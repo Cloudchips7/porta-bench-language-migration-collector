@@ -1,6 +1,8 @@
 .env
 Tokens.txt
 需求文档/Tokens.txt
+__pycache__/
+*.pyc
 *.tmp
 *.temp
 Thumbs.db

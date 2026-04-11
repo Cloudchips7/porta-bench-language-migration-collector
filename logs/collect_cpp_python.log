@@ -1,2 +1,104 @@
 2026-04-11 01:00:06,739 | INFO | Starting export-review stage for cpp_python
 2026-04-11 01:00:06,742 | INFO | Review CSV exported: 0 rows
+2026-04-11 20:01:14,653 | INFO | Starting collect stage for cpp_python
+2026-04-11 20:01:30,722 | INFO | Reached max candidate limit: 5
+2026-04-11 20:01:30,726 | INFO | Query query_d page 1 collected. Current unique PRs: 10, candidate PRs: 5
+2026-04-11 20:01:30,729 | INFO | Collect stage finished. Unique PRs: 10
+2026-04-11 20:04:55,597 | INFO | Starting enrich stage for cpp_python
+2026-04-11 20:05:21,464 | ERROR | Failed to enrich cpp_python__arendst__Tasmota__pr24599: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_fq06yk99\repo'...
+fatal: unable to access 'https://github.com/arendst/Tasmota.git/': Failed to connect to github.com port 443 after 21098 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 724, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 635, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_fq06yk99\repo'...
+fatal: unable to access 'https://github.com/arendst/Tasmota.git/': Failed to connect to github.com port 443 after 21098 ms: Could not connect to server
+2026-04-11 20:05:45,793 | ERROR | Failed to enrich cpp_python__hdtv-tool__hdtv__pr52: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_o9jcx5g4\repo'...
+fatal: unable to access 'https://github.com/hdtv-tool/hdtv.git/': Failed to connect to github.com port 443 after 21060 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 724, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 635, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_o9jcx5g4\repo'...
+fatal: unable to access 'https://github.com/hdtv-tool/hdtv.git/': Failed to connect to github.com port 443 after 21060 ms: Could not connect to server
+2026-04-11 20:06:10,137 | ERROR | Failed to enrich cpp_python__openvdb__fvdb-core__pr595: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_u0xw1g2k\repo'...
+fatal: unable to access 'https://github.com/openvdb/fvdb-core.git/': Failed to connect to github.com port 443 after 21097 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 724, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 635, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_u0xw1g2k\repo'...
+fatal: unable to access 'https://github.com/openvdb/fvdb-core.git/': Failed to connect to github.com port 443 after 21097 ms: Could not connect to server
+2026-04-11 20:06:35,010 | ERROR | Failed to enrich cpp_python__pespila__max-min-hill-climbing-algorithm__pr2: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_mctywar4\repo'...
+fatal: unable to access 'https://github.com/pespila/max-min-hill-climbing-algorithm.git/': Failed to connect to github.com port 443 after 21102 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 724, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 635, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_mctywar4\repo'...
+fatal: unable to access 'https://github.com/pespila/max-min-hill-climbing-algorithm.git/': Failed to connect to github.com port 443 after 21102 ms: Could not connect to server
+2026-04-11 20:07:21,069 | ERROR | Failed to enrich cpp_python__taco-project__FlexKV__pr127: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_ubdosbgx\repo'...
+error: RPC failed; curl 28 Recv failure: Connection was reset
+fatal: expected flush after ref listing
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 724, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 635, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_ubdosbgx\repo'...
+error: RPC failed; curl 28 Recv failure: Connection was reset
+fatal: expected flush after ref listing
+2026-04-11 20:07:21,069 | INFO | Enrich stage finished. Records: 0
+2026-04-11 22:31:41,235 | INFO | Starting export-review stage for cpp_python
+2026-04-11 22:31:41,237 | INFO | Review CSV exported: 0 rows
+2026-04-11 22:34:25,446 | INFO | Starting enrich stage for cpp_python
+2026-04-11 22:34:55,144 | ERROR | Failed to enrich cpp_python__arendst__Tasmota__pr24599: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_umd8fnu9\repo'...
+fatal: unable to access 'https://github.com/arendst/Tasmota.git/': Failed to connect to github.com port 443 after 21123 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 975, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 886, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_umd8fnu9\repo'...
+fatal: unable to access 'https://github.com/arendst/Tasmota.git/': Failed to connect to github.com port 443 after 21123 ms: Could not connect to server
+2026-04-11 22:35:21,695 | ERROR | Failed to enrich cpp_python__hdtv-tool__hdtv__pr52: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_cx9h86a6\repo'...
+fatal: unable to access 'https://github.com/hdtv-tool/hdtv.git/': Failed to connect to github.com port 443 after 21125 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 975, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 886, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_cx9h86a6\repo'...
+fatal: unable to access 'https://github.com/hdtv-tool/hdtv.git/': Failed to connect to github.com port 443 after 21125 ms: Could not connect to server
+2026-04-11 22:35:51,188 | ERROR | Failed to enrich cpp_python__openvdb__fvdb-core__pr595: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_knauahyt\repo'...
+fatal: unable to access 'https://github.com/openvdb/fvdb-core.git/': Failed to connect to github.com port 443 after 21076 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 975, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 886, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_knauahyt\repo'...
+fatal: unable to access 'https://github.com/openvdb/fvdb-core.git/': Failed to connect to github.com port 443 after 21076 ms: Could not connect to server
+2026-04-11 22:36:18,737 | ERROR | Failed to enrich cpp_python__pespila__max-min-hill-climbing-algorithm__pr2: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_cfguxz4m\repo'...
+fatal: unable to access 'https://github.com/pespila/max-min-hill-climbing-algorithm.git/': Failed to connect to github.com port 443 after 21097 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 975, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 886, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_cfguxz4m\repo'...
+fatal: unable to access 'https://github.com/pespila/max-min-hill-climbing-algorithm.git/': Failed to connect to github.com port 443 after 21097 ms: Could not connect to server
+2026-04-11 22:36:45,988 | ERROR | Failed to enrich cpp_python__taco-project__FlexKV__pr127: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_om63a949\repo'...
+fatal: unable to access 'https://github.com/taco-project/FlexKV.git/': Failed to connect to github.com port 443 after 21060 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 975, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 886, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_om63a949\repo'...
+fatal: unable to access 'https://github.com/taco-project/FlexKV.git/': Failed to connect to github.com port 443 after 21060 ms: Could not connect to server
+2026-04-11 22:36:45,989 | INFO | Enrich stage finished. Records: 5

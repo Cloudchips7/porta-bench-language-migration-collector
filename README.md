@@ -6,6 +6,10 @@ Current focus:
 - `py2 -> py3`
 - `cpp -> python`
 
+Current collection priority:
+- First stabilize `py2 -> py3` (`version_migration`)
+- Then extend the same pipeline to `cpp -> python` (`cross_language_migration`)
+
 The project is organized around a single main script:
 - `需求文档/download_repo.py`
 
@@ -21,8 +25,11 @@ Directory overview:
 - `data/raw/`: raw search results, PR metadata, and repository snapshots
 - `data/review/`: manual review CSV files
 - `data/processed/`: processed candidates and final packaged dataset
+- `data/stats/`: json stats plus subtype progress boards
 - `logs/`: stage logs
 - `需求文档/`: source PPT and the main collection script
+- `语言变化迁移样本标注规范_v1.md`: annotation guideline for the language-migration scenario
+- `项目进度看板.md`: top-level visual dashboard generated after each stage run
 
 Example commands:
 
@@ -43,4 +50,5 @@ python "需求文档/download_repo.py" --stage collect --subtype py2_py3 --query
 Notes:
 - GitHub authentication can come from `需求文档/Tokens.txt` or `GITHUB_PAT_TOKEN`
 - Review labels should use `positive`, `negative`, or `uncertain`
+- Review CSV now includes taxonomy and benchmark-readiness fields such as `migration_type`, `reproducible`, `issue_rewrite_ready`, and `leakage_risk`
 - Generated runtime files are kept under `data/` and `logs/`

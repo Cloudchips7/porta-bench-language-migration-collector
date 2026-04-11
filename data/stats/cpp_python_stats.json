@@ -1,15 +1,23 @@
 {
   "scenario": "language_migration",
   "subtype": "cpp_python",
-  "raw_pr_count": 0,
-  "unique_pr_count": 0,
-  "collect_candidate_count": 0,
+  "raw_pr_count": 100,
+  "unique_pr_count": 10,
+  "collect_candidate_count": 5,
   "auto_filtered_candidate_count": 0,
+  "auto_excluded_count": 0,
+  "enrich_error_count": 5,
   "manual_positive_count": 0,
   "manual_negative_count": 0,
   "manual_uncertain_count": 0,
   "processed_candidate_count": 0,
   "has_tests_before_ratio": 0.0,
   "adds_new_tests_ratio": 0.0,
-  "query_hit_rate": {}
+  "query_hit_rate": {
+    "query_d": 5
+  },
+  "auto_exclude_reason_breakdown": {},
+  "migration_type_breakdown": {},
+  "reproducible_breakdown": {},
+  "issue_rewrite_ready_breakdown": {}
 }

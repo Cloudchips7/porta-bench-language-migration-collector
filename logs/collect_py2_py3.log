@@ -14,3 +14,86 @@
 2026-04-11 13:47:25,102 | INFO | Reached max candidate limit: 2
 2026-04-11 13:47:25,104 | INFO | Query adhoc_query page 1 collected. Current unique PRs: 9, candidate PRs: 2
 2026-04-11 13:47:25,105 | INFO | Collect stage finished. Unique PRs: 9
+2026-04-11 20:01:14,653 | INFO | Starting collect stage for py2_py3
+2026-04-11 20:02:34,783 | INFO | Reached max candidate limit: 5
+2026-04-11 20:02:34,793 | INFO | Query query_a page 1 collected. Current unique PRs: 70, candidate PRs: 5
+2026-04-11 20:02:34,795 | INFO | Collect stage finished. Unique PRs: 70
+2026-04-11 20:04:55,563 | INFO | Starting enrich stage for py2_py3
+2026-04-11 20:05:20,811 | ERROR | Failed to enrich py2_py3__BU-Neuromics__terminal_quest__pr2: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_g1ksi6qk\repo'...
+fatal: unable to access 'https://github.com/BU-Neuromics/terminal_quest.git/': Failed to connect to github.com port 443 after 21108 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 724, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 635, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_g1ksi6qk\repo'...
+fatal: unable to access 'https://github.com/BU-Neuromics/terminal_quest.git/': Failed to connect to github.com port 443 after 21108 ms: Could not connect to server
+2026-04-11 20:05:44,736 | ERROR | Failed to enrich py2_py3__arild__csp-presentation__pr2: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_zgh2agvj\repo'...
+fatal: unable to access 'https://github.com/arild/csp-presentation.git/': Failed to connect to github.com port 443 after 21102 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 724, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 635, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_zgh2agvj\repo'...
+fatal: unable to access 'https://github.com/arild/csp-presentation.git/': Failed to connect to github.com port 443 after 21102 ms: Could not connect to server
+2026-04-11 20:05:48,197 | INFO | Enriched py2_py3__joedemcher__simplelogin-cli__pr2 (excluded)
+2026-04-11 20:06:12,077 | ERROR | Failed to enrich py2_py3__lijunzh__SeisCM__pr2: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_bs113k41\repo'...
+fatal: unable to access 'https://github.com/lijunzh/SeisCM.git/': Failed to connect to github.com port 443 after 21093 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 724, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 635, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_bs113k41\repo'...
+fatal: unable to access 'https://github.com/lijunzh/SeisCM.git/': Failed to connect to github.com port 443 after 21093 ms: Could not connect to server
+2026-04-11 20:06:37,099 | ERROR | Failed to enrich py2_py3__mwyau__PyStormTracker__pr2: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_jbjk2781\repo'...
+fatal: unable to access 'https://github.com/mwyau/PyStormTracker.git/': Failed to connect to github.com port 443 after 21114 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 724, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 635, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_jbjk2781\repo'...
+fatal: unable to access 'https://github.com/mwyau/PyStormTracker.git/': Failed to connect to github.com port 443 after 21114 ms: Could not connect to server
+2026-04-11 20:06:37,101 | INFO | Enrich stage finished. Records: 1
+2026-04-11 22:31:41,234 | INFO | Starting export-review stage for py2_py3
+2026-04-11 22:31:41,237 | INFO | Review CSV exported: 0 rows
+2026-04-11 22:37:03,051 | INFO | Starting enrich stage for py2_py3
+2026-04-11 22:37:31,161 | ERROR | Failed to enrich py2_py3__BU-Neuromics__terminal_quest__pr2: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_jn0gb3fc\repo'...
+fatal: unable to access 'https://github.com/BU-Neuromics/terminal_quest.git/': Failed to connect to github.com port 443 after 21079 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 975, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 886, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_jn0gb3fc\repo'...
+fatal: unable to access 'https://github.com/BU-Neuromics/terminal_quest.git/': Failed to connect to github.com port 443 after 21079 ms: Could not connect to server
+2026-04-11 22:37:59,229 | ERROR | Failed to enrich py2_py3__arild__csp-presentation__pr2: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_pfnjhkc5\repo'...
+fatal: unable to access 'https://github.com/arild/csp-presentation.git/': Failed to connect to github.com port 443 after 21083 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 975, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 886, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_pfnjhkc5\repo'...
+fatal: unable to access 'https://github.com/arild/csp-presentation.git/': Failed to connect to github.com port 443 after 21083 ms: Could not connect to server
+2026-04-11 22:38:27,109 | ERROR | Failed to enrich py2_py3__lijunzh__SeisCM__pr2: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_49n1y8z9\repo'...
+fatal: unable to access 'https://github.com/lijunzh/SeisCM.git/': Failed to connect to github.com port 443 after 21095 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 975, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 886, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_49n1y8z9\repo'...
+fatal: unable to access 'https://github.com/lijunzh/SeisCM.git/': Failed to connect to github.com port 443 after 21095 ms: Could not connect to server
+2026-04-11 22:38:55,570 | ERROR | Failed to enrich py2_py3__mwyau__PyStormTracker__pr2: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_5k5gmxyc\repo'...
+fatal: unable to access 'https://github.com/mwyau/PyStormTracker.git/': Failed to connect to github.com port 443 after 21073 ms: Could not connect to server
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 975, in enrich_stage
+    self.clone_repo(repo["clone_url"], repo_dir)
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 886, in clone_repo
+    raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_5k5gmxyc\repo'...
+fatal: unable to access 'https://github.com/mwyau/PyStormTracker.git/': Failed to connect to github.com port 443 after 21073 ms: Could not connect to server
+2026-04-11 22:38:55,571 | INFO | Enrich stage finished. Records: 5

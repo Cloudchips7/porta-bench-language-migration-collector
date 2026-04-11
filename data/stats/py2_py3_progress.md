@@ -1,25 +1,25 @@
 # py2_py3 进度看板
 
-- 更新时间: `2026-04-11 22:45:06`
-- 触发节点: `package`
+- 更新时间: `2026-04-12 01:27:31`
+- 触发节点: `export-review`
 
 ## 阶段状态
 
 | 节点 | 状态 | 说明 |
 | --- | --- | --- |
-| `collect` | `done` | unique=70 |
-| `enrich` | `done` | records=5/5 |
-| `export-review` | `done` | rows=0 |
+| `collect` | `done` | unique=100 |
+| `enrich` | `done` | records=8/8 |
+| `export-review` | `done` | rows=3 |
 | `apply-review` | `pending` | processed=0 |
 | `package` | `done` | stats=yes |
 
 ## 数量概览
 
-- Collect 候选: 5/70 [#...................] 7%
-- Enrich 完成: 5/5 [####################] 100%
-- Enrich 候选: 0/5 [....................] 0%
-- 人工已标注: 0/0 [....................] 0%
-- Processed 保留: 0/0 [....................] 0%
+- Collect 候选: 8/100 [##..................] 8%
+- Enrich 完成: 8/8 [####################] 100%
+- Enrich 候选: 3/8 [########............] 38%
+- 人工已标注: 0/3 [....................] 0%
+- Processed 保留: 0/3 [....................] 0%
 
 ## 中间产物
 
@@ -31,19 +31,16 @@
 
 ## 当前阻塞
 
-- `py2_py3__BU-Neuromics__terminal_quest__pr2`: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_jn0gb3fc\repo'... fatal: unable to access 'https://github.com/BU-Neuromics/terminal_quest.git/': Failed to connect to github.com port 443 after 21079 ms: Could not connect to server
-- `py2_py3__arild__csp-presentation__pr2`: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_pfnjhkc5\repo'... fatal: unable to access 'https://github.com/arild/csp-presentation.git/': Failed to connect to github.com port 443 after 21083 ms: Could not connect to server
-- `py2_py3__lijunzh__SeisCM__pr2`: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_49n1y8z9\repo'... fatal: unable to access 'https://github.com/lijunzh/SeisCM.git/': Failed to connect to github.com port 443 after 21095 ms: Could not connect to server
-- `py2_py3__mwyau__PyStormTracker__pr2`: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_5k5gmxyc\repo'... fatal: unable to access 'https://github.com/mwyau/PyStormTracker.git/': Failed to connect to github.com port 443 after 21073 ms: Could not connect to server
+- 暂无已记录的 enrich 错误。
 
 ## 统计快照
 
-- raw_pr_count: `100`
-- unique_pr_count: `70`
-- collect_candidate_count: `5`
-- auto_filtered_candidate_count: `0`
-- auto_excluded_count: `1`
-- enrich_error_count: `4`
+- raw_pr_count: `200`
+- unique_pr_count: `100`
+- collect_candidate_count: `8`
+- auto_filtered_candidate_count: `3`
+- auto_excluded_count: `5`
+- enrich_error_count: `0`
 - manual_positive_count: `0`
 - manual_negative_count: `0`
 - manual_uncertain_count: `0`

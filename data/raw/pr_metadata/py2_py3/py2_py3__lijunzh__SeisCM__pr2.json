@@ -1,0 +1,231 @@
+{
+  "instance_id": "py2_py3__lijunzh__SeisCM__pr2",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "lijunzh/SeisCM",
+  "pr_number": 2,
+  "pr_url": "https://github.com/lijunzh/SeisCM/pull/2",
+  "repo": {
+    "full_name": "lijunzh/SeisCM",
+    "clone_url": "https://github.com/lijunzh/SeisCM.git",
+    "default_branch": "master",
+    "stars": 28,
+    "license": "MIT",
+    "size_kb": 29
+  },
+  "pull_request": {
+    "id": 3368740778,
+    "title": "Modernize repo: src layout, type hints, ruff, GitHub Actions CI/CD",
+    "body": "## Summary\n\nThis PR brings SeisCM from its 2017 Python 2.7 era into 2025 with modern tooling and best practices.\n\n### Changes\n\n#### Project Structure\n- **`src/` layout** — migrated from flat `seiscm/` to `src/seiscm/`\n- **`setup.py` → `pyproject.toml`** with `setuptools_scm` for dynamic git-tag versioning\n- **`uv.lock`** for reproducible dependency resolution\n- Removed `tests/__init__.py` (unnecessary with pytest)\n\n#### Code Quality & Typing\n- **Type annotations** with `TypeAlias` for colormap segment dictionaries\n- **`py.typed`** marker (PEP 561) for downstream type checker support\n- **`_make_cmap()`** helper extracted to DRY up colormap construction\n- **Fixed** `frequency()` docstring (was copy-pasted from `phase()`)\n- **Dropped** Python 2 compat (`__future__` imports, `# -*- coding: utf-8 -*-`)\n\n#### Linting & Formatting\n- **Ruff** with rules: `E/W/F/I/UP/B/SIM/RUF`\n- **Pre-commit** config with ruff hooks\n\n#### CI/CD\n- **GitHub Actions** replaces dead Travis CI\n- **Test matrix**: Python 3.10–3.13\n- **Dedicated lint job**\n- **PyPI trusted publishing** on version tags\n\n#### Tests\n- **Expanded from 4 → 12 tests**: alpha validation, edge colours, cmap names, transparency\n- `autouse` fixture to close matplotlib figures (no leaks)\n\n#### Housekeeping\n- **.gitignore** cleaned (removed Django/Flask/Scrapy cruft)\n- **README** rewritten: CI badge, colormap table, quick-start example, dev instructions\n",
+    "merged_at": "2026-03-08T00:19:42Z",
+    "base_sha": "b711f8fc85532dbc944c21e4eed61adfb7aed8c7",
+    "head_sha": "2305c51a1c515592d81893bc77026df0179d44d5",
+    "merge_commit_sha": "6f016eff13f605874d14ac6110dcc108c61834d6",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_a"
+  ],
+  "base_sha": "b711f8fc85532dbc944c21e4eed61adfb7aed8c7",
+  "final_sha": "2305c51a1c515592d81893bc77026df0179d44d5",
+  "changed_files": [
+    {
+      "sha": "05a8b6f8e6b5df2eb68744725fd8b0986f1d59f4",
+      "filename": ".github/workflows/cicd.yml",
+      "status": "added",
+      "additions": 86,
+      "deletions": 0,
+      "changes": 86,
+      "blob_url": "https://github.com/lijunzh/SeisCM/blob/2305c51a1c515592d81893bc77026df0179d44d5/.github%2Fworkflows%2Fcicd.yml",
+      "raw_url": "https://github.com/lijunzh/SeisCM/raw/2305c51a1c515592d81893bc77026df0179d44d5/.github%2Fworkflows%2Fcicd.yml",
+      "contents_url": "https://api.github.com/repos/lijunzh/SeisCM/contents/.github%2Fworkflows%2Fcicd.yml?ref=2305c51a1c515592d81893bc77026df0179d44d5",
+      "patch": "@@ -0,0 +1,86 @@\n+name: CI/CD\n+\n+on:\n+  push:\n+    branches: [master]\n+    tags: [\"v*.*.*\"]\n+  pull_request:\n+    branches: [master]\n+\n+jobs:\n+  lint:\n+    runs-on: ubuntu-latest\n+    steps:\n+      - uses: actions/checkout@v4\n+\n+      - name: Setup uv\n+        uses: astral-sh/setup-uv@v5\n+        with:\n+          enable-cache: true\n+          cache-dependency-glob: \"pyproject.toml\"\n+\n+      - name: Set up Python\n+        uses: actions/setup-python@v5\n+        with:\n+          python-version: \"3.13\"\n+\n+      - name: Install the project\n+        run: uv sync --all-extras --dev\n+\n+      - name: Lint with ruff\n+        run: uv run ruff check src tests\n+\n+      - name: Check formatting with ruff\n+        run: uv run ruff format --check src tests\n+\n+  tests:\n+    runs-on: ubuntu-latest\n+    strategy:\n+      matrix:\n+        python-version: [\"3.10\", \"3.11\", \"3.12\", \"3.13\"]\n+\n+    steps:\n+      - uses: actions/checkout@v4\n+\n+      - name: Setup uv\n+        uses: astral-sh/setup-uv@v5\n+        with:\n+          enable-cache: true\n+          cache-dependency-glob: \"pyproject.toml\"\n+\n+      - name: Set up Python ${{ matrix.python-version }}\n+        uses: actions/setup-python@v5\n+        with:\n+          python-version: ${{ matrix.python-version }}\n+\n+      - name: Install the project\n+        run: uv sync --all-extras --dev\n+\n+      - name: Run tests\n+        run: uv run pytest tests\n+\n+  pypi_publish:\n+    if: startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc')\n+    runs-on: ubuntu-latest\n+    needs: [lint, tests]\n+    permissions:\n+      id-token: write\n+      contents: read\n+\n+    steps:\n+      - name: Checkout code\n+        uses: actions/checkout@v4\n+        with:\n+          fetch-depth: 0\n+\n+      - name: Setup uv\n+        uses: astral-sh/setup-uv@v5\n+        with:\n+          enable-cache: true\n+          cache-dependency-glob: \"uv.lock\"\n+\n+      - name: Build Python package\n+        run: uv build\n+\n+      - name: Publish to PyPI\n+        run: uv publish"
+    },
+    {
+      "sha": "3fcfe002883cd1f0cb4daf1a9000554b5273680b",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 20,
+      "deletions": 64,
+      "changes": 84,
+      "blob_url": "https://github.com/lijunzh/SeisCM/blob/2305c51a1c515592d81893bc77026df0179d44d5/.gitignore",
+      "raw_url": "https://github.com/lijunzh/SeisCM/raw/2305c51a1c515592d81893bc77026df0179d44d5/.gitignore",
+      "contents_url": "https://api.github.com/repos/lijunzh/SeisCM/contents/.gitignore?ref=2305c51a1c515592d81893bc77026df0179d44d5",
+      "patch": "@@ -7,84 +7,40 @@ __pycache__/\n *.so\n \n # Distribution / packaging\n-.Python\n-env/\n build/\n-develop-eggs/\n dist/\n-downloads/\n-eggs/\n-.eggs/\n-lib/\n-lib64/\n-parts/\n-sdist/\n-var/\n *.egg-info/\n-.installed.cfg\n *.egg\n \n-# PyInstaller\n-#  Usually these files are written by a python script from a template\n-#  before PyInstaller builds the exe, so as to inject date/other infos into it.\n-*.manifest\n-*.spec\n+# Virtual environments\n+.venv/\n+venv/\n+env/\n+ENV/\n \n-# Installer logs\n-pip-log.txt\n-pip-delete-this-directory.txt\n+# IDE / editor\n+.idea/\n+.vscode/\n+*.swp\n+*.swo\n+*~\n \n-# Unit test / coverage reports\n+# Testing / coverage\n htmlcov/\n .tox/\n .coverage\n .coverage.*\n-.cache\n-nosetests.xml\n coverage.xml\n-*,cover\n+.pytest_cache/\n .hypothesis/\n \n-# Translations\n-*.mo\n-*.pot\n-\n-# Django stuff:\n-*.log\n-local_settings.py\n-\n-# Flask stuff:\n-instance/\n-.webassets-cache\n-\n-# Scrapy stuff:\n-.scrapy\n-\n-# Sphinx documentation\n-docs/_build/\n+# OS files\n+.DS_Store\n+Thumbs.db\n \n-# PyBuilder\n-target/\n+# Setuptools-scm generated version\n+**/*/_version.py\n \n-# IPython Notebook\n-.ipynb_checkpoints\n-\n-# pyenv\n-.python-version\n-\n-# celery beat schedule file\n-celerybeat-schedule\n-\n-# dotenv\n+# Environment variables\n .env\n-\n-# virtualenv\n-venv/\n-ENV/\n-\n-# Spyder project settings\n-.spyderproject\n-\n-# Rope project settings\n-.ropeproject\n-.idea/\n+uv.lock"
+    },
+    {
+      "sha": "d4de6b03b37ebf94bcf4d45422c6fca5155362cc",
+      "filename": ".pre-commit-config.yaml",
+      "status": "added",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/lijunzh/SeisCM/blob/2305c51a1c515592d81893bc77026df0179d44d5/.pre-commit-config.yaml",
+      "raw_url": "https://github.com/lijunzh/SeisCM/raw/2305c51a1c515592d81893bc77026df0179d44d5/.pre-commit-config.yaml",
+      "contents_url": "https://api.github.com/repos/lijunzh/SeisCM/contents/.pre-commit-config.yaml?ref=2305c51a1c515592d81893bc77026df0179d44d5",
+      "patch": "@@ -0,0 +1,7 @@\n+repos:\n+  - repo: https://github.com/astral-sh/ruff-pre-commit\n+    rev: v0.9.10\n+    hooks:\n+      - id: ruff\n+        args: [--fix]\n+      - id: ruff-format"
+    },
+    {
+      "sha": "e2c901a5308bf103a791a6d287803d1036950d3a",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 55,
+      "deletions": 32,
+      "changes": 87,
+      "blob_url": "https://github.com/lijunzh/SeisCM/blob/2305c51a1c515592d81893bc77026df0179d44d5/README.md",
+      "raw_url": "https://github.com/lijunzh/SeisCM/raw/2305c51a1c515592d81893bc77026df0179d44d5/README.md",
+      "contents_url": "https://api.github.com/repos/lijunzh/SeisCM/contents/README.md?ref=2305c51a1c515592d81893bc77026df0179d44d5",
+      "patch": "@@ -1,52 +1,75 @@\n-# Seismic ColorMap\n+# Seismic Colormaps (SeisCM)\n \n-[![PyPI version](https://badge.fury.io/py/SeisCM.svg)](https://badge.fury.io/py/SeisCM)\n-[![Build Status](https://travis-ci.org/gatechzhu/SeisCM.svg?branch=master)](https://travis-ci.org/gatechzhu/SeisCM)\n+[![PyPI version](https://img.shields.io/pypi/v/SeisCM)](https://pypi.org/project/SeisCM/)\n+![License](https://img.shields.io/pypi/l/SeisCM)\n+![Python versions](https://img.shields.io/pypi/pyversions/SeisCM)\n+[![CI/CD](https://github.com/lijunzh/seiscm/actions/workflows/cicd.yml/badge.svg)](https://github.com/lijunzh/seiscm/actions/workflows/cicd.yml)\n \n ## Introduction\n-As geophysicists can never agree on a standard colormap to plot seismic datasets that make every one happy, I try to make a package that include most common colormaps so that I can call them simply by import a package. \n-This package is designed to be minimal initially and try to include as manny cm as possible. \n-Open a pull request for any new colormap that you want me to include and I will put it in the package as soon as possible.\n- \n-## List of Available Colormaps\n-- Blue-White-Red \n-- Seismic\n-- Phase\n-- Frequency\n- \n- \n-![Colormap Demo](/fig/colormaps.png?raw=true \"Colormaps\")\n- \n \n-## Dependancy\n-- [NumPy](http://www.numpy.org/)\n-- [Matplotlib](http://matplotlib.org/)\n+Geophysicists can never agree on a standard colormap — so here's a package\n+with the most common ones, ready to import. SeisCM provides\n+[matplotlib](https://matplotlib.org/)-compatible colormaps designed\n+specifically for seismic and geophysical data visualization.\n \n-## Usage\n-For a given $CM (replace $CM by the actual colormap that you want to use), you can use it as following:\n-```\n-from seiscm import $CM \n-import matplotlib.pyplot as plt\n+Pull requests for new colormaps are welcome!\n \n-plt.imshow(img, cmap=$CM())\n+## Available Colormaps\n+\n+| Name | Description |\n+|------|-------------|\n+| `bwr` | Blue-White-Red with configurable mid-point transparency |\n+| `seismic` | Classic seismic amplitude display |\n+| `phase` | Phase attribute visualisation |\n+| `frequency` | Frequency attribute visualisation |\n+\n+![Colormap Demo](/fig/colormaps.png?raw=true \"Colormaps\")\n \n-```\n- \n ## Installation\n \n ### From PyPI\n-```\n+\n+```bash\n pip install seiscm\n ```\n \n-### From source file\n-Download srouce file from [releases page](https://github.com/gatechzhu/SeisCM/releases). Under the root directory, type:\n+### From source (development)\n \n+```bash\n+git clone https://github.com/lijunzh/seiscm.git\n+cd seiscm\n+uv sync --all-extras --dev\n ```\n-python setup.py install\n+\n+## Quick Start\n+\n+```python\n+from seiscm import bwr\n+import matplotlib.pyplot as plt\n+import numpy as np\n+\n+data = np.random.default_rng(42).standard_normal((100, 100))\n+plt.imshow(data, cmap=bwr())\n+plt.colorbar()\n+plt.show()\n ```\n \n+## Dependencies\n+\n+- [NumPy](https://numpy.org/)\n+- [Matplotlib](https://matplotlib.org/)\n+\n+## Development\n+\n+```bash\n+uv run ruff check src tests   # lint\n+uv run ruff format src tests  # format\n+uv run pytest                 # test\n+uv run pre-commit install     # set up git hooks\n+```\n \n ## Contact\n \n-In counter of any trouble, contact *gatechzhu@gmail.com*\n+For issues, please open a\n+[GitHub issue](https://github.com/lijunzh/seiscm/issues) or contact\n+*gatechzhu@gmail.com*."
+    },
+    {
+      "sha": "0990178a531c561218443942bdc3e664b763a52f",
+      "filename": "pyproject.toml",
+      "status": "added",
+      "additions": 65,
+      "deletions": 0,
+      "changes": 65,
+      "blob_url": "https://github.com/lijunzh/SeisCM/blob/2305c51a1c515592d81893bc77026df0179d44d5/pyproject.toml",
+      "raw_url": "https://github.com/lijunzh/SeisCM/raw/2305c51a1c515592d81893bc77026df0179d44d5/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/lijunzh/SeisCM/contents/pyproject.toml?ref=2305c51a1c515592d81893bc77026df0179d44d5",
+      "patch": "@@ -0,0 +1,65 @@\n+[build-system]\n+requires = [\"setuptools>=61.0\", \"setuptools_scm>=8\"]\n+build-backend = \"setuptools.build_meta\"\n+\n+[project]\n+name = \"SeisCM\"\n+dynamic = [\"version\"]\n+description = \"Seismic Colormap Generator\"\n+readme = \"README.md\"\n+authors = [\n+    { name = \"Lijun Zhu\", email = \"gatechzhu@gmail.com\" }\n+]\n+license = { file = \"LICENSE\" }\n+requires-python = \">=3.10\"\n+classifiers = [\n+    \"Development Status :: 4 - Beta\",\n+    \"Intended Audience :: Science/Research\",\n+    \"License :: OSI Approved :: MIT License\",\n+    \"Programming Language :: Python :: 3\",\n+    \"Programming Language :: Python :: 3.10\",\n+    \"Programming Language :: Python :: 3.11\",\n+    \"Programming Language :: Python :: 3.12\",\n+    \"Programming Language :: Python :: 3.13\",\n+    \"Topic :: Scientific/Engineering\",\n+    \"Topic :: Scientific/Engineering :: Visualization\",\n+    \"Typing :: Typed\",\n+]\n+dependencies = [\n+    \"numpy\",\n+    \"matplotlib\",\n+]\n+\n+[dependency-groups]\n+dev = [\n+    \"pytest>=8.3.5\",\n+    \"ruff>=0.9\",\n+    \"pre-commit>=4.0\",\n+]\n+\n+[tool.setuptools_scm]\n+version_scheme = \"guess-next-dev\"\n+local_scheme = \"no-local-version\"\n+write_to = \"src/seiscm/_version.py\"\n+\n+[tool.ruff]\n+target-version = \"py310\"\n+line-length = 88\n+\n+[tool.ruff.lint]\n+select = [\n+    \"E\",    # pycodestyle errors\n+    \"W\",    # pycodestyle warnings\n+    \"F\",    # pyflakes\n+    \"I\",    # isort\n+    \"UP\",   # pyupgrade\n+    \"B\",    # flake8-bugbear\n+    \"SIM\",  # flake8-simplify\n+    \"RUF\",  # ruff-specific rules\n+]\n+\n+[tool.ruff.lint.isort]\n+known-first-party = [\"seiscm\"]\n+\n+[tool.pytest.ini_options]\n+testpaths = [\"tests\"]"
+    },
+    {
+      "sha": "92675c9f9c32c0365ec3f2a9f0951e92bf9ea630",
+      "filename": "seiscm/__init__.py",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 4,
+      "changes": 4,
+      "blob_url": "https://github.com/lijunzh/SeisCM/blob/b711f8fc85532dbc944c21e4eed61adfb7aed8c7/seiscm%2F__init__.py",
+      "raw_url": "https://github.com/lijunzh/SeisCM/raw/b711f8fc85532dbc944c21e4eed61adfb7aed8c7/seiscm%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/lijunzh/SeisCM/contents/seiscm%2F__init__.py?ref=b711f8fc85532dbc944c21e4eed61adfb7aed8c7",
+      "patch": "@@ -1,4 +0,0 @@\n-# -*- coding: utf-8 -*-\n-from __future__ import print_function, absolute_import, division\n-\n-from .seiscm import bwr, seismic, phase, frequency"
+    },
+    {
+      "sha": "aef9dd0ac77f4bcd28dc18f932341f4079854cc7",
+      "filename": "seiscm/seiscm.py",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 213,
+      "changes": 213,
+      "blob_url": "https://github.com/lijunzh/SeisCM/blob/b711f8fc85532dbc944c21e4eed61adfb7aed8c7/seiscm%2Fseiscm.py",
+      "raw_url": "https://github.com/lijunzh/SeisCM/raw/b711f8fc85532dbc944c21e4eed61adfb7aed8c7/seiscm%2Fseiscm.py",
+      "contents_url": "https://api.github.com/repos/lijunzh/SeisCM/contents/seiscm%2Fseiscm.py?ref=b711f8fc85532dbc944c21e4eed61adfb7aed8c7",
+      "patch": "@@ -1,213 +0,0 @@\n-import matplotlib.pyplot as plt\n-import numpy as np\n-from matplotlib.colors import LinearSegmentedColormap\n-\n-\n-def bwr(alpha=0):\n-    \"\"\"\n-    Create a Blue-White-Red colormap given transparency value (alpha,\n-    default=0 for seismic cmap) in the middle.\n-\n-    :param alpha: Transparency value in the middle between 0 and 1 (default=0).\n-    :type alpha: float\n-\n-    :return: Blue-White-Red colormap\n-    :rtype: matplotlib.colors.LinearSegmentedColormap object\n-    \"\"\"\n-\n-    # Input check\n-    if not 0 <= alpha <= 1:\n-        raise ValueError(\"Alpha value must be between 0 and 1.\")\n-\n-    # Construct cmap dictionary\n-    cdict = {\n-        'red': ((0, 0, 0),\n-                (0.25, 0, 0),\n-                (0.5, 1, 1),\n-                (0.75, 0.8314, 0.8314),\n-                (1, 0.5, 0.5)),\n-\n-        'green': ((0, 0, 0),\n-                  (0.25, 0.375, 0.375),\n-                  (0.5, 1, 1),\n-                  (0.75, 0.375, 0.375),\n-                  (1, 0, 0)),\n-\n-        'blue': ((0, 0.5, 0.5),\n-                 (0.25, 0.8314, 0.8314),\n-                 (0.5, 1, 1),\n-                 (0.75, 0, 0),\n-                 (1, 0, 0)),\n-\n-        'alpha': ((0, 1, 1),\n-                  (0.5, alpha, alpha),\n-                  (1, 1, 1)),\n-    }\n-\n-    return LinearSegmentedColormap('BlueWhiteRed', cdict)\n-\n-\n-def seismic():\n-    \"\"\"\n-    Create a seismic colormap.\n-\n-    :return: seismic colormap\n-    :rtype: matplotlib.colors.LinearSegmentedColormap object\n-    \"\"\"\n-\n-    # Construct cmap dictionary\n-    cdict = {\n-        'red': ((0, 0.6314, 0.6314),\n-                (0.33, 0, 0),\n-                (0.4, 0.302, 0.302),\n-                (0.5, 0.8, 0.8),\n-                (0.6, 0.3804, 0.3804),\n-                (0.667, 0.749, 0.749),\n-                (1, 1, 1)),\n-\n-        'green': ((0, 1, 1),\n-                  (0.33, 0, 0),\n-                  (0.4, 0.302, 0.302),\n-                  (0.5, 0.8, 0.8),\n-                  (0.6, 0.2706, 0.2706),\n-                  (0.667, 0, 0),\n-                  (1, 1, 1)),\n-\n-        'blue': ((0, 1, 1),\n-                 (0.33, 0.749, 0.749),\n-                 (0.4, 0.302, 0.302),\n-                 (0.5, 0.8, 0.8),\n-                 (0.6, 0, 0),\n-                 (0.667, 0, 0),\n-                 (1, 0, 0)),\n-    }\n-\n-    return LinearSegmentedColormap('Seismic', cdict)\n-\n-\n-def phase():\n-    \"\"\"\n-    Create a phase colormap.\n-\n-    :return: phase colormap\n-    :rtype: matplotlib.colors.LinearSegmentedColormap object\n-    \"\"\"\n-\n-    # Construct cmap dictionary\n-    cdict = {\n-        'red': ((0, 1, 1),\n-                (0.1, 1, 1),\n-                (0.2, 1, 1),\n-                (0.3, 1, 1),\n-                (0.4, 0.7765, 0.7765),\n-                (0.5, 0, 0),\n-                (0.6, 0, 0),\n-                (0.7, 0, 0),\n-                (0.8, 0, 0),\n-                (0.9, 0.6314, 0.6314),\n-                (1, 1, 1)),\n-\n-        'green': ((0, 0, 0),\n-                  (0.1, 0, 0),\n-                  (0.2, 0.4471, 0.4471),\n-                  (0.3, 0.8941, 0.8941),\n-                  (0.4, 1, 1),\n-                  (0.5, 1, 1),\n-                  (0.6, 1, 1),\n-                  (0.7, 0.8941, 0.8941),\n-                  (0.8, 0.4471, 0.4471),\n-                  (0.9, 0, 0),\n-                  (1, 0, 0)),\n-\n-        'blue': ((0, 1, 1),\n-                 (0.1, 0.6314, 0.6314),\n-                 (0.2, 0, 0),\n-                 (0.3, 0, 0),\n-                 (0.4, 0, 0),\n-                 (0.5, 0, 0),\n-                 (0.6, 0.7765, 0.7765),\n-                 (0.7, 1, 1),\n-                 (0.8, 1, 1),\n-                 (0.9, 1, 1),\n-                 (1, 1, 1)),\n-    }\n-\n-    return LinearSegmentedColormap('Phase', cdict)\n-\n-\n-def frequency():\n-    \"\"\"\n-    Create a phase colormap.\n-\n-    :return: phase colormap\n-    :rtype: matplotlib.colors.LinearSegmentedColormap object\n-    \"\"\"\n-\n-    # Construct cmap dictionary\n-    cdict = {\n-        'red': ((0, 0, 0),\n-                (0.1, 1, 1),\n-                (0.2, 1, 1),\n-                (0.3, 0.9412, 0.9412),\n-                (0.4, 0.5765, 0.5765),\n-                (0.5, 0, 0),\n-                (0.6, 0, 0),\n-                (0.7, 0, 0),\n-                (0.8, 0, 0),\n-                (0.9, 0.6667, 0.6667),\n-                (1, 1, 1)),\n-\n-        'green': ((0, 0, 0),\n-                  (0.1, 0, 0),\n-                  (0.2, 0.7451, 0.7451),\n-                  (0.3, 1, 1),\n-                  (0.4, 1, 1),\n-                  (0.5, 1, 1),\n-                  (0.6, 1, 1),\n-                  (0.7, 0.8157, 0.8157),\n-                  (0.8, 0.3333, 0.3333),\n-                  (0.9, 0, 0),\n-                  (1, 0, 0)),\n-\n-        'blue': ((0, 0, 0),\n-                 (0.1, 0, 0),\n-                 (0.2, 0, 0),\n-                 (0.3, 0, 0),\n-                 (0.4, 0, 0),\n-                 (0.5, 0.4706, 0.4706),\n-                 (0.6, 0.8824, 0.8824),\n-                 (0.7, 1, 1),\n-                 (0.8, 1, 1),\n-                 (0.9, 1, 1),\n-                 (1, 1, 1)),\n-    }\n-\n-    return LinearSegmentedColormap('Frequency', cdict)\n-\n-if __name__ == '__main__':\n-    # Show colormap gradient\n-    gradient = np.linspace(0, 1, 256)\n-    gradient = np.vstack((gradient, gradient))\n-\n-    fig = plt.figure()\n-    ax = fig.add_subplot(411)\n-    ax.imshow(gradient, interpolation='none', aspect='auto', cmap=bwr(0))\n-    ax.set_axis_off()\n-    ax.set_title(\"bwr\")\n-\n-    ax = fig.add_subplot(412)\n-    ax.imshow(gradient, interpolation='none', aspect='auto', cmap=seismic())\n-    ax.set_axis_off()\n-    ax.set_title(\"seismic\")\n-\n-    ax = fig.add_subplot(413)\n-    ax.imshow(gradient, interpolation='none', aspect='auto', cmap=phase())\n-    ax.set_axis_off()\n-    ax.set_title(\"phase\")\n-\n-    ax = fig.add_subplot(414)\n-    ax.imshow(gradient, interpolation='none', aspect='auto', cmap=frequency())\n-    ax.set_axis_off()\n-    ax.set_title(\"frequency\")\n-\n-    plt.show()"
+    },
+    {
+      "sha": "e06791eacafff10b432fcee1e799fccc3a9cb5e6",
+      "filename": "setup.py",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 84,
+      "changes": 84,
+      "blob_url": "https://github.com/lijunzh/SeisCM/blob/b711f8fc85532dbc944c21e4eed61adfb7aed8c7/setup.py",
+      "raw_url": "https://github.com/lijunzh/SeisCM/raw/b711f8fc85532dbc944c21e4eed61adfb7aed8c7/setup.py",
+      "contents_url": "https://api.github.com/repos/lijunzh/SeisCM/contents/setup.py?ref=b711f8fc85532dbc944c21e4eed61adfb7aed8c7",
+      "patch": "@@ -1,84 +0,0 @@\n-#!/usr/bin/env python\n-\"\"\"Seismic Colormap Generator\"\"\"\n-\n-DOCLINES = __doc__.split(\"\\n\")\n-\n-import sys\n-\n-from setuptools import setup, find_packages\n-\n-# Check Python version\n-if sys.version_info[:2] < (2, 7) or (3, 0) <= sys.version_info[0:2] < (3, 4):\n-    raise RuntimeError(\"Python version 2.7 or >= 3.4 required.\")\n-\n-CLASSIFIERS = \"\"\"\\\n-Development Status :: 2 - Pre-Alpha\n-Intended Audience :: Science/Research\n-Intended Audience :: Developers\n-License :: OSI Approved :: MIT License\n-Programming Language :: Python\n-Programming Language :: Python :: 2.7\n-Programming Language :: Python :: 3.4\n-Programming Language :: Python :: 3.5\n-Programming Language :: Python :: 3.6\n-Topic :: Software Development\n-Topic :: Scientific/Engineering\n-Operating System :: Microsoft :: Windows\n-Operating System :: POSIX\n-Operating System :: Unix\n-Operating System :: MacOS\n-\n-\"\"\"\n-\n-MAJOR = 0\n-MINOR = 1\n-MICRO = 1\n-ISRELEASED = False\n-# VERSION = '{}.{}.{}'.format(MAJOR, MINOR, MICRO)\n-VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)\n-\n-def setup_package():\n-    # Figure out whether to add ``*_requires = ['numpy']``.\n-    # We don't want to do that unconditionally, because we risk updating\n-    # an installed numpy which fails too often.  Just if it's not installed, we\n-    # may give it a try.  See gh-3379.\n-    try:\n-        import numpy\n-    except ImportError:  # We do not have numpy installed\n-        build_requires = ['numpy>=1.8.2']\n-    else:\n-        # If we're building a wheel, assume there already exist numpy wheels\n-        # for this platform, so it is safe to add numpy to build requirements.\n-        # See gh-5184.\n-        build_requires = (['numpy>=1.8.2'] if 'bdist_wheel' in sys.argv[1:]\n-                          else [])\n-\n-    try:\n-        import matplotlib\n-    except ImportError:\n-        build_requires += ['matplotlib>=2.0.0']\n-\n-    metadata = dict(\n-        name='SeisCM',\n-        maintainer=\"Lijun Zhu\",\n-        version=VERSION,\n-        maintainer_email=\"gatechzhu@gmail.com\",\n-        description=DOCLINES[0],\n-        long_description=\"\\n\".join(DOCLINES[2:]),\n-        url=\"https://github.com/gatechzhu/SeisCM\",\n-        download_url=\"https://github.com/gatechzhu/SeisCM/releases\",\n-        license='MIT',\n-        classifiers=[_f for _f in CLASSIFIERS.split('\\n') if _f],\n-        platforms=[\"Windows\", \"Linux\", \"Solaris\", \"Mac OS-X\", \"Unix\"],\n-        test_suite='tests',\n-        packages=find_packages(),\n-        setup_requires=build_requires,\n-        install_requires=build_requires,\n-        tests_require=build_requires + ['pytest'],\n-    )\n-\n-    setup(**metadata)\n-\n-\n-if __name__ == '__main__':\n-    setup_package()"
+    },
+    {
+      "sha": "9c405bf9c8d527d7cf08cc2822ad1afd9487a04d",
+      "filename": "src/seiscm/__init__.py",
+      "status": "added",
+      "additions": 6,
+      "deletions": 0,
+      "changes": 6,
+      "blob_url": "https://github.com/lijunzh/SeisCM/blob/2305c51a1c515592d81893bc77026df0179d44d5/src%2Fseiscm%2F__init__.py",
+      "raw_url": "https://github.com/lijunzh/SeisCM/raw/2305c51a1c515592d81893bc77026df0179d44d5/src%2Fseiscm%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/lijunzh/SeisCM/contents/src%2Fseiscm%2F__init__.py?ref=2305c51a1c515592d81893bc77026df0179d44d5",
+      "patch": "@@ -0,0 +1,6 @@\n+\"\"\"Seismic Colormap Generator.\"\"\"\n+\n+__all__ = [\"__version__\", \"bwr\", \"frequency\", \"phase\", \"seismic\"]\n+\n+from ._version import __version__\n+from .seiscm import bwr, frequency, phase, seismic"
+    },
+    {
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "filename": "src/seiscm/py.typed",
+      "status": "added",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/lijunzh/SeisCM/blob/2305c51a1c515592d81893bc77026df0179d44d5/src%2Fseiscm%2Fpy.typed",
+      "raw_url": "https://github.com/lijunzh/SeisCM/raw/2305c51a1c515592d81893bc77026df0179d44d5/src%2Fseiscm%2Fpy.typed",
+      "contents_url": "https://api.github.com/repos/lijunzh/SeisCM/contents/src%2Fseiscm%2Fpy.typed?ref=2305c51a1c515592d81893bc77026df0179d44d5"
+    },
+    {
+      "sha": "ac979c7dc61f4fac631c74aa2434a272f9ad2fe5",
+      "filename": "src/seiscm/seiscm.py",
+      "status": "added",
+      "additions": 230,
+      "deletions": 0,
+      "changes": 230,
+      "blob_url": "https://github.com/lijunzh/SeisCM/blob/2305c51a1c515592d81893bc77026df0179d44d5/src%2Fseiscm%2Fseiscm.py",
+      "raw_url": "https://github.com/lijunzh/SeisCM/raw/2305c51a1c515592d81893bc77026df0179d44d5/src%2Fseiscm%2Fseiscm.py",
+      "contents_url": "https://api.github.com/repos/lijunzh/SeisCM/contents/src%2Fseiscm%2Fseiscm.py?ref=2305c51a1c515592d81893bc77026df0179d44d5",
+      "patch": "@@ -0,0 +1,230 @@\n+\"\"\"Seismic colormaps for geophysical data visualization.\"\"\"\n+\n+from __future__ import annotations\n+\n+from typing import TypeAlias\n+\n+import matplotlib.pyplot as plt\n+import numpy as np\n+from matplotlib.colors import LinearSegmentedColormap\n+\n+_Segments: TypeAlias = tuple[tuple[float, float, float], ...]\n+_CDict: TypeAlias = dict[str, _Segments]\n+\n+\n+def _make_cmap(name: str, cdict: _CDict) -> LinearSegmentedColormap:\n+    \"\"\"Thin wrapper around ``LinearSegmentedColormap`` for DRY construction.\"\"\"\n+    return LinearSegmentedColormap(name, cdict)\n+\n+\n+# ---------------------------------------------------------------------------\n+# Public colormaps\n+# ---------------------------------------------------------------------------\n+\n+\n+def bwr(alpha: float = 0) -> LinearSegmentedColormap:\n+    \"\"\"Blue-White-Red colormap with configurable mid-point transparency.\n+\n+    Parameters\n+    ----------\n+    alpha : float\n+        Transparency at the centre of the map, in ``[0, 1]``.\n+        ``0`` (default) gives a fully transparent midpoint suitable for\n+        overlaying seismic amplitudes on other imagery.\n+\n+    Returns\n+    -------\n+    LinearSegmentedColormap\n+    \"\"\"\n+    if not 0 <= alpha <= 1:\n+        raise ValueError(\"alpha must be between 0 and 1.\")\n+\n+    cdict: _CDict = {\n+        \"red\": (\n+            (0, 0, 0),\n+            (0.25, 0, 0),\n+            (0.5, 1, 1),\n+            (0.75, 0.8314, 0.8314),\n+            (1, 0.5, 0.5),\n+        ),\n+        \"green\": (\n+            (0, 0, 0),\n+            (0.25, 0.375, 0.375),\n+            (0.5, 1, 1),\n+            (0.75, 0.375, 0.375),\n+            (1, 0, 0),\n+        ),\n+        \"blue\": (\n+            (0, 0.5, 0.5),\n+            (0.25, 0.8314, 0.8314),\n+            (0.5, 1, 1),\n+            (0.75, 0, 0),\n+            (1, 0, 0),\n+        ),\n+        \"alpha\": (\n+            (0, 1, 1),\n+            (0.5, alpha, alpha),\n+            (1, 1, 1),\n+        ),\n+    }\n+    return _make_cmap(\"BlueWhiteRed\", cdict)\n+\n+\n+def seismic() -> LinearSegmentedColormap:\n+    \"\"\"Seismic colormap.\n+\n+    Returns\n+    -------\n+    LinearSegmentedColormap\n+    \"\"\"\n+    cdict: _CDict = {\n+        \"red\": (\n+            (0, 0.6314, 0.6314),\n+            (0.33, 0, 0),\n+            (0.4, 0.302, 0.302),\n+            (0.5, 0.8, 0.8),\n+            (0.6, 0.3804, 0.3804),\n+            (0.667, 0.749, 0.749),\n+            (1, 1, 1),\n+        ),\n+        \"green\": (\n+            (0, 1, 1),\n+            (0.33, 0, 0),\n+            (0.4, 0.302, 0.302),\n+            (0.5, 0.8, 0.8),\n+            (0.6, 0.2706, 0.2706),\n+            (0.667, 0, 0),\n+            (1, 1, 1),\n+        ),\n+        \"blue\": (\n+            (0, 1, 1),\n+            (0.33, 0.749, 0.749),\n+            (0.4, 0.302, 0.302),\n+            (0.5, 0.8, 0.8),\n+            (0.6, 0, 0),\n+            (0.667, 0, 0),\n+            (1, 0, 0),\n+        ),\n+    }\n+    return _make_cmap(\"Seismic\", cdict)\n+\n+\n+def phase() -> LinearSegmentedColormap:\n+    \"\"\"Phase colormap.\n+\n+    Returns\n+    -------\n+    LinearSegmentedColormap\n+    \"\"\"\n+    cdict: _CDict = {\n+        \"red\": (\n+            (0, 1, 1),\n+            (0.1, 1, 1),\n+            (0.2, 1, 1),\n+            (0.3, 1, 1),\n+            (0.4, 0.7765, 0.7765),\n+            (0.5, 0, 0),\n+            (0.6, 0, 0),\n+            (0.7, 0, 0),\n+            (0.8, 0, 0),\n+            (0.9, 0.6314, 0.6314),\n+            (1, 1, 1),\n+        ),\n+        \"green\": (\n+            (0, 0, 0),\n+            (0.1, 0, 0),\n+            (0.2, 0.4471, 0.4471),\n+            (0.3, 0.8941, 0.8941),\n+            (0.4, 1, 1),\n+            (0.5, 1, 1),\n+            (0.6, 1, 1),\n+            (0.7, 0.8941, 0.8941),\n+            (0.8, 0.4471, 0.4471),\n+            (0.9, 0, 0),\n+            (1, 0, 0),\n+        ),\n+        \"blue\": (\n+            (0, 1, 1),\n+            (0.1, 0.6314, 0.6314),\n+            (0.2, 0, 0),\n+            (0.3, 0, 0),\n+            (0.4, 0, 0),\n+            (0.5, 0, 0),\n+            (0.6, 0.7765, 0.7765),\n+            (0.7, 1, 1),\n+            (0.8, 1, 1),\n+            (0.9, 1, 1),\n+            (1, 1, 1),\n+        ),\n+    }\n+    return _make_cmap(\"Phase\", cdict)\n+\n+\n+def frequency() -> LinearSegmentedColormap:\n+    \"\"\"Frequency colormap.\n+\n+    Returns\n+    -------\n+    LinearSegmentedColormap\n+    \"\"\"\n+    cdict: _CDict = {\n+        \"red\": (\n+            (0, 0, 0),\n+            (0.1, 1, 1),\n+            (0.2, 1, 1),\n+            (0.3, 0.9412, 0.9412),\n+            (0.4, 0.5765, 0.5765),\n+            (0.5, 0, 0),\n+            (0.6, 0, 0),\n+            (0.7, 0, 0),\n+            (0.8, 0, 0),\n+            (0.9, 0.6667, 0.6667),\n+            (1, 1, 1),\n+        ),\n+        \"green\": (\n+            (0, 0, 0),\n+            (0.1, 0, 0),\n+            (0.2, 0.7451, 0.7451),\n+            (0.3, 1, 1),\n+            (0.4, 1, 1),\n+            (0.5, 1, 1),\n+            (0.6, 1, 1),\n+            (0.7, 0.8157, 0.8157),\n+            (0.8, 0.3333, 0.3333),\n+            (0.9, 0, 0),\n+            (1, 0, 0),\n+        ),\n+        \"blue\": (\n+            (0, 0, 0),\n+            (0.1, 0, 0),\n+            (0.2, 0, 0),\n+            (0.3, 0, 0),\n+            (0.4, 0, 0),\n+            (0.5, 0.4706, 0.4706),\n+            (0.6, 0.8824, 0.8824),\n+            (0.7, 1, 1),\n+            (0.8, 1, 1),\n+            (0.9, 1, 1),\n+            (1, 1, 1),\n+        ),\n+    }\n+    return _make_cmap(\"Frequency\", cdict)\n+\n+\n+if __name__ == \"__main__\":\n+    gradient = np.linspace(0, 1, 256)\n+    gradient = np.vstack((gradient, gradient))\n+\n+    fig, axes = plt.subplots(4, 1)\n+    cmaps = [\n+        (\"bwr\", bwr),\n+        (\"seismic\", seismic),\n+        (\"phase\", phase),\n+        (\"frequency\", frequency),\n+    ]\n+    for ax, (name, cmap_fn) in zip(axes, cmaps, strict=True):\n+        ax.imshow(gradient, interpolation=\"none\", aspect=\"auto\", cmap=cmap_fn())\n+        ax.set_axis_off()\n+        ax.set_title(name)\n+\n+    plt.show()"
+    },
+    {
+      "sha": "23736e9bb2fd6a5db91880037d8d090f5f890d1e",
+      "filename": "tests/__init__.py",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/lijunzh/SeisCM/blob/b711f8fc85532dbc944c21e4eed61adfb7aed8c7/tests%2F__init__.py",
+      "raw_url": "https://github.com/lijunzh/SeisCM/raw/b711f8fc85532dbc944c21e4eed61adfb7aed8c7/tests%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/lijunzh/SeisCM/contents/tests%2F__init__.py?ref=b711f8fc85532dbc944c21e4eed61adfb7aed8c7",
+      "patch": "@@ -1,2 +0,0 @@\n-# -*- coding: utf-8 -*-\n-from __future__ import print_function, absolute_import, division"
+    },
+    {
+      "sha": "2752811fa3609133dee089957962aee9fc35d190",
+      "filename": "tests/test_seiscm.py",
+      "status": "modified",
+      "additions": 60,
+      "deletions": 12,
+      "changes": 72,
+      "blob_url": "https://github.com/lijunzh/SeisCM/blob/2305c51a1c515592d81893bc77026df0179d44d5/tests%2Ftest_seiscm.py",
+      "raw_url": "https://github.com/lijunzh/SeisCM/raw/2305c51a1c515592d81893bc77026df0179d44d5/tests%2Ftest_seiscm.py",
+      "contents_url": "https://api.github.com/repos/lijunzh/SeisCM/contents/tests%2Ftest_seiscm.py?ref=2305c51a1c515592d81893bc77026df0179d44d5",
+      "patch": "@@ -1,28 +1,76 @@\n+\"\"\"Tests for seiscm colormaps.\"\"\"\n+\n+import matplotlib.pyplot as plt\n import pytest\n from matplotlib.colors import LinearSegmentedColormap\n \n-from seiscm import bwr, seismic, phase, frequency\n+from seiscm import bwr, frequency, phase, seismic\n+\n \n+@pytest.fixture(autouse=True)\n+def _close_figures():\n+    \"\"\"Close all matplotlib figures after each test to prevent leaks.\"\"\"\n+    yield\n+    plt.close(\"all\")\n \n-class TestBwr():\n-    def test_alpha_range(self):\n-        with pytest.raises(ValueError):\n-            bwr(-1)\n \n-    def test_output_type(self):\n+class TestBwr:\n+    \"\"\"Tests for the Blue-White-Red colormap.\"\"\"\n+\n+    def test_returns_colormap(self):\n         assert isinstance(bwr(), LinearSegmentedColormap)\n \n+    def test_default_alpha_zero(self):\n+        cmap = bwr()\n+        # Middle of the map should be fully transparent (alpha=0)\n+        assert cmap(0.5)[3] == pytest.approx(0.0, abs=0.01)\n+\n+    def test_custom_alpha(self):\n+        cmap = bwr(alpha=0.5)\n+        assert cmap(0.5)[3] == pytest.approx(0.5, abs=0.01)\n+\n+    def test_rejects_alpha_below_zero(self):\n+        with pytest.raises(ValueError, match=\"between 0 and 1\"):\n+            bwr(-0.1)\n+\n+    def test_rejects_alpha_above_one(self):\n+        with pytest.raises(ValueError, match=\"between 0 and 1\"):\n+            bwr(1.1)\n+\n+    def test_edge_colours(self):\n+        cmap = bwr()\n+        r0, _g0, b0, _ = cmap(0.0)\n+        r1, _g1, b1, _ = cmap(1.0)\n+        # Left end should be blue-ish, right end red-ish\n+        assert b0 > r0\n+        assert r1 > b1\n \n-class TestSeismic():\n-    def test_output_type(self):\n+\n+class TestSeismic:\n+    \"\"\"Tests for the seismic colormap.\"\"\"\n+\n+    def test_returns_colormap(self):\n         assert isinstance(seismic(), LinearSegmentedColormap)\n \n+    def test_name(self):\n+        assert seismic().name == \"Seismic\"\n+\n+\n+class TestPhase:\n+    \"\"\"Tests for the phase colormap.\"\"\"\n \n-class TestPhase():\n-    def test_output_type(self):\n+    def test_returns_colormap(self):\n         assert isinstance(phase(), LinearSegmentedColormap)\n \n+    def test_name(self):\n+        assert phase().name == \"Phase\"\n \n-class TestFrequency():\n-    def test_output_type(self):\n+\n+class TestFrequency:\n+    \"\"\"Tests for the frequency colormap.\"\"\"\n+\n+    def test_returns_colormap(self):\n         assert isinstance(frequency(), LinearSegmentedColormap)\n+\n+    def test_name(self):\n+        assert frequency().name == \"Frequency\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "a24efd62e6f2b12437e5404dad8cbfc4a4d99cbf",
+      "message": "modernize: src layout, type hints, ruff, CI/CD, drop Python 2\n\n- Migrate flat layout to src/ layout (seiscm/ → src/seiscm/)\n- Replace setup.py with pyproject.toml + setuptools_scm for dynamic versioning\n- Add type annotations with TypeAlias for colormap segment dicts\n- Add py.typed marker (PEP 561)\n- Add ruff for linting & formatting (E/W/F/I/UP/B/SIM/RUF)\n- Add pre-commit config with ruff hooks\n- Add GitHub Actions CI/CD (replaces dead Travis CI)\n  - Lint job + test matrix for Python 3.10-3.13\n  - PyPI publish on version tags\n- Fix frequency() docstring (was copy-pasted from phase())\n- Extract _make_cmap() helper to DRY up colormap construction\n- Modernize __main__ demo with subplots() and zip(strict=True)\n- Remove Python 2 compat imports (__future__, coding headers)\n- Remove tests/__init__.py (not needed with pytest)\n- Expand tests from 4 → 12 (alpha bounds, edge colours, cmap names)\n- Add autouse fixture to close matplotlib figures after each test\n- Clean .gitignore (remove Django/Flask/Scrapy cruft)\n- Rewrite README with badges, table, quick-start, dev instructions\n- Add uv.lock for reproducible installs",
+      "parent_shas": [
+        "b711f8fc85532dbc944c21e4eed61adfb7aed8c7"
+      ]
+    },
+    {
+      "sha": "fa22ed51295f2c9e358d416d8a35728b9b17f8d5",
+      "message": "ci: remove uv.lock (contained internal proxy URLs)\n\nThe lock file was generated against Walmart's internal PyPI proxy,\nwhich is unreachable from GitHub Actions. Removing it so CI resolves\ndependencies directly from public PyPI.",
+      "parent_shas": [
+        "a24efd62e6f2b12437e5404dad8cbfc4a4d99cbf"
+      ]
+    },
+    {
+      "sha": "2305c51a1c515592d81893bc77026df0179d44d5",
+      "message": "ci: use pyproject.toml for cache key (no uv.lock)",
+      "parent_shas": [
+        "fa22ed51295f2c9e358d416d8a35728b9b17f8d5"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__lijunzh__SeisCM__pr2.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\lijunzh__SeisCM__pr2__py2_py3__lijunzh__SeisCM__pr2\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\lijunzh__SeisCM__pr2__py2_py3__lijunzh__SeisCM__pr2\\rn"
+  }
+}

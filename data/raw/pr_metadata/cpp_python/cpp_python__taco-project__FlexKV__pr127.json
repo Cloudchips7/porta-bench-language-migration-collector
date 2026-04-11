@@ -1,0 +1,248 @@
+{
+  "instance_id": "cpp_python__taco-project__FlexKV__pr127",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "taco-project/FlexKV",
+  "pr_number": 127,
+  "pr_url": "https://github.com/taco-project/FlexKV/pull/127",
+  "repo": {
+    "full_name": "taco-project/FlexKV",
+    "clone_url": "https://github.com/taco-project/FlexKV.git",
+    "default_branch": "main",
+    "stars": 215,
+    "license": "NOASSERTION",
+    "size_kb": 2512
+  },
+  "pull_request": {
+    "id": 3433111382,
+    "title": "[bugfix] Rewrite transfer metrics from C++ to Python side",
+    "body": "Previously, transfer metrics (ops_total, bytes_total) were recorded in the C++ layer (transfer.cu, transfer_ssd.cpp, gds_manager.cpp) via MetricsManager macros. Although C++ has its own Prometheus exporter (port 8081), the actual data transfer code runs in forked worker subprocesses, which do not initialize the C++ Prometheus metrics server. As a result, these transfer metrics were never collected at all.\r\n\r\nKey changes:\r\n- Rewrite transfer metrics collection entirely on the Python side with a post-completion approach, recording metrics in the main process after transfer operations complete\r\n- Add `flexkv_py_transfer_bytes_total` counter to Python collector for tracking data transfer throughput\r\n- Remove `flexkv_cpp_transfer_ops_total` and `flexkv_cpp_transfer_bytes_total` counters from C++ MetricsManager\r\n\r\nChanges include:\r\n- Extended `CompletedOp` in `flexkv/common/transfer.py` with `transfer_type`, `num_blocks`, and `num_bytes` fields\r\n- Compute transfer bytes in `TransferEngine` (`transfer_engine.py`) when an op finishes\r\n- Record all three counters (ops_total, blocks_total, bytes_total) via `record_transfer_completed()` in `KVTaskManager._update_tasks()` (`kvtask.py`), ensuring metrics are collected in the main process\r\n- Added `flexkv_py_transfer_bytes_total` counter to `flexkv/metrics/collector.py`\r\n- Removed old `_record_transfer_ops()` from `cache_engine.py`\r\n- Removed C++ transfer metric recording from `transfer.cu`, `transfer_ssd.cpp`, and `gds_manager.cpp`\r\n- Updated Grafana dashboard (`flexkv-demo.json`): added Transfer Throughput panel, replaced C++ Transfer Throughput with Cache Blocks Rate panel\r\n- Updated monitoring documentation at `docs/monitoring/README_en.md` (English) and `docs/monitoring/README_zh.md` (Chinese)",
+    "merged_at": "2026-03-24T01:57:07Z",
+    "base_sha": "6983cef6b5cbd6b202bf89c1fea9defc4898002b",
+    "head_sha": "37b31754691c8f79c72db482fde85fff5dc89a97",
+    "merge_commit_sha": "54a8e4e44171bb9f55e5302eb6447946003fd961",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_d"
+  ],
+  "base_sha": "6983cef6b5cbd6b202bf89c1fea9defc4898002b",
+  "final_sha": "37b31754691c8f79c72db482fde85fff5dc89a97",
+  "changed_files": [
+    {
+      "sha": "68e83b6f8699ad899a3c00d1fd43ee7c5db41364",
+      "filename": "csrc/gds/gds_manager.cpp",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 9,
+      "changes": 9,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/csrc%2Fgds%2Fgds_manager.cpp",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/csrc%2Fgds%2Fgds_manager.cpp",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/csrc%2Fgds%2Fgds_manager.cpp?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -1,6 +1,5 @@\n #include \"gds_manager.h\"\n #include \"layout_transform.cuh\"\n-#include \"monitoring/metrics_manager.h\"\n #include <fcntl.h>\n #include <unistd.h>\n #include <cstring>\n@@ -725,10 +724,6 @@ void transfer_kv_blocks_gds(\n                     // READ: SSD -> buffer_slot -> GPU\n                     gds_manager.read(filename.c_str(), buffer_slot_ptr, gpu_buffer_size_in_bytes, ssd_block_offset);\n                     \n-                    // Record transfer metrics after successful GDS read\n-                    // Direction: is_read=true means data flows INTO GPU (GPU reads from SSD)\n-                    FLEXKV_GPU_GDS_TRANSFER(true, gpu_buffer_size_in_bytes);\n-                    \n                     launch_layout_transform_kernel<Type>(\n                         reinterpret_cast<int64_t*>(buffer_slot_ptr),\n                         buffer_layer_stride,\n@@ -763,10 +758,6 @@ void transfer_kv_blocks_gds(\n                     cudaStreamSynchronize(slot_stream);\n                     \n                     gds_manager.write(filename.c_str(), buffer_slot_ptr, gpu_buffer_size_in_bytes, ssd_block_offset);\n-                    \n-                    // Record transfer metrics after successful GDS write\n-                    // Direction: is_read=false means data flows OUT of GPU (GPU writes to SSD)\n-                    FLEXKV_GPU_GDS_TRANSFER(false, gpu_buffer_size_in_bytes);\n                 }\n                 \n                 if (verbose) {"
+    },
+    {
+      "sha": "63226330dc59fcca51855e702720d1ae846f5fb2",
+      "filename": "csrc/monitoring/metrics_manager.cpp",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 42,
+      "changes": 42,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/csrc%2Fmonitoring%2Fmetrics_manager.cpp",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/csrc%2Fmonitoring%2Fmetrics_manager.cpp",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/csrc%2Fmonitoring%2Fmetrics_manager.cpp?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -90,18 +90,6 @@ bool MetricsManager::Initialize(const std::string& bind_address) {\n         exposer_ = std::make_unique<prometheus::Exposer>(bind_address);\n         exposer_->RegisterCollectable(registry_);\n \n-        // Counter: Transfer operations count\n-        transfer_ops_family_ = &prometheus::BuildCounter()\n-            .Name(\"flexkv_cpp_transfer_ops_total\")\n-            .Help(\"Total number of transfer operations by type and direction\")\n-            .Register(*registry_);\n-\n-        // Counter: Transfer bytes count\n-        transfer_bytes_family_ = &prometheus::BuildCounter()\n-            .Name(\"flexkv_cpp_transfer_bytes_total\")\n-            .Help(\"Total bytes transferred by type and direction\")\n-            .Register(*registry_);\n-\n         // Counter: Cache operations\n         cache_ops_family_ = &prometheus::BuildCounter()\n             .Name(\"flexkv_cpp_cache_ops_total\")\n@@ -160,36 +148,6 @@ Labels MetricsManager::MergeLabels(const Labels& base, const Labels& extra) {\n }\n #endif\n \n-// ==================== Counter: Transfer Operations ====================\n-\n-void MetricsManager::RecordTransfer(TransferType type, const std::string& direction, size_t bytes) {\n-#ifdef FLEXKV_ENABLE_MONITORING\n-    if (!EnsureInitialized()) return;\n-    \n-    // Increment transfer ops counter\n-    if (transfer_ops_family_) {\n-        auto& ops_counter = transfer_ops_family_->Add({\n-            {\"type\", TransferTypeToString(type)},\n-            {\"direction\", direction}\n-        });\n-        ops_counter.Increment();\n-    }\n-    \n-    // Increment transfer bytes counter\n-    if (transfer_bytes_family_) {\n-        auto& bytes_counter = transfer_bytes_family_->Add({\n-            {\"type\", TransferTypeToString(type)},\n-            {\"direction\", direction}\n-        });\n-        bytes_counter.Increment(static_cast<double>(bytes));\n-    }\n-#else\n-    (void)type;\n-    (void)direction;\n-    (void)bytes;\n-#endif\n-}\n-\n // ==================== Counter: Cache Operations ====================\n \n void MetricsManager::IncrementCacheOps(CacheOperation op) {"
+    },
+    {
+      "sha": "86eb93659914b4d4b9b4ca44e572af4bedfcfc05",
+      "filename": "csrc/monitoring/metrics_manager.h",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 51,
+      "changes": 51,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/csrc%2Fmonitoring%2Fmetrics_manager.h",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/csrc%2Fmonitoring%2Fmetrics_manager.h",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/csrc%2Fmonitoring%2Fmetrics_manager.h?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -8,8 +8,6 @@\n  * Prometheus includes and related members are excluded so the code compiles without prometheus-cpp.\n  * \n  * Metrics:\n- * - Counter:   flexkv_cpp_transfer_ops_total (total transfer operations)\n- * - Counter:   flexkv_cpp_transfer_bytes_total (total bytes transferred)\n  * - Counter:   flexkv_cpp_cache_ops_total (cache operations)\n  * - Counter:   flexkv_cpp_cache_blocks_total (cache block operations)\n  * \n@@ -37,27 +35,6 @@\n namespace flexkv {\n namespace monitoring {\n \n-/**\n- * @brief Transfer operation types\n- */\n-enum class TransferType {\n-    GPU_CPU,    // GPU <-> CPU transfer\n-    CPU_SSD,    // CPU <-> SSD transfer\n-    GPU_GDS     // GPU <-> GDS (GPU Direct Storage)\n-};\n-\n-/**\n- * @brief Convert TransferType to string\n- */\n-inline const char* TransferTypeToString(TransferType type) {\n-    switch (type) {\n-        case TransferType::GPU_CPU: return \"gpu_cpu\";\n-        case TransferType::CPU_SSD: return \"cpu_ssd\";\n-        case TransferType::GPU_GDS: return \"gpu_gds\";\n-        default: return \"unknown\";\n-    }\n-}\n-\n /**\n  * @brief Cache operation types\n  * \n@@ -160,16 +137,6 @@ class MetricsManager {\n \n \n \n-    // ==================== Counter: Transfer Operations ====================\n-    \n-    /**\n-     * @brief Increment transfer operation counter and record bytes\n-     * @param type Transfer type (GPU_CPU, CPU_SSD, etc.)\n-     * @param direction \"read\" or \"write\"\n-     * @param bytes Number of bytes transferred\n-     */\n-    void RecordTransfer(TransferType type, const std::string& direction, size_t bytes);\n-\n     // ==================== Counter: Cache Operations ====================\n \n     /**\n@@ -216,9 +183,6 @@ class MetricsManager {\n     // Core components (Prometheus)\n     std::shared_ptr<prometheus::Registry> registry_;\n     std::unique_ptr<prometheus::Exposer> exposer_;\n-    // Transfer metric families\n-    prometheus::Family<prometheus::Counter>* transfer_ops_family_{nullptr};\n-    prometheus::Family<prometheus::Counter>* transfer_bytes_family_{nullptr};\n     // Cache operation metric families\n     prometheus::Family<prometheus::Counter>* cache_ops_family_{nullptr};\n     prometheus::Family<prometheus::Counter>* cache_blocks_family_{nullptr};\n@@ -237,21 +201,6 @@ class MetricsManager {\n #define FLEXKV_METRICS_SHUTDOWN() \\\n     flexkv::monitoring::MetricsManager::Instance().Shutdown()\n \n-// ==================== Transfer Operation Macros ====================\n-\n-// Convenience macros for specific transfer types (record ops + bytes)\n-#define FLEXKV_GPU_CPU_TRANSFER(is_read, bytes) \\\n-    flexkv::monitoring::MetricsManager::Instance().RecordTransfer( \\\n-        flexkv::monitoring::TransferType::GPU_CPU, (is_read) ? \"read\" : \"write\", bytes)\n-\n-#define FLEXKV_CPU_SSD_TRANSFER(is_read, bytes) \\\n-    flexkv::monitoring::MetricsManager::Instance().RecordTransfer( \\\n-        flexkv::monitoring::TransferType::CPU_SSD, (is_read) ? \"read\" : \"write\", bytes)\n-\n-#define FLEXKV_GPU_GDS_TRANSFER(is_read, bytes) \\\n-    flexkv::monitoring::MetricsManager::Instance().RecordTransfer( \\\n-        flexkv::monitoring::TransferType::GPU_GDS, (is_read) ? \"read\" : \"write\", bytes)\n-\n // ==================== Cache Operation Macros ====================\n \n // Cache match operation counters (HIT/MISS/MATCH are mutually exclusive)"
+    },
+    {
+      "sha": "0b3e976986058c0da567d0b1bd0f9aaa591dfebe",
+      "filename": "csrc/transfer.cu",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 24,
+      "changes": 24,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/csrc%2Ftransfer.cu",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/csrc%2Ftransfer.cu",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/csrc%2Ftransfer.cu?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -17,7 +17,6 @@\n #include <cuda_runtime.h>\n #include <torch/extension.h>\n \n-#include \"monitoring/metrics_manager.h\"\n #include \"transfer.cuh\"\n \n namespace flexkv {\n@@ -132,12 +131,6 @@ void transfer_kv_blocks(\n             cudaMemcpyAsync(cpu_chunk_ptr, gpu_chunk_ptr, chunk_size_in_bytes,\n                             cudaMemcpyDeviceToHost, stream);\n           }\n-          // Record transfer metrics after each cudaMemcpyAsync submission\n-          // Direction convention (from GPU perspective):\n-          //   - is_host_to_device=true  -> read (CPU->GPU, data flows INTO GPU)\n-          //   - is_host_to_device=false -> write (GPU->CPU, data flows OUT of\n-          //   GPU)\n-          FLEXKV_GPU_CPU_TRANSFER(is_host_to_device, chunk_size_in_bytes);\n         }\n       }\n     }\n@@ -149,23 +142,6 @@ void transfer_kv_blocks(\n         cpu_ptr_int64, cpu_kv_stride_int64, cpu_layer_stride_int64,\n         cpu_block_stride_int64, cpu_startoff_inside_chunks_int64,\n         chunk_size_in_int64, is_mla, is_host_to_device);\n-\n-    // Record transfer metrics after kernel launch (cannot record inside kernel)\n-    // Total bytes = actual_chunk_bytes * num_layers * kv_dim * num_blocks\n-    // Note: Kernel transfers in float4 units, so we calculate aligned bytes to\n-    // match Direction convention (from GPU perspective):\n-    //   - is_host_to_device=true  -> read (CPU->GPU, data flows INTO GPU)\n-    //   - is_host_to_device=false -> write (GPU->CPU, data flows OUT of GPU)\n-    int kv_dim = is_mla ? 1 : 2;\n-    // Calculate actual bytes transferred (aligned to float4, matching kernel\n-    // logic)\n-    int64_t actual_chunk_bytes =\n-        (chunk_size_in_int64 * sizeof(int64_t) / sizeof(float4)) *\n-        sizeof(float4);\n-    FLEXKV_GPU_CPU_TRANSFER(\n-        is_host_to_device,\n-        actual_chunk_bytes * static_cast<int64_t>(num_layers) *\n-            static_cast<int64_t>(kv_dim) * static_cast<int64_t>(num_blocks));\n   }\n   cudaStreamSynchronize(stream);\n }"
+    },
+    {
+      "sha": "b47ada05d1823629da6125bca55c063e4fdbf00b",
+      "filename": "csrc/transfer_ssd.cpp",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 11,
+      "changes": 11,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/csrc%2Ftransfer_ssd.cpp",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/csrc%2Ftransfer_ssd.cpp",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/csrc%2Ftransfer_ssd.cpp?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -11,7 +11,6 @@\n #include <unistd.h>\n \n #include \"transfer_ssd.h\"\n-#include \"monitoring/metrics_manager.h\"\n \n namespace flexkv {\n \n@@ -85,8 +84,6 @@ static void _transfer_iouring_impl(\n       if (bytes_transfer && (bytes_transfer != layers_chunk_size_in_bytes)) {\n         throw std::runtime_error(\"Failed to transfer block\");\n       }\n-      // Record bytes: io_uring submitted (rc >= 0) or fallback pread/pwrite succeeded\n-      FLEXKV_CPU_SSD_TRANSFER(is_read, layers_chunk_size_in_bytes);\n       continue;\n     }\n \n@@ -123,8 +120,6 @@ static void _transfer_iouring_impl(\n       if (bytes_transfer && (bytes_transfer != chunk_size_in_bytes)) {\n         throw std::runtime_error(\"Failed to transfer K block\");\n       }\n-      // Record bytes: io_uring submitted (rc >= 0) or fallback pread/pwrite succeeded\n-      FLEXKV_CPU_SSD_TRANSFER(is_read, chunk_size_in_bytes);\n \n       if (is_mla) {\n         continue;\n@@ -150,8 +145,6 @@ static void _transfer_iouring_impl(\n       if (bytes_transfer && (bytes_transfer != chunk_size_in_bytes)) {\n         throw std::runtime_error(\"Failed to transfer K block\");\n       }\n-      // Record bytes: io_uring submitted (rc >= 0) or fallback pread/pwrite succeeded\n-      FLEXKV_CPU_SSD_TRANSFER(is_read, chunk_size_in_bytes);\n     } // end layer loop\n   } // end block loop\n \n@@ -205,8 +198,6 @@ static void _transfer_single_thread_impl(\n       if (bytes_transfer != chunk_size_in_bytes) {\n         throw std::runtime_error(\"Failed to transfer K block\");\n       }\n-      // Record transfer bytes immediately after completion\n-      FLEXKV_CPU_SSD_TRANSFER(is_read, bytes_transfer);\n \n       if (is_mla) {\n         continue;\n@@ -222,8 +213,6 @@ static void _transfer_single_thread_impl(\n       if (bytes_transfer != chunk_size_in_bytes) {\n         throw std::runtime_error(\"Failed to transfer V block\");\n       }\n-      // Record transfer bytes immediately after completion\n-      FLEXKV_CPU_SSD_TRANSFER(is_read, bytes_transfer);\n \n     } // end layer loop\n   } // end block loop"
+    },
+    {
+      "sha": "c1675747cd4dadf122cf711778749ae7483a4295",
+      "filename": "docs/monitoring/README_en.md",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 8,
+      "changes": 16,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/docs%2Fmonitoring%2FREADME_en.md",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/docs%2Fmonitoring%2FREADME_en.md",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/docs%2Fmonitoring%2FREADME_en.md?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -39,6 +39,7 @@ Python metrics are recorded by `GlobalCacheEngine` in `cache_engine.py` and coll\n | `flexkv_py_cache_miss_blocks_total` | Counter | - | Total number of cache-miss blocks (missed at all levels) |\n | `flexkv_py_transfer_blocks_total` | Counter | `transfer_type`, `operation` | Total number of transferred blocks |\n | `flexkv_py_transfer_ops_total` | Counter | `transfer_type`, `operation` | Number of transfer operations |\n+| `flexkv_py_transfer_bytes_total` | Counter | `transfer_type`, `operation` | Total bytes transferred |\n | `flexkv_py_mempool_total_blocks` | Gauge | `device` | Total blocks in memory pool |\n | `flexkv_py_mempool_free_blocks` | Gauge | `device` | Free blocks in memory pool |\n | `flexkv_py_evicted_blocks_total` | Counter | `device` | Total number of evicted blocks |\n@@ -53,8 +54,6 @@ C++ metrics are managed by the `MetricsManager` singleton, primarily instrumente\n \n | Metric Name | Type | Labels | Description |\n |---|---|---|---|\n-| `flexkv_cpp_transfer_ops_total` | Counter | `type`, `direction` | C++ layer data transfer operation count |\n-| `flexkv_cpp_transfer_bytes_total` | Counter | `type`, `direction` | C++ layer total transferred bytes |\n | `flexkv_cpp_cache_ops_total` | Counter | `operation` | RadixTree cache operation count |\n | `flexkv_cpp_cache_blocks_total` | Counter | `operation` | Blocks involved in RadixTree cache operations |\n \n@@ -128,11 +127,12 @@ curl -s http://localhost:8081/metrics | grep flexkv_cpp_\n \n **Pre-built dashboard panels:**\n \n-| Panel | Description |\n-|---|---|\n-| Cache Hit/Miss Rate | Python layer cache hit/miss rate |\n-| Memory Pool Blocks | Python layer memory pool block statistics |\n-| C++ Cache Operations Rate | C++ layer cache operation rate |\n-| C++ Transfer Throughput | C++ layer data transfer throughput |\n+| Section | Panel | Description |\n+|---|---|---|\n+| Python Runtime Metrics | Cache Hit/Miss Rate | Cache hit/miss rate |\n+| Python Runtime Metrics | Memory Pool Blocks | Memory pool block statistics |\n+| Python Runtime Metrics | Transfer Throughput | Data transfer throughput |\n+| C++ Runtime Metrics | Cache Operations Rate | Cache operation rate |\n+| C++ Runtime Metrics | Cache Blocks Rate | Cache blocks operation rate |\n \n > Users can create custom panels and configure PromQL queries as needed."
+    },
+    {
+      "sha": "71f8c731cb14af4f7648dc91afa6d2d22f7927f9",
+      "filename": "docs/monitoring/README_zh.md",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 8,
+      "changes": 16,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/docs%2Fmonitoring%2FREADME_zh.md",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/docs%2Fmonitoring%2FREADME_zh.md",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/docs%2Fmonitoring%2FREADME_zh.md?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -39,6 +39,7 @@ Python 指标由 `GlobalCacheEngine` 在 `cache_engine.py` 中记录，通过 `F\n | `flexkv_py_cache_miss_blocks_total` | Counter | - | 缓存未命中的 blocks 总数（所有层级均未命中） |\n | `flexkv_py_transfer_blocks_total` | Counter | `transfer_type`, `operation` | 传输的 blocks 总数 |\n | `flexkv_py_transfer_ops_total` | Counter | `transfer_type`, `operation` | 传输操作次数 |\n+| `flexkv_py_transfer_bytes_total` | Counter | `transfer_type`, `operation` | 传输字节总数 |\n | `flexkv_py_mempool_total_blocks` | Gauge | `device` | 内存池总 blocks |\n | `flexkv_py_mempool_free_blocks` | Gauge | `device` | 内存池空闲 blocks |\n | `flexkv_py_evicted_blocks_total` | Counter | `device` | 驱逐的 blocks 总数 |\n@@ -53,8 +54,6 @@ C++ 指标由 `MetricsManager` 单例管理，主要在 RadixTree 缓存操作\n \n | 指标名称 | 类型 | 标签 | 描述 |\n |---|---|---|---|\n-| `flexkv_cpp_transfer_ops_total` | Counter | `type`, `direction` | C++ 层数据传输操作次数 |\n-| `flexkv_cpp_transfer_bytes_total` | Counter | `type`, `direction` | C++ 层数据传输字节总数 |\n | `flexkv_cpp_cache_ops_total` | Counter | `operation` | RadixTree 缓存操作次数 |\n | `flexkv_cpp_cache_blocks_total` | Counter | `operation` | RadixTree 缓存操作涉及的 blocks 数 |\n \n@@ -128,11 +127,12 @@ curl -s http://localhost:8081/metrics | grep flexkv_cpp_\n \n **预置仪表板包含以下典型面板：**\n \n-| 面板 | 说明 |\n-|---|---|\n-| Cache Hit/Miss Rate | Python 层缓存命中/未命中速率 |\n-| Memory Pool Blocks | Python 层内存池块数统计 |\n-| C++ Cache Operations Rate | C++ 层缓存操作速率 |\n-| C++ Transfer Throughput | C++ 层数据传输吞吐量 |\n+| 分区 | 面板 | 说明 |\n+|---|---|---|\n+| Python Runtime Metrics | Cache Hit/Miss Rate | 缓存命中/未命中速率 |\n+| Python Runtime Metrics | Memory Pool Blocks | 内存池块数统计 |\n+| Python Runtime Metrics | Transfer Throughput | 数据传输吞吐量 |\n+| C++ Runtime Metrics | Cache Operations Rate | 缓存操作速率 |\n+| C++ Runtime Metrics | Cache Blocks Rate | 缓存块操作速率 |\n \n > 用户可以按需创建自定义面板并添加和配置 PromQL 查询语句。"
+    },
+    {
+      "sha": "b9ce68e6d2bea13cfad06038095484d74dc87040",
+      "filename": "flexkv/cache/cache_engine.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 19,
+      "changes": 21,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/flexkv%2Fcache%2Fcache_engine.py",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/flexkv%2Fcache%2Fcache_engine.py",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/flexkv%2Fcache%2Fcache_engine.py?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -508,21 +508,6 @@ def _update_mempool_metrics(self) -> None:\n                     engine.mempool.num_free_blocks\n                 )\n     \n-    def _record_transfer_ops(self, transfer_graph: TransferOpGraph, operation: str) -> None:\n-        \"\"\"Record metrics for all transfer operations in the graph.\n-        \n-        Args:\n-            transfer_graph: The transfer operation graph\n-            operation: Operation type (\"get\" or \"put\")\n-        \"\"\"\n-        if self._metrics_collector is None:\n-            return\n-        for op in transfer_graph._op_map.values():\n-            if op.transfer_type != TransferType.VIRTUAL:\n-                transfer_type_str = op.transfer_type.value\n-                num_blocks = len(op.src_block_ids) if op.src_block_ids is not None else 0\n-                self._metrics_collector.record_transfer(transfer_type_str, num_blocks, operation)\n-\n     def get(self,\n             request_id: int,\n             token_ids: np.ndarray,\n@@ -623,9 +608,8 @@ def get(self,\n                                               node_to_ready=op_node_to_ready[op_id][1],\n                                               ready_length=op_node_to_ready[op_id][2])\n         \n-        # Record metrics for GET operation\n+        # Update mempool metrics after GET operation\n         if self._metrics_collector is not None:\n-            self._record_transfer_ops(transfer_graph, \"get\")\n             self._update_mempool_metrics()\n         \n         return transfer_graph, return_mask, callback, op_callback_dict, task_end_op_id\n@@ -1139,9 +1123,8 @@ def put(self,\n                                               node_to_ready=op_node_to_ready[op_id][1],\n                                               ready_length=op_node_to_ready[op_id][2])\n \n-        # Record metrics for PUT operation\n+        # Update mempool metrics after PUT operation\n         if self._metrics_collector is not None:\n-            self._record_transfer_ops(transfer_graph, \"put\")\n             self._update_mempool_metrics()\n \n         return transfer_graph, return_mask, callback, op_callback_dict, task_end_op_id"
+    },
+    {
+      "sha": "9717a7f49f05706388904f543ca598452ae1c1fa",
+      "filename": "flexkv/common/transfer.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/flexkv%2Fcommon%2Ftransfer.py",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/flexkv%2Fcommon%2Ftransfer.py",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/flexkv%2Fcommon%2Ftransfer.py?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -10,6 +10,10 @@\n class CompletedOp:\n     graph_id: int\n     op_id: int\n+    # Transfer metrics fields (populated when op completes, for post-completion metrics)\n+    transfer_type: Optional[str] = None\n+    num_blocks: int = 0\n+    num_bytes: int = 0\n \n     def is_graph_completed(self) -> bool:\n         return self.op_id == -1"
+    },
+    {
+      "sha": "a622beae4ae46020d99e479f1698aa0832541fd4",
+      "filename": "flexkv/kvtask.py",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 0,
+      "changes": 18,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/flexkv%2Fkvtask.py",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/flexkv%2Fkvtask.py",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/flexkv%2Fkvtask.py?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -26,6 +26,7 @@\n )\n from flexkv.cache.redis_meta import RedisMeta\n from flexkv.integration.dynamo.collector import KVEventCollector\n+from flexkv.metrics.collector import get_global_collector\n \n class TaskStatus(Enum):\n     # slot mapping is not ready\n@@ -323,11 +324,28 @@ def _launch_task(self, task_id: int) -> None:\n \n     def _update_tasks(self, timeout: float = 0.001) -> None:\n         completed_ops = self._get_completed_ops(timeout)\n+        metrics_collector = get_global_collector()\n         for completed_op in completed_ops:\n             if completed_op.graph_id not in self.graph_to_task:\n                 continue\n             task_id = self.graph_to_task[completed_op.graph_id]\n             task = self.tasks[task_id]\n+            # Record transfer metrics for completed ops (post-completion statistics)\n+            # All three counters (ops_total, blocks_total, bytes_total) are updated\n+            # here after transfer completion, providing accurate post-transfer metrics.\n+            if metrics_collector is not None and completed_op.transfer_type is not None:\n+                if task.task_type in (TaskType.GET, TaskType.PREFETCH, TaskType.BATCH_GET):\n+                    operation = \"get\"\n+                elif task.task_type == TaskType.PUT:\n+                    operation = \"put\"\n+                else:\n+                    operation = \"unknown\"\n+                metrics_collector.record_transfer_completed(\n+                    completed_op.transfer_type,\n+                    completed_op.num_blocks,\n+                    completed_op.num_bytes,\n+                    operation,\n+                )\n             if completed_op.is_graph_completed():\n                 self._mark_completed(task_id)\n             elif completed_op.op_id == task.task_end_op_id:"
+    },
+    {
+      "sha": "ecaec9b394f27720f8aa3cd395f690b39f3d52c9",
+      "filename": "flexkv/metrics/__init__.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/flexkv%2Fmetrics%2F__init__.py",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/flexkv%2Fmetrics%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/flexkv%2Fmetrics%2F__init__.py?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -14,8 +14,8 @@\n     collector.record_cache_hit(\"cpu\", num_blocks=10)\n     collector.record_cache_miss(num_blocks=5)\n     \n-    # Record transfer operations\n-    collector.record_transfer(\"H2D\", num_blocks=8)\n+    # Record transfer operations (post-completion)\n+    collector.record_transfer_completed(\"H2D\", num_blocks=8, num_bytes=1048576, operation=\"get\")\n     \n     # Update memory pool stats\n     collector.update_mempool_stats(\"cpu\", total_blocks=1000, free_blocks=200)"
+    },
+    {
+      "sha": "ed9b9bee59a5f892e14fcf005b9a1aad6ad56af8",
+      "filename": "flexkv/metrics/collector.py",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 3,
+      "changes": 21,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/flexkv%2Fmetrics%2Fcollector.py",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/flexkv%2Fmetrics%2Fcollector.py",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/flexkv%2Fmetrics%2Fcollector.py?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -106,6 +106,7 @@ class FlexKVMetricsCollector:\n     - flexkv_py_cache_miss_blocks_total: Cache miss block counts (not found in any cache level)\n     - flexkv_py_transfer_blocks_total: Transfer block counts by transfer type and operation\n     - flexkv_py_transfer_ops_total: Transfer operation counts by transfer type and operation\n+    - flexkv_py_transfer_bytes_total: Transfer byte counts by transfer type and operation\n     - flexkv_py_mempool_total_blocks: Memory pool total blocks by device\n     - flexkv_py_mempool_free_blocks: Memory pool free blocks by device\n     - flexkv_py_evicted_blocks_total: Evicted block counts by device\n@@ -115,7 +116,7 @@ class FlexKVMetricsCollector:\n     Usage:\n         collector = FlexKVMetricsCollector()\n         collector.record_cache_hit(\"cpu\", 10)\n-        collector.record_transfer(\"H2D\", 5, \"get\")\n+        collector.record_transfer_completed(\"H2D\", 5, 1048576, \"get\")\n     \"\"\"\n     \n     def __init__(self):\n@@ -180,6 +181,12 @@ def _init_metrics(self):\n             labelnames=[\"transfer_type\", \"operation\"],\n         )\n         \n+        self.transfer_bytes_total = Counter(\n+            name=\"flexkv_py_transfer_bytes_total\",\n+            documentation=\"Total number of bytes transferred by transfer type and operation\",\n+            labelnames=[\"transfer_type\", \"operation\"],\n+        )\n+        \n         # Memory pool gauges by device\n         mempool_gauge_kwargs = {\n             \"labelnames\": [\"device\"],\n@@ -232,6 +239,7 @@ def set(self, *args, **kwargs):\n         self.allocation_failures_total = dummy\n         self.transfer_blocks_total = dummy\n         self.transfer_ops_total = dummy\n+        self.transfer_bytes_total = dummy\n         self.mempool_total_blocks = dummy\n         self.mempool_free_blocks = dummy\n         self.evicted_blocks_total = dummy\n@@ -275,20 +283,27 @@ def record_allocation_failure(self, mode: str):\n             return\n         self.allocation_failures_total.labels(mode=mode).inc()\n     \n-    def record_transfer(self, transfer_type: str, num_blocks: int, operation: str = \"unknown\"):\n+    def record_transfer_completed(self, transfer_type: str, num_blocks: int, num_bytes: int, operation: str = \"unknown\"):\n         \"\"\"\n-        Record a transfer operation.\n+        Record metrics for a completed transfer operation (post-completion).\n+        \n+        Called from KVTaskManager._update_tasks() when a CompletedOp is consumed.\n+        Updates ops_total, blocks_total, and bytes_total counters.\n+        All three transfer metrics are unified here, updated only after transfer completion.\n         \n         Args:\n             transfer_type: Transfer type (e.g., \"H2D\", \"D2H\", \"DISK2H\", etc.)\n             num_blocks: Number of blocks transferred\n+            num_bytes: Number of bytes transferred\n             operation: Operation type (\"get\" or \"put\")\n         \"\"\"\n         if not self.enabled:\n             return\n         self.transfer_ops_total.labels(transfer_type=transfer_type, operation=operation).inc()\n         if num_blocks > 0:\n             self.transfer_blocks_total.labels(transfer_type=transfer_type, operation=operation).inc(num_blocks)\n+        if num_bytes > 0:\n+            self.transfer_bytes_total.labels(transfer_type=transfer_type, operation=operation).inc(num_bytes)\n     \n     def update_mempool_stats(self, device: str, total_blocks: int, free_blocks: int):\n         \"\"\""
+    },
+    {
+      "sha": "5d15f571d96dc737625804803eb40e60691e232a",
+      "filename": "flexkv/transfer/transfer_engine.py",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 1,
+      "changes": 12,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/flexkv%2Ftransfer%2Ftransfer_engine.py",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/flexkv%2Ftransfer%2Ftransfer_engine.py",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/flexkv%2Ftransfer%2Ftransfer_engine.py?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -414,7 +414,17 @@ def _scheduler_loop(self) -> None:\n                                 op_id = self.finished_ops_queue.get_nowait()\n                                 op = self.op_id_to_op[op_id]\n                                 free_op_from_buffer(op, self.pin_buffer)\n-                                self.completed_queue.put(CompletedOp(graph_id=op.graph_id, op_id=op.op_id))\n+                                # Compute transfer metrics for this completed op\n+                                num_blocks = len(op.src_block_ids) if op.src_block_ids is not None else 0\n+                                num_bytes = num_blocks * self.cache_config.tokens_per_block * self.model_config.token_size_in_bytes\n+                                transfer_type_str = op.transfer_type.value if op.transfer_type != TransferType.VIRTUAL else None\n+                                self.completed_queue.put(CompletedOp(\n+                                    graph_id=op.graph_id,\n+                                    op_id=op.op_id,\n+                                    transfer_type=transfer_type_str,\n+                                    num_blocks=num_blocks,\n+                                    num_bytes=num_bytes,\n+                                ))\n                                 finished_ops.append(op)\n                                 del self.op_id_to_op[op_id]\n                             except queue.Empty:"
+    },
+    {
+      "sha": "c0cbeae2f14490632ce5e432627698216204031c",
+      "filename": "monitoring/grafana/dashboards/flexkv-demo.json",
+      "status": "modified",
+      "additions": 64,
+      "deletions": 10,
+      "changes": 74,
+      "blob_url": "https://github.com/taco-project/FlexKV/blob/37b31754691c8f79c72db482fde85fff5dc89a97/monitoring%2Fgrafana%2Fdashboards%2Fflexkv-demo.json",
+      "raw_url": "https://github.com/taco-project/FlexKV/raw/37b31754691c8f79c72db482fde85fff5dc89a97/monitoring%2Fgrafana%2Fdashboards%2Fflexkv-demo.json",
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/monitoring%2Fgrafana%2Fdashboards%2Fflexkv-demo.json?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -137,9 +137,63 @@\n         }\n       ]\n     },\n+    {\n+      \"datasource\": {\n+        \"type\": \"prometheus\",\n+        \"uid\": \"prometheus\"\n+      },\n+      \"fieldConfig\": {\n+        \"defaults\": {\n+          \"color\": { \"mode\": \"palette-classic\" },\n+          \"custom\": {\n+            \"axisBorderShow\": false,\n+            \"axisCenteredZero\": false,\n+            \"axisColorMode\": \"text\",\n+            \"axisLabel\": \"\",\n+            \"axisPlacement\": \"auto\",\n+            \"barAlignment\": 0,\n+            \"drawStyle\": \"line\",\n+            \"fillOpacity\": 10,\n+            \"gradientMode\": \"none\",\n+            \"hideFrom\": { \"legend\": false, \"tooltip\": false, \"viz\": false },\n+            \"lineInterpolation\": \"linear\",\n+            \"lineWidth\": 1,\n+            \"pointSize\": 5,\n+            \"scaleDistribution\": { \"type\": \"linear\" },\n+            \"showPoints\": \"auto\",\n+            \"spanNulls\": false,\n+            \"stacking\": { \"group\": \"A\", \"mode\": \"none\" },\n+            \"thresholdsStyle\": { \"mode\": \"off\" }\n+          },\n+          \"mappings\": [],\n+          \"thresholds\": {\n+            \"mode\": \"absolute\",\n+            \"steps\": [{ \"color\": \"green\", \"value\": null }]\n+          },\n+          \"unit\": \"Bps\"\n+        },\n+        \"overrides\": []\n+      },\n+      \"gridPos\": { \"h\": 8, \"w\": 12, \"x\": 0, \"y\": 9 },\n+      \"id\": 3,\n+      \"options\": {\n+        \"legend\": { \"calcs\": [\"last\"], \"displayMode\": \"table\", \"placement\": \"bottom\", \"showLegend\": true },\n+        \"tooltip\": { \"mode\": \"single\", \"sort\": \"none\" }\n+      },\n+      \"title\": \"Transfer Throughput (bytes/s)\",\n+      \"type\": \"timeseries\",\n+      \"targets\": [\n+        {\n+          \"datasource\": { \"type\": \"prometheus\", \"uid\": \"prometheus\" },\n+          \"expr\": \"rate(flexkv_py_transfer_bytes_total[1m])\",\n+          \"legendFormat\": \"{{transfer_type}} ({{operation}})\",\n+          \"refId\": \"A\"\n+        }\n+      ]\n+    },\n     {\n       \"collapsed\": false,\n-      \"gridPos\": { \"h\": 1, \"w\": 24, \"x\": 0, \"y\": 9 },\n+      \"gridPos\": { \"h\": 1, \"w\": 24, \"x\": 0, \"y\": 17 },\n       \"id\": 200,\n       \"panels\": [],\n       \"title\": \"C++ Runtime Metrics (Port: 8081)\",\n@@ -182,13 +236,13 @@\n         },\n         \"overrides\": []\n       },\n-      \"gridPos\": { \"h\": 8, \"w\": 12, \"x\": 0, \"y\": 10 },\n+      \"gridPos\": { \"h\": 8, \"w\": 12, \"x\": 0, \"y\": 18 },\n       \"id\": 6,\n       \"options\": {\n         \"legend\": { \"calcs\": [\"last\"], \"displayMode\": \"table\", \"placement\": \"bottom\", \"showLegend\": true },\n         \"tooltip\": { \"mode\": \"single\", \"sort\": \"none\" }\n       },\n-      \"title\": \"C++ Cache Operations Rate\",\n+      \"title\": \"Cache Operations Rate\",\n       \"type\": \"timeseries\",\n       \"targets\": [\n         {\n@@ -230,25 +284,25 @@\n           \"mappings\": [],\n           \"thresholds\": {\n             \"mode\": \"absolute\",\n-            \"steps\": [{ \"color\": \"blue\", \"value\": null }]\n+            \"steps\": [{ \"color\": \"green\", \"value\": null }]\n           },\n-          \"unit\": \"Bps\"\n+          \"unit\": \"short\"\n         },\n         \"overrides\": []\n       },\n-      \"gridPos\": { \"h\": 8, \"w\": 12, \"x\": 12, \"y\": 10 },\n-      \"id\": 9,\n+      \"gridPos\": { \"h\": 8, \"w\": 12, \"x\": 12, \"y\": 18 },\n+      \"id\": 7,\n       \"options\": {\n         \"legend\": { \"calcs\": [\"last\"], \"displayMode\": \"table\", \"placement\": \"bottom\", \"showLegend\": true },\n         \"tooltip\": { \"mode\": \"single\", \"sort\": \"none\" }\n       },\n-      \"title\": \"C++ Transfer Throughput (bytes/s)\",\n+      \"title\": \"Cache Blocks Rate (blocks/s)\",\n       \"type\": \"timeseries\",\n       \"targets\": [\n         {\n           \"datasource\": { \"type\": \"prometheus\", \"uid\": \"prometheus\" },\n-          \"expr\": \"rate(flexkv_cpp_transfer_bytes_total[1m])\",\n-          \"legendFormat\": \"{{type}} ({{direction}})\",\n+          \"expr\": \"rate(flexkv_cpp_cache_blocks_total[1m])\",\n+          \"legendFormat\": \"{{operation}}\",\n           \"refId\": \"A\"\n         }\n       ]"
+    },
+    {
+      "sha": "f13cdd052eeae5e89decc11bf03697d0f78b15bc",
+      "filename": "third_party/prometheus-cpp",
+      "status": "added",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": null,
+      "raw_url": null,
+      "contents_url": "https://api.github.com/repos/taco-project/FlexKV/contents/third_party%2Fprometheus-cpp?ref=37b31754691c8f79c72db482fde85fff5dc89a97",
+      "patch": "@@ -0,0 +1 @@\n+Subproject commit f13cdd052eeae5e89decc11bf03697d0f78b15bc"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "fc1fdd37944676231d12318ea9b55c2794542563",
+      "message": "[bugfix] Rewrite transfer metrics from C++ to Python side\n\nPreviously, transfer metrics (ops_total, bytes_total) were recorded in\nthe C++ layer (transfer.cu, transfer_ssd.cpp, gds_manager.cpp) via\nMetricsManager macros. Although C++ has its own Prometheus exporter\n(port 8081), the actual data transfer code runs in forked worker\nsubprocesses, which do not initialize the C++ Prometheus metrics server.\nAs a result, these transfer metrics were never collected at all.\n\nKey changes:\n- Rewrite transfer metrics collection entirely on the Python side with\n  a post-completion approach, recording metrics in the main process\n  after transfer operations complete\n- Add `flexkv_py_transfer_bytes_total` counter to Python collector for\n  tracking data transfer throughput\n- Remove `flexkv_cpp_transfer_ops_total` and\n  `flexkv_cpp_transfer_bytes_total` counters from C++ MetricsManager\n\nChanges include:\n- Extended `CompletedOp` in `flexkv/common/transfer.py` with\n  `transfer_type`, `num_blocks`, and `num_bytes` fields\n- Compute transfer bytes in `TransferEngine` (`transfer_engine.py`)\n  when an op finishes\n- Record all three counters (ops_total, blocks_total, bytes_total) via\n  `record_transfer_completed()` in `KVTaskManager._update_tasks()`\n  (`kvtask.py`), ensuring metrics are collected in the main process\n- Added `flexkv_py_transfer_bytes_total` counter to\n  `flexkv/metrics/collector.py`\n- Removed old `_record_transfer_ops()` from `cache_engine.py`\n- Removed C++ transfer metric recording from `transfer.cu`,\n  `transfer_ssd.cpp`, and `gds_manager.cpp`\n- Updated Grafana dashboard (`flexkv-demo.json`): added Transfer\n  Throughput panel, replaced C++ Transfer Throughput with Cache Blocks\n  Rate panel\n- Updated monitoring documentation at `docs/monitoring/README_en.md`\n  (English) and `docs/monitoring/README_zh.md` (Chinese)",
+      "parent_shas": [
+        "6983cef6b5cbd6b202bf89c1fea9defc4898002b"
+      ]
+    },
+    {
+      "sha": "37b31754691c8f79c72db482fde85fff5dc89a97",
+      "message": "fix: properly register prometheus-cpp submodule in git tree",
+      "parent_shas": [
+        "fc1fdd37944676231d12318ea9b55c2794542563"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__taco-project__FlexKV__pr127.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\taco-project__FlexKV__pr127__cpp_python__taco-project__FlexKV__pr127\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\taco-project__FlexKV__pr127__cpp_python__taco-project__FlexKV__pr127\\rn"
+  }
+}

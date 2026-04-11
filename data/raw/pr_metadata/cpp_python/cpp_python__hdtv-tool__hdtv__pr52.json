@@ -1,0 +1,109 @@
+{
+  "instance_id": "cpp_python__hdtv-tool__hdtv__pr52",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "hdtv-tool/hdtv",
+  "pr_number": 52,
+  "pr_url": "https://github.com/hdtv-tool/hdtv/pull/52",
+  "repo": {
+    "full_name": "hdtv-tool/hdtv",
+    "clone_url": "https://github.com/hdtv-tool/hdtv.git",
+    "default_branch": "master",
+    "stars": 21,
+    "license": "GPL-2.0",
+    "size_kb": 9765
+  },
+  "pull_request": {
+    "id": 3129865085,
+    "title": "Move TH1IntegrateWithPartialBins from C++ to Python",
+    "body": "ROOT.HDTV.TH1IntegrateWithPartialBins() is only used in histogram.py.\r\nSince it is a small and easy function, it can be implemented directly in PyROOT and does not need to be compiled.\r\n\r\n---\r\n\r\nThis patch isn't covered by the test suite. ~I'm also unsure how to trigger the function manually.~ Manual tested (https://github.com/janmayer/hdtv/pull/52#issuecomment-3796839728)",
+    "merged_at": "2026-01-31T21:58:54Z",
+    "base_sha": "9f839c978eae61a7099af4a2990470362e881d29",
+    "head_sha": "262d3b36d84e6188e3682562e845436075ab4fbe",
+    "merge_commit_sha": "e470e0a94341aada0f2dda90bc4f93fcaba3fc8a",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_d"
+  ],
+  "base_sha": "9f839c978eae61a7099af4a2990470362e881d29",
+  "final_sha": "262d3b36d84e6188e3682562e845436075ab4fbe",
+  "changed_files": [
+    {
+      "sha": "631603cded69d412977c5ed51e424b3bede53972",
+      "filename": "src/hdtv/histogram.py",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 2,
+      "changes": 15,
+      "blob_url": "https://github.com/hdtv-tool/hdtv/blob/262d3b36d84e6188e3682562e845436075ab4fbe/src%2Fhdtv%2Fhistogram.py",
+      "raw_url": "https://github.com/hdtv-tool/hdtv/raw/262d3b36d84e6188e3682562e845436075ab4fbe/src%2Fhdtv%2Fhistogram.py",
+      "contents_url": "https://api.github.com/repos/hdtv-tool/hdtv/contents/src%2Fhdtv%2Fhistogram.py?ref=262d3b36d84e6188e3682562e845436075ab4fbe",
+      "patch": "@@ -19,6 +19,7 @@\n \n import copy\n import os\n+from typing import Final\n \n import numpy as np\n import ROOT\n@@ -138,6 +139,16 @@ def info(self):\n             s += \"Calibration: unknown\\n\"\n         return s\n \n+    @staticmethod\n+    def _TH1IntegrateWithPartialBins(spec : ROOT.TH1, xmin : float, xmax : float) -> float:\n+        axis : Final[ROOT.TAxis] = spec.GetXaxis()\n+        bmin : Final[int] = axis.FindBin(xmin)\n+        bmax : Final[int] = axis.FindBin(xmax)\n+        integral : float = spec.Integral(bmin, bmax)\n+        integral -= spec.GetBinContent(bmin) * (xmin - axis.GetBinLowEdge(bmin)) / axis.GetBinWidth(bmin)\n+        integral -= spec.GetBinContent(bmax) * (axis.GetBinUpEdge(bmax) - xmax) / axis.GetBinWidth(bmax)\n+        return integral\n+\n     # TODO: sumw2 function should be called at some point for correct error\n     # handling\n     def Plus(self, spec):\n@@ -158,7 +169,7 @@ def Plus(self, spec):\n             hdtv.ui.info(\"Adding calibrated\")\n             nbins = self._hist.GetNbinsX()\n             for n in range(nbins):\n-                integral = ROOT.HDTV.TH1IntegrateWithPartialBins(\n+                integral = self._TH1IntegrateWithPartialBins(\n                     spec._hist,\n                     spec.cal.E2Ch(self.cal.Ch2E(n - 0.5)),\n                     spec.cal.E2Ch(self.cal.Ch2E(n + 0.5)),\n@@ -191,7 +202,7 @@ def Minus(self, spec):\n             hdtv.ui.info(\"Subtracting calibrated\")\n             nbins = self._hist.GetNbinsX()\n             for n in range(nbins):\n-                integral = ROOT.HDTV.TH1IntegrateWithPartialBins(\n+                integral = self._TH1IntegrateWithPartialBins(\n                     spec._hist,\n                     spec.cal.E2Ch(self.cal.Ch2E(n - 0.5)),\n                     spec.cal.E2Ch(self.cal.Ch2E(n + 0.5)),"
+    },
+    {
+      "sha": "27481245e0f0768f292a2fd4a7ef00db796a2bf1",
+      "filename": "src/hdtv/rootext/fit/LinkDef.h",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/hdtv-tool/hdtv/blob/262d3b36d84e6188e3682562e845436075ab4fbe/src%2Fhdtv%2Frootext%2Ffit%2FLinkDef.h",
+      "raw_url": "https://github.com/hdtv-tool/hdtv/raw/262d3b36d84e6188e3682562e845436075ab4fbe/src%2Fhdtv%2Frootext%2Ffit%2FLinkDef.h",
+      "contents_url": "https://api.github.com/repos/hdtv-tool/hdtv/contents/src%2Fhdtv%2Frootext%2Ffit%2FLinkDef.h?ref=262d3b36d84e6188e3682562e845436075ab4fbe",
+      "patch": "@@ -25,6 +25,5 @@\n #pragma link C++ class HDTV::Fit::TheuerkaufFitter+;\n #pragma link C++ class HDTV::Fit::EEPeak+;\n #pragma link C++ class HDTV::Fit::EEFitter+;\n-#pragma link C++ function HDTV::TH1IntegrateWithPartialBins;\n \n #endif"
+    },
+    {
+      "sha": "b4567b205b7005e2aa7295cbe4fbcdc04a11031f",
+      "filename": "src/hdtv/rootext/fit/Util.cc",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 10,
+      "changes": 10,
+      "blob_url": "https://github.com/hdtv-tool/hdtv/blob/262d3b36d84e6188e3682562e845436075ab4fbe/src%2Fhdtv%2Frootext%2Ffit%2FUtil.cc",
+      "raw_url": "https://github.com/hdtv-tool/hdtv/raw/262d3b36d84e6188e3682562e845436075ab4fbe/src%2Fhdtv%2Frootext%2Ffit%2FUtil.cc",
+      "contents_url": "https://api.github.com/repos/hdtv-tool/hdtv/contents/src%2Fhdtv%2Frootext%2Ffit%2FUtil.cc?ref=262d3b36d84e6188e3682562e845436075ab4fbe",
+      "patch": "@@ -44,14 +44,4 @@ std::string GetFuncUniqueName(const char *prefix, void *ptr) {\n   return name.str();\n }\n \n-double TH1IntegrateWithPartialBins(const TH1 *spec, const double xmin, const double xmax) {\n-  const TAxis *axis = spec->GetXaxis();\n-  const int bmin = axis->FindBin(xmin);\n-  const int bmax = axis->FindBin(xmax);\n-  double integral = spec->Integral(bmin, bmax);\n-  integral -= spec->GetBinContent(bmin) * (xmin - axis->GetBinLowEdge(bmin)) / axis->GetBinWidth(bmin);\n-  integral -= spec->GetBinContent(bmax) * (axis->GetBinUpEdge(bmax) - xmax) / axis->GetBinWidth(bmax);\n-  return integral;\n-}\n-\n } // end namespace HDTV"
+    },
+    {
+      "sha": "a981e75f98028138ac2c0a0a81badc72b6d7a212",
+      "filename": "src/hdtv/rootext/fit/Util.hh",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/hdtv-tool/hdtv/blob/262d3b36d84e6188e3682562e845436075ab4fbe/src%2Fhdtv%2Frootext%2Ffit%2FUtil.hh",
+      "raw_url": "https://github.com/hdtv-tool/hdtv/raw/262d3b36d84e6188e3682562e845436075ab4fbe/src%2Fhdtv%2Frootext%2Ffit%2FUtil.hh",
+      "contents_url": "https://api.github.com/repos/hdtv-tool/hdtv/contents/src%2Fhdtv%2Frootext%2Ffit%2FUtil.hh?ref=262d3b36d84e6188e3682562e845436075ab4fbe",
+      "patch": "@@ -31,8 +31,6 @@ namespace HDTV {\n \n std::string GetFuncUniqueName(const char *prefix, void *ptr);\n \n-double TH1IntegrateWithPartialBins(const TH1 *spec, const double xmin, const double xmax);\n-\n } // end namespace HDTV\n \n #endif"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "262d3b36d84e6188e3682562e845436075ab4fbe",
+      "message": "Move TH1IntegrateWithPartialBins from C++ to Python\n\nROOT.HDTV.TH1IntegrateWithPartialBins() is only used in histogram.py.\nSince it is a small and easy function, it can be implemented directly in\nPyROOT and does not need to be compiled.",
+      "parent_shas": [
+        "9f839c978eae61a7099af4a2990470362e881d29"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__hdtv-tool__hdtv__pr52.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\hdtv-tool__hdtv__pr52__cpp_python__hdtv-tool__hdtv__pr52\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\hdtv-tool__hdtv__pr52__cpp_python__hdtv-tool__hdtv__pr52\\rn"
+  }
+}

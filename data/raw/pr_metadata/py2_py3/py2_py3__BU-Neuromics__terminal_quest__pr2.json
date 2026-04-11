@@ -1,0 +1,159 @@
+{
+  "instance_id": "py2_py3__BU-Neuromics__terminal_quest__pr2",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "BU-Neuromics/terminal_quest",
+  "pr_number": 2,
+  "pr_url": "https://github.com/BU-Neuromics/terminal_quest/pull/2",
+  "repo": {
+    "full_name": "BU-Neuromics/terminal_quest",
+    "clone_url": "https://github.com/BU-Neuromics/terminal_quest.git",
+    "default_branch": "main",
+    "stars": 5,
+    "license": "MIT",
+    "size_kb": 187
+  },
+  "pull_request": {
+    "id": 3490438994,
+    "title": "Modernize for current Python (3.9+), drop legacy deps",
+    "body": "## Summary\n- Remove `fabulous`, `future`, and `pillow` dependencies — now runs on the Python standard library only\n- Add `compat.py` as a lightweight replacement for fabulous (ANSI colors, terminal info, text rendering)\n- Drop Python 2 support, require Python 3.9+\n- Add `pyproject.toml` and `__main__.py` for modern packaging (`python -m terminal_quest`)\n- Fix level 4 directory reference bug, replace `old_div` with `//`, stabilize `random.sample` call\n- Update README with current installation instructions\n\n## Test plan\n- [ ] Run `python -m terminal_quest` and play through all 10 levels\n- [ ] Verify banner and color output display correctly in terminal\n- [ ] Test `pip install .` in a fresh venv on Python 3.9+\n- [ ] Confirm no third-party packages are required\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "merged_at": "2026-04-06T15:53:52Z",
+    "base_sha": "c5986f1f0768b70c1bd84f54a9ad9c14f0d50590",
+    "head_sha": "8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7",
+    "merge_commit_sha": "844d0de710c0b94346b98622d7860ad237ed50f7",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_a"
+  ],
+  "base_sha": "c5986f1f0768b70c1bd84f54a9ad9c14f0d50590",
+  "final_sha": "8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7",
+  "changed_files": [
+    {
+      "sha": "46cff0e4985df3cbf3e6bf1ff9938a874ab17bac",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/BU-Neuromics/terminal_quest/blob/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/.gitignore",
+      "raw_url": "https://github.com/BU-Neuromics/terminal_quest/raw/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/.gitignore",
+      "contents_url": "https://api.github.com/repos/BU-Neuromics/terminal_quest/contents/.gitignore?ref=8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7",
+      "patch": "@@ -4,3 +4,5 @@\n build\n dist\n twine_creds.sh\n+.venv/\n+level0/"
+    },
+    {
+      "sha": "7218a0c64a71c7f68884037a505962dee73e99e9",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 13,
+      "changes": 25,
+      "blob_url": "https://github.com/BU-Neuromics/terminal_quest/blob/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/README.md",
+      "raw_url": "https://github.com/BU-Neuromics/terminal_quest/raw/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/README.md",
+      "contents_url": "https://api.github.com/repos/BU-Neuromics/terminal_quest/contents/README.md?ref=8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7",
+      "patch": "@@ -2,8 +2,8 @@\n \n `terminal-quest` is a [gamified](https://en.wikipedia.org/wiki/Gamification)\n introduction to basic command line navigation and file manipulation skills. It\n-is implemented in the python programming language but requires no programming\n-other than entering commands on a command line. \n+is implemented in Python but requires no programming beyond entering commands on\n+the command line.\n \n `terminal-quest` is a series of puzzles that can be solved with only the\n commands **cd**, **ls**, **man**, **cat**, **head**, **tail**, **grep**, file\n@@ -15,16 +15,18 @@ globbing (`*` character), and output redirection (`>` character).\n \n ### pypi ###\n \n-You can install `terminal-quest` using `pip`:\n+Create and activate a virtual environment, then install with `pip`:\n \n ```\n-pip install terminal-quest\n+python3 -m venv .venv\n+source .venv/bin/activate\n+python -m pip install .\n ```\n \n ### Manual Installation ###\n \n-If you do not have access to anaconda, you may also install this package\n-manually. You can either clone this repo to your local machine with:\n+If you just want to play from a clone of this repository, you do not need to\n+install any third-party packages. Clone the repo:\n \n ```\n git clone https://github.com/BU-Neuromics/terminal_quest\n@@ -37,17 +39,14 @@ Once downloaded (and expanded, if downloaded as an archive), open a terminal\n and run from within the source directory:\n \n ```\n-python setup.py install\n-terminal_quest\n+python3 -m venv .venv\n+source .venv/bin/activate\n+python -m terminal_quest\n ```\n \n ### Dependencies ###\n \n-This package uses the following non-standard python packages:\n-\n-* [future](https://pypi.python.org/pypi/future)\n-* [fabulous](https://pypi.python.org/pypi/fabulous)\n-* [pillow](https://python-pillow.org/)\n+Current versions run with the Python standard library only.\n \n ## terminal temple\n "
+    },
+    {
+      "sha": "26e6bb088ed0e829ddffc4a7459a6c3f12812cd0",
+      "filename": "pyproject.toml",
+      "status": "added",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/BU-Neuromics/terminal_quest/blob/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/pyproject.toml",
+      "raw_url": "https://github.com/BU-Neuromics/terminal_quest/raw/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/BU-Neuromics/terminal_quest/contents/pyproject.toml?ref=8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7",
+      "patch": "@@ -0,0 +1,3 @@\n+[build-system]\n+requires = [\"setuptools>=68\"]\n+build-backend = \"setuptools.build_meta\""
+    },
+    {
+      "sha": "490b6effb1dfa37883dd3759db2462017153661b",
+      "filename": "setup.py",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 16,
+      "changes": 29,
+      "blob_url": "https://github.com/BU-Neuromics/terminal_quest/blob/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/setup.py",
+      "raw_url": "https://github.com/BU-Neuromics/terminal_quest/raw/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/setup.py",
+      "contents_url": "https://api.github.com/repos/BU-Neuromics/terminal_quest/contents/setup.py?ref=8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7",
+      "patch": "@@ -1,12 +1,13 @@\n #!/usr/bin/env python\n \n+from pathlib import Path\n+\n from setuptools import setup, find_packages\n \n-with open('VERSION', 'r', encoding='utf-8') as f :\n-    version = f.read()\n+ROOT = Path(__file__).parent\n \n-with open('README.md', 'r', encoding='utf-8') as f:\n-    long_description = f.read()\n+version = (ROOT / 'VERSION').read_text(encoding='utf-8').strip()\n+long_description = (ROOT / 'README.md').read_text(encoding='utf-8')\n \n setup(name='terminal-quest'\n       ,url='https://github.com/BU-Neuromics/terminal_quest'\n@@ -19,12 +20,8 @@\n       ,license='MIT'\n       ,packages=find_packages()\n       ,package_data={'terminal_quest': ['mds/*','mds/.level*']}\n-      ,python_requires='>=2.6, >=3'\n-      ,install_requires=[\n-        'future'\n-        ,'fabulous'\n-        ,'pillow'\n-      ]\n+      ,python_requires='>=3.9'\n+      ,install_requires=[]\n       ,entry_points={\n         'console_scripts': [\n           'terminal_quest=terminal_quest:main'\n@@ -46,12 +43,12 @@\n \n           # Specify the Python versions you support here. In particular, ensure\n           # that you indicate whether you support Python 2, Python 3 or both.\n-          'Programming Language :: Python :: 2',\n-          'Programming Language :: Python :: 2.6',\n-          'Programming Language :: Python :: 2.7',\n           'Programming Language :: Python :: 3',\n-          'Programming Language :: Python :: 3.2',\n-          'Programming Language :: Python :: 3.3',\n-          'Programming Language :: Python :: 3.4',\n+          'Programming Language :: Python :: 3.9',\n+          'Programming Language :: Python :: 3.10',\n+          'Programming Language :: Python :: 3.11',\n+          'Programming Language :: Python :: 3.12',\n+          'Programming Language :: Python :: 3.13',\n+          'Programming Language :: Python :: 3.14',\n       ]\n      )"
+    },
+    {
+      "sha": "006d332369abd121a56b5050ff0c26fb499530f5",
+      "filename": "terminal_quest/__main__.py",
+      "status": "added",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/BU-Neuromics/terminal_quest/blob/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/terminal_quest%2F__main__.py",
+      "raw_url": "https://github.com/BU-Neuromics/terminal_quest/raw/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/terminal_quest%2F__main__.py",
+      "contents_url": "https://api.github.com/repos/BU-Neuromics/terminal_quest/contents/terminal_quest%2F__main__.py?ref=8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7",
+      "patch": "@@ -0,0 +1,5 @@\n+from .terminal_quest import main\n+\n+\n+if __name__ == \"__main__\":\n+    main()"
+    },
+    {
+      "sha": "36b652f4d62cf46b0a7f154f8c0d4b850b0e4832",
+      "filename": "terminal_quest/compat.py",
+      "status": "added",
+      "additions": 64,
+      "deletions": 0,
+      "changes": 64,
+      "blob_url": "https://github.com/BU-Neuromics/terminal_quest/blob/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/terminal_quest%2Fcompat.py",
+      "raw_url": "https://github.com/BU-Neuromics/terminal_quest/raw/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/terminal_quest%2Fcompat.py",
+      "contents_url": "https://api.github.com/repos/BU-Neuromics/terminal_quest/contents/terminal_quest%2Fcompat.py?ref=8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7",
+      "patch": "@@ -0,0 +1,64 @@\n+from __future__ import annotations\n+\n+import shutil\n+import sys\n+\n+\n+CSI = \"\\033[\"\n+RESET = \"\\033[0m\"\n+\n+\n+def _supports_ansi() -> bool:\n+    return sys.stdout.isatty()\n+\n+\n+def _wrap_ansi(text: str, code: str) -> str:\n+    if not _supports_ansi():\n+        return text\n+    return f\"{CSI}{code}m{text}{RESET}\"\n+\n+\n+def bold(text: str) -> str:\n+    return _wrap_ansi(text, \"1\")\n+\n+\n+def yellow(text: str) -> str:\n+    return _wrap_ansi(text, \"33\")\n+\n+\n+def blue(text: str) -> str:\n+    return _wrap_ansi(text, \"34\")\n+\n+\n+def green(text: str) -> str:\n+    return _wrap_ansi(text, \"32\")\n+\n+\n+def bg256(color: str, text: str) -> str:\n+    if not _supports_ansi():\n+        return text\n+    color = color.lstrip(\"#\")\n+    if len(color) != 6:\n+        return text\n+    red = int(color[0:2], 16)\n+    green = int(color[2:4], 16)\n+    blue = int(color[4:6], 16)\n+    return f\"{CSI}48;2;{red};{green};{blue}m{text}{RESET}\"\n+\n+\n+class TerminalInfo:\n+    def __init__(self) -> None:\n+        size = shutil.get_terminal_size(fallback=(80, 24))\n+        self.width = size.columns\n+        self.height = size.lines\n+\n+\n+class Text:\n+    def __init__(self, value: str, skew: int = 0, shadow: bool = False, color: str | None = None) -> None:\n+        del shadow, color\n+        self.value = value\n+        self.skew = max(0, skew)\n+\n+    def __str__(self) -> str:\n+        indent = \" \" * min(self.skew, 8)\n+        return f\"{indent}{self.value}\""
+    },
+    {
+      "sha": "ec90ef38cde0e728e282b64995f62c18e2223df4",
+      "filename": "terminal_quest/pizzazz.py",
+      "status": "modified",
+      "additions": 28,
+      "deletions": 22,
+      "changes": 50,
+      "blob_url": "https://github.com/BU-Neuromics/terminal_quest/blob/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/terminal_quest%2Fpizzazz.py",
+      "raw_url": "https://github.com/BU-Neuromics/terminal_quest/raw/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/terminal_quest%2Fpizzazz.py",
+      "contents_url": "https://api.github.com/repos/BU-Neuromics/terminal_quest/contents/terminal_quest%2Fpizzazz.py?ref=8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7",
+      "patch": "@@ -1,25 +1,30 @@\n from itertools import product, cycle\n-from fabulous import text\n-from fabulous.color import *\n-from fabulous.utils import TerminalInfo\n import random\n import sys\n import termios\n-import tty\n from time import sleep\n \n-flags = termios.tcgetattr(sys.stdout)\n+from .compat import TerminalInfo, Text, bg256, bold, green\n+\n+try:\n+    _terminal_fd = sys.stdin.fileno()\n+    _flags = termios.tcgetattr(_terminal_fd) if sys.stdin.isatty() else None\n+except (AttributeError, OSError, termios.error):\n+    _terminal_fd = None\n+    _flags = None\n \n term = TerminalInfo()\n \n def set_echo_and_icanon(flag) :\n+    if _flags is None or _terminal_fd is None:\n+        return\n     if flag :\n-        new = flags.copy()\n+        new = _flags.copy()\n         new[3] = new[3] | termios.ECHO | termios.ICANON\n     else :\n-        new = flags.copy()\n+        new = _flags.copy()\n         new[3] = new[3] & ~termios.ECHO & ~termios.ICANON\n-    termios.tcsetattr(sys.stdout, termios.TCSANOW, new)\n+    termios.tcsetattr(_terminal_fd, termios.TCSANOW, new)\n     pass\n \n def write(o) :\n@@ -73,9 +78,9 @@ def banner() :\n     voffset = 4\n     rect(0,int(term.height/voffset-2),term.width,int(term.height/voffset+26),'#000')\n     move(0,int(term.height/voffset))\n-    write(text.Text(' terminal',skew=5,shadow=True,color=banner_color))\n+    write(Text(' terminal',skew=5,shadow=True,color=banner_color))\n     move(0,int(term.height/voffset+12))\n-    write(text.Text('  quest',skew=5,shadow=True,color=banner_color))\n+    write(Text('  quest',skew=5,shadow=True,color=banner_color))\n \n def dazzle() :\n \n@@ -112,15 +117,16 @@ def fini():\n     type_text(green(\"\\n\\nDAZZLED\"),speed=0.01)\n     sleep(1)\n \n-    set_echo_and_icanon(0)\n-    try :\n-        dazzle()\n-    finally :\n-        set_echo_and_icanon(1)\n-        banner()\n-        sleep(10)\n-        move(0,term.height)\n-        \n-        print(bold('if you enjoyed terminal quest, why not try the sequel: terminal temple?'))\n-        print(bold('https://bitbucket.org/bucab/terminal_temple'))\n-        print(bold('it almost certainly could be as good!'))\n+    if _flags is not None:\n+        set_echo_and_icanon(0)\n+        try :\n+            dazzle()\n+        finally :\n+            set_echo_and_icanon(1)\n+            banner()\n+            sleep(10)\n+            move(0,term.height)\n+\n+    print(bold('if you enjoyed terminal quest, why not try the sequel: terminal temple?'))\n+    print(bold('https://bitbucket.org/bucab/terminal_temple'))\n+    print(bold('it almost certainly could be as good!'))"
+    },
+    {
+      "sha": "4b01f2a51e8bdf37e50f2dbbfbb9d7275b5b8fb2",
+      "filename": "terminal_quest/terminal_quest.py",
+      "status": "modified",
+      "additions": 25,
+      "deletions": 38,
+      "changes": 63,
+      "blob_url": "https://github.com/BU-Neuromics/terminal_quest/blob/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/terminal_quest%2Fterminal_quest.py",
+      "raw_url": "https://github.com/BU-Neuromics/terminal_quest/raw/8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7/terminal_quest%2Fterminal_quest.py",
+      "contents_url": "https://api.github.com/repos/BU-Neuromics/terminal_quest/contents/terminal_quest%2Fterminal_quest.py?ref=8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7",
+      "patch": "@@ -1,25 +1,16 @@\n-from __future__ import division\n from __future__ import print_function\n-from builtins import zip\n-from builtins import str\n-from builtins import range\n import getpass\n import hashlib\n-from past.utils import old_div\n-from collections import defaultdict\n-from glob import glob\n+from importlib import resources\n import random\n import os\n import shutil\n import string\n import sys\n import textwrap\n-from fabulous.color import bold, yellow, blue\n-from fabulous import text\n \n from .pizzazz import fini\n-\n-import pkg_resources\n+from .compat import Text, blue, bold, yellow\n \n opj = os.path.join\n \n@@ -38,25 +29,20 @@\n     sys.exit(0)\n \n # clean\n-try :\n-  shutil.rmtree('level0')\n-except Exception as e :\n-  pass\n-  #print e\n-except Error as e :\n-  pass\n-  #print e\n+try:\n+    shutil.rmtree(\"level0\")\n+except OSError:\n+    pass\n \n def copy_md(level,path) :\n \n     level_md = '{}.md'.format(level)\n+    desc = resources.files(\"terminal_quest\").joinpath(\"mds\", level_md).read_text(encoding=\"utf-8\")\n+    size = len(desc.encode(\"utf-8\"))\n+    with open(os.path.join(path, level_md), \"w\", encoding=\"utf-8\") as handle:\n+        handle.write(desc)\n \n-    f = pkg_resources.resource_stream(__name__, opj('mds',level_md))\n-    desc = f.read()\n-    size = f.tell()\n-    open(os.path.join(path,level_md),'w').write(desc.decode('utf-8'))\n-\n-    return level_md,desc,size\n+    return level_md, desc, size\n \n def create_mds(level,path) :\n     copy_md(level,path)\n@@ -72,8 +58,8 @@ def rndchr(n) :\n def main() :\n \n     print()\n-    print(text.Text('Terminal',skew=5))\n-    print(text.Text('   Quest',skew=5))\n+    print(Text('Terminal',skew=5))\n+    print(Text('   Quest',skew=5))\n     print()\n     print(bold(yellow('Your personal quest is being created right now, please wait.')))\n     print()\n@@ -101,10 +87,7 @@ def main() :\n     copy_md('.level2_hint',lpath)\n \n     # create 49 directories named as random numbers between 0-300\n-    paths = random.sample(list(range(0,300)),49)\n-    while level2_size in paths :\n-      paths.remove(level2_size)\n-      paths.append(random.randint(0,300))\n+    paths = random.sample([value for value in range(0,300) if value != level2_size],49)\n     paths = [str(_) for _ in paths]\n     for path in paths:\n       os.mkdir(os.path.join(lpath,path))\n@@ -133,10 +116,15 @@ def main() :\n         \"just kidding, no you didn't, but you did find a SECRET\"\n       )\n \n-    # use the last random directory as the real one\n-    real_fns = [rndchr(6).upper()+'_{}_SECRET' for _ in range(len(rnd_dir))]\n+    # keep the real directory stable instead of relying on the last loop value\n+    level4_dir = '.' + rndchr(6)\n+    while os.path.exists(opj(lpath, level4_dir)):\n+        level4_dir = '.' + rndchr(6)\n+    os.mkdir(opj(lpath, level4_dir))\n+\n+    real_fns = [rndchr(6).upper()+'_{}_SECRET' for _ in range(len(level4_dir))]\n     real_fns.sort()\n-    real_fns = [_1.format(_2) for _1, _2 in zip(real_fns,rnd_dir)]\n+    real_fns = [_1.format(_2) for _1, _2 in zip(real_fns, level4_dir)]\n \n     # create a bunch of files with the pattern [A-Z]{6}_[a-z]_[A-Z]{6}\n     fake_fns = [rndchr(6).upper()+'_x_'+rndchr(6).upper() for _ in range(1000)]\n@@ -146,8 +134,7 @@ def main() :\n \n     ##################################################\n     # level 4\n-    lpath = opj(lpath,rnd_dir)\n-    # this directory was already created in the previous step\n+    lpath = opj(lpath,level4_dir)\n     create_mds('level4',lpath)\n \n     level5_dir = '.'+rndchr(6)\n@@ -360,7 +347,7 @@ def main() :\n               `'-'`/;;  | |   \\ mx\n                   ;;;  ,' |    `\n                       /   ' \"\"\".split('\\n')\n-    top_suess = suess[:old_div(len(suess),2)+3]\n+    top_suess = suess[: len(suess) // 2 + 3]\n     lines = [rndchr(60) for _ in range(random.randint(1000,1500))]\n     open(opj(lpath,'fox.txt'),'w').write(''.join(_+'\\n' for _ in top_suess+lines))\n \n@@ -434,7 +421,7 @@ def main() :\n     head_tail_ids = set(range(len(scrollbits))).difference(set(secret_ids))\n \n     num_heads = int(num_secret/2)\n-    head_ids = random.sample(head_tail_ids,num_heads)\n+    head_ids = random.sample(sorted(head_tail_ids),num_heads)\n \n     tail_ids = set(head_tail_ids).difference(set(head_ids))\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8bbae91c0b67a1136f989b4dbe4e3acc3a7709e7",
+      "message": "terminal questを現行Python環境向けにリファクタリング",
+      "parent_shas": [
+        "c5986f1f0768b70c1bd84f54a9ad9c14f0d50590"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_tests_detected"
+    ],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__BU-Neuromics__terminal_quest__pr2.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\BU-Neuromics__terminal_quest__pr2__py2_py3__BU-Neuromics__terminal_quest__pr2\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\BU-Neuromics__terminal_quest__pr2__py2_py3__BU-Neuromics__terminal_quest__pr2\\rn"
+  }
+}

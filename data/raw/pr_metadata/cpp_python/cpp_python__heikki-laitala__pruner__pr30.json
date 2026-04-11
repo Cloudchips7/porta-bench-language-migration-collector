@@ -1,0 +1,286 @@
+{
+  "instance_id": "cpp_python__heikki-laitala__pruner__pr30",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "heikki-laitala/pruner",
+  "pr_number": 30,
+  "pr_url": "https://github.com/heikki-laitala/pruner/pull/30",
+  "repo": {
+    "full_name": "heikki-laitala/pruner",
+    "clone_url": "https://github.com/heikki-laitala/pruner.git",
+    "default_branch": "main",
+    "stars": 8,
+    "license": "MIT",
+    "size_kb": 1202
+  },
+  "pull_request": {
+    "id": 3447791128,
+    "title": "feat: add C/C++ language support",
+    "body": "## Summary\n\n- Add `tree-sitter-c` and `tree-sitter-cpp` grammars for parsing C and C++ source files\n- C extraction: functions, structs, enums, unions, typedefs, `#include` directives, and call expressions (including `->` member calls)\n- C++ extraction: classes, namespaces, structs, inline and out-of-line methods (with `Class::method` resolution), templates, and all C features\n- Supported extensions: `.c`, `.h` (C), `.cpp`, `.cc`, `.cxx`, `.c++`, `.hpp`, `.hxx`, `.hh`, `.h++` (C++)\n\n## Test plan\n\n- [x] 11 new unit tests for C/C++ parsing (functions, structs, typedefs, enums, includes, calls, classes, namespaces, out-of-line methods, struct methods)\n- [x] 11 new integration tests across `c_project` and `cpp_project` fixtures\n- [x] 2 new language detection tests for C and C++ extensions\n- [x] All 206 unit tests + 82 integration tests pass\n- [x] Clippy clean, formatted",
+    "merged_at": "2026-03-25T22:35:16Z",
+    "base_sha": "271677b822d58a11946e48f8b678f579c0503cac",
+    "head_sha": "2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+    "merge_commit_sha": "addd7750a8f75afb3afdc2817fe8434a234fc9f4",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_e"
+  ],
+  "base_sha": "271677b822d58a11946e48f8b678f579c0503cac",
+  "final_sha": "2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+  "changed_files": [
+    {
+      "sha": "f33fa5f80ddcf261c94ecd5dcee6d325635d09b6",
+      "filename": "Cargo.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/Cargo.toml",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/Cargo.toml",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/Cargo.toml?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -29,6 +29,8 @@ zip = \"2\"\n self-replace = \"1\"\n tempfile = \"3\"\n rayon = \"1.11.0\"\n+tree-sitter-c = \"0.24\"\n+tree-sitter-cpp = \"0.23\"\n \n [dev-dependencies]\n assert_cmd = \"2\""
+    },
+    {
+      "sha": "a0efcbbf46a13f50c44b9233f793f731e2bde200",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/README.md",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/README.md",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/README.md?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -386,6 +386,8 @@ Full tree-sitter parsing (symbols, imports, calls):\n - Rust\n - Go\n - Java\n+- C\n+- C++\n \n Basic indexing (files, metadata):\n "
+    },
+    {
+      "sha": "8aff95b720babe660701fda9d02e847bf014a40f",
+      "filename": "src/indexer.rs",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/src%2Findexer.rs",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/src%2Findexer.rs",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/src%2Findexer.rs?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -899,8 +899,8 @@ mod tests {\n         let dir = TempDir::new()?;\n         let db = IndexDb::open_memory()?;\n \n-        // .c is unsupported — file gets indexed but no symbols parsed\n-        fs::write(dir.path().join(\"main.c\"), \"int main() { return 0; }\\n\")?;\n+        // .rb is unsupported — file gets indexed but no symbols parsed\n+        fs::write(dir.path().join(\"main.rb\"), \"def hello; end\\n\")?;\n \n         let stats = index_repo(dir.path(), &db, false)?;\n         assert_eq!(stats.files, 1);"
+    },
+    {
+      "sha": "a43655e4e40fb23ed412c0627539b368be98118d",
+      "filename": "src/languages.rs",
+      "status": "modified",
+      "additions": 26,
+      "deletions": 1,
+      "changes": 27,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/src%2Flanguages.rs",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/src%2Flanguages.rs",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/src%2Flanguages.rs?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -15,6 +15,8 @@ pub enum Language {\n     Rust,\n     Go,\n     Java,\n+    C,\n+    Cpp,\n }\n \n /// Detect language from file extension. Returns None for unsupported extensions.\n@@ -28,6 +30,8 @@ pub fn detect_language(path: &Path) -> Option<Language> {\n         \"rs\" => Some(Language::Rust),\n         \"go\" => Some(Language::Go),\n         \"java\" => Some(Language::Java),\n+        \"c\" | \"h\" => Some(Language::C),\n+        \"cc\" | \"cpp\" | \"cxx\" | \"c++\" | \"hpp\" | \"hxx\" | \"hh\" | \"h++\" => Some(Language::Cpp),\n         _ => None,\n     }\n }\n@@ -171,10 +175,31 @@ mod tests {\n         );\n     }\n \n+    #[test]\n+    fn test_detect_language_c() {\n+        assert_eq!(detect_language(Path::new(\"main.c\")), Some(Language::C));\n+        assert_eq!(detect_language(Path::new(\"header.h\")), Some(Language::C));\n+    }\n+\n+    #[test]\n+    fn test_detect_language_cpp() {\n+        assert_eq!(detect_language(Path::new(\"main.cpp\")), Some(Language::Cpp));\n+        assert_eq!(detect_language(Path::new(\"main.cc\")), Some(Language::Cpp));\n+        assert_eq!(detect_language(Path::new(\"main.cxx\")), Some(Language::Cpp));\n+        assert_eq!(\n+            detect_language(Path::new(\"header.hpp\")),\n+            Some(Language::Cpp)\n+        );\n+        assert_eq!(\n+            detect_language(Path::new(\"header.hxx\")),\n+            Some(Language::Cpp)\n+        );\n+        assert_eq!(detect_language(Path::new(\"header.hh\")), Some(Language::Cpp));\n+    }\n+\n     #[test]\n     fn test_detect_language_unsupported() {\n         assert_eq!(detect_language(Path::new(\"file.rb\")), None);\n-        assert_eq!(detect_language(Path::new(\"file.c\")), None);\n     }\n \n     #[test]"
+    },
+    {
+      "sha": "0e9be84d6105f48f1db91abc11599cf8643d8450",
+      "filename": "src/parser.rs",
+      "status": "modified",
+      "additions": 752,
+      "deletions": 0,
+      "changes": 752,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/src%2Fparser.rs",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/src%2Fparser.rs",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/src%2Fparser.rs?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -56,6 +56,8 @@ pub fn parse_source(source: &str, language: Language) -> Result<ParseResult> {\n         Language::Rust => extract_rust(root, src),\n         Language::Go => extract_go(root, src),\n         Language::Java => extract_java(root, src),\n+        Language::C => extract_c(root, src),\n+        Language::Cpp => extract_cpp(root, src),\n     }\n }\n \n@@ -68,6 +70,8 @@ fn ts_language_for(language: Language) -> tree_sitter::Language {\n         Language::Rust => tree_sitter_rust::LANGUAGE.into(),\n         Language::Go => tree_sitter_go::LANGUAGE.into(),\n         Language::Java => tree_sitter_java::LANGUAGE.into(),\n+        Language::C => tree_sitter_c::LANGUAGE.into(),\n+        Language::Cpp => tree_sitter_cpp::LANGUAGE.into(),\n     }\n }\n \n@@ -947,6 +951,403 @@ fn build_java_constructor_signature(node: &tree_sitter::Node, src: &[u8]) -> Str\n     format!(\"{name}{params}\")\n }\n \n+// -- C extraction --\n+\n+fn extract_c(root: tree_sitter::Node, src: &[u8]) -> Result<ParseResult> {\n+    let mut result = ParseResult::default();\n+    extract_c_node(root, src, &mut result, None);\n+    Ok(result)\n+}\n+\n+fn extract_c_node(\n+    node: tree_sitter::Node,\n+    src: &[u8],\n+    result: &mut ParseResult,\n+    parent_index: Option<usize>,\n+) {\n+    let mut cursor = node.walk();\n+    for child in node.children(&mut cursor) {\n+        match child.kind() {\n+            \"function_definition\" => {\n+                if let Some(declarator) = child.child_by_field_name(\"declarator\")\n+                    && let Some(name) = extract_c_declarator_name(&declarator, src)\n+                {\n+                    let sig = build_c_fn_signature(&child, src);\n+                    let idx = result.symbols.len();\n+                    result.symbols.push(Symbol {\n+                        name,\n+                        kind: \"function\".to_string(),\n+                        line_start: child.start_position().row + 1,\n+                        line_end: child.end_position().row + 1,\n+                        parent_index,\n+                        signature: Some(sig),\n+                    });\n+                    extract_c_calls(&child, src, result, idx);\n+                }\n+            }\n+            \"declaration\" => {\n+                // Function declarations (prototypes) — skip, only extract definitions\n+                // But extract global variable declarations if needed\n+            }\n+            \"struct_specifier\" | \"enum_specifier\" | \"union_specifier\" => {\n+                extract_c_type(&child, src, result);\n+            }\n+            \"type_definition\" => {\n+                extract_c_typedef(&child, src, result);\n+            }\n+            \"preproc_include\" => {\n+                if let Some(path_node) = child.child_by_field_name(\"path\") {\n+                    let raw = node_text(path_node, src);\n+                    let module = raw.trim_matches(&['\"', '<', '>'] as &[char]).to_string();\n+                    result.imports.push(Import {\n+                        module,\n+                        names: None,\n+                    });\n+                }\n+            }\n+            _ => {\n+                extract_c_node(child, src, result, parent_index);\n+            }\n+        }\n+    }\n+}\n+\n+/// Extract the name from a C declarator (handles function_declarator, pointer_declarator, etc.)\n+fn extract_c_declarator_name(node: &tree_sitter::Node, src: &[u8]) -> Option<String> {\n+    match node.kind() {\n+        \"identifier\" | \"field_identifier\" => Some(node_text(*node, src).to_string()),\n+        \"function_declarator\" => node\n+            .child_by_field_name(\"declarator\")\n+            .and_then(|d| extract_c_declarator_name(&d, src)),\n+        \"pointer_declarator\" | \"parenthesized_declarator\" | \"array_declarator\" => node\n+            .child_by_field_name(\"declarator\")\n+            .and_then(|d| extract_c_declarator_name(&d, src)),\n+        _ => {\n+            // Try first named child as fallback\n+            let mut cursor = node.walk();\n+            for child in node.named_children(&mut cursor) {\n+                if let Some(name) = extract_c_declarator_name(&child, src) {\n+                    return Some(name);\n+                }\n+            }\n+            None\n+        }\n+    }\n+}\n+\n+fn extract_c_type(node: &tree_sitter::Node, src: &[u8], result: &mut ParseResult) {\n+    let kind = match node.kind() {\n+        \"struct_specifier\" => \"struct\",\n+        \"enum_specifier\" => \"enum\",\n+        \"union_specifier\" => \"union\",\n+        _ => \"type\",\n+    };\n+    if let Some(name_node) = node.child_by_field_name(\"name\") {\n+        // Only extract if it has a body (definition, not just forward declaration)\n+        if node.child_by_field_name(\"body\").is_some() {\n+            result.symbols.push(Symbol {\n+                name: node_text(name_node, src).to_string(),\n+                kind: kind.to_string(),\n+                line_start: node.start_position().row + 1,\n+                line_end: node.end_position().row + 1,\n+                parent_index: None,\n+                signature: None,\n+            });\n+        }\n+    }\n+}\n+\n+fn extract_c_typedef(node: &tree_sitter::Node, src: &[u8], result: &mut ParseResult) {\n+    // typedef struct { ... } Name; — the name is a type_identifier child\n+    // typedef int MyInt; — the name is also a type_identifier child\n+    // typedef void (*FuncPtr)(int); — the name is in a function_declarator\n+    let mut cursor = node.walk();\n+    for child in node.named_children(&mut cursor) {\n+        match child.kind() {\n+            \"type_identifier\" => {\n+                result.symbols.push(Symbol {\n+                    name: node_text(child, src).to_string(),\n+                    kind: \"type\".to_string(),\n+                    line_start: node.start_position().row + 1,\n+                    line_end: node.end_position().row + 1,\n+                    parent_index: None,\n+                    signature: None,\n+                });\n+                return;\n+            }\n+            \"function_declarator\" | \"pointer_declarator\" => {\n+                if let Some(name) = extract_c_declarator_name(&child, src) {\n+                    result.symbols.push(Symbol {\n+                        name,\n+                        kind: \"type\".to_string(),\n+                        line_start: node.start_position().row + 1,\n+                        line_end: node.end_position().row + 1,\n+                        parent_index: None,\n+                        signature: None,\n+                    });\n+                    return;\n+                }\n+            }\n+            _ => {}\n+        }\n+    }\n+}\n+\n+fn extract_c_calls(\n+    node: &tree_sitter::Node,\n+    src: &[u8],\n+    result: &mut ParseResult,\n+    caller_index: usize,\n+) {\n+    let mut cursor = node.walk();\n+    for child in node.children(&mut cursor) {\n+        if child.kind() == \"call_expression\"\n+            && let Some(func) = child.child_by_field_name(\"function\")\n+        {\n+            let name = match func.kind() {\n+                \"identifier\" => node_text(func, src).to_string(),\n+                \"field_expression\" => {\n+                    // obj->method or obj.method\n+                    func.child_by_field_name(\"field\")\n+                        .map(|f| node_text(f, src).to_string())\n+                        .unwrap_or_default()\n+                }\n+                \"qualified_identifier\" | \"scoped_identifier\" => {\n+                    // std::move, ns::foo, Type::static_fn — use rightmost segment\n+                    let full = node_text(func, src);\n+                    full.rsplit(\"::\").next().unwrap_or(full).to_string()\n+                }\n+                _ => String::new(),\n+            };\n+            if !name.is_empty() {\n+                result.calls.push(Call {\n+                    caller_index,\n+                    callee_name: name,\n+                    line: child.start_position().row + 1,\n+                });\n+            }\n+        }\n+        extract_c_calls(&child, src, result, caller_index);\n+    }\n+}\n+\n+fn build_c_fn_signature(node: &tree_sitter::Node, src: &[u8]) -> String {\n+    let return_type = node\n+        .child_by_field_name(\"type\")\n+        .map(|n| node_text(n, src))\n+        .unwrap_or(\"void\");\n+    let declarator = node.child_by_field_name(\"declarator\");\n+    if let Some(decl) = declarator {\n+        let decl_text = node_text(decl, src);\n+        // Remove the body, just keep the declaration part\n+        format!(\"{return_type} {decl_text}\")\n+    } else {\n+        return_type.to_string()\n+    }\n+}\n+\n+// -- C++ extraction --\n+\n+fn extract_cpp(root: tree_sitter::Node, src: &[u8]) -> Result<ParseResult> {\n+    let mut result = ParseResult::default();\n+    extract_cpp_node(root, src, &mut result, None);\n+    Ok(result)\n+}\n+\n+fn extract_cpp_node(\n+    node: tree_sitter::Node,\n+    src: &[u8],\n+    result: &mut ParseResult,\n+    parent_index: Option<usize>,\n+) {\n+    let mut cursor = node.walk();\n+    for child in node.children(&mut cursor) {\n+        match child.kind() {\n+            \"function_definition\" => {\n+                if let Some(declarator) = child.child_by_field_name(\"declarator\")\n+                    && let Some(name) = extract_cpp_fn_name(&declarator, src)\n+                {\n+                    let display_name = name.rsplit(\"::\").next().unwrap_or(&name).to_string();\n+                    let sig = build_c_fn_signature(&child, src);\n+                    let idx = result.symbols.len();\n+                    // For qualified names (Foo::bar, ns::Foo::bar), resolve parent\n+                    // from the second-to-last segment. Classify as method if the\n+                    // immediate scope matches a known class/struct, or if it's not\n+                    // a known namespace (out-of-line method with class in a header).\n+                    let (kind, parent) = if name.contains(\"::\") {\n+                        let segments: Vec<&str> = name.rsplitn(2, \"::\").collect();\n+                        let scope = segments.get(1).unwrap_or(&\"\");\n+                        let class_name = scope.rsplit(\"::\").next().unwrap_or(scope);\n+                        if let Some(pos) = result.symbols.iter().position(|s| {\n+                            s.name == class_name && (s.kind == \"class\" || s.kind == \"struct\")\n+                        }) {\n+                            (\"method\", Some(pos))\n+                        } else if result\n+                            .symbols\n+                            .iter()\n+                            .any(|s| s.name == class_name && s.kind == \"namespace\")\n+                        {\n+                            // Scope is a known namespace — this is a free function\n+                            (\"function\", parent_index)\n+                        } else {\n+                            // Scope is unknown (likely a class declared in a header)\n+                            (\"method\", parent_index)\n+                        }\n+                    } else {\n+                        (\"function\", parent_index)\n+                    };\n+                    result.symbols.push(Symbol {\n+                        name: display_name,\n+                        kind: kind.to_string(),\n+                        line_start: child.start_position().row + 1,\n+                        line_end: child.end_position().row + 1,\n+                        parent_index: parent,\n+                        signature: Some(sig),\n+                    });\n+                    extract_c_calls(&child, src, result, idx);\n+                }\n+            }\n+            \"class_specifier\" => {\n+                if let Some(name_node) = child.child_by_field_name(\"name\") {\n+                    let idx = result.symbols.len();\n+                    result.symbols.push(Symbol {\n+                        name: node_text(name_node, src).to_string(),\n+                        kind: \"class\".to_string(),\n+                        line_start: child.start_position().row + 1,\n+                        line_end: child.end_position().row + 1,\n+                        parent_index,\n+                        signature: None,\n+                    });\n+                    // Extract inline method definitions inside the class body\n+                    if let Some(body) = child.child_by_field_name(\"body\") {\n+                        extract_cpp_class_body(&body, src, result, Some(idx));\n+                    }\n+                }\n+            }\n+            \"struct_specifier\" => {\n+                if let Some(name_node) = child.child_by_field_name(\"name\")\n+                    && child.child_by_field_name(\"body\").is_some()\n+                {\n+                    let idx = result.symbols.len();\n+                    result.symbols.push(Symbol {\n+                        name: node_text(name_node, src).to_string(),\n+                        kind: \"struct\".to_string(),\n+                        line_start: child.start_position().row + 1,\n+                        line_end: child.end_position().row + 1,\n+                        parent_index,\n+                        signature: None,\n+                    });\n+                    if let Some(body) = child.child_by_field_name(\"body\") {\n+                        extract_cpp_class_body(&body, src, result, Some(idx));\n+                    }\n+                }\n+            }\n+            \"enum_specifier\" => {\n+                extract_c_type(&child, src, result);\n+            }\n+            \"namespace_definition\" => {\n+                let ns_parent = if let Some(name_node) = child.child_by_field_name(\"name\") {\n+                    let idx = result.symbols.len();\n+                    result.symbols.push(Symbol {\n+                        name: node_text(name_node, src).to_string(),\n+                        kind: \"namespace\".to_string(),\n+                        line_start: child.start_position().row + 1,\n+                        line_end: child.end_position().row + 1,\n+                        parent_index,\n+                        signature: None,\n+                    });\n+                    Some(idx)\n+                } else {\n+                    // Anonymous namespace — recurse with current parent\n+                    parent_index\n+                };\n+                if let Some(body) = child.child_by_field_name(\"body\") {\n+                    extract_cpp_node(body, src, result, ns_parent);\n+                }\n+            }\n+            \"type_definition\" => {\n+                extract_c_typedef(&child, src, result);\n+            }\n+            \"preproc_include\" => {\n+                if let Some(path_node) = child.child_by_field_name(\"path\") {\n+                    let raw = node_text(path_node, src);\n+                    let module = raw.trim_matches(&['\"', '<', '>'] as &[char]).to_string();\n+                    result.imports.push(Import {\n+                        module,\n+                        names: None,\n+                    });\n+                }\n+            }\n+            \"template_declaration\" => {\n+                // Recurse into template to find the class/function inside\n+                extract_cpp_node(child, src, result, parent_index);\n+            }\n+            _ => {\n+                extract_cpp_node(child, src, result, parent_index);\n+            }\n+        }\n+    }\n+}\n+\n+/// Extract function/method name from a C++ declarator, handling qualified names like Class::method.\n+fn extract_cpp_fn_name(node: &tree_sitter::Node, src: &[u8]) -> Option<String> {\n+    match node.kind() {\n+        \"identifier\" | \"field_identifier\" | \"destructor_name\" => {\n+            Some(node_text(*node, src).to_string())\n+        }\n+        \"qualified_identifier\" => Some(node_text(*node, src).to_string()),\n+        \"function_declarator\" | \"reference_declarator\" => node\n+            .child_by_field_name(\"declarator\")\n+            .and_then(|d| extract_cpp_fn_name(&d, src)),\n+        \"pointer_declarator\" | \"parenthesized_declarator\" => node\n+            .child_by_field_name(\"declarator\")\n+            .and_then(|d| extract_cpp_fn_name(&d, src)),\n+        \"operator_name\" => Some(node_text(*node, src).to_string()),\n+        _ => {\n+            let mut cursor = node.walk();\n+            for child in node.named_children(&mut cursor) {\n+                if let Some(name) = extract_cpp_fn_name(&child, src) {\n+                    return Some(name);\n+                }\n+            }\n+            None\n+        }\n+    }\n+}\n+\n+/// Extract inline method definitions from a class/struct body.\n+fn extract_cpp_class_body(\n+    body: &tree_sitter::Node,\n+    src: &[u8],\n+    result: &mut ParseResult,\n+    parent_index: Option<usize>,\n+) {\n+    let mut cursor = body.walk();\n+    for child in body.children(&mut cursor) {\n+        match child.kind() {\n+            \"function_definition\" => {\n+                if let Some(declarator) = child.child_by_field_name(\"declarator\")\n+                    && let Some(name) = extract_cpp_fn_name(&declarator, src)\n+                {\n+                    let sig = build_c_fn_signature(&child, src);\n+                    let idx = result.symbols.len();\n+                    result.symbols.push(Symbol {\n+                        name,\n+                        kind: \"method\".to_string(),\n+                        line_start: child.start_position().row + 1,\n+                        line_end: child.end_position().row + 1,\n+                        parent_index,\n+                        signature: Some(sig),\n+                    });\n+                    extract_c_calls(&child, src, result, idx);\n+                }\n+            }\n+            \"access_specifier\" | \"field_declaration\" => {}\n+            _ => {}\n+        }\n+    }\n+}\n+\n #[cfg(test)]\n mod tests {\n     use super::*;\n@@ -1814,4 +2215,355 @@ class Foo {\n         assert_eq!(normalize_java_type_name(\"com.foo.User\"), \"User\");\n         assert_eq!(normalize_java_type_name(\"com.foo.Box<String>\"), \"Box\");\n     }\n+\n+    // -- C tests --\n+\n+    #[test]\n+    fn test_parse_c_function() -> anyhow::Result<()> {\n+        let src = r#\"\n+#include <stdio.h>\n+\n+int authenticate(const char* email, const char* password) {\n+    return 1;\n+}\n+\"#;\n+        let result = parse_source(src, Language::C)?;\n+        assert!(result.symbols.iter().any(|s| s.name == \"authenticate\"\n+            && s.kind == \"function\"\n+            && s.signature.as_ref().unwrap().contains(\"authenticate\")));\n+        assert!(result.imports.iter().any(|i| i.module == \"stdio.h\"));\n+        Ok(())\n+    }\n+\n+    #[test]\n+    fn test_parse_c_struct_and_typedef() -> anyhow::Result<()> {\n+        let src = r#\"\n+struct User {\n+    int id;\n+    char* name;\n+};\n+\n+typedef struct {\n+    int x;\n+    int y;\n+} Point;\n+\"#;\n+        let result = parse_source(src, Language::C)?;\n+        assert!(\n+            result\n+                .symbols\n+                .iter()\n+                .any(|s| s.name == \"User\" && s.kind == \"struct\"),\n+            \"should find struct User\"\n+        );\n+        assert!(\n+            result\n+                .symbols\n+                .iter()\n+                .any(|s| s.name == \"Point\" && s.kind == \"type\"),\n+            \"should find typedef Point, got: {:?}\",\n+            result.symbols\n+        );\n+        Ok(())\n+    }\n+\n+    #[test]\n+    fn test_parse_c_enum() -> anyhow::Result<()> {\n+        let src = r#\"\n+enum Color {\n+    RED,\n+    GREEN,\n+    BLUE\n+};\n+\"#;\n+        let result = parse_source(src, Language::C)?;\n+        assert!(\n+            result\n+                .symbols\n+                .iter()\n+                .any(|s| s.name == \"Color\" && s.kind == \"enum\")\n+        );\n+        Ok(())\n+    }\n+\n+    #[test]\n+    fn test_parse_c_calls() -> anyhow::Result<()> {\n+        let src = r#\"\n+void process(void) {\n+    int x = calculate(42);\n+    printf(\"result: %d\\n\", x);\n+}\n+\"#;\n+        let result = parse_source(src, Language::C)?;\n+        assert!(result.calls.iter().any(|c| c.callee_name == \"calculate\"));\n+        assert!(result.calls.iter().any(|c| c.callee_name == \"printf\"));\n+        Ok(())\n+    }\n+\n+    #[test]\n+    fn test_parse_c_includes() -> anyhow::Result<()> {\n+        let src = r#\"\n+#include <stdio.h>\n+#include \"myheader.h\"\n+#include <stdlib.h>\n+\"#;\n+        let result = parse_source(src, Language::C)?;\n+        assert_eq!(result.imports.len(), 3);\n+        assert!(result.imports.iter().any(|i| i.module == \"stdio.h\"));\n+        assert!(result.imports.iter().any(|i| i.module == \"myheader.h\"));\n+        assert!(result.imports.iter().any(|i| i.module == \"stdlib.h\"));\n+        Ok(())\n+    }\n+\n+    // -- C++ tests --\n+\n+    #[test]\n+    fn test_parse_cpp_class_and_methods() -> anyhow::Result<()> {\n+        let src = r#\"\n+#include <string>\n+\n+class UserService {\n+public:\n+    void authenticate(const std::string& email) {\n+        findUser(email);\n+    }\n+};\n+\"#;\n+        let result = parse_source(src, Language::Cpp)?;\n+        assert!(\n+            result\n+                .symbols\n+                .iter()\n+                .any(|s| s.name == \"UserService\" && s.kind == \"class\"),\n+            \"should find class UserService, got: {:?}\",\n+            result.symbols\n+        );\n+        assert!(\n+            result\n+                .symbols\n+                .iter()\n+                .any(|s| s.name == \"authenticate\" && s.kind == \"method\"),\n+            \"should find method authenticate, got: {:?}\",\n+            result.symbols\n+        );\n+        // Method should be parented to class\n+        let method = result\n+            .symbols\n+            .iter()\n+            .find(|s| s.name == \"authenticate\")\n+            .unwrap();\n+        assert!(method.parent_index.is_some());\n+        let parent = &result.symbols[method.parent_index.unwrap()];\n+        assert_eq!(parent.name, \"UserService\");\n+        Ok(())\n+    }\n+\n+    #[test]\n+    fn test_parse_cpp_namespace() -> anyhow::Result<()> {\n+        let src = r#\"\n+namespace auth {\n+    void login() {}\n+}\n+\"#;\n+        let result = parse_source(src, Language::Cpp)?;\n+        assert!(\n+            result\n+                .symbols\n+                .iter()\n+                .any(|s| s.name == \"auth\" && s.kind == \"namespace\")\n+        );\n+        assert!(\n+            result\n+                .symbols\n+                .iter()\n+                .any(|s| s.name == \"login\" && s.kind == \"function\")\n+        );\n+        // login should be parented to namespace\n+        let login = result.symbols.iter().find(|s| s.name == \"login\").unwrap();\n+        assert!(login.parent_index.is_some());\n+        Ok(())\n+    }\n+\n+    #[test]\n+    fn test_parse_cpp_out_of_line_method() -> anyhow::Result<()> {\n+        let src = r#\"\n+class Server {\n+};\n+\n+void Server::start() {\n+    listen(8080);\n+}\n+\"#;\n+        let result = parse_source(src, Language::Cpp)?;\n+        assert!(\n+            result\n+                .symbols\n+                .iter()\n+                .any(|s| s.name == \"start\" && s.kind == \"method\"),\n+            \"should find out-of-line method, got: {:?}\",\n+            result.symbols\n+        );\n+        // Should have a call to listen\n+        assert!(result.calls.iter().any(|c| c.callee_name == \"listen\"));\n+        Ok(())\n+    }\n+\n+    #[test]\n+    fn test_parse_cpp_includes() -> anyhow::Result<()> {\n+        let src = r#\"\n+#include <iostream>\n+#include <vector>\n+#include \"server.h\"\n+\"#;\n+        let result = parse_source(src, Language::Cpp)?;\n+        assert_eq!(result.imports.len(), 3);\n+        assert!(result.imports.iter().any(|i| i.module == \"iostream\"));\n+        assert!(result.imports.iter().any(|i| i.module == \"vector\"));\n+        assert!(result.imports.iter().any(|i| i.module == \"server.h\"));\n+        Ok(())\n+    }\n+\n+    #[test]\n+    fn test_parse_cpp_struct() -> anyhow::Result<()> {\n+        let src = r#\"\n+struct Point {\n+    int x;\n+    int y;\n+    double distance() { return 0.0; }\n+};\n+\"#;\n+        let result = parse_source(src, Language::Cpp)?;\n+        assert!(\n+            result\n+                .symbols\n+                .iter()\n+                .any(|s| s.name == \"Point\" && s.kind == \"struct\")\n+        );\n+        assert!(\n+            result\n+                .symbols\n+                .iter()\n+                .any(|s| s.name == \"distance\" && s.kind == \"method\"),\n+            \"should find inline method in struct\"\n+        );\n+        Ok(())\n+    }\n+\n+    #[test]\n+    fn test_parse_cpp_calls() -> anyhow::Result<()> {\n+        let src = r#\"\n+void process() {\n+    auto result = compute(42);\n+    obj->sendMessage(\"hello\");\n+}\n+\"#;\n+        let result = parse_source(src, Language::Cpp)?;\n+        assert!(result.calls.iter().any(|c| c.callee_name == \"compute\"));\n+        assert!(result.calls.iter().any(|c| c.callee_name == \"sendMessage\"));\n+        Ok(())\n+    }\n+\n+    #[test]\n+    fn test_parse_cpp_qualified_free_function_is_function() -> anyhow::Result<()> {\n+        let src = r#\"\n+namespace util {\n+    void log();\n+}\n+\n+void util::log() {\n+    printf(\"hello\");\n+}\n+\"#;\n+        let result = parse_source(src, Language::Cpp)?;\n+        let log_fn = result\n+            .symbols\n+            .iter()\n+            .find(|s| s.name == \"log\" && s.kind == \"function\")\n+            .expect(\"util::log should be classified as function, not method\");\n+        // Should be parented to namespace, not treated as a class method\n+        assert!(\n+            log_fn.parent_index.is_none()\n+                || result.symbols[log_fn.parent_index.unwrap()].kind == \"namespace\",\n+            \"free function should not be parented to a class\"\n+        );\n+        Ok(())\n+    }\n+\n+    #[test]\n+    fn test_parse_cpp_deeply_qualified_method_parent() -> anyhow::Result<()> {\n+        let src = r#\"\n+namespace auth {\n+    class AuthService {};\n+}\n+\n+void auth::AuthService::authenticate() {\n+    validate();\n+}\n+\"#;\n+        let result = parse_source(src, Language::Cpp)?;\n+        let method = result\n+            .symbols\n+            .iter()\n+            .find(|s| s.name == \"authenticate\")\n+            .expect(\"should find authenticate\");\n+        assert_eq!(method.kind, \"method\");\n+        // Parent should be AuthService, not auth\n+        if let Some(pi) = method.parent_index {\n+            assert_eq!(result.symbols[pi].name, \"AuthService\");\n+        }\n+        Ok(())\n+    }\n+\n+    #[test]\n+    fn test_parse_cpp_anonymous_namespace() -> anyhow::Result<()> {\n+        let src = r#\"\n+namespace {\n+    void helper() {\n+        do_work();\n+    }\n+}\n+\"#;\n+        let result = parse_source(src, Language::Cpp)?;\n+        assert!(\n+            result\n+                .symbols\n+                .iter()\n+                .any(|s| s.name == \"helper\" && s.kind == \"function\"),\n+            \"should find function inside anonymous namespace, got: {:?}\",\n+            result.symbols\n+        );\n+        assert!(\n+            result.calls.iter().any(|c| c.callee_name == \"do_work\"),\n+            \"should find calls inside anonymous namespace\"\n+        );\n+        Ok(())\n+    }\n+\n+    #[test]\n+    fn test_parse_cpp_qualified_calls() -> anyhow::Result<()> {\n+        let src = r#\"\n+void process() {\n+    std::move(x);\n+    ns::foo(42);\n+    Type::static_fn();\n+}\n+\"#;\n+        let result = parse_source(src, Language::Cpp)?;\n+        assert!(\n+            result.calls.iter().any(|c| c.callee_name == \"move\"),\n+            \"should capture std::move, got: {:?}\",\n+            result.calls\n+        );\n+        assert!(\n+            result.calls.iter().any(|c| c.callee_name == \"foo\"),\n+            \"should capture ns::foo, got: {:?}\",\n+            result.calls\n+        );\n+        assert!(\n+            result.calls.iter().any(|c| c.callee_name == \"static_fn\"),\n+            \"should capture Type::static_fn, got: {:?}\",\n+            result.calls\n+        );\n+        Ok(())\n+    }\n }"
+    },
+    {
+      "sha": "41fd96272549735ae6c3611132e2d796574201a9",
+      "filename": "tests/fixtures/c_project/src/auth.c",
+      "status": "added",
+      "additions": 17,
+      "deletions": 0,
+      "changes": 17,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fc_project%2Fsrc%2Fauth.c",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fc_project%2Fsrc%2Fauth.c",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/tests%2Ffixtures%2Fc_project%2Fsrc%2Fauth.c?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -0,0 +1,17 @@\n+#include <string.h>\n+#include <stdlib.h>\n+#include \"auth.h\"\n+\n+int authenticate(const char* email, const char* password, UserStore* store) {\n+    User* user = find_by_email(store, email);\n+    if (user && check_password(user, password)) {\n+        return 1;\n+    }\n+    return 0;\n+}\n+\n+char* generate_token(const User* user) {\n+    char* token = malloc(256);\n+    snprintf(token, 256, \"token-%s\", user->email);\n+    return token;\n+}"
+    },
+    {
+      "sha": "e544f5ca6feeecd09e8eb2d17206d404a450d685",
+      "filename": "tests/fixtures/c_project/src/auth.h",
+      "status": "added",
+      "additions": 9,
+      "deletions": 0,
+      "changes": 9,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fc_project%2Fsrc%2Fauth.h",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fc_project%2Fsrc%2Fauth.h",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/tests%2Ffixtures%2Fc_project%2Fsrc%2Fauth.h?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -0,0 +1,9 @@\n+#ifndef AUTH_H\n+#define AUTH_H\n+\n+#include \"user.h\"\n+\n+int authenticate(const char* email, const char* password, UserStore* store);\n+char* generate_token(const User* user);\n+\n+#endif"
+    },
+    {
+      "sha": "3c8889b3a16013adf642da87b1a49ac9250f8a24",
+      "filename": "tests/fixtures/c_project/src/main.c",
+      "status": "added",
+      "additions": 11,
+      "deletions": 0,
+      "changes": 11,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fc_project%2Fsrc%2Fmain.c",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fc_project%2Fsrc%2Fmain.c",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/tests%2Ffixtures%2Fc_project%2Fsrc%2Fmain.c?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -0,0 +1,11 @@\n+#include <stdio.h>\n+#include \"auth.h\"\n+#include \"user.h\"\n+\n+int main(int argc, char* argv[]) {\n+    UserStore* store = create_user_store();\n+    int result = authenticate(\"admin@example.com\", \"secret\", store);\n+    printf(\"Auth result: %d\\n\", result);\n+    free_user_store(store);\n+    return 0;\n+}"
+    },
+    {
+      "sha": "c6ed35a4cd2165779210afd27ded04593446dcf0",
+      "filename": "tests/fixtures/c_project/src/user.c",
+      "status": "added",
+      "additions": 40,
+      "deletions": 0,
+      "changes": 40,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fc_project%2Fsrc%2Fuser.c",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fc_project%2Fsrc%2Fuser.c",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/tests%2Ffixtures%2Fc_project%2Fsrc%2Fuser.c?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -0,0 +1,40 @@\n+#include <stdlib.h>\n+#include <string.h>\n+#include \"user.h\"\n+\n+UserStore* create_user_store(void) {\n+    UserStore* store = malloc(sizeof(UserStore));\n+    store->count = 1;\n+    store->users = malloc(sizeof(User));\n+    store->users[0].id = 1;\n+    store->users[0].email = \"admin@example.com\";\n+    store->users[0].name = \"Admin\";\n+    return store;\n+}\n+\n+void free_user_store(UserStore* store) {\n+    free(store->users);\n+    free(store);\n+}\n+\n+User* find_by_email(UserStore* store, const char* email) {\n+    for (int i = 0; i < store->count; i++) {\n+        if (strcmp(store->users[i].email, email) == 0) {\n+            return &store->users[i];\n+        }\n+    }\n+    return NULL;\n+}\n+\n+User* find_by_id(UserStore* store, int id) {\n+    for (int i = 0; i < store->count; i++) {\n+        if (store->users[i].id == id) {\n+            return &store->users[i];\n+        }\n+    }\n+    return NULL;\n+}\n+\n+int check_password(const User* user, const char* password) {\n+    return strcmp(password, \"secret\") == 0;\n+}"
+    },
+    {
+      "sha": "0365f8c1833c2818b062aaa72291e708461f9156",
+      "filename": "tests/fixtures/c_project/src/user.h",
+      "status": "added",
+      "additions": 21,
+      "deletions": 0,
+      "changes": 21,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fc_project%2Fsrc%2Fuser.h",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fc_project%2Fsrc%2Fuser.h",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/tests%2Ffixtures%2Fc_project%2Fsrc%2Fuser.h?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -0,0 +1,21 @@\n+#ifndef USER_H\n+#define USER_H\n+\n+typedef struct {\n+    int id;\n+    char* email;\n+    char* name;\n+} User;\n+\n+typedef struct {\n+    User* users;\n+    int count;\n+} UserStore;\n+\n+UserStore* create_user_store(void);\n+void free_user_store(UserStore* store);\n+User* find_by_email(UserStore* store, const char* email);\n+User* find_by_id(UserStore* store, int id);\n+int check_password(const User* user, const char* password);\n+\n+#endif"
+    },
+    {
+      "sha": "e8c278f36fb70e3443229f48823630c5c0c68d7c",
+      "filename": "tests/fixtures/c_project/tests/test_auth.c",
+      "status": "added",
+      "additions": 15,
+      "deletions": 0,
+      "changes": 15,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fc_project%2Ftests%2Ftest_auth.c",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fc_project%2Ftests%2Ftest_auth.c",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/tests%2Ffixtures%2Fc_project%2Ftests%2Ftest_auth.c?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -0,0 +1,15 @@\n+#include <assert.h>\n+#include \"../src/auth.h\"\n+#include \"../src/user.h\"\n+\n+void test_authenticate(void) {\n+    UserStore* store = create_user_store();\n+    assert(authenticate(\"admin@example.com\", \"secret\", store) == 1);\n+    assert(authenticate(\"unknown@example.com\", \"secret\", store) == 0);\n+    free_user_store(store);\n+}\n+\n+int main(void) {\n+    test_authenticate();\n+    return 0;\n+}"
+    },
+    {
+      "sha": "0597fd29b81693b0cb371ab1b017d20e0c43999a",
+      "filename": "tests/fixtures/cpp_project/src/auth_service.cpp",
+      "status": "added",
+      "additions": 19,
+      "deletions": 0,
+      "changes": 19,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fcpp_project%2Fsrc%2Fauth_service.cpp",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fcpp_project%2Fsrc%2Fauth_service.cpp",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/tests%2Ffixtures%2Fcpp_project%2Fsrc%2Fauth_service.cpp?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -0,0 +1,19 @@\n+#include \"auth_service.hpp\"\n+\n+namespace auth {\n+\n+AuthService::AuthService(UserRepository& repo) : repo_(repo) {}\n+\n+bool AuthService::authenticate(const std::string& email, const std::string& password) {\n+    User* user = repo_.findByEmail(email);\n+    if (user) {\n+        return checkPassword(user, password);\n+    }\n+    return false;\n+}\n+\n+std::string AuthService::generateToken(const User& user) {\n+    return \"token-\" + user.email;\n+}\n+\n+}"
+    },
+    {
+      "sha": "7a3da131a0eeac2be008344e7a7a1d3f167e106c",
+      "filename": "tests/fixtures/cpp_project/src/auth_service.hpp",
+      "status": "added",
+      "additions": 21,
+      "deletions": 0,
+      "changes": 21,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fcpp_project%2Fsrc%2Fauth_service.hpp",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fcpp_project%2Fsrc%2Fauth_service.hpp",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/tests%2Ffixtures%2Fcpp_project%2Fsrc%2Fauth_service.hpp?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -0,0 +1,21 @@\n+#ifndef AUTH_SERVICE_HPP\n+#define AUTH_SERVICE_HPP\n+\n+#include <string>\n+#include \"user.hpp\"\n+\n+namespace auth {\n+\n+class AuthService {\n+public:\n+    AuthService(UserRepository& repo);\n+    bool authenticate(const std::string& email, const std::string& password);\n+    std::string generateToken(const User& user);\n+\n+private:\n+    UserRepository& repo_;\n+};\n+\n+}\n+\n+#endif"
+    },
+    {
+      "sha": "c996a261e0dbabf4d5b18b58d96f3bb02152d541",
+      "filename": "tests/fixtures/cpp_project/src/main.cpp",
+      "status": "added",
+      "additions": 11,
+      "deletions": 0,
+      "changes": 11,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fcpp_project%2Fsrc%2Fmain.cpp",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fcpp_project%2Fsrc%2Fmain.cpp",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/tests%2Ffixtures%2Fcpp_project%2Fsrc%2Fmain.cpp?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -0,0 +1,11 @@\n+#include <iostream>\n+#include \"auth_service.hpp\"\n+#include \"user.hpp\"\n+\n+int main() {\n+    auth::UserRepository repo;\n+    auth::AuthService service(repo);\n+    auto result = service.authenticate(\"admin@example.com\", \"secret\");\n+    std::cout << \"Auth: \" << result << std::endl;\n+    return 0;\n+}"
+    },
+    {
+      "sha": "bcc91e4494159a9e7404a87b74ec7675847c022b",
+      "filename": "tests/fixtures/cpp_project/src/user.hpp",
+      "status": "added",
+      "additions": 22,
+      "deletions": 0,
+      "changes": 22,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fcpp_project%2Fsrc%2Fuser.hpp",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fcpp_project%2Fsrc%2Fuser.hpp",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/tests%2Ffixtures%2Fcpp_project%2Fsrc%2Fuser.hpp?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -0,0 +1,22 @@\n+#ifndef USER_HPP\n+#define USER_HPP\n+\n+#include <string>\n+\n+namespace auth {\n+\n+struct User {\n+    int id;\n+    std::string email;\n+    std::string name;\n+};\n+\n+class UserRepository {\n+public:\n+    User* findByEmail(const std::string& email);\n+    User* findById(int id);\n+};\n+\n+}\n+\n+#endif"
+    },
+    {
+      "sha": "81f82c7498d73bb79add4a1da281a8e18926d31f",
+      "filename": "tests/fixtures/cpp_project/tests/auth_test.cpp",
+      "status": "added",
+      "additions": 13,
+      "deletions": 0,
+      "changes": 13,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fcpp_project%2Ftests%2Fauth_test.cpp",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Ffixtures%2Fcpp_project%2Ftests%2Fauth_test.cpp",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/tests%2Ffixtures%2Fcpp_project%2Ftests%2Fauth_test.cpp?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -0,0 +1,13 @@\n+#include <cassert>\n+#include \"../src/auth_service.hpp\"\n+\n+void test_authenticate() {\n+    auth::UserRepository repo;\n+    auth::AuthService service(repo);\n+    assert(service.authenticate(\"admin@example.com\", \"secret\"));\n+}\n+\n+int main() {\n+    test_authenticate();\n+    return 0;\n+}"
+    },
+    {
+      "sha": "5a6f6e61a61329280bcd0414a5d2116f2fd18e29",
+      "filename": "tests/integration.rs",
+      "status": "modified",
+      "additions": 142,
+      "deletions": 0,
+      "changes": 142,
+      "blob_url": "https://github.com/heikki-laitala/pruner/blob/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Fintegration.rs",
+      "raw_url": "https://github.com/heikki-laitala/pruner/raw/2938dbcac3c898773fb9c5a9beb6fb388aff6955/tests%2Fintegration.rs",
+      "contents_url": "https://api.github.com/repos/heikki-laitala/pruner/contents/tests%2Fintegration.rs?ref=2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "patch": "@@ -1572,6 +1572,148 @@ mod java_project {\n     }\n }\n \n+mod c_project {\n+    use super::*;\n+\n+    #[test]\n+    fn index_succeeds() {\n+        let dir = setup_fixture(\"c_project\");\n+        let path = dir.path().to_str().unwrap().to_string();\n+        pruner().args([\"index\", &path]).assert().success();\n+    }\n+\n+    #[test]\n+    fn finds_c_functions() {\n+        let dir = setup_fixture(\"c_project\");\n+        let path = index_fixture(&dir);\n+\n+        pruner()\n+            .args([\"show-symbol\", &path, \"authenticate\"])\n+            .assert()\n+            .success()\n+            .stdout(predicate::str::contains(\"function\"))\n+            .stdout(predicate::str::contains(\"auth.c\"));\n+    }\n+\n+    #[test]\n+    fn finds_c_structs() {\n+        let dir = setup_fixture(\"c_project\");\n+        let path = index_fixture(&dir);\n+\n+        // User is a typedef in user.h\n+        pruner()\n+            .args([\"show-symbol\", &path, \"User\"])\n+            .assert()\n+            .success()\n+            .stdout(predicate::str::contains(\"type\"));\n+    }\n+\n+    #[test]\n+    fn detects_c_test_files() {\n+        let dir = setup_fixture(\"c_project\");\n+        let path = index_fixture(&dir);\n+\n+        let json = context_json(&path, \"authenticate\");\n+        let tests = json[\"relevant_tests\"].as_array().unwrap();\n+\n+        assert!(\n+            tests\n+                .iter()\n+                .any(|t| t[\"path\"].as_str().unwrap_or(\"\").contains(\"test_auth.c\")),\n+            \"should detect C test file\"\n+        );\n+    }\n+\n+    #[test]\n+    fn context_has_execution_paths() {\n+        let dir = setup_fixture(\"c_project\");\n+        let path = index_fixture(&dir);\n+\n+        let json = context_json_full(&path, \"authenticate\");\n+        let paths = json[\"execution_paths\"].as_array().unwrap();\n+\n+        assert!(\n+            !paths.is_empty(),\n+            \"should have execution paths from authenticate\"\n+        );\n+    }\n+}\n+\n+mod cpp_project {\n+    use super::*;\n+\n+    #[test]\n+    fn index_succeeds() {\n+        let dir = setup_fixture(\"cpp_project\");\n+        let path = dir.path().to_str().unwrap().to_string();\n+        pruner().args([\"index\", &path]).assert().success();\n+    }\n+\n+    #[test]\n+    fn finds_cpp_classes() {\n+        let dir = setup_fixture(\"cpp_project\");\n+        let path = index_fixture(&dir);\n+\n+        pruner()\n+            .args([\"show-symbol\", &path, \"AuthService\"])\n+            .assert()\n+            .success()\n+            .stdout(predicate::str::contains(\"class\"));\n+    }\n+\n+    #[test]\n+    fn finds_cpp_methods() {\n+        let dir = setup_fixture(\"cpp_project\");\n+        let path = index_fixture(&dir);\n+\n+        pruner()\n+            .args([\"show-symbol\", &path, \"authenticate\"])\n+            .assert()\n+            .success()\n+            .stdout(predicate::str::contains(\"method\"));\n+    }\n+\n+    #[test]\n+    fn finds_cpp_namespaces() {\n+        let dir = setup_fixture(\"cpp_project\");\n+        let path = index_fixture(&dir);\n+\n+        pruner()\n+            .args([\"show-symbol\", &path, \"auth\"])\n+            .assert()\n+            .success()\n+            .stdout(predicate::str::contains(\"namespace\"));\n+    }\n+\n+    #[test]\n+    fn context_includes_snippets() {\n+        let dir = setup_fixture(\"cpp_project\");\n+        let path = index_fixture(&dir);\n+\n+        let json = context_json_full(&path, \"authenticate\");\n+        let snippets = json[\"snippets\"].as_array().unwrap();\n+\n+        assert!(!snippets.is_empty(), \"should include C++ code snippets\");\n+    }\n+\n+    #[test]\n+    fn detects_cpp_test_files() {\n+        let dir = setup_fixture(\"cpp_project\");\n+        let path = index_fixture(&dir);\n+\n+        let json = context_json_full(&path, \"authenticate\");\n+        let files = json[\"key_files\"].as_array().unwrap();\n+\n+        assert!(\n+            files.iter().any(\n+                |f| f[\"path\"].as_str().unwrap_or(\"\").contains(\"auth_test.cpp\")\n+                    && f[\"is_test\"].as_bool().unwrap_or(false)\n+            ),\n+            \"should detect C++ test file as test\"\n+        );\n+    }\n+}\n+\n #[cfg(test)]\n mod upgrade {\n     use assert_cmd::Command;"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "c6b0f20655a62c7b68d79e03927dfcd5b2cb149f",
+      "message": "feat: add C/C++ language support with tree-sitter parsing\n\nAdd tree-sitter-c and tree-sitter-cpp grammars for parsing C and C++\nsource files. Extracts functions, structs, enums, typedefs, unions,\nincludes, and call expressions for C. Additionally extracts classes,\nnamespaces, methods (inline and out-of-line), and templates for C++.\n\nSupported extensions: .c, .h (C), .cpp, .cc, .cxx, .c++, .hpp, .hxx,\n.hh, .h++ (C++).",
+      "parent_shas": [
+        "271677b822d58a11946e48f8b678f579c0503cac"
+      ]
+    },
+    {
+      "sha": "2fa12f21cb9df1f05c3e4a42deaa200959bc5dfb",
+      "message": "fix: correct C++ symbol classification for qualified names and anonymous namespaces\n\n- Classify qualified free functions (e.g. util::log) as functions, not methods,\n  by checking whether the scope segment is a known class/struct or namespace\n- Use rightmost scope segment for class parent lookup so auth::AuthService::authenticate\n  resolves to AuthService instead of auth\n- Recurse into anonymous namespace bodies to index their symbols and calls\n- Capture qualified callees (std::move, ns::foo, Type::static_fn) in call extraction",
+      "parent_shas": [
+        "c6b0f20655a62c7b68d79e03927dfcd5b2cb149f"
+      ]
+    },
+    {
+      "sha": "e6a17228a1df18e47aa39d1b05d8c39b0316cd85",
+      "message": "docs: add C/C++ to supported languages in README",
+      "parent_shas": [
+        "2fa12f21cb9df1f05c3e4a42deaa200959bc5dfb"
+      ]
+    },
+    {
+      "sha": "2938dbcac3c898773fb9c5a9beb6fb388aff6955",
+      "message": "chore: fix rustfmt formatting in C++ symbol classification",
+      "parent_shas": [
+        "e6a17228a1df18e47aa39d1b05d8c39b0316cd85"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "adds_new_tests",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__heikki-laitala__pruner__pr30.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\heikki-laitala__pruner__pr30__cpp_python__heikki-laitala__pruner__pr30\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\heikki-laitala__pruner__pr30__cpp_python__heikki-laitala__pruner__pr30\\rn"
+  }
+}

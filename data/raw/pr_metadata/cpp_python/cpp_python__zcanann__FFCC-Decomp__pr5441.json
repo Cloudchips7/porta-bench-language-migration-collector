@@ -1,0 +1,272 @@
+{
+  "instance_id": "cpp_python__zcanann__FFCC-Decomp__pr5441",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "zcanann/FFCC-Decomp",
+  "pr_number": 5441,
+  "pr_url": "https://github.com/zcanann/FFCC-Decomp/pull/5441",
+  "repo": {
+    "full_name": "zcanann/FFCC-Decomp",
+    "clone_url": "https://github.com/zcanann/FFCC-Decomp.git",
+    "default_branch": "main",
+    "stars": 17,
+    "license": "CC0-1.0",
+    "size_kb": 22161
+  },
+  "pull_request": {
+    "id": 3373643375,
+    "title": "Fix source fallback for case-variant C/C++ extensions",
+    "body": "## Summary\n- fix derive_source_file to treat file extensions case-insensitively when inferring fallback source filenames\n- preserve original source name when unit names end with .C, .Cpp, .CpP, etc., instead of rewriting to .cpp\n- add regression tests for uppercase and mixed-case extension variants\n\n## Testing\n- python3 -m unittest discover -s tools/tests -p \"test_*.py\"",
+    "merged_at": "2026-03-09T16:19:46Z",
+    "base_sha": "605e12766f96e55b285df9be2f2ad64bc5125bcf",
+    "head_sha": "3294f566205049327e4ad2551d2f1e572f394df9",
+    "merge_commit_sha": "29c7d2d24bd16f4d2223074b3644e19b972216d3",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_e"
+  ],
+  "base_sha": "090fe29f08d878128276cab6aa17266c4736af1d",
+  "final_sha": "3294f566205049327e4ad2551d2f1e572f394df9",
+  "changed_files": [
+    {
+      "sha": "e0b864c05ecc2ffda99293bca3c4546b20568005",
+      "filename": "tools/agent_select_target.py",
+      "status": "modified",
+      "additions": 104,
+      "deletions": 21,
+      "changes": 125,
+      "blob_url": "https://github.com/zcanann/FFCC-Decomp/blob/3294f566205049327e4ad2551d2f1e572f394df9/tools%2Fagent_select_target.py",
+      "raw_url": "https://github.com/zcanann/FFCC-Decomp/raw/3294f566205049327e4ad2551d2f1e572f394df9/tools%2Fagent_select_target.py",
+      "contents_url": "https://api.github.com/repos/zcanann/FFCC-Decomp/contents/tools%2Fagent_select_target.py?ref=3294f566205049327e4ad2551d2f1e572f394df9",
+      "patch": "@@ -9,7 +9,8 @@\n import json\n import sys\n import random\n-from pathlib import Path\n+import math\n+from pathlib import Path, PurePosixPath, PureWindowsPath\n \n try:\n     from . import extract_symbols\n@@ -22,6 +23,29 @@\n )\n COMPLETE_THRESHOLD_PERCENT = 100\n \n+\n+def _path_name(path_str):\n+    \"\"\"Return basename for paths that may use POSIX or Windows separators.\"\"\"\n+    if not isinstance(path_str, str) or not path_str:\n+        return \"\"\n+    path_obj = PureWindowsPath(path_str) if \"\\\\\" in path_str else PurePosixPath(path_str)\n+    return path_obj.name\n+\n+\n+def _path_stem(path_str):\n+    \"\"\"Return stem for paths that may use POSIX or Windows separators.\"\"\"\n+    name = _path_name(path_str)\n+    return PurePosixPath(name).stem if name else \"\"\n+\n+\n+def _has_real_source_path(source_path):\n+    \"\"\"Return True when source_path contains a usable path, not an unknown marker.\"\"\"\n+    if not isinstance(source_path, str):\n+        return False\n+    normalized = source_path.strip().lower()\n+    return normalized not in {\"\", \"unknown\", \"<unknown>\", \"n/a\", \"none\", \"null\"}\n+\n+\n def warn_build_mismatch():\n     \"\"\"Print a warning immediately before reporting any address/size (scoped per output block).\"\"\"\n     print(WARNING_BUILD_MISMATCH)\n@@ -30,16 +54,38 @@ def warn_build_mismatch():\n def safe_float(value, default=0.0):\n     \"\"\"Parse a float from mixed report values without throwing.\"\"\"\n     try:\n-        return float(value)\n-    except (TypeError, ValueError):\n+        parsed = float(value)\n+        return parsed if math.isfinite(parsed) else default\n+    except (TypeError, ValueError, OverflowError):\n         return default\n \n \n def safe_int(value, default=0):\n     \"\"\"Parse an int from mixed report values without throwing.\"\"\"\n     try:\n+        if isinstance(value, str):\n+            value = value.strip()\n+            if not value:\n+                return default\n+            # Accept explicit integer bases while keeping plain decimal strings stable.\n+            # (e.g. \"010\" should stay decimal, not octal)\n+            lower_value = value.lower()\n+            has_explicit_base = lower_value.startswith((\"+0x\", \"-0x\", \"0x\", \"+0o\", \"-0o\", \"0o\", \"+0b\", \"-0b\", \"0b\"))\n+            try:\n+                return int(value, 0 if has_explicit_base else 10)\n+            except ValueError:\n+                # Some reports may serialize integral values as float-like strings (e.g. \"12.0\").\n+                parsed = float(value)\n+                if not math.isfinite(parsed):\n+                    return default\n+                if not parsed.is_integer():\n+                    return default\n+                return int(parsed)\n+        if isinstance(value, float):\n+            if not math.isfinite(value) or not value.is_integer():\n+                return default\n         return int(value)\n-    except (TypeError, ValueError):\n+    except (TypeError, ValueError, OverflowError):\n         return default\n \n \n@@ -91,22 +137,31 @@ def is_viable_target(unit, blacklist):\n \n def derive_object_file(unit):\n     source_path = unit.get(\"metadata\", {}).get(\"source_path\")\n-    if source_path and source_path != \"unknown\":\n-        base = Path(source_path).stem\n-        return f\"{base}.o\"\n+    if _has_real_source_path(source_path):\n+        base = _path_stem(source_path)\n+        if base:\n+            return f\"{base}.o\"\n     name = unit.get(\"name\", \"\")\n-    base = Path(name).stem\n+    base = _path_stem(name)\n+    if not base:\n+        base = \"unknown\"\n     return f\"{base}.o\"\n \n def derive_source_file(unit):\n     source_path = unit.get(\"metadata\", {}).get(\"source_path\")\n-    if source_path and source_path != \"unknown\":\n-        return Path(source_path).name\n+    if _has_real_source_path(source_path):\n+        source_name = _path_name(source_path)\n+        if source_name:\n+            return source_name\n     name = unit.get(\"name\", \"\")\n-    path = Path(name)\n-    if path.suffix in {\".c\", \".cc\", \".cpp\", \".cxx\"}:\n-        return path.name\n-    return f\"{path.stem}.cpp\"\n+    path_name = _path_name(name)\n+    if not path_name:\n+        return \"unknown.cpp\"\n+    path = PurePosixPath(path_name)\n+    if path.suffix.lower() in {\".c\", \".cc\", \".cpp\", \".cxx\"}:\n+        return path_name\n+    stem = path.stem or \"unknown\"\n+    return f\"{stem}.cpp\"\n \n def summarize_symbols(label, all_info):\n     \"\"\"Return formatted lines for symbol summary (no printing inside).\"\"\"\n@@ -116,11 +171,19 @@ def summarize_symbols(label, all_info):\n \n     lines = []\n     functions = all_info.get(\"functions\", [])\n+    if not isinstance(functions, list):\n+        functions = []\n     globals_data = all_info.get(\"globals\", [])\n+    if not isinstance(globals_data, list):\n+        globals_data = []\n     lines.append(f\"  {label}: {len(functions)} funcs, {len(globals_data)} globals (showing up to 5 funcs)\")\n \n     for func in functions[:5]:\n+        if not isinstance(func, dict):\n+            continue\n         p = func.get(\"parsed\", {})\n+        if not isinstance(p, dict):\n+            p = {}\n         symbol = p.get(\"symbol\", \"unknown\")\n         size_raw = p.get(\"size\", \"unknown\")\n         addr = p.get(\"virtual_addr\", \"unknown\")\n@@ -130,9 +193,12 @@ def summarize_symbols(label, all_info):\n         elif isinstance(size_raw, int):\n             size = f\"0x{size_raw:x}\"\n         elif isinstance(size_raw, str):\n-            try:\n-                size = f\"0x{int(size_raw, 16):x}\"\n-            except ValueError:\n+            # Sizes are usually hex-ish strings from MAP output, but some paths\n+            # may provide decimal or base-prefixed values.\n+            parsed_size = safe_int(size_raw, None)\n+            if parsed_size is not None:\n+                size = f\"0x{parsed_size:x}\"\n+            else:\n                 size = size_raw\n         else:\n             size = str(size_raw)\n@@ -151,16 +217,29 @@ def extract_candidates(report_path):\n     candidates = []\n \n     units = data.get(\"units\", [])\n+    if not isinstance(units, list):\n+        return []\n \n     for unit in units:\n+        if not isinstance(unit, dict):\n+            continue\n         viable, _reason = is_viable_target(unit, blacklist)\n         if not viable:\n             continue\n \n         measures = unit.get(\"measures\", {})\n+        if not isinstance(measures, dict):\n+            measures = {}\n         functions = unit.get(\"functions\", [])\n-        source_path = unit.get(\"metadata\", {}).get(\"source_path\", \"unknown\")\n-        source_file = Path(source_path).name if source_path and source_path != \"unknown\" else \"unknown\"\n+        if not isinstance(functions, list):\n+            functions = []\n+        metadata = unit.get(\"metadata\", {})\n+        if not isinstance(metadata, dict):\n+            metadata = {}\n+        source_path = metadata.get(\"source_path\", \"unknown\")\n+        if not _has_real_source_path(source_path):\n+            source_path = \"unknown\"\n+        source_file = _path_name(source_path) if source_path and source_path != \"unknown\" else \"unknown\"\n \n         entry = {\n             \"name\": unit[\"name\"],\n@@ -177,11 +256,15 @@ def extract_candidates(report_path):\n             \"top_functions\": []\n         }\n \n-        for func in sorted(functions, key=lambda f: safe_float(f.get(\"fuzzy_match_percent\", 0)))[:3]:\n+        function_dicts = [func for func in functions if isinstance(func, dict)]\n+        for func in sorted(function_dicts, key=lambda f: safe_float(f.get(\"fuzzy_match_percent\", 0)))[:3]:\n             func_match = safe_float(func.get(\"fuzzy_match_percent\", 0))\n             if func_match < 99:\n+                func_name = func.get(\"name\")\n+                if not isinstance(func_name, str) or not func_name:\n+                    func_name = \"unknown\"\n                 entry[\"top_functions\"].append({\n-                    \"name\": func.get(\"name\", \"unknown\"),\n+                    \"name\": func_name,\n                     \"match\": func_match,\n                     \"size\": func.get(\"size\", \"unknown\")\n                 })"
+    },
+    {
+      "sha": "b15c697d1b7763e5593fa873881c300887e5921a",
+      "filename": "tools/decompctx.py",
+      "status": "modified",
+      "additions": 51,
+      "deletions": 4,
+      "changes": 55,
+      "blob_url": "https://github.com/zcanann/FFCC-Decomp/blob/3294f566205049327e4ad2551d2f1e572f394df9/tools%2Fdecompctx.py",
+      "raw_url": "https://github.com/zcanann/FFCC-Decomp/raw/3294f566205049327e4ad2551d2f1e572f394df9/tools%2Fdecompctx.py",
+      "contents_url": "https://api.github.com/repos/zcanann/FFCC-Decomp/contents/tools%2Fdecompctx.py?ref=3294f566205049327e4ad2551d2f1e572f394df9",
+      "patch": "@@ -23,11 +23,47 @@\n exclude_globs: List[str] = []  # Set with -x flag\n \n include_pattern = re.compile(r'^#\\s*include\\s*[<\"](.+?)[>\"]')\n-guard_pattern = re.compile(r\"^#\\s*ifndef\\s+(.*)$\")\n+guard_pattern = re.compile(r\"^#\\s*ifndef\\s+([A-Za-z_]\\w*)\\b\")\n+if_not_defined_pattern = re.compile(\n+    r\"^#\\s*if\\s+!defined(?:\\s*\\(\\s*([A-Za-z_]\\w*)\\s*\\)|\\s+([A-Za-z_]\\w*))\"\n+)\n once_pattern = re.compile(r\"^#\\s*pragma\\s+once$\")\n \n defines = set()\n deps = []\n+active_imports = set()\n+\n+\n+def get_header_guard_key(in_file: str, lines: List[str]) -> Optional[str]:\n+    \"\"\"Return a stable de-duplication key for include guards / pragma once.\"\"\"\n+    for line in lines[:64]:\n+        stripped = line.strip()\n+        if not stripped:\n+            continue\n+        if (\n+            stripped.startswith(\"//\")\n+            or stripped.startswith(\"/*\")\n+            or stripped.startswith(\"*/\")\n+            or stripped.startswith(\"*\")\n+        ):\n+            continue\n+\n+        guard_match = guard_pattern.match(stripped)\n+        if guard_match:\n+            return guard_match[1]\n+\n+        if_not_defined_match = if_not_defined_pattern.match(stripped)\n+        if if_not_defined_match:\n+            return if_not_defined_match[1] or if_not_defined_match[2]\n+\n+        once_match = once_pattern.match(stripped)\n+        if once_match:\n+            return in_file\n+\n+        # Stop scanning once we hit non-comment, non-guard content.\n+        break\n+\n+    return None\n \n \n def get_header_guard_key(in_file: str, lines: List[str]) -> Optional[str]:\n@@ -84,16 +120,24 @@ def import_h_file(in_file: str, r_path: str) -> str:\n \n \n def import_c_file(in_file: str) -> str:\n-    in_file = os.path.relpath(in_file, root_dir)\n+    in_file = os.path.normpath(os.path.relpath(in_file, root_dir))\n+    if in_file in active_imports:\n+        print(\"Skipping recursive include\", in_file)\n+        return f\"/* Skipped recursive include: {in_file} */\\n\"\n+\n+    active_imports.add(in_file)\n     deps.append(in_file)\n     out_text = \"\"\n+    full_path = os.path.join(root_dir, in_file)\n \n     try:\n-        with open(in_file, encoding=\"utf-8\") as file:\n+        with open(full_path, encoding=\"utf-8\") as file:\n             out_text += process_file(in_file, list(file))\n     except Exception:\n-        with open(in_file) as file:\n+        with open(full_path) as file:\n             out_text += process_file(in_file, list(file))\n+    finally:\n+        active_imports.discard(in_file)\n     return out_text\n \n \n@@ -173,6 +217,9 @@ def main():\n \n     if args.include is None:\n         exit(\"No include directories specified\")\n+    defines.clear()\n+    deps.clear()\n+    active_imports.clear()\n     global include_dirs\n     include_dirs = args.include\n     global exclude_globs"
+    },
+    {
+      "sha": "101ecc13c0ba21bc9dc3a6c94332e8f9cbc4a226",
+      "filename": "tools/tests/test_agent_select_target.py",
+      "status": "modified",
+      "additions": 179,
+      "deletions": 0,
+      "changes": 179,
+      "blob_url": "https://github.com/zcanann/FFCC-Decomp/blob/3294f566205049327e4ad2551d2f1e572f394df9/tools%2Ftests%2Ftest_agent_select_target.py",
+      "raw_url": "https://github.com/zcanann/FFCC-Decomp/raw/3294f566205049327e4ad2551d2f1e572f394df9/tools%2Ftests%2Ftest_agent_select_target.py",
+      "contents_url": "https://api.github.com/repos/zcanann/FFCC-Decomp/contents/tools%2Ftests%2Ftest_agent_select_target.py?ref=3294f566205049327e4ad2551d2f1e572f394df9",
+      "patch": "@@ -28,10 +28,54 @@ def test_derive_source_file_fallback_preserves_c_extension(self):\n         unit = {\"name\": \"src/card/CARDOpen.c\", \"metadata\": {\"source_path\": \"unknown\"}}\n         self.assertEqual(agent_select_target.derive_source_file(unit), \"CARDOpen.c\")\n \n+    def test_derive_source_file_fallback_preserves_uppercase_c_extension(self):\n+        unit = {\"name\": \"src/card/CARDOpen.C\", \"metadata\": {\"source_path\": \"unknown\"}}\n+        self.assertEqual(agent_select_target.derive_source_file(unit), \"CARDOpen.C\")\n+\n+    def test_derive_source_file_fallback_preserves_mixed_case_cpp_extension(self):\n+        unit = {\"name\": \"src/system/player.CpP\", \"metadata\": {\"source_path\": \"unknown\"}}\n+        self.assertEqual(agent_select_target.derive_source_file(unit), \"player.CpP\")\n+\n     def test_derive_source_file_fallback_defaults_to_cpp_without_extension(self):\n         unit = {\"name\": \"src/system/player\", \"metadata\": {\"source_path\": \"unknown\"}}\n         self.assertEqual(agent_select_target.derive_source_file(unit), \"player.cpp\")\n \n+    def test_derive_object_file_uses_windows_style_source_path_stem(self):\n+        unit = {\"name\": \"foo\", \"metadata\": {\"source_path\": r\"src\\\\system\\\\player.cpp\"}}\n+        self.assertEqual(agent_select_target.derive_object_file(unit), \"player.o\")\n+\n+    def test_derive_source_file_uses_windows_style_source_path_name(self):\n+        unit = {\"name\": \"foo\", \"metadata\": {\"source_path\": r\"src\\\\system\\\\player.cpp\"}}\n+        self.assertEqual(agent_select_target.derive_source_file(unit), \"player.cpp\")\n+\n+    def test_derive_source_file_fallback_handles_windows_style_unit_name(self):\n+        unit = {\"name\": r\"src\\\\system\\\\player\", \"metadata\": {\"source_path\": \"unknown\"}}\n+        self.assertEqual(agent_select_target.derive_source_file(unit), \"player.cpp\")\n+\n+    def test_derive_object_file_falls_back_to_unit_name_when_source_path_has_no_stem(self):\n+        unit = {\"name\": \"src/system/player.cpp\", \"metadata\": {\"source_path\": \"/\"}}\n+        self.assertEqual(agent_select_target.derive_object_file(unit), \"player.o\")\n+\n+    def test_derive_object_file_defaults_to_unknown_when_all_names_missing(self):\n+        unit = {\"name\": \"\", \"metadata\": {\"source_path\": \"/\"}}\n+        self.assertEqual(agent_select_target.derive_object_file(unit), \"unknown.o\")\n+\n+    def test_derive_object_file_fallback_treats_unknown_markers_case_insensitively(self):\n+        unit = {\"name\": \"src/system/player.cpp\", \"metadata\": {\"source_path\": \" Unknown \"}}\n+        self.assertEqual(agent_select_target.derive_object_file(unit), \"player.o\")\n+\n+    def test_derive_source_file_falls_back_to_unit_name_when_source_path_has_no_name(self):\n+        unit = {\"name\": \"src/system/player.cpp\", \"metadata\": {\"source_path\": \"/\"}}\n+        self.assertEqual(agent_select_target.derive_source_file(unit), \"player.cpp\")\n+\n+    def test_derive_source_file_defaults_to_unknown_when_all_names_missing(self):\n+        unit = {\"name\": \"\", \"metadata\": {\"source_path\": \"/\"}}\n+        self.assertEqual(agent_select_target.derive_source_file(unit), \"unknown.cpp\")\n+\n+    def test_derive_source_file_fallback_treats_unknown_markers_case_insensitively(self):\n+        unit = {\"name\": \"src/system/player.cpp\", \"metadata\": {\"source_path\": \"<UNKNOWN>\"}}\n+        self.assertEqual(agent_select_target.derive_source_file(unit), \"player.cpp\")\n+\n \n class NumericParsingTests(unittest.TestCase):\n     def test_safe_float_returns_default_for_invalid_values(self):\n@@ -42,6 +86,27 @@ def test_safe_int_returns_default_for_invalid_values(self):\n         self.assertEqual(agent_select_target.safe_int(\"not-a-number\"), 0)\n         self.assertEqual(agent_select_target.safe_int(None, 7), 7)\n \n+    def test_safe_int_parses_prefixed_and_float_strings(self):\n+        self.assertEqual(agent_select_target.safe_int(\"0x20\"), 32)\n+        self.assertEqual(agent_select_target.safe_int(\"-0x10\"), -16)\n+        self.assertEqual(agent_select_target.safe_int(\"0o12\"), 10)\n+        self.assertEqual(agent_select_target.safe_int(\"-0b101\"), -5)\n+        self.assertEqual(agent_select_target.safe_int(\"12.0\"), 12)\n+\n+    def test_safe_int_rejects_non_integral_float_inputs(self):\n+        self.assertEqual(agent_select_target.safe_int(\"12.9\", 9), 9)\n+        self.assertEqual(agent_select_target.safe_int(-7.25, 5), 5)\n+\n+    def test_safe_float_returns_default_for_non_finite_values(self):\n+        self.assertEqual(agent_select_target.safe_float(\"nan\", 1.25), 1.25)\n+        self.assertEqual(agent_select_target.safe_float(\"inf\", 3.5), 3.5)\n+        self.assertEqual(agent_select_target.safe_float(\"-inf\", 4.75), 4.75)\n+\n+    def test_safe_int_returns_default_for_non_finite_values(self):\n+        self.assertEqual(agent_select_target.safe_int(\"nan\", 11), 11)\n+        self.assertEqual(agent_select_target.safe_int(\"inf\", 22), 22)\n+        self.assertEqual(agent_select_target.safe_int(\"-inf\", 33), 33)\n+\n     def test_is_viable_target_handles_non_numeric_measures(self):\n         unit = {\n             \"name\": \"bad-measures\",\n@@ -183,6 +248,72 @@ def test_extract_candidates_defaults_missing_function_name(self):\n         self.assertEqual(len(candidates), 1)\n         self.assertEqual(candidates[0][\"top_functions\"][0][\"name\"], \"unknown\")\n \n+    def test_extract_candidates_normalizes_unknown_source_path_markers(self):\n+        report = {\n+            \"units\": [\n+                {\n+                    \"name\": \"unitE\",\n+                    \"metadata\": {\"source_path\": \" N/A \"},\n+                    \"measures\": {\n+                        \"fuzzy_match_percent\": \"50.0\",\n+                        \"matched_code_percent\": \"10.0\",\n+                        \"matched_data_percent\": \"0.0\",\n+                    },\n+                    \"functions\": [],\n+                }\n+            ]\n+        }\n+        with tempfile.TemporaryDirectory() as tmpdir:\n+            report_path = Path(tmpdir) / \"report.json\"\n+            report_path.write_text(json.dumps(report), encoding=\"utf-8\")\n+            candidates = agent_select_target.extract_candidates(report_path)\n+\n+        self.assertEqual(len(candidates), 1)\n+        self.assertEqual(candidates[0][\"source_path\"], \"unknown\")\n+        self.assertEqual(candidates[0][\"source_file\"], \"unknown\")\n+\n+    def test_extract_candidates_returns_empty_when_units_is_not_a_list(self):\n+        report = {\"units\": \"not-a-list\"}\n+        with tempfile.TemporaryDirectory() as tmpdir:\n+            report_path = Path(tmpdir) / \"report.json\"\n+            report_path.write_text(json.dumps(report), encoding=\"utf-8\")\n+            candidates = agent_select_target.extract_candidates(report_path)\n+\n+        self.assertEqual(candidates, [])\n+\n+    def test_extract_candidates_skips_non_dict_units_and_non_dict_functions(self):\n+        report = {\n+            \"units\": [\n+                \"invalid-unit\",\n+                {\n+                    \"name\": \"unitE\",\n+                    \"metadata\": {\"source_path\": \"src/unitE.cpp\"},\n+                    \"measures\": {\n+                        \"fuzzy_match_percent\": \"25.0\",\n+                        \"matched_code_percent\": \"10.0\",\n+                        \"matched_data_percent\": \"5.0\",\n+                        \"total_functions\": 1,\n+                        \"matched_functions\": 0,\n+                        \"matched_functions_percent\": \"0.0\",\n+                        \"total_code\": 64,\n+                        \"total_data\": 0,\n+                    },\n+                    \"functions\": [\n+                        \"invalid-func\",\n+                        {\"name\": \"fn_valid\", \"fuzzy_match_percent\": 20.0, \"size\": 16},\n+                    ],\n+                },\n+            ]\n+        }\n+        with tempfile.TemporaryDirectory() as tmpdir:\n+            report_path = Path(tmpdir) / \"report.json\"\n+            report_path.write_text(json.dumps(report), encoding=\"utf-8\")\n+            candidates = agent_select_target.extract_candidates(report_path)\n+\n+        self.assertEqual(len(candidates), 1)\n+        self.assertEqual(len(candidates[0][\"top_functions\"]), 1)\n+        self.assertEqual(candidates[0][\"top_functions\"][0][\"name\"], \"fn_valid\")\n+\n \n class BlacklistLoadingTests(unittest.TestCase):\n     def _state_path(self, home):\n@@ -281,6 +412,54 @@ def test_summarize_symbols_stringifies_unexpected_size_type(self):\n         self.assertEqual(lines[0], \"  EN symbols: 1 funcs, 0 globals (showing up to 5 funcs)\")\n         self.assertEqual(lines[1], \"    - fnB (Noneb at 0x80002000)\")\n \n+    def test_summarize_symbols_parses_decimal_size_string_as_decimal(self):\n+        info = {\n+            \"functions\": [\n+                {\"parsed\": {\"symbol\": \"fnC\", \"size\": \"32\", \"virtual_addr\": \"0x80003000\"}},\n+            ],\n+            \"globals\": [],\n+        }\n+\n+        lines = agent_select_target.summarize_symbols(\"PAL symbols\", info)\n+\n+        self.assertEqual(lines[0], \"  PAL symbols: 1 funcs, 0 globals (showing up to 5 funcs)\")\n+        self.assertEqual(lines[1], \"    - fnC (0x20b at 0x80003000)\")\n+\n+    def test_summarize_symbols_parses_prefixed_hex_size_string(self):\n+        info = {\n+            \"functions\": [\n+                {\"parsed\": {\"symbol\": \"fnD\", \"size\": \"0x20\", \"virtual_addr\": \"0x80004000\"}},\n+            ],\n+            \"globals\": [],\n+        }\n+\n+        lines = agent_select_target.summarize_symbols(\"EN symbols\", info)\n+\n+        self.assertEqual(lines[0], \"  EN symbols: 1 funcs, 0 globals (showing up to 5 funcs)\")\n+        self.assertEqual(lines[1], \"    - fnD (0x20b at 0x80004000)\")\n+\n+    def test_summarize_symbols_treats_non_list_collections_as_empty(self):\n+        info = {\"functions\": \"bad\", \"globals\": None}\n+\n+        lines = agent_select_target.summarize_symbols(\"PAL symbols\", info)\n+\n+        self.assertEqual(lines[0], \"  PAL symbols: 0 funcs, 0 globals (showing up to 5 funcs)\")\n+        self.assertEqual(len(lines), 1)\n+\n+    def test_summarize_symbols_skips_non_dict_function_entries(self):\n+        info = {\n+            \"functions\": [\n+                \"bad-entry\",\n+                {\"parsed\": {\"symbol\": \"fnE\", \"size\": 8, \"virtual_addr\": \"0x80005000\"}},\n+            ],\n+            \"globals\": [],\n+        }\n+\n+        lines = agent_select_target.summarize_symbols(\"EN symbols\", info)\n+\n+        self.assertEqual(lines[0], \"  EN symbols: 2 funcs, 0 globals (showing up to 5 funcs)\")\n+        self.assertEqual(lines[1], \"    - fnE (0x8b at 0x80005000)\")\n+\n \n if __name__ == \"__main__\":\n     unittest.main()"
+    },
+    {
+      "sha": "dc3a3a6047eafce29c6f37acec26bd8f99df9ab3",
+      "filename": "tools/tests/test_decompctx.py",
+      "status": "modified",
+      "additions": 58,
+      "deletions": 0,
+      "changes": 58,
+      "blob_url": "https://github.com/zcanann/FFCC-Decomp/blob/3294f566205049327e4ad2551d2f1e572f394df9/tools%2Ftests%2Ftest_decompctx.py",
+      "raw_url": "https://github.com/zcanann/FFCC-Decomp/raw/3294f566205049327e4ad2551d2f1e572f394df9/tools%2Ftests%2Ftest_decompctx.py",
+      "contents_url": "https://api.github.com/repos/zcanann/FFCC-Decomp/contents/tools%2Ftests%2Ftest_decompctx.py?ref=3294f566205049327e4ad2551d2f1e572f394df9",
+      "patch": "@@ -1,4 +1,6 @@\n import unittest\n+import tempfile\n+from pathlib import Path\n \n from tools import decompctx\n \n@@ -22,6 +24,36 @@ def test_detects_ifndef_after_banner_comments(self):\n         ]\n         self.assertEqual(decompctx.get_header_guard_key(\"include/example.h\", lines), \"EXAMPLE_H\")\n \n+    def test_detects_ifndef_after_single_line_banner_comment(self):\n+        lines = [\n+            \"/* Copyright header */\\n\",\n+            \"\\n\",\n+            \"#ifndef EXAMPLE_H\\n\",\n+            \"#define EXAMPLE_H\\n\",\n+        ]\n+        self.assertEqual(decompctx.get_header_guard_key(\"include/example.h\", lines), \"EXAMPLE_H\")\n+\n+    def test_detects_ifndef_ignoring_trailing_comment(self):\n+        lines = [\n+            \"#ifndef EXAMPLE_H // guard\\n\",\n+            \"#define EXAMPLE_H\\n\",\n+        ]\n+        self.assertEqual(decompctx.get_header_guard_key(\"include/example.h\", lines), \"EXAMPLE_H\")\n+\n+    def test_detects_if_not_defined_with_parentheses(self):\n+        lines = [\n+            \"#if !defined(EXAMPLE_H)\\n\",\n+            \"#define EXAMPLE_H\\n\",\n+        ]\n+        self.assertEqual(decompctx.get_header_guard_key(\"include/example.h\", lines), \"EXAMPLE_H\")\n+\n+    def test_detects_if_not_defined_without_parentheses(self):\n+        lines = [\n+            \"#if !defined EXAMPLE_H\\n\",\n+            \"#define EXAMPLE_H\\n\",\n+        ]\n+        self.assertEqual(decompctx.get_header_guard_key(\"include/example.h\", lines), \"EXAMPLE_H\")\n+\n     def test_detects_pragma_once_after_comments(self):\n         lines = [\n             \"// generated header\\n\",\n@@ -42,5 +74,31 @@ def test_returns_none_without_guard(self):\n         self.assertIsNone(decompctx.get_header_guard_key(\"include/example.h\", lines))\n \n \n+class ImportBehaviorTests(unittest.TestCase):\n+    def setUp(self):\n+        decompctx.defines.clear()\n+        decompctx.deps.clear()\n+        decompctx.active_imports.clear()\n+\n+    def test_import_c_file_skips_recursive_include_cycle(self):\n+        with tempfile.TemporaryDirectory() as tmpdir:\n+            root = Path(tmpdir)\n+            (root / \"a.h\").write_text('#include \"b.h\"\\n', encoding=\"utf-8\")\n+            (root / \"b.h\").write_text('#include \"a.h\"\\n', encoding=\"utf-8\")\n+\n+            old_root = decompctx.root_dir\n+            old_include_dirs = decompctx.include_dirs\n+            try:\n+                decompctx.root_dir = str(root)\n+                decompctx.include_dirs = [str(root)]\n+                output = decompctx.import_c_file(str(root / \"a.h\"))\n+            finally:\n+                decompctx.root_dir = old_root\n+                decompctx.include_dirs = old_include_dirs\n+\n+            self.assertIn(\"Skipped recursive include\", output)\n+            self.assertEqual(decompctx.active_imports, set())\n+\n+\n if __name__ == \"__main__\":\n     unittest.main()"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "c1200cbb611745f119817027957ab0db20e4bba1",
+      "message": "partMng: model as CMapMesh base and fix mesh accesses",
+      "parent_shas": [
+        "090fe29f08d878128276cab6aa17266c4736af1d"
+      ]
+    },
+    {
+      "sha": "f1e7f73b3228fb04f6bf77641a1931627c09f981",
+      "message": "Fix target filename fallback derivation and add tests",
+      "parent_shas": [
+        "c1200cbb611745f119817027957ab0db20e4bba1"
+      ]
+    },
+    {
+      "sha": "7ac0c016cb6683abf8b03c9a935ac71b7fa4b363",
+      "message": "Harden target selection parsing for malformed report metrics",
+      "parent_shas": [
+        "f1e7f73b3228fb04f6bf77641a1931627c09f981"
+      ]
+    },
+    {
+      "sha": "81e9d3f871c9fd9b1bfd13d0491564edc0e00e7d",
+      "message": "tools: preserve source extension in target fallback",
+      "parent_shas": [
+        "7ac0c016cb6683abf8b03c9a935ac71b7fa4b363"
+      ]
+    },
+    {
+      "sha": "d38516d0f444f5649e9fefdf6904e74c3c622fed",
+      "message": "tools: harden numeric parsing in target selection",
+      "parent_shas": [
+        "81e9d3f871c9fd9b1bfd13d0491564edc0e00e7d"
+      ]
+    },
+    {
+      "sha": "50f59ff04fbf9835cd76bbb88701183d19128180",
+      "message": "tools: narrow blacklist load exceptions and add tests",
+      "parent_shas": [
+        "d38516d0f444f5649e9fefdf6904e74c3c622fed"
+      ]
+    },
+    {
+      "sha": "cd85927ed82e8973727b4238b6abcd376029307c",
+      "message": "Harden blacklist parsing in target selector",
+      "parent_shas": [
+        "50f59ff04fbf9835cd76bbb88701183d19128180"
+      ]
+    },
+    {
+      "sha": "0689e8b418c185b1a873cdffd9007d454d2046c5",
+      "message": "tools: harden symbol size parsing in target selector",
+      "parent_shas": [
+        "cd85927ed82e8973727b4238b6abcd376029307c"
+      ]
+    },
+    {
+      "sha": "cc1ba8e009600c908ac8edfa161b8c4d4db459e9",
+      "message": "Harden target selection against malformed report entries",
+      "parent_shas": [
+        "0689e8b418c185b1a873cdffd9007d454d2046c5"
+      ]
+    },
+    {
+      "sha": "7e4ccd49f718f064e422d6043f224299ff0346a8",
+      "message": "tools: improve decompctx include-guard detection",
+      "parent_shas": [
+        "cc1ba8e009600c908ac8edfa161b8c4d4db459e9"
+      ]
+    },
+    {
+      "sha": "142d1cbc12bcc3a8f1f84ed7b7a67730b6e5c509",
+      "message": "tools: make safe_int robust for hex and float-like strings",
+      "parent_shas": [
+        "7e4ccd49f718f064e422d6043f224299ff0346a8"
+      ]
+    },
+    {
+      "sha": "9945a678252933f18092fcd907a002e8bd1aea7b",
+      "message": "decompctx: handle single-line C comments before header guards",
+      "parent_shas": [
+        "142d1cbc12bcc3a8f1f84ed7b7a67730b6e5c509"
+      ]
+    },
+    {
+      "sha": "960ee4922043ce9f89faa873ea0bd2e9b79082f1",
+      "message": "Harden numeric parsing in target selector",
+      "parent_shas": [
+        "9945a678252933f18092fcd907a002e8bd1aea7b"
+      ]
+    },
+    {
+      "sha": "c1bfc262be62091f9831ea3d85d156d4ad5de70b",
+      "message": "tools: accept 0o/0b prefixes in safe_int parsing",
+      "parent_shas": [
+        "960ee4922043ce9f89faa873ea0bd2e9b79082f1"
+      ]
+    },
+    {
+      "sha": "3d4ea7f0d4ec091c4e6ba83432090ba9c3c6c3d4",
+      "message": "tools: reject non-integral float inputs in safe_int",
+      "parent_shas": [
+        "c1bfc262be62091f9831ea3d85d156d4ad5de70b"
+      ]
+    },
+    {
+      "sha": "4f2efedc65320bf770fcd95d3fcbdaff14d4f43a",
+      "message": "Handle Windows-style paths in target selection",
+      "parent_shas": [
+        "3d4ea7f0d4ec091c4e6ba83432090ba9c3c6c3d4"
+      ]
+    },
+    {
+      "sha": "65fa07d0d6f628b75ef897968ea5a917bb13ebb7",
+      "message": "tools: harden decompctx include processing",
+      "parent_shas": [
+        "4f2efedc65320bf770fcd95d3fcbdaff14d4f43a"
+      ]
+    },
+    {
+      "sha": "fe53b9befe8d79b75cf8972ee430bd2b7d9daf52",
+      "message": "agent_select_target: parse numeric size strings robustly",
+      "parent_shas": [
+        "65fa07d0d6f628b75ef897968ea5a917bb13ebb7"
+      ]
+    },
+    {
+      "sha": "70d76fdc11d9a52c306eee4e0880d2c482c0a5cd",
+      "message": "tools: harden target filename fallbacks for malformed paths",
+      "parent_shas": [
+        "fe53b9befe8d79b75cf8972ee430bd2b7d9daf52"
+      ]
+    },
+    {
+      "sha": "02c0fe6b08995a8180602c5994ac027f2a74d970",
+      "message": "tools: harden candidate/symbol parsing for malformed report shapes",
+      "parent_shas": [
+        "70d76fdc11d9a52c306eee4e0880d2c482c0a5cd"
+      ]
+    },
+    {
+      "sha": "96b564ab13667e67886a30a417db26b8f8c30824",
+      "message": "Fix source filename fallback for case-variant C/C++ extensions",
+      "parent_shas": [
+        "02c0fe6b08995a8180602c5994ac027f2a74d970"
+      ]
+    },
+    {
+      "sha": "4430738af080739732e748cb2f1c65df38d6de69",
+      "message": "Handle unknown source path markers in target selection",
+      "parent_shas": [
+        "96b564ab13667e67886a30a417db26b8f8c30824"
+      ]
+    },
+    {
+      "sha": "79b30d14b6f35d3877a3bc9c04f3d5c1e40a850f",
+      "message": "tools: improve decompctx include guard detection",
+      "parent_shas": [
+        "4430738af080739732e748cb2f1c65df38d6de69"
+      ]
+    },
+    {
+      "sha": "3294f566205049327e4ad2551d2f1e572f394df9",
+      "message": "Merge branch 'main' into fix/agent-target-filename-fallback",
+      "parent_shas": [
+        "79b30d14b6f35d3877a3bc9c04f3d5c1e40a850f",
+        "605e12766f96e55b285df9be2f2ad64bc5125bcf"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "too_many_commits"
+    ],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__zcanann__FFCC-Decomp__pr5441.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\zcanann__FFCC-Decomp__pr5441__cpp_python__zcanann__FFCC-Decomp__pr5441\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\zcanann__FFCC-Decomp__pr5441__cpp_python__zcanann__FFCC-Decomp__pr5441\\rn"
+  }
+}

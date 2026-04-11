@@ -22,10 +22,12 @@ import os
 import random
 import re
 import shutil
+import socket
 import subprocess
 import tempfile
 import textwrap
 import time
+from urllib.parse import urlparse
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
@@ -52,6 +54,7 @@ REVIEW_DIR = DATA_DIR / "review"
 PROCESSED_DIR = DATA_DIR / "processed"
 STATS_DIR = DATA_DIR / "stats"
 LOG_DIR = PROJECT_ROOT / "logs"
+TMP_DIR = PROJECT_ROOT / "tmp"
 
 DEFAULT_TOKEN_FILE = SCRIPT_DIR / "Tokens.txt"
 DEFAULT_QUERY_FILE = CONFIG_DIR / "language_queries.json"
@@ -154,6 +157,7 @@ def ensure_layout() -> None:
         PROCESSED_DIR,
         STATS_DIR,
         LOG_DIR,
+        TMP_DIR,
     ):
         path.mkdir(parents=True, exist_ok=True)
 
@@ -526,6 +530,8 @@ class PortaBenchCollector:
         self.subtype_search_dir().mkdir(parents=True, exist_ok=True)
         self.subtype_metadata_dir().mkdir(parents=True, exist_ok=True)
         self.subtype_snapshot_dir().mkdir(parents=True, exist_ok=True)
+        if self.stage in {"collect", "enrich"}:
+            self.preflight_network_check()
 
         stage_map = {
             "collect": self.collect_stage,
@@ -878,6 +884,22 @@ class PortaBenchCollector:
             )
         self.dashboard_path().write_text("\n".join(board_lines) + "\n", encoding="utf-8")
 
+    def preflight_network_check(self) -> None:
+        diagnostics = self.collect_github_network_diagnostics()
+        resolved_ips = diagnostics.get("github_com_resolved_ips", [])
+        proxy_reachable = bool(diagnostics.get("reachable_proxy"))
+        if any(ip.startswith("127.") for ip in resolved_ips) and not proxy_reachable:
+            self.logger.error("Preflight network check failed: %s", json.dumps(diagnostics, ensure_ascii=False))
+            raise RuntimeError(
+                "GitHub connectivity preflight failed: github.com resolves to 127.x.x.x. "
+                "Please remove GitHub-related hosts overrides before running collect/enrich."
+            )
+        if any(ip.startswith("127.") for ip in resolved_ips) and proxy_reachable:
+            self.logger.warning(
+                "GitHub resolves to loopback, but a reachable proxy is configured. Continuing with proxy: %s",
+                json.dumps(diagnostics.get("reachable_proxy"), ensure_ascii=False),
+            )
+
     def clone_repo(self, clone_url: str, workdir: Path) -> None:
         result = subprocess.run(
             ["git", "clone", "--no-checkout", "--filter=blob:none", clone_url, str(workdir)],
@@ -886,6 +908,80 @@ class PortaBenchCollector:
         )
         if result.returncode != 0:
             raise RuntimeError(f"git clone failed: {result.stderr.strip()}")
+
+    def git_config_value(self, key: str) -> str:
+        result = subprocess.run(
+            ["git", "config", "--global", "--get", key],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            return ""
+        return result.stdout.strip()
+
+    def collect_github_network_diagnostics(self) -> Dict[str, Any]:
+        try:
+            resolved_ips = sorted(
+                {
+                    item[4][0]
+                    for item in socket.getaddrinfo("github.com", 443, proto=socket.IPPROTO_TCP)
+                    if item and item[4]
+                }
+            )
+        except OSError as exc:
+            resolved_ips = [f"dns_error:{exc}"]
+
+        hosts_hits: List[str] = []
+        hosts_path = Path(r"C:\Windows\System32\drivers\etc\hosts")
+        if hosts_path.exists():
+            try:
+                for raw_line in hosts_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+                    stripped = raw_line.strip()
+                    if not stripped or stripped.startswith("#"):
+                        continue
+                    if any(domain in stripped for domain in ("github.com", "api.github.com", "raw.githubusercontent.com")):
+                        hosts_hits.append(stripped)
+            except OSError as exc:
+                hosts_hits.append(f"hosts_read_error:{exc}")
+
+        git_version = subprocess.run(
+            ["git", "--version"],
+            capture_output=True,
+            text=True,
+        )
+
+        proxies = [
+            os.environ.get("https_proxy") or os.environ.get("HTTPS_PROXY") or "",
+            os.environ.get("http_proxy") or os.environ.get("HTTP_PROXY") or "",
+            self.git_config_value("https.proxy"),
+            self.git_config_value("http.proxy"),
+        ]
+        reachable_proxy: Dict[str, Any] = {}
+        for proxy in proxies:
+            if not proxy:
+                continue
+            parsed = urlparse(proxy)
+            host = parsed.hostname
+            port = parsed.port
+            if not host or not port:
+                continue
+            try:
+                with socket.create_connection((host, port), timeout=2):
+                    reachable_proxy = {"proxy": proxy, "host": host, "port": port}
+                    break
+            except OSError:
+                continue
+
+        return {
+            "github_com_resolved_ips": resolved_ips,
+            "git_version": git_version.stdout.strip(),
+            "git_http_proxy": self.git_config_value("http.proxy"),
+            "git_https_proxy": self.git_config_value("https.proxy"),
+            "env_http_proxy": os.environ.get("http_proxy") or os.environ.get("HTTP_PROXY") or "",
+            "env_https_proxy": os.environ.get("https_proxy") or os.environ.get("HTTPS_PROXY") or "",
+            "hosts_overrides": hosts_hits[:10],
+            "reachable_proxy": reachable_proxy,
+        }
 
     def ensure_commit_available(self, repo_dir: Path, sha: str) -> None:
         check = subprocess.run(
@@ -972,7 +1068,7 @@ class PortaBenchCollector:
                 has_tests_before = False
                 snapshot_error = ""
                 if not filter_result["exclude_reasons"]:
-                    with tempfile.TemporaryDirectory(prefix="porta_bench_") as temp_dir:
+                    with tempfile.TemporaryDirectory(prefix="porta_bench_", dir=str(TMP_DIR)) as temp_dir:
                         repo_dir = Path(temp_dir) / "repo"
                         self.clone_repo(repo["clone_url"], repo_dir)
                         self.checkout_and_copy_snapshot(repo_dir, base_sha, r0_path)
@@ -1066,6 +1162,8 @@ class PortaBenchCollector:
                 self.save_checkpoint(self.enrich_checkpoint_path(), checkpoint)
                 self.logger.info("Enriched %s (%s)", instance_id, status)
             except Exception as exc:  # noqa: BLE001
+                diagnostics = self.collect_github_network_diagnostics()
+                self.logger.error("Network diagnostics for %s: %s", instance_id, json.dumps(diagnostics, ensure_ascii=False))
                 enrich_index[instance_id] = {
                     "instance_id": instance_id,
                     "scenario": SCENARIO,
@@ -1086,6 +1184,7 @@ class PortaBenchCollector:
                     "base_sha": "",
                     "final_sha": "",
                     "enrich_error": truncate_text(str(exc), width=300),
+                    "network_diagnostics": diagnostics,
                 }
                 self.save_enrich_index(enrich_index)
                 self.logger.exception("Failed to enrich %s: %s", instance_id, exc)

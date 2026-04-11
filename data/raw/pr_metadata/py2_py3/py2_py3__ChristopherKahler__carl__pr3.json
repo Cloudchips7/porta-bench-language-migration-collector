@@ -1,0 +1,75 @@
+{
+  "instance_id": "py2_py3__ChristopherKahler__carl__pr3",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "ChristopherKahler/carl",
+  "pr_number": 3,
+  "pr_url": "https://github.com/ChristopherKahler/carl/pull/3",
+  "repo": {
+    "full_name": "ChristopherKahler/carl",
+    "clone_url": "https://github.com/ChristopherKahler/carl.git",
+    "default_branch": "main",
+    "stars": 303,
+    "license": "MIT",
+    "size_kb": 157
+  },
+  "pull_request": {
+    "id": 3390964158,
+    "title": "fix: Python 3.9 compatibility for carl-hook.py",
+    "body": "## Summary\n\nFixes #2 — `carl-hook.py` crashes on Python 3.9 (the default macOS system Python) due to [PEP 604](https://peps.python.org/pep-0604/) union type syntax (`X | None`), which requires Python 3.10+.\n\n**Error on every prompt:**\n```\nTypeError: unsupported operand type(s) for |: 'type' and 'NoneType'\n```\n\n## Changes\n\n- Add `from typing import Optional` import\n- Replace all 10 instances of `X | None` with `Optional[X]` (compatible with Python 3.7+)\n\nNo behavioral changes — type hints only.\n\n## Test plan\n\n- [x] Verified `python3 carl-hook.py` runs without error on Python 3.9.6\n- [x] Verified hook produces correct JSON output with valid CARL rules injection\n- [x] No remaining `| None` patterns in codebase",
+    "merged_at": "2026-03-18T02:27:48Z",
+    "base_sha": "53b80cbed5797cf4561adb5f8ee91edf5d148938",
+    "head_sha": "e579e0a0c8d36a64ab290c49f01223884c9c1fd5",
+    "merge_commit_sha": "110741992c15ae246c63dc54081dd287837cea52",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_b"
+  ],
+  "base_sha": "53b80cbed5797cf4561adb5f8ee91edf5d148938",
+  "final_sha": "e579e0a0c8d36a64ab290c49f01223884c9c1fd5",
+  "changed_files": [
+    {
+      "sha": "6d751dfdb29785efb3a50fc7a22cc7588af8370a",
+      "filename": "hooks/carl-hook.py",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 10,
+      "changes": 21,
+      "blob_url": "https://github.com/ChristopherKahler/carl/blob/e579e0a0c8d36a64ab290c49f01223884c9c1fd5/hooks%2Fcarl-hook.py",
+      "raw_url": "https://github.com/ChristopherKahler/carl/raw/e579e0a0c8d36a64ab290c49f01223884c9c1fd5/hooks%2Fcarl-hook.py",
+      "contents_url": "https://api.github.com/repos/ChristopherKahler/carl/contents/hooks%2Fcarl-hook.py?ref=e579e0a0c8d36a64ab290c49f01223884c9c1fd5",
+      "patch": "@@ -25,6 +25,7 @@\n import subprocess\r\n from pathlib import Path\r\n from datetime import datetime, timedelta\r\n+from typing import Optional\r\n \r\n \r\n CARL_FOLDER = '.carl'\r\n@@ -51,7 +52,7 @@ def get_sessions_path(carl_path: Path) -> Path:\n     return sessions_path\r\n \r\n \r\n-def load_session_config(carl_path: Path, session_id: str) -> dict | None:\r\n+def load_session_config(carl_path: Path, session_id: str) -> Optional[dict]:\r\n     \"\"\"\r\n     Load session config from .carl/sessions/{session_id}.json\r\n     Returns None if session doesn't exist.\r\n@@ -199,7 +200,7 @@ def merge_manifest_with_session(\n     domains: dict,\r\n     global_exclude: list[str],\r\n     devmode: bool,\r\n-    session_config: dict | None\r\n+    session_config: Optional[dict]\r\n ) -> tuple[dict, list[str], bool]:\r\n     \"\"\"\r\n     Merge global manifest settings with session-specific overrides.\r\n@@ -234,7 +235,7 @@ def merge_manifest_with_session(\n     return merged_domains, global_exclude, effective_devmode\r\n \r\n \r\n-def generate_title_from_transcript(session_id: str, cwd: str) -> str | None:\r\n+def generate_title_from_transcript(session_id: str, cwd: str) -> Optional[str]:\r\n     \"\"\"\r\n     Generate a session title from the first user message in the transcript.\r\n     Returns truncated first message or None if can't read.\r\n@@ -349,7 +350,7 @@ def generate_title_from_transcript(session_id: str, cwd: str) -> str | None:\n     return None\r\n \r\n \r\n-def get_or_create_session(carl_path: Path, session_id: str, cwd: str) -> dict | None:\r\n+def get_or_create_session(carl_path: Path, session_id: str, cwd: str) -> Optional[dict]:\r\n     \"\"\"\r\n     Get existing session config or create new one.\r\n     Also triggers stale session cleanup periodically.\r\n@@ -396,7 +397,7 @@ def get_or_create_session(carl_path: Path, session_id: str, cwd: str) -> dict |\n # CONTEXT PERCENTAGE AND BRACKET\r\n # =============================================================================\r\n \r\n-def get_context_percentage(input_data: dict) -> float | None:\r\n+def get_context_percentage(input_data: dict) -> Optional[float]:\r\n     \"\"\"\r\n     Get current context percentage remaining by reading session JSONL file.\r\n     Returns None if cannot determine.\r\n@@ -459,7 +460,7 @@ def get_context_percentage(input_data: dict) -> float | None:\n     return None\r\n \r\n \r\n-def get_active_bracket(context_remaining: float | None) -> str:\r\n+def get_active_bracket(context_remaining: Optional[float]) -> str:\r\n     \"\"\"\r\n     Determine bracket from context percentage.\r\n     Returns FRESH, MODERATE, DEPLETED, or CRITICAL.\r\n@@ -770,11 +771,11 @@ def format_output(\n     global_excluded: list[str],\r\n     devmode: bool,\r\n     bracket: str = \"FRESH\",\r\n-    context_remaining: float | None = None,\r\n-    bracket_rules: list[str] | None = None,\r\n-    command_rules: dict[str, list[str]] | None = None,\r\n+    context_remaining: Optional[float] = None,\r\n+    bracket_rules: Optional[list] = None,\r\n+    command_rules: Optional[dict] = None,\r\n     global_disabled: bool = False,\r\n-    domains_with_files: set[str] | None = None,\r\n+    domains_with_files: Optional[set] = None,\r\n     context_enabled: bool = True\r\n ) -> str:\r\n     \"\"\"\r"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "e579e0a0c8d36a64ab290c49f01223884c9c1fd5",
+      "message": "fix: replace Python 3.10+ union type hints with Optional for 3.9 compat\n\nThe `X | None` syntax for type hints requires Python 3.10+, but macOS\nships with Python 3.9 as the system default. This causes a TypeError\ncrash on hook execution. Replace all `X | None` hints with\n`typing.Optional[X]` which works on Python 3.9+.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "53b80cbed5797cf4561adb5f8ee91edf5d148938"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "py3_only_support_noise"
+    ],
+    "auto_signals": [
+      "keyword_match",
+      "py3_only_support_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__ChristopherKahler__carl__pr3.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\ChristopherKahler__carl__pr3__py2_py3__ChristopherKahler__carl__pr3\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\ChristopherKahler__carl__pr3__py2_py3__ChristopherKahler__carl__pr3\\rn"
+  }
+}

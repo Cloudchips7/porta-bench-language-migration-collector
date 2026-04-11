@@ -1,0 +1,75 @@
+{
+  "instance_id": "py2_py3__FireRedTeam__FireRedASR2S__pr3",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "FireRedTeam/FireRedASR2S",
+  "pr_number": 3,
+  "pr_url": "https://github.com/FireRedTeam/FireRedASR2S/pull/3",
+  "repo": {
+    "full_name": "FireRedTeam/FireRedASR2S",
+    "clone_url": "https://github.com/FireRedTeam/FireRedASR2S.git",
+    "default_branch": "main",
+    "stars": 463,
+    "license": "Apache-2.0",
+    "size_kb": 7761
+  },
+  "pull_request": {
+    "id": 3278083982,
+    "title": "Fix dataclass mutable default fields for Python 3.12 compatibility",
+    "body": "",
+    "merged_at": "2026-02-13T09:31:05Z",
+    "base_sha": "c88dfa5319acdd500cd2fdabe63792e7fe105b8d",
+    "head_sha": "eab822ed7933e600d843da5dfff87faf35b8b438",
+    "merge_commit_sha": "72096c2526c9e2c5c387d4d0814cbe33f152fa8e",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_b"
+  ],
+  "base_sha": "c88dfa5319acdd500cd2fdabe63792e7fe105b8d",
+  "final_sha": "eab822ed7933e600d843da5dfff87faf35b8b438",
+  "changed_files": [
+    {
+      "sha": "89a3707f6e2d4e89f1a729b3ce37091bc1e44ee8",
+      "filename": "fireredasr2s/fireredasr2system.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/FireRedTeam/FireRedASR2S/blob/eab822ed7933e600d843da5dfff87faf35b8b438/fireredasr2s%2Ffireredasr2system.py",
+      "raw_url": "https://github.com/FireRedTeam/FireRedASR2S/raw/eab822ed7933e600d843da5dfff87faf35b8b438/fireredasr2s%2Ffireredasr2system.py",
+      "contents_url": "https://api.github.com/repos/FireRedTeam/FireRedASR2S/contents/fireredasr2s%2Ffireredasr2system.py?ref=eab822ed7933e600d843da5dfff87faf35b8b438",
+      "patch": "@@ -2,7 +2,7 @@\n \n import logging\n import re\n-from dataclasses import dataclass\n+from dataclasses import dataclass, field\n \n import soundfile as sf\n \n@@ -23,10 +23,10 @@ class FireRedAsr2SystemConfig:\n     asr_type: str = \"aed\"\n     asr_model_dir: str = \"pretrained_models/FireRedASR2-AED\"\n     punc_model_dir: str = \"pretrained_models/FireRedPunc\"\n-    vad_config: FireRedVadConfig = FireRedVadConfig()\n-    lid_config: FireRedLidConfig = FireRedLidConfig()\n-    asr_config: FireRedAsr2Config = FireRedAsr2Config()\n-    punc_config: FireRedPuncConfig = FireRedPuncConfig()\n+    vad_config: FireRedVadConfig = field(default_factory=FireRedVadConfig)\n+    lid_config: FireRedLidConfig = field(default_factory=FireRedLidConfig)\n+    asr_config: FireRedAsr2Config = field(default_factory=FireRedAsr2Config)\n+    punc_config: FireRedPuncConfig = field(default_factory=FireRedPuncConfig)\n     asr_batch_size: int = 1\n     punc_batch_size: int = 1\n     enable_vad: bool = True"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "eab822ed7933e600d843da5dfff87faf35b8b438",
+      "message": "Fix dataclass mutable default fields for Python 3.12 compatibility",
+      "parent_shas": [
+        "c88dfa5319acdd500cd2fdabe63792e7fe105b8d"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "py3_only_support_noise"
+    ],
+    "auto_signals": [
+      "keyword_match",
+      "py3_only_support_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__FireRedTeam__FireRedASR2S__pr3.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\FireRedTeam__FireRedASR2S__pr3__py2_py3__FireRedTeam__FireRedASR2S__pr3\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\FireRedTeam__FireRedASR2S__pr3__py2_py3__FireRedTeam__FireRedASR2S__pr3\\rn"
+  }
+}

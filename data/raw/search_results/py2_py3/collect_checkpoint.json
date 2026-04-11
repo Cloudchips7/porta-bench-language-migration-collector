@@ -1,8 +1,10 @@
 {
   "pages": {
-    "query_a": 1
+    "query_a": 1,
+    "query_b": 1
   },
   "finished_queries": [
-    "query_a"
+    "query_a",
+    "query_b"
   ]
 }

@@ -102,3 +102,422 @@ Traceback (most recent call last):
 RuntimeError: git clone failed: Cloning into 'C:\Users\86136\AppData\Local\Temp\porta_bench_om63a949\repo'...
 fatal: unable to access 'https://github.com/taco-project/FlexKV.git/': Failed to connect to github.com port 443 after 21060 ms: Could not connect to server
 2026-04-11 22:36:45,989 | INFO | Enrich stage finished. Records: 5
+2026-04-11 23:14:11,827 | INFO | Starting enrich stage for cpp_python
+2026-04-11 23:14:19,122 | WARNING | GitHub API request failed (1/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/arendst/Tasmota/pulls/24599 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+2026-04-11 23:14:28,318 | WARNING | GitHub API request failed (2/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/arendst/Tasmota/pulls/24599 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+2026-04-11 23:14:39,750 | ERROR | Network diagnostics for cpp_python__arendst__Tasmota__pr24599: {"github_com_resolved_ips": ["127.0.0.1"], "git_version": "git version 2.49.0.windows.1", "git_http_proxy": "", "git_https_proxy": "", "env_http_proxy": "", "env_https_proxy": "", "hosts_overrides": ["127.0.0.1 api.github.com", "127.0.0.1 education.github.com", "127.0.0.1 resources.github.com", "127.0.0.1 uploads.github.com", "127.0.0.1 archiveprogram.github.com", "127.0.0.1 raw.github.com", "127.0.0.1 raw.githubusercontent.com", "127.0.0.1 github.com", "127.0.0.1 pages.github.com", "127.0.0.1 gist.github.com"]}
+2026-04-11 23:14:39,751 | ERROR | Failed to enrich cpp_python__arendst__Tasmota__pr24599: GitHub API request failed: https://api.github.com/repos/arendst/Tasmota/pulls/24599
+Traceback (most recent call last):
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 713, in urlopen
+    self._prepare_proxy(conn)
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 1015, in _prepare_proxy
+    conn.connect()
+  File "D:\Anaconda\Lib\site-packages\urllib3\connection.py", line 419, in connect
+    self.sock = ssl_wrap_socket(
+                ^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\ssl_.py", line 458, in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\ssl_.py", line 502, in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\ssl.py", line 455, in wrap_socket
+    return self.sslsocket_class._create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\ssl.py", line 1041, in _create
+    self.do_handshake()
+  File "D:\Anaconda\Lib\ssl.py", line 1319, in do_handshake
+    self._sslobj.do_handshake()
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Anaconda\Lib\site-packages\requests\adapters.py", line 644, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 802, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\retry.py", line 594, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/arendst/Tasmota/pulls/24599 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 374, in _request
+    response = self.session.get(url, params=params, timeout=30)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 602, in get
+    return self.request("GET", url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\adapters.py", line 675, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/arendst/Tasmota/pulls/24599 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 1003, in enrich_stage
+    pr_basic = self.github.fetch_pr_basic(record["repo_api_url"], record["pr_number"])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 397, in fetch_pr_basic
+    return self._request(f"{repo_api_url}/pulls/{pr_number}")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 385, in _request
+    raise RuntimeError(f"GitHub API request failed: {url}") from exc
+RuntimeError: GitHub API request failed: https://api.github.com/repos/arendst/Tasmota/pulls/24599
+2026-04-11 23:14:47,198 | WARNING | GitHub API request failed (1/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/hdtv-tool/hdtv/pulls/52 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+2026-04-11 23:14:56,699 | WARNING | GitHub API request failed (2/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/hdtv-tool/hdtv/pulls/52 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+2026-04-11 23:15:08,176 | ERROR | Network diagnostics for cpp_python__hdtv-tool__hdtv__pr52: {"github_com_resolved_ips": ["127.0.0.1"], "git_version": "git version 2.49.0.windows.1", "git_http_proxy": "", "git_https_proxy": "", "env_http_proxy": "", "env_https_proxy": "", "hosts_overrides": ["127.0.0.1 api.github.com", "127.0.0.1 education.github.com", "127.0.0.1 resources.github.com", "127.0.0.1 uploads.github.com", "127.0.0.1 archiveprogram.github.com", "127.0.0.1 raw.github.com", "127.0.0.1 raw.githubusercontent.com", "127.0.0.1 github.com", "127.0.0.1 pages.github.com", "127.0.0.1 gist.github.com"]}
+2026-04-11 23:15:08,178 | ERROR | Failed to enrich cpp_python__hdtv-tool__hdtv__pr52: GitHub API request failed: https://api.github.com/repos/hdtv-tool/hdtv/pulls/52
+Traceback (most recent call last):
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 713, in urlopen
+    self._prepare_proxy(conn)
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 1015, in _prepare_proxy
+    conn.connect()
+  File "D:\Anaconda\Lib\site-packages\urllib3\connection.py", line 419, in connect
+    self.sock = ssl_wrap_socket(
+                ^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\ssl_.py", line 458, in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\ssl_.py", line 502, in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\ssl.py", line 455, in wrap_socket
+    return self.sslsocket_class._create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\ssl.py", line 1041, in _create
+    self.do_handshake()
+  File "D:\Anaconda\Lib\ssl.py", line 1319, in do_handshake
+    self._sslobj.do_handshake()
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Anaconda\Lib\site-packages\requests\adapters.py", line 644, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 802, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\retry.py", line 594, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/hdtv-tool/hdtv/pulls/52 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 374, in _request
+    response = self.session.get(url, params=params, timeout=30)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 602, in get
+    return self.request("GET", url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\adapters.py", line 675, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/hdtv-tool/hdtv/pulls/52 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 1003, in enrich_stage
+    pr_basic = self.github.fetch_pr_basic(record["repo_api_url"], record["pr_number"])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 397, in fetch_pr_basic
+    return self._request(f"{repo_api_url}/pulls/{pr_number}")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 385, in _request
+    raise RuntimeError(f"GitHub API request failed: {url}") from exc
+RuntimeError: GitHub API request failed: https://api.github.com/repos/hdtv-tool/hdtv/pulls/52
+2026-04-11 23:15:15,473 | WARNING | GitHub API request failed (1/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/openvdb/fvdb-core/pulls/595 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+2026-04-11 23:15:25,119 | WARNING | GitHub API request failed (2/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/openvdb/fvdb-core/pulls/595 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+2026-04-11 23:15:36,793 | ERROR | Network diagnostics for cpp_python__openvdb__fvdb-core__pr595: {"github_com_resolved_ips": ["127.0.0.1"], "git_version": "git version 2.49.0.windows.1", "git_http_proxy": "", "git_https_proxy": "", "env_http_proxy": "", "env_https_proxy": "", "hosts_overrides": ["127.0.0.1 api.github.com", "127.0.0.1 education.github.com", "127.0.0.1 resources.github.com", "127.0.0.1 uploads.github.com", "127.0.0.1 archiveprogram.github.com", "127.0.0.1 raw.github.com", "127.0.0.1 raw.githubusercontent.com", "127.0.0.1 github.com", "127.0.0.1 pages.github.com", "127.0.0.1 gist.github.com"]}
+2026-04-11 23:15:36,794 | ERROR | Failed to enrich cpp_python__openvdb__fvdb-core__pr595: GitHub API request failed: https://api.github.com/repos/openvdb/fvdb-core/pulls/595
+Traceback (most recent call last):
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 713, in urlopen
+    self._prepare_proxy(conn)
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 1015, in _prepare_proxy
+    conn.connect()
+  File "D:\Anaconda\Lib\site-packages\urllib3\connection.py", line 419, in connect
+    self.sock = ssl_wrap_socket(
+                ^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\ssl_.py", line 458, in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\ssl_.py", line 502, in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\ssl.py", line 455, in wrap_socket
+    return self.sslsocket_class._create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\ssl.py", line 1041, in _create
+    self.do_handshake()
+  File "D:\Anaconda\Lib\ssl.py", line 1319, in do_handshake
+    self._sslobj.do_handshake()
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Anaconda\Lib\site-packages\requests\adapters.py", line 644, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 802, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\retry.py", line 594, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/openvdb/fvdb-core/pulls/595 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 374, in _request
+    response = self.session.get(url, params=params, timeout=30)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 602, in get
+    return self.request("GET", url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\adapters.py", line 675, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/openvdb/fvdb-core/pulls/595 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 1003, in enrich_stage
+    pr_basic = self.github.fetch_pr_basic(record["repo_api_url"], record["pr_number"])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 397, in fetch_pr_basic
+    return self._request(f"{repo_api_url}/pulls/{pr_number}")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 385, in _request
+    raise RuntimeError(f"GitHub API request failed: {url}") from exc
+RuntimeError: GitHub API request failed: https://api.github.com/repos/openvdb/fvdb-core/pulls/595
+2026-04-11 23:15:44,333 | WARNING | GitHub API request failed (1/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/pespila/max-min-hill-climbing-algorithm/pulls/2 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+2026-04-11 23:15:53,751 | WARNING | GitHub API request failed (2/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/pespila/max-min-hill-climbing-algorithm/pulls/2 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+2026-04-11 23:16:05,249 | ERROR | Network diagnostics for cpp_python__pespila__max-min-hill-climbing-algorithm__pr2: {"github_com_resolved_ips": ["127.0.0.1"], "git_version": "git version 2.49.0.windows.1", "git_http_proxy": "", "git_https_proxy": "", "env_http_proxy": "", "env_https_proxy": "", "hosts_overrides": ["127.0.0.1 api.github.com", "127.0.0.1 education.github.com", "127.0.0.1 resources.github.com", "127.0.0.1 uploads.github.com", "127.0.0.1 archiveprogram.github.com", "127.0.0.1 raw.github.com", "127.0.0.1 raw.githubusercontent.com", "127.0.0.1 github.com", "127.0.0.1 pages.github.com", "127.0.0.1 gist.github.com"]}
+2026-04-11 23:16:05,250 | ERROR | Failed to enrich cpp_python__pespila__max-min-hill-climbing-algorithm__pr2: GitHub API request failed: https://api.github.com/repos/pespila/max-min-hill-climbing-algorithm/pulls/2
+Traceback (most recent call last):
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 713, in urlopen
+    self._prepare_proxy(conn)
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 1015, in _prepare_proxy
+    conn.connect()
+  File "D:\Anaconda\Lib\site-packages\urllib3\connection.py", line 419, in connect
+    self.sock = ssl_wrap_socket(
+                ^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\ssl_.py", line 458, in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\ssl_.py", line 502, in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\ssl.py", line 455, in wrap_socket
+    return self.sslsocket_class._create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\ssl.py", line 1041, in _create
+    self.do_handshake()
+  File "D:\Anaconda\Lib\ssl.py", line 1319, in do_handshake
+    self._sslobj.do_handshake()
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Anaconda\Lib\site-packages\requests\adapters.py", line 644, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 802, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\retry.py", line 594, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/pespila/max-min-hill-climbing-algorithm/pulls/2 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 374, in _request
+    response = self.session.get(url, params=params, timeout=30)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 602, in get
+    return self.request("GET", url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\adapters.py", line 675, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/pespila/max-min-hill-climbing-algorithm/pulls/2 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 1003, in enrich_stage
+    pr_basic = self.github.fetch_pr_basic(record["repo_api_url"], record["pr_number"])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 397, in fetch_pr_basic
+    return self._request(f"{repo_api_url}/pulls/{pr_number}")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 385, in _request
+    raise RuntimeError(f"GitHub API request failed: {url}") from exc
+RuntimeError: GitHub API request failed: https://api.github.com/repos/pespila/max-min-hill-climbing-algorithm/pulls/2
+2026-04-11 23:16:12,253 | WARNING | GitHub API request failed (1/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/taco-project/FlexKV/pulls/127 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+2026-04-11 23:16:21,193 | WARNING | GitHub API request failed (2/3): HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/taco-project/FlexKV/pulls/127 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+2026-04-11 23:16:32,523 | ERROR | Network diagnostics for cpp_python__taco-project__FlexKV__pr127: {"github_com_resolved_ips": ["127.0.0.1"], "git_version": "git version 2.49.0.windows.1", "git_http_proxy": "", "git_https_proxy": "", "env_http_proxy": "", "env_https_proxy": "", "hosts_overrides": ["127.0.0.1 api.github.com", "127.0.0.1 education.github.com", "127.0.0.1 resources.github.com", "127.0.0.1 uploads.github.com", "127.0.0.1 archiveprogram.github.com", "127.0.0.1 raw.github.com", "127.0.0.1 raw.githubusercontent.com", "127.0.0.1 github.com", "127.0.0.1 pages.github.com", "127.0.0.1 gist.github.com"]}
+2026-04-11 23:16:32,524 | ERROR | Failed to enrich cpp_python__taco-project__FlexKV__pr127: GitHub API request failed: https://api.github.com/repos/taco-project/FlexKV/pulls/127
+Traceback (most recent call last):
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 713, in urlopen
+    self._prepare_proxy(conn)
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 1015, in _prepare_proxy
+    conn.connect()
+  File "D:\Anaconda\Lib\site-packages\urllib3\connection.py", line 419, in connect
+    self.sock = ssl_wrap_socket(
+                ^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\ssl_.py", line 458, in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\ssl_.py", line 502, in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\ssl.py", line 455, in wrap_socket
+    return self.sslsocket_class._create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\ssl.py", line 1041, in _create
+    self.do_handshake()
+  File "D:\Anaconda\Lib\ssl.py", line 1319, in do_handshake
+    self._sslobj.do_handshake()
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Anaconda\Lib\site-packages\requests\adapters.py", line 644, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 830, in urlopen
+    return self.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\connectionpool.py", line 802, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\urllib3\util\retry.py", line 594, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/taco-project/FlexKV/pulls/127 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 374, in _request
+    response = self.session.get(url, params=params, timeout=30)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 602, in get
+    return self.request("GET", url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda\Lib\site-packages\requests\adapters.py", line 675, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/taco-project/FlexKV/pulls/127 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)')))
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 1003, in enrich_stage
+    pr_basic = self.github.fetch_pr_basic(record["repo_api_url"], record["pr_number"])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 397, in fetch_pr_basic
+    return self._request(f"{repo_api_url}/pulls/{pr_number}")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\thecourceofdasi\TeacherWangWork\SWEbench（zzc）\需求文档\download_repo.py", line 385, in _request
+    raise RuntimeError(f"GitHub API request failed: {url}") from exc
+RuntimeError: GitHub API request failed: https://api.github.com/repos/taco-project/FlexKV/pulls/127
+2026-04-11 23:16:32,528 | INFO | Enrich stage finished. Records: 5
+2026-04-12 01:21:50,566 | INFO | Starting collect stage for cpp_python
+2026-04-12 01:21:50,591 | INFO | Skipping completed query query_d
+2026-04-12 01:22:21,900 | INFO | Reached max candidate limit: 8
+2026-04-12 01:22:21,902 | INFO | Query query_e page 1 collected. Current unique PRs: 24, candidate PRs: 8
+2026-04-12 01:22:21,902 | INFO | Collect stage finished. Unique PRs: 24
+2026-04-12 01:23:20,299 | INFO | Starting enrich stage for cpp_python
+2026-04-12 01:24:38,389 | INFO | Enriched cpp_python__arendst__Tasmota__pr24599 (candidate)
+2026-04-12 01:25:02,911 | INFO | Enriched cpp_python__hdtv-tool__hdtv__pr52 (candidate)
+2026-04-12 01:25:17,676 | INFO | Enriched cpp_python__heikki-laitala__pruner__pr30 (candidate)
+2026-04-12 01:26:17,508 | INFO | Enriched cpp_python__openvdb__fvdb-core__pr595 (candidate)
+2026-04-12 01:26:44,145 | INFO | Enriched cpp_python__pespila__max-min-hill-climbing-algorithm__pr2 (candidate)
+2026-04-12 01:27:03,380 | INFO | Enriched cpp_python__taco-project__FlexKV__pr127 (candidate)
+2026-04-12 01:27:10,922 | INFO | Enriched cpp_python__walt-id__waltid-identity__pr1597 (excluded)
+2026-04-12 01:27:16,181 | INFO | Enriched cpp_python__zcanann__FFCC-Decomp__pr5441 (excluded)
+2026-04-12 01:27:16,181 | INFO | Enrich stage finished. Records: 8
+2026-04-12 01:27:31,829 | INFO | Starting export-review stage for cpp_python
+2026-04-12 01:27:32,159 | INFO | Review CSV exported: 6 rows

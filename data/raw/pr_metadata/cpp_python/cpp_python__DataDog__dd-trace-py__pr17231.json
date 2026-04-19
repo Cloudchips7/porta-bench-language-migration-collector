@@ -1,0 +1,121 @@
+{
+  "instance_id": "cpp_python__DataDog__dd-trace-py__pr17231",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "DataDog/dd-trace-py",
+  "pr_number": 17231,
+  "pr_url": "https://github.com/DataDog/dd-trace-py/pull/17231",
+  "repo": {
+    "full_name": "DataDog/dd-trace-py",
+    "clone_url": "https://github.com/DataDog/dd-trace-py.git",
+    "default_branch": "main",
+    "created_at": "2016-06-20T18:52:23Z",
+    "stars": 637,
+    "license": "NOASSERTION",
+    "size_kb": 129016
+  },
+  "pull_request": {
+    "id": 3473379961,
+    "title": "fix(internal): catch ModuleNotFoundError when _ctypes isn't available",
+    "body": "<!-- dd-meta {\"pullId\":\"daf670cc-ea19-4921-bbdd-ddbb19563b3a\",\"source\":\"chat\",\"resourceId\":\"6c0297a1-2652-4ba2-8577-6dddc8b80536\",\"workflowId\":\"9f83ebfd-5ad1-4d4e-a4ef-12a63bbf91d0\",\"codeChangeId\":\"9f83ebfd-5ad1-4d4e-a4ef-12a63bbf91d0\",\"sourceType\":\"assistant\"} -->\r\n## Description\r\n\r\nThis PR fixes remote config startup failures in Python environments where `_ctypes` is unavailable (for example, minimal images without libffi).\r\n",
+    "created_at": "2026-03-31T18:19:43Z",
+    "merged_at": "2026-04-01T17:49:32Z",
+    "base_sha": "5a864892610227626e2647792dbed780d5e6ea2e",
+    "head_sha": "d0f58a734c7072ef9e47170ce6c8a765a96fc214",
+    "merge_commit_sha": "c4cb9339f4c0e19307a6972f56204b7528ff26b9",
+    "labels": [
+      "Bits AI"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "e8d91fbfec6b062e06f45370292fd2ea2c1d6e05",
+  "final_sha": "d0f58a734c7072ef9e47170ce6c8a765a96fc214",
+  "changed_files": [
+    {
+      "sha": "a57a1a4d3f6817cf979d2255f3a2b23fe211622d",
+      "filename": "ddtrace/internal/remoteconfig/_connectors.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 1,
+      "changes": 9,
+      "blob_url": "https://github.com/DataDog/dd-trace-py/blob/d0f58a734c7072ef9e47170ce6c8a765a96fc214/ddtrace%2Finternal%2Fremoteconfig%2F_connectors.py",
+      "raw_url": "https://github.com/DataDog/dd-trace-py/raw/d0f58a734c7072ef9e47170ce6c8a765a96fc214/ddtrace%2Finternal%2Fremoteconfig%2F_connectors.py",
+      "contents_url": "https://api.github.com/repos/DataDog/dd-trace-py/contents/ddtrace%2Finternal%2Fremoteconfig%2F_connectors.py?ref=d0f58a734c7072ef9e47170ce6c8a765a96fc214",
+      "patch": "@@ -45,7 +45,14 @@ class PublisherSubscriberConnector:\n     def __init__(self):\n         try:\n             self.data = get_mp_context().Array(\"c\", SHARED_MEMORY_SIZE, lock=False)\n-        except FileNotFoundError:\n+        # FileNotFoundError: /dev/shm may not exist or be inaccessible.\n+        # ImportError: multiprocessing.Array imports multiprocessing.sharedctypes,\n+        # which imports ctypes and requires the _ctypes C extension module. Some\n+        # environments (e.g. Alpine Linux, minimal Docker images, or custom\n+        # Python builds without libffi) do not provide _ctypes and raise\n+        # ModuleNotFoundError.\n+        # See: https://app.datadoghq.com/error-tracking/issue/25b34008-bb9f-11f0-abbd-da7ad0900002\n+        except (FileNotFoundError, ImportError):\n             log.warning(\n                 \"Unable to create shared memory. Features relying on remote configuration will not work as expected.\"\n             )"
+    },
+    {
+      "sha": "de127d38b9f3fbf052e2047e038699fd3676e6ea",
+      "filename": "releasenotes/notes/fix-remoteconfig-importerror-fallback-5f73ed40f3c6a8ab.yaml",
+      "status": "added",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/DataDog/dd-trace-py/blob/d0f58a734c7072ef9e47170ce6c8a765a96fc214/releasenotes%2Fnotes%2Ffix-remoteconfig-importerror-fallback-5f73ed40f3c6a8ab.yaml",
+      "raw_url": "https://github.com/DataDog/dd-trace-py/raw/d0f58a734c7072ef9e47170ce6c8a765a96fc214/releasenotes%2Fnotes%2Ffix-remoteconfig-importerror-fallback-5f73ed40f3c6a8ab.yaml",
+      "contents_url": "https://api.github.com/repos/DataDog/dd-trace-py/contents/releasenotes%2Fnotes%2Ffix-remoteconfig-importerror-fallback-5f73ed40f3c6a8ab.yaml?ref=d0f58a734c7072ef9e47170ce6c8a765a96fc214",
+      "patch": "@@ -0,0 +1,4 @@\n+---\n+fixes:\n+  - |\n+    internal: This fix resolves an issue where a ``ModuleNotFoundError`` could be raised at startup in Python environments without the ``_ctypes`` extension module."
+    },
+    {
+      "sha": "e05afe6c3850d70d028225b44251c1ddcdcf8ea2",
+      "filename": "tests/internal/remoteconfig/test_remoteconfig_connector.py",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 0,
+      "changes": 12,
+      "blob_url": "https://github.com/DataDog/dd-trace-py/blob/d0f58a734c7072ef9e47170ce6c8a765a96fc214/tests%2Finternal%2Fremoteconfig%2Ftest_remoteconfig_connector.py",
+      "raw_url": "https://github.com/DataDog/dd-trace-py/raw/d0f58a734c7072ef9e47170ce6c8a765a96fc214/tests%2Finternal%2Fremoteconfig%2Ftest_remoteconfig_connector.py",
+      "contents_url": "https://api.github.com/repos/DataDog/dd-trace-py/contents/tests%2Finternal%2Fremoteconfig%2Ftest_remoteconfig_connector.py?ref=d0f58a734c7072ef9e47170ce6c8a765a96fc214",
+      "patch": "@@ -1,4 +1,6 @@\n # -*- coding: utf-8 -*-\n+from unittest.mock import patch\n+\n import pytest\n \n from ddtrace.internal.remoteconfig._connectors import PublisherSubscriberConnector\n@@ -56,6 +58,16 @@ def test_connector_multiple_reads_different_data():\n     assert connector.read()[0].content == {\"a\": \"b\"}\n \n \n+def test_connector_fallback_on_array_creation_failure():\n+    \"\"\"PublisherSubscriberConnector degrades when multiprocessing.Array fails.\"\"\"\n+    from ddtrace.internal.remoteconfig._connectors import _DummySharedArray\n+\n+    with patch(\"ddtrace.internal.remoteconfig._connectors.get_mp_context\") as mock_context:\n+        mock_context.return_value.Array.side_effect = ImportError(\"No module named '_ctypes'\")\n+        connector = PublisherSubscriberConnector()\n+        assert isinstance(connector.data, _DummySharedArray)\n+\n+\n global_connector = PublisherSubscriberConnector()\n \n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "5aa08879700237abdb1bbf05e127c0e20b719c54",
+      "message": "fix(internal): catch ModuleNotFoundError when _ctypes isn't available\n\nCo-authored-by: brettlangdon <me@brett.is>",
+      "parent_shas": [
+        "e8d91fbfec6b062e06f45370292fd2ea2c1d6e05"
+      ]
+    },
+    {
+      "sha": "b9ef1038da275ed35ecde6c755f6e7bef5d01d8d",
+      "message": "Apply suggestion from @brettlangdon",
+      "parent_shas": [
+        "5aa08879700237abdb1bbf05e127c0e20b719c54"
+      ]
+    },
+    {
+      "sha": "d0f58a734c7072ef9e47170ce6c8a765a96fc214",
+      "message": "Merge branch 'main' into dd/catch-importerror-connector-init",
+      "parent_shas": [
+        "b9ef1038da275ed35ecde6c755f6e7bef5d01d8d",
+        "5a864892610227626e2647792dbed780d5e6ea2e"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__DataDog__dd-trace-py__pr17231.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\DataDog__dd-trace-py__pr17231__cpp_python__DataDog__dd-trace-py__pr17231\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\DataDog__dd-trace-py__pr17231__cpp_python__DataDog__dd-trace-py__pr17231\\rn"
+  }
+}

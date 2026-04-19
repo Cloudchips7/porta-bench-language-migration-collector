@@ -1,0 +1,292 @@
+{
+  "instance_id": "python_cpp__HHS__simpler-grants-protocol__pr707",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "HHS/simpler-grants-protocol",
+  "pr_number": 707,
+  "pr_url": "https://github.com/HHS/simpler-grants-protocol/pull/707",
+  "repo": {
+    "full_name": "HHS/simpler-grants-protocol",
+    "clone_url": "https://github.com/HHS/simpler-grants-protocol.git",
+    "default_branch": "main",
+    "created_at": "2024-12-19T21:14:35Z",
+    "stars": 22,
+    "license": "NOASSERTION",
+    "size_kb": 6813
+  },
+  "pull_request": {
+    "id": 3524736647,
+    "title": "[Issue #642] Python updates",
+    "body": "### Summary\r\n\r\n- Fixes #642 \r\n- Time to review: 5minutes\r\n\r\n### Changes proposed\r\n> What was added, updated, or removed in this PR.\r\n\r\nThis PR achieves several things. \r\n\r\n1. Updates the Black code format library to version 26.3.1 to address a high vulnerability alert\r\n2. As a result of the Black update in `python-sdk` a handful of files had additional updates to remove an extra line in them. \r\n3. Making a small change to the plugin `generate.py` default behavior to address a left over PR comment that can be found [here](https://github.com/HHS/simpler-grants-protocol/issues/611#issuecomment-4199856146)\r\n4. Makes another small tweak to the plugins file `generate.py` to make the output files comply with the upgraded black version requirements. \r\n\r\n### Context for reviewers\r\n> Testing instructions, background context, more in-depth details of the implementation, and anything else you'd like to call out or ask reviewers. Explain how the changes were verified.\r\n\r\n\r\nThe plugin generation command `poetry run python -m common_grants_sdk.extensions.generate --plugin examples/plugins/opportunity_extensions` was run from the `lib/python-sdk` directory to ensure generation of plugins continued to work as expected \r\n\r\n\r\n### Additional information\r\n> Screenshots, GIF demos, code examples or output to help show the changes working as expected.\r\n\r\nplugin generation test\r\n<img width=\"1165\" height=\"60\" alt=\"image\" src=\"https://github.com/user-attachments/assets/6307210d-d113-4014-b357-d16f29f4a6b6\" />\r\n\r\n\r\n\r\n",
+    "created_at": "2026-04-13T19:22:56Z",
+    "merged_at": "2026-04-14T13:29:51Z",
+    "base_sha": "e195ee124f04a4c094c304e64a30c60e467d2df8",
+    "head_sha": "84d516e17112defda975c651da9f57f72fb7b8f1",
+    "merge_commit_sha": "c3339dfbbf766e53c8d6b270f4d5a286783dee47",
+    "labels": [
+      "cli",
+      "website",
+      "core",
+      "dependencies",
+      "python",
+      "sdk",
+      "typescript",
+      "py-sdk",
+      "ts-sdk"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "e195ee124f04a4c094c304e64a30c60e467d2df8",
+  "final_sha": "84d516e17112defda975c651da9f57f72fb7b8f1",
+  "changed_files": [
+    {
+      "sha": "65ac7b85daa70adef576d8af42d6758224cce556",
+      "filename": ".changeset/array-default-any.md",
+      "status": "added",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/.changeset%2Farray-default-any.md",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/.changeset%2Farray-default-any.md",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/.changeset%2Farray-default-any.md?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -0,0 +1,5 @@\n+---\n+\"common-grants-sdk\": patch\n+---\n+\n+Change default ARRAY field type annotation from `list[str]` to `list[Any]` in plugin code generation. This more accurately reflects that an array field with no explicit `value` type should not assume string elements."
+    },
+    {
+      "sha": "03dbd42462e8223b3d6ca77bfc23e048ca22422b",
+      "filename": "lib/python-sdk/common_grants_sdk/client/opportunities.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fcommon_grants_sdk%2Fclient%2Fopportunities.py",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fcommon_grants_sdk%2Fclient%2Fopportunities.py",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/lib%2Fpython-sdk%2Fcommon_grants_sdk%2Fclient%2Fopportunities.py?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -16,7 +16,6 @@\n from .types import ItemsT\n from typing import List\n \n-\n if TYPE_CHECKING:\n     from .client import Client\n "
+    },
+    {
+      "sha": "9083276ce66af0f7c65fd279228357c4b63859e3",
+      "filename": "lib/python-sdk/common_grants_sdk/extensions/README.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fcommon_grants_sdk%2Fextensions%2FREADME.md",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fcommon_grants_sdk%2Fextensions%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/lib%2Fpython-sdk%2Fcommon_grants_sdk%2Fextensions%2FREADME.md?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -508,7 +508,7 @@ A plugin should represent a single logical concern (one agency's fields, one int\n \n ### Type safety\n \n-- Omitting `value` in `CustomFieldSpec` falls back to a sensible default (`str`, `int`, `float`, `bool`, `list[str]`, or `dict[str, Any]`). Specify it explicitly when you need a more precise type.\n+- Omitting `value` in `CustomFieldSpec` falls back to a sensible default (`str`, `int`, `float`, `bool`, `list[Any]`, or `dict[str, Any]`). Specify it explicitly when you need a more precise type.\n - For complex object types, define a Pydantic `BaseModel` subclass and pass it as `value`:\n \n   ```python"
+    },
+    {
+      "sha": "40eba082b39d36087f52bd4f83f42937d73d507f",
+      "filename": "lib/python-sdk/common_grants_sdk/extensions/generate.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fcommon_grants_sdk%2Fextensions%2Fgenerate.py",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fcommon_grants_sdk%2Fextensions%2Fgenerate.py",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/lib%2Fpython-sdk%2Fcommon_grants_sdk%2Fextensions%2Fgenerate.py?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -21,15 +21,15 @@\n }\n \n # Default Python type annotation strings written into generated source for each field type.\n-# ARRAY and OBJECT use parameterized forms (list[str], dict[str, Any]) as practical defaults;\n+# ARRAY and OBJECT use parameterized forms (list[Any], dict[str, Any]) as practical defaults;\n # callers can override these by setting spec.value to a more specific type.\n FIELD_TYPE_DEFAULT_ANNOTATION: dict[CustomFieldType, str] = {\n     CustomFieldType.STRING: \"str\",\n     CustomFieldType.NUMBER: \"float\",\n     CustomFieldType.INTEGER: \"int\",\n     CustomFieldType.BOOLEAN: \"bool\",\n     CustomFieldType.OBJECT: \"dict[str, Any]\",\n-    CustomFieldType.ARRAY: \"list[str]\",\n+    CustomFieldType.ARRAY: \"list[Any]\",\n }\n \n \n@@ -132,7 +132,7 @@ def _annotation_for_spec(spec: CustomFieldSpec, resolved_type: CustomFieldType)\n     Handles three cases based on what ``spec.value`` contains:\n \n     - ``None``: looks up a default annotation from ``FIELD_TYPE_DEFAULT_ANNOTATION``\n-      (e.g. ``field_type=\"array\"`` → ``\"list[str]\"``).\n+      (e.g. ``field_type=\"array\"`` → ``\"list[Any]\"``).\n     - A plain ``type`` object (e.g. ``int``, ``MyModel``): uses ``__name__``. Builtin\n       and SDK types are already importable in the generated file; external types (e.g.\n       Pydantic models from ``cg_config.py`` or third-party packages) will have their\n@@ -417,7 +417,6 @@ def _render_plugin_init_py(plugin_variable_name: str) -> str:\n             \"from .cg_config import config\",\n             \"from .generated import schemas\",\n             \"\",\n-            \"\",\n             f\"{plugin_variable_name} = Plugin(\",\n             \"    extensions=config.extensions,\",\n             \"    schemas=schemas,\","
+    },
+    {
+      "sha": "c79978c7d62ab2fef7c9f169801f0f4892377cc6",
+      "filename": "lib/python-sdk/common_grants_sdk/schemas/pydantic/types.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fcommon_grants_sdk%2Fschemas%2Fpydantic%2Ftypes.py",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fcommon_grants_sdk%2Fschemas%2Fpydantic%2Ftypes.py",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/lib%2Fpython-sdk%2Fcommon_grants_sdk%2Fschemas%2Fpydantic%2Ftypes.py?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -6,7 +6,6 @@\n \n from pydantic import BeforeValidator\n \n-\n # Date and Time\n ISODate = date\n ISOTime = time"
+    },
+    {
+      "sha": "4f745ff39d76ee5bf7a38c58bb92fdc3ba650200",
+      "filename": "lib/python-sdk/examples/custom_fields.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fexamples%2Fcustom_fields.py",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fexamples%2Fcustom_fields.py",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/lib%2Fpython-sdk%2Fexamples%2Fcustom_fields.py?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -1,4 +1,4 @@\n-\"\"\"Example script to demonstrate how to use and add custom fields to an opportunity object \n+\"\"\"Example script to demonstrate how to use and add custom fields to an opportunity object\n \n Run with poetry run python ./custom_fields.py\n \"\"\""
+    },
+    {
+      "sha": "a78fe04a35246240ed4b6e270f78ccf1bf5dd657",
+      "filename": "lib/python-sdk/examples/get_custom_fields.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fexamples%2Fget_custom_fields.py",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fexamples%2Fget_custom_fields.py",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/lib%2Fpython-sdk%2Fexamples%2Fget_custom_fields.py?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -1,4 +1,4 @@\n-\"\"\"Example script to demonstrate how to retrieve custom fields to an opportunity object \n+\"\"\"Example script to demonstrate how to retrieve custom fields to an opportunity object\n \n Run with poetry run python ./get_custom_fields.py\n \"\"\""
+    },
+    {
+      "sha": "41c364c1a2500aa9c41892d9b0610fcfd02865a7",
+      "filename": "lib/python-sdk/examples/plugin_custom_fields.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fexamples%2Fplugin_custom_fields.py",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fexamples%2Fplugin_custom_fields.py",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/lib%2Fpython-sdk%2Fexamples%2Fplugin_custom_fields.py?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -21,7 +21,6 @@\n \n from plugins.opportunity_extensions import opportunity_extensions  # noqa: E402\n \n-\n # ---------------------------------------------------------------------------\n # Sample API payload containing our four custom fields\n # ---------------------------------------------------------------------------"
+    },
+    {
+      "sha": "3e1f6a8acd2b66501408b9b9d672f2369f902a61",
+      "filename": "lib/python-sdk/examples/plugins/opportunity_extensions/__init__.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fexamples%2Fplugins%2Fopportunity_extensions%2F__init__.py",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fexamples%2Fplugins%2Fopportunity_extensions%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/lib%2Fpython-sdk%2Fexamples%2Fplugins%2Fopportunity_extensions%2F__init__.py?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -6,7 +6,6 @@\n from .cg_config import config\n from .generated import schemas\n \n-\n opportunity_extensions = Plugin(\n     extensions=config.extensions,\n     schemas=schemas,"
+    },
+    {
+      "sha": "1c3434dff7385209ebc9394e91887c1271a87d6e",
+      "filename": "lib/python-sdk/poetry.lock",
+      "status": "modified",
+      "additions": 99,
+      "deletions": 32,
+      "changes": 131,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fpoetry.lock",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fpoetry.lock",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/lib%2Fpython-sdk%2Fpoetry.lock?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -1,4 +1,4 @@\n-# This file is automatically @generated by Poetry 2.1.3 and should not be changed by hand.\n+# This file is automatically @generated by Poetry 2.1.4 and should not be changed by hand.\n \n [[package]]\n name = \"annotated-types\"\n@@ -48,48 +48,54 @@ test = [\"coverage\", \"mypy\", \"pexpect\", \"ruff\", \"wheel\"]\n \n [[package]]\n name = \"black\"\n-version = \"24.10.0\"\n+version = \"26.3.1\"\n description = \"The uncompromising code formatter.\"\n optional = false\n-python-versions = \">=3.9\"\n+python-versions = \">=3.10\"\n groups = [\"dev\"]\n files = [\n-    {file = \"black-24.10.0-cp310-cp310-macosx_10_9_x86_64.whl\", hash = \"sha256:e6668650ea4b685440857138e5fe40cde4d652633b1bdffc62933d0db4ed9812\"},\n-    {file = \"black-24.10.0-cp310-cp310-macosx_11_0_arm64.whl\", hash = \"sha256:1c536fcf674217e87b8cc3657b81809d3c085d7bf3ef262ead700da345bfa6ea\"},\n-    {file = \"black-24.10.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:649fff99a20bd06c6f727d2a27f401331dc0cc861fb69cde910fe95b01b5928f\"},\n-    {file = \"black-24.10.0-cp310-cp310-win_amd64.whl\", hash = \"sha256:fe4d6476887de70546212c99ac9bd803d90b42fc4767f058a0baa895013fbb3e\"},\n-    {file = \"black-24.10.0-cp311-cp311-macosx_10_9_x86_64.whl\", hash = \"sha256:5a2221696a8224e335c28816a9d331a6c2ae15a2ee34ec857dcf3e45dbfa99ad\"},\n-    {file = \"black-24.10.0-cp311-cp311-macosx_11_0_arm64.whl\", hash = \"sha256:f9da3333530dbcecc1be13e69c250ed8dfa67f43c4005fb537bb426e19200d50\"},\n-    {file = \"black-24.10.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:4007b1393d902b48b36958a216c20c4482f601569d19ed1df294a496eb366392\"},\n-    {file = \"black-24.10.0-cp311-cp311-win_amd64.whl\", hash = \"sha256:394d4ddc64782e51153eadcaaca95144ac4c35e27ef9b0a42e121ae7e57a9175\"},\n-    {file = \"black-24.10.0-cp312-cp312-macosx_10_13_x86_64.whl\", hash = \"sha256:b5e39e0fae001df40f95bd8cc36b9165c5e2ea88900167bddf258bacef9bbdc3\"},\n-    {file = \"black-24.10.0-cp312-cp312-macosx_11_0_arm64.whl\", hash = \"sha256:d37d422772111794b26757c5b55a3eade028aa3fde43121ab7b673d050949d65\"},\n-    {file = \"black-24.10.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:14b3502784f09ce2443830e3133dacf2c0110d45191ed470ecb04d0f5f6fcb0f\"},\n-    {file = \"black-24.10.0-cp312-cp312-win_amd64.whl\", hash = \"sha256:30d2c30dc5139211dda799758559d1b049f7f14c580c409d6ad925b74a4208a8\"},\n-    {file = \"black-24.10.0-cp313-cp313-macosx_10_13_x86_64.whl\", hash = \"sha256:1cbacacb19e922a1d75ef2b6ccaefcd6e93a2c05ede32f06a21386a04cedb981\"},\n-    {file = \"black-24.10.0-cp313-cp313-macosx_11_0_arm64.whl\", hash = \"sha256:1f93102e0c5bb3907451063e08b9876dbeac810e7da5a8bfb7aeb5a9ef89066b\"},\n-    {file = \"black-24.10.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:ddacb691cdcdf77b96f549cf9591701d8db36b2f19519373d60d31746068dbf2\"},\n-    {file = \"black-24.10.0-cp313-cp313-win_amd64.whl\", hash = \"sha256:680359d932801c76d2e9c9068d05c6b107f2584b2a5b88831c83962eb9984c1b\"},\n-    {file = \"black-24.10.0-cp39-cp39-macosx_10_9_x86_64.whl\", hash = \"sha256:17374989640fbca88b6a448129cd1745c5eb8d9547b464f281b251dd00155ccd\"},\n-    {file = \"black-24.10.0-cp39-cp39-macosx_11_0_arm64.whl\", hash = \"sha256:63f626344343083322233f175aaf372d326de8436f5928c042639a4afbbf1d3f\"},\n-    {file = \"black-24.10.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:ccfa1d0cb6200857f1923b602f978386a3a2758a65b52e0950299ea014be6800\"},\n-    {file = \"black-24.10.0-cp39-cp39-win_amd64.whl\", hash = \"sha256:2cd9c95431d94adc56600710f8813ee27eea544dd118d45896bb734e9d7a0dc7\"},\n-    {file = \"black-24.10.0-py3-none-any.whl\", hash = \"sha256:3bb2b7a1f7b685f85b11fed1ef10f8a9148bceb49853e47a294a3dd963c1dd7d\"},\n-    {file = \"black-24.10.0.tar.gz\", hash = \"sha256:846ea64c97afe3bc677b761787993be4991810ecc7a4a937816dd6bddedc4875\"},\n+    {file = \"black-26.3.1-cp310-cp310-macosx_10_9_x86_64.whl\", hash = \"sha256:86a8b5035fce64f5dcd1b794cf8ec4d31fe458cf6ce3986a30deb434df82a1d2\"},\n+    {file = \"black-26.3.1-cp310-cp310-macosx_11_0_arm64.whl\", hash = \"sha256:5602bdb96d52d2d0672f24f6ffe5218795736dd34807fd0fd55ccd6bf206168b\"},\n+    {file = \"black-26.3.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:6c54a4a82e291a1fee5137371ab488866b7c86a3305af4026bdd4dc78642e1ac\"},\n+    {file = \"black-26.3.1-cp310-cp310-win_amd64.whl\", hash = \"sha256:6e131579c243c98f35bce64a7e08e87fb2d610544754675d4a0e73a070a5aa3a\"},\n+    {file = \"black-26.3.1-cp310-cp310-win_arm64.whl\", hash = \"sha256:5ed0ca58586c8d9a487352a96b15272b7fa55d139fc8496b519e78023a8dab0a\"},\n+    {file = \"black-26.3.1-cp311-cp311-macosx_10_9_x86_64.whl\", hash = \"sha256:28ef38aee69e4b12fda8dba75e21f9b4f979b490c8ac0baa7cb505369ac9e1ff\"},\n+    {file = \"black-26.3.1-cp311-cp311-macosx_11_0_arm64.whl\", hash = \"sha256:bf9bf162ed91a26f1adba8efda0b573bc6924ec1408a52cc6f82cb73ec2b142c\"},\n+    {file = \"black-26.3.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:474c27574d6d7037c1bc875a81d9be0a9a4f9ee95e62800dab3cfaadbf75acd5\"},\n+    {file = \"black-26.3.1-cp311-cp311-win_amd64.whl\", hash = \"sha256:5e9d0d86df21f2e1677cc4bd090cd0e446278bcbbe49bf3659c308c3e402843e\"},\n+    {file = \"black-26.3.1-cp311-cp311-win_arm64.whl\", hash = \"sha256:9a5e9f45e5d5e1c5b5c29b3bd4265dcc90e8b92cf4534520896ed77f791f4da5\"},\n+    {file = \"black-26.3.1-cp312-cp312-macosx_10_13_x86_64.whl\", hash = \"sha256:b5e6f89631eb88a7302d416594a32faeee9fb8fb848290da9d0a5f2903519fc1\"},\n+    {file = \"black-26.3.1-cp312-cp312-macosx_11_0_arm64.whl\", hash = \"sha256:41cd2012d35b47d589cb8a16faf8a32ef7a336f56356babd9fcf70939ad1897f\"},\n+    {file = \"black-26.3.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:0f76ff19ec5297dd8e66eb64deda23631e642c9393ab592826fd4bdc97a4bce7\"},\n+    {file = \"black-26.3.1-cp312-cp312-win_amd64.whl\", hash = \"sha256:ddb113db38838eb9f043623ba274cfaf7d51d5b0c22ecb30afe58b1bb8322983\"},\n+    {file = \"black-26.3.1-cp312-cp312-win_arm64.whl\", hash = \"sha256:dfdd51fc3e64ea4f35873d1b3fb25326773d55d2329ff8449139ebaad7357efb\"},\n+    {file = \"black-26.3.1-cp313-cp313-macosx_10_13_x86_64.whl\", hash = \"sha256:855822d90f884905362f602880ed8b5df1b7e3ee7d0db2502d4388a954cc8c54\"},\n+    {file = \"black-26.3.1-cp313-cp313-macosx_11_0_arm64.whl\", hash = \"sha256:8a33d657f3276328ce00e4d37fe70361e1ec7614da5d7b6e78de5426cb56332f\"},\n+    {file = \"black-26.3.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:f1cd08e99d2f9317292a311dfe578fd2a24b15dbce97792f9c4d752275c1fa56\"},\n+    {file = \"black-26.3.1-cp313-cp313-win_amd64.whl\", hash = \"sha256:c7e72339f841b5a237ff14f7d3880ddd0fc7f98a1199e8c4327f9a4f478c1839\"},\n+    {file = \"black-26.3.1-cp313-cp313-win_arm64.whl\", hash = \"sha256:afc622538b430aa4c8c853f7f63bc582b3b8030fd8c80b70fb5fa5b834e575c2\"},\n+    {file = \"black-26.3.1-cp314-cp314-macosx_10_15_x86_64.whl\", hash = \"sha256:2d6bfaf7fd0993b420bed691f20f9492d53ce9a2bcccea4b797d34e947318a78\"},\n+    {file = \"black-26.3.1-cp314-cp314-macosx_11_0_arm64.whl\", hash = \"sha256:f89f2ab047c76a9c03f78d0d66ca519e389519902fa27e7a91117ef7611c0568\"},\n+    {file = \"black-26.3.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:b07fc0dab849d24a80a29cfab8d8a19187d1c4685d8a5e6385a5ce323c1f015f\"},\n+    {file = \"black-26.3.1-cp314-cp314-win_amd64.whl\", hash = \"sha256:0126ae5b7c09957da2bdbd91a9ba1207453feada9e9fe51992848658c6c8e01c\"},\n+    {file = \"black-26.3.1-cp314-cp314-win_arm64.whl\", hash = \"sha256:92c0ec1f2cc149551a2b7b47efc32c866406b6891b0ee4625e95967c8f4acfb1\"},\n+    {file = \"black-26.3.1-py3-none-any.whl\", hash = \"sha256:2bd5aa94fc267d38bb21a70d7410a89f1a1d318841855f698746f8e7f51acd1b\"},\n+    {file = \"black-26.3.1.tar.gz\", hash = \"sha256:2c50f5063a9641c7eed7795014ba37b0f5fa227f3d408b968936e24bc0566b07\"},\n ]\n \n [package.dependencies]\n click = \">=8.0.0\"\n mypy-extensions = \">=0.4.3\"\n packaging = \">=22.0\"\n-pathspec = \">=0.9.0\"\n+pathspec = \">=1.0.0\"\n platformdirs = \">=2\"\n+pytokens = \">=0.4.0,<0.5.0\"\n \n [package.extras]\n colorama = [\"colorama (>=0.4.3)\"]\n d = [\"aiohttp (>=3.10)\"]\n jupyter = [\"ipython (>=7.8.0)\", \"tokenize-rt (>=3.2.0)\"]\n-uvloop = [\"uvloop (>=0.15.2)\"]\n+uvloop = [\"uvloop (>=0.15.2) ; sys_platform != \\\"win32\\\"\", \"winloop (>=0.5.0) ; sys_platform == \\\"win32\\\"\"]\n \n [[package]]\n name = \"certifi\"\n@@ -729,16 +735,22 @@ files = [\n \n [[package]]\n name = \"pathspec\"\n-version = \"0.12.1\"\n+version = \"1.0.4\"\n description = \"Utility library for gitignore style pattern matching of file paths.\"\n optional = false\n-python-versions = \">=3.8\"\n+python-versions = \">=3.9\"\n groups = [\"dev\"]\n files = [\n-    {file = \"pathspec-0.12.1-py3-none-any.whl\", hash = \"sha256:a0d503e138a4c123b27490a4f7beda6a01c6f288df0e4a8b79c7eb0dc7b4cc08\"},\n-    {file = \"pathspec-0.12.1.tar.gz\", hash = \"sha256:a482d51503a1ab33b1c67a6c3813a26953dbdc71c31dacaef9a838c4e29f5712\"},\n+    {file = \"pathspec-1.0.4-py3-none-any.whl\", hash = \"sha256:fb6ae2fd4e7c921a165808a552060e722767cfa526f99ca5156ed2ce45a5c723\"},\n+    {file = \"pathspec-1.0.4.tar.gz\", hash = \"sha256:0210e2ae8a21a9137c0d470578cb0e595af87edaa6ebf12ff176f14a02e0e645\"},\n ]\n \n+[package.extras]\n+hyperscan = [\"hyperscan (>=0.7)\"]\n+optional = [\"typing-extensions (>=4)\"]\n+re2 = [\"google-re2 (>=1.1)\"]\n+tests = [\"pytest (>=9)\", \"typing-extensions (>=4.15)\"]\n+\n [[package]]\n name = \"platformdirs\"\n version = \"4.5.1\"\n@@ -984,6 +996,61 @@ pytest = \">=4.6\"\n [package.extras]\n testing = [\"fields\", \"hunter\", \"process-tests\", \"pytest-xdist\", \"virtualenv\"]\n \n+[[package]]\n+name = \"pytokens\"\n+version = \"0.4.1\"\n+description = \"A Fast, spec compliant Python 3.14+ tokenizer that runs on older Pythons.\"\n+optional = false\n+python-versions = \">=3.8\"\n+groups = [\"dev\"]\n+files = [\n+    {file = \"pytokens-0.4.1-cp310-cp310-macosx_11_0_arm64.whl\", hash = \"sha256:2a44ed93ea23415c54f3face3b65ef2b844d96aeb3455b8a69b3df6beab6acc5\"},\n+    {file = \"pytokens-0.4.1-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl\", hash = \"sha256:add8bf86b71a5d9fb5b89f023a80b791e04fba57960aa790cc6125f7f1d39dfe\"},\n+    {file = \"pytokens-0.4.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:670d286910b531c7b7e3c0b453fd8156f250adb140146d234a82219459b9640c\"},\n+    {file = \"pytokens-0.4.1-cp310-cp310-musllinux_1_2_x86_64.whl\", hash = \"sha256:4e691d7f5186bd2842c14813f79f8884bb03f5995f0575272009982c5ac6c0f7\"},\n+    {file = \"pytokens-0.4.1-cp310-cp310-win_amd64.whl\", hash = \"sha256:27b83ad28825978742beef057bfe406ad6ed524b2d28c252c5de7b4a6dd48fa2\"},\n+    {file = \"pytokens-0.4.1-cp311-cp311-macosx_11_0_arm64.whl\", hash = \"sha256:d70e77c55ae8380c91c0c18dea05951482e263982911fc7410b1ffd1dadd3440\"},\n+    {file = \"pytokens-0.4.1-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl\", hash = \"sha256:4a58d057208cb9075c144950d789511220b07636dd2e4708d5645d24de666bdc\"},\n+    {file = \"pytokens-0.4.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:b49750419d300e2b5a3813cf229d4e5a4c728dae470bcc89867a9ad6f25a722d\"},\n+    {file = \"pytokens-0.4.1-cp311-cp311-musllinux_1_2_x86_64.whl\", hash = \"sha256:d9907d61f15bf7261d7e775bd5d7ee4d2930e04424bab1972591918497623a16\"},\n+    {file = \"pytokens-0.4.1-cp311-cp311-win_amd64.whl\", hash = \"sha256:ee44d0f85b803321710f9239f335aafe16553b39106384cef8e6de40cb4ef2f6\"},\n+    {file = \"pytokens-0.4.1-cp312-cp312-macosx_11_0_arm64.whl\", hash = \"sha256:140709331e846b728475786df8aeb27d24f48cbcf7bcd449f8de75cae7a45083\"},\n+    {file = \"pytokens-0.4.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl\", hash = \"sha256:6d6c4268598f762bc8e91f5dbf2ab2f61f7b95bdc07953b602db879b3c8c18e1\"},\n+    {file = \"pytokens-0.4.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:24afde1f53d95348b5a0eb19488661147285ca4dd7ed752bbc3e1c6242a304d1\"},\n+    {file = \"pytokens-0.4.1-cp312-cp312-musllinux_1_2_x86_64.whl\", hash = \"sha256:5ad948d085ed6c16413eb5fec6b3e02fa00dc29a2534f088d3302c47eb59adf9\"},\n+    {file = \"pytokens-0.4.1-cp312-cp312-win_amd64.whl\", hash = \"sha256:3f901fe783e06e48e8cbdc82d631fca8f118333798193e026a50ce1b3757ea68\"},\n+    {file = \"pytokens-0.4.1-cp313-cp313-macosx_11_0_arm64.whl\", hash = \"sha256:8bdb9d0ce90cbf99c525e75a2fa415144fd570a1ba987380190e8b786bc6ef9b\"},\n+    {file = \"pytokens-0.4.1-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl\", hash = \"sha256:5502408cab1cb18e128570f8d598981c68a50d0cbd7c61312a90507cd3a1276f\"},\n+    {file = \"pytokens-0.4.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:29d1d8fb1030af4d231789959f21821ab6325e463f0503a61d204343c9b355d1\"},\n+    {file = \"pytokens-0.4.1-cp313-cp313-musllinux_1_2_x86_64.whl\", hash = \"sha256:970b08dd6b86058b6dc07efe9e98414f5102974716232d10f32ff39701e841c4\"},\n+    {file = \"pytokens-0.4.1-cp313-cp313-win_amd64.whl\", hash = \"sha256:9bd7d7f544d362576be74f9d5901a22f317efc20046efe2034dced238cbbfe78\"},\n+    {file = \"pytokens-0.4.1-cp314-cp314-macosx_11_0_arm64.whl\", hash = \"sha256:4a14d5f5fc78ce85e426aa159489e2d5961acf0e47575e08f35584009178e321\"},\n+    {file = \"pytokens-0.4.1-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl\", hash = \"sha256:97f50fd18543be72da51dd505e2ed20d2228c74e0464e4262e4899797803d7fa\"},\n+    {file = \"pytokens-0.4.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:dc74c035f9bfca0255c1af77ddd2d6ae8419012805453e4b0e7513e17904545d\"},\n+    {file = \"pytokens-0.4.1-cp314-cp314-musllinux_1_2_x86_64.whl\", hash = \"sha256:f66a6bbe741bd431f6d741e617e0f39ec7257ca1f89089593479347cc4d13324\"},\n+    {file = \"pytokens-0.4.1-cp314-cp314-win_amd64.whl\", hash = \"sha256:b35d7e5ad269804f6697727702da3c517bb8a5228afa450ab0fa787732055fc9\"},\n+    {file = \"pytokens-0.4.1-cp314-cp314t-macosx_11_0_arm64.whl\", hash = \"sha256:8fcb9ba3709ff77e77f1c7022ff11d13553f3c30299a9fe246a166903e9091eb\"},\n+    {file = \"pytokens-0.4.1-cp314-cp314t-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl\", hash = \"sha256:79fc6b8699564e1f9b521582c35435f1bd32dd06822322ec44afdeba666d8cb3\"},\n+    {file = \"pytokens-0.4.1-cp314-cp314t-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:d31b97b3de0f61571a124a00ffe9a81fb9939146c122c11060725bd5aea79975\"},\n+    {file = \"pytokens-0.4.1-cp314-cp314t-musllinux_1_2_x86_64.whl\", hash = \"sha256:967cf6e3fd4adf7de8fc73cd3043754ae79c36475c1c11d514fc72cf5490094a\"},\n+    {file = \"pytokens-0.4.1-cp314-cp314t-win_amd64.whl\", hash = \"sha256:584c80c24b078eec1e227079d56dc22ff755e0ba8654d8383b2c549107528918\"},\n+    {file = \"pytokens-0.4.1-cp38-cp38-macosx_11_0_arm64.whl\", hash = \"sha256:da5baeaf7116dced9c6bb76dc31ba04a2dc3695f3d9f74741d7910122b456edc\"},\n+    {file = \"pytokens-0.4.1-cp38-cp38-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl\", hash = \"sha256:11edda0942da80ff58c4408407616a310adecae1ddd22eef8c692fe266fa5009\"},\n+    {file = \"pytokens-0.4.1-cp38-cp38-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:0fc71786e629cef478cbf29d7ea1923299181d0699dbe7c3c0f4a583811d9fc1\"},\n+    {file = \"pytokens-0.4.1-cp38-cp38-musllinux_1_2_x86_64.whl\", hash = \"sha256:dcafc12c30dbaf1e2af0490978352e0c4041a7cde31f4f81435c2a5e8b9cabb6\"},\n+    {file = \"pytokens-0.4.1-cp38-cp38-win_amd64.whl\", hash = \"sha256:42f144f3aafa5d92bad964d471a581651e28b24434d184871bd02e3a0d956037\"},\n+    {file = \"pytokens-0.4.1-cp39-cp39-macosx_11_0_arm64.whl\", hash = \"sha256:34bcc734bd2f2d5fe3b34e7b3c0116bfb2397f2d9666139988e7a3eb5f7400e3\"},\n+    {file = \"pytokens-0.4.1-cp39-cp39-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl\", hash = \"sha256:941d4343bf27b605e9213b26bfa1c4bf197c9c599a9627eb7305b0defcfe40c1\"},\n+    {file = \"pytokens-0.4.1-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\", hash = \"sha256:3ad72b851e781478366288743198101e5eb34a414f1d5627cdd585ca3b25f1db\"},\n+    {file = \"pytokens-0.4.1-cp39-cp39-musllinux_1_2_x86_64.whl\", hash = \"sha256:682fa37ff4d8e95f7df6fe6fe6a431e8ed8e788023c6bcc0f0880a12eab80ad1\"},\n+    {file = \"pytokens-0.4.1-cp39-cp39-win_amd64.whl\", hash = \"sha256:30f51edd9bb7f85c748979384165601d028b84f7bd13fe14d3e065304093916a\"},\n+    {file = \"pytokens-0.4.1-py3-none-any.whl\", hash = \"sha256:26cef14744a8385f35d0e095dc8b3a7583f6c953c2e3d269c7f82484bf5ad2de\"},\n+    {file = \"pytokens-0.4.1.tar.gz\", hash = \"sha256:292052fe80923aae2260c073f822ceba21f3872ced9a68bb7953b348e561179a\"},\n+]\n+\n+[package.extras]\n+dev = [\"black\", \"build\", \"mypy\", \"pytest\", \"pytest-cov\", \"setuptools\", \"tox\", \"twine\", \"wheel\"]\n+\n [[package]]\n name = \"pyyaml\"\n version = \"6.0.3\"\n@@ -1280,4 +1347,4 @@ tests = [\"build\", \"coverage\", \"mypy\", \"ruff\", \"wheel\"]\n [metadata]\n lock-version = \"2.1\"\n python-versions = \"^3.11\"\n-content-hash = \"5402f055d0a5e94fa813375f0115bf674adc6f4348fc90d99d5b4276649daa0e\"\n+content-hash = \"f38ebd974e24c212835a11b8bd1c0cde068fd537c62d5111582c04f86522ae8a\""
+    },
+    {
+      "sha": "48eaf802b7ebc74e12b527d216865ed70e132e12",
+      "filename": "lib/python-sdk/pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fpyproject.toml",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/lib%2Fpython-sdk%2Fpyproject.toml?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -14,7 +14,7 @@ httpx = \"^0.27.0\"\n \n \n [tool.poetry.group.dev.dependencies]\n-black = \"^24.0.0\"\n+black = \"^26.3.1\"\n mypy = \"^1.4.1\"\n pytest = \"^8.0.0\"\n pytest-cov = \"^5.0.0\""
+    },
+    {
+      "sha": "c32ce0343eba20af1de81cc5b7213c77ec6f7d08",
+      "filename": "lib/python-sdk/tests/schemas/test_plugin_registry.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Ftests%2Fschemas%2Ftest_plugin_registry.py",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Ftests%2Fschemas%2Ftest_plugin_registry.py",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/lib%2Fpython-sdk%2Ftests%2Fschemas%2Ftest_plugin_registry.py?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -7,7 +7,6 @@\n from common_grants_sdk.schemas.pydantic.fields import CustomFieldType\n from common_grants_sdk.schemas.pydantic.models.opp_base import OpportunityBase\n \n-\n # ---------------------------------------------------------------------------\n # Helpers\n # ---------------------------------------------------------------------------"
+    },
+    {
+      "sha": "b0e1e2c03629084c81f155459e38e4b10a01aea4",
+      "filename": "lib/python-sdk/tests/utils/test_custom_fields.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Ftests%2Futils%2Ftest_custom_fields.py",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Ftests%2Futils%2Ftest_custom_fields.py",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/lib%2Fpython-sdk%2Ftests%2Futils%2Ftest_custom_fields.py?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -15,7 +15,6 @@\n )\n from common_grants_sdk.extensions.specs import CustomFieldSpec\n \n-\n BASE_OPP = {\n     \"id\": uuid4(),\n     \"title\": \"Foo bar\","
+    },
+    {
+      "sha": "212f824cdd7cc853f8a16db0ced0ccacbc429690",
+      "filename": "lib/python-sdk/tests/utils/test_plugin_generator.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/HHS/simpler-grants-protocol/blob/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Ftests%2Futils%2Ftest_plugin_generator.py",
+      "raw_url": "https://github.com/HHS/simpler-grants-protocol/raw/84d516e17112defda975c651da9f57f72fb7b8f1/lib%2Fpython-sdk%2Ftests%2Futils%2Ftest_plugin_generator.py",
+      "contents_url": "https://api.github.com/repos/HHS/simpler-grants-protocol/contents/lib%2Fpython-sdk%2Ftests%2Futils%2Ftest_plugin_generator.py?ref=84d516e17112defda975c651da9f57f72fb7b8f1",
+      "patch": "@@ -307,4 +307,4 @@ def test_generate_models_typecheck_with_pyright_strict(tmp_path: Path):\n         check=False,\n     )\n     assert pyright.returncode == 0, pyright.stdout + \"\\n\" + pyright.stderr\n-    assert 'Type of \"values\" is \"list[str] | None\"' in pyright.stdout\n+    assert 'Type of \"values\" is \"list[Any] | None\"' in pyright.stdout"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "17759348910ed94a9c31e46e619c753c01000d85",
+      "message": "Moving dev dependencies to pnpm catalog",
+      "parent_shas": [
+        "e195ee124f04a4c094c304e64a30c60e467d2df8"
+      ]
+    },
+    {
+      "sha": "7651d3234ad8eef6849be98c0c8ed34857d61e94",
+      "message": "Running new version of black to update formatting",
+      "parent_shas": [
+        "17759348910ed94a9c31e46e619c753c01000d85"
+      ]
+    },
+    {
+      "sha": "d97d5e322436b2f29586627972515fa9fe4d7177",
+      "message": "Fixing example file",
+      "parent_shas": [
+        "7651d3234ad8eef6849be98c0c8ed34857d61e94"
+      ]
+    },
+    {
+      "sha": "1cb1288dc0834cae98a9f31508e47303dbd24063",
+      "message": "Fixing generate default behavior",
+      "parent_shas": [
+        "d97d5e322436b2f29586627972515fa9fe4d7177"
+      ]
+    },
+    {
+      "sha": "5e8a4a0cb2e9f4a36cdc5815bc6743689e2fb29a",
+      "message": "Updating plugin generation to satisfy new black requirements",
+      "parent_shas": [
+        "1cb1288dc0834cae98a9f31508e47303dbd24063"
+      ]
+    },
+    {
+      "sha": "a10fa0bdc0e66eeb7d114c2e527507ddd71d4a01",
+      "message": "Fixing website prettier version to use the same version as the other modules",
+      "parent_shas": [
+        "5e8a4a0cb2e9f4a36cdc5815bc6743689e2fb29a"
+      ]
+    },
+    {
+      "sha": "1dc6ed66e7192316588fc662fd455b03b08ef66e",
+      "message": "Removing non python changes",
+      "parent_shas": [
+        "a10fa0bdc0e66eeb7d114c2e527507ddd71d4a01"
+      ]
+    },
+    {
+      "sha": "84d516e17112defda975c651da9f57f72fb7b8f1",
+      "message": "Add changeset and fix stale ARRAY default in README (#708)",
+      "parent_shas": [
+        "1dc6ed66e7192316588fc662fd455b03b08ef66e"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__HHS__simpler-grants-protocol__pr707.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\HHS__simpler-grants-protocol__pr707__python_cpp__HHS__simpler-grants-protocol__pr707\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\HHS__simpler-grants-protocol__pr707__python_cpp__HHS__simpler-grants-protocol__pr707\\rn"
+  }
+}

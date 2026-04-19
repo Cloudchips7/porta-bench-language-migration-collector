@@ -1,0 +1,166 @@
+{
+  "instance_id": "python_java__ytsaurus__ytsaurus-flyt__pr29",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "ytsaurus/ytsaurus-flyt",
+  "pr_number": 29,
+  "pr_url": "https://github.com/ytsaurus/ytsaurus-flyt/pull/29",
+  "repo": {
+    "full_name": "ytsaurus/ytsaurus-flyt",
+    "clone_url": "https://github.com/ytsaurus/ytsaurus-flyt.git",
+    "default_branch": "main",
+    "created_at": "2025-10-15T10:18:15Z",
+    "stars": 5,
+    "license": "Apache-2.0",
+    "size_kb": 1781
+  },
+  "pull_request": {
+    "id": 3525076664,
+    "title": "fix(python): refactor docs",
+    "body": "- Remove duplications / redundancy\r\n- Simplify wording / explanation\r\n- Add links to YTSaurus docs where relevant",
+    "created_at": "2026-04-13T20:40:52Z",
+    "merged_at": "2026-04-14T12:00:18Z",
+    "base_sha": "5892c5060a46b37c99a6cb4ee95869f0d05d245b",
+    "head_sha": "799e9a94c7672d82e62783e6f072d83eafcafe4e",
+    "merge_commit_sha": "e396a8ab49d89131a7e5193178f0eb79aeb082ad",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "1dab57336d831b3f49e4919ffc9247b41432876a",
+  "final_sha": "799e9a94c7672d82e62783e6f072d83eafcafe4e",
+  "changed_files": [
+    {
+      "sha": "cd99a0e27a198374c5ed4da1e5ea1809905e7b15",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 12,
+      "changes": 17,
+      "blob_url": "https://github.com/ytsaurus/ytsaurus-flyt/blob/799e9a94c7672d82e62783e6f072d83eafcafe4e/README.md",
+      "raw_url": "https://github.com/ytsaurus/ytsaurus-flyt/raw/799e9a94c7672d82e62783e6f072d83eafcafe4e/README.md",
+      "contents_url": "https://api.github.com/repos/ytsaurus/ytsaurus-flyt/contents/README.md?ref=799e9a94c7672d82e62783e6f072d83eafcafe4e",
+      "patch": "@@ -17,16 +17,9 @@ You can read [post about YTsaurus](https://medium.com/p/42e7f5fa5fc6) or check v\n \n ## FLYT\n \n-Integration between Apache Flink and YTsaurus. Java connectors and formatters live in the main [ytsaurus](https://github.com/ytsaurus/ytsaurus) repository; this repo ships the **Python launcher** [`ytsaurus-flyt`](python/).\n+The project that aims to integrate Apache Flink and YTsaurus.\n \n-### Quick start\n-\n-```bash\n-pip install ytsaurus-flyt\n-export YT_TOKEN=...\n-flyt profile add my-dev --proxy http://localhost:50005 --pool default\n-flyt install\n-flyt run path/to/pipeline.py\n-```\n-\n-See [python/README.md](python/README.md) and [python/ARCHITECTURE.md](python/ARCHITECTURE.md).\n+* [Apache Flink connectors](https://github.com/ytsaurus/ytsaurus-flyt/tree/main/flink-connector-ytsaurus) for working with YTsaurus [dynamic tables](https://ytsaurus.tech/docs/en/user-guide/dynamic-tables/overview)\n+* [Apache Flink formatters](https://github.com/ytsaurus/ytsaurus-flyt/tree/main/flink-yson) for working with [YSON](https://ytsaurus.tech/docs/en/user-guide/storage/yson) format\n+* [Python launcher / CLI](https://github.com/ytsaurus/ytsaurus-flyt/tree/main/python) for launching PyFlink jobs inside [Vanilla](https://ytsaurus.tech/docs/en/user-guide/data-processing/operations/vanilla) operations\n+* tools that simplify the integration YTsaurus and Apache Flink"
+    },
+    {
+      "sha": "3d30f878e7f2bde693e014b614ebe32a4c8719ba",
+      "filename": "python/ARCHITECTURE.md",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 4,
+      "changes": 12,
+      "blob_url": "https://github.com/ytsaurus/ytsaurus-flyt/blob/799e9a94c7672d82e62783e6f072d83eafcafe4e/python%2FARCHITECTURE.md",
+      "raw_url": "https://github.com/ytsaurus/ytsaurus-flyt/raw/799e9a94c7672d82e62783e6f072d83eafcafe4e/python%2FARCHITECTURE.md",
+      "contents_url": "https://api.github.com/repos/ytsaurus/ytsaurus-flyt/contents/python%2FARCHITECTURE.md?ref=799e9a94c7672d82e62783e6f072d83eafcafe4e",
+      "patch": "@@ -1,10 +1,14 @@\n # Architecture\n \n-FLYT submits a PyFlink job as a YTsaurus Vanilla operation (application mode). The process builds a spec, uploads wheels/runtime/JARs, and submits it via the YTsaurus client; it does not run a local Flink cluster. Configuration is `FlytConfig`, usually from profiles in `~/.config/flyt/profiles/<name>.yaml` (or `FLYT_CONFIG_DIR`).\n+FLYT submits a PyFlink job as a YTsaurus Vanilla operation (right now, application mode only). The process builds an [operation spec](https://ytsaurus.tech/docs/ru/user-guide/data-processing/operations/vanilla#primer-specifikacii), uploads job wheels and JARs, and submits it via the YTsaurus client.\n \n-By default `flyt profile add` sets `cypress_base_path` to `//home/flyt/clusters/<profile_name>/` so layer/tool caches live under that prefix. Optional shared JARs for `flink/lib` can sit under e.g. `//home/flyt/libraries/` with `jar_scan_folder` pointing there.\n+Profiles encapsulate cluster proxy/pool, paths, layers, etc. See [FlytConfig](src/ytsaurus_flyt/config.py).\n \n-The SquashFS runtime is built where you run `flyt` (Docker/Podman + `mksquashfs`), keyed by hash and cached on Cypress so exec nodes do not run `pip` per job. Delivery: `layer_paths` (mount SquashFS on the node) or `sandbox_unpack` (upload `.squashfs` as a file and unpack in the sandbox). Wheels in the layer target `runtime_python_version`; `python_bin` on workers must match that ABI.\n+The SquashFS runtime is built where you run `flyt` (Docker/Podman + `mksquashfs`), keyed by hash and cached on Cypress so exec nodes do not run `pip` per job. \n+\n+Delivery: [`layer_paths`](https://ytsaurus.tech/docs/en/user-guide/data-processing/operations/operations-options#user-script-options) — for production clusters (mount SquashFS on the node) — or `sandbox_unpack` — for local (Kind) clusters where porto support is not available (upload `.squashfs` as a file and unpack in the sandbox). \n+\n+Wheels in the layer target `runtime_python_version`; `python_bin` on workers must match that ABI.\n \n ```mermaid\n flowchart LR\n@@ -23,7 +27,7 @@ flowchart LR\n     W & R & J --> V\n ```\n \n-JARs: list basenames in `embed_squashfs_layer_jar_basenames` (inside the layer) and/or `runtime_jar_basenames` (staged as `file_paths` to `flink/lib`). Resolution picks the latest semver per basename under `jar_scan_folder`.\n+JARs: list basenames in `embed_squashfs_layer_jar_basenames` (inside the layer) and/or `runtime_jar_basenames` (staged as [`file_paths`](https://ytsaurus.tech/docs/en/user-guide/data-processing/operations/operations-options#user-script-options) to `flink/lib`). Resolution picks the latest semver per basename under `jar_scan_folder`.\n \n The code is split so the CLI, YTsaurus submission, and layer/image build logic can be tested independently. Job bootstrap is concatenated bash from `run_scripts/`.\n "
+    },
+    {
+      "sha": "c13701365a91ff88cdc40ecb6a30cb98d682ca43",
+      "filename": "python/README.md",
+      "status": "modified",
+      "additions": 45,
+      "deletions": 23,
+      "changes": 68,
+      "blob_url": "https://github.com/ytsaurus/ytsaurus-flyt/blob/799e9a94c7672d82e62783e6f072d83eafcafe4e/python%2FREADME.md",
+      "raw_url": "https://github.com/ytsaurus/ytsaurus-flyt/raw/799e9a94c7672d82e62783e6f072d83eafcafe4e/python%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/ytsaurus/ytsaurus-flyt/contents/python%2FREADME.md?ref=799e9a94c7672d82e62783e6f072d83eafcafe4e",
+      "patch": "@@ -1,44 +1,37 @@\n # ytsaurus-flyt\n \n PyFlink on [YTsaurus](https://ytsaurus.tech/) [Vanilla](https://ytsaurus.tech/docs/en/user-guide/data-processing/operations/vanilla) in application mode.\n-\n-Runtime is a SquashFS image (PyFlink + optional JARs for `flink/lib`), cached on Cypress. See [ARCHITECTURE.md](ARCHITECTURE.md). `squashfs_layer_delivery` is `layer_paths` or `sandbox_unpack`.\n+See [ARCHITECTURE.md](ARCHITECTURE.md) for internals.\n \n ## Install\n \n ```bash\n pip install ytsaurus-flyt\n ```\n \n-## Typical flow\n-\n-A profile stores proxy, pool, and `FlytConfig` defaults (under `~/.config/flyt/profiles/<name>.yaml`). You can keep several profiles for the same cluster.\n+## Quick start\n \n ```bash\n export YT_TOKEN=...\n-flyt profile add kind-dev --proxy http://localhost:50005 --pool default\n+flyt profile add kind-dev --proxy http://localhost:50005\n flyt install\n flyt run examples/simple_wordcount/pipeline.py\n ```\n \n-- `flyt install` uploads the SquashFS runtime for the active profile.\n-- `flyt run`, `validate`, and `build-layer` use the active profile unless you pass `--profile` or set `FLYT_PROFILE`. For proxy/pool, precedence is: `--proxy` / `--pool`, then `FLYT_PROXY` / `YT_PROXY` / `FLYT_POOL` / `YT_POOL`, then the profile.\n-- Without `--wheel` / `--source-dir`, `flyt run` finds `pyproject.toml` next to the script and builds a wheel in a temp dir. The script path you pass is rewritten relative to that project (or `--source-dir`) so it matches the wheel layout.\n-- With `--wheel` only, pass the script path as it appears inside the unpacked wheel (e.g. `pipeline.py`).\n+## Profiles\n \n-Other commands: `flyt profile import`, `flyt validate` (profile, `mksquashfs`, `unzip`, optional connectivity check), `flyt jobshell` (needs `tornado`), `flyt build-layer` (local `.squashfs`, optional `--upload`). See `flyt <cmd> --help` for flags.\n+A profile stores proxy, pool, and `FlytConfig` defaults under `~/.config/flyt/profiles/<name>.yaml`.\n+You can keep several profiles for different clusters or environments.\n \n ```bash\n-flyt build-layer --output runtime.squashfs\n+flyt profile add <name> --proxy <url>\n+flyt profile import <file.yaml>\n ```\n \n-`--force-rebuild` on `flyt run` ignores a cached SquashFS on Cypress and rebuilds the layer.\n-\n-If `squashfs_layer_cache_prefix` / `squashfs_tools_cache_prefix` are unset, defaults under `//tmp/` on Cypress may be GC’d. New profiles default `cypress_base_path` to `//home/flyt/clusters/<profile_name>/`. Put shared JARs under something like `//home/flyt/libraries/` and set `jar_scan_folder`.\n+Commands use the active profile unless you pass `--profile` or set `FLYT_PROFILE`.\n+For proxy/pool, precedence: CLI flags > env vars (`FLYT_PROXY` / `YT_PROXY` / `FLYT_POOL` / `YT_POOL`) > profile.\n \n-JAR filenames follow `<basename>-<version>.jar`. List basenames in `jar_scan_folder`; use `embed_squashfs_layer_jar_basenames` for the layer and `runtime_jar_basenames` for `file_paths` into `flink/lib` only. Do not put the same basename in both lists.\n-\n-## Minimal profile YAML (SquashFS)\n+### Example YAML\n \n `flyt profile add` writes a starter; extend with any `FlytConfig` field:\n \n@@ -56,18 +49,44 @@ python_bin: \"/usr/bin/python3\"\n \n `runtime_python_version` must match the Python ABI of `python_bin` on exec nodes.\n \n-Default `squashfs_layer_delivery` from `flyt profile add` is `layer_paths`. For Kind local dev, use `sandbox_unpack` (see [examples/kind/README.md](examples/kind/README.md)).\n+Default `squashfs_layer_delivery` is `layer_paths`. For Kind local dev, use `sandbox_unpack` (see [examples/kind/README.md](examples/kind/README.md)).\n \n-## API\n+## Commands\n \n-`FlytConfig`, `FlytConfig.from_yaml()`, `launch_vanilla_job()`, `ClusterPreset` — see the package and [ARCHITECTURE.md](ARCHITECTURE.md).\n+| Command | Description |\n+|---------|-------------|\n+| `flyt run <script>` | Build wheel, upload runtime, submit [Vanilla](https://ytsaurus.tech/docs/en/user-guide/data-processing/operations/vanilla) job |\n+| `flyt install` | Upload SquashFS runtime for the active profile |\n+| `flyt validate` | Check profile, tools (`mksquashfs`, `unzip`), optional connectivity |\n+| `flyt build-layer` | Build local `.squashfs`; `--upload` to push to Cypress |\n+| `flyt jobshell` | Interactive shell into a running job (needs `tornado`) |\n+\n+Run `flyt <cmd> --help` for all flags.\n+\n+### `flyt run` details\n+\n+Without `--wheel` / `--source-dir`, `flyt run` finds `pyproject.toml` next to the script, builds a wheel in a temp dir, and rewrites the script path to match the wheel layout.\n+With `--wheel` only, pass the script path as it appears inside the unpacked wheel (e.g. `pipeline.py`).\n+\n+`--force-rebuild` ignores a cached SquashFS on Cypress and rebuilds the layer.\n+\n+## JARs\n+\n+JAR filenames follow `<basename>-<version>.jar`. Place them under `jar_scan_folder`; resolution picks the latest semver per basename.\n+\n+| Profile field | Where the JAR ends up |\n+|---|---|\n+| `embed_squashfs_layer_jar_basenames` | Baked into the SquashFS layer |\n+| `runtime_jar_basenames` | Staged as [`file_paths`](https://ytsaurus.tech/docs/en/user-guide/data-processing/operations/operations-options#user-script-options) into `flink/lib` at runtime |\n+\n+Do not put the same basename in both lists.\n \n ## Credentials\n \n - `YT_TOKEN` / `FLYT_YT_TOKEN`.\n - Kind demo ([examples/kind/README.md](examples/kind/README.md)): UI password works as `YT_TOKEN`; set `YT_USER=admin` if needed.\n-- Do not set `YT_TOKEN` to an empty string (it blocks the YTsaurus Python client from using the default token file at `~/.yt/token`). Unset or use a real token.\n-- Optional `FLYT_SECURE_<KEY>` for extra secure_vault keys.\n+- Do not set `YT_TOKEN` to an empty string — it blocks the YTsaurus client from using `~/.yt/token`. Unset or use a real token.\n+- Optional `FLYT_SECURE_<KEY>` for extra [`secure_vault`](https://ytsaurus.tech/docs/en/user-guide/data-processing/operations/operations-options#general-options-for-all-operation-types) keys.\n - Programmatic: `extra_secrets` on `get_secure_credentials` / `launch_vanilla_job` if secrets come from outside env.\n \n ## Presets\n@@ -79,6 +98,9 @@ Default `squashfs_layer_delivery` from `flyt profile add` is `layer_paths`. For\n | LARGE | 4 | 16G | 9296M |\n | XLARGE | 8 | 32G | 24G |\n \n+## API\n+\n+`FlytConfig`, `FlytConfig.from_yaml()`, `launch_vanilla_job()`, `ClusterPreset` — see the package and [ARCHITECTURE.md](ARCHITECTURE.md).\n \n ## Development\n "
+    },
+    {
+      "sha": "b07c16a8df5a5268db984b479c01ef050926f3ba",
+      "filename": "python/examples/README.md",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 10,
+      "changes": 14,
+      "blob_url": "https://github.com/ytsaurus/ytsaurus-flyt/blob/799e9a94c7672d82e62783e6f072d83eafcafe4e/python%2Fexamples%2FREADME.md",
+      "raw_url": "https://github.com/ytsaurus/ytsaurus-flyt/raw/799e9a94c7672d82e62783e6f072d83eafcafe4e/python%2Fexamples%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/ytsaurus/ytsaurus-flyt/contents/python%2Fexamples%2FREADME.md?ref=799e9a94c7672d82e62783e6f072d83eafcafe4e",
+      "patch": "@@ -1,17 +1,11 @@\n # Examples\n \n-Run `flyt` from the repo `python/` directory; paths such as `examples/simple_wordcount/pipeline.py` are relative to that root. Install the package first so `flyt` is on `PATH` (`pip install ytsaurus-flyt`, or `pip install -e .` from `python/` when developing).\n+See [../README.md](../README.md) for install and `flyt` commands.\n \n-Then use `flyt profile` / `flyt install` / `flyt run` as in [../README.md](../README.md). That flow (profile + SquashFS runtime on the cluster) is the same for every job below; the table only describes what each pipeline does.\n-\n-Example [profile.yaml](simple_wordcount/profile.yaml) files under `examples/` default **`squashfs_layer_delivery: sandbox_unpack`** so local and Kind-style runs work without extra edits.\n-\n-**Production:** Prefer **`layer_paths`** (`squashfs_layer_delivery`) for real clusters: the SquashFS is mounted from Cypress on exec nodes, startup is much faster, and layers are cached on nodes between jobs. **`sandbox_unpack`** ships the archive as job files and unpacks in the sandbox—fine for try-out, not what you want at scale. Set `layer_paths` in the profile you import before running serious workloads (see [../README.md](../README.md)).\n+Example profiles default to `squashfs_layer_delivery: sandbox_unpack` so they work locally and on Kind without extra setup. For production clusters, switch to `layer_paths` (see [../README.md](../README.md#profiles)).\n \n | Path | Notes |\n-|------|--------|\n+|------|-------|\n | [simple_wordcount/](simple_wordcount/) | Datagen and print; [profile.yaml](simple_wordcount/profile.yaml) |\n | [simple_java_udf/](simple_java_udf/) | PyFlink + Java `ScalarFunction` JAR (Gradle); [profile.yaml](simple_java_udf/profile.yaml) |\n-| [kind/](kind/) | Kind cluster. See [kind/README.md](kind/README.md) |\n-\n-With `flyt` on `PATH`, absolute paths to job scripts also work from any cwd.\n+| [kind/](kind/) | Kind cluster setup; [kind/README.md](kind/README.md) |"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "59c2394b9a4cc185ffd89448baafc8d054f90018",
+      "message": "feat(python): restructure docs",
+      "parent_shas": [
+        "1dab57336d831b3f49e4919ffc9247b41432876a"
+      ]
+    },
+    {
+      "sha": "61a683c6ab6269a289fbf23d0843f19403ed95f1",
+      "message": "Enrich with links to YTSaurus docs",
+      "parent_shas": [
+        "59c2394b9a4cc185ffd89448baafc8d054f90018"
+      ]
+    },
+    {
+      "sha": "06381cf769c84849e798e376dfd689b5c099c1cf",
+      "message": "Merge branch 'main' into fix/fix-docs",
+      "parent_shas": [
+        "61a683c6ab6269a289fbf23d0843f19403ed95f1",
+        "5892c5060a46b37c99a6cb4ee95869f0d05d245b"
+      ]
+    },
+    {
+      "sha": "c03009e14010380a430a30b0f5f4adb63f4da1dc",
+      "message": "Remove FLYT mention from the main README.md",
+      "parent_shas": [
+        "06381cf769c84849e798e376dfd689b5c099c1cf"
+      ]
+    },
+    {
+      "sha": "fd1b9b875ac0b1ba2397f37a9d40fec65f4ef803",
+      "message": "Update README.md",
+      "parent_shas": [
+        "c03009e14010380a430a30b0f5f4adb63f4da1dc"
+      ]
+    },
+    {
+      "sha": "fbc8e8c4e49bfa762092d60bde2e5721b4c533c6",
+      "message": "Update README.md",
+      "parent_shas": [
+        "fd1b9b875ac0b1ba2397f37a9d40fec65f4ef803"
+      ]
+    },
+    {
+      "sha": "77db0bf9d2967880c5bc8f222639b8dacea82255",
+      "message": "Update README.md",
+      "parent_shas": [
+        "fbc8e8c4e49bfa762092d60bde2e5721b4c533c6"
+      ]
+    },
+    {
+      "sha": "799e9a94c7672d82e62783e6f072d83eafcafe4e",
+      "message": "Add link to Vanilla ytsaurus docs in main README",
+      "parent_shas": [
+        "77db0bf9d2967880c5bc8f222639b8dacea82255"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "doc_only",
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "python_java_bridge_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__ytsaurus__ytsaurus-flyt__pr29.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\ytsaurus__ytsaurus-flyt__pr29__python_java__ytsaurus__ytsaurus-flyt__pr29\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\ytsaurus__ytsaurus-flyt__pr29__python_java__ytsaurus__ytsaurus-flyt__pr29\\rn"
+  }
+}

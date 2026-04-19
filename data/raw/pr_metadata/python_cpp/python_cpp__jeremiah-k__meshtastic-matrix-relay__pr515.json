@@ -1,0 +1,103 @@
+{
+  "instance_id": "python_cpp__jeremiah-k__meshtastic-matrix-relay__pr515",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "jeremiah-k/meshtastic-matrix-relay",
+  "pr_number": 515,
+  "pr_url": "https://github.com/jeremiah-k/meshtastic-matrix-relay/pull/515",
+  "repo": {
+    "full_name": "jeremiah-k/meshtastic-matrix-relay",
+    "clone_url": "https://github.com/jeremiah-k/meshtastic-matrix-relay.git",
+    "default_branch": "main",
+    "created_at": "2023-04-17T23:40:19Z",
+    "stars": 177,
+    "license": "GPL-3.0",
+    "size_kb": 3642
+  },
+  "pull_request": {
+    "id": 3520221813,
+    "title": "Update dependency python",
+    "body": "This PR contains the following updates:\n\n| Package | Type | Update | Change |\n|---|---|---|---|\n| [python](https://redirect.github.com/actions/python-versions) | uses-with | minor | `3.12` → `3.14` |\n| python | final | minor | `3.11-slim-bookworm` → `3.14-slim-bookworm` |\n| python | stage | minor | `3.11-slim-bookworm` → `3.14-slim-bookworm` |\n\n---\n\n### Release Notes\n\n<details>\n<summary>actions/python-versions (python)</summary>\n\n### [`v3.14.4`](https://redirect.github.com/actions/python-versions/releases/tag/3.14.4-24114161919): 3.14.4\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.14.3-21673711214...3.14.4-24114161919)\n\nPython 3.14.4\n\n### [`v3.14.3`](https://redirect.github.com/actions/python-versions/releases/tag/3.14.3-21673711214): 3.14.3\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.14.2-20014991423...3.14.3-21673711214)\n\nPython 3.14.3\n\n### [`v3.14.2`](https://redirect.github.com/actions/python-versions/releases/tag/3.14.2-20014991423): 3.14.2\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.14.1-19879739908...3.14.2-20014991423)\n\nPython 3.14.2\n\n### [`v3.14.1`](https://redirect.github.com/actions/python-versions/releases/tag/3.14.1-19879739908): 3.14.1\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.14.0-18313368925...3.14.1-19879739908)\n\nPython 3.14.1\n\n### [`v3.14.0`](https://redirect.github.com/actions/python-versions/releases/tag/3.14.0-18313368925): 3.14.0\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.13-24114113768...3.14.0-18313368925)\n\nPython 3.14.0\n\n### [`v3.13.13`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.13-24114113768): 3.13.13\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.12-21673645133...3.13.13-24114113768)\n\nPython 3.13.13\n\n### [`v3.13.12`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.12-21673645133): 3.13.12\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.11-20014977833...3.13.12-21673645133)\n\nPython 3.13.12\n\n### [`v3.13.11`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.11-20014977833): 3.13.11\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.10-19879712315...3.13.11-20014977833)\n\nPython 3.13.11\n\n### [`v3.13.10`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.10-19879712315): 3.13.10\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.9-18515951191...3.13.10-19879712315)\n\nPython 3.13.10\n\n### [`v3.13.9`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.9-18515951191): 3.13.9\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.8-18331000654...3.13.9-18515951191)\n\nPython 3.13.9\n\n### [`v3.13.8`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.8-18331000654): 3.13.8\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.7-16980743123...3.13.8-18331000654)\n\nPython 3.13.8\n\n### [`v3.13.7`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.7-16980743123): 3.13.7\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.6-16792117939...3.13.7-16980743123)\n\nPython 3.13.7\n\n### [`v3.13.6`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.6-16792117939): 3.13.6\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.5-15601068749...3.13.6-16792117939)\n\nPython 3.13.6\n\n### [`v3.13.5`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.5-15601068749): 3.13.5\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.4-15433317575...3.13.5-15601068749)\n\nPython 3.13.5\n\n### [`v3.13.4`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.4-15433317575): 3.13.4\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.3-14344076652...3.13.4-15433317575)\n\nPython 3.13.4\n\n### [`v3.13.3`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.3-14344076652): 3.13.3\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.2-13708744326...3.13.3-14344076652)\n\nPython 3.13.3\n\n### [`v3.13.2`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.2-13708744326): 3.13.2\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.1-13437882550...3.13.2-13708744326)\n\nPython 3.13.2\n\n### [`v3.13.1`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.1-13437882550): 3.13.1\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.13.0-13707372259...3.13.1-13437882550)\n\nPython 3.13.1\n\n### [`v3.13.0`](https://redirect.github.com/actions/python-versions/releases/tag/3.13.0-13707372259): 3.13.0\n\n[Compare Source](https://redirect.github.com/actions/python-versions/compare/3.12.13-22652080177...3.13.0-13707372259)\n\nPython 3.13.0\n\n</details>\n\n---\n\n### Configuration\n\n📅 **Schedule**: (in timezone America/Chicago)\n\n- Branch creation\n  - At any time (no schedule defined)\n- Automerge\n  - At any time (no schedule defined)\n\n🚦 **Automerge**: Enabled.\n\n♻ **Rebasing**: Whenever PR is behind base branch, or you tick the rebase/retry checkbox.\n\n👻 **Immortal**: This PR will be recreated if closed unmerged. Get [config help](https://redirect.github.com/renovatebot/renovate/discussions) if that's undesired.\n\n---\n\n - [ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box\n\n---\n\nThis PR was generated by [Mend Renovate](https://mend.io/renovate/). View the [repository job log](https://developer.mend.io/github/jeremiah-k/meshtastic-matrix-relay).\n<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiI0My4xMTAuMiIsInVwZGF0ZWRJblZlciI6IjQzLjExMC4yIiwidGFyZ2V0QnJhbmNoIjoibWFpbiIsImxhYmVscyI6W119-->\n",
+    "created_at": "2026-04-12T21:36:39Z",
+    "merged_at": "2026-04-12T23:54:08Z",
+    "base_sha": "bed5fc649d97e35679907889c3618de543db60be",
+    "head_sha": "6c6ec4994b3ee3a5700f9651d641c05149355488",
+    "merge_commit_sha": "f74ade4ac9fe8c31301ac45d029bc06b437267cf",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "bed5fc649d97e35679907889c3618de543db60be",
+  "final_sha": "6c6ec4994b3ee3a5700f9651d641c05149355488",
+  "changed_files": [
+    {
+      "sha": "ce07cd9ccbd944f04681bd921490ae0aaaf0aeda",
+      "filename": ".github/workflows/meshtasticd-integration.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/jeremiah-k/meshtastic-matrix-relay/blob/6c6ec4994b3ee3a5700f9651d641c05149355488/.github%2Fworkflows%2Fmeshtasticd-integration.yml",
+      "raw_url": "https://github.com/jeremiah-k/meshtastic-matrix-relay/raw/6c6ec4994b3ee3a5700f9651d641c05149355488/.github%2Fworkflows%2Fmeshtasticd-integration.yml",
+      "contents_url": "https://api.github.com/repos/jeremiah-k/meshtastic-matrix-relay/contents/.github%2Fworkflows%2Fmeshtasticd-integration.yml?ref=6c6ec4994b3ee3a5700f9651d641c05149355488",
+      "patch": "@@ -140,7 +140,7 @@ jobs:\n       - name: Set up Python\n         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6\n         with:\n-          python-version: \"3.12\"\n+          python-version: \"3.14\"\n \n       - name: Cache pip dependencies\n         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5"
+    },
+    {
+      "sha": "3b47a460d9c35de1fc49f753c9af301a1ff5860d",
+      "filename": ".github/workflows/package-windows.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/jeremiah-k/meshtastic-matrix-relay/blob/6c6ec4994b3ee3a5700f9651d641c05149355488/.github%2Fworkflows%2Fpackage-windows.yml",
+      "raw_url": "https://github.com/jeremiah-k/meshtastic-matrix-relay/raw/6c6ec4994b3ee3a5700f9651d641c05149355488/.github%2Fworkflows%2Fpackage-windows.yml",
+      "contents_url": "https://api.github.com/repos/jeremiah-k/meshtastic-matrix-relay/contents/.github%2Fworkflows%2Fpackage-windows.yml?ref=6c6ec4994b3ee3a5700f9651d641c05149355488",
+      "patch": "@@ -30,7 +30,7 @@ jobs:\n       - name: Set up Python\n         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6\n         with:\n-          python-version: 3.12\n+          python-version: 3.14\n \n       - name: Extract version and git SHA\n         id: get_version"
+    },
+    {
+      "sha": "c2080226d9b2a5db8159123e4c417fbd320eabed",
+      "filename": "Dockerfile",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/jeremiah-k/meshtastic-matrix-relay/blob/6c6ec4994b3ee3a5700f9651d641c05149355488/Dockerfile",
+      "raw_url": "https://github.com/jeremiah-k/meshtastic-matrix-relay/raw/6c6ec4994b3ee3a5700f9651d641c05149355488/Dockerfile",
+      "contents_url": "https://api.github.com/repos/jeremiah-k/meshtastic-matrix-relay/contents/Dockerfile?ref=6c6ec4994b3ee3a5700f9651d641c05149355488",
+      "patch": "@@ -1,5 +1,5 @@\n # Build stage\n-FROM python:3.11-slim-bookworm@sha256:9c6f90801e6b68e772b7c0ca74260cbf7af9f320acec894e26fccdaccfbe3b47 AS builder\n+FROM python:3.14-slim-bookworm@sha256:980c03657c7c8bfbce5212d242ffe5caf69bfd8b6c8383e3580b27d028a6ddb3 AS builder\n \n # Install build dependencies with pinned versions\n RUN apt-get update && apt-get install -y --no-install-recommends \\\n@@ -22,7 +22,7 @@ RUN python -m pip install --no-cache-dir --timeout=300 --retries=3 \\\n     --prefix=/install \".[e2e]\"\n \n # Runtime stage\n-FROM python:3.11-slim-bookworm@sha256:9c6f90801e6b68e772b7c0ca74260cbf7af9f320acec894e26fccdaccfbe3b47\n+FROM python:3.14-slim-bookworm@sha256:980c03657c7c8bfbce5212d242ffe5caf69bfd8b6c8383e3580b27d028a6ddb3\n \n # Create non-root user for security\n RUN groupadd --gid 1000 mmrelay && \\"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "6c6ec4994b3ee3a5700f9651d641c05149355488",
+      "message": "Update dependency python",
+      "parent_shas": [
+        "bed5fc649d97e35679907889c3618de543db60be"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__jeremiah-k__meshtastic-matrix-relay__pr515.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\jeremiah-k__meshtastic-matrix-relay__pr515__python_cpp__jeremiah-k__meshtastic-matrix-relay__pr515\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\jeremiah-k__meshtastic-matrix-relay__pr515__python_cpp__jeremiah-k__meshtastic-matrix-relay__pr515\\rn"
+  }
+}

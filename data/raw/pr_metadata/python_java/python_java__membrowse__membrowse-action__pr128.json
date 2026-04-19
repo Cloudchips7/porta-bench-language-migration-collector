@@ -1,0 +1,107 @@
+{
+  "instance_id": "python_java__membrowse__membrowse-action__pr128",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "membrowse/membrowse-action",
+  "pr_number": 128,
+  "pr_url": "https://github.com/membrowse/membrowse-action/pull/128",
+  "repo": {
+    "full_name": "membrowse/membrowse-action",
+    "clone_url": "https://github.com/membrowse/membrowse-action.git",
+    "default_branch": "main",
+    "created_at": "2025-06-23T14:26:13Z",
+    "stars": 19,
+    "license": "GPL-3.0",
+    "size_kb": 899
+  },
+  "pull_request": {
+    "id": 3517472667,
+    "title": "fix container action python",
+    "body": "",
+    "created_at": "2026-04-11T11:41:49Z",
+    "merged_at": "2026-04-11T11:52:02Z",
+    "base_sha": "6d8c774ee9a7327744f690f43892d4e4cfff2ea1",
+    "head_sha": "5b860bfc322aacea12b342a933116688bb694d6b",
+    "merge_commit_sha": "90ee0af11dbd0337dbf4b70027037235a480722d",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "6d8c774ee9a7327744f690f43892d4e4cfff2ea1",
+  "final_sha": "5b860bfc322aacea12b342a933116688bb694d6b",
+  "changed_files": [
+    {
+      "sha": "59d7be869b38d8cebdd2da63ac242d3e790523f2",
+      "filename": "action.yml",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 1,
+      "changes": 19,
+      "blob_url": "https://github.com/membrowse/membrowse-action/blob/5b860bfc322aacea12b342a933116688bb694d6b/action.yml",
+      "raw_url": "https://github.com/membrowse/membrowse-action/raw/5b860bfc322aacea12b342a933116688bb694d6b/action.yml",
+      "contents_url": "https://api.github.com/repos/membrowse/membrowse-action/contents/action.yml?ref=5b860bfc322aacea12b342a933116688bb694d6b",
+      "patch": "@@ -83,7 +83,24 @@ runs:\n     - name: Install membrowse package\n       shell: bash\n       run: |\n-        ${{ steps.detect-python.outputs.python }} -m pip install --force-reinstall --no-cache-dir ${{ github.action_path }}\n+        INSTALL_PATH=\"${{ github.action_path }}\"\n+        # In container jobs, github.action_path uses the host path which doesn't\n+        # exist inside the container. Derive the container prefix from GITHUB_WORKSPACE.\n+        if [ ! -d \"$INSTALL_PATH\" ]; then\n+          if [[ \"$INSTALL_PATH\" == */_actions/* ]] && [ -n \"${GITHUB_WORKSPACE:-}\" ]; then\n+            HOST_PREFIX=\"${INSTALL_PATH%%/_actions/*}\"\n+            CONTAINER_PREFIX=\"${GITHUB_WORKSPACE%/*/*}\"\n+            if [ -n \"$CONTAINER_PREFIX\" ]; then\n+              INSTALL_PATH=\"${INSTALL_PATH/$HOST_PREFIX/$CONTAINER_PREFIX}\"\n+              echo \"Resolved container install path: $INSTALL_PATH\"\n+            fi\n+          fi\n+          if [ ! -d \"$INSTALL_PATH\" ]; then\n+            echo \"::error::Could not resolve membrowse package path. Tried: ${{ github.action_path }} and $INSTALL_PATH\"\n+            exit 1\n+          fi\n+        fi\n+        ${{ steps.detect-python.outputs.python }} -m pip install --force-reinstall --no-cache-dir \"$INSTALL_PATH\"\n \n     - name: Run memory analysis\n       id: analysis"
+    },
+    {
+      "sha": "999eeb0c3827674e9818fd53b1d58be0077aba99",
+      "filename": "comment-action/action.yml",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 1,
+      "changes": 19,
+      "blob_url": "https://github.com/membrowse/membrowse-action/blob/5b860bfc322aacea12b342a933116688bb694d6b/comment-action%2Faction.yml",
+      "raw_url": "https://github.com/membrowse/membrowse-action/raw/5b860bfc322aacea12b342a933116688bb694d6b/comment-action%2Faction.yml",
+      "contents_url": "https://api.github.com/repos/membrowse/membrowse-action/contents/comment-action%2Faction.yml?ref=5b860bfc322aacea12b342a933116688bb694d6b",
+      "patch": "@@ -53,7 +53,24 @@ runs:\n     - name: Install membrowse package\n       shell: bash\n       run: |\n-        ${{ steps.detect-python.outputs.python }} -m pip install --force-reinstall --no-cache-dir ${{ github.action_path }}/..\n+        INSTALL_PATH=\"${{ github.action_path }}/..\"\n+        # In container jobs, github.action_path uses the host path which doesn't\n+        # exist inside the container. Derive the container prefix from GITHUB_WORKSPACE.\n+        if [ ! -d \"$INSTALL_PATH\" ]; then\n+          if [[ \"$INSTALL_PATH\" == */_actions/* ]] && [ -n \"${GITHUB_WORKSPACE:-}\" ]; then\n+            HOST_PREFIX=\"${INSTALL_PATH%%/_actions/*}\"\n+            CONTAINER_PREFIX=\"${GITHUB_WORKSPACE%/*/*}\"\n+            if [ -n \"$CONTAINER_PREFIX\" ]; then\n+              INSTALL_PATH=\"${INSTALL_PATH/$HOST_PREFIX/$CONTAINER_PREFIX}\"\n+              echo \"Resolved container install path: $INSTALL_PATH\"\n+            fi\n+          fi\n+          if [ ! -d \"$INSTALL_PATH\" ]; then\n+            echo \"::error::Could not resolve membrowse package path. Tried: ${{ github.action_path }}/.. and $INSTALL_PATH\"\n+            exit 1\n+          fi\n+        fi\n+        ${{ steps.detect-python.outputs.python }} -m pip install --force-reinstall --no-cache-dir \"$INSTALL_PATH\"\n \n     - name: Post combined PR comment\n       shell: bash"
+    },
+    {
+      "sha": "63dbcfaa027836a6a54b7e48b12bf480e006d3d4",
+      "filename": "onboard-action/action.yml",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 1,
+      "changes": 19,
+      "blob_url": "https://github.com/membrowse/membrowse-action/blob/5b860bfc322aacea12b342a933116688bb694d6b/onboard-action%2Faction.yml",
+      "raw_url": "https://github.com/membrowse/membrowse-action/raw/5b860bfc322aacea12b342a933116688bb694d6b/onboard-action%2Faction.yml",
+      "contents_url": "https://api.github.com/repos/membrowse/membrowse-action/contents/onboard-action%2Faction.yml?ref=5b860bfc322aacea12b342a933116688bb694d6b",
+      "patch": "@@ -90,7 +90,24 @@ runs:\n     - name: Install membrowse package\n       shell: bash\n       run: |\n-        ${{ steps.detect-python.outputs.python }} -m pip install --force-reinstall --no-cache-dir ${{ github.action_path }}/..\n+        INSTALL_PATH=\"${{ github.action_path }}/..\"\n+        # In container jobs, github.action_path uses the host path which doesn't\n+        # exist inside the container. Derive the container prefix from GITHUB_WORKSPACE.\n+        if [ ! -d \"$INSTALL_PATH\" ]; then\n+          if [[ \"$INSTALL_PATH\" == */_actions/* ]] && [ -n \"${GITHUB_WORKSPACE:-}\" ]; then\n+            HOST_PREFIX=\"${INSTALL_PATH%%/_actions/*}\"\n+            CONTAINER_PREFIX=\"${GITHUB_WORKSPACE%/*/*}\"\n+            if [ -n \"$CONTAINER_PREFIX\" ]; then\n+              INSTALL_PATH=\"${INSTALL_PATH/$HOST_PREFIX/$CONTAINER_PREFIX}\"\n+              echo \"Resolved container install path: $INSTALL_PATH\"\n+            fi\n+          fi\n+          if [ ! -d \"$INSTALL_PATH\" ]; then\n+            echo \"::error::Could not resolve membrowse package path. Tried: ${{ github.action_path }}/.. and $INSTALL_PATH\"\n+            exit 1\n+          fi\n+        fi\n+        ${{ steps.detect-python.outputs.python }} -m pip install --force-reinstall --no-cache-dir \"$INSTALL_PATH\"\n \n     - name: Fetch full git history\n       shell: bash"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "bb9eae841363659195a0433f9448e1a614f5b381",
+      "message": "fix container action python",
+      "parent_shas": [
+        "6d8c774ee9a7327744f690f43892d4e4cfff2ea1"
+      ]
+    },
+    {
+      "sha": "5b860bfc322aacea12b342a933116688bb694d6b",
+      "message": "fix cr",
+      "parent_shas": [
+        "bb9eae841363659195a0433f9448e1a614f5b381"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__membrowse__membrowse-action__pr128.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\membrowse__membrowse-action__pr128__python_java__membrowse__membrowse-action__pr128\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\membrowse__membrowse-action__pr128__python_java__membrowse__membrowse-action__pr128\\rn"
+  }
+}

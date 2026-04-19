@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>语言迁移标注工作台</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-copy">
+        <p class="eyebrow">Porta-Bench Language Migration Review</p>
+        <h1>语言迁移标注工作台</h1>
+        <p class="topbar-description">
+          左边看证据，右边做判断。中间工作区会优先展示和这条 PR 最相关的改动文件、Patch 片段，以及
+          <code>r0 / rn</code> 快照内容。
+        </p>
+      </div>
+      <div class="topbar-meta">
+        <span id="resultsPath">结果目录：data/review_results/</span>
+        <button id="reloadBtn" class="ghost-button" type="button">刷新样本</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sample-rail">
+        <div class="rail-header">
+          <label for="subtypeSelect">子类型</label>
+          <select id="subtypeSelect"></select>
+        </div>
+        <div class="sample-count" id="sampleCount">正在加载样本...</div>
+        <div class="sample-list" id="sampleList"></div>
+      </aside>
+
+      <section class="evidence-stage">
+        <div class="stage-hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Evidence First</p>
+            <h2 id="sampleTitle">请选择一个样本</h2>
+            <p id="sampleSubtitle">这里会展示 PR 摘要、关键改动文件和前后快照对照。</p>
+          </div>
+          <div class="hero-stats" id="heroStats"></div>
+        </div>
+
+        <div class="stage-panels">
+          <section class="evidence-panel">
+            <div class="section-head">
+              <h3>样本概览</h3>
+              <span id="instanceBadge" class="badge">未选择样本</span>
+            </div>
+
+            <div class="overview-grid" id="overviewGrid"></div>
+
+            <div class="story-block">
+              <h4>PR 摘要</h4>
+              <div class="prose-block" id="bodyBlock">请选择样本后查看。</div>
+            </div>
+
+            <div class="story-block">
+              <h4>证据阅读顺序</h4>
+              <div class="guides-grid">
+                <div>
+                  <h5>左侧应该先看什么</h5>
+                  <ul id="leftGuideList" class="guide-list"></ul>
+                </div>
+                <div>
+                  <h5>右侧选项如何对应</h5>
+                  <ul id="rightGuideList" class="guide-list"></ul>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="files-panel">
+            <div class="section-head">
+              <h3>改动文件与快照对照</h3>
+              <span class="muted">优先展示与标注最相关的改动文件</span>
+            </div>
+
+            <div class="file-browser">
+              <aside class="file-list-wrap">
+                <div class="mini-tabs">
+                  <button class="mini-tab is-active" type="button">改动文件</button>
+                </div>
+                <div class="file-controls">
+                  <input id="fileSearchInput" type="text" placeholder="搜索文件名或路径" />
+                  <select id="fileFilterSelect">
+                    <option value="all">全部文件</option>
+                    <option value="diff">优先看差异文件</option>
+                    <option value="python">只看 Python</option>
+                    <option value="cpp">只看 C/C++</option>
+                    <option value="java">只看 Java</option>
+                    <option value="tests">只看测试文件</option>
+                  </select>
+                </div>
+                <div id="fileList" class="file-list"></div>
+              </aside>
+
+              <div class="file-viewer">
+                <div class="viewer-toolbar">
+                  <div class="file-meta" id="fileMeta">请选择一个文件。</div>
+                  <div class="viewer-actions">
+                    <button id="openDetailsModalBtn" class="ghost-button small" type="button">放大详情</button>
+                    <button id="openPatchModalBtn" class="ghost-button small" type="button">放大 Patch</button>
+                    <button id="openCompareModalBtn" class="ghost-button small" type="button">放大对照</button>
+                  </div>
+                </div>
+
+                <div class="viewer-stack">
+                  <section class="stack-card is-open" data-panel="details">
+                    <button class="stack-toggle" data-target="details" type="button">
+                      <span>文件详情</span>
+                      <span class="toggle-hint">点击折叠 / 展开</span>
+                    </button>
+                    <div class="stack-content" id="panel-details">
+                      <div id="fileDetailGrid" class="file-detail-grid"></div>
+                    </div>
+                  </section>
+
+                  <section class="stack-card is-open" data-panel="patch">
+                    <button class="stack-toggle" data-target="patch" type="button">
+                      <span>Patch 片段</span>
+                      <span class="toggle-hint">可折叠，可放大</span>
+                    </button>
+                    <div class="stack-content" id="panel-patch">
+                      <pre id="patchPreview" class="code-view code-view-tall">请选择左侧文件后查看 patch。</pre>
+                    </div>
+                  </section>
+
+                  <section class="stack-card is-open" data-panel="compare">
+                    <button class="stack-toggle" data-target="compare" type="button">
+                      <span>r0 / rn 对照阅读</span>
+                      <span class="toggle-hint">可拖动分栏，可放大</span>
+                    </button>
+                    <div class="stack-content" id="panel-compare">
+                      <div class="compare-toolbar">
+                        <span>中间分隔条可以左右拖动，调整 r0 / rn 阅读比例。</span>
+                      </div>
+                      <div class="resizable-compare" id="comparePane">
+                        <div class="compare-pane" id="compareLeft">
+                          <div class="box-title">r0 改动前</div>
+                          <pre id="r0Content" class="code-view code-view-compare">请选择文件后查看。</pre>
+                        </div>
+                        <div class="compare-splitter" id="compareSplitter" title="拖动调整 r0 / rn 比例"></div>
+                        <div class="compare-pane" id="compareRight">
+                          <div class="box-title">rn 改动后</div>
+                          <pre id="rnContent" class="code-view code-view-compare">请选择文件后查看。</pre>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <aside class="annotation-panel">
+        <div class="section-head">
+          <h3>人工标注</h3>
+          <span class="muted">保存后会写入 data/review_results/</span>
+        </div>
+
+        <div class="form-block">
+          <label>manual_label</label>
+          <p class="field-help" id="help_manual_label"></p>
+          <div class="option-group" id="manualLabelGroup"></div>
+        </div>
+
+        <div class="form-block">
+          <label>implementation_scope</label>
+          <p class="field-help" id="help_implementation_scope"></p>
+          <div class="option-group" id="implementationScopeGroup"></div>
+        </div>
+
+        <div class="form-block">
+          <label>logic_equivalence_scope</label>
+          <p class="field-help" id="help_logic_equivalence_scope"></p>
+          <div class="option-group" id="logicScopeGroup"></div>
+        </div>
+
+        <div class="form-block dual">
+          <div>
+            <label for="sourceLanguage">source_language</label>
+            <p class="field-help" id="help_source_target"></p>
+            <select id="sourceLanguage"></select>
+          </div>
+          <div>
+            <label for="targetLanguage">target_language</label>
+            <p class="field-help">&nbsp;</p>
+            <select id="targetLanguage"></select>
+          </div>
+        </div>
+
+        <div class="form-block dual">
+          <div>
+            <label for="sourceVersion">source_version</label>
+            <input id="sourceVersion" type="text" placeholder="例如 2" />
+          </div>
+          <div>
+            <label for="targetVersion">target_version</label>
+            <input id="targetVersion" type="text" placeholder="例如 3" />
+          </div>
+        </div>
+
+        <div class="form-block">
+          <label for="migrationPattern">migration_pattern</label>
+          <p class="field-help" id="help_migration_pattern"></p>
+          <textarea id="migrationPattern" rows="4"></textarea>
+        </div>
+
+        <div class="form-block dual">
+          <div>
+            <label for="testFramework">test_framework</label>
+            <input id="testFramework" type="text" />
+          </div>
+          <div>
+            <label for="buildSystem">build_system</label>
+            <input id="buildSystem" type="text" />
+          </div>
+        </div>
+
+        <div class="form-block triple">
+          <div>
+            <label for="reproducible">reproducible</label>
+            <p class="field-help" id="help_reproducible"></p>
+            <select id="reproducible"></select>
+          </div>
+          <div>
+            <label for="issueRewriteReady">issue_rewrite_ready</label>
+            <p class="field-help" id="help_issue_rewrite_ready"></p>
+            <select id="issueRewriteReady"></select>
+          </div>
+          <div>
+            <label for="leakageRisk">leakage_risk</label>
+            <p class="field-help" id="help_leakage_risk"></p>
+            <select id="leakageRisk"></select>
+          </div>
+        </div>
+
+        <div class="form-block">
+          <label for="excludeReason">exclude_reason</label>
+          <p class="field-help" id="help_exclude_reason"></p>
+          <input id="excludeReason" type="text" placeholder="negative 时再填，例如 binding_wrapper_noise" />
+        </div>
+
+        <div class="form-block dual">
+          <div>
+            <label for="reviewer">reviewer</label>
+            <input id="reviewer" type="text" placeholder="标注人姓名" />
+          </div>
+          <div>
+            <label for="crossCheckStatus">cross_check_status</label>
+            <select id="crossCheckStatus"></select>
+          </div>
+        </div>
+
+        <div class="form-block">
+          <label for="notes">notes</label>
+          <p class="field-help" id="help_notes"></p>
+          <textarea id="notes" rows="6" placeholder="这里写你为什么这么标。建议说明：迁移意图、对应模块、是否同一逻辑。"></textarea>
+        </div>
+
+        <div class="action-row">
+          <button id="saveBtn" class="primary-button" type="button">保存到结果文件夹</button>
+          <button id="fillExampleBtn" class="ghost-button" type="button">填入推荐示例</button>
+        </div>
+
+        <div class="save-status" id="saveStatus">还没有保存。</div>
+      </aside>
+    </main>
+  </div>
+
+  <div id="detailModal" class="detail-modal" hidden>
+    <div class="detail-modal-backdrop" data-close="modal"></div>
+    <div class="detail-modal-panel">
+      <div class="detail-modal-header">
+        <div>
+          <p class="eyebrow">Detail View</p>
+          <h3 id="detailModalTitle">详情查看</h3>
+        </div>
+        <button id="closeDetailModalBtn" class="ghost-button small" type="button">关闭</button>
+      </div>
+      <div id="detailModalBody" class="detail-modal-body"></div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+{
+  "instance_id": "python_java__google__net_http__pr36",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "google/net_http",
+  "pr_number": 36,
+  "pr_url": "https://github.com/google/net_http/pull/36",
+  "repo": {
+    "full_name": "google/net_http",
+    "clone_url": "https://github.com/google/net_http.git",
+    "default_branch": "main",
+    "created_at": "2023-03-28T05:41:00Z",
+    "stars": 29,
+    "license": "Apache-2.0",
+    "size_kb": 213
+  },
+  "pull_request": {
+    "id": 3503158946,
+    "title": "chore(wish/python): lower the Python version requirement",
+    "body": "",
+    "created_at": "2026-04-08T12:36:50Z",
+    "merged_at": "2026-04-08T12:40:45Z",
+    "base_sha": "8407fd0a0a24e1f980172c3ac51e1af3d78d2ae9",
+    "head_sha": "6a66f7609606f5548ae807507ce17305d9e125de",
+    "merge_commit_sha": "2b10d955dd2b35f2aa2bf5154ec35fe1727d3833",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "8407fd0a0a24e1f980172c3ac51e1af3d78d2ae9",
+  "final_sha": "6a66f7609606f5548ae807507ce17305d9e125de",
+  "changed_files": [
+    {
+      "sha": "cffc426db81da57e5c3249edeacf72d1c04f216a",
+      "filename": "wish/python/CMakeLists.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/google/net_http/blob/6a66f7609606f5548ae807507ce17305d9e125de/wish%2Fpython%2FCMakeLists.txt",
+      "raw_url": "https://github.com/google/net_http/raw/6a66f7609606f5548ae807507ce17305d9e125de/wish%2Fpython%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/google/net_http/contents/wish%2Fpython%2FCMakeLists.txt?ref=6a66f7609606f5548ae807507ce17305d9e125de",
+      "patch": "@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)\n set(CMAKE_CXX_STANDARD_REQUIRED ON)\n set(CMAKE_POSITION_INDEPENDENT_CODE ON)\n \n-find_package(Python 3.9 COMPONENTS Interpreter Development.Module REQUIRED)\n+find_package(Python 3.8 COMPONENTS Interpreter Development.Module REQUIRED)\n find_package(nanobind CONFIG REQUIRED)\n \n # Force static libevent for the Python extension"
+    },
+    {
+      "sha": "e09f318b2527e3a07104cbb100289a55fa0b91b4",
+      "filename": "wish/python/README.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/google/net_http/blob/6a66f7609606f5548ae807507ce17305d9e125de/wish%2Fpython%2FREADME.md",
+      "raw_url": "https://github.com/google/net_http/raw/6a66f7609606f5548ae807507ce17305d9e125de/wish%2Fpython%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/google/net_http/contents/wish%2Fpython%2FREADME.md?ref=6a66f7609606f5548ae807507ce17305d9e125de",
+      "patch": "@@ -10,8 +10,7 @@ The `libevent` event loop runs in a background thread, integrated with the Pytho\n This sub-project is intended to be used with a Python virtual environment (`venv`).\n \n ### Prerequisites\n-- Python 3.9+\n-  - *Required for `asyncio.to_thread()`, which is used to run the C++ libevent loop concurrently.*\n+- Python 3.8+\n - CMake 3.14+\n - A working C++17 compiler\n - Background libraries like BoringSSL and libevent\n@@ -71,7 +70,7 @@ if __name__ == \"__main__\":\n \n To provide maximum throughput without blocking the Python event loop, these bindings rely on several specific architectural choices:\n \n-- **Background C++ Event Loop:** The core networking operations and TLS data streaming are handled natively by `libevent`. The `wish/client.py` module uses `asyncio.to_thread()` to spawn this C++ event loop in a background thread.\n+- **Background C++ Event Loop:** The core networking operations and TLS data streaming are handled natively by `libevent`. The `wish/client.py` module uses `loop.run_in_executor()` to spawn this C++ event loop in a background thread.\n - **GIL Management:** The C++ extension releases the Python GIL while running its `libevent` dispatch loop and when performing heavy network I/O. The Python interpreter only re-acquires the GIL for split seconds to process incoming messages or to initiate send operations.\n - **Micro-Bindings:** `nanobind` is deliberately chosen for its modern, zero-overhead approach to creating C++ bindings. It has a small binary footprint and fast execution speed when crossing the C++/Python boundary.\n - **Thread-safe Asyncio Bridging:** When the C++ connection layer has an event (like a successful connection or a received message), it safely bridges back to the Python thread by triggering `loop.call_soon_threadsafe()`. Data is seamlessly funneled into an `asyncio.Queue` so that the Python user processes it using standard, non-blocking asynchronous loops."
+    },
+    {
+      "sha": "fbfccdc9c6d0bc3dfe582da36be1696d37174c55",
+      "filename": "wish/python/wish/client.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/google/net_http/blob/6a66f7609606f5548ae807507ce17305d9e125de/wish%2Fpython%2Fwish%2Fclient.py",
+      "raw_url": "https://github.com/google/net_http/raw/6a66f7609606f5548ae807507ce17305d9e125de/wish%2Fpython%2Fwish%2Fclient.py",
+      "contents_url": "https://api.github.com/repos/google/net_http/contents/wish%2Fpython%2Fwish%2Fclient.py?ref=6a66f7609606f5548ae807507ce17305d9e125de",
+      "patch": "@@ -32,9 +32,7 @@ def on_message(opcode, msg):\n \n     async def connect(self):\n         # Run the C++ event loop in a background thread.\n-        # Must use create_task() so it's actually scheduled and runs\n-        # concurrently while we await the open_future below.\n-        asyncio.create_task(asyncio.to_thread(self._client.run))\n+        self._loop.run_in_executor(None, self._client.run)\n         # Wait until the on_open callback fires\n         await self._open_future\n         return self"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "6a66f7609606f5548ae807507ce17305d9e125de",
+      "message": "chore(wish/python): lower the Python version requirement",
+      "parent_shas": [
+        "8407fd0a0a24e1f980172c3ac51e1af3d78d2ae9"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "python_java_bridge_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__google__net_http__pr36.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\google__net_http__pr36__python_java__google__net_http__pr36\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\google__net_http__pr36__python_java__google__net_http__pr36\\rn"
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "instance_id": "python_java__oliver-zehentleitner__unicorn-binance-rest-api__pr95",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "oliver-zehentleitner/unicorn-binance-rest-api",
+  "pr_number": 95,
+  "pr_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/pull/95",
+  "repo": {
+    "full_name": "oliver-zehentleitner/unicorn-binance-rest-api",
+    "clone_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api.git",
+    "default_branch": "master",
+    "created_at": "2021-04-03T15:55:50Z",
+    "stars": 68,
+    "license": "MIT",
+    "size_kb": 11438
+  },
+  "pull_request": {
+    "id": 3503480611,
+    "title": "Add Python 3.14 support, drop Python 3.8",
+    "body": "## Summary\n\n- Drop Python 3.8 (EOL Oct 2024), minimum is now 3.9\n- Add Python 3.14 support\n- Remove leftover `simplejson` dependency from `pyproject.toml` (inconsistency carried over from before #94 was merged to fork)\n- Remove `importlib-metadata` conditional dep (was only needed for py<3.8)\n\n## Changes\n\n| File | Change |\n|---|---|\n| `setup.py` | `python_requires>=3.9`, classifiers: 3.8 out, 3.14 in |\n| `pyproject.toml` | `python>=3.9`, remove `simplejson` |\n| `environment.yml` | `python>=3.9`, remove `importlib-metadata` |\n| `meta.yaml` | remove `importlib-metadata` from host + run |\n| `unit-tests.yml` | remove `test_python_3_8` job, add `test_python_3_14` job |\n| `build_wheels.yml` | `cp38-*` out, `cp314-*` in |\n\n## Test plan\n\n- [ ] CI unit tests pass on Python 3.9–3.14\n- [ ] Build wheels workflow includes cp314-* and excludes cp38-*",
+    "created_at": "2026-04-08T13:43:44Z",
+    "merged_at": "2026-04-08T14:11:47Z",
+    "base_sha": "e1657d266d8755e6c2af97d26e60b523529a7f63",
+    "head_sha": "56180c8c0b50785f63e7638870ae12d40f421d8c",
+    "merge_commit_sha": "c711ba1bb6c93e450c6f3e4c8261ecfad4f6a115",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "73a5af044026404934afad999de2db55f401d133",
+  "final_sha": "56180c8c0b50785f63e7638870ae12d40f421d8c",
+  "changed_files": [
+    {
+      "sha": "0b5e714d26296f5d26fd03629747c790da5bb194",
+      "filename": ".github/workflows/build_wheels.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/blob/56180c8c0b50785f63e7638870ae12d40f421d8c/.github%2Fworkflows%2Fbuild_wheels.yml",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/raw/56180c8c0b50785f63e7638870ae12d40f421d8c/.github%2Fworkflows%2Fbuild_wheels.yml",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-binance-rest-api/contents/.github%2Fworkflows%2Fbuild_wheels.yml?ref=56180c8c0b50785f63e7638870ae12d40f421d8c",
+      "patch": "@@ -10,7 +10,7 @@ jobs:\n     name: Build wheels on ${{ matrix.os }}\n     runs-on: ${{ matrix.os }}\n     env:\n-      CIBW_BUILD: \"cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*\"\n+      CIBW_BUILD: \"cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*\"\n       CIBW_ARCHS_LINUX: \"x86_64\"\n       CIBW_ARCHS_MACOS: \"x86_64 arm64 universal2\"\n       CIBW_ARCHS_WINDOWS: \"AMD64\""
+    },
+    {
+      "sha": "235bc53a8fbd2543fbf7ef8d3196c1c1baac18c2",
+      "filename": ".github/workflows/unit-tests.yml",
+      "status": "modified",
+      "additions": 20,
+      "deletions": 20,
+      "changes": 40,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/blob/56180c8c0b50785f63e7638870ae12d40f421d8c/.github%2Fworkflows%2Funit-tests.yml",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/raw/56180c8c0b50785f63e7638870ae12d40f421d8c/.github%2Fworkflows%2Funit-tests.yml",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-binance-rest-api/contents/.github%2Fworkflows%2Funit-tests.yml?ref=56180c8c0b50785f63e7638870ae12d40f421d8c",
+      "patch": "@@ -7,7 +7,7 @@ on:\n     branches: [ master ]\n \n jobs:\n-  test_python_3_8:\n+  test_python_3_9:\n     runs-on: ubuntu-latest\n     steps:\n     - name: GitHub Checkout\n@@ -16,7 +16,7 @@ jobs:\n     - name: Set up Python\n       uses: actions/setup-python@v4\n       with:\n-        python-version: 3.8\n+        python-version: 3.9\n \n     - name: Install dependencies\n       run: |\n@@ -31,7 +31,7 @@ jobs:\n         LUCIT_LICENSE_TOKEN: ${{ secrets.LUCIT_LICENSE_TOKEN }}\n       run: coverage run --source unicorn_binance_rest_api unittest_binance_rest_api.py\n \n-  test_python_3_9:\n+  test_python_3_10:\n     runs-on: ubuntu-latest\n     steps:\n     - name: GitHub Checkout\n@@ -40,7 +40,7 @@ jobs:\n     - name: Set up Python\n       uses: actions/setup-python@v4\n       with:\n-        python-version: 3.9\n+        python-version: \"3.10\"\n \n     - name: Install dependencies\n       run: |\n@@ -55,7 +55,7 @@ jobs:\n         LUCIT_LICENSE_TOKEN: ${{ secrets.LUCIT_LICENSE_TOKEN }}\n       run: coverage run --source unicorn_binance_rest_api unittest_binance_rest_api.py\n \n-  test_python_3_10:\n+  test_python_3_11:\n     runs-on: ubuntu-latest\n     steps:\n     - name: GitHub Checkout\n@@ -64,7 +64,7 @@ jobs:\n     - name: Set up Python\n       uses: actions/setup-python@v4\n       with:\n-        python-version: \"3.10\"\n+        python-version: \"3.11\"\n \n     - name: Install dependencies\n       run: |\n@@ -79,7 +79,7 @@ jobs:\n         LUCIT_LICENSE_TOKEN: ${{ secrets.LUCIT_LICENSE_TOKEN }}\n       run: coverage run --source unicorn_binance_rest_api unittest_binance_rest_api.py\n \n-  test_python_3_11:\n+  test_python_3_12:\n     runs-on: ubuntu-latest\n     steps:\n     - name: GitHub Checkout\n@@ -88,7 +88,7 @@ jobs:\n     - name: Set up Python\n       uses: actions/setup-python@v4\n       with:\n-        python-version: \"3.11\"\n+        python-version: \"3.12\"\n \n     - name: Install dependencies\n       run: |\n@@ -103,7 +103,7 @@ jobs:\n         LUCIT_LICENSE_TOKEN: ${{ secrets.LUCIT_LICENSE_TOKEN }}\n       run: coverage run --source unicorn_binance_rest_api unittest_binance_rest_api.py\n \n-  test_python_3_12:\n+  test_python_3_13:\n     runs-on: ubuntu-latest\n     steps:\n     - name: GitHub Checkout\n@@ -112,7 +112,7 @@ jobs:\n     - name: Set up Python\n       uses: actions/setup-python@v4\n       with:\n-        python-version: \"3.12\"\n+        python-version: \"3.13\"\n \n     - name: Install dependencies\n       run: |\n@@ -127,7 +127,15 @@ jobs:\n         LUCIT_LICENSE_TOKEN: ${{ secrets.LUCIT_LICENSE_TOKEN }}\n       run: coverage run --source unicorn_binance_rest_api unittest_binance_rest_api.py\n \n-  test_python_3_13:\n+    - name: Upload coverage to Codecov\n+      uses: codecov/codecov-action@v3\n+      with:\n+        token: ${{ secrets.CODECOV_TOKEN }}\n+        flags: unittests\n+        name: codecov-umbrella\n+        verbose: true\n+\n+  test_python_3_14:\n     runs-on: ubuntu-latest\n     steps:\n     - name: GitHub Checkout\n@@ -136,7 +144,7 @@ jobs:\n     - name: Set up Python\n       uses: actions/setup-python@v4\n       with:\n-        python-version: \"3.13\"\n+        python-version: \"3.14\"\n \n     - name: Install dependencies\n       run: |\n@@ -151,11 +159,3 @@ jobs:\n         LUCIT_LICENSE_TOKEN: ${{ secrets.LUCIT_LICENSE_TOKEN }}\n       run: coverage run --source unicorn_binance_rest_api unittest_binance_rest_api.py\n \n-    - name: Upload coverage to Codecov\n-      uses: codecov/codecov-action@v3\n-      with:\n-        token: ${{ secrets.CODECOV_TOKEN }}\n-        flags: unittests\n-        name: codecov-umbrella\n-        verbose: true\n-"
+    },
+    {
+      "sha": "36837c4418109fbc7475a705c6288fffb01b7498",
+      "filename": "environment.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/blob/56180c8c0b50785f63e7638870ae12d40f421d8c/environment.yml",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/raw/56180c8c0b50785f63e7638870ae12d40f421d8c/environment.yml",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-binance-rest-api/contents/environment.yml?ref=56180c8c0b50785f63e7638870ae12d40f421d8c",
+      "patch": "@@ -6,13 +6,12 @@ channels:\n   - defaults\n \n dependencies:\n-  - python>=3.7\n+  - python>=3.9\n   - certifi>=2023.7.22\n   - colorama\n   - cryptography>=42.0.4\n   - cython\n   - dateparser\n-  - importlib-metadata  # [py<38]\n   - pyopenssl\n   - pysocks\n   - requests>=2.31.0"
+    },
+    {
+      "sha": "e351ce27c88b4b1f784b172e180afefb7c54bfc5",
+      "filename": "meta.yaml",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/blob/56180c8c0b50785f63e7638870ae12d40f421d8c/meta.yaml",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/raw/56180c8c0b50785f63e7638870ae12d40f421d8c/meta.yaml",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-binance-rest-api/contents/meta.yaml?ref=56180c8c0b50785f63e7638870ae12d40f421d8c",
+      "patch": "@@ -27,7 +27,6 @@ requirements:\n     - cryptography >=42.0.4\n     - cython\n     - dateparser\n-    - importlib-metadata  # [py<38]\n     - pyopenssl\n     - PySocks\n     - regex\n@@ -41,7 +40,6 @@ requirements:\n     - cryptography >=42.0.4\n     - cython\n     - dateparser\n-    - importlib-metadata  # [py<38]\n     - pyopenssl\n     - PySocks\n     - regex"
+    },
+    {
+      "sha": "b45ad17bcc3f3f42dc0947870f5fed6f24641449",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/blob/56180c8c0b50785f63e7638870ae12d40f421d8c/pyproject.toml",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/raw/56180c8c0b50785f63e7638870ae12d40f421d8c/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-binance-rest-api/contents/pyproject.toml?ref=56180c8c0b50785f63e7638870ae12d40f421d8c",
+      "patch": "@@ -20,10 +20,9 @@ repository = \"https://github.com/oliver-zehentleitner/unicorn-binance-rest-api\"\n 'Telegram' = 'https://t.me/unicorndevs'\n \n [tool.poetry.dependencies]\n-python = \">=3.8.0\"\n+python = \">=3.9.0\"\n Cython = \"*\"\n requests = \">=2.31.0\"\n-simplejson = \"*\"\n certifi = \">=2023.7.22\"\n colorama = \"*\"\n cryptography = \">=42.0.4\""
+    },
+    {
+      "sha": "9ed2d0c4794a2ef5a71a3778c1b78d2cd552baa7",
+      "filename": "requirements.txt",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/blob/56180c8c0b50785f63e7638870ae12d40f421d8c/requirements.txt",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/raw/56180c8c0b50785f63e7638870ae12d40f421d8c/requirements.txt",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-binance-rest-api/contents/requirements.txt?ref=56180c8c0b50785f63e7638870ae12d40f421d8c",
+      "patch": "@@ -11,7 +11,6 @@ Cython\n dateparser\n pyOpenSSL\n PySocks\n-pytz\n regex\n requests>=2.31.0\n service-identity"
+    },
+    {
+      "sha": "991e31befe85798880f3fb7cc19f167cee200587",
+      "filename": "setup.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/blob/56180c8c0b50785f63e7638870ae12d40f421d8c/setup.py",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/raw/56180c8c0b50785f63e7638870ae12d40f421d8c/setup.py",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-binance-rest-api/contents/setup.py?ref=56180c8c0b50785f63e7638870ae12d40f421d8c",
+      "patch": "@@ -100,17 +100,17 @@\n      },\n      packages=find_packages(exclude=[f\"dev/{source_dir}\"], include=[source_dir]),\n      ext_modules=cythonize(extensions, compiler_directives={'language_level': \"3\"}),\n-     python_requires='>=3.8.0',\n+     python_requires='>=3.9.0',\n      package_data={'': ['*.so', '*.dll', '*.py', '*.pyd', '*.pyi']},\n      include_package_data=True,\n      classifiers=[\n          \"Development Status :: 5 - Production/Stable\",\n-         \"Programming Language :: Python :: 3.8\",\n          \"Programming Language :: Python :: 3.9\",\n          \"Programming Language :: Python :: 3.10\",\n          \"Programming Language :: Python :: 3.11\",\n          \"Programming Language :: Python :: 3.12\",\n          \"Programming Language :: Python :: 3.13\",\n+         \"Programming Language :: Python :: 3.14\",\n          'Intended Audience :: Developers',\n          \"Intended Audience :: Financial and Insurance Industry\",\n          \"Intended Audience :: Information Technology\","
+    },
+    {
+      "sha": "e4c18b4672d39e43de3d6086acfe144ca2bd084b",
+      "filename": "unicorn_binance_rest_api/helpers.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/blob/56180c8c0b50785f63e7638870ae12d40f421d8c/unicorn_binance_rest_api%2Fhelpers.py",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-binance-rest-api/raw/56180c8c0b50785f63e7638870ae12d40f421d8c/unicorn_binance_rest_api%2Fhelpers.py",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-binance-rest-api/contents/unicorn_binance_rest_api%2Fhelpers.py?ref=56180c8c0b50785f63e7638870ae12d40f421d8c",
+      "patch": "@@ -40,9 +40,8 @@\n # IN THE SOFTWARE.\n \n import dateparser\n-import pytz\n \n-from datetime import datetime\n+from datetime import datetime, timezone\n \n \n def date_to_milliseconds(date_str):\n@@ -56,12 +55,12 @@ def date_to_milliseconds(date_str):\n     :type date_str: str\n     \"\"\"\n     # get epoch value in UTC\n-    epoch = datetime.utcfromtimestamp(0).replace(tzinfo=pytz.utc)\n+    epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)\n     # parse our date string\n     d = dateparser.parse(date_str)\n     # if the date is not timezone aware apply UTC timezone\n     if d.tzinfo is None or d.tzinfo.utcoffset(d) is None:\n-        d = d.replace(tzinfo=pytz.utc)\n+        d = d.replace(tzinfo=timezone.utc)\n \n     # return the difference in time\n     return int((d - epoch).total_seconds() * 1000.0)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "c4d0586d084afb323d0cbb6d999649da2daa2864",
+      "message": "Add Python 3.14 support, drop Python 3.8\n\n- setup.py: python_requires>=3.9, classifiers updated (3.8 out, 3.14 in)\n- pyproject.toml: python>=3.9, remove leftover simplejson dependency\n- environment.yml: python>=3.9, remove importlib-metadata (py<38 only)\n- meta.yaml: remove importlib-metadata from host and run (py<38 only)\n- unit-tests.yml: remove test_python_3_8 job, add test_python_3_14 job\n- build_wheels.yml: remove cp38-*, add cp314-*",
+      "parent_shas": [
+        "73a5af044026404934afad999de2db55f401d133"
+      ]
+    },
+    {
+      "sha": "56180c8c0b50785f63e7638870ae12d40f421d8c",
+      "message": "Fix DeprecationWarning: replace utcfromtimestamp() and pytz with timezone.utc\n\ndatetime.utcfromtimestamp() is deprecated since Python 3.12 and scheduled\nfor removal. Replace with datetime(1970, 1, 1, tzinfo=timezone.utc) and\nuse stdlib datetime.timezone.utc throughout helpers.py instead of pytz.\n\nRemoves pytz dependency entirely from requirements.txt.",
+      "parent_shas": [
+        "c4d0586d084afb323d0cbb6d999649da2daa2864"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__oliver-zehentleitner__unicorn-binance-rest-api__pr95.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\oliver-zehentleitner__unicorn-binance-rest-api__pr95__python_java__oliver-zehentleitner__unicorn-binance-rest-api__pr95\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\oliver-zehentleitner__unicorn-binance-rest-api__pr95__python_java__oliver-zehentleitner__unicorn-binance-rest-api__pr95\\rn"
+  }
+}

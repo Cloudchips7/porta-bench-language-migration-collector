@@ -1,0 +1,79 @@
+{
+  "instance_id": "cpp_python__numtide__go2nix__pr69",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "numtide/go2nix",
+  "pr_number": 69,
+  "pr_url": "https://github.com/numtide/go2nix/pull/69",
+  "repo": {
+    "full_name": "numtide/go2nix",
+    "clone_url": "https://github.com/numtide/go2nix.git",
+    "default_branch": "main",
+    "created_at": "2026-03-20T15:21:24Z",
+    "stars": 15,
+    "license": "MIT",
+    "size_kb": 2037
+  },
+  "pull_request": {
+    "id": 3513799196,
+    "title": "plugin: include MFiles/SwigFiles in go list -json= filter",
+    "body": "## Summary\n\nThe `PkgFiles` struct (added in #61) deserialises `MFiles`/`SwigFiles`/`SwigCXXFiles` and `CompileGoPackage` fails fast when they're non-empty, but the `-json=` field filter passed to `go list` at resolve.rs:312/356 omitted them — so `go list` never emitted them, the structs always defaulted to empty, and the \"Objective-C/SWIG not yet supported\" error never fired in default/dag mode. Packages with `.m`/`.swig` sources were silently compiled without those files.\n\nAppends `MFiles,SwigFiles,SwigCXXFiles` to both `-json=` strings and adds a regression test that runs the real `go list` against a temp module with `.m`/`.swig`/`.swigcxx` files. The test is skipped when `GO2NIX_DEFAULT_GO` is unset at compile time (bare `cargo test`) and exercised in the nix build where it's baked in.\n\n## Test plan\n\n- [x] `cargo test` — 45/45 (test skips gracefully without baked-in go)\n- [x] `GO2NIX_DEFAULT_GO=$(which go) cargo test run_go_list_surfaces` — passes; verified it would have failed before the fix (`go list` with the old field set returns `\"MFiles\":null`)\n- [x] `nix build .#go2nix-nix-plugin`\n- [x] `nix flake check` (formatting)",
+    "created_at": "2026-04-10T12:04:23Z",
+    "merged_at": "2026-04-10T12:07:25Z",
+    "base_sha": "d7b65b2a244e27194b716e47cced6667c74ffd24",
+    "head_sha": "1d9a1fa7c5501e2389c87644b7379487ecea7207",
+    "merge_commit_sha": "974d195a330ea09d9efdc00b82fef4eb48f47e7b",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "d7b65b2a244e27194b716e47cced6667c74ffd24",
+  "final_sha": "1d9a1fa7c5501e2389c87644b7379487ecea7207",
+  "changed_files": [
+    {
+      "sha": "922e34d190a8c599ec6fcc7409651c8658f05727",
+      "filename": "packages/go2nix-nix-plugin/rust/src/resolve.rs",
+      "status": "modified",
+      "additions": 37,
+      "deletions": 2,
+      "changes": 39,
+      "blob_url": "https://github.com/numtide/go2nix/blob/1d9a1fa7c5501e2389c87644b7379487ecea7207/packages%2Fgo2nix-nix-plugin%2Frust%2Fsrc%2Fresolve.rs",
+      "raw_url": "https://github.com/numtide/go2nix/raw/1d9a1fa7c5501e2389c87644b7379487ecea7207/packages%2Fgo2nix-nix-plugin%2Frust%2Fsrc%2Fresolve.rs",
+      "contents_url": "https://api.github.com/repos/numtide/go2nix/contents/packages%2Fgo2nix-nix-plugin%2Frust%2Fsrc%2Fresolve.rs?ref=1d9a1fa7c5501e2389c87644b7379487ecea7207",
+      "patch": "@@ -309,7 +309,7 @@ fn run_go_list(\n ) -> Result<Vec<u8>> {\n     let mut cmd = Command::new(go_bin);\n     cmd.arg(\"list\");\n-    cmd.arg(\"-json=ImportPath,Dir,Module,Imports,GoFiles,CgoFiles,SFiles,CFiles,CXXFiles,FFiles,HFiles,SysoFiles,EmbedPatterns,CgoPkgConfig,CgoCFLAGS,CgoLDFLAGS,Error\");\n+    cmd.arg(\"-json=ImportPath,Dir,Module,Imports,GoFiles,CgoFiles,SFiles,CFiles,CXXFiles,MFiles,FFiles,HFiles,SysoFiles,SwigFiles,SwigCXXFiles,EmbedPatterns,CgoPkgConfig,CgoCFLAGS,CgoLDFLAGS,Error\");\n     cmd.arg(\"-deps\");\n     cmd.arg(\"-e\");\n     cmd.arg(\"-buildvcs=false\");\n@@ -353,7 +353,7 @@ fn run_go_list_test(\n ) -> Result<Vec<u8>> {\n     let mut cmd = Command::new(go_bin);\n     cmd.arg(\"list\");\n-    cmd.arg(\"-json=ImportPath,Module,Imports,GoFiles,CgoFiles,SFiles,CFiles,CXXFiles,FFiles,HFiles,SysoFiles,EmbedPatterns,CgoPkgConfig,CgoCFLAGS,CgoLDFLAGS,Error\");\n+    cmd.arg(\"-json=ImportPath,Module,Imports,GoFiles,CgoFiles,SFiles,CFiles,CXXFiles,MFiles,FFiles,HFiles,SysoFiles,SwigFiles,SwigCXXFiles,EmbedPatterns,CgoPkgConfig,CgoCFLAGS,CgoLDFLAGS,Error\");\n     cmd.arg(\"-deps\");\n     cmd.arg(\"-test\");\n     cmd.arg(\"-e\");\n@@ -1590,4 +1590,39 @@ mod tests {\n         std::env::remove_var(\"GOPROXY\");\n         std::env::remove_var(\"NETRC\");\n     }\n+\n+    /// Regression: the -json= field filter must include MFiles/SwigFiles/\n+    /// SwigCXXFiles or go list silently omits them and the compile-time\n+    /// \"not yet supported\" check never fires.\n+    #[test]\n+    fn run_go_list_surfaces_mfiles_and_swig() {\n+        let Some(go) = DEFAULT_GO else {\n+            eprintln!(\"skip: GO2NIX_DEFAULT_GO unset at build time\");\n+            return;\n+        };\n+        let dir = tempfile::tempdir().unwrap();\n+        std::fs::write(dir.path().join(\"go.mod\"), \"module example.com/mswig\\n\\ngo 1.23\\n\").unwrap();\n+        // CgoFiles is required for go/build to classify .m/.swig as package sources.\n+        std::fs::write(\n+            dir.path().join(\"a.go\"),\n+            \"package mswig\\n// #cgo LDFLAGS: -lm\\nimport \\\"C\\\"\\n\",\n+        )\n+        .unwrap();\n+        std::fs::write(dir.path().join(\"x.m\"), \"// objc\\n\").unwrap();\n+        std::fs::write(dir.path().join(\"x.swig\"), \"%module mswig\\n\").unwrap();\n+        std::fs::write(dir.path().join(\"x.swigcxx\"), \"%module mswigxx\\n\").unwrap();\n+\n+        let stdout = run_go_list(\n+            go,\n+            dir.path().to_str().unwrap(),\n+            &[\"./...\".to_string()],\n+            &test_opts(Some(\"off\")),\n+        )\n+        .unwrap();\n+        let graph = parse_go_packages(&stdout).unwrap();\n+        let f = &graph.local_packages[0].files;\n+        assert_eq!(f.m_files, vec![\"x.m\"], \"MFiles missing from go list output\");\n+        assert_eq!(f.swig_files, vec![\"x.swig\"], \"SwigFiles missing\");\n+        assert_eq!(f.swig_cxx_files, vec![\"x.swigcxx\"], \"SwigCXXFiles missing\");\n+    }\n }"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "1d9a1fa7c5501e2389c87644b7379487ecea7207",
+      "message": "plugin: include MFiles/SwigFiles/SwigCXXFiles in go list -json= filter\n\nThe PkgFiles struct deserialises these fields and CompileGoPackage\nfails fast on them, but the -json= field filter passed to go list\nomitted them, so go list never emitted them and the structs always\ndefaulted to empty. Packages with Objective-C or SWIG sources were\nsilently compiled without those files in default mode.\n\nAdds a regression test that runs the real go list against a temp\nmodule with .m/.swig/.swigcxx files (skipped when GO2NIX_DEFAULT_GO\nis unset, exercised in the nix build where it's baked in).\n\n:house: Remote-Dev: homespace",
+      "parent_shas": [
+        "d7b65b2a244e27194b716e47cced6667c74ffd24"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__numtide__go2nix__pr69.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\numtide__go2nix__pr69__cpp_python__numtide__go2nix__pr69\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\numtide__go2nix__pr69__cpp_python__numtide__go2nix__pr69\\rn"
+  }
+}

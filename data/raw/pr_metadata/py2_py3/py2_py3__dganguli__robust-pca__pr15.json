@@ -1,0 +1,80 @@
+{
+  "instance_id": "py2_py3__dganguli__robust-pca__pr15",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "dganguli/robust-pca",
+  "pr_number": 15,
+  "pr_url": "https://github.com/dganguli/robust-pca/pull/15",
+  "repo": {
+    "full_name": "dganguli/robust-pca",
+    "clone_url": "https://github.com/dganguli/robust-pca.git",
+    "default_branch": "master",
+    "created_at": "2014-03-03T23:36:27Z",
+    "stars": 258,
+    "license": "MIT",
+    "size_kb": 479
+  },
+  "pull_request": {
+    "id": 3131672749,
+    "title": "Modernize codebase and fix Python issues",
+    "body": "- Remove Python 2 compatibility code (__future__ imports, xrange)\r\n- Replace deprecated pylab import with matplotlib.pyplot\r\n- Rename class R_pca to RobustPCA (PEP 8)\r\n- Fix parameter checking: use `is not None` instead of truthiness (allows passing mu=0 or lmbda=0)\r\n- Rename `iter` variable to `n_iter` (avoid shadowing built-in)\r\n- Replace deprecated np.Inf with np.inf\r\n- Fix variable shadowing in plot_fit loop (n -> i)\r\n- Simplify shrink(): use np.maximum(..., 0) instead of np.zeros\r\n- Use f-strings for string formatting\r\n\r\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "created_at": "2025-12-26T21:20:00Z",
+    "merged_at": "2025-12-26T21:20:38Z",
+    "base_sha": "eff345356265f92ebd1fe1a58f7193cbdab7206d",
+    "head_sha": "c0ba37fb240f5389ebd02423c71335281256eb5c",
+    "merge_commit_sha": "efb42523297c033405f0897209507051e1e49018",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "eff345356265f92ebd1fe1a58f7193cbdab7206d",
+  "final_sha": "c0ba37fb240f5389ebd02423c71335281256eb5c",
+  "changed_files": [
+    {
+      "sha": "c05f254b795b24dc4942f9c0b89a30dd64a24c1f",
+      "filename": "r_pca.py",
+      "status": "modified",
+      "additions": 19,
+      "deletions": 28,
+      "changes": 47,
+      "blob_url": "https://github.com/dganguli/robust-pca/blob/c0ba37fb240f5389ebd02423c71335281256eb5c/r_pca.py",
+      "raw_url": "https://github.com/dganguli/robust-pca/raw/c0ba37fb240f5389ebd02423c71335281256eb5c/r_pca.py",
+      "contents_url": "https://api.github.com/repos/dganguli/robust-pca/contents/r_pca.py?ref=c0ba37fb240f5389ebd02423c71335281256eb5c",
+      "patch": "@@ -1,35 +1,26 @@\n-from __future__ import division, print_function\n-\n import numpy as np\n \n try:\n-    from pylab import plt\n+    import matplotlib.pyplot as plt\n except ImportError:\n-    print('Unable to import pylab. R_pca.plot_fit() will not work.')\n-\n-try:\n-    # Python 2: 'xrange' is the iterative version\n-    range = xrange\n-except NameError:\n-    # Python 3: 'range' is iterative - no need for 'xrange'\n-    pass\n+    print('Unable to import matplotlib. RobustPCA.plot_fit() will not work.')\n \n \n-class R_pca:\n+class RobustPCA:\n \n     def __init__(self, D, mu=None, lmbda=None):\n         self.D = D\n         self.S = np.zeros(self.D.shape)\n         self.Y = np.zeros(self.D.shape)\n \n-        if mu:\n+        if mu is not None:\n             self.mu = mu\n         else:\n             self.mu = np.prod(self.D.shape) / (4 * np.linalg.norm(self.D.flatten(), ord=1))\n \n         self.mu_inv = 1 / self.mu\n \n-        if lmbda:\n+        if lmbda is not None:\n             self.lmbda = lmbda\n         else:\n             self.lmbda = 1 / np.sqrt(np.max(self.D.shape))\n@@ -40,36 +31,36 @@ def frobenius_norm(M):\n \n     @staticmethod\n     def shrink(M, tau):\n-        return np.sign(M) * np.maximum((np.abs(M) - tau), np.zeros(M.shape))\n+        return np.sign(M) * np.maximum(np.abs(M) - tau, 0)\n \n     def svd_threshold(self, M, tau):\n         U, S, V = np.linalg.svd(M, full_matrices=False)\n         return np.dot(U, np.dot(np.diag(self.shrink(S, tau)), V))\n \n     def fit(self, tol=None, max_iter=1000, iter_print=100):\n-        iter = 0\n-        err = np.Inf\n+        n_iter = 0\n+        err = np.inf\n         Sk = self.S\n         Yk = self.Y\n         Lk = np.zeros(self.D.shape)\n \n-        if tol:\n+        if tol is not None:\n             _tol = tol\n         else:\n             _tol = 1E-7 * self.frobenius_norm(self.D)\n \n         #this loop implements the principal component pursuit (PCP) algorithm\n         #located in the table on page 29 of https://arxiv.org/pdf/0912.3599.pdf\n-        while (err > _tol) and iter < max_iter:\n+        while err > _tol and n_iter < max_iter:\n             Lk = self.svd_threshold(\n                 self.D - Sk - self.mu_inv * Yk, self.mu)                                #this line implements step 3\n             Sk = self.shrink(\n                 self.D - Lk + self.mu_inv * Yk, self.lmbda * self.mu)                   #this line implements step 4\n             Yk = Yk + self.mu * (self.D - Lk - Sk)                                      #this line implements step 5\n             err = self.frobenius_norm(self.D - Lk - Sk)\n-            iter += 1\n-            if (iter % iter_print) == 0 or iter == 1 or iter > max_iter or err <= _tol:\n-                print('iteration: {0}, error: {1}'.format(iter, err))\n+            n_iter += 1\n+            if (n_iter % iter_print) == 0 or n_iter == 1 or n_iter > max_iter or err <= _tol:\n+                print(f'iteration: {n_iter}, error: {err}')\n \n         self.L = Lk\n         self.S = Sk\n@@ -79,7 +70,7 @@ def plot_fit(self, size=None, tol=0.1, axis_on=True):\n \n         n, d = self.D.shape\n \n-        if size:\n+        if size is not None:\n             nrows, ncols = size\n         else:\n             sq = np.ceil(np.sqrt(n))\n@@ -88,15 +79,15 @@ def plot_fit(self, size=None, tol=0.1, axis_on=True):\n \n         ymin = np.nanmin(self.D)\n         ymax = np.nanmax(self.D)\n-        print('ymin: {0}, ymax: {1}'.format(ymin, ymax))\n+        print(f'ymin: {ymin}, ymax: {ymax}')\n \n         numplots = np.min([n, nrows * ncols])\n         plt.figure()\n \n-        for n in range(numplots):\n-            plt.subplot(nrows, ncols, n + 1)\n+        for i in range(numplots):\n+            plt.subplot(nrows, ncols, i + 1)\n             plt.ylim((ymin - tol, ymax + tol))\n-            plt.plot(self.L[n, :] + self.S[n, :], 'r')\n-            plt.plot(self.L[n, :], 'b')\n+            plt.plot(self.L[i, :] + self.S[i, :], 'r')\n+            plt.plot(self.L[i, :], 'b')\n             if not axis_on:\n                 plt.axis('off')"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "c0ba37fb240f5389ebd02423c71335281256eb5c",
+      "message": "Modernize codebase and fix Python issues\n\n- Remove Python 2 compatibility code (__future__ imports, xrange)\n- Replace deprecated pylab import with matplotlib.pyplot\n- Rename class R_pca to RobustPCA (PEP 8)\n- Fix parameter checking: use `is not None` instead of truthiness\n  (allows passing mu=0 or lmbda=0)\n- Rename `iter` variable to `n_iter` (avoid shadowing built-in)\n- Replace deprecated np.Inf with np.inf\n- Fix variable shadowing in plot_fit loop (n -> i)\n- Simplify shrink(): use np.maximum(..., 0) instead of np.zeros\n- Use f-strings for string formatting\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>",
+      "parent_shas": [
+        "eff345356265f92ebd1fe1a58f7193cbdab7206d"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_tests_detected"
+    ],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__dganguli__robust-pca__pr15.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\dganguli__robust-pca__pr15__py2_py3__dganguli__robust-pca__pr15\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\dganguli__robust-pca__pr15__py2_py3__dganguli__robust-pca__pr15\\rn"
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "instance_id": "python_java__wrangleworks__WranglesPY__pr955",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "wrangleworks/WranglesPY",
+  "pr_number": 955,
+  "pr_url": "https://github.com/wrangleworks/WranglesPY/pull/955",
+  "repo": {
+    "full_name": "wrangleworks/WranglesPY",
+    "clone_url": "https://github.com/wrangleworks/WranglesPY.git",
+    "default_branch": "main",
+    "created_at": "2021-10-16T18:30:26Z",
+    "stars": 5,
+    "license": "Apache-2.0",
+    "size_kb": 2858
+  },
+  "pull_request": {
+    "id": 3486980068,
+    "title": "Python variables",
+    "body": "",
+    "created_at": "2026-04-03T17:27:57Z",
+    "merged_at": "2026-04-07T17:10:20Z",
+    "base_sha": "ce789869105275f971c35a216b06dff3505dc884",
+    "head_sha": "c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf",
+    "merge_commit_sha": "436d2eab7eb925d9f99d0cce223edf3cd120d10e",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "ce789869105275f971c35a216b06dff3505dc884",
+  "final_sha": "c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf",
+  "changed_files": [
+    {
+      "sha": "5ea2c63be9af5dd8d82f42a1cea46967747a1437",
+      "filename": "tests/recipes/wrangles/test_main.py",
+      "status": "modified",
+      "additions": 69,
+      "deletions": 0,
+      "changes": 69,
+      "blob_url": "https://github.com/wrangleworks/WranglesPY/blob/c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf/tests%2Frecipes%2Fwrangles%2Ftest_main.py",
+      "raw_url": "https://github.com/wrangleworks/WranglesPY/raw/c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf/tests%2Frecipes%2Fwrangles%2Ftest_main.py",
+      "contents_url": "https://api.github.com/repos/wrangleworks/WranglesPY/contents/tests%2Frecipes%2Fwrangles%2Ftest_main.py?ref=c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf",
+      "patch": "@@ -4717,6 +4717,75 @@ def test_python_df_variable(self):\n         )\n         assert df[\"result\"][0] == \"a b\"\n \n+    def test_python_double_variable(self):\n+        \"\"\"\n+        Test a python command using a variable that is a variable itself\n+        \"\"\"\n+        df = wrangles.recipe.run(\n+            \"\"\"\n+            wrangles:\n+            - python:\n+                command: \"'This is ' + ${var}\"\n+                var: ${string}\n+                output: result\n+            \"\"\",\n+            dataframe=pd.DataFrame({\n+                'header1': ['a', 'c', 'z']\n+            }),\n+            variables={'string': 'a string'}\n+        )\n+        assert df[\"result\"][0] == 'This is a string'\n+\n+    def test_python_double_variable_int(self):\n+        \"\"\"\n+        Test data type is preserved when passing a double variable\n+        \"\"\"\n+        df = wrangles.recipe.run(\n+            \"\"\"\n+            wrangles:\n+            - python:\n+                command: 5 + ${var}\n+                var: ${int}\n+                output: result\n+            \"\"\",\n+            dataframe=pd.DataFrame({\n+                'header1': ['a', 'c', 'z']\n+            }),\n+            variables={'int': 5}\n+        )\n+        assert df[\"result\"][0] == 10\n+\n+    def test_python_delayed_variable(self):\n+        \"\"\"\n+        Test all delayed variables are correctly resolved before the command is run\n+        \"\"\"\n+        df = wrangles.recipe.run(\n+            \"\"\"\n+            wrangles:\n+            - create.column:\n+                output: A Column\n+                value: The Value\n+\n+            - explode:\n+                input: header1\n+\n+            - python:\n+                command: |\n+                    {'Columns': ${columns}, 'Row Count': ${row_count},\n+                    'Column Count': ${column_count}, 'DF': ${df}}\n+                output: result\n+            \"\"\",\n+            dataframe=pd.DataFrame({\n+                'header1': [['a', 'b'], ['c', 'd'], ['z']],\n+                'header2': ['b', 'd', 'p'],\n+                'numbers': [1, 2, 6]\n+            })\n+        )\n+        assert df[\"result\"][0]['Columns'] == ['header1', 'header2', 'numbers', 'A Column']\n+        assert df[\"result\"][0]['Row Count'] == 5\n+        assert df[\"result\"][0]['Column Count'] == 4\n+        assert isinstance(df[\"result\"][0]['DF'], pd.DataFrame)\n+\n \n class TestAccordion:\n     \"\"\""
+    },
+    {
+      "sha": "716f2c53b74242fa1a849e5286baf2fa16d520c8",
+      "filename": "wrangles/recipe.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 122,
+      "changes": 126,
+      "blob_url": "https://github.com/wrangleworks/WranglesPY/blob/c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf/wrangles%2Frecipe.py",
+      "raw_url": "https://github.com/wrangleworks/WranglesPY/raw/c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf/wrangles%2Frecipe.py",
+      "contents_url": "https://api.github.com/repos/wrangleworks/WranglesPY/contents/wrangles%2Frecipe.py?ref=c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf",
+      "patch": "@@ -29,12 +29,13 @@\n     validate_function_args as _validate_function_args,\n     add_special_parameters as _add_special_parameters,\n     wildcard_expansion as _wildcard_expansion,\n-    wildcard_expansion_dict as _wildcard_expansion_dict\n+    wildcard_expansion_dict as _wildcard_expansion_dict,\n+    replace_templated_values as _replace_templated_values\n )\n try:\n-    from yaml import CSafeLoader as _YamlLoader, CSafeDumper as _YAMLDumper\n+    from yaml import CSafeDumper as _YAMLDumper\n except ImportError:\n-    from yaml import SafeLoader as _YamlLoader, SafeDumper as _YAMLDumper\n+    from yaml import SafeDumper as _YAMLDumper\n \n _logging.getLogger().setLevel(_logging.INFO)\n \n@@ -46,125 +47,6 @@\n _warnings.simplefilter(action='ignore', category=_pandas.errors.PerformanceWarning)\n \n \n-def _replace_templated_values(\n-    recipe_object: _typing.Any,\n-    variables: dict,\n-    ignore_unknown_variables: bool = False\n-) -> _typing.Any:\n-    \"\"\"\n-    Replace templated values of the format ${} within a recipe.\n-    This function can be called recursively to iterate through an arbitrary number of levels within the main object\n-    \n-    :param recipe_object: Recipe object that may contain values to replace\n-    :param variables: List of variables that contain any templated values to update\n-    :param ignore_unknown_variables: Do not raise an error for unrecognized variables from this point \\\n-        down the stack. e.g. for matrix which uses runtime variables.\n-    :return: Updated Recipe object with variables replaced by their corresponding values\n-    \"\"\"\n-    if isinstance(recipe_object, list):\n-        # Iterate over all of the elements in a list recursively\n-        new_recipe_object = [\n-            _replace_templated_values(element, variables, ignore_unknown_variables)\n-            for element in recipe_object\n-        ]\n-            \n-    elif isinstance(recipe_object, dict):\n-        # Use a temporary copy of variables to allow for nested variable definitions\n-        temp_vars = variables.copy()\n-        if 'variables' in recipe_object and isinstance(recipe_object['variables'], dict):\n-            for key in recipe_object['variables'].keys():\n-                if key in temp_vars and key != recipe_object['variables'][key][2:-1]:\n-                    temp_vars[key] = recipe_object['variables'][key]\n-        \n-        # Iterate over all of the keys and value in a dictionary recursively\n-        new_recipe_object = {\n-            _replace_templated_values(\n-                key,\n-                temp_vars,\n-                any([ignore_unknown_variables, key in [\"matrix\"]])\n-            )\n-            :\n-            (\n-                _replace_templated_values(\n-                    val,\n-                    temp_vars,\n-                    any([ignore_unknown_variables, key in [\"matrix\"]])\n-                )\n-                if key not in [\"if\", \"python\", \"log\"]\n-                else val\n-            )\n-            for key, val in recipe_object.items()\n-        }\n-\n-    elif isinstance(recipe_object, str):\n-        # Search string for one or more variables to replace\n-        new_recipe_object = recipe_object\n-\n-        # Pattern matching ${<something here>}\n-        variable_pattern = _re.compile(r\"\\$\\{[^\\}]+\\}\")\n-\n-        # Whole string is a variable\n-        if variable_pattern.fullmatch(new_recipe_object):\n-            try:\n-                replacement_value = variables[new_recipe_object[2:-1]]\n-            except:\n-                if ignore_unknown_variables:\n-                    return new_recipe_object\n-                else:\n-                    raise ValueError(f\"Variable {new_recipe_object} was not found.\")\n-\n-            # Test if replacement is JSON\n-            if (\n-                isinstance(replacement_value, str)\n-                and len(replacement_value) > 0\n-                and replacement_value[0] in ['{', '[']\n-                and replacement_value[-1] in ['}', ']']\n-            ):\n-                try:\n-                    replacement_value = _json.loads(replacement_value)\n-                except:\n-                    # Replacement wasn't JSON\n-                    pass\n-\n-            # Test if replacement is YAML\n-            if (\n-                isinstance(replacement_value, str) \n-                and ':' in replacement_value \n-                and '\\n' in replacement_value\n-            ):\n-                try:\n-                    replacement_value = _yaml.load(replacement_value, Loader=_YamlLoader)\n-                except:\n-                    # Replacement wasn't YAML\n-                    pass\n-\n-            new_recipe_object = _replace_templated_values(\n-                replacement_value,\n-                variables,\n-                ignore_unknown_variables\n-            )\n-\n-        # Variable is found within the string e.g. file-${number}.csv\n-        # Since this is within a string, the type is forced to also be a string\n-        elif variable_pattern.search(new_recipe_object):\n-            for var in variable_pattern.findall(new_recipe_object):\n-                try:\n-                    replacement_value = variables[var[2:-1]]\n-                except:\n-                    if ignore_unknown_variables:\n-                        replacement_value = var\n-                    else:\n-                        raise ValueError(f\"Variable {var} was not found.\")\n-\n-                new_recipe_object = new_recipe_object.replace(var, str(replacement_value))\n-\n-    # Otherwise, just return unchanged    \n-    else:\n-        new_recipe_object = recipe_object\n-\n-    return new_recipe_object\n-\n-\n def _load_recipe(\n     recipe: str,\n     variables: dict = None,"
+    },
+    {
+      "sha": "16db95179d52179bc8a312434eedf7bd2e5b525e",
+      "filename": "wrangles/recipe_wrangles/main.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 23,
+      "changes": 31,
+      "blob_url": "https://github.com/wrangleworks/WranglesPY/blob/c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf/wrangles%2Frecipe_wrangles%2Fmain.py",
+      "raw_url": "https://github.com/wrangleworks/WranglesPY/raw/c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf/wrangles%2Frecipe_wrangles%2Fmain.py",
+      "contents_url": "https://api.github.com/repos/wrangleworks/WranglesPY/contents/wrangles%2Frecipe_wrangles%2Fmain.py?ref=c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf",
+      "patch": "@@ -31,6 +31,7 @@\n from ..connectors.matrix import _define_permutations\n from ..utils import statement_modifier as _statement_modifier\n from ..utils import delayed_variable_interpretation as _delayed_variable_interpretation\n+from ..utils import replace_templated_values as _replace_templated_values\n \n \n def accordion(\n@@ -838,23 +839,13 @@ def log(\n     variables = kwargs.pop('variables', {})\n     variables = _delayed_variable_interpretation(df, variables)\n \n-    def _interpret_variables(input, variables):\n-        \"\"\"\n-        Interpret variables in the input string. Variables should be in the format ${variable_name}.\n-        \"\"\"\n-        input_str = str(input)\n-        variable_matches = _re.findall(r'\\$\\{([A-Za-z0-9_]+)\\}', input_str)\n-        for match in variable_matches:\n-            if match in variables:\n-                input_str = _re.sub(r'\\$\\{' + match + r'\\}', str(variables.get(match)), input_str)\n-            else:\n-                raise ValueError(f'Variable {match} not found.')\n-        return input_str\n+    # Handle variable interpretation for all parameters\n+    columns, write, error, warning, info = [\n+        _replace_templated_values(msg, variables) if msg else msg\n+        for msg in (columns, write, error, warning, info)\n+    ]\n \n     if columns is not None:\n-        # Columns handled seperately as a list\n-        columns = [_interpret_variables(x, variables) for x in columns]\n-\n         # Get the wildcards\n         wildcard_check = [x for x in columns if '*' in x]\n \n@@ -885,12 +876,6 @@ def _interpret_variables(input, variables):\n \n     else:\n         df_tolog = df.head(20)\n-    \n-    # Handle variable interpretation for string parameters\n-    error, warning, info = [\n-        _interpret_variables(msg, variables) if msg else msg\n-        for msg in (error, warning, info)\n-    ]\n \n     if error:\n         _logging.error(error)\n@@ -900,8 +885,6 @@ def _interpret_variables(input, variables):\n         _logging.info(info)\n \n     if write:\n-        # Convert to json for variable interpretation then convert back\n-        write = _json.loads(_interpret_variables(_json.dumps(write), variables))\n         _wrangles.recipe.run(\n             {'write': write},\n             dataframe=df\n@@ -1370,6 +1353,8 @@ def _exception_handler(variables, **kwargs):\n \n     variables = _delayed_variable_interpretation(df, variables)\n \n+    input, output, kwargs = [_replace_templated_values(msg, variables) for msg in (input, output, kwargs)]\n+\n     df[output] = df[input].apply(\n         lambda x: _exception_handler(variables, **x, **kwargs),\n         axis=1,"
+    },
+    {
+      "sha": "e320548da2d01cf7b76bb8979afd17535df7b004",
+      "filename": "wrangles/utils.py",
+      "status": "modified",
+      "additions": 125,
+      "deletions": 0,
+      "changes": 125,
+      "blob_url": "https://github.com/wrangleworks/WranglesPY/blob/c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf/wrangles%2Futils.py",
+      "raw_url": "https://github.com/wrangleworks/WranglesPY/raw/c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf/wrangles%2Futils.py",
+      "contents_url": "https://api.github.com/repos/wrangleworks/WranglesPY/contents/wrangles%2Futils.py?ref=c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf",
+      "patch": "@@ -7,6 +7,12 @@\n import importlib as _importlib\n import requests as _requests\n from urllib3.util import Retry as _Retry\n+import typing as _typing\n+import json as _json\n+try:\n+    from yaml import CSafeLoader as _YamlLoader\n+except ImportError:\n+    from yaml import SafeLoader as _YamlLoader\n \n \n def wildcard_expansion_dict(all_columns: list, selected_columns: dict) -> list:\n@@ -501,6 +507,125 @@ def delayed_variable_interpretation(df, variables=None):\n     }\n     return variables\n \n+\n+def replace_templated_values(\n+    recipe_object: _typing.Any,\n+    variables: dict,\n+    ignore_unknown_variables: bool = False\n+) -> _typing.Any:\n+    \"\"\"\n+    Replace templated values of the format ${} within a recipe.\n+    This function can be called recursively to iterate through an arbitrary number of levels within the main object\n+    \n+    :param recipe_object: Recipe object that may contain values to replace\n+    :param variables: List of variables that contain any templated values to update\n+    :param ignore_unknown_variables: Do not raise an error for unrecognized variables from this point \\\n+        down the stack. e.g. for matrix which uses runtime variables.\n+    :return: Updated Recipe object with variables replaced by their corresponding values\n+    \"\"\"\n+    if isinstance(recipe_object, list):\n+        # Iterate over all of the elements in a list recursively\n+        new_recipe_object = [\n+            replace_templated_values(element, variables, ignore_unknown_variables)\n+            for element in recipe_object\n+        ]\n+            \n+    elif isinstance(recipe_object, dict):\n+        # Use a temporary copy of variables to allow for nested variable definitions\n+        temp_vars = variables.copy()\n+        if 'variables' in recipe_object and isinstance(recipe_object['variables'], dict):\n+            for key in recipe_object['variables'].keys():\n+                if key in temp_vars and key != recipe_object['variables'][key][2:-1]:\n+                    temp_vars[key] = recipe_object['variables'][key]\n+        \n+        # Iterate over all of the keys and value in a dictionary recursively\n+        new_recipe_object = {\n+            replace_templated_values(\n+                key,\n+                temp_vars,\n+                any([ignore_unknown_variables, key in [\"matrix\"]])\n+            )\n+            :\n+            (\n+                replace_templated_values(\n+                    val,\n+                    temp_vars,\n+                    any([ignore_unknown_variables, key in [\"matrix\"]])\n+                )\n+                if key not in [\"if\", \"python\", \"log\"]\n+                else val\n+            )\n+            for key, val in recipe_object.items()\n+        }\n+\n+    elif isinstance(recipe_object, str):\n+        # Search string for one or more variables to replace\n+        new_recipe_object = recipe_object\n+\n+        # Pattern matching ${<something here>}\n+        variable_pattern = _re.compile(r\"\\$\\{[^\\}]+\\}\")\n+\n+        # Whole string is a variable\n+        if variable_pattern.fullmatch(new_recipe_object):\n+            try:\n+                replacement_value = variables[new_recipe_object[2:-1]]\n+            except:\n+                if ignore_unknown_variables:\n+                    return new_recipe_object\n+                else:\n+                    raise ValueError(f\"Variable {new_recipe_object} was not found.\")\n+\n+            # Test if replacement is JSON\n+            if (\n+                isinstance(replacement_value, str)\n+                and len(replacement_value) > 0\n+                and replacement_value[0] in ['{', '[']\n+                and replacement_value[-1] in ['}', ']']\n+            ):\n+                try:\n+                    replacement_value = _json.loads(replacement_value)\n+                except:\n+                    # Replacement wasn't JSON\n+                    pass\n+\n+            # Test if replacement is YAML\n+            if (\n+                isinstance(replacement_value, str) \n+                and ':' in replacement_value \n+                and '\\n' in replacement_value\n+            ):\n+                try:\n+                    replacement_value = _yaml.load(replacement_value, Loader=_YamlLoader)\n+                except:\n+                    # Replacement wasn't YAML\n+                    pass\n+\n+            new_recipe_object = replace_templated_values(\n+                replacement_value,\n+                variables,\n+                ignore_unknown_variables\n+            )\n+\n+        # Variable is found within the string e.g. file-${number}.csv\n+        # Since this is within a string, the type is forced to also be a string\n+        elif variable_pattern.search(new_recipe_object):\n+            for var in variable_pattern.findall(new_recipe_object):\n+                try:\n+                    replacement_value = variables[var[2:-1]]\n+                except:\n+                    if ignore_unknown_variables:\n+                        replacement_value = var\n+                    else:\n+                        raise ValueError(f\"Variable {var} was not found.\")\n+\n+                new_recipe_object = new_recipe_object.replace(var, str(replacement_value))\n+\n+    # Otherwise, just return unchanged    \n+    else:\n+        new_recipe_object = recipe_object\n+\n+    return new_recipe_object\n+\n         \n class LazyLoader:\n     \"\"\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "76503329092ebd01b482a84bbcbe68098a46083c",
+      "message": "Moved interpret_variables to utils.py, added it to python function",
+      "parent_shas": [
+        "ce789869105275f971c35a216b06dff3505dc884"
+      ]
+    },
+    {
+      "sha": "e7ab89f3c163723f6cd416c3ca65a03fa580f83c",
+      "message": "Added delayed variable tests",
+      "parent_shas": [
+        "76503329092ebd01b482a84bbcbe68098a46083c"
+      ]
+    },
+    {
+      "sha": "6c20541f63bdc6b2b01d5e8d2f2d536eaf1c897f",
+      "message": "Fixed typo",
+      "parent_shas": [
+        "e7ab89f3c163723f6cd416c3ca65a03fa580f83c"
+      ]
+    },
+    {
+      "sha": "461c371a9d1f98e34b1249de8d53bfcf6e51c029",
+      "message": "Moved _replace_templated_values to utils",
+      "parent_shas": [
+        "6c20541f63bdc6b2b01d5e8d2f2d536eaf1c897f"
+      ]
+    },
+    {
+      "sha": "5ca4c05cd812a821c61ddc22f40cdbb243abb21d",
+      "message": "Moved to _replace_templated_values for delayed variable interpretation",
+      "parent_shas": [
+        "461c371a9d1f98e34b1249de8d53bfcf6e51c029"
+      ]
+    },
+    {
+      "sha": "6192be178578e65564c5e856cd86ddcd8c7ef5b0",
+      "message": "Added data type preservation test",
+      "parent_shas": [
+        "5ca4c05cd812a821c61ddc22f40cdbb243abb21d"
+      ]
+    },
+    {
+      "sha": "626523259aa9df8dddb99e6f65cf8bc3aa07dc37",
+      "message": "Moved to _replace_templated_valuesfor log",
+      "parent_shas": [
+        "6192be178578e65564c5e856cd86ddcd8c7ef5b0"
+      ]
+    },
+    {
+      "sha": "6889872f9c508314aa30e8cb62d251592ab2449d",
+      "message": "Dropped interpret_variables",
+      "parent_shas": [
+        "626523259aa9df8dddb99e6f65cf8bc3aa07dc37"
+      ]
+    },
+    {
+      "sha": "5e0fe66b03886ae453db8996348aa054ae79170e",
+      "message": "Update tests/recipes/wrangles/test_main.py\n\nCo-authored-by: Copilot <175728472+Copilot@users.noreply.github.com>",
+      "parent_shas": [
+        "6889872f9c508314aa30e8cb62d251592ab2449d"
+      ]
+    },
+    {
+      "sha": "0a52b0078d74c4dacf4a937768dd58d41b60660a",
+      "message": "Dropped _replace_templated_values",
+      "parent_shas": [
+        "5e0fe66b03886ae453db8996348aa054ae79170e"
+      ]
+    },
+    {
+      "sha": "50ed6b7f65f4f05de6298bdc23a9bcf2327140a1",
+      "message": "Consolidated replace_templated_values calls",
+      "parent_shas": [
+        "0a52b0078d74c4dacf4a937768dd58d41b60660a"
+      ]
+    },
+    {
+      "sha": "c5f9cefc11f60b8bb90bc133df00bb9d13c6ffbf",
+      "message": "Updated imports",
+      "parent_shas": [
+        "50ed6b7f65f4f05de6298bdc23a9bcf2327140a1"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__wrangleworks__WranglesPY__pr955.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\wrangleworks__WranglesPY__pr955__python_java__wrangleworks__WranglesPY__pr955\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\wrangleworks__WranglesPY__pr955__python_java__wrangleworks__WranglesPY__pr955\\rn"
+  }
+}

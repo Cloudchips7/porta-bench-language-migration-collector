@@ -1,0 +1,314 @@
+{
+  "instance_id": "python_java__whatsnowplaying__whats-now-playing__pr1597",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "whatsnowplaying/whats-now-playing",
+  "pr_number": 1597,
+  "pr_url": "https://github.com/whatsnowplaying/whats-now-playing/pull/1597",
+  "repo": {
+    "full_name": "whatsnowplaying/whats-now-playing",
+    "clone_url": "https://github.com/whatsnowplaying/whats-now-playing.git",
+    "default_branch": "main",
+    "created_at": "2021-01-30T03:34:16Z",
+    "stars": 85,
+    "license": "MIT",
+    "size_kb": 185940
+  },
+  "pull_request": {
+    "id": 3517828000,
+    "title": "Support Python 3.14",
+    "body": "## Summary by Sourcery\n\nExtend supported Python versions and refresh development tooling and CI to match.\n\nNew Features:\n- Support running and installing the project on Python 3.14.\n\nEnhancements:\n- Relax the runtime version constraint to allow Python 3.14 while preventing use of 3.15+, and align the builder script messaging accordingly.\n- Improve the dev environment setup by eagerly upgrading dependencies during editable installs and ensuring the vendored directory is always present in the repo.\n- Add a new vendor type stub file for internal use.\n\nCI:\n- Expand the GitHub Actions test matrix to include Python 3.14.\n\nDocumentation:\n- Update developer documentation to state support for Python 3.11–3.14 and clarify examples for choosing a supported Python version.",
+    "created_at": "2026-04-11T15:59:12Z",
+    "merged_at": "2026-04-13T02:15:36Z",
+    "base_sha": "e8d6e0baa4b77d4eb0896756a7213f54eaf82d97",
+    "head_sha": "2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+    "merge_commit_sha": "5b04e43c9f1363294ddf2e7cac16f6dfd4f64564",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "e8d6e0baa4b77d4eb0896756a7213f54eaf82d97",
+  "final_sha": "2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+  "changed_files": [
+    {
+      "sha": "55f919acec637f30246972121a2a5ea9556e30cd",
+      "filename": ".github/workflows/testing.yaml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/.github%2Fworkflows%2Ftesting.yaml",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/.github%2Fworkflows%2Ftesting.yaml",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/.github%2Fworkflows%2Ftesting.yaml?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -170,7 +170,7 @@ jobs:\n       contents: read\n     strategy:\n       matrix:\n-        python: [\"3.11\", \"3.12\", \"3.13\"]\n+        python: [\"3.11\", \"3.12\", \"3.13\", \"3.14\"]\n     env:\n       DISPLAY: ':99.0'\n     steps:"
+    },
+    {
+      "sha": "1046039503e0039275196f17f34595655262b061",
+      "filename": "builder.sh",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 3,
+      "changes": 7,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/builder.sh",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/builder.sh",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/builder.sh?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -22,8 +22,8 @@ check_python_version() {\n     echo \"Python 3.11 or later is required (got ${pyver}).\"\n     exit 1\n   fi\n-  if [[ ${PY_VER[1]} -ge 14 ]]; then\n-    echo \"Python 3.14+ is not yet supported (got ${pyver}). Use Python 3.11–3.13.\"\n+  if [[ ${PY_VER[1]} -ge 15 ]]; then\n+    echo \"Python 3.15+ is not yet supported (got ${pyver}). Use Python 3.11–3.14.\"\n     exit 1\n   fi\n }\n@@ -56,8 +56,9 @@ if [[ \"${SYSTEM}\" == \"dev\" ]]; then\n   PYTHONBINDIR=$(dirname \"${ACTIVATE}\")\n   PYTHONBIN=\"${PYTHONBINDIR}/${PYTHON}\"\n   \"${PYTHONBIN}\" -m pip install --upgrade pip\n-  \"${PYTHONBIN}\" -m pip install -e \".[dev,docs,osspecials,test]\"\n+  \"${PYTHONBIN}\" -m pip install --upgrade --upgrade-strategy eager -e \".[dev,docs,osspecials,test]\"\n   \"${PYTHONBIN}\" -m vendoring sync\n+  touch nowplaying/vendor/.gitkeep\n   versioningit --write\n   \"${PYTHONBIN}\" tools/setupnltk.py\n   \"${PYTHONBIN}\" tools/build_templates.py"
+    },
+    {
+      "sha": "11d9ee90adbab6098ce66cd0651166e066ddf71f",
+      "filename": "conftest.py",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 16,
+      "changes": 29,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/conftest.py",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/conftest.py",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/conftest.py?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -22,7 +22,6 @@\n import nowplaying.apicache\n import nowplaying.bootstrap\n import nowplaying.config\n-import nowplaying.db\n \n # if sys.platform == 'darwin':\n #     import psutil\n@@ -82,21 +81,19 @@ def bootstrap(getroot):  # pylint: disable=redefined-outer-name\n             dbdir.mkdir()\n             dbfile = dbdir.joinpath(\"test.db\")\n \n-            with unittest.mock.patch.dict(\n-                os.environ,\n-                {\"WNP_CONFIG_TEST_DIR\": str(newpath), \"WNP_METADB_TEST_FILE\": str(dbfile)},\n-            ):\n-                rmdir = newpath\n-                bundledir = pathlib.Path(getroot).joinpath(\"nowplaying\")\n-                nowplaying.bootstrap.set_qt_names(domain=DOMAIN, appname=\"testsuite\")\n-                config = nowplaying.config.ConfigFile(\n-                    bundledir=bundledir, logpath=newpath, testmode=True\n-                )\n-                config.cparser.setValue(\"acoustidmb/enabled\", False)\n-                config.cparser.sync()\n-                config.testdir = pathlib.Path(newpath)\n-\n-                yield config\n+            rmdir = newpath\n+            bundledir = pathlib.Path(getroot).joinpath(\"nowplaying\")\n+            nowplaying.bootstrap.set_qt_names(domain=DOMAIN, appname=\"testsuite\")\n+            config = nowplaying.config.ConfigFile(\n+                bundledir=bundledir, logpath=newpath, testmode=True\n+            )\n+            config.cparser.setValue(\"acoustidmb/enabled\", False)\n+            config.cparser.setValue(\"testmode/metadbpath\", str(dbfile))\n+            config.cparser.sync()\n+            config.testdir = pathlib.Path(newpath)\n+            config.dbtestfile = dbfile\n+\n+            yield config\n             if pathlib.Path(rmdir).exists():\n                 shutil.rmtree(rmdir)\n "
+    },
+    {
+      "sha": "871bc6b73e6e0e083a4bb3f48d72e000287f0933",
+      "filename": "docs/help/developers.md",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/docs%2Fhelp%2Fdevelopers.md",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/docs%2Fhelp%2Fdevelopers.md",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/docs%2Fhelp%2Fdevelopers.md?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -6,7 +6,7 @@\n \n ## Requirements\n \n-* Python 3.11+ for your operating system\n+* Python 3.11–3.14 for your operating system (3.15+ is not yet supported)\n * A terminal / development shell\n * `git` installed and working\n \n@@ -20,12 +20,12 @@ cd whats-now-playing\n ./builder.sh dev\n ```\n \n-If your system default Python is unsupported (e.g. 3.14+) or you have multiple\n+If your system default Python is unsupported (e.g. 3.15+) or you have multiple\n versions installed and need to target a specific supported one, set `PYTHONBIN`\n before running the script:\n \n ```bash\n-PYTHONBIN=/usr/local/bin/python3.11 ./builder.sh dev\n+PYTHONBIN=/usr/local/bin/python3.12 ./builder.sh dev\n ```\n \n `builder.sh` defaults to `python3` (or `python` on Windows) found on `PATH`."
+    },
+    {
+      "sha": "3416a17d5753e271c9bf37c5371449bd762bef09",
+      "filename": "nowplaying/artistextras/discogs.py",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 0,
+      "changes": 14,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/nowplaying%2Fartistextras%2Fdiscogs.py",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/nowplaying%2Fartistextras%2Fdiscogs.py",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/nowplaying%2Fartistextras%2Fdiscogs.py?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -305,6 +305,20 @@ async def download_async(self, metadata=None, imagecache=None):  # pylint: disab\n             logging.debug(\"discogs did not find it\")\n             return None\n \n+        # If load_full_artist_data was rate-limited during the search, the cached result\n+        # may have an incomplete artist (no bio/urls).  Fetch the full profile explicitly\n+        # so we always have a separate artist_{id} cache entry to fall back on.\n+        needs_bio = self.config.cparser.value(\"discogs/bio\", type=bool)\n+        needs_websites = self.config.cparser.value(\"discogs/websites\", type=bool)\n+        missing_bio = needs_bio and not getattr(artistresultlist, \"profile_plaintext\", None)\n+        missing_urls = needs_websites and not getattr(artistresultlist, \"urls\", None)\n+        if missing_bio or missing_urls:\n+            artist_id = getattr(artistresultlist, \"discogs_id\", None)\n+            if artist_id:\n+                full_artist = await self._artist_async_cached(str(artist_id), metadata[\"artist\"])\n+                if full_artist:\n+                    artistresultlist = full_artist\n+\n         self._process_metadata(metadata[\"imagecacheartist\"], artistresultlist, imagecache)\n         return self.addmeta\n "
+    },
+    {
+      "sha": "274e2f11f659f6aa3d1143bcbb0d294ca5831da3",
+      "filename": "nowplaying/db.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/nowplaying%2Fdb.py",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/nowplaying%2Fdb.py",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/nowplaying%2Fdb.py?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -169,8 +169,6 @@ def __init__(self, databasefile: str | pathlib.Path | None = None, initialize: b\n     @staticmethod\n     def init_db_var(databasefile: str | pathlib.Path | None) -> pathlib.Path:\n         \"\"\"split this out to make testing easier\"\"\"\n-        if os.environ.get(\"WNP_METADB_TEST_FILE\"):\n-            return pathlib.Path(os.environ[\"WNP_METADB_TEST_FILE\"])\n         if databasefile:\n             return pathlib.Path(databasefile)\n         return pathlib.Path("
+    },
+    {
+      "sha": "6e29857e8684fc40565e017e9f81a6dc6cea469e",
+      "filename": "nowplaying/discogsclient.py",
+      "status": "modified",
+      "additions": 28,
+      "deletions": 2,
+      "changes": 30,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/nowplaying%2Fdiscogsclient.py",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/nowplaying%2Fdiscogsclient.py",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/nowplaying%2Fdiscogsclient.py?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -7,6 +7,7 @@\n with just the functionality needed by the nowplaying application.\n \"\"\"\n \n+import contextlib\n import logging\n import ssl\n from typing import Any\n@@ -61,12 +62,15 @@ async def load_full_data(self):\n         url = f\"{self.client.BASE_URL}/releases/{self.discogs_id}\"\n         try:\n             async with self.client.session.get(url) as response:\n+                self.client._log_rate_limit(response)  # pylint: disable=protected-access\n                 if response.status == 200:\n                     data = await response.json()\n                     if \"artists\" in data and data[\"artists\"]:\n                         # Create artist objects with IDs for further lookup\n                         self.artists = [DiscogsArtist(artist) for artist in data[\"artists\"]]\n                         self._artists_loaded = True\n+                elif response.status == 429:\n+                    logging.warning(\"Discogs release lookup rate limited (429), skipping\")\n         except Exception as error:  # pylint: disable=broad-exception-caught\n             logging.debug(\"Error loading full release data: %s\", error)\n \n@@ -146,6 +150,20 @@ async def __aexit__(self, exc_type, exc_val, exc_tb):\n         if self.session:\n             await self.session.close()\n \n+    @staticmethod\n+    def _log_rate_limit(response: aiohttp.ClientResponse) -> None:\n+        \"\"\"Log Discogs rate limit headers so callers can see how close we are.\"\"\"\n+        remaining_str = response.headers.get(\"X-Discogs-Ratelimit-Remaining\")\n+        limit_str = response.headers.get(\"X-Discogs-Ratelimit\")\n+        if remaining_str is not None and limit_str is not None:\n+            with contextlib.suppress(ValueError):\n+                remaining = int(remaining_str)\n+                limit = int(limit_str)\n+                if remaining <= 2:\n+                    logging.warning(\"Discogs rate limit low: %d/%d remaining\", remaining, limit)\n+                else:\n+                    logging.debug(\"Discogs rate limit: %d/%d remaining\", remaining, limit)\n+\n     async def search(  # pylint: disable=too-many-arguments\n         self,\n         query: str,\n@@ -171,6 +189,7 @@ async def search(  # pylint: disable=too-many-arguments\n             if not self.session:\n                 return DiscogsSearchResult([], self)\n             async with self.session.get(url, params=params) as response:  # pylint: disable=not-async-context-manager\n+                self._log_rate_limit(response)\n                 if response.status == 200:\n                     data = await response.json()\n                     results = data.get(\"results\", [])\n@@ -187,7 +206,10 @@ async def search(  # pylint: disable=too-many-arguments\n \n                     return search_result\n \n-                logging.warning(\"Discogs search failed with status %d\", response.status)\n+                if response.status == 429:\n+                    logging.warning(\"Discogs search rate limited (429), skipping\")\n+                else:\n+                    logging.warning(\"Discogs search failed with status %d\", response.status)\n                 return DiscogsSearchResult([], self)\n         except Exception as error:  # pylint: disable=broad-exception-caught\n             logging.debug(\"Discogs search error: %s\", error)\n@@ -204,6 +226,7 @@ async def artist(\n \n         try:\n             async with self.session.get(url) as response:  # pylint: disable=not-async-context-manager\n+                self._log_rate_limit(response)\n                 if response.status == 200:\n                     data = await response.json()\n \n@@ -227,7 +250,10 @@ async def artist(\n \n                     return DiscogsArtist(data)\n \n-                logging.warning(\"Discogs artist lookup failed with status %d\", response.status)\n+                if response.status == 429:\n+                    logging.warning(\"Discogs artist lookup rate limited (429), skipping\")\n+                else:\n+                    logging.warning(\"Discogs artist lookup failed with status %d\", response.status)\n                 return None\n         except Exception as error:  # pylint: disable=broad-exception-caught\n             logging.debug(\"Discogs artist lookup error: %s\", error)"
+    },
+    {
+      "sha": "866e04636bae7f24296ece1ef0785bd81b2d7d9c",
+      "filename": "nowplaying/processes/webserver.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 1,
+      "changes": 5,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/nowplaying%2Fprocesses%2Fwebserver.py",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/nowplaying%2Fprocesses%2Fwebserver.py",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/nowplaying%2Fprocesses%2Fwebserver.py?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -670,7 +670,10 @@ async def on_startup(self, app: web.Application):\n         template_dir = app[CONFIG_KEY].getbundledir().joinpath(\"templates\")\n         app.router.add_static(\"/vendor/\", path=template_dir / \"vendor\", name=\"vendor\")\n         app.router.add_static(\"/guessgame/\", path=template_dir / \"guessgame\", name=\"guessgame\")\n-        app[METADB_KEY] = nowplaying.db.MetadataDB()\n+        metadb_path: str | None = None\n+        if self.testmode:\n+            metadb_path = app[CONFIG_KEY].cparser.value(\"testmode/metadbpath\", defaultValue=None)\n+        app[METADB_KEY] = nowplaying.db.MetadataDB(databasefile=metadb_path)\n         app[IC_KEY] = nowplaying.imagecache.ImageCache()\n         app[WATCHER_KEY] = app[METADB_KEY].watcher()\n         app[WATCHER_KEY].start()"
+    },
+    {
+      "sha": "435b117da640c586e4a31b52742b90c2369f31f6",
+      "filename": "nowplaying/trackrequests.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 1,
+      "changes": 5,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/nowplaying%2Ftrackrequests.py",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/nowplaying%2Ftrackrequests.py",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/nowplaying%2Ftrackrequests.py?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -1081,7 +1081,10 @@ async def twofer_request(\n     ) -> TrackRequestResult:\n         \"\"\"twofer request\"\"\"\n \n-        metadb = nowplaying.db.MetadataDB()\n+        metadb_path: str | None = None\n+        if self.testmode and self.config:\n+            metadb_path = self.config.cparser.value(\"testmode/metadbpath\", defaultValue=None)\n+        metadb = nowplaying.db.MetadataDB(databasefile=metadb_path)\n         metadata = await metadb.read_last_meta_async()\n         if not metadata:\n             logging.debug(\"Twofer: No currently playing track? skipping\")"
+    },
+    {
+      "sha": "9009b3a6ad839bdc984e156dda9be5c3f7e53fce",
+      "filename": "nowplaying/vendor/wnpmb.pyi",
+      "status": "added",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/nowplaying%2Fvendor%2Fwnpmb.pyi",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/nowplaying%2Fvendor%2Fwnpmb.pyi",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/nowplaying%2Fvendor%2Fwnpmb.pyi?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -0,0 +1 @@\n+from wnpmb import *\n\\ No newline at end of file"
+    },
+    {
+      "sha": "fd991a047058a52dd12d045576be1fdeb33b3f2e",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/pyproject.toml",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/pyproject.toml?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -5,7 +5,7 @@ build-backend = \"setuptools.build_meta\"\n [project]\n name = \"WhatsNowPlaying\"\n dynamic = [\"version\", \"dependencies\", \"optional-dependencies\"]\n-requires-python = \">=3.11,<3.14\"\n+requires-python = \">=3.11,<3.15\"\n license-files = [\"LICENSE.txt\"]\n \n [project.entry-points.pyinstaller40]"
+    },
+    {
+      "sha": "0743bb652e18c54188b2e3f2a68cc49e35e6949d",
+      "filename": "tests/test_db.py",
+      "status": "modified",
+      "additions": 19,
+      "deletions": 19,
+      "changes": 38,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/tests%2Ftest_db.py",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/tests%2Ftest_db.py",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/tests%2Ftest_db.py?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -18,16 +18,16 @@ def results(expected, metadata):\n \n \n @pytest.mark.asyncio\n-async def test_simple_check(bootstrap):  # pylint: disable=unused-argument\n+async def test_simple_check(bootstrap):\n     \"\"\"test writing false data\"\"\"\n-    metadb = nowplaying.db.MetadataDB(initialize=True)\n+    metadb = nowplaying.db.MetadataDB(databasefile=bootstrap.dbtestfile, initialize=True)\n     assert metadb\n \n \n @pytest.mark.asyncio\n-async def test_empty_db(bootstrap):  # pylint: disable=unused-argument\n+async def test_empty_db(bootstrap):\n     \"\"\"test writing false data\"\"\"\n-    metadb = nowplaying.db.MetadataDB(initialize=True)\n+    metadb = nowplaying.db.MetadataDB(databasefile=bootstrap.dbtestfile, initialize=True)\n     await metadb.write_to_metadb(metadata=None)\n     readdata = metadb.read_last_meta()\n \n@@ -40,9 +40,9 @@ async def test_empty_db(bootstrap):  # pylint: disable=unused-argument\n \n \n @pytest.mark.asyncio\n-async def test_empty_db_async(bootstrap):  # pylint: disable=unused-argument\n+async def test_empty_db_async(bootstrap):\n     \"\"\"test writing false data\"\"\"\n-    metadb = nowplaying.db.MetadataDB(initialize=True)\n+    metadb = nowplaying.db.MetadataDB(databasefile=bootstrap.dbtestfile, initialize=True)\n     await metadb.write_to_metadb(metadata=None)\n     readdata = await metadb.read_last_meta_async()\n \n@@ -55,9 +55,9 @@ async def test_empty_db_async(bootstrap):  # pylint: disable=unused-argument\n \n \n @pytest.mark.asyncio\n-async def test_data_db1(bootstrap):  # pylint: disable=unused-argument\n+async def test_data_db1(bootstrap):\n     \"\"\"simple data test\"\"\"\n-    metadb = nowplaying.db.MetadataDB(initialize=True)\n+    metadb = nowplaying.db.MetadataDB(databasefile=bootstrap.dbtestfile, initialize=True)\n \n     expected = {\n         \"acoustidid\": None,\n@@ -119,9 +119,9 @@ async def test_data_db1(bootstrap):  # pylint: disable=unused-argument\n \n \n @pytest.mark.asyncio\n-async def test_data_db2(bootstrap):  # pylint: disable=unused-argument\n+async def test_data_db2(bootstrap):\n     \"\"\"more complex data test\"\"\"\n-    metadb = nowplaying.db.MetadataDB(initialize=True)\n+    metadb = nowplaying.db.MetadataDB(databasefile=bootstrap.dbtestfile, initialize=True)\n \n     expected = {\n         \"album\": \"Secret Samadhi\",\n@@ -204,9 +204,9 @@ async def test_data_db2(bootstrap):  # pylint: disable=unused-argument\n \n \n @pytest.mark.asyncio\n-async def test_data_dbid(bootstrap):  # pylint: disable=unused-argument\n+async def test_data_dbid(bootstrap):\n     \"\"\"make sure dbid increments\"\"\"\n-    metadb = nowplaying.db.MetadataDB(initialize=True)\n+    metadb = nowplaying.db.MetadataDB(databasefile=bootstrap.dbtestfile, initialize=True)\n \n     expected = {\n         \"artist\": \"Nine Inch Nails\",\n@@ -228,9 +228,9 @@ async def test_data_dbid(bootstrap):  # pylint: disable=unused-argument\n \n \n @pytest.mark.asyncio\n-async def test_data_previoustrack(bootstrap):  # pylint: disable=unused-argument\n+async def test_data_previoustrack(bootstrap):\n     \"\"\"test the previoustrack functionality\"\"\"\n-    metadb = nowplaying.db.MetadataDB(initialize=True)\n+    metadb = nowplaying.db.MetadataDB(databasefile=bootstrap.dbtestfile, initialize=True)\n \n     for counter in range(4):\n         await metadb.write_to_metadb(metadata={\"artist\": f\"a{counter}\", \"title\": f\"t{counter}\"})\n@@ -245,19 +245,19 @@ async def test_data_previoustrack(bootstrap):  # pylint: disable=unused-argument\n ## there are no crashes\n \n \n-def test_empty_setlist(bootstrap):  # pylint: disable=unused-argument\n+def test_empty_setlist(bootstrap):\n     \"\"\"test a simple empty db\"\"\"\n     config = bootstrap\n     config.cparser.setValue(\"setlist/enabled\", True)\n     nowplaying.db.create_setlist(config)\n \n \n @pytest.mark.asyncio\n-async def test_simple_setlist(bootstrap):  # pylint: disable=unused-argument\n+async def test_simple_setlist(bootstrap):\n     \"\"\"test a single entry db\"\"\"\n     config = bootstrap\n     config.cparser.setValue(\"setlist/enabled\", True)\n-    metadb = nowplaying.db.MetadataDB(initialize=True)\n+    metadb = nowplaying.db.MetadataDB(databasefile=bootstrap.dbtestfile, initialize=True)\n \n     expected = {\n         \"artist\": \"Great Artist Here\",\n@@ -269,11 +269,11 @@ async def test_simple_setlist(bootstrap):  # pylint: disable=unused-argument\n \n \n @pytest.mark.asyncio\n-async def test_missingartist_setlist(bootstrap):  # pylint: disable=unused-argument\n+async def test_missingartist_setlist(bootstrap):\n     \"\"\"test a single entry db\"\"\"\n     config = bootstrap\n     config.cparser.setValue(\"setlist/enabled\", True)\n-    metadb = nowplaying.db.MetadataDB(initialize=True)\n+    metadb = nowplaying.db.MetadataDB(databasefile=bootstrap.dbtestfile, initialize=True)\n \n     expected = {\n         \"artist\": None,"
+    },
+    {
+      "sha": "78aa3b65ddc4e755cde55480ab209c5844ec3e28",
+      "filename": "tests/test_has_tracks_by_artist.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/tests%2Ftest_has_tracks_by_artist.py",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/tests%2Ftest_has_tracks_by_artist.py",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/tests%2Ftest_has_tracks_by_artist.py?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -9,6 +9,7 @@\n \n import asyncio\n import gc\n+import inspect\n import tempfile\n import time\n import unittest.mock\n@@ -652,7 +653,7 @@ async def test_all_plugins_implement_has_tracks_by_artist(bootstrap):\n         assert hasattr(plugin, \"has_tracks_by_artist\"), (\n             f\"{plugin_class.__name__} missing has_tracks_by_artist method\"\n         )\n-        assert asyncio.iscoroutinefunction(plugin.has_tracks_by_artist), (\n+        assert inspect.iscoroutinefunction(plugin.has_tracks_by_artist), (\n             f\"{plugin_class.__name__}.has_tracks_by_artist must be async\"\n         )\n "
+    },
+    {
+      "sha": "3da7b1c281dc6cdbcc50ad95b41063868006c315",
+      "filename": "tests/test_imagecache.py",
+      "status": "modified",
+      "additions": 34,
+      "deletions": 27,
+      "changes": 61,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/tests%2Ftest_imagecache.py",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/tests%2Ftest_imagecache.py",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/tests%2Ftest_imagecache.py?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -323,6 +323,7 @@ async def test_get_next_dlset_empty_database(bootstrap):\n         result = imagecache.get_next_dlset()\n         assert result is None or result == []\n     finally:\n+        imagecache.close()\n         # Clean up SQLite WAL files to prevent flaky test failures\n         if imagecache.databasefile.exists():\n             with contextlib.suppress(Exception):\n@@ -342,20 +343,23 @@ async def test_database_operations(bootstrap):\n \n     imagecache = nowplaying.imagecache.ImageCache(cachedir=dbdir)\n \n-    # Test put_db_srclocation\n-    imagecache.put_db_srclocation(\"testartist\", \"testurl\", \"fanart\")\n-\n-    # Test find_srclocation\n-    data = imagecache.find_srclocation(\"testurl\")\n-    assert data is not None\n-    assert data[\"identifier\"] == \"testartist\"\n-    assert data[\"imagetype\"] == \"fanart\"\n-    assert data[\"srclocation\"] == \"testurl\"\n-\n-    # Test erase_srclocation\n-    imagecache.erase_srclocation(\"testurl\")\n-    data = imagecache.find_srclocation(\"testurl\")\n-    assert data is None\n+    try:\n+        # Test put_db_srclocation\n+        imagecache.put_db_srclocation(\"testartist\", \"testurl\", \"fanart\")\n+\n+        # Test find_srclocation\n+        data = imagecache.find_srclocation(\"testurl\")\n+        assert data is not None\n+        assert data[\"identifier\"] == \"testartist\"\n+        assert data[\"imagetype\"] == \"fanart\"\n+        assert data[\"srclocation\"] == \"testurl\"\n+\n+        # Test erase_srclocation\n+        imagecache.erase_srclocation(\"testurl\")\n+        data = imagecache.find_srclocation(\"testurl\")\n+        assert data is None\n+    finally:\n+        imagecache.close()\n \n \n @pytest.mark.asyncio\n@@ -445,22 +449,25 @@ async def test_stopwnp_only_in_batch(bootstrap):\n     imagecache = nowplaying.imagecache.ImageCache(cachedir=dbdir)\n     recently_processed = {}\n \n-    # Simulate shutdown scenario where only STOPWNP is in the queue\n-    mock_dataset = [\n-        {\"srclocation\": \"STOPWNP\", \"identifier\": \"STOPWNP\", \"imagetype\": \"STOPWNP\"},\n-    ]\n+    try:\n+        # Simulate shutdown scenario where only STOPWNP is in the queue\n+        mock_dataset = [\n+            {\"srclocation\": \"STOPWNP\", \"identifier\": \"STOPWNP\", \"imagetype\": \"STOPWNP\"},\n+        ]\n \n-    with patch.object(imagecache, \"get_next_dlset\", return_value=mock_dataset):\n-        batch = imagecache._get_next_queue_batch(recently_processed)  # pylint: disable=protected-access\n-        assert len(batch) == 1\n-        assert batch[0][\"srclocation\"] == \"STOPWNP\"\n+        with patch.object(imagecache, \"get_next_dlset\", return_value=mock_dataset):\n+            batch = imagecache._get_next_queue_batch(recently_processed)  # pylint: disable=protected-access\n+            assert len(batch) == 1\n+            assert batch[0][\"srclocation\"] == \"STOPWNP\"\n \n-    # Verify filtering out STOPWNP leaves empty batch (clean shutdown)\n-    items_to_process = [item for item in batch if item[\"srclocation\"] != \"STOPWNP\"]\n-    should_stop = len(items_to_process) != len(batch)\n+        # Verify filtering out STOPWNP leaves empty batch (clean shutdown)\n+        items_to_process = [item for item in batch if item[\"srclocation\"] != \"STOPWNP\"]\n+        should_stop = len(items_to_process) != len(batch)\n \n-    assert not items_to_process\n-    assert should_stop\n+        assert not items_to_process\n+        assert should_stop\n+    finally:\n+        imagecache.close()\n \n \n @pytest.mark.asyncio"
+    },
+    {
+      "sha": "396bdce39609aefc29b8e2fded1b3cb5002cb6f1",
+      "filename": "tests/test_trackrequests.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/tests%2Ftest_trackrequests.py",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/tests%2Ftest_trackrequests.py",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/tests%2Ftest_trackrequests.py?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -614,7 +614,7 @@ async def test_twofer(bootstrap, getroot):  # pylint: disable=redefined-outer-na\n     )\n     config.cparser.sync()\n \n-    metadb = nowplaying.db.MetadataDB(initialize=True)\n+    metadb = nowplaying.db.MetadataDB(databasefile=bootstrap.dbtestfile, initialize=True)\n     trackrequest = nowplaying.trackrequests.Requests(\n         stopevent=stopevent, config=config, testmode=True\n     )"
+    },
+    {
+      "sha": "2fdcd36e6c97189ad7ed4166e3d4b1eda43b861c",
+      "filename": "tests/webserver/conftest.py",
+      "status": "modified",
+      "additions": 53,
+      "deletions": 54,
+      "changes": 107,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/tests%2Fwebserver%2Fconftest.py",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/tests%2Fwebserver%2Fconftest.py",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/tests%2Fwebserver%2Fconftest.py?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -4,12 +4,10 @@\n import asyncio\n import contextlib\n import logging\n-import os\n import pathlib\n import socket\n import tempfile\n import time\n-import unittest.mock\n \n import pytest\n import pytest_asyncio\n@@ -71,63 +69,58 @@ def shared_webserver_config(pytestconfig):\n     \"\"\"module-scoped webserver configuration shared across all webserver tests\"\"\"\n     with contextlib.suppress(PermissionError):\n         with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as newpath:\n-            dbinit_patch = unittest.mock.patch(\"nowplaying.db.MetadataDB.init_db_var\")\n-            dbinit_mock = dbinit_patch.start()\n             dbdir = pathlib.Path(newpath).joinpath(\"mdb\")\n             dbdir.mkdir()\n             dbfile = dbdir.joinpath(\"test.db\")\n-            dbinit_mock.return_value = dbfile\n \n-            with unittest.mock.patch.dict(\n-                os.environ,\n-                {\"WNP_CONFIG_TEST_DIR\": str(newpath), \"WNP_METADB_TEST_FILE\": str(dbfile)},\n-            ):\n-                bundledir = pathlib.Path(pytestconfig.rootpath).joinpath(\"nowplaying\")\n-                nowplaying.bootstrap.set_qt_names(\n-                    domain=\"com.github.whatsnowplaying.testsuite\", appname=\"testsuite\"\n-                )\n-                config = nowplaying.config.ConfigFile(\n-                    bundledir=bundledir, logpath=newpath, testmode=True\n-                )\n-                config.cparser.setValue(\"acoustidmb/enabled\", False)\n-                config.cparser.setValue(\"musicbrainz/enabled\", False)\n-                config.cparser.setValue(\"weboutput/httpenabled\", \"true\")\n-                config.cparser.sync()\n-\n-                metadb = nowplaying.db.MetadataDB(initialize=True)\n-                logging.debug(\"shared webserver databasefile = %s\", metadb.databasefile)\n-\n-                port = config.cparser.value(\"weboutput/httpport\", type=int)\n-                logging.debug(\"checking %s for use\", port)\n-                while is_port_in_use(port):\n-                    logging.debug(\"%s is in use; waiting\", port)\n-                    time.sleep(2)\n-\n-                manager = nowplaying.subprocesses.SubprocessManager(config=config, testmode=True)\n-                manager.start_webserver()\n-\n-                # Wait for webserver to start\n-                timeout = 10.0\n-                start_time = time.time()\n-                while time.time() - start_time < timeout:\n-                    with contextlib.suppress(\n-                        requests.exceptions.RequestException, requests.exceptions.ConnectionError\n-                    ):\n-                        req = requests.get(f\"http://localhost:{port}/internals\", timeout=2)\n-                        if req.status_code == 200:\n-                            logging.debug(\"internals = %s\", req.json())\n-                            break\n-                    time.sleep(0.1)\n-                else:\n-                    raise RuntimeError(\n-                        f\"Webserver on port {port} failed to start within {timeout} seconds\"\n-                    )\n-\n-                yield config, metadb, manager, port\n-\n-                manager.stop_all_processes()\n+            bundledir = pathlib.Path(pytestconfig.rootpath).joinpath(\"nowplaying\")\n+            nowplaying.bootstrap.set_qt_names(\n+                domain=\"com.github.whatsnowplaying.testsuite\", appname=\"testsuite\"\n+            )\n+            config = nowplaying.config.ConfigFile(\n+                bundledir=bundledir, logpath=newpath, testmode=True\n+            )\n+            config.cparser.setValue(\"acoustidmb/enabled\", False)\n+            config.cparser.setValue(\"musicbrainz/enabled\", False)\n+            config.cparser.setValue(\"weboutput/httpenabled\", \"true\")\n+            config.cparser.setValue(\"testmode/metadbpath\", str(dbfile))\n+            config.cparser.sync()\n+\n+            metadb = nowplaying.db.MetadataDB(databasefile=dbfile, initialize=True)\n+            logging.debug(\"shared webserver databasefile = %s\", metadb.databasefile)\n+\n+            port = config.cparser.value(\"weboutput/httpport\", type=int)\n+            logging.debug(\"checking %s for use\", port)\n+            while is_port_in_use(port):\n+                logging.debug(\"%s is in use; waiting\", port)\n                 time.sleep(2)\n-                dbinit_mock.stop()\n+\n+            manager = nowplaying.subprocesses.SubprocessManager(config=config, testmode=True)\n+            manager.start_webserver()\n+\n+            # Wait for webserver to start\n+            timeout = 10.0\n+            start_time = time.time()\n+            while time.time() - start_time < timeout:\n+                with contextlib.suppress(\n+                    requests.exceptions.RequestException, requests.exceptions.ConnectionError\n+                ):\n+                    req = requests.get(f\"http://localhost:{port}/internals\", timeout=2)\n+                    if req.status_code == 200:\n+                        logging.debug(\"internals = %s\", req.json())\n+                        break\n+                time.sleep(0.1)\n+            else:\n+                raise RuntimeError(\n+                    f\"Webserver on port {port} failed to start within {timeout} seconds\"\n+                )\n+\n+            yield config, metadb, manager, port\n+\n+            manager.stop_all_processes()\n+            config.cparser.remove(\"testmode/metadbpath\")\n+            config.cparser.sync()\n+            time.sleep(2)\n \n \n @pytest_asyncio.fixture\n@@ -144,6 +137,7 @@ async def getwebserver(shared_webserver_config):\n     config.cparser.setValue(\"weboutput/httpport\", port)\n     config.cparser.setValue(\"acoustidmb/enabled\", False)\n     config.cparser.setValue(\"musicbrainz/enabled\", False)\n+    config.cparser.setValue(\"testmode/metadbpath\", str(metadb.databasefile))\n     config.cparser.sync()\n \n     # Recreate the database for clean test isolation\n@@ -160,6 +154,8 @@ async def getwebserver(shared_webserver_config):\n     yield config, metadb\n \n     manager.stop_all_processes()\n+    config.cparser.remove(\"testmode/metadbpath\")\n+    config.cparser.sync()\n     await asyncio.sleep(1)\n \n \n@@ -178,6 +174,7 @@ async def webserver_with_imagecache(shared_webserver_config):\n     config.cparser.setValue(\"acoustidmb/enabled\", False)\n     config.cparser.setValue(\"musicbrainz/enabled\", False)\n     config.cparser.setValue(\"artistextras/enabled\", True)\n+    config.cparser.setValue(\"testmode/metadbpath\", str(metadb.databasefile))\n     config.cparser.sync()\n \n     # Recreate the database for clean test isolation\n@@ -203,6 +200,8 @@ async def webserver_with_imagecache(shared_webserver_config):\n     yield config, metadb, manager, port\n \n     manager.stop_all_processes()\n+    config.cparser.remove(\"testmode/metadbpath\")\n+    config.cparser.sync()\n     await asyncio.sleep(1)\n \n "
+    },
+    {
+      "sha": "edaae76b4d741e1ce468581168bf46e7b724a2f5",
+      "filename": "tests/webserver/test_webserver_consolidated.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/whatsnowplaying/whats-now-playing/blob/2036eb1331ab1e23e9d365d8951d4f7032ca658a/tests%2Fwebserver%2Ftest_webserver_consolidated.py",
+      "raw_url": "https://github.com/whatsnowplaying/whats-now-playing/raw/2036eb1331ab1e23e9d365d8951d4f7032ca658a/tests%2Fwebserver%2Ftest_webserver_consolidated.py",
+      "contents_url": "https://api.github.com/repos/whatsnowplaying/whats-now-playing/contents/tests%2Fwebserver%2Ftest_webserver_consolidated.py?ref=2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "patch": "@@ -37,7 +37,7 @@ async def test_webserver_templates(getwebserver, template_type, endpoint, expect\n     port = config.cparser.value(\"weboutput/httpport\", type=int)\n \n     # Configure template\n-    template_path = config.getbundledir().joinpath(\"templates\", \"basic-plain.txt\")\n+    template_path = str(config.getbundledir().joinpath(\"templates\", \"basic-plain.txt\"))\n     if template_type == \"html\":\n         config.cparser.setValue(\"weboutput/htmltemplate\", template_path)\n     else:"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d568ebe6caeaa755df8e9fe43e2290bd8255e7dc",
+      "message": "Support Python 3.14",
+      "parent_shas": [
+        "e8d6e0baa4b77d4eb0896756a7213f54eaf82d97"
+      ]
+    },
+    {
+      "sha": "ef630e3b4af4e37206fa16d46f4be895d20307d1",
+      "message": "more test fixes",
+      "parent_shas": [
+        "d568ebe6caeaa755df8e9fe43e2290bd8255e7dc"
+      ]
+    },
+    {
+      "sha": "daed325168c526229bdf66bf31c069044c593747",
+      "message": "more fixes for 3.14",
+      "parent_shas": [
+        "ef630e3b4af4e37206fa16d46f4be895d20307d1"
+      ]
+    },
+    {
+      "sha": "5943198f3a0894fbdd0b7f6f2c124cc45a47572d",
+      "message": "more fixes",
+      "parent_shas": [
+        "daed325168c526229bdf66bf31c069044c593747"
+      ]
+    },
+    {
+      "sha": "f8aeb7d45432622b8dc62ee6bc4ed8a10e9f6c15",
+      "message": "another fix",
+      "parent_shas": [
+        "5943198f3a0894fbdd0b7f6f2c124cc45a47572d"
+      ]
+    },
+    {
+      "sha": "eb9d18c414b25882d022fe30780bcb2b129cdf9c",
+      "message": "fixes",
+      "parent_shas": [
+        "f8aeb7d45432622b8dc62ee6bc4ed8a10e9f6c15"
+      ]
+    },
+    {
+      "sha": "2036eb1331ab1e23e9d365d8951d4f7032ca658a",
+      "message": "support rate limits for discogs",
+      "parent_shas": [
+        "eb9d18c414b25882d022fe30780bcb2b129cdf9c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "python_java_bridge_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__whatsnowplaying__whats-now-playing__pr1597.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\whatsnowplaying__whats-now-playing__pr1597__python_java__whatsnowplaying__whats-now-playing__pr1597\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\whatsnowplaying__whats-now-playing__pr1597__python_java__whatsnowplaying__whats-now-playing__pr1597\\rn"
+  }
+}

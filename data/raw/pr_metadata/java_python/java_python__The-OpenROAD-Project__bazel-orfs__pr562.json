@@ -1,0 +1,442 @@
+{
+  "instance_id": "java_python__The-OpenROAD-Project__bazel-orfs__pr562",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "The-OpenROAD-Project/bazel-orfs",
+  "pr_number": 562,
+  "pr_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/pull/562",
+  "repo": {
+    "full_name": "The-OpenROAD-Project/bazel-orfs",
+    "clone_url": "https://github.com/The-OpenROAD-Project/bazel-orfs.git",
+    "default_branch": "main",
+    "created_at": "2024-02-06T17:24:15Z",
+    "stars": 24,
+    "license": "BSD-3-Clause",
+    "size_kb": 15787
+  },
+  "pull_request": {
+    "id": 3430962768,
+    "title": "Rewrite .github/ ad-hoc tests as idiomatic Bazel sh_test targets",
+    "body": "## Summary\r\n\r\nConsolidate CI from 5 jobs to 1 and make `bazelisk test ... --build_tests_only` the single source of truth for testing. Rewrite mock binaries in Python with unit tests so we're testing `.bzl` rule logic, not the OpenROAD binary.\r\n\r\n**Before**: 5 CI jobs, ad-hoc shell scripts in `.github/scripts/`, nested `bazel` invocations inside tests that spawned extra servers and exhausted disk. **After**: one CI job, 20 test targets, 3s critical path (cached), zero nested bazel.\r\n\r\n## Changes\r\n\r\n- **Mock-openroad/klayout rewritten in Python** with 36 unit tests. Shell wrappers delegate to Python via runfiles. Shared `mock_helpers.py` loader avoids duplication.\r\n- **Per-PDK `build_test` targets** for all 4 PDKs (asap7, nangate45, sky130hd, ihp-sg13g2) — real OpenROAD, full flow through `generate_abstract`.\r\n- **CI consolidated to one job**: lint, lockfile check, `bazelisk test ... --build_tests_only`. The `--build_tests_only` flag prevents building non-test targets (e.g. heavyweight sram flows).\r\n- **Disk cache GC** in `.bazelrc` (`--experimental_disk_cache_gc_max_size=5G`) to prevent CI runner disk exhaustion.\r\n- **Deleted** `.github/scripts/` (smoketests.sh, build_local_target.sh, extract_docker_revision.py) and nested-bazel test scripts (open_target_test.sh, local_build_test.sh, genrule_config_test.sh, query_target_test.sh).\r\n- **TESTING.md** with exhaustive table of all test targets, their mocking strategy, and PDK.\r\n\r\n## Test plan\r\n\r\n- `bazelisk test ... --build_tests_only --keep_going` passes all 20 tests\r\n- `bazelisk build //... --nobuild` — 318 targets analyze clean\r\n- No nested bazel invocations in any test\r\n- Profile: 3s total, 438ms critical path (cached)\r\n",
+    "created_at": "2026-03-22T16:40:21Z",
+    "merged_at": "2026-03-23T07:05:57Z",
+    "base_sha": "e531033aa1deb8ad037718880ce2367558fcc40a",
+    "head_sha": "bf26e3303754a414a92a0b36e253aa46973aed9d",
+    "merge_commit_sha": "6c42246e9127b2089d1e3b32b4e8f9ffd0cbeaeb",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "e531033aa1deb8ad037718880ce2367558fcc40a",
+  "final_sha": "bf26e3303754a414a92a0b36e253aa46973aed9d",
+  "changed_files": [
+    {
+      "sha": "2a95b5f5d664368006037fd4d727fa05d7f7db6e",
+      "filename": ".bazelignore",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 0,
+      "changes": 10,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/.bazelignore",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/.bazelignore",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/.bazelignore?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -1,2 +1,12 @@\n .bazelbsp\n tmp\n+# Sub-modules: these directories have their own MODULE.bazel and are\n+# developed/tested independently (cd chisel && bazelisk test ...).\n+# Excluding them from //... keeps the root module fast by avoiding\n+# heavy deps (chisel/scala/maven, verilator, kepler-formal, oss_cad_suite).\n+chisel\n+delivery\n+lec\n+mock/chisel\n+naja\n+sby"
+    },
+    {
+      "sha": "1dc0911e3b7f3a551aa0bbbc2c4fca91f9f51953",
+      "filename": ".bazelrc",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/.bazelrc",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/.bazelrc",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/.bazelrc?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -6,4 +6,7 @@ common --incompatible_disallow_empty_glob\n # Use: bazelisk build --config=openroad-gui @openroad//:openroad\n build:openroad-gui --@openroad//:platform=gui\n \n+# Garbage-collect disk cache to avoid exhausting CI runner disk.\n+build --experimental_disk_cache_gc_max_size=10G\n+\n try-import %workspace%/user.bazelrc"
+    },
+    {
+      "sha": "74cc7a8ca1f2c925c7dde5607d9f253caaa15a7e",
+      "filename": ".github/ci.bazelrc",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/.github%2Fci.bazelrc",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/.github%2Fci.bazelrc",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/.github%2Fci.bazelrc?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -1,3 +1,3 @@\n-# Override kepler-formal with a lightweight local mock to avoid\n-# cloning the full git repository during module resolution.\n-common --override_module=kepler-formal=%workspace%/mock/kepler-formal\n+# CI-specific Bazel configuration.\n+# Currently empty — heavy deps (chisel, kepler-formal, etc.) have been\n+# moved to sub-modules and are no longer resolved by the root module."
+    },
+    {
+      "sha": "3e819421487b404506e57ef61a0b17b6ffe22f7c",
+      "filename": ".github/scripts/build_local_target.sh",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 78,
+      "changes": 78,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/e531033aa1deb8ad037718880ce2367558fcc40a/.github%2Fscripts%2Fbuild_local_target.sh",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/e531033aa1deb8ad037718880ce2367558fcc40a/.github%2Fscripts%2Fbuild_local_target.sh",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/.github%2Fscripts%2Fbuild_local_target.sh?ref=e531033aa1deb8ad037718880ce2367558fcc40a",
+      "patch": "@@ -1,78 +0,0 @@\n-#!/bin/bash\n-\n-set -ex\n-\n-# Test local build with submacros\n-target_name=${TARGET:-\"//test:L1MetadataArray\"}\n-if [[ -z \"$STAGES\" ]]; then\n-  # Skip \"grt\" \"route\", takes too long\n-  STAGES=(\"synth\" \"floorplan\" \"place\" \"cts\")\n-else\n-  eval \"STAGES=($STAGES)\"\n-fi\n-\n-# Derive package and bare target from target_name for tmp/<package>/<name> output directory\n-if [[ \"$target_name\" == //* ]]; then\n-  # //package:target -> package, target\n-  package=\"${target_name#//}\"\n-  bare_target=\"${package#*:}\"\n-  package=\"${package%%:*}\"\n-elif [[ \"$target_name\" == *:* ]]; then\n-  # package:target -> package, target\n-  bare_target=\"${target_name#*:}\"\n-  package=\"${target_name%%:*}\"\n-else\n-  # bare target name -> root package (empty)\n-  bare_target=\"$target_name\"\n-  package=\"\"\n-fi\n-\n-if [[ \"$target_name\" == *\"L1MetadataArray\" || \"$target_name\" == \"//sram:top_mix\" ]]; then\n-  macro=\"true\"\n-fi\n-echo \"Build ${target_name} macro\"\n-for stage in \"${STAGES[@]}\"\n-do\n-  build_dir=\"tmp${package:+/$package}/${bare_target}_${stage}_deps\"\n-  rm -rf \"./$build_dir\"\n-  if [[ -z $SKIP_BUILD ]] ; then\n-    echo \"[${target_name}] ${stage}: Build dependency\"\n-    bazel run --verbose_failures \"${target_name}_${stage}_deps\"\n-  fi\n-  if [[ -z $SKIP_RUN ]] ; then\n-    stages=()\n-    if [[ $stage == \"synth\" ]]; then\n-        stages+=(\"do-yosys-canonicalize\")\n-        stages+=(\"do-yosys\")\n-        stages+=(\"do-1_synth\")\n-    elif [[ $stage == \"grt\" ]]; then\n-        stages+=(\"do-5_1_grt\")\n-    elif [[ $stage == \"route\" ]]; then\n-        stages+=(\"do-5_2_route\")\n-        stages+=(\"do-5_3_fillcell\")\n-    elif [[ $stage == \"cts\" ]]; then\n-        stages+=(\"do-cts\")\n-        [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*\\.odb' | wc -l) -eq 1 ]\n-        [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*\\.sdc' | wc -l) -eq 1 ]\n-        [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*\\.v' | wc -l) -eq 0 ]\n-    else\n-        stages+=(\"do-${stage}\")\n-    fi\n-    if [[ \"$macro\" == \"true\" ]]; then\n-      [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*\\.lef' | wc -l) -eq 1 ]\n-      [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*\\.lib' | wc -l) -eq 1 ]\n-    fi\n-    for local_stage in \"${stages[@]}\"\n-    do\n-        echo \"[${target_name}] ${local_stage}: Run make script\"\n-        \"$build_dir/make\" \"${local_stage}\"\n-    done\n-    echo \"Check that we can load the result\"\n-    \"$build_dir/make\" OR_ARGS=-exit open_${stage}\n-  fi\n-done\n-\n-if [[ -z $SKIP_BUILD && -z $SKIP_ABSTRACT ]]; then\n-    echo \"build abstract\"\n-    bazel build --verbose_failures \"${target_name}_generate_abstract\"\n-fi"
+    },
+    {
+      "sha": "78c2844e6668cf75e70cf7928a33a59d2f2d1e12",
+      "filename": ".github/scripts/extract_docker_revision.py",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 67,
+      "changes": 67,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/e531033aa1deb8ad037718880ce2367558fcc40a/.github%2Fscripts%2Fextract_docker_revision.py",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/e531033aa1deb8ad037718880ce2367558fcc40a/.github%2Fscripts%2Fextract_docker_revision.py",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/.github%2Fscripts%2Fextract_docker_revision.py?ref=e531033aa1deb8ad037718880ce2367558fcc40a",
+      "patch": "@@ -1,67 +0,0 @@\n-import json\n-from pathlib import Path\n-import sys\n-from typing import Optional\n-\n-\n-def find_docker_orfs(data: dict) -> Optional[dict]:\n-    \"\"\"\n-    Recursively search for the 'docker_orfs' configuration in\n-    the provided JSON data.\n-\n-    Parameters\n-    ----------\n-    data : dict\n-        The JSON data to search for the 'docker_orfs' configuration.\n-\n-    Returns\n-    -------\n-    Optional[dict]\n-        The 'docker_orfs' configuration if found, otherwise None.\n-    \"\"\"\n-    if isinstance(data, dict):\n-        if 'docker_orfs' in data:\n-            return data['docker_orfs']\n-        for key, value in data.items():\n-            result = find_docker_orfs(value)\n-            if result:\n-                return result\n-    elif isinstance(data, list):\n-        for item in data:\n-            result = find_docker_orfs(item)\n-            if result:\n-                return result\n-    return None\n-\n-\n-if __name__ == \"__main__\":\n-    if len(sys.argv) < 2 or not Path(sys.argv[1]).exists():\n-        print(f\"Usage: {sys.argv[0]} <MODULE.bazel>\")\n-        exit(1)\n-\n-    with open(sys.argv[1], 'r') as file:\n-        try:\n-            data = json.load(file)\n-        except json.JSONDecodeError:\n-            print(f\"Unable to parse JSON data from {sys.argv[1]}\")\n-            exit(1)\n-\n-        docker_orfs = find_docker_orfs(data)\n-        if docker_orfs is None or docker_orfs.get('attributes', None) is None:\n-            print(\"Unable to find 'docker_orfs' configuration in the provided file\")    # noqa: E501\n-            exit(1)\n-\n-    docker_tag = docker_orfs.get('attributes').get('image', None)\n-    docker_sha256 = docker_orfs.get('attributes').get('sha256', None)\n-\n-    if docker_tag is None or docker_sha256 is None:\n-        print(\"Unable to find correct Docker tag or SHA256 in the provided file.\")\n-        print(f\"Obtained Docker tag: {docker_tag}\")\n-        print(f\"Obtained Docker SHA256: {docker_sha256}\")\n-        exit(1)\n-\n-    print(json.dumps({\n-            'image': f\"{docker_tag}@sha256:{docker_sha256}\",\n-            'tag': docker_tag,\n-            'sha256': docker_sha256\n-    }))"
+    },
+    {
+      "sha": "54c8a6210fcc33c7920b987e8ae584d744234380",
+      "filename": ".github/scripts/smoketests.sh",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 32,
+      "changes": 32,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/e531033aa1deb8ad037718880ce2367558fcc40a/.github%2Fscripts%2Fsmoketests.sh",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/e531033aa1deb8ad037718880ce2367558fcc40a/.github%2Fscripts%2Fsmoketests.sh",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/.github%2Fscripts%2Fsmoketests.sh?ref=e531033aa1deb8ad037718880ce2367558fcc40a",
+      "patch": "@@ -1,32 +0,0 @@\n-#!/bin/bash\n-set -ex\n-\n-echo These targets should have been pruned\n-bazelisk query //test:* | grep -q -v lb_32x128_1_synth\n-bazelisk query //test:* | grep -q -v lb_32x128_2_floorplan\n-bazelisk query //test:* | grep -q -v lb_32x128_3_place\n-echo This target should exist\n-bazelisk query //test:* | grep -q -v lb_32x128_4_synth\n-\n-# orfs_genrule: verify srcs use exec config (not target config)\n-# Native genrule forces srcs into target config, rebuilding ORFS outputs.\n-# orfs_genrule keeps srcs in exec config, avoiding the duplicate build.\n-target_config=$(bazelisk cquery //test:gatelist_wc_orfs_genrule 2>&1 | grep \"^//\" | sed 's/.*(\\(.*\\))/\\1/')\n-srcs_config=$(bazelisk cquery 'deps(//test:gatelist_wc_orfs_genrule, 1)' 2>&1 | grep \"gatelist \" | sed 's/.*(\\(.*\\))/\\1/')\n-test \"$target_config\" != \"$srcs_config\"\n-\n-bazelisk test ... \\\n-   --keep_going \\\n-   --test_output=errors \\\n-   --profile=build.profile\n-\n-# Reenable naja tests later, merged.lib is gone, PRs welcome...\n-#\n-# grep naja bazel-bin/sram/mock-naja.v\n-# grep -q naja bazel-bin/sram/results/asap7/sdq_17x64/mock-naja/1_synth.v && false || true\n-# (bazelisk build //sram:sdq_17x64_naja-error_floorplan 2>&1 || true) | grep \"syntax error\"\n-\n-# bazelisk run //sram:sdq_17x64_mock-naja_floorplan_deps\n-# grep naja tmp/sram/_main/sram/results/asap7/sdq_17x64/mock-naja/1_synth.v\n-\n-bazelisk analyze-profile build.profile"
+    },
+    {
+      "sha": "ac5c8b747791294074dc210177399e3ce23add1b",
+      "filename": ".github/workflows/ci.yml",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 277,
+      "changes": 285,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/.github%2Fworkflows%2Fci.yml",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/.github%2Fworkflows%2Fci.yml",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/.github%2Fworkflows%2Fci.yml?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -7,173 +7,9 @@ on:\n       - main\n   pull_request:\n \n-env:\n-  DOCKER_IMAGE: openroad/flow-ubuntu22.04-builder:latest\n-\n jobs:\n-  lint:\n-    name: Lint Bazel files\n-    runs-on: ubuntu-22.04\n-    env:\n-      DEBIAN_FRONTEND: \"noninteractive\"\n-    steps:\n-      - name: Checkout bazel-orfs\n-        uses: actions/checkout@v4\n-\n-      - name: Check Bazel files\n-        run: |\n-          bazelisk run @buildifier_prebuilt//:buildifier -- -lint warn -r .\n-\n-  test-make-target:\n-    name: ${{ matrix.STAGE_TARGET }}\n-    runs-on: ubuntu-22.04\n-    defaults:\n-      run:\n-        shell: bash\n-    strategy:\n-      fail-fast: false\n-      matrix:\n-        STAGE_TARGET:\n-          - \"//sram:top_mix_cts\"\n-          - \"//test:tag_array_64x184_generate_abstract\"\n-          - \"//test:tag_array_64x184_report\"\n-          - \"//test:lb_32x128_generate_abstract\"\n-          - \"//test:lb_32x128_test_generate_abstract\"\n-          - \"//test:L1MetadataArray_generate_abstract\"\n-          - \"//test:regfile_128x65_floorplan\"\n-          - \"//subpackage:L1MetadataArray_generate_abstract\"\n-          - \"//subpackage:tag_array_64x184_generate_abstract\"\n-    env:\n-      DEBIAN_FRONTEND: \"noninteractive\"\n-    steps:\n-      - name: Checkout bazel-orfs\n-        uses: actions/checkout@v4\n-\n-      - name: Setup Bazel\n-        uses: bazel-contrib/setup-bazel@0.15.0\n-        with:\n-          bazelisk-cache: true\n-          disk-cache: ${{ github.workflow }}-${{ matrix.STAGE_TARGET }}\n-          repository-cache: true\n-\n-      - name: Use mock kepler-formal\n-        run: echo 'import %workspace%/.github/ci.bazelrc' >> user.bazelrc\n-\n-      - name: Build report\n-        if: ${{ endsWith(matrix.STAGE_TARGET, '_report') }}\n-        run: |\n-          bazel build --verbose_failures ${{ matrix.STAGE_TARGET }}\n-      - name: Run target\n-        if: ${{ !endsWith(matrix.STAGE_TARGET, '_report') }}\n-        run: |\n-          if [[ ${{ matrix.STAGE_TARGET }} == *\"lb_32x128_generate_abstract\" || ${{ matrix.STAGE_TARGET }} == *\"tag_array_64x184_generate_abstract\"* ]]; then\n-            # this is a mock area abstract, so it is not executable\n-            bazel build --verbose_failures ${{ matrix.STAGE_TARGET }}\n-          else\n-            bazel run --verbose_failures ${{ matrix.STAGE_TARGET }}\n-          fi\n-\n-  test-open-target:\n-    name: open ${{ matrix.STAGE_TARGET }}\n-    runs-on: ubuntu-22.04\n-    defaults:\n-      run:\n-        shell: bash\n-    strategy:\n-      fail-fast: false\n-      matrix:\n-        STAGE_TARGET:\n-          - \"//sram:top_mix\"\n-          - \"//test:tag_array_64x184\"\n-          - \"//test:L1MetadataArray\"\n-          - \"//subpackage:L1MetadataArray\"\n-          - \"//subpackage:tag_array_64x184\"\n-    env:\n-      DEBIAN_FRONTEND: \"noninteractive\"\n-    steps:\n-      - name: Checkout bazel-orfs\n-        uses: actions/checkout@v4\n-\n-      - name: Setup Bazel\n-        uses: bazel-contrib/setup-bazel@0.15.0\n-        with:\n-          bazelisk-cache: true\n-          disk-cache: ${{ github.workflow }}-${{ matrix.STAGE_TARGET }}\n-          repository-cache: true\n-\n-      - name: Use mock kepler-formal\n-        run: echo 'import %workspace%/.github/ci.bazelrc' >> user.bazelrc\n-\n-      - name: Run target\n-        run: |\n-          set -ex\n-\n-          stage_target=\"${{ matrix.STAGE_TARGET }}\"\n-          if [[ \"$stage_target\" == //* ]]; then\n-            package=\"${stage_target#//}\"; package=\"${package%%:*}\"\n-          elif [[ \"$stage_target\" == *:* ]]; then\n-            package=\"${stage_target%%:*}\"\n-          else\n-            package=\"\"\n-          fi\n-          build_dir=\"tmp${package:+/$package}\"\n-\n-          rm -rf \"./$build_dir\"\n-          bazel run ${stage_target}_synth -- OR_ARGS=-exit open_synth\n-          if [[ \"$stage_target\" == *\"L1MetadataArray\" || \"$stage_target\" == \"//sram:top_mix\" ]]; then\n-            macro=\"true\"\n-          fi\n-          if [[ \"$macro\" == \"true\" ]]; then\n-            [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*\\.lib' | wc -l) -eq 1 ]\n-            [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*\\.lef' | wc -l) -eq 1 ]\n-          fi\n-          [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*/1_.*\\.log' | wc -l) -gt 1 ]\n-          [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*/2_.*\\.log' | wc -l) -eq 0 ]\n-          rm -rf \"./$build_dir\"\n-          bazel run ${stage_target}_floorplan -- OR_ARGS=-exit open_floorplan\n-          if [[ \"$macro\" == \"true\" ]]; then\n-            [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*\\.lib' | wc -l) -eq 1 ]\n-            [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*\\.lef' | wc -l) -eq 1 ]\n-          fi\n-          [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*\\.odb' | wc -l) -eq 1 ]\n-          [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*\\.sdc' | wc -l) -eq 1 ]\n-          [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*\\.v' | wc -l) -eq 0 ]\n-          [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*/1_.*\\.log' | wc -l) -eq 0 ]\n-          [ $(find \"$build_dir/_main\" ! -regex '.*/\\(objects\\|external\\)/.*' -regex '.*/2_.*\\.log' | wc -l) -gt 1 ]\n-\n-  test-delivery:\n-    name: Delivery - Chisel to SV roundtrip\n-    runs-on: ubuntu-22.04\n-    defaults:\n-      run:\n-        shell: bash\n-    env:\n-      DEBIAN_FRONTEND: \"noninteractive\"\n-    steps:\n-      - name: Checkout bazel-orfs\n-        uses: actions/checkout@v4\n-\n-      - name: Setup Bazel\n-        uses: bazel-contrib/setup-bazel@0.15.0\n-        with:\n-          bazelisk-cache: true\n-          disk-cache: ${{ github.workflow }}-${{ github.job }}\n-          repository-cache: true\n-\n-      - name: Use mock kepler-formal\n-        run: echo 'import %workspace%/.github/ci.bazelrc' >> user.bazelrc\n-\n-      - name: Verilator simulation - generated Verilog\n-        run: bazel test --verbose_failures //delivery:cpu_generated_test --test_output=errors\n-\n-      - name: Verilator simulation - idiomatic SystemVerilog rewrite\n-        run: bazel test --verbose_failures //delivery:cpu_rewrite_test --test_output=errors\n-\n-      - name: Synthesis - ASAP7\n-        run: bazel build --verbose_failures //delivery:CountTo42Cpu_synth\n-\n-  test-builds:\n-    name: Smoketests\n+  test:\n+    name: Test\n     runs-on: ubuntu-22.04\n     defaults:\n       run:\n@@ -189,7 +25,6 @@ jobs:\n           dotnet: true\n           haskell: true\n           docker-images: true\n-          # Set false for speed (~4min -> ~47s); ~20GB savings remain sufficient.\n           large-packages: false\n           swap-storage: false\n       - name: Checkout bazel-orfs\n@@ -199,115 +34,11 @@ jobs:\n         uses: bazel-contrib/setup-bazel@0.15.0\n         with:\n           bazelisk-cache: true\n-          disk-cache: ${{ github.workflow }}-${{ github.job }}\n-          repository-cache: true\n-\n-      - name: Use mock kepler-formal\n-        run: echo 'import %workspace%/.github/ci.bazelrc' >> user.bazelrc\n-\n-      - name: Smoketests\n-        run: |\n-          .github/scripts/smoketests.sh\n-\n-  test-target-local-clean-setup:\n-    name: Local flow - clean setup\n-    runs-on: ubuntu-22.04\n-    defaults:\n-      run:\n-        shell: bash\n-    env:\n-      DEBIAN_FRONTEND: \"noninteractive\"\n-    steps:\n-      - name: Checkout bazel-orfs\n-        uses: actions/checkout@v4\n-\n-      - name: Install bazelisk as bazel\n-        run: |\n-          sudo wget https://github.com/bazelbuild/bazelisk/releases/download/v1.19.0/bazelisk-linux-amd64 -O /usr/local/bin/bazel\n-          sudo chmod +x /usr/local/bin/bazel\n-\n-      - name: Use mock kepler-formal\n-        run: echo 'import %workspace%/.github/ci.bazelrc' >> user.bazelrc\n-\n-      - name: Build local stage targets - tag_array_64x184\n-        env:\n-          TARGET: //test:tag_array_64x184\n-        run: .github/scripts/build_local_target.sh\n-\n-      - name: Build local stage targets - L1MetadataArray\n-        env:\n-          TARGET: //test:L1MetadataArray\n-        run: .github/scripts/build_local_target.sh\n-      # FIXME switch from strings to labels to fix problems with bazel run vs. _deps environment\n-      # - name: Build local stage targets - //sram:top_mix\n-      #   env:\n-      #     TARGET: //sram:top_mix\n-      #   run: .github/scripts/build_local_target.sh\n-\n-  generate-config:\n-    name: Generate configs\n-    runs-on: ubuntu-22.04\n-    outputs:\n-      docker-tag: ${{ steps.docker-image.outputs.docker-orfs }}\n-    steps:\n-      - name: Checkout bazel-orfs\n-        uses: actions/checkout@v4\n-\n-      - name: Setup Bazel\n-        uses: bazel-contrib/setup-bazel@0.15.0\n-        with:\n-          bazelisk-cache: true\n-          disk-cache: ${{ github.workflow }}-${{ github.job }}\n+          disk-cache: ${{ github.workflow }}\n           repository-cache: true\n \n-      - name: Use mock kepler-formal\n-        run: echo 'import %workspace%/.github/ci.bazelrc' >> user.bazelrc\n-\n-      - name: Lint Bazel files\n-        run: bazel mod tidy && git diff --exit-code\n-      - name: Extract Docker tag\n-        id: docker-image\n-        run: |\n-          revision=$(python3 .github/scripts/extract_docker_revision.py MODULE.bazel.lock)\n-          echo \"docker-orfs=$revision\" | tee -a $GITHUB_OUTPUT\n-\n-  test-target-local-preinstalled-orfs:\n-    name: Local flow - preinstalled orfs\n-    runs-on: ubuntu-22.04\n-    needs: generate-config\n-    container:\n-      image: ${{ fromJSON(needs.generate-config.outputs.docker-tag).image }}\n-    defaults:\n-      run:\n-        shell: bash\n-    env:\n-      DEBIAN_FRONTEND: \"noninteractive\"\n-      FLOW_HOME: /OpenROAD-flow-scripts/flow\n-    steps:\n-      - name: orfs setup\n-        run: |\n-          cd /OpenROAD-flow-scripts\n-          echo \"OpenROAD-flow-scripts SHA: \"$(git rev-parse HEAD)\n-          source ./env.sh\n-          yosys --version\n-          openroad -version\n-\n-      - name: Install bazelisk as bazel\n-        run: |\n-          wget https://github.com/bazelbuild/bazelisk/releases/download/v1.19.0/bazelisk-linux-amd64 -O /usr/local/bin/bazel\n-          chmod +x /usr/local/bin/bazel\n-\n-      - name: Checkout bazel-orfs\n-        uses: actions/checkout@v4\n-\n-      - name: Use mock kepler-formal\n-        run: echo 'import %workspace%/.github/ci.bazelrc' >> user.bazelrc\n-\n-      - name: Build local stage targets - tag_array_64x184\n-        env:\n-          TARGET: //test:tag_array_64x184\n-        run: .github/scripts/build_local_target.sh\n-      - name: Build local stage targets - L1MetadataArray\n-        env:\n-          TARGET: //test:L1MetadataArray\n-        run: .github/scripts/build_local_target.sh\n+      - name: Test\n+        run: bazelisk test ... --keep_going --build_tests_only --test_output=errors --profile=build.profile\n+      - name: Analyze profile\n+        if: always()\n+        run: bazelisk analyze-profile build.profile"
+    },
+    {
+      "sha": "4345d9e98e811189f337839acf4b2fc91ec85353",
+      "filename": ".github/workflows/lint.yml",
+      "status": "added",
+      "additions": 38,
+      "deletions": 0,
+      "changes": 38,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/.github%2Fworkflows%2Flint.yml",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/.github%2Fworkflows%2Flint.yml",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/.github%2Fworkflows%2Flint.yml?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -0,0 +1,38 @@\n+name: lint\n+\n+on:\n+  workflow_dispatch:\n+  push:\n+    branches:\n+      - main\n+  pull_request:\n+\n+jobs:\n+  lint:\n+    name: Lint\n+    runs-on: ubuntu-22.04\n+    env:\n+      DEBIAN_FRONTEND: \"noninteractive\"\n+    steps:\n+      - name: Checkout bazel-orfs\n+        uses: actions/checkout@v4\n+        with:\n+          fetch-depth: 0\n+\n+      - name: Setup Bazel\n+        uses: bazel-contrib/setup-bazel@0.15.0\n+        with:\n+          bazelisk-cache: true\n+          repository-cache: true\n+\n+      - name: Use mock kepler-formal\n+        run: echo 'import %workspace%/.github/ci.bazelrc' >> user.bazelrc\n+\n+      # Single source of truth: fix_lint.sh handles buildifier (respecting\n+      # .bazelignore), black, and lockfile regeneration (with CI config).\n+      # If this produces a diff, the contributor forgot to run fix_lint locally.\n+      - name: Lint and lockfile check\n+        run: |\n+          bazelisk run //:fix_lint\n+          rm -f user.bazelrc\n+          git diff --exit-code"
+    },
+    {
+      "sha": "104626c01425bb495eb8c14fcfd8810a218b013c",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/.gitignore",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/.gitignore",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/.gitignore?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -16,3 +16,4 @@ external\n optuna/results/\n \n tmp/\n+bep.json"
+    },
+    {
+      "sha": "fc01e5b1068688148672e881ac90d96f13a02e13",
+      "filename": "MODULE.bazel",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 229,
+      "changes": 229,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/MODULE.bazel",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/MODULE.bazel",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/MODULE.bazel?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -9,23 +9,13 @@ module(\n bazel_dep(name = \"bazel_skylib\", version = \"1.9.0\")\n \n bazel_dep(name = \"buildifier_prebuilt\", version = \"6.4.0\", dev_dependency = True)\n-bazel_dep(name = \"googletest\", version = \"1.17.0.bcr.1\", dev_dependency = True)\n-bazel_dep(name = \"rules_jvm_external\", version = \"6.7\", dev_dependency = True)\n-bazel_dep(name = \"rules_java\", version = \"8.14.0\", dev_dependency = True)\n-bazel_dep(name = \"rules_scala\", version = \"7.1.5\", dev_dependency = True)\n-bazel_dep(name = \"rules_chisel\", version = \"0.3.0\", dev_dependency = True)\n-\n-bazel_dep(name = \"rules_verilator\", version = \"0.1.0\")\n-bazel_dep(name = \"verilator\", version = \"5.036.bcr.3\")\n \n # WARNING: Do not bump rules_shell here for dev-only needs\n # (e.g. OpenROAD from source). It is a non-dev dep, so MVS forces the\n # higher version on ALL downstream consumers. When bazel-orfs is the root\n # module, MVS will pull in the higher versions from OpenROAD automatically.\n bazel_dep(name = \"rules_shell\", version = \"0.3.0\")\n \n-bazel_dep(name = \"rules_cc\", version = \"0.2.4\", dev_dependency = True)\n-bazel_dep(name = \"kepler-formal\", version = \"1.0.0\", dev_dependency = True)\n bazel_dep(name = \"mock-klayout\", version = \"0.0.1\", dev_dependency = True)\n local_path_override(\n     module_name = \"mock-klayout\",\n@@ -38,81 +28,6 @@ local_path_override(\n     path = \"mock/openroad\",\n )\n \n-# Build OpenROAD from source (dev_dependency for testing the override mechanism).\n-# The default remains @docker_orfs//:openroad for speed/convenience.\n-# Users who want to test latest OpenROAD before docker image updates can add\n-# these same deps in their own MODULE.bazel and override via orfs.default().\n-bazel_dep(name = \"openroad\", dev_dependency = True)\n-git_override(\n-    module_name = \"openroad\",\n-    commit = \"a5b10a7a23f1a922864e697a6c573ddeab468515\",\n-    init_submodules = True,\n-    # HACK: Patch out the llvm extension usage because toolchains_llvm\n-    # enforces root-module-only usage. The root module configures it below.\n-    # Remove this patch once OpenROAD makes llvm extension usage conditional.\n-    patch_strip = 1,\n-    patches = [\n-        \"//:openroad-llvm-root-only.patch\",\n-        \"//:openroad-visibility.patch\",\n-    ],\n-    remote = \"https://github.com/The-OpenROAD-Project/OpenROAD.git\",\n-)\n-\n-# Required by OpenROAD: qt-bazel git_override must be in the root module\n-# because bzlmod ignores git_override from non-root modules.\n-# Remove once qt-bazel is published to BCR.\n-bazel_dep(name = \"qt-bazel\", dev_dependency = True)\n-git_override(\n-    module_name = \"qt-bazel\",\n-    commit = \"df022f4ebaa4130713692fffd2f519d49e9d0b97\",\n-    remote = \"https://github.com/The-OpenROAD-Project/qt_bazel_prebuilts\",\n-)\n-\n-# Required by OpenROAD for its LLVM toolchain.\n-bazel_dep(name = \"toolchains_llvm\", version = \"1.5.0\", dev_dependency = True)\n-\n-# HACK: Configure the llvm toolchain here (root module) because OpenROAD\n-# can't do it as a non-root module. Remove once OpenROAD handles this.\n-llvm = use_extension(\n-    \"@toolchains_llvm//toolchain/extensions:llvm.bzl\",\n-    \"llvm\",\n-    dev_dependency = True,\n-)\n-llvm.toolchain(\n-    llvm_version = \"20.1.8\",\n-)\n-use_repo(llvm, \"llvm_toolchain\")\n-\n-register_toolchains(\n-    \"@llvm_toolchain//:all\",\n-    dev_dependency = True,\n-)\n-\n-# kepler-formal is not yet in BCR. Use git_override pointing to the repo.\n-# For local development, comment out git_override and use local_path_override:\n-#   local_path_override(module_name = \"kepler-formal\", path = \"../kepler-formal\")\n-# After BCR publication, remove the override entirely.\n-git_override(\n-    module_name = \"kepler-formal\",\n-    commit = \"e8675f3086926c63205f8f5f586be7c7dccaf788\",\n-    remote = \"https://github.com/keplertech/kepler-formal.git\",\n-)\n-\n-http_archive = use_repo_rule(\n-    \"@bazel_tools//tools/build_defs/repo:http.bzl\",\n-    \"http_archive\",\n-)\n-\n-http_archive(\n-    name = \"oss_cad_suite\",\n-    build_file = \"oss_cad_suite.BUILD.bazel\",\n-    sha256 = \"05ff3c1435b7ce69f537ef942c6e0e96d09b10fac350e99925a3dd1610246f30\",\n-    strip_prefix = \"oss-cad-suite\",\n-    urls = [\n-        \"https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2025-11-18/oss-cad-suite-linux-x64-20251118.tgz\",\n-    ],\n-)\n-\n load_json_file = use_repo_rule(\"//:load_json_file.bzl\", \"load_json_file\")\n \n load_json_file(\n@@ -151,18 +66,6 @@ pip_features.parse(\n )\n use_repo(pip_features, \"bazel-orfs-features-pip\")\n \n-pip_examples = use_extension(\n-    \"@rules_python//python/extensions:pip.bzl\",\n-    \"pip\",\n-    dev_dependency = True,\n-)\n-pip_examples.parse(\n-    hub_name = \"bazel-orfs-examples-pip\",\n-    python_version = \"3.13\",\n-    requirements_lock = \"//:requirements_examples_lock_3_13.txt\",\n-)\n-use_repo(pip_examples, \"bazel-orfs-examples-pip\")\n-\n orfs = use_extension(\"//:extension.bzl\", \"orfs_repositories\")\n use_repo(orfs, \"com_github_nixos_patchelf_download\")\n use_repo(orfs, \"docker_orfs\")\n@@ -184,135 +87,3 @@ orfs_dev.default(\n     # Comment out line below for local only docker images\n     sha256 = \"9c90633d62e08f0b3772d4fdfc06b14e4f33273ae1511d1c41d3c48560adb9a5\",\n )\n-\n-# Not in use in CI\n-#\n-# Ideally pin_data() would be tested in CI, but setting up a Google Cloud\n-# Storage bucket for the test is inconvenient.\n-#\n-# pin = use_extension(\"//extensions:pin.bzl\", \"pin\")\n-# pin.artifacts(\n-#     artifacts_lock = \"//:artifacts_lock.txt\",\n-#     repo_name = \"pinned\",\n-# )\n-# use_repo(pin, \"pinned\")\n-\n-SCALA_VERSION = \"2.13.17\"\n-\n-SCALA_VERSION_SHORT = SCALA_VERSION.rpartition(\".\")[0]\n-\n-CIRCE_VERSION = \"0.14.4\"\n-\n-MAVEN_DEPS = {\n-    \"org.apache.commons:commons-text\": \"1.12.0\",\n-    # BCR rules_scala automatically provides scala-compiler, scala-library, scala-reflect\n-}\n-\n-MAVEN_SHORT_DEPS = {\n-    \"com.github.scopt:scopt\": \"4.1.0\",\n-    \"com.lihaoyi:os-lib\": \"0.10.0\",\n-    \"com.lihaoyi:ujson\": \"4.1.0\",\n-    \"com.lihaoyi:upickle\": \"4.1.0\",\n-    \"io.circe:circe-core\": CIRCE_VERSION,\n-    \"io.circe:circe-generic\": CIRCE_VERSION,\n-    \"io.circe:circe-generic-extras\": CIRCE_VERSION,\n-    \"io.circe:circe-parser\": CIRCE_VERSION,\n-    \"org.chipsalliance:chisel\": \"7.2.0\",\n-    \"org.chipsalliance:firtool-resolver\": \"2.0.1\",\n-    \"org.json4s:json4s-native\": \"4.0.7\",\n-    \"org.scalatest:scalatest\": \"3.2.19\",\n-}\n-\n-MAVEN_LONG_DEPS = {\n-    \"org.chipsalliance:chisel-plugin\": \"7.2.0\",\n-    \"org.scalameta:semanticdb-scalac\": \"4.14.1\",\n-}\n-\n-# Configure BCR rules_scala\n-#\n-# Downstream modules must configure their own scala_config, scala_deps,\n-# register_toolchains, and maven extensions. bazel-orfs provides the\n-# rules (chisel.bzl, etc.) but does not own the toolchain configuration.\n-scala_config = use_extension(\n-    \"@rules_scala//scala/extensions:config.bzl\",\n-    \"scala_config\",\n-    dev_dependency = True,\n-)\n-scala_config.settings(scala_version = \"2.13.17\")\n-use_repo(scala_config, \"rules_scala_config\")\n-\n-scala_deps = use_extension(\n-    \"@rules_scala//scala/extensions:deps.bzl\",\n-    \"scala_deps\",\n-    dev_dependency = True,\n-)\n-scala_deps.scala()  # Provides scala-compiler, scala-library, scala-reflect\n-scala_deps.scalatest()  # Provides scalatest framework\n-use_repo(scala_deps, \"rules_scala_toolchains\")\n-\n-maven = use_extension(\n-    \"@rules_jvm_external//:extensions.bzl\",\n-    \"maven\",\n-    dev_dependency = True,\n-)\n-maven.install(\n-    artifacts = [\n-                    \"{}_{}:{}\".format(dep, SCALA_VERSION_SHORT, version)\n-                    for (dep, version) in MAVEN_SHORT_DEPS.items()\n-                ] +\n-                [\n-                    \"{}_{}:{}\".format(dep, SCALA_VERSION, version)\n-                    for (dep, version) in MAVEN_LONG_DEPS.items()\n-                ] +\n-                [\"{}:{}\".format(dep, version) for (dep, version) in MAVEN_DEPS.items()],\n-    fetch_sources = True,\n-    # bazelisk run @maven//:pin\n-    lock_file = \"//:maven_install.json\",\n-    repositories = [\n-        \"https://repo1.maven.org/maven2\",  # fastest mirror, last I tried\n-        \"https://s01.oss.sonatype.org/content/repositories/releases\",\n-        \"https://s01.oss.sonatype.org/content/repositories/snapshots\",\n-    ],\n-)\n-use_repo(maven, \"maven\")\n-\n-chisel = use_extension(\"@rules_chisel//chisel:extensions.bzl\", \"chisel\", dev_dependency = True)\n-chisel.toolchain(\n-    chisel_version = \"7.2.0\",\n-    firtool_resolver_version = \"2.0.1\",\n-    scala_version = SCALA_VERSION,\n-)\n-use_repo(chisel, \"chisel_maven\")\n-\n-# ## Lock the compiler version and avoid any local compiler\n-# bazel_dep(name = \"toolchains_llvm\", version = \"1.5.0\")\n-\n-# # Configure and register the toolchain.\n-# llvm = use_extension(\"@toolchains_llvm//toolchain/extensions:llvm.bzl\", \"llvm\")\n-# llvm.toolchain(\n-#     llvm_version = \"20.1.8\",\n-# )\n-# use_repo(llvm, \"llvm_toolchain\")\n-\n-register_toolchains(\n-    \"@rules_verilator//verilator:verilator_toolchain\",\n-    \"@rules_scala_toolchains//...:all\",\n-    # \"@llvm_toolchain//:all\",\n-    dev_dependency = True,\n-)\n-\n-http_archive(\n-    name = \"circt\",\n-    build_file_content = \"\"\"\n-package(default_visibility = [\"//visibility:public\"])\n-\n-filegroup(\n-    name = \"bin/firtool\",\n-    srcs = [\"org.chipsalliance/llvm-firtool/linux-x64/bin/firtool\"],\n-)\n-\n-exports_files([\"org.chipsalliance/llvm-firtool/linux-x64/bin/firtool\"])\n-\"\"\",\n-    sha256 = \"87eed8ee81914c9bce19228a6b397b10a7e8b1a8dbafa100ed84c15bc63a8188\",\n-    urls = [\"https://repo1.maven.org/maven2/org/chipsalliance/llvm-firtool/1.137.0/llvm-firtool-1.137.0.jar\"],\n-)"
+    },
+    {
+      "sha": "d078ca4283218646737ab8933f0cf8c65e8c6234",
+      "filename": "MODULE.bazel.lock",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 896,
+      "changes": 911,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/MODULE.bazel.lock",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/MODULE.bazel.lock",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/MODULE.bazel.lock?ref=bf26e3303754a414a92a0b36e253aa46973aed9d"
+    },
+    {
+      "sha": "520b3ff3eda7883c103090ba0ced5d9967958490",
+      "filename": "TESTING.md",
+      "status": "added",
+      "additions": 79,
+      "deletions": 0,
+      "changes": 79,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/TESTING.md",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/TESTING.md",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/TESTING.md?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -0,0 +1,79 @@\n+# Testing\n+\n+All tests run via `bazelisk test ...`. No nested Bazel invocations, no\n+external scripts.\n+\n+## Test targets\n+\n+| Target | What it tests | Mock OpenROAD | Mock KLayout | PDK | Real OpenROAD |\n+|--------|--------------|:---:|:---:|-----|:---:|\n+| `//test:mock_openroad_test` | Mock openroad Python unit tests | — | — | — | — |\n+| `//test:mock_klayout_test` | Mock klayout Python unit tests | — | — | — | — |\n+| `//test/klayout:mock_klayout_test` | Mock klayout shell integration | — | yes | — | — |\n+| `//test:mock_openroad_floorplan_build_test` | `orfs_flow` through floorplan, `last_stage`, openroad override, substep targets | yes | — | asap7 | synth only |\n+| `//test:mock_openroad_squashed_cts_build_test` | `orfs_flow` squashed through cts, `squash=True`, `substeps=False` | yes | — | asap7 | synth only |\n+| `//test:lb_32x128_squashed_final_test` | `orfs_flow` squashed through final, substep targets for all stages | yes | — | asap7 | synth only |\n+| `//test:lb_32x128_sky130hd_macro_test` | `orfs_macro` + `orfs_gds`, full flow through GDS | — | yes | sky130hd | yes |\n+| `//test:mock_hierarchy_build_test` | Hierarchical design with macro: submacro abstract + parent flow | yes | — | asap7 | synth only |\n+| `//test/smoketest:lb_32x128_asap7_build_test` | Full flow, all stages, all PDK-specific config | — | — | asap7 | yes |\n+| `//test/smoketest:lb_32x128_nangate45_build_test` | Full flow, all stages, all PDK-specific config | — | — | nangate45 | yes |\n+| `//test/smoketest:lb_32x128_sky130hd_build_test` | Full flow, all stages, all PDK-specific config | — | — | sky130hd | yes |\n+| `//test/smoketest:lb_32x128_ihp-sg13g2_build_test` | Full flow, all stages, all PDK-specific config | — | — | ihp-sg13g2 | yes |\n+| `//test/bump:bump_test` | `bump.sh` MODULE.bazel version update logic | — | — | — | — |\n+| `//chisel:life_test` | Chisel → FIRRTL → Verilog generation | — | — | — | — |\n+| `//chisel:life_cc_test` | Verilator simulation of Chisel design | — | — | — | — |\n+| `//chisel:life2_test` | Verilator simulation (larger design) | — | — | — | — |\n+| `//chisel:helloworld_synth_test` | Chisel → synthesis with real OpenROAD | — | — | asap7 | yes |\n+| `//chisel:helloworld_dir_synth_test` | Chisel → synthesis (directory output) | — | — | asap7 | yes |\n+| `//delivery:cpu_generated_test` | Verilator simulation of generated Verilog | — | — | — | — |\n+| `//delivery:cpu_rewrite_test` | Verilator simulation of rewritten SystemVerilog | — | — | — | — |\n+| `//delivery:cpu_eqy_lec_test` | Equivalence checking (eqy) | — | — | — | — |\n+| `//delivery:cpu_kepler_lec_test` | Equivalence checking (kepler-formal, mocked in CI) | — | — | — | — |\n+| `//sby:counter_test` | Formal verification (SymbiYosys BMC) | — | — | — | — |\n+| `//:requirements.test` | pip requirements lock consistency | — | — | — | — |\n+| `//:requirements_examples.test` | pip requirements lock consistency | — | — | — | — |\n+| `//:requirements_features.test` | pip requirements lock consistency | — | — | — | — |\n+\n+### Manual tests (not run by `bazelisk test ...`)\n+\n+| Target | What it tests |\n+|--------|--------------|\n+| `//test/chisel:downstream_chisel_test` | Downstream project Chisel integration (needs full source tree) |\n+| `//chisel:life2_test_inner` | Inner test target (run by life2_test) |\n+\n+## What must be tested locally\n+\n+These cannot be tested via `bazelisk test ...`:\n+\n+- **`_deps` workflow**: `bazel run //test:lb_32x128_mock_openroad_floorplan_deps` then\n+  `tmp/.../make do-floorplan`. Tests the local escape-hatch build workflow.\n+- **Docker container**: Testing with preinstalled ORFS in the Docker image.\n+- **Lockfile consistency**: `bazel mod tidy && git diff --exit-code` (run in CI as a pre-test step).\n+- **Buildifier lint**: `bazelisk run @buildifier_prebuilt//:buildifier -- -lint warn -r .` (run in CI as a pre-test step).\n+\n+## Sub-modules (.bazelignore)\n+\n+The following directories are excluded from `//...` via `.bazelignore`.\n+They contain code that doesn't belong in bazel-orfs long-term — bazel-orfs\n+is hosting it temporarily until the respective owners provide native Bazel\n+support. Each directory will get its own `MODULE.bazel` for independent\n+development (`cd chisel && bazelisk test ...`).\n+\n+| Directory | Why it's here | Who should own it |\n+|-----------|--------------|-------------------|\n+| `chisel/` | Chisel integration examples/tests. Chisel rules already moved to BCR `rules_chisel`. | rules_chisel examples repo |\n+| `delivery/` | Chisel→SV roundtrip LEC demo using eqy + kepler-formal + verilator | downstream project example |\n+| `lec/` | Bazel rules wrapping kepler-formal for logic equivalence checking | kepler-formal repo |\n+| `sby/` | Bazel rules wrapping SymbiYosys for formal verification | oss-cad-suite or separate rules_sby repo |\n+| `naja/` | Naja EDA netlist cleaning example | naja repo |\n+\n+These are tested post-merge to catch breakage, but don't block PRs.\n+\n+## Profiling\n+\n+To identify the slowest targets:\n+\n+```sh\n+bazelisk test ... --build_tests_only --keep_going --profile=build.profile\n+bazelisk analyze-profile build.profile\n+```"
+    },
+    {
+      "sha": "a9f9f89dd5132c0b61f65b480d7675b2549e2acd",
+      "filename": "chisel/BUILD",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/chisel%2FBUILD",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/chisel%2FBUILD",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/chisel%2FBUILD?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -1,9 +1,9 @@\n load(\"@rules_cc//cc:cc_test.bzl\", \"cc_test\")\n load(\"@rules_chisel//chisel:defs.bzl\", \"chisel_binary\", \"chisel_library\", \"chisel_test\")\n load(\"@rules_shell//shell:sh_test.bzl\", \"sh_test\")\n-load(\"//:generate.bzl\", \"fir_library\")\n+load(\"@bazel-orfs-verilog//:generate.bzl\", \"fir_library\")\n load(\"//:openroad.bzl\", \"orfs_synth\")\n-load(\"//:verilog.bzl\", \"verilog_directory\", \"verilog_single_file_library\")\n+load(\"@bazel-orfs-verilog//:verilog.bzl\", \"verilog_directory\", \"verilog_single_file_library\")\n load(\"//chisel:test.bzl\", \"chisel_bench_test\")\n \n filegroup("
+    },
+    {
+      "sha": "1733e2848b9082ad0d359c553df26aa354739b3e",
+      "filename": "chisel/test.bzl",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/chisel%2Ftest.bzl",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/chisel%2Ftest.bzl",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/chisel%2Ftest.bzl?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -5,8 +5,8 @@ This module defines Bazel rules and macros for generating, simulating, and testi\n load(\"@rules_cc//cc:cc_binary.bzl\", \"cc_binary\")\n load(\"@rules_chisel//chisel:defs.bzl\", \"chisel_binary\")\n load(\"@rules_verilator//verilator:defs.bzl\", \"verilator_cc_library\")\n-load(\"//:generate.bzl\", \"fir_library\")\n-load(\"//:verilog.bzl\", \"verilog_directory\")\n+load(\"@bazel-orfs-verilog//:generate.bzl\", \"fir_library\")\n+load(\"@bazel-orfs-verilog//:verilog.bzl\", \"verilog_directory\")\n \n def _chisel_bench_test_impl(ctx):\n     test = ctx.actions.declare_file(\"{}_test\".format(ctx.attr.name))"
+    },
+    {
+      "sha": "6c339337e23bbbcda9710fa7f3ab2436114b2478",
+      "filename": "delivery/BUILD.bazel",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/delivery%2FBUILD.bazel",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/delivery%2FBUILD.bazel",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/delivery%2FBUILD.bazel?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -13,9 +13,9 @@ load(\"@rules_chisel//chisel:defs.bzl\", \"chisel_binary\", \"chisel_library\")\n load(\"@rules_verilator//verilator:defs.bzl\", \"verilator_cc_library\")\n load(\"@rules_verilator//verilog:defs.bzl\", \"verilog_library\")\n load(\"//:eqy.bzl\", \"eqy_test\")\n-load(\"//:generate.bzl\", \"fir_library\")\n+load(\"@bazel-orfs-verilog//:generate.bzl\", \"fir_library\")\n load(\"//:openroad.bzl\", \"orfs_flow\")\n-load(\"//:verilog.bzl\", \"verilog_directory\", \"verilog_single_file_library\")\n+load(\"@bazel-orfs-verilog//:verilog.bzl\", \"verilog_directory\", \"verilog_single_file_library\")\n load(\"//lec:lec.bzl\", \"lec_test\")\n \n # ============================================================================="
+    },
+    {
+      "sha": "e76a5febac92b2ec883541f5dccf263a47069dac",
+      "filename": "fix_lint.sh",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 2,
+      "changes": 18,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/fix_lint.sh",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/fix_lint.sh",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/fix_lint.sh?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -15,10 +15,24 @@ fi\n \n MERGE_BASE=$(git merge-base origin/main HEAD 2>/dev/null || echo HEAD~1)\n \n+# Build grep pattern from .bazelignore (skip comments and blank lines)\n+BAZELIGNORE_PATTERN=\"\"\n+if [ -f .bazelignore ]; then\n+    BAZELIGNORE_PATTERN=$(grep -v '^#' .bazelignore | grep -v '^$' | sed 's|/$||' | paste -sd'|' | sed 's/|/\\\\|/g')\n+fi\n+\n+filter_ignored() {\n+    if [ -n \"$BAZELIGNORE_PATTERN\" ]; then\n+        grep -v \"^\\\\($BAZELIGNORE_PATTERN\\\\)/\" || true\n+    else\n+        cat\n+    fi\n+}\n+\n # Buildifier: format and lint Bazel files\n BAZEL_FILES=$(git diff --name-only --diff-filter=d \"$MERGE_BASE\" -- \\\n     '*.bzl' '*.bazel' 'BUILD' '**/BUILD' 'MODULE.bazel' '**/MODULE.bazel' \\\n-    'WORKSPACE' '**/WORKSPACE' 2>/dev/null || true)\n+    'WORKSPACE' '**/WORKSPACE' 2>/dev/null | filter_ignored || true)\n if [ -n \"$BAZEL_FILES\" ]; then\n     echo \"buildifier: $(echo \"$BAZEL_FILES\" | wc -w) file(s)\"\n     echo \"$BAZEL_FILES\" | xargs \"$BUILDIFIER\"\n@@ -34,7 +48,7 @@ if git diff --name-only --diff-filter=d \"$MERGE_BASE\" -- MODULE.bazel | grep -q\n fi\n \n # Black: format Python files\n-PY_FILES=$(git diff --name-only --diff-filter=d \"$MERGE_BASE\" -- '*.py' 2>/dev/null || true)\n+PY_FILES=$(git diff --name-only --diff-filter=d \"$MERGE_BASE\" -- '*.py' 2>/dev/null | filter_ignored || true)\n if [ -n \"$PY_FILES\" ] && command -v black >/dev/null 2>&1; then\n     echo \"black: $(echo \"$PY_FILES\" | wc -w) file(s)\"\n     echo \"$PY_FILES\" | xargs black --quiet"
+    },
+    {
+      "sha": "d3c857ca03cc5afb4334c77c00717c07527e847a",
+      "filename": "mock/chisel/BUILD.bazel",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/mock%2Fchisel%2FBUILD.bazel",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/mock%2Fchisel%2FBUILD.bazel",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/mock%2Fchisel%2FBUILD.bazel?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -1,5 +1,5 @@\n-load(\"@bazel-orfs//:generate.bzl\", \"fir_library\")\n-load(\"@bazel-orfs//:verilog.bzl\", \"verilog_directory\", \"verilog_single_file_library\")\n+load(\"@bazel-orfs-verilog//:generate.bzl\", \"fir_library\")\n+load(\"@bazel-orfs-verilog//:verilog.bzl\", \"verilog_directory\", \"verilog_single_file_library\")\n load(\"@rules_chisel//chisel:defs.bzl\", \"chisel_binary\", \"chisel_library\")\n \n chisel_library("
+    },
+    {
+      "sha": "0132863093ab85c766285a77379c8f2f873d0de4",
+      "filename": "private/flow.bzl",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/private%2Fflow.bzl",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/private%2Fflow.bzl",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/private%2Fflow.bzl?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -83,7 +83,7 @@ def orfs_flow(\n         stage_data = {},\n         test_kwargs = {},\n         squash = False,\n-        substeps = True,\n+        substeps = False,\n         **kwargs):\n     \"\"\"\n     Creates targets for running physical design flow with OpenROAD-flow-scripts.\n@@ -113,9 +113,9 @@ def orfs_flow(\n       squash: if True, combine all stages after synthesis into a single Bazel action.\n         Reduces artifact size by avoiding intermediate ODB checkpoints. Useful for\n         stable designs like RAM macros where intermediate stages don't need inspection.\n-      substeps: if True (default), generate manual-tagged per-substep targets for\n-        debugging and fast iteration. Set to False to reduce target count for designs\n-        that don't need substep-level debugging.\n+      substeps: if True, generate manual-tagged per-substep targets for\n+        debugging and fast iteration. Default is False to keep the target count low.\n+        Set to True for designs where substep-level debugging is needed.\n       **kwargs: forward named args\n     \"\"\"\n     if abstract_stage and last_stage:\n@@ -278,7 +278,7 @@ def _orfs_pass(\n         test_kwargs = {},\n         mock_area = False,\n         squash = False,\n-        substeps = True,\n+        substeps = False,\n         **kwargs):\n     ALL_STAGES = [step.stage for step in STAGE_IMPLS]\n     steps = []"
+    },
+    {
+      "sha": "5745aec091c1399851376f2f1e8ab191c93a23e0",
+      "filename": "requirements_features.in",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/requirements_features.in",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/requirements_features.in",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/requirements_features.in?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -1,2 +1 @@\n matplotlib==3.10.0\n-najaeda==0.3.5"
+    },
+    {
+      "sha": "aada6a8e24accd1504778e87de794639aaacf0b7",
+      "filename": "requirements_features_lock_3_13.txt",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 28,
+      "changes": 28,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/requirements_features_lock_3_13.txt",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/requirements_features_lock_3_13.txt",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/requirements_features_lock_3_13.txt?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -289,34 +289,6 @@ matplotlib==3.10.0 \\\n     --hash=sha256:d907fddb39f923d011875452ff1eca29a9e7f21722b873e90db32e5d8ddff12e \\\n     --hash=sha256:fd44fc75522f58612ec4a33958a7e5552562b7705b42ef1b4f8c0818e304a363\n     # via -r requirements_features.in\n-najaeda==0.3.5 \\\n-    --hash=sha256:04ea595004eab7d2b50d75f8d833c2ca09409f7de3b9821346acce6745e3d9eb \\\n-    --hash=sha256:1146109ef8e1db872810ce356a221b3f0fb33355df87d6ef3e1a4283279f03bb \\\n-    --hash=sha256:21c9c268c443a99e0133cfc58d828575eeb13e638a53b392fa0985c0cd339d83 \\\n-    --hash=sha256:2d686829384fe760042623a550f819886d581c29fd59dc34e7edd9e263528a00 \\\n-    --hash=sha256:2fe6c0a1c756404485ee8971808895d050a2b4365129bcb9b39ca767ea40617f \\\n-    --hash=sha256:39c5a97c33020cc7dfffcc7bb73c7de70c103b9b2ec4ea151b09e9ab3321f0d2 \\\n-    --hash=sha256:426faf4ca813a9f8773dff1f026f40c28802fe6b5ae610cbacce0acddbae0856 \\\n-    --hash=sha256:551710ba614479ad08e35875f242343b343737981fc3fe163807aee9736fe4de \\\n-    --hash=sha256:5b2b4c0beee09914d9888b6853f010782c9effc3c45165cbdfeff486b3547a7e \\\n-    --hash=sha256:5ee53ae4b5202301fc24afbd0fcd166bf4592d101419223fd3ebed0cf36b918f \\\n-    --hash=sha256:67c8aa929d03369516295297c6386e36945dfe74ec3b9229773260f4885ab7e7 \\\n-    --hash=sha256:71d58578e3b080ef8c823df237865a709da6a92d31459d4ed9d58e9aef73e244 \\\n-    --hash=sha256:730f60aaacfedb77dc487c2fbfbd5a397600e4354773b8604b6300114283e837 \\\n-    --hash=sha256:774a677ce7ad34d5417d0b761c82bb46210325e42cf19f31c1d6f249f4890e22 \\\n-    --hash=sha256:7c2d7040925958dbcfb4019b974d1bec77033d682ddaa518ae71e98474ae9c8a \\\n-    --hash=sha256:7e2449eb34cd92dac19bc6abf7e24500acb7a33d5e426a89103d1a10bdd13d74 \\\n-    --hash=sha256:9b9d328c92fd187f82f3c0175e37814980b86ace67d3ac133ed5a6d9892792fd \\\n-    --hash=sha256:9c9dd3345813f798b63b787f67e0b64dcc30a996bd555ec894d056911e6ca45e \\\n-    --hash=sha256:a062277efacc309361da688aa00aa19cf60ece7c4226653ba64aebf92f736fe0 \\\n-    --hash=sha256:a5e7378899059cfdfe89ccf97a4456a49c4176fb6d620cdba8f0b36d253d8624 \\\n-    --hash=sha256:bcc4ac923902077c072cebcecc00dfc9113cd22c81997180cdb62c76ce9b355d \\\n-    --hash=sha256:c8743416df941f9cd1eeffed1b4f9fa9cb98d3fbbc89ffc61c85804786157dfa \\\n-    --hash=sha256:cb742ac83a4ce1dee0afb8d3e50b1199e90c43380f061e2b5f7a44f4668ad0b6 \\\n-    --hash=sha256:d4fb961a21d7a06479aadbb0646f3142eeb7b3b6711401bb0789f5eb036566a4 \\\n-    --hash=sha256:d823a0e0f4256a67df968a70a8eeb63e72179000654fd6385507ef28244078b8 \\\n-    --hash=sha256:ffed85b6e6eb520304d54ba2aac7759595a84352e8fa8688bd4f26fda6037481\n-    # via -r requirements_features.in\n numpy==2.4.3 \\\n     --hash=sha256:0200b25c687033316fb39f0ff4e3e690e8957a2c3c8d22499891ec58c37a3eb5 \\\n     --hash=sha256:0448e7f9caefb34b4b7dd2b77f21e8906e5d6f0365ad525f9f4f530b13df2afc \\"
+    },
+    {
+      "sha": "c157c2e75c42571038df8ab61f087d33c11f5c3f",
+      "filename": "sby.bzl",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/sby.bzl",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/sby.bzl",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/sby.bzl?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -1,7 +1,7 @@\n \"\"\"Rules for sby formal verification.\"\"\"\n \n-load(\"//:generate.bzl\", \"fir_library\")\n-load(\"//:verilog.bzl\", \"verilog_directory\", \"verilog_single_file_library\")\n+load(\"@bazel-orfs-verilog//:generate.bzl\", \"fir_library\")\n+load(\"@bazel-orfs-verilog//:verilog.bzl\", \"verilog_directory\", \"verilog_single_file_library\")\n \n # Default firtool options for formal verification.\n #"
+    },
+    {
+      "sha": "38c146d6c58ce00a897f3b33ea72eef97e710434",
+      "filename": "sweep.bzl",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 1,
+      "changes": 5,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/sweep.bzl",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/sweep.bzl",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/sweep.bzl?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -26,7 +26,8 @@ def orfs_sweep(\n         macros = [],\n         pdk = None,\n         visibility = [\"//visibility:private\"],\n-        tags = []):\n+        tags = [],\n+        **kwargs):\n     \"\"\"Run a sweep of OpenROAD stages\n \n     Args:\n@@ -44,6 +45,7 @@ def orfs_sweep(\n         sources: forwarded to orfs_flow\n         pdk: forwarded to orfs_flow\n         tags: forwarded\n+        **kwargs: forwarded to orfs_flow (e.g. openroad, substeps)\n     \"\"\"\n     if top == None:\n         top = name\n@@ -107,6 +109,7 @@ def orfs_sweep(\n             abstract_stage = abstract_stage,\n             visibility = visibility,\n             tags = tags,\n+            **kwargs\n         )\n \n         native.filegroup("
+    },
+    {
+      "sha": "9b7810b624a834020e1db1ea9aac5f3dd8002cef",
+      "filename": "test/BUILD",
+      "status": "modified",
+      "additions": 26,
+      "deletions": 1,
+      "changes": 27,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/test%2FBUILD",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/test%2FBUILD",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/test%2FBUILD?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -494,7 +494,6 @@ orfs_flow(\n     previous_stage = {\"floorplan\": \":lb_32x128_synth\"},\n     squash = True,\n     stage_sources = LB_STAGE_SOURCES,\n-    substeps = False,\n     variant = \"squashed\",\n     verilog_files = LB_VERILOG_FILES,\n )\n@@ -510,6 +509,7 @@ orfs_flow(\n     previous_stage = {\"floorplan\": \":lb_32x128_synth\"},\n     squash = True,\n     stage_sources = LB_STAGE_SOURCES,\n+    substeps = True,\n     variant = \"squashed_final\",\n     verilog_files = LB_VERILOG_FILES,\n )\n@@ -616,6 +616,31 @@ build_test(\n     targets = [\":lb_32x128_top_mock_hierarchy_generate_abstract\"],\n )\n \n+# Mock sweep test: tests orfs_sweep with macros + openroad override.\n+# Uses mock-openroad for all stages. The sweep's \"base\" variant uses\n+# lb_32x128_mock_abstract as a macro (hierarchical design).\n+orfs_sweep(\n+    name = \"mock_sweep_lb\",\n+    abstract_stage = \"cts\",\n+    arguments = LB_ARGS,\n+    openroad = \"@mock-openroad//src/bin:openroad\",\n+    stage_sources = LB_STAGE_SOURCES,\n+    sweep = {\n+        \"mock\": {\n+            \"macros\": [\"lb_32x128_mock_abstract_generate_abstract\"],\n+            \"previous_stage\": {\"floorplan\": \"lb_32x128_synth\"},\n+            \"sources\": {\n+                \"SDC_FILE\": [\":constraints-sram\"],\n+            },\n+        },\n+    },\n+    verilog_files = [\"rtl/L1MetadataArray.sv\"],\n+)\n+\n+build_test(\n+    name = \"mock_sweep_build_test\",\n+    targets = [\":mock_sweep_lb_mock_generate_abstract\"],\n+)\n # Pruning is validated implicitly: if orfs_sweep's previous_stage pruning\n # is broken, the lb_32x128 sweep targets would fail at analysis time\n # (duplicate actions or missing deps). No explicit query tests needed."
+    },
+    {
+      "sha": "bf639d6545f3d937c1f15e9f4a65722e99181357",
+      "filename": "test/smoketest/BUILD",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 6,
+      "changes": 21,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/test%2Fsmoketest%2FBUILD",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/test%2Fsmoketest%2FBUILD",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/test%2Fsmoketest%2FBUILD?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -1,7 +1,15 @@\n \"\"\"Multi-PDK smoke tests: verify the full ORFS flow completes for all supported PDKs.\"\"\"\n \n+load(\"@bazel_skylib//rules:build_test.bzl\", \"build_test\")\n load(\"//:openroad.bzl\", \"orfs_flow\")\n \n+PDKS = [\n+    \"asap7\",\n+    \"nangate45\",\n+    \"sky130hd\",\n+    \"ihp-sg13g2\",\n+]\n+\n FAST_SETTINGS = {\n     \"FILL_CELLS\": \"\",\n     \"GND_NETS_VOLTAGES\": \"\",\n@@ -28,9 +36,10 @@ FAST_SETTINGS = {\n     top = \"lb_32x128\",\n     verilog_files = [\"//test:mock/lb_32x128.sv\"],\n     visibility = [\"//:__subpackages__\"],\n-) for pdk in [\n-    \"asap7\",\n-    \"nangate45\",\n-    \"sky130hd\",\n-    \"ihp-sg13g2\",\n-]]\n+) for pdk in PDKS]\n+\n+# Full-flow build tests: verify real OpenROAD completes for each PDK.\n+[build_test(\n+    name = \"lb_32x128_{}_build_test\".format(pdk),\n+    targets = [\":lb_32x128_{}_generate_abstract\".format(pdk)],\n+) for pdk in PDKS]"
+    },
+    {
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "filename": "verilog/BUILD.bazel",
+      "status": "added",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/verilog%2FBUILD.bazel",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/verilog%2FBUILD.bazel",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/verilog%2FBUILD.bazel?ref=bf26e3303754a414a92a0b36e253aa46973aed9d"
+    },
+    {
+      "sha": "39d4709477a5fce410089c3fe6eb5a6c887942ae",
+      "filename": "verilog/MODULE.bazel",
+      "status": "added",
+      "additions": 28,
+      "deletions": 0,
+      "changes": 28,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/verilog%2FMODULE.bazel",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/verilog%2FMODULE.bazel",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/verilog%2FMODULE.bazel?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "patch": "@@ -0,0 +1,28 @@\n+module(\n+    name = \"bazel-orfs-verilog\",\n+    version = \"0.0.1\",\n+)\n+\n+bazel_dep(name = \"rules_verilator\", version = \"0.1.0\")\n+bazel_dep(name = \"verilator\", version = \"5.036.bcr.3\")\n+\n+http_archive = use_repo_rule(\n+    \"@bazel_tools//tools/build_defs/repo:http.bzl\",\n+    \"http_archive\",\n+)\n+\n+http_archive(\n+    name = \"circt\",\n+    build_file_content = \"\"\"\n+package(default_visibility = [\"//visibility:public\"])\n+\n+filegroup(\n+    name = \"bin/firtool\",\n+    srcs = [\"org.chipsalliance/llvm-firtool/linux-x64/bin/firtool\"],\n+)\n+\n+exports_files([\"org.chipsalliance/llvm-firtool/linux-x64/bin/firtool\"])\n+\"\"\",\n+    sha256 = \"87eed8ee81914c9bce19228a6b397b10a7e8b1a8dbafa100ed84c15bc63a8188\",\n+    urls = [\"https://repo1.maven.org/maven2/org/chipsalliance/llvm-firtool/1.137.0/llvm-firtool-1.137.0.jar\"],\n+)"
+    },
+    {
+      "sha": "87c2380c2539bfb2dc64ab3026001e37a6fd9204",
+      "filename": "verilog/generate.bzl",
+      "status": "renamed",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/verilog%2Fgenerate.bzl",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/verilog%2Fgenerate.bzl",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/verilog%2Fgenerate.bzl?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "previous_filename": "generate.bzl"
+    },
+    {
+      "sha": "d6e00ad43398075a91c7bc8714de5866fda5e81b",
+      "filename": "verilog/verilog.bzl",
+      "status": "renamed",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/blob/bf26e3303754a414a92a0b36e253aa46973aed9d/verilog%2Fverilog.bzl",
+      "raw_url": "https://github.com/The-OpenROAD-Project/bazel-orfs/raw/bf26e3303754a414a92a0b36e253aa46973aed9d/verilog%2Fverilog.bzl",
+      "contents_url": "https://api.github.com/repos/The-OpenROAD-Project/bazel-orfs/contents/verilog%2Fverilog.bzl?ref=bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "previous_filename": "verilog.bzl"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "edf2ef96d6caa1d8794e911b5a584b189667372d",
+      "message": "Respect .bazelignore in fix_lint.sh\n\nFilter out files in .bazelignored directories when running buildifier\nand black. Previously, fix_lint.sh ran linters on all changed files\nincluding those in .bazelignored sub-modules (chisel, delivery, etc.),\ncausing spurious lint warnings that CI couldn't reproduce.\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>\nSigned-off-by: Øyvind Harboe <oyvind.harboe@zylin.com>",
+      "parent_shas": [
+        "e531033aa1deb8ad037718880ce2367558fcc40a"
+      ]
+    },
+    {
+      "sha": "53a124c260036dd59ea75da84e28bda66b6dbb19",
+      "message": "Move sub-modules to .bazelignore to speed up analysis\n\nMove chisel, delivery, lec, naja, sby, mock/chisel to .bazelignore and\nstrip their heavy deps from MODULE.bazel (rules_chisel, rules_scala,\nrules_verilator, verilator, kepler-formal, toolchains_llvm,\noss_cad_suite, maven, najaeda pip, etc.).\n\nThese directories contain code hosted temporarily in bazel-orfs until\nrespective owners provide native Bazel support (e.g. chisel rules were\nalready upstreamed to BCR as rules_chisel).\n\nThe root module now resolves only core deps: bazel_skylib, rules_python,\nrules_shell, buildifier_prebuilt, mock-openroad, mock-klayout,\ndocker_orfs.\n\nAnalysis drops from 27K+ configured targets to ~8K.\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>\nSigned-off-by: Øyvind Harboe <oyvind.harboe@zylin.com>",
+      "parent_shas": [
+        "edf2ef96d6caa1d8794e911b5a584b189667372d"
+      ]
+    },
+    {
+      "sha": "0f876d6345546e9fa171171a6d64934fc5cd7dcb",
+      "message": "Extract verilog.bzl into bazel-orfs-verilog sub-module\n\nMove verilog.bzl and generate.bzl into verilog/ with its own\nMODULE.bazel declaring rules_verilator, verilator, and circt deps.\n\nThis keeps the root bazel-orfs module free of verilator/circt deps\nwhile still hosting the code. Downstream consumers (OpenROAD) will\nneed to add bazel_dep(name = \"bazel-orfs-verilog\") and update their\nload() paths when they bump bazel-orfs.\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>\nSigned-off-by: Øyvind Harboe <oyvind.harboe@zylin.com>",
+      "parent_shas": [
+        "53a124c260036dd59ea75da84e28bda66b6dbb19"
+      ]
+    },
+    {
+      "sha": "fe15bef9d5fe04dcb2c2e862cd08fa0391a1eaf8",
+      "message": "Add mock hierarchy, mock sweep, and per-PDK build_test targets\n\nAdd mock-openroad test targets:\n- lb_32x128_top mock_hierarchy: hierarchical flow with mock macros\n- mock_sweep_lb: orfs_sweep with openroad= override and macros\n- mock_hierarchy_build_test and mock_sweep_build_test\n\nAdd per-PDK build_test targets for asap7, nangate45, sky130hd, and\nihp-sg13g2 in test/smoketest/BUILD using a PDKS constant.\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>\nSigned-off-by: Øyvind Harboe <oyvind.harboe@zylin.com>",
+      "parent_shas": [
+        "0f876d6345546e9fa171171a6d64934fc5cd7dcb"
+      ]
+    },
+    {
+      "sha": "bb19d43f397c496c51e4308d8fcce8fb5ac81196",
+      "message": "Consolidate CI to lint + test jobs\n\nReplace 5 CI jobs with 2:\n- lint.yml: buildifier + lockfile check (no Bazel build needed)\n- ci.yml: bazelisk test ... --build_tests_only with profiling\n\nThe --build_tests_only flag prevents building non-test targets (like\nthe sram/ real-openroad flows) that bazel test ... would otherwise\nanalyze and build.\n\nAdd disk cache GC settings to .bazelrc (10GB max) as safety net.\nAdd profile analysis step to CI for identifying slow tests.\n\nDelete .github/scripts/ (smoketests.sh, build_local_target.sh,\nextract_docker_revision.py) — all functionality is now in Bazel\ntest targets or inlined in ci.yml.\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>\nSigned-off-by: Øyvind Harboe <oyvind.harboe@zylin.com>",
+      "parent_shas": [
+        "fe15bef9d5fe04dcb2c2e862cd08fa0391a1eaf8"
+      ]
+    },
+    {
+      "sha": "62cb7e539dabd4ae45f3cc98fdfcfd93730c3f04",
+      "message": "Change substeps default to False\n\nMost users don't need per-substep targets. Change the default from\nTrue to False to reduce target count. Users who need substep-level\ndebugging can opt in with substeps=True.\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>\nSigned-off-by: Øyvind Harboe <oyvind.harboe@zylin.com>",
+      "parent_shas": [
+        "bb19d43f397c496c51e4308d8fcce8fb5ac81196"
+      ]
+    },
+    {
+      "sha": "bf26e3303754a414a92a0b36e253aa46973aed9d",
+      "message": "Add TESTING.md documenting test targets and sub-modules\n\nDocument all test targets, sub-module architecture, and what needs\ntesting locally vs in CI. Lists future work including moving naja\nto a separate module and mock naja.\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>\nSigned-off-by: Øyvind Harboe <oyvind.harboe@zylin.com>",
+      "parent_shas": [
+        "62cb7e539dabd4ae45f3cc98fdfcfd93730c3f04"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__The-OpenROAD-Project__bazel-orfs__pr562.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\The-OpenROAD-Project__bazel-orfs__pr562__java_python__The-OpenROAD-Project__bazel-orfs__pr562\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\The-OpenROAD-Project__bazel-orfs__pr562__java_python__The-OpenROAD-Project__bazel-orfs__pr562\\rn"
+  }
+}

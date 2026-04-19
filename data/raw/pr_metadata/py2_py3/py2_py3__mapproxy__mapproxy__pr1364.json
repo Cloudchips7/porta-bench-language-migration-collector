@@ -1,0 +1,163 @@
+{
+  "instance_id": "py2_py3__mapproxy__mapproxy__pr1364",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "mapproxy/mapproxy",
+  "pr_number": 1364,
+  "pr_url": "https://github.com/mapproxy/mapproxy/pull/1364",
+  "repo": {
+    "full_name": "mapproxy/mapproxy",
+    "clone_url": "https://github.com/mapproxy/mapproxy.git",
+    "default_branch": "master",
+    "created_at": "2012-04-23T07:36:34Z",
+    "stars": 649,
+    "license": "Apache-2.0",
+    "size_kb": 34934
+  },
+  "pull_request": {
+    "id": 3172755930,
+    "title": "feat: improve typing of ImmutableDictList",
+    "body": "This PR aims at making the ImmutableDictList and NamedGridList more typesafe.\r\n\r\nThis is done mainly by making ImmutableDictList a generic that inherits from Mapping:\r\n\r\n```python\r\nclass ImmutableDictList(Mapping[Hashable, V], Generic[V]):\r\n  ...\r\n```\r\n\r\nInheriting from Mapping changed the behavior for iterating the ImmutableDictList. For mappings it is default that the standard iterator yields keys, the ImmutableDictList yielded the values. So every time a standard iterator was used (for example in enumerate), the `.values()` function needs to be used now.\r\n\r\nAlso `.iteritems` was removed in favor of the standard `.items` method.\r\n\r\n`__str__` was replaced by `__repr__`.\r\n\r\n<!--\r\n\r\nMapProxy is governed by a [Project Steering Committee (PSC)][1].\r\nThe PSC makes decisions on all aspects of the MapProxy project - both technical and non-technical.\r\nMost decisions require a vote by the PSC on the [mapproxy-dev mailing list][2].\r\n\r\nPlease contact the [mapproxy-dev list][2] with a Request For Change (RFC) proposal if your pull request matches any item below:\r\n\r\n- Changes to project infrastructure (e.g. tool, location or substantive configuration)\r\n- Anything that could cause backward compatibility issues.\r\n- Adding substantial amounts of new code.\r\n- Changing inter-subsystem APIs, or objects.\r\n- Anything that might be controversial.\r\n\r\nYou can read more about the voting process in the [PSC Guidelines][2].\r\n\r\n[1]: https://github.com/mapproxy/mapproxy/wiki/PSC-Guidelines\r\n[2]: https://lists.osgeo.org/mailman/listinfo/mapproxy-dev\r\n\r\n-->\r\n",
+    "created_at": "2026-01-14T09:31:55Z",
+    "merged_at": "2026-01-15T09:25:36Z",
+    "base_sha": "a70bfecbb7ee834ae0b42cb214d5c290ecf53d20",
+    "head_sha": "4f9b9453acdc24620c63932953aae258b1a6bed5",
+    "merge_commit_sha": "3d2f701e5ba2bf58c49d5315e9f01d24418cd87e",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "8c0632e63f157708eeb57e49b8c739c6e6138898",
+  "final_sha": "4f9b9453acdc24620c63932953aae258b1a6bed5",
+  "changed_files": [
+    {
+      "sha": "b50879af30ae593ac7ba9fb45d6ec0d98edba3a5",
+      "filename": "mapproxy/cache/geopackage.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/mapproxy/mapproxy/blob/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Fcache%2Fgeopackage.py",
+      "raw_url": "https://github.com/mapproxy/mapproxy/raw/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Fcache%2Fgeopackage.py",
+      "contents_url": "https://api.github.com/repos/mapproxy/mapproxy/contents/mapproxy%2Fcache%2Fgeopackage.py?ref=4f9b9453acdc24620c63932953aae258b1a6bed5",
+      "patch": "@@ -294,8 +294,8 @@ def _initialize_gpkg(self):\n             db.commit()\n \n             tile_size = self.tile_grid.tile_size\n-            for grid, resolution, level in zip(self.tile_grid.grid_sizes,\n-                                               self.tile_grid.resolutions, range(20)):\n+            for grid, resolution, level in zip(self.tile_grid.grid_sizes.values(),\n+                                               self.tile_grid.resolutions.values(), range(20)):\n                 db.execute(\"\"\"\n                     INSERT OR REPLACE INTO gpkg_tile_matrix (table_name, zoom_level, matrix_width,\n                         matrix_height, tile_width, tile_height, pixel_x_size, pixel_y_size)"
+    },
+    {
+      "sha": "75c21fb9e888a9914f80982bea0b65b13c9aef3d",
+      "filename": "mapproxy/grid/resolutions.py",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 8,
+      "changes": 18,
+      "blob_url": "https://github.com/mapproxy/mapproxy/blob/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Fgrid%2Fresolutions.py",
+      "raw_url": "https://github.com/mapproxy/mapproxy/raw/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Fgrid%2Fresolutions.py",
+      "contents_url": "https://api.github.com/repos/mapproxy/mapproxy/contents/mapproxy%2Fgrid%2Fresolutions.py?ref=4f9b9453acdc24620c63932953aae258b1a6bed5",
+      "patch": "@@ -1,5 +1,8 @@\n import math\n+from typing import Optional, TYPE_CHECKING\n \n+if TYPE_CHECKING:\n+    from mapproxy.grid.tile_grid import NamedGridList\n from mapproxy.util.bbox import bbox_size\n \n \n@@ -35,16 +38,15 @@ def get_resolution(bbox, size):\n \n \n def aligned_resolutions(\n-    min_res=None,\n-    max_res=None,\n-    res_factor=2.0,\n-    num_levels=None,\n+    with_resolutions: 'NamedGridList',\n+    min_res: Optional[float] = None,\n+    max_res: Optional[float] = None,\n+    res_factor: float = 2.0,\n+    num_levels: Optional[int] = None,\n     bbox=None,\n-    tile_size=(256, 256),\n-    align_with=None,\n+    tile_size: tuple[int, int] = (256, 256),\n ):\n-    alinged_res = align_with.resolutions\n-    res = list(alinged_res)\n+    res = list(with_resolutions.values())\n \n     if not min_res:\n         width = bbox[2] - bbox[0]"
+    },
+    {
+      "sha": "91ccd6ee76041abb04d1614142cd46b73d83a102",
+      "filename": "mapproxy/grid/tile_grid.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 10,
+      "changes": 17,
+      "blob_url": "https://github.com/mapproxy/mapproxy/blob/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Fgrid%2Ftile_grid.py",
+      "raw_url": "https://github.com/mapproxy/mapproxy/raw/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Fgrid%2Ftile_grid.py",
+      "contents_url": "https://api.github.com/repos/mapproxy/mapproxy/contents/mapproxy%2Fgrid%2Ftile_grid.py?ref=4f9b9453acdc24620c63932953aae258b1a6bed5",
+      "patch": "@@ -75,8 +75,7 @@ def tile_grid(srs=None, bbox=None, bbox_srs=None, tile_size=(256, 256),\n             raise ValueError(\"res is not a list, use res_factor for float values\")\n \n     elif align_with is not None:\n-        res = aligned_resolutions(min_res, max_res, res_factor, num_levels, bbox, tile_size,\n-                                  align_with)\n+        res = aligned_resolutions(align_with.resolutions, min_res, max_res, res_factor, num_levels, bbox, tile_size)\n     else:\n         res = resolutions(min_res, max_res, res_factor, num_levels, bbox, tile_size)\n \n@@ -162,10 +161,8 @@ def tile_grid_from_ogc_tile_matrix_set(ogc_tile_matrix_set):\n                     name=ogc_tile_matrix_set[\"id\"])\n \n     grids = []\n-    idx = 0\n-    for name, _ in tilegrid.resolutions.iteritems():\n+    for idx, name in enumerate(tilegrid.resolutions.keys()):\n         grids.append((name, grid_sizes[idx]))\n-        idx += 1\n     tilegrid.grid_sizes = NamedGridList(grids)\n \n     return tilegrid\n@@ -252,7 +249,7 @@ def _calc_grids(self):\n         width = self.bbox[2] - self.bbox[0]\n         height = self.bbox[3] - self.bbox[1]\n         grids = []\n-        for idx, res in self.resolutions.iteritems():\n+        for idx, res in self.resolutions.items():\n             x = max(math.ceil(width // res / self.tile_size[0]), 1)\n             y = max(math.ceil(height // res / self.tile_size[1]), 1)\n             grids.append((idx, (int(x), int(y))))\n@@ -275,7 +272,7 @@ def _calc_res(self, factor=None):\n         else:\n             return pyramid_res_level(initial_res, factor, levels=self.levels)\n \n-    def resolution(self, level):\n+    def resolution(self, level: str):\n         \"\"\"\n         Returns the resolution of the `level` in units/pixel.\n \n@@ -316,7 +313,7 @@ def closest_level(self, res):\n                 threshold = thresholds.pop()\n \n         threshold_result = None\n-        for level, l_res in enumerate(self.resolutions):\n+        for level, l_res in enumerate(self.resolutions.values()):\n             if threshold and prev_l_res > threshold >= l_res:\n                 if res > threshold:\n                     return level-1\n@@ -387,7 +384,7 @@ def supports_access_with_origin(self, origin):\n         # allow for some rounding errors in the _tiles_bbox calculations\n         delta = max(abs(self.bbox[1]), abs(self.bbox[3])) / 1e12\n \n-        for level, grid_size in enumerate(self.grid_sizes):\n+        for level, grid_size in enumerate(self.grid_sizes.values()):\n             level_bbox = self._tiles_bbox([(0, 0, level),\n                                            (grid_size[0] - 1, grid_size[1] - 1, level)])\n \n@@ -567,7 +564,7 @@ def is_subset_of(self, other):\n \n         # check if all level tiles from self align with (affected)\n         # tiles from other\n-        for self_level, self_level_res in self.resolutions.iteritems():\n+        for self_level, self_level_res in self.resolutions.items():\n             level_size = (\n                 self.grid_sizes[self_level][0] * self.tile_size[0],\n                 self.grid_sizes[self_level][1] * self.tile_size[1]"
+    },
+    {
+      "sha": "2c1b97756e6c010edb7f54bbcfe60cdea196db7c",
+      "filename": "mapproxy/script/grids.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/mapproxy/mapproxy/blob/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Fscript%2Fgrids.py",
+      "raw_url": "https://github.com/mapproxy/mapproxy/raw/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Fscript%2Fgrids.py",
+      "contents_url": "https://api.github.com/repos/mapproxy/mapproxy/contents/mapproxy%2Fscript%2Fgrids.py?ref=4f9b9453acdc24620c63932953aae258b1a6bed5",
+      "patch": "@@ -82,8 +82,8 @@ def display_grid(grid_conf, coverage=None):\n         print('    Levels: Resolutions, # x * y = total tiles (approx. tiles within coverage)')\n     else:\n         print('    Levels: Resolutions, # x * y = total tiles')\n-    max_digits = max([len(\"%r\" % (res,)) for level, res in enumerate(tile_grid.resolutions)])\n-    for level, res in enumerate(tile_grid.resolutions):\n+    max_digits = max([len(\"%r\" % (res,)) for level, res in enumerate(tile_grid.resolutions.values())])\n+    for level, res in enumerate(tile_grid.resolutions.values()):\n         tiles_in_x, tiles_in_y = tile_grid.grid_sizes[level]\n         total_tiles = tiles_in_x * tiles_in_y\n         spaces = max_digits - len(\"%r\" % (res,)) + 1"
+    },
+    {
+      "sha": "0fb59d4f19ddef7b94786e6514084c1cbeff3f83",
+      "filename": "mapproxy/service/wmts.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/mapproxy/mapproxy/blob/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Fservice%2Fwmts.py",
+      "raw_url": "https://github.com/mapproxy/mapproxy/raw/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Fservice%2Fwmts.py",
+      "contents_url": "https://api.github.com/repos/mapproxy/mapproxy/contents/mapproxy%2Fservice%2Fwmts.py?ref=4f9b9453acdc24620c63932953aae258b1a6bed5",
+      "patch": "@@ -405,7 +405,7 @@ def __iter__(self):\n         return iter(self.tile_matrices)\n \n     def _tile_matrices(self):\n-        for level, res in self.grid.resolutions.iteritems():\n+        for level, res in self.grid.resolutions.items():\n             origin = self.grid.origin_tile(level, 'ul')\n             bbox = self.grid.tile_bbox(origin)\n             topleft = bbox[0], bbox[3]"
+    },
+    {
+      "sha": "93f85c6682c24d761e05091f1a3d52aa847bceb5",
+      "filename": "mapproxy/test/unit/test_cache_tile.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/mapproxy/mapproxy/blob/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Ftest%2Funit%2Ftest_cache_tile.py",
+      "raw_url": "https://github.com/mapproxy/mapproxy/raw/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Ftest%2Funit%2Ftest_cache_tile.py",
+      "contents_url": "https://api.github.com/repos/mapproxy/mapproxy/contents/mapproxy%2Ftest%2Funit%2Ftest_cache_tile.py?ref=4f9b9453acdc24620c63932953aae258b1a6bed5",
+      "patch": "@@ -39,7 +39,7 @@\n tile_image2 = create_tmp_image_buf((256, 256), color='red')\n \n \n-class TileCacheTestBase(object):\n+class TileCacheTestBase:\n     always_loads_metadata = False\n     uses_utc = False\n \n@@ -201,7 +201,7 @@ def test_overwrite_tile(self):\n \n     def test_store_tile_already_stored(self):\n         # tile object is marked as stored,\n-        # check that is is not stored 'again'\n+        # check that it is not stored 'again'\n         # (used for disable_storage)\n         tile = Tile((1234, 589, 12), ImageSource(BytesIO(b'foo')))\n         tile.stored = True"
+    },
+    {
+      "sha": "f7d728074a3bb42d6b363fa3ccaf85dcbec3b30c",
+      "filename": "mapproxy/test/unit/test_collections.py",
+      "status": "modified",
+      "additions": 39,
+      "deletions": 2,
+      "changes": 41,
+      "blob_url": "https://github.com/mapproxy/mapproxy/blob/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Ftest%2Funit%2Ftest_collections.py",
+      "raw_url": "https://github.com/mapproxy/mapproxy/raw/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Ftest%2Funit%2Ftest_collections.py",
+      "contents_url": "https://api.github.com/repos/mapproxy/mapproxy/contents/mapproxy%2Ftest%2Funit%2Ftest_collections.py?ref=4f9b9453acdc24620c63932953aae258b1a6bed5",
+      "patch": "@@ -103,9 +103,22 @@ def test_named(self):\n         assert res['three'] == 3\n         assert len(res) == 3\n \n-    def test_named_iteritems(self):\n+    def test_values(self):\n         res = ImmutableDictList([('one', 10), ('two', 5), ('three', 3)])\n-        itr = res.iteritems()\n+        itr = iter(res.values())\n+        assert next(itr) == 10\n+        assert next(itr) == 5\n+        assert next(itr) == 3\n+        try:\n+            next(itr)\n+        except StopIteration:\n+            pass\n+        else:\n+            assert False, 'StopIteration expected'\n+\n+    def test_named_items(self):\n+        res = ImmutableDictList([('one', 10), ('two', 5), ('three', 3)])\n+        itr = iter(res.items())\n         assert next(itr) == ('one', 10)\n         assert next(itr) == ('two', 5)\n         assert next(itr) == ('three', 3)\n@@ -115,3 +128,27 @@ def test_named_iteritems(self):\n             pass\n         else:\n             assert False, 'StopIteration expected'\n+\n+    def test_enumerate(self):\n+        res = ImmutableDictList([('one', 10), ('two', 5), ('three', 3)])\n+        itr = enumerate(res)\n+        assert next(itr) == (0, 'one')\n+        assert next(itr) == (1, 'two')\n+        assert next(itr) == (2, 'three')\n+        try:\n+            next(itr)\n+        except StopIteration:\n+            pass\n+        else:\n+            assert False, 'StopIteration expected'\n+\n+        itr = enumerate(res.values())\n+        assert next(itr) == (0, 10)\n+        assert next(itr) == (1, 5)\n+        assert next(itr) == (2, 3)\n+        try:\n+            next(itr)\n+        except StopIteration:\n+            pass\n+        else:\n+            assert False, 'StopIteration expected'"
+    },
+    {
+      "sha": "adf78b926007237a523d19e458a3cfeea8dc5bd5",
+      "filename": "mapproxy/util/immutable_dict_list.py",
+      "status": "modified",
+      "additions": 31,
+      "deletions": 31,
+      "changes": 62,
+      "blob_url": "https://github.com/mapproxy/mapproxy/blob/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Futil%2Fimmutable_dict_list.py",
+      "raw_url": "https://github.com/mapproxy/mapproxy/raw/4f9b9453acdc24620c63932953aae258b1a6bed5/mapproxy%2Futil%2Fimmutable_dict_list.py",
+      "contents_url": "https://api.github.com/repos/mapproxy/mapproxy/contents/mapproxy%2Futil%2Fimmutable_dict_list.py?ref=4f9b9453acdc24620c63932953aae258b1a6bed5",
+      "patch": "@@ -13,10 +13,12 @@\n # See the License for the specific language governing permissions and\n # limitations under the License.\n \n-from __future__ import absolute_import\n+from typing import TypeVar, Mapping, Hashable, Generic, Iterable, Iterator\n \n+V = TypeVar(\"V\")\n \n-class ImmutableDictList(object):\n+\n+class ImmutableDictList(Mapping[Hashable, V], Generic[V]):\n     \"\"\"\n     A dictionary where each item can also be accessed by the\n     integer index of the initial position.\n@@ -28,35 +30,33 @@ class ImmutableDictList(object):\n     (23, 24)\n     \"\"\"\n \n-    def __init__(self, items):\n-        self._names = []\n-        self._values = {}\n+    def __init__(self, items: Iterable[tuple[Hashable, V]]) -> None:\n+        names: list[Hashable] = []\n+        values: dict[Hashable, V] = {}\n+\n         for name, value in items:\n-            self._values[name] = value\n-            self._names.append(name)\n-\n-    def __getitem__(self, name):\n-        if isinstance(name, str):\n-            return self._values[name]\n-        else:\n-            return self._values[self._names[name]]\n-\n-    def __contains__(self, name):\n-        try:\n-            self[name]\n-            return True\n-        except KeyError:\n-            return False\n-\n-    def __len__(self):\n-        return len(self._values)\n+            if name in values:\n+                raise ValueError(f\"Duplicate key: {name!r}\")\n+            names.append(name)\n+            values[name] = value\n+\n+        self._names: tuple[Hashable, ...] = tuple(names)\n+        self._values: dict[Hashable, V] = values\n \n-    def __str__(self):\n-        values = []\n-        for name in self._names:\n-            values.append('%s: %s' % (name, self._values[name]))\n-        return '[%s]' % (', '.join(values),)\n+    def __getitem__(self, key: Hashable | int) -> V:\n+        if isinstance(key, int):\n+            return self._values[self._names[key]]\n+        return self._values[key]\n+\n+    def __iter__(self) -> Iterator[Hashable]:\n+        # Mapping contract: iteration yields keys\n+        return iter(self._names)\n+\n+    def __len__(self) -> int:\n+        return len(self._values)\n \n-    def iteritems(self):\n-        for idx in self._names:\n-            yield idx, self._values[idx]\n+    def __repr__(self) -> str:\n+        contents = \", \".join(\n+            f\"{name!r}: {self._values[name]!r}\" for name in self._names\n+        )\n+        return f\"{self.__class__.__name__}([{contents}])\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "4f9b9453acdc24620c63932953aae258b1a6bed5",
+      "message": "feat: improve typing of ImmutableDictList",
+      "parent_shas": [
+        "8c0632e63f157708eeb57e49b8c739c6e6138898"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__mapproxy__mapproxy__pr1364.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\mapproxy__mapproxy__pr1364__py2_py3__mapproxy__mapproxy__pr1364\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\mapproxy__mapproxy__pr1364__py2_py3__mapproxy__mapproxy__pr1364\\rn"
+  }
+}

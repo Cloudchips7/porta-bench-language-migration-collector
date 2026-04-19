@@ -1,0 +1,334 @@
+{
+  "instance_id": "py2_py3__dgraph-io__pydgraph__pr284",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "dgraph-io/pydgraph",
+  "pr_number": 284,
+  "pr_url": "https://github.com/dgraph-io/pydgraph/pull/284",
+  "repo": {
+    "full_name": "dgraph-io/pydgraph",
+    "clone_url": "https://github.com/dgraph-io/pydgraph.git",
+    "default_branch": "main",
+    "created_at": "2016-06-30T23:52:36Z",
+    "stars": 291,
+    "license": "Apache-2.0",
+    "size_kb": 1721
+  },
+  "pull_request": {
+    "id": 3138264274,
+    "title": "Add context manager support (fixes for PR #279)",
+    "body": "## Summary\n\nThis PR incorporates the work from PR #279 with fixes for CI failures.\n\n### Changes from original PR #279:\n- Add Python context manager support to `Txn` and `DgraphClientStub` classes\n- Update documentation and examples\n- Add comprehensive test coverage\n\n### Fixes applied to make CI pass:\n- Remove Python 2 compatibility code (basestring references) - Python >= 3.7 is required\n- Fix linting issues (blind exception assertions, ambiguous variable names)  \n- Add authentication (`client.login()`) to context manager tests\n- Format README.md with prettier\n\n### Test Results\n\nAll tests passing locally:\n- ✅ 13/13 tests in `test_client_stub.py`\n- ✅ Trunk linting checks pass\n- ✅ No security issues introduced\n\n## Closes\n\n- Closes #279\n\n## Attribution\n\nOriginal work by:\n- @garylavayou (Gary Wang)\n- @shaunpatterson (Shaun Patterson)\n\nFixes and integration by: @mlwelles",
+    "created_at": "2025-12-31T02:16:44Z",
+    "merged_at": "2025-12-31T02:23:41Z",
+    "base_sha": "524e9d9f6e3eeabec07be9025311a4b3b8a78f1c",
+    "head_sha": "91ecc086fca5e7f838e3e0995d96aed63be46e28",
+    "merge_commit_sha": "a2dc15756c04c7f5dca067d0f36fb7c609aa39d3",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "68f241cdd7ea07d9b81e101020f5d646f98a7b79",
+  "final_sha": "91ecc086fca5e7f838e3e0995d96aed63be46e28",
+  "changed_files": [
+    {
+      "sha": "0a96db7662445d990dcad071c9f8942771f65341",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/.gitignore",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/.gitignore",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/.gitignore?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -32,6 +32,9 @@ MANIFEST\n .idea\n pydgraph.iml\n \n+# VS Code\n+.vscode\n+\n # Python Virtual Environments\n venv\n .venv"
+    },
+    {
+      "sha": "6b4e0dbf1e420e07f8347aa162f4f6f84f5b4085",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 68,
+      "deletions": 25,
+      "changes": 93,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/README.md",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/README.md",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/README.md?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -352,6 +352,53 @@ request = txn.create_request(mutations=[mutation], commit_now=True)\n txn.do_request(request)\n ```\n \n+### Committing a Transaction\n+\n+A transaction can be committed using the `Txn#commit()` method. If your transaction consist solely\n+of `Txn#query` or `Txn#queryWithVars` calls, and no calls to `Txn#mutate`, then calling\n+`Txn#commit()` is not necessary.\n+\n+An error is raised if another transaction(s) modify the same data concurrently that was modified in\n+the current transaction. It is up to the user to retry transactions when they fail.\n+\n+```python\n+txn = client.txn()\n+try:\n+  # ...\n+  # Perform any number of queries and mutations\n+  # ...\n+  # and finally...\n+  txn.commit()\n+except pydgraph.AbortedError:\n+  # Retry or handle exception.\n+finally:\n+  # Clean up. Calling this after txn.commit() is a no-op\n+  # and hence safe.\n+  txn.discard()\n+```\n+\n+#### Using Transaction with Context Manager\n+\n+The Python context manager will automatically perform the \"`commit`\" action after all queries and\n+mutations have been done, and perform \"`discard`\" action to clean the transaction. When something\n+goes wrong in the scope of context manager, \"`commit`\" will not be called,and the \"`discard`\" action\n+will be called to drop any potential changes.\n+\n+```python\n+with client.begin(read_only=False, best_effort=False) as txn:\n+  # Do some queries or mutations here\n+```\n+\n+or you can directly create a transaction from the `Txn` class.\n+\n+```python\n+with pydgraph.Txn(client, read_only=False, best_effort=False) as txn:\n+  # Do some queries or mutations here\n+```\n+\n+> `client.begin()` can only be used with \"`with-as`\" blocks, while `pydgraph.Txn` class can be\n+> directly called to instantiate a transaction object.\n+\n ### Running a Query\n \n You can run a query by calling `Txn#query(string)`. You will need to pass in a\n@@ -461,31 +508,6 @@ request = txn.create_request(mutations=[mutation], query=query, commit_now=True)\n txn.do_request(request)\n ```\n \n-### Committing a Transaction\n-\n-A transaction can be committed using the `Txn#commit()` method. If your transaction consist solely\n-of `Txn#query` or `Txn#queryWithVars` calls, and no calls to `Txn#mutate`, then calling\n-`Txn#commit()` is not necessary.\n-\n-An error is raised if another transaction(s) modify the same data concurrently that was modified in\n-the current transaction. It is up to the user to retry transactions when they fail.\n-\n-```python3\n-txn = client.txn()\n-try:\n-  # ...\n-  # Perform any number of queries and mutations\n-  # ...\n-  # and finally...\n-  txn.commit()\n-except pydgraph.AbortedError:\n-  # Retry or handle exception.\n-finally:\n-  # Clean up. Calling this after txn.commit() is a no-op\n-  # and hence safe.\n-  txn.discard()\n-```\n-\n ### Cleaning Up Resources\n \n To clean up resources, you have to call `DgraphClientStub#close()` individually for all the\n@@ -510,6 +532,27 @@ stub1.close()\n stub2.close()\n ```\n \n+#### Use context manager to automatically clean resources\n+\n+Use function call:\n+\n+```python\n+with pydgraph.client_stub(SERVER_ADDR) as stub1:\n+  with pydgraph.client_stub(SERVER_ADDR) as stub2:\n+    client = pydgraph.DgraphClient(stub1, stub2)\n+```\n+\n+Use class constructor:\n+\n+```python\n+with pydgraph.DgraphClientStub(SERVER_ADDR) as stub1:\n+  with pydgraph.DgraphClientStub(SERVER_ADDR) as stub2:\n+    client = pydgraph.DgraphClient(stub1, stub2)\n+```\n+\n+Note: `client` should be used inside the \"`with-as`\" block. The resources related to `client` will\n+be automatically released outside the block and `client` is not usable any more.\n+\n ### Setting Metadata Headers\n \n Metadata headers such as authentication tokens can be set through the metadata of gRPC methods."
+    },
+    {
+      "sha": "54e9d03c8107dcddec2b67981085dc2d32768103",
+      "filename": "pydgraph/__init__.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/pydgraph%2F__init__.py",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/pydgraph%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/pydgraph%2F__init__.py?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -1,6 +1,7 @@\n # SPDX-FileCopyrightText: © 2017-2025 Istari Digital, Inc.\n # SPDX-License-Identifier: Apache-2.0\n \n+# ruff: noqa: F401, F403\n from pydgraph.client import *\n from pydgraph.client_stub import *\n from pydgraph.errors import *"
+    },
+    {
+      "sha": "975f629e0d859fa1a16e8425fcbb7b66517231fb",
+      "filename": "pydgraph/client.py",
+      "status": "modified",
+      "additions": 30,
+      "deletions": 3,
+      "changes": 33,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/pydgraph%2Fclient.py",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/pydgraph%2Fclient.py",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/pydgraph%2Fclient.py?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -3,6 +3,7 @@\n \n \"\"\"Dgraph python client.\"\"\"\n \n+import contextlib\n import random\n import urllib.parse\n \n@@ -267,10 +268,11 @@ def set_schema(self, schema, timeout=None, metadata=None, credentials=None):\n             operation, timeout=timeout, metadata=metadata, credentials=credentials\n         )\n \n-    def txn(self, read_only=False, best_effort=False):\n+    def txn(self, read_only=False, best_effort=False, **commit_kwargs):\n         \"\"\"Creates a transaction.\"\"\"\n-\n-        return txn.Txn(self, read_only=read_only, best_effort=best_effort)\n+        return txn.Txn(\n+            self, read_only=read_only, best_effort=best_effort, **commit_kwargs\n+        )\n \n     def run_dql(\n         self,\n@@ -646,6 +648,31 @@ def close(self):\n         for client in self._clients:\n             client.close()\n \n+    @contextlib.contextmanager\n+    def begin(\n+        self,\n+        read_only: bool = False,\n+        best_effort: bool = False,\n+        timeout=None,\n+        metadata=None,\n+        credentials=None,\n+    ):\n+        \"\"\"Start a managed transaction.\n+\n+        Note\n+        ----\n+        Only use this function in ``with-as`` blocks.\n+        \"\"\"\n+        tx = self.txn(read_only=read_only, best_effort=best_effort)\n+        try:\n+            yield tx\n+            if not read_only and not tx._finished:\n+                tx.commit(timeout=timeout, metadata=metadata, credentials=credentials)\n+        except Exception as e:\n+            raise e\n+        finally:\n+            tx.discard()\n+\n \n def open(connection_string: str) -> DgraphClient:\n     \"\"\"Open a new Dgraph client. Use client.close() to close the client."
+    },
+    {
+      "sha": "7b474f85a65a4d115d7369768e86466f6219ecf0",
+      "filename": "pydgraph/client_stub.py",
+      "status": "modified",
+      "additions": 36,
+      "deletions": 1,
+      "changes": 37,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/pydgraph%2Fclient_stub.py",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/pydgraph%2Fclient_stub.py",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/pydgraph%2Fclient_stub.py?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -3,6 +3,8 @@\n \n \"\"\"Stub for RPC request.\"\"\"\n \n+import contextlib\n+\n import grpc\n \n from pydgraph.meta import VERSION\n@@ -30,6 +32,14 @@ def __init__(self, addr=\"localhost:9080\", credentials=None, options=None):\n \n         self.stub = api_grpc.DgraphStub(self.channel)\n \n+    def __enter__(self):\n+        return self\n+\n+    def __exit__(self, exc_type, exc_val, exc_tb):\n+        self.close()\n+        if exc_type is not None:\n+            raise exc_val\n+\n     def login(self, login_req, timeout=None, metadata=None, credentials=None):\n         return self.stub.Login(\n             login_req, timeout=timeout, metadata=metadata, credentials=credentials\n@@ -104,7 +114,7 @@ def close(self):\n         \"\"\"Deletes channel and stub.\"\"\"\n         try:\n             self.channel.close()\n-        except:\n+        except Exception:\n             pass\n         del self.channel\n         del self.stub\n@@ -147,3 +157,28 @@ def from_cloud(cloud_endpoint, api_key, options=None):\n             options=options,\n         )\n         return client_stub\n+\n+\n+@contextlib.contextmanager\n+def client_stub(addr=\"localhost:9080\", **kwargs):\n+    \"\"\"Create a managed DgraphClientStub instance.\n+\n+    Parameters\n+    ----------\n+    addr : str, optional\n+    credentials : ChannelCredentials, optional\n+    options: List[Dict]\n+        An optional list of key-value pairs (``channel_arguments``\n+        in gRPC Core runtime) to configure the channel.\n+\n+    Note\n+    ----\n+    Only use this function in ``with-as`` blocks.\n+    \"\"\"\n+    stub = DgraphClientStub(addr=addr, **kwargs)\n+    try:\n+        yield stub\n+    except Exception as e:\n+        raise e\n+    finally:\n+        stub.close()"
+    },
+    {
+      "sha": "c1a379795a785125d185d8b6113cdfd68456b843",
+      "filename": "pydgraph/txn.py",
+      "status": "modified",
+      "additions": 31,
+      "deletions": 6,
+      "changes": 37,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/pydgraph%2Ftxn.py",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/pydgraph%2Ftxn.py",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/pydgraph%2Ftxn.py?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -30,7 +30,15 @@ class Txn(object):\n     after calling commit.\n     \"\"\"\n \n-    def __init__(self, client, read_only=False, best_effort=False):\n+    def __init__(\n+        self,\n+        client,\n+        read_only=False,\n+        best_effort=False,\n+        timeout=None,\n+        metadata=None,\n+        credentials=None,\n+    ):\n         if not read_only and best_effort:\n             raise Exception(\n                 \"Best effort transactions are only compatible with \"\n@@ -45,6 +53,23 @@ def __init__(self, client, read_only=False, best_effort=False):\n         self._mutated = False\n         self._read_only = read_only\n         self._best_effort = best_effort\n+        self._commit_kwargs = {\n+            \"timeout\": timeout,\n+            \"metadata\": metadata,\n+            \"credentials\": credentials,\n+        }\n+\n+    def __enter__(self):\n+        return self\n+\n+    def __exit__(self, exc_type, exc_val, exc_tb):\n+        if exc_type is not None:\n+            self.discard(**self._commit_kwargs)\n+            raise exc_val\n+        if not self._read_only and not self._finished:\n+            self.commit(**self._commit_kwargs)\n+        else:\n+            self.discard(**self._commit_kwargs)\n \n     def query(\n         self,\n@@ -168,7 +193,7 @@ def do_request(self, request, timeout=None, metadata=None, credentials=None):\n                 self.discard(\n                     timeout=timeout, metadata=metadata, credentials=credentials\n                 )\n-            except:\n+            except Exception:\n                 # Ignore error - user should see the original error.\n                 pass\n \n@@ -201,7 +226,7 @@ def handle_query_future(future):\n         try:\n             response = future.result()\n         except Exception as error:\n-            txn._common_except_mutate(error)\n+            Txn._common_except_mutate(error)\n \n         return response\n \n@@ -212,11 +237,11 @@ def handle_mutate_future(txn, future, commit_now):\n             response = future.result()\n         except Exception as error:\n             try:\n-                txn.discard(timeout=timeout, metadata=metadata, credentials=credentials)\n-            except:\n+                txn.discard(**txn._commit_kwargs)\n+            except Exception:\n                 # Ignore error - user should see the original error.\n                 pass\n-            txn._common_except_mutate(error)\n+            Txn._common_except_mutate(error)\n \n         if commit_now:\n             txn._finished = True"
+    },
+    {
+      "sha": "280688c2763db886300670ca766f541a871faa1b",
+      "filename": "pydgraph/util.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 6,
+      "changes": 7,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/pydgraph%2Futil.py",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/pydgraph%2Futil.py",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/pydgraph%2Futil.py?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -3,8 +3,6 @@\n \n \"\"\"Various utility functions.\"\"\"\n \n-import sys\n-\n import grpc\n \n from pydgraph.meta import VERSION\n@@ -16,10 +14,7 @@\n \n \n def is_string(string):\n-    \"\"\"Checks if argument is a string. Compatible with Python 2 and 3.\"\"\"\n-    if sys.version_info[0] < 3:\n-        return isinstance(string, basestring)\n-\n+    \"\"\"Checks if argument is a string.\"\"\"\n     return isinstance(string, str)\n \n "
+    },
+    {
+      "sha": "9327e1c00e2b1a03a30b8f2a1d2fb3d39df9fa60",
+      "filename": "tests/test_acct_upsert.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_acct_upsert.py",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_acct_upsert.py",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/tests%2Ftest_acct_upsert.py?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -14,8 +14,7 @@\n import unittest\n \n import pydgraph\n-\n-from . import helper\n+from tests import helper\n \n CONCURRENCY = 5\n FIRSTS = [\"Paul\", \"Eric\", \"Jack\", \"John\", \"Martin\"]\n@@ -30,9 +29,9 @@ def setUp(self):\n         super(TestAccountUpsert, self).setUp()\n \n         self.accounts = [\n-            {\"first\": f, \"last\": l, \"age\": a}\n+            {\"first\": f, \"last\": ln, \"age\": a}\n             for f in FIRSTS\n-            for l in LASTS\n+            for ln in LASTS\n             for a in AGES\n         ]\n         logging.info(len(self.accounts))"
+    },
+    {
+      "sha": "20abe4cbd9c93a6313fff26295a126e053c67b55",
+      "filename": "tests/test_async.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_async.py",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_async.py",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/tests%2Ftest_async.py?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -9,8 +9,7 @@\n import json\n \n import pydgraph\n-\n-from . import helper\n+from tests import helper\n \n \n class TestAsync(helper.ClientIntegrationTestCase):"
+    },
+    {
+      "sha": "50c43c311496703e0c7bf0dfa76fa1a040fb6c37",
+      "filename": "tests/test_client_stub.py",
+      "status": "modified",
+      "additions": 127,
+      "deletions": 7,
+      "changes": 134,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_client_stub.py",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_client_stub.py",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/tests%2Ftest_client_stub.py?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -6,7 +6,6 @@\n __author__ = \"Garvit Pahal\"\n __maintainer__ = \"Istari Digital, Inc. <dgraph-admin@istaridigital.com>\"\n \n-import sys\n import unittest\n \n import pydgraph\n@@ -19,10 +18,6 @@ class TestDgraphClientStub(helper.ClientIntegrationTestCase):\n \n     def validate_version_object(self, version):\n         tag = version.tag\n-        if sys.version_info[0] < 3:\n-            self.assertIsInstance(tag, basestring)\n-            return\n-\n         self.assertIsInstance(tag, str)\n \n     def check_version(self, stub):\n@@ -32,7 +27,7 @@ def test_constructor(self):\n         self.check_version(pydgraph.DgraphClientStub(addr=self.TEST_SERVER_ADDR))\n \n     def test_timeout(self):\n-        with self.assertRaises(Exception):\n+        with self.assertRaises(Exception):  # noqa: B017\n             pydgraph.DgraphClientStub(self.TEST_SERVER_ADDR).check_version(\n                 pydgraph.Check(), timeout=-1\n             )\n@@ -41,7 +36,7 @@ def test_close(self):\n         client_stub = pydgraph.DgraphClientStub(addr=self.TEST_SERVER_ADDR)\n         self.check_version(client_stub)\n         client_stub.close()\n-        with self.assertRaises(Exception):\n+        with self.assertRaises(Exception):  # noqa: B017\n             client_stub.check_version(pydgraph.Check())\n \n \n@@ -70,10 +65,135 @@ def test_from_cloud(self):\n                     raise (e)\n \n \n+class TestDgraphClientStubContextManager(helper.ClientIntegrationTestCase):\n+    def setUp(self):\n+        super(TestDgraphClientStubContextManager, self).setUp()\n+\n+    def test_context_manager(self):\n+        \"\"\"Test basic context manager usage for DgraphClientStub.\"\"\"\n+        with pydgraph.DgraphClientStub(addr=self.TEST_SERVER_ADDR) as client_stub:\n+            ver = client_stub.check_version(pydgraph.Check())\n+            self.assertIsNotNone(ver)\n+\n+    def test_context_manager_code_exception(self):\n+        \"\"\"Test that exceptions within context manager are properly handled.\"\"\"\n+        with self.assertRaises(AttributeError):\n+            with pydgraph.DgraphClientStub(addr=self.TEST_SERVER_ADDR) as client_stub:\n+                self.check_version(client_stub)  # AttributeError: no such method\n+\n+    def test_context_manager_function_wrapper(self):\n+        \"\"\"Test the client_stub() function wrapper for context manager.\"\"\"\n+        with pydgraph.client_stub(addr=self.TEST_SERVER_ADDR) as client_stub:\n+            ver = client_stub.check_version(pydgraph.Check())\n+            self.assertIsNotNone(ver)\n+\n+    def test_context_manager_closes_stub(self):\n+        \"\"\"Test that the stub is properly closed after exiting context manager.\"\"\"\n+        stub = None\n+        with pydgraph.DgraphClientStub(addr=self.TEST_SERVER_ADDR) as client_stub:\n+            stub = client_stub\n+            ver = client_stub.check_version(pydgraph.Check())\n+            self.assertIsNotNone(ver)\n+\n+        # After exiting context, stub should be closed and unusable\n+        with self.assertRaises(Exception):  # noqa: B017\n+            stub.check_version(pydgraph.Check())\n+\n+    def test_context_manager_with_client(self):\n+        \"\"\"Test using DgraphClientStub context manager with DgraphClient.\"\"\"\n+        with pydgraph.DgraphClientStub(addr=self.TEST_SERVER_ADDR) as client_stub:\n+            client = pydgraph.DgraphClient(client_stub)\n+            client.login(\"groot\", \"password\")\n+\n+            # Perform a simple operation\n+            txn = client.txn(read_only=True)\n+            query = \"{ me(func: has(name)) { name } }\"\n+            resp = txn.query(query)\n+            self.assertIsNotNone(resp)\n+\n+    def test_context_manager_exception_still_closes(self):\n+        \"\"\"Test that stub is closed even when an exception occurs.\"\"\"\n+        stub_ref = None\n+        try:\n+            with pydgraph.DgraphClientStub(addr=self.TEST_SERVER_ADDR) as client_stub:\n+                stub_ref = client_stub\n+                client_stub.check_version(pydgraph.Check())\n+                raise ValueError(\"Test exception\")\n+        except ValueError:\n+            pass\n+\n+        # Stub should still be closed despite the exception\n+        with self.assertRaises(Exception):  # noqa: B017\n+            stub_ref.check_version(pydgraph.Check())\n+\n+    def test_context_manager_function_wrapper_closes(self):\n+        \"\"\"Test that client_stub() function wrapper properly closes the stub.\"\"\"\n+        stub_ref = None\n+        with pydgraph.client_stub(addr=self.TEST_SERVER_ADDR) as client_stub:\n+            stub_ref = client_stub\n+            ver = client_stub.check_version(pydgraph.Check())\n+            self.assertIsNotNone(ver)\n+\n+        # Stub should be closed after exiting\n+        with self.assertRaises(Exception):  # noqa: B017\n+            stub_ref.check_version(pydgraph.Check())\n+\n+    def test_context_manager_multiple_operations(self):\n+        \"\"\"Test performing multiple operations within context manager.\"\"\"\n+        with pydgraph.DgraphClientStub(addr=self.TEST_SERVER_ADDR) as client_stub:\n+            # Check version multiple times\n+            ver1 = client_stub.check_version(pydgraph.Check())\n+            ver2 = client_stub.check_version(pydgraph.Check())\n+            self.assertIsNotNone(ver1)\n+            self.assertIsNotNone(ver2)\n+\n+            # Create client and perform operations\n+            client = pydgraph.DgraphClient(client_stub)\n+            client.login(\"groot\", \"password\")\n+            txn = client.txn(read_only=True)\n+            query = \"{ me(func: has(name)) { name } }\"\n+            resp = txn.query(query)\n+            self.assertIsNotNone(resp)\n+\n+    def test_context_manager_nested_with_client_operations(self):\n+        \"\"\"Test full workflow: stub context manager with client and transaction operations.\"\"\"\n+        with pydgraph.DgraphClientStub(addr=self.TEST_SERVER_ADDR) as stub:\n+            client = pydgraph.DgraphClient(stub)\n+            client.login(\"groot\", \"password\")\n+\n+            # Set schema\n+            schema = \"test_name: string @index(fulltext) .\"\n+            op = pydgraph.Operation(schema=schema)\n+            client.alter(op)\n+\n+            # Perform mutation and query\n+            with client.txn() as txn:\n+                response = txn.mutate(set_obj={\"test_name\": \"ContextManagerTest\"})\n+                self.assertEqual(1, len(response.uids))\n+                uid = list(response.uids.values())[0]\n+\n+            # Verify data was committed\n+            query = \"\"\"{{\n+                me(func: uid(\"{uid}\")) {{\n+                    test_name\n+                }}\n+            }}\"\"\".format(\n+                uid=uid\n+            )\n+\n+            with client.txn(read_only=True) as txn:\n+                resp = txn.query(query)\n+                import json\n+\n+                results = json.loads(resp.json).get(\"me\")\n+                self.assertEqual([{\"test_name\": \"ContextManagerTest\"}], results)\n+\n+\n def suite():\n     \"\"\"Returns a test suite object.\"\"\"\n     suite_obj = unittest.TestSuite()\n     suite_obj.addTest(TestDgraphClientStub())\n+    suite_obj.addTest(TestDgraphClientStubContextManager())\n     return suite_obj\n \n "
+    },
+    {
+      "sha": "0cd16019fe3cbf88ca968b6ec9356f778f52efe1",
+      "filename": "tests/test_essentials.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_essentials.py",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_essentials.py",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/tests%2Ftest_essentials.py?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -10,7 +10,7 @@\n import logging\n import unittest\n \n-from . import helper\n+from tests import helper\n \n \n class TestEssentials(helper.ClientIntegrationTestCase):"
+    },
+    {
+      "sha": "1328c0b48d411485493199877ec2c6a8aba74364",
+      "filename": "tests/test_queries.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_queries.py",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_queries.py",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/tests%2Ftest_queries.py?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -13,8 +13,7 @@\n \n import pydgraph\n from pydgraph import open\n-\n-from . import helper\n+from tests import helper\n \n \n class TestQueries(helper.ClientIntegrationTestCase):"
+    },
+    {
+      "sha": "f963639c5b72825c93f06ebafd68fbff100dcab1",
+      "filename": "tests/test_txn.py",
+      "status": "modified",
+      "additions": 201,
+      "deletions": 13,
+      "changes": 214,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_txn.py",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_txn.py",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/tests%2Ftest_txn.py?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -10,8 +10,7 @@\n import unittest\n \n import pydgraph\n-\n-from . import helper\n+from tests import helper\n \n \n class TestTxn(helper.ClientIntegrationTestCase):\n@@ -39,7 +38,7 @@ def test_query_after_commit(self):\n             uid=uid\n         )\n \n-        with self.assertRaises(Exception):\n+        with self.assertRaises(Exception):  # noqa: B017\n             txn.query(query)\n \n     def test_mutate_after_commit(self):\n@@ -49,7 +48,7 @@ def test_mutate_after_commit(self):\n \n         txn.commit()\n \n-        with self.assertRaises(Exception):\n+        with self.assertRaises(Exception):  # noqa: B017\n             txn.mutate(set_obj={\"name\": \"Manish2\"})\n \n     def test_commit_now(self):\n@@ -59,7 +58,7 @@ def test_commit_now(self):\n         for _, uid in response.uids.items():\n             uid = uid\n \n-        self.assertRaises(Exception, txn.commit)\n+        self.assertRaises(Exception, txn.commit)  # noqa: B017\n \n         query = \"\"\"{{\n             me(func: uid(\"{uid:s}\")) {{\n@@ -84,7 +83,7 @@ def test_discard(self):\n         _ = txn2.mutate(set_obj={\"uid\": uid, \"name\": \"Manish2\"})\n \n         txn.discard()\n-        self.assertRaises(Exception, txn.commit)\n+        self.assertRaises(Exception, txn.commit)  # noqa: B017\n \n         query = \"\"\"{{\n             me(func: uid(\"{uid:s}\")) {{\n@@ -98,11 +97,11 @@ def test_discard(self):\n \n     def test_mutate_error(self):\n         txn = self.client.txn()\n-        with self.assertRaises(Exception):\n+        with self.assertRaises(Exception):  # noqa: B017\n             # Following N-Quad is invalid\n             _ = txn.mutate(set_nquads=\"_:node <name> Manish\")\n \n-        self.assertRaises(Exception, txn.commit)\n+        self.assertRaises(Exception, txn.commit)  # noqa: B017\n \n     def test_read_at_start_ts(self):\n         \"\"\"Tests read after write when readTs == startTs\"\"\"\n@@ -275,9 +274,9 @@ def test_read_only_txn(self):\n         # Within the same transaction, timestamps should always be equal\n         self.assertEqual(start_ts1, start_ts2)\n \n-        with self.assertRaises(Exception):\n+        with self.assertRaises(Exception):  # noqa: B017\n             txn.mutate(set_obj={\"name\": \"Manish\"})\n-        with self.assertRaises(Exception):\n+        with self.assertRaises(Exception):  # noqa: B017\n             txn.commit()\n \n     def test_best_effort_txn(self):\n@@ -286,7 +285,7 @@ def test_best_effort_txn(self):\n         helper.drop_all(self.client)\n         helper.set_schema(self.client, \"name: string @index(exact) .\")\n \n-        with self.assertRaises(Exception):\n+        with self.assertRaises(Exception):  # noqa: B017\n             self.client.txn(read_only=False, best_effort=True)\n \n         query = \"{ me(func: has(name)) {name} }\"\n@@ -459,14 +458,14 @@ def test_non_string_variable(self):\n             }\n         \"\"\"\n         variables = {\"$a\": 1234}\n-        with self.assertRaises(Exception):\n+        with self.assertRaises(Exception):  # noqa: B017\n             _ = txn.query(query, variables=variables)\n \n     def test_finished(self):\n         txn = self.client.txn()\n         txn.mutate(set_nquads='_:animesh <name> \"Animesh\" .', commit_now=True)\n \n-        with self.assertRaises(Exception):\n+        with self.assertRaises(Exception):  # noqa: B017\n             txn.mutate(set_nquads='_:aman <name> \"Aman\" .', commit_now=True)\n \n     def test_mutate_facet(self):\n@@ -626,10 +625,199 @@ def test_sp_star2(self):\n         self.assertEqual([{\"uid\": uid1}], json.loads(resp.json).get(\"me\"))\n \n \n+class TestContextManager(helper.ClientIntegrationTestCase):\n+    def setUp(self):\n+        super(TestContextManager, self).setUp()\n+        helper.drop_all(self.client)\n+        helper.set_schema(self.client, \"name: string @index(fulltext) .\")\n+\n+    def test_context_manager_by_contextlib(self):\n+        \"\"\"Test context manager via client.begin() for read-only transactions.\"\"\"\n+        q = \"\"\"\n+        {\n+            company(func: type(x.Company), first: 10){\n+                    expand(_all_)\n+            }\n+        }\n+        \"\"\"\n+        with self.client.begin(read_only=True, best_effort=True) as tx:\n+            response = tx.query(q)\n+        self.assertIsNotNone(response)\n+        _data = json.loads(response.json)\n+\n+    def test_context_manager_by_class(self):\n+        \"\"\"Test context manager using Txn class directly for read-only transactions.\"\"\"\n+        q = \"\"\"\n+        {\n+            company(func: type(x.Company), first: 10){\n+                    expand(_all_)\n+            }\n+        }\n+        \"\"\"\n+        with pydgraph.Txn(self.client, read_only=True, best_effort=True) as tx:\n+            response = tx.query(q)\n+        self.assertIsNotNone(response)\n+        _data = json.loads(response.json)\n+\n+    def test_context_manager_auto_commit(self):\n+        \"\"\"Test that write transactions automatically commit on successful completion.\"\"\"\n+        with self.client.txn() as txn:\n+            response = txn.mutate(set_obj={\"name\": \"Alice\"})\n+            self.assertEqual(1, len(response.uids), \"Nothing was assigned\")\n+            uid = list(response.uids.values())[0]\n+\n+        # Verify the data was committed by querying in a new transaction\n+        query = \"\"\"{{\n+            me(func: uid(\"{uid}\")) {{\n+                name\n+            }}\n+        }}\"\"\".format(\n+            uid=uid\n+        )\n+\n+        resp = self.client.txn(read_only=True).query(query)\n+        self.assertEqual([{\"name\": \"Alice\"}], json.loads(resp.json).get(\"me\"))\n+\n+    def test_context_manager_read_only_auto_discard(self):\n+        \"\"\"Test that read-only transactions automatically discard.\"\"\"\n+        # Create some data first\n+        txn = self.client.txn()\n+        response = txn.mutate(set_obj={\"name\": \"Bob\"})\n+        uid = list(response.uids.values())[0]\n+        txn.commit()\n+\n+        # Read-only transaction should auto-discard (not commit)\n+        query = \"\"\"{{\n+            me(func: uid(\"{uid}\")) {{\n+                name\n+            }}\n+        }}\"\"\".format(\n+            uid=uid\n+        )\n+\n+        with self.client.txn(read_only=True) as txn:\n+            resp = txn.query(query)\n+            self.assertEqual([{\"name\": \"Bob\"}], json.loads(resp.json).get(\"me\"))\n+\n+        # Transaction should be finished after context manager exits\n+        self.assertTrue(txn._finished)\n+\n+    def test_context_manager_exception_handling(self):\n+        \"\"\"Test that exceptions cause automatic discard and are re-raised.\"\"\"\n+        with self.assertRaises(ValueError):\n+            with self.client.txn() as txn:\n+                response = txn.mutate(set_obj={\"name\": \"Charlie\"})\n+                _uid = list(response.uids.values())[0]\n+                raise ValueError(\"Test exception\")\n+\n+        # Verify transaction was discarded - data should not exist\n+        query = \"\"\"{\n+            me(func: has(name)) {\n+                name\n+            }\n+        }\"\"\"\n+\n+        resp = self.client.txn(read_only=True).query(query)\n+        results = json.loads(resp.json).get(\"me\")\n+        # Should be empty or not contain Charlie\n+        if results:\n+            names = [r.get(\"name\") for r in results]\n+            self.assertNotIn(\"Charlie\", names)\n+\n+    def test_context_manager_transaction_finished_after_exit(self):\n+        \"\"\"Test that transaction is marked as finished after exiting context manager.\"\"\"\n+        with self.client.txn() as txn:\n+            txn.mutate(set_obj={\"name\": \"David\"})\n+            self.assertFalse(txn._finished)\n+\n+        # Should be finished after exit\n+        self.assertTrue(txn._finished)\n+\n+        # Should not be able to use transaction after context manager\n+        with self.assertRaises(Exception):  # noqa: B017\n+            txn.query(\"{ me() {} }\")\n+\n+    def test_context_manager_multiple_mutations(self):\n+        \"\"\"Test multiple mutations within a single context manager.\"\"\"\n+        with self.client.txn() as txn:\n+            response1 = txn.mutate(set_obj={\"name\": \"Eve\"})\n+            _uid1 = list(response1.uids.values())[0]\n+\n+            response2 = txn.mutate(set_obj={\"name\": \"Frank\"})\n+            _uid2 = list(response2.uids.values())[0]\n+\n+        # Verify both mutations were committed\n+        query = \"\"\"{\n+            me(func: has(name), orderasc: name) {\n+                name\n+            }\n+        }\"\"\"\n+\n+        resp = self.client.txn(read_only=True).query(query)\n+        results = json.loads(resp.json).get(\"me\")\n+        names = [r.get(\"name\") for r in results]\n+        self.assertIn(\"Eve\", names)\n+        self.assertIn(\"Frank\", names)\n+\n+    def test_context_manager_query_and_mutate(self):\n+        \"\"\"Test both query and mutate operations within a context manager.\"\"\"\n+        # Create initial data\n+        txn = self.client.txn()\n+        response = txn.mutate(set_obj={\"name\": \"Grace\"})\n+        uid = list(response.uids.values())[0]\n+        txn.commit()\n+\n+        # Query and update in context manager\n+        with self.client.txn() as txn:\n+            query = \"\"\"{{\n+                me(func: uid(\"{uid}\")) {{\n+                    name\n+                }}\n+            }}\"\"\".format(\n+                uid=uid\n+            )\n+\n+            resp = txn.query(query)\n+            self.assertEqual([{\"name\": \"Grace\"}], json.loads(resp.json).get(\"me\"))\n+\n+            # Update the name\n+            txn.mutate(set_obj={\"uid\": uid, \"name\": \"Grace Updated\"})\n+\n+        # Verify the update was committed\n+        resp = self.client.txn(read_only=True).query(query)\n+        self.assertEqual([{\"name\": \"Grace Updated\"}], json.loads(resp.json).get(\"me\"))\n+\n+    def test_context_manager_invalid_nquad_exception(self):\n+        \"\"\"Test that invalid operations cause proper exception handling and discard.\"\"\"\n+        with self.assertRaises(Exception):  # noqa: B017\n+            with self.client.txn() as txn:\n+                # This should fail with invalid N-Quad syntax\n+                txn.mutate(set_nquads=\"_:node <name> InvalidWithoutQuotes\")\n+\n+        # Transaction should be finished\n+        self.assertTrue(txn._finished)\n+\n+    def test_context_manager_read_only_cannot_mutate(self):\n+        \"\"\"Test that read-only transactions cannot mutate within context manager.\"\"\"\n+        with self.assertRaises(Exception):  # noqa: B017\n+            with self.client.txn(read_only=True) as txn:\n+                txn.mutate(set_obj={\"name\": \"Should Fail\"})\n+\n+    def test_context_manager_no_mutations_auto_commit(self):\n+        \"\"\"Test that transactions with no mutations don't error on auto-commit.\"\"\"\n+        with self.client.txn() as txn:\n+            query = \"{ me(func: has(name)) { name } }\"\n+            _resp = txn.query(query)\n+\n+        # Should complete without errors even though no mutations were made\n+        self.assertTrue(txn._finished)\n+\n+\n def suite():\n     s = unittest.TestSuite()\n     s.addTest(TestTxn())\n     s.addTest(TestSPStar())\n+    s.addTest(TestContextManager())\n     return s\n \n "
+    },
+    {
+      "sha": "122bb6cde58a1066d27e7aefc85bd8495641117a",
+      "filename": "tests/test_upsert_block.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/dgraph-io/pydgraph/blob/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_upsert_block.py",
+      "raw_url": "https://github.com/dgraph-io/pydgraph/raw/91ecc086fca5e7f838e3e0995d96aed63be46e28/tests%2Ftest_upsert_block.py",
+      "contents_url": "https://api.github.com/repos/dgraph-io/pydgraph/contents/tests%2Ftest_upsert_block.py?ref=91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "patch": "@@ -9,7 +9,7 @@\n import logging\n import unittest\n \n-from . import helper\n+from tests import helper\n \n \n class TestUpsertBlock(helper.ClientIntegrationTestCase):"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "e7a17b88c593eb2e171323753f845a00287c2476",
+      "message": "change: ignore VS Code settings files.",
+      "parent_shas": [
+        "68f241cdd7ea07d9b81e101020f5d646f98a7b79"
+      ]
+    },
+    {
+      "sha": "2c336557bb3e97476c042584bcfffc8628321aca",
+      "message": "fix: absolute import for the test `helper` module.",
+      "parent_shas": [
+        "e7a17b88c593eb2e171323753f845a00287c2476"
+      ]
+    },
+    {
+      "sha": "e4f22df7dbfcc725b14e8922ddcd6169d856dcbe",
+      "message": "change: allow `Txn` to accept commit kwargs.",
+      "parent_shas": [
+        "2c336557bb3e97476c042584bcfffc8628321aca"
+      ]
+    },
+    {
+      "sha": "da17f92b33f9de18d94b93ea4288c61a56af55e2",
+      "message": "fix: refer static method from `Txn` class name.",
+      "parent_shas": [
+        "e4f22df7dbfcc725b14e8922ddcd6169d856dcbe"
+      ]
+    },
+    {
+      "sha": "396d5ab5efe483889b7ba23fd33abb92806ce8ad",
+      "message": "enhancement: add context manager to `Txn` and `DgraphClientStub`.",
+      "parent_shas": [
+        "da17f92b33f9de18d94b93ea4288c61a56af55e2"
+      ]
+    },
+    {
+      "sha": "f0305f2b82eb6d0e72b9165df2223e744a84fa30",
+      "message": "docs: usage of Txn with context manager.",
+      "parent_shas": [
+        "396d5ab5efe483889b7ba23fd33abb92806ce8ad"
+      ]
+    },
+    {
+      "sha": "d98e209f467e3238be04ba89e8bbe5908e40a0d6",
+      "message": "docs: use context manager to clean resources.",
+      "parent_shas": [
+        "f0305f2b82eb6d0e72b9165df2223e744a84fa30"
+      ]
+    },
+    {
+      "sha": "143d880726d4da125c826a547f756d9e0319295f",
+      "message": "update: explain the `client`'s effective scope.",
+      "parent_shas": [
+        "d98e209f467e3238be04ba89e8bbe5908e40a0d6"
+      ]
+    },
+    {
+      "sha": "c2428c803085f6a0ffef022c27125c10876ab164",
+      "message": "fix: avoid repeat commit when Txn finished.",
+      "parent_shas": [
+        "143d880726d4da125c826a547f756d9e0319295f"
+      ]
+    },
+    {
+      "sha": "b558d36c503eb5c80d44d12d13060b3a6c6de2db",
+      "message": "Add comprehensive tests for context manager functionality\n\nThis commit adds extensive test coverage for the context manager\nimplementation in PR #185, which adds Python context manager support\nto the Txn and DgraphClientStub classes.\n\nTests for Txn context manager:\n- Auto-commit for write transactions on successful completion\n- Auto-discard for read-only transactions\n- Exception handling with automatic discard\n- Transaction state validation after context manager exit\n- Multiple mutations within a single context manager\n- Query and mutate operations combined\n- Invalid operation exception handling\n- Read-only transaction mutation prevention\n- No-mutation transaction handling\n\nTests for DgraphClientStub context manager:\n- Basic context manager usage\n- Exception handling\n- Proper resource cleanup (stub close) after exit\n- Exception-safe resource cleanup\n- Multiple operations within context manager\n- Integration with DgraphClient and transactions\n- Full workflow with nested context managers\n\nThese tests ensure robust behavior of the context manager\nimplementation including proper resource cleanup, exception\nhandling, and transaction lifecycle management.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>",
+      "parent_shas": [
+        "c2428c803085f6a0ffef022c27125c10876ab164"
+      ]
+    },
+    {
+      "sha": "3949c9e5aa9ccc7af68f4c84b795c61155561768",
+      "message": "style: Fix linting and formatting issues\n\n- Fix == False comparisons to use not x\n- Fix bare except clauses to use except Exception\n- Remove unused import in test_acl.py\n- Prefix unused variables with underscore\n- Apply black/isort formatting\n- Add ruff noqa for intentional re-exports in __init__.py\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>",
+      "parent_shas": [
+        "b558d36c503eb5c80d44d12d13060b3a6c6de2db"
+      ]
+    },
+    {
+      "sha": "19b749c9a4ea1e9d58ada04bb80eced9f11fe8d7",
+      "message": "Merge branch 'main' into add-context-manager-tests",
+      "parent_shas": [
+        "3949c9e5aa9ccc7af68f4c84b795c61155561768",
+        "524e9d9f6e3eeabec07be9025311a4b3b8a78f1c"
+      ]
+    },
+    {
+      "sha": "5e3729c58a1ad840822f2a5b1f0290e81795303d",
+      "message": "fix: resolve linting issues for PR #279\n\n- Remove Python 2 compatibility code (basestring references)\n- Fix blind exception assertions with noqa comments\n- Fix ambiguous variable name in test_acct_upsert.py\n- Format README.md\n\nCo-authored-by: Gary Wang <garylavayou@outlook.com>\nCo-authored-by: Shaun Patterson <shaunpatterson@gmail.com>",
+      "parent_shas": [
+        "19b749c9a4ea1e9d58ada04bb80eced9f11fe8d7"
+      ]
+    },
+    {
+      "sha": "a3f0e430b75dfa99b201726698acfd616216fa15",
+      "message": "fix: add authentication to context manager tests\n\nThe context manager tests were creating DgraphClient instances\nwithout authentication, causing UNAUTHENTICATED errors.\n\nCo-authored-by: Gary Wang <garylavayou@outlook.com>\nCo-authored-by: Shaun Patterson <shaunpatterson@gmail.com>",
+      "parent_shas": [
+        "5e3729c58a1ad840822f2a5b1f0290e81795303d"
+      ]
+    },
+    {
+      "sha": "91ecc086fca5e7f838e3e0995d96aed63be46e28",
+      "message": "fix: remove duplicate 'Committing a Transaction' heading\n\nThe section was moved earlier in the document with context manager\nadditions, but the original section wasn't removed, causing a\nmarkdownlint MD024 error for duplicate headings.\n\nCo-authored-by: Gary Wang <garylavayou@outlook.com>\nCo-authored-by: Shaun Patterson <shaunpatterson@gmail.com>",
+      "parent_shas": [
+        "a3f0e430b75dfa99b201726698acfd616216fa15"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__dgraph-io__pydgraph__pr284.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\dgraph-io__pydgraph__pr284__py2_py3__dgraph-io__pydgraph__pr284\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\dgraph-io__pydgraph__pr284__py2_py3__dgraph-io__pydgraph__pr284\\rn"
+  }
+}

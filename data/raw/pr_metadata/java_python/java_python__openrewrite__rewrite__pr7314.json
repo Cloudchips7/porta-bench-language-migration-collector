@@ -1,0 +1,90 @@
+{
+  "instance_id": "java_python__openrewrite__rewrite__pr7314",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "openrewrite/rewrite",
+  "pr_number": 7314,
+  "pr_url": "https://github.com/openrewrite/rewrite/pull/7314",
+  "repo": {
+    "full_name": "openrewrite/rewrite",
+    "clone_url": "https://github.com/openrewrite/rewrite.git",
+    "default_branch": "main",
+    "created_at": "2020-05-12T20:16:14Z",
+    "stars": 3407,
+    "license": "Apache-2.0",
+    "size_kb": 126345
+  },
+  "pull_request": {
+    "id": 3502361129,
+    "title": "Fix UnsupportedOperationException in Py.ExpressionTypeTree.withType()",
+    "body": "## Motivation\n\n`Py.ExpressionTypeTree.withType()` delegates to the wrapped reference's `withType()`, which throws `UnsupportedOperationException` for `J.MethodInvocation` and `J.MethodDeclaration` (they require `withMethodType()` instead).\n\nThis caused `ChangeType` to fail on repos containing Python files, because its `postVisit()` calls `withType()` on the `ExpressionTypeTree` via its catch-all `TypedTree` branch. Any recipe using `ChangeType` was affected — e.g., `NoGuavaPredicate` from the \"Java best practices\" flagship recipe.\n\n## Summary\n\n- Catch `UnsupportedOperationException` in `ExpressionTypeTree.withType()` and return `this` instead of propagating the exception\n- This is safe because the visitor already handles the inner node's type correctly when visiting the reference directly via `visitExpressionTypeTree` → `visitAndCast(reference)`\n- Added unit tests for `ExpressionTypeTree.withType()` with wrapped `MethodInvocation`, `MethodDeclaration`, and `Identifier`\n\n## Test plan\n\n- [x] New unit tests: `ExpressionTypeTreeTest.withTypeOnWrappedMethodInvocation`, `withTypeOnWrappedMethodDeclaration`, `withTypeOnWrappedIdentifier`\n- [x] Tests fail without the fix, pass with it\n- [x] `ChangeTypeTest` suite passes (no regressions)\n- [x] `rewrite-python` test suite passes",
+    "created_at": "2026-04-08T09:25:50Z",
+    "merged_at": "2026-04-10T00:02:44Z",
+    "base_sha": "83bd3887c100a12edc70d5dbb3166708fdd6cbb9",
+    "head_sha": "7f613645b50accece85956f4dfd532681613a8b2",
+    "merge_commit_sha": "0e0eaf0f2edf97b13c2b95ff66be5e87838cdacd",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "83bd3887c100a12edc70d5dbb3166708fdd6cbb9",
+  "final_sha": "7f613645b50accece85956f4dfd532681613a8b2",
+  "changed_files": [
+    {
+      "sha": "ed38564bba8ecacd5bddb7e12c76d18e0727d939",
+      "filename": "rewrite-python/src/main/java/org/openrewrite/python/tree/Py.java",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 5,
+      "changes": 16,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/7f613645b50accece85956f4dfd532681613a8b2/rewrite-python%2Fsrc%2Fmain%2Fjava%2Forg%2Fopenrewrite%2Fpython%2Ftree%2FPy.java",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/7f613645b50accece85956f4dfd532681613a8b2/rewrite-python%2Fsrc%2Fmain%2Fjava%2Forg%2Fopenrewrite%2Fpython%2Ftree%2FPy.java",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-python%2Fsrc%2Fmain%2Fjava%2Forg%2Fopenrewrite%2Fpython%2Ftree%2FPy.java?ref=7f613645b50accece85956f4dfd532681613a8b2",
+      "patch": "@@ -675,11 +675,17 @@ public <P> J acceptPython(PythonVisitor<P> v, P p) {\n         @SuppressWarnings(\"unchecked\")\n         @Override\n         public ExpressionTypeTree withType(@Nullable JavaType type) {\n-            if (reference instanceof Expression) {\n-                return withReference(((Expression) reference).withType(type));\n-            }\n-            if (reference instanceof TypedTree) {\n-                return withReference(((TypedTree) reference).withType(type));\n+            try {\n+                if (reference instanceof Expression) {\n+                    return withReference(((Expression) reference).withType(type));\n+                }\n+                if (reference instanceof TypedTree) {\n+                    return withReference(((TypedTree) reference).withType(type));\n+                }\n+            } catch (UnsupportedOperationException ignored) {\n+                // Some J types (e.g., MethodInvocation, MethodDeclaration) throw on withType()\n+                // and require withMethodType() instead. When wrapped in ExpressionTypeTree,\n+                // the inner node's type is already handled by the visitor directly.\n             }\n             return this;\n         }"
+    },
+    {
+      "sha": "2aa93895a27c5c8e7c92471b2e61f05d91f26d61",
+      "filename": "rewrite-python/src/test/java/org/openrewrite/python/tree/ExpressionTypeTreeTest.java",
+      "status": "added",
+      "additions": 86,
+      "deletions": 0,
+      "changes": 86,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/7f613645b50accece85956f4dfd532681613a8b2/rewrite-python%2Fsrc%2Ftest%2Fjava%2Forg%2Fopenrewrite%2Fpython%2Ftree%2FExpressionTypeTreeTest.java",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/7f613645b50accece85956f4dfd532681613a8b2/rewrite-python%2Fsrc%2Ftest%2Fjava%2Forg%2Fopenrewrite%2Fpython%2Ftree%2FExpressionTypeTreeTest.java",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-python%2Fsrc%2Ftest%2Fjava%2Forg%2Fopenrewrite%2Fpython%2Ftree%2FExpressionTypeTreeTest.java?ref=7f613645b50accece85956f4dfd532681613a8b2",
+      "patch": "@@ -0,0 +1,86 @@\n+/*\n+ * Copyright 2026 the original author or authors.\n+ * <p>\n+ * Licensed under the Moderne Source Available License (the \"License\");\n+ * you may not use this file except in compliance with the License.\n+ * You may obtain a copy of the License at\n+ * <p>\n+ * https://docs.moderne.io/licensing/moderne-source-available-license\n+ * <p>\n+ * Unless required by applicable law or agreed to in writing, software\n+ * distributed under the License is distributed on an \"AS IS\" BASIS,\n+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+ * See the License for the specific language governing permissions and\n+ * limitations under the License.\n+ */\n+package org.openrewrite.python.tree;\n+\n+import org.junit.jupiter.api.Test;\n+import org.openrewrite.Tree;\n+import org.openrewrite.java.tree.J;\n+import org.openrewrite.java.tree.JContainer;\n+import org.openrewrite.java.tree.JavaType;\n+import org.openrewrite.java.tree.Space;\n+import org.openrewrite.marker.Markers;\n+\n+import java.util.Collections;\n+\n+import static org.assertj.core.api.Assertions.assertThat;\n+\n+class ExpressionTypeTreeTest {\n+\n+    @Test\n+    void withTypeOnWrappedMethodInvocation() {\n+        J.MethodInvocation mi = new J.MethodInvocation(\n+                Tree.randomId(), Space.EMPTY, Markers.EMPTY,\n+                null, null,\n+                new J.Identifier(Tree.randomId(), Space.EMPTY, Markers.EMPTY, Collections.emptyList(), \"foo\", null, null),\n+                JContainer.empty(),\n+                null\n+        );\n+        Py.ExpressionTypeTree ett = new Py.ExpressionTypeTree(\n+                Tree.randomId(), Space.EMPTY, Markers.EMPTY, mi\n+        );\n+\n+        // Should not throw UnsupportedOperationException\n+        Py.ExpressionTypeTree result = ett.withType(JavaType.Primitive.Int);\n+        assertThat(result).isSameAs(ett);\n+    }\n+\n+    @Test\n+    void withTypeOnWrappedMethodDeclaration() {\n+        J.MethodDeclaration md = new J.MethodDeclaration(\n+                Tree.randomId(), Space.EMPTY, Markers.EMPTY,\n+                Collections.emptyList(), Collections.emptyList(), null,\n+                null,\n+                new J.MethodDeclaration.IdentifierWithAnnotations(\n+                        new J.Identifier(Tree.randomId(), Space.EMPTY, Markers.EMPTY, Collections.emptyList(), \"bar\", null, null),\n+                        Collections.emptyList()\n+                ),\n+                JContainer.empty(), null, null, null, null\n+        );\n+        Py.ExpressionTypeTree ett = new Py.ExpressionTypeTree(\n+                Tree.randomId(), Space.EMPTY, Markers.EMPTY, md\n+        );\n+\n+        // Should not throw UnsupportedOperationException\n+        Py.ExpressionTypeTree result = ett.withType(JavaType.Primitive.Int);\n+        assertThat(result).isSameAs(ett);\n+    }\n+\n+    @Test\n+    void withTypeOnWrappedIdentifier() {\n+        J.Identifier ident = new J.Identifier(\n+                Tree.randomId(), Space.EMPTY, Markers.EMPTY,\n+                Collections.emptyList(), \"x\", JavaType.Primitive.String, null\n+        );\n+        Py.ExpressionTypeTree ett = new Py.ExpressionTypeTree(\n+                Tree.randomId(), Space.EMPTY, Markers.EMPTY, ident\n+        );\n+\n+        // Should update the type normally\n+        Py.ExpressionTypeTree result = ett.withType(JavaType.Primitive.Int);\n+        assertThat(result).isNotSameAs(ett);\n+        assertThat(result.getType()).isEqualTo(JavaType.Primitive.Int);\n+    }\n+}"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "7f613645b50accece85956f4dfd532681613a8b2",
+      "message": "Fix `UnsupportedOperationException` in `Py.ExpressionTypeTree.withType()`\n\n`ExpressionTypeTree.withType()` delegates to the wrapped reference's\n`withType()`, which throws for `J.MethodInvocation` and\n`J.MethodDeclaration` (they require `withMethodType()` instead).\n\nThis caused `ChangeType` to fail on repos containing Python files,\nbecause its `postVisit()` calls `withType()` on the `ExpressionTypeTree`\nvia its catch-all `TypedTree` branch. This affected any recipe using\n`ChangeType` (e.g., `NoGuavaPredicate`) — 18 errors across\nspring-data-commons, spring-data-rest, spring-framework, and\nspring-security in flagship recipe runs.\n\nThe fix catches `UnsupportedOperationException` in\n`ExpressionTypeTree.withType()`. This is safe because the visitor\nalready handles the inner node's type correctly when visiting the\nreference directly.",
+      "parent_shas": [
+        "83bd3887c100a12edc70d5dbb3166708fdd6cbb9"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "adds_new_tests",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__openrewrite__rewrite__pr7314.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\openrewrite__rewrite__pr7314__java_python__openrewrite__rewrite__pr7314\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\openrewrite__rewrite__pr7314__java_python__openrewrite__rewrite__pr7314\\rn"
+  }
+}

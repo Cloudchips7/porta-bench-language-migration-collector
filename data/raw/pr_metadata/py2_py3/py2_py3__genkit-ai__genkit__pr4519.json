@@ -1,0 +1,127 @@
+{
+  "instance_id": "py2_py3__genkit-ai__genkit__pr4519",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "genkit-ai/genkit",
+  "pr_number": 4519,
+  "pr_url": "https://github.com/genkit-ai/genkit/pull/4519",
+  "repo": {
+    "full_name": "genkit-ai/genkit",
+    "clone_url": "https://github.com/genkit-ai/genkit.git",
+    "default_branch": "main",
+    "created_at": "2024-04-29T22:04:42Z",
+    "stars": 5803,
+    "license": "Apache-2.0",
+    "size_kb": 250728
+  },
+  "pull_request": {
+    "id": 3261121727,
+    "title": "fix(py/core): raise GenkitError when arun_raw receives None input but requires validation",
+    "body": "## Description\r\n\r\nPreviously, when the Dev UI invoked an action (like an embedder) without providing any input payload,  would receive  as . This was then passed to , causing a cryptic Pydantic `ValidationError` (Input should be a valid dictionary) instead of a clear error message.\r\n\r\nThis PR fixes this by explicitly checking if `raw_input` is `None` when the action has a defined input schema, and raising a clear `GenkitError(status='INVALID_ARGUMENT')`.\r\n\r\nThis systematic fix resolves the issue for all embedders (Mistral, Ollama, Cohere, etc.) when tested in the Dev UI without input.\r\n\r\n## Learnings\r\n\r\nUpdated `py/GEMINI.md` with the **Action Input Validation (Gotcha)** section to document this pattern for future contributors.",
+    "created_at": "2026-02-09T04:25:08Z",
+    "merged_at": "2026-02-09T23:14:48Z",
+    "base_sha": "58a43ad135390169e422172547a49f153d5adb7e",
+    "head_sha": "46eeaec473bc1a0cb1cf76343fdce351f332bcb9",
+    "merge_commit_sha": "82ae7070c9f67fa3ba5774f664a248b661a48e2e",
+    "labels": [
+      "docs",
+      "python",
+      "fix"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "58a43ad135390169e422172547a49f153d5adb7e",
+  "final_sha": "46eeaec473bc1a0cb1cf76343fdce351f332bcb9",
+  "changed_files": [
+    {
+      "sha": "bd84f20052be1bba685ceec1892c39b57e5fa0ad",
+      "filename": "py/GEMINI.md",
+      "status": "modified",
+      "additions": 27,
+      "deletions": 0,
+      "changes": 27,
+      "blob_url": "https://github.com/genkit-ai/genkit/blob/46eeaec473bc1a0cb1cf76343fdce351f332bcb9/py%2FGEMINI.md",
+      "raw_url": "https://github.com/genkit-ai/genkit/raw/46eeaec473bc1a0cb1cf76343fdce351f332bcb9/py%2FGEMINI.md",
+      "contents_url": "https://api.github.com/repos/genkit-ai/genkit/contents/py%2FGEMINI.md?ref=46eeaec473bc1a0cb1cf76343fdce351f332bcb9",
+      "patch": "@@ -627,6 +627,33 @@ Python-specific development and release scripts:\n * Add links to relevant documentation on the Web or elsewhere\n   in the relevent places in docstrings.\n \n+### Core Framework Patterns\n+\n+**Action Input Validation (Gotcha)**\n+\n+When implementing low-level action execution (like `arun_raw`), **always check if `raw_input` is `None`** before passing it to Pydantic's `validate_python()`.\n+\n+* **The Problem**: `validate_python(None)` raises a generic, cryptic `ValidationError` (\"Input should be a valid dictionary\") instead of telling you the input is missing.\n+* **The Fix**: Explicitly check for `None` and raise `GenkitError(status='INVALID_ARGUMENT')`.\n+\n+```python\n+# WRONG - raises cryptic ValidationError on None\n+input_action = self._input_type.validate_python(raw_input)\n+\n+# CORRECT - raises clear GenkitError\n+if self._input_type is not None:\n+    if raw_input is None:\n+        raise GenkitError(\n+            message=f\"Action '{self.name}' requires input.\",\n+            status='INVALID_ARGUMENT'\n+        )\n+    input_action = self._input_type.validate_python(raw_input)\n+```\n+\n+* This is critical for the Dev UI, which sends `None` payload when the user clicks \"Run\" without providing JSON input.\n+\n+### Documentation Best Practices\n+\n * Add ASCII diagrams to illustrate relationships, flows, and concepts.\n \n * **Plugin Architecture Diagrams**: Every plugin MUST include an ASCII architecture"
+    },
+    {
+      "sha": "1f8cf2917d851d966620ca3573d06beebbb6cc83",
+      "filename": "py/packages/genkit/src/genkit/core/action/_action.py",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 2,
+      "changes": 16,
+      "blob_url": "https://github.com/genkit-ai/genkit/blob/46eeaec473bc1a0cb1cf76343fdce351f332bcb9/py%2Fpackages%2Fgenkit%2Fsrc%2Fgenkit%2Fcore%2Faction%2F_action.py",
+      "raw_url": "https://github.com/genkit-ai/genkit/raw/46eeaec473bc1a0cb1cf76343fdce351f332bcb9/py%2Fpackages%2Fgenkit%2Fsrc%2Fgenkit%2Fcore%2Faction%2F_action.py",
+      "contents_url": "https://api.github.com/repos/genkit-ai/genkit/contents/py%2Fpackages%2Fgenkit%2Fsrc%2Fgenkit%2Fcore%2Faction%2F_action.py?ref=46eeaec473bc1a0cb1cf76343fdce351f332bcb9",
+      "patch": "@@ -409,9 +409,21 @@ async def arun_raw(\n             An awaitable ActionResponse object containing the final result and trace ID.\n \n         Raises:\n-            GenkitError: If an error occurs during action execution.\n+            GenkitError: If an error occurs during action execution, or if\n+                the action requires input but none was provided.\n         \"\"\"\n-        input_action = self._input_type.validate_python(raw_input) if self._input_type is not None else None\n+        input_action: InputT | None = None\n+        if self._input_type is not None:\n+            if raw_input is None:\n+                raise GenkitError(\n+                    message=(\n+                        f\"Action '{self.name}' requires input but none was provided. \"\n+                        'Please supply a valid input payload.'\n+                    ),\n+                    status='INVALID_ARGUMENT',\n+                )\n+            input_action = self._input_type.validate_python(raw_input)\n+\n         return await self.arun(\n             input=input_action,\n             on_chunk=on_chunk,"
+    },
+    {
+      "sha": "6476a69593f013cff4672baa3bc20ec9eb326876",
+      "filename": "py/packages/genkit/tests/genkit/core/action_test.py",
+      "status": "modified",
+      "additions": 39,
+      "deletions": 0,
+      "changes": 39,
+      "blob_url": "https://github.com/genkit-ai/genkit/blob/46eeaec473bc1a0cb1cf76343fdce351f332bcb9/py%2Fpackages%2Fgenkit%2Ftests%2Fgenkit%2Fcore%2Faction_test.py",
+      "raw_url": "https://github.com/genkit-ai/genkit/raw/46eeaec473bc1a0cb1cf76343fdce351f332bcb9/py%2Fpackages%2Fgenkit%2Ftests%2Fgenkit%2Fcore%2Faction_test.py",
+      "contents_url": "https://api.github.com/repos/genkit-ai/genkit/contents/py%2Fpackages%2Fgenkit%2Ftests%2Fgenkit%2Fcore%2Faction_test.py?ref=46eeaec473bc1a0cb1cf76343fdce351f332bcb9",
+      "patch": "@@ -311,3 +311,42 @@ async def async_foo(_: str | None, ctx: ActionRunContext) -> None:\n     assert 'stack' in e.value.details\n     assert 'trace_id' in e.value.details\n     assert str(e.value.cause) == 'oops'\n+\n+\n+@pytest.mark.asyncio\n+async def test_arun_raw_raises_on_none_input_when_input_required() -> None:\n+    \"\"\"arun_raw raises GenkitError when input is None but the action requires it.\"\"\"\n+\n+    async def typed_fn(input: str) -> str:\n+        return f'got {input}'\n+\n+    action = Action(name='typedAction', kind=ActionKind.CUSTOM, fn=typed_fn)\n+\n+    with pytest.raises(GenkitError, match=r'.*requires input but none was provided.*'):\n+        await action.arun_raw(raw_input=None)\n+\n+\n+@pytest.mark.asyncio\n+async def test_arun_raw_succeeds_with_valid_input() -> None:\n+    \"\"\"arun_raw succeeds when valid input is provided.\"\"\"\n+\n+    async def typed_fn(input: str) -> str:\n+        return f'got {input}'\n+\n+    action = Action(name='typedAction', kind=ActionKind.CUSTOM, fn=typed_fn)\n+\n+    result = await action.arun_raw(raw_input='hello')\n+    assert result.response == 'got hello'\n+\n+\n+@pytest.mark.asyncio\n+async def test_arun_raw_no_input_type_allows_none() -> None:\n+    \"\"\"arun_raw allows None input when action has no input type.\"\"\"\n+\n+    async def no_input_fn() -> str:\n+        return 'no input needed'\n+\n+    action = Action(name='noInputAction', kind=ActionKind.CUSTOM, fn=no_input_fn)\n+\n+    result = await action.arun_raw(raw_input=None)\n+    assert result.response == 'no input needed'"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "2cc3563adbb60b2fb5ed9c21dae30d60bbccc655",
+      "message": "fix(py/core): raise GenkitError when arun_raw receives None input but requires validation\n\n- Previously,  would call , causing a cryptic Pydantic .\n- This happens when the Dev UI invokes an action (like an embedder) without providing any input payload.\n- Now, it checks if  and raises a clear  with  status if the action has a defined input schema.",
+      "parent_shas": [
+        "58a43ad135390169e422172547a49f153d5adb7e"
+      ]
+    },
+    {
+      "sha": "46512c4a57f4db9aeb420cd3e81c5d74e5fcbc78",
+      "message": "docs(py): update GEMINI.md with Action Input Validation gotcha\n\n- Documents the issue where Pydantic validation on  input raises cryptic errors\n- Prescribes the standardized fix pattern using explicit\n- Adds example code for correct implementation in low-level action execution paths",
+      "parent_shas": [
+        "2cc3563adbb60b2fb5ed9c21dae30d60bbccc655"
+      ]
+    },
+    {
+      "sha": "c110126b8904d04c7a8d6be9237dc5eaf0b400f3",
+      "message": "test(py/core): add arun_raw(None) regression test",
+      "parent_shas": [
+        "46512c4a57f4db9aeb420cd3e81c5d74e5fcbc78"
+      ]
+    },
+    {
+      "sha": "46eeaec473bc1a0cb1cf76343fdce351f332bcb9",
+      "message": "doc(py): fix GEMINI.md code example per review\n\n- The suggested code example for action input validation was flawed.\n- It would raise AttributeError if input_type was None.\n- Fixed the example to properly guard against None input_type.",
+      "parent_shas": [
+        "c110126b8904d04c7a8d6be9237dc5eaf0b400f3"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__genkit-ai__genkit__pr4519.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\genkit-ai__genkit__pr4519__py2_py3__genkit-ai__genkit__pr4519\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\genkit-ai__genkit__pr4519__py2_py3__genkit-ai__genkit__pr4519\\rn"
+  }
+}

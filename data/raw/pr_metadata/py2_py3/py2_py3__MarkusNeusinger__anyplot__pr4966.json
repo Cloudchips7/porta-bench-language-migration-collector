@@ -1,0 +1,165 @@
+{
+  "instance_id": "py2_py3__MarkusNeusinger__anyplot__pr4966",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "MarkusNeusinger/anyplot",
+  "pr_number": 4966,
+  "pr_url": "https://github.com/MarkusNeusinger/anyplot/pull/4966",
+  "repo": {
+    "full_name": "MarkusNeusinger/anyplot",
+    "clone_url": "https://github.com/MarkusNeusinger/anyplot.git",
+    "default_branch": "main",
+    "created_at": "2025-11-18T18:15:06Z",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 33528
+  },
+  "pull_request": {
+    "id": 3412083967,
+    "title": "feat(pygal): implement scatter-constellation-diagram",
+    "body": "## Implementation: `scatter-constellation-diagram` - pygal\n\nImplements the **pygal** version of `scatter-constellation-diagram`.\n\n**File:** `plots/scatter-constellation-diagram/implementations/pygal.py`\n\n**Parent Issue:** #4562\n\n---\n:robot: *[impl-generate workflow](https://github.com/MarkusNeusinger/pyplots/actions/runs/23220948643)*",
+    "created_at": "2026-03-17T23:21:38Z",
+    "merged_at": "2026-03-17T23:52:55Z",
+    "base_sha": "c1ecd795146174741a6d5255ce277c3d27eaa481",
+    "head_sha": "cf37f18dd363908b046be0163e58caa5ee24af90",
+    "merge_commit_sha": "3216ec0e8e0fb8b84b0d18d9c0c851051d85759c",
+    "labels": [
+      "ai-attempt-1",
+      "ai-attempt-2",
+      "ai-attempt-3",
+      "ai-approved",
+      "quality:78",
+      "quality:85",
+      "quality:82",
+      "quality:84"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "f5ab65551bc6b055901777a8325425f2b185482c",
+  "final_sha": "cf37f18dd363908b046be0163e58caa5ee24af90",
+  "changed_files": [
+    {
+      "sha": "d32a90ac621d566d9157ef1c9e73a7c89d4d84df",
+      "filename": "plots/scatter-constellation-diagram/implementations/pygal.py",
+      "status": "added",
+      "additions": 216,
+      "deletions": 0,
+      "changes": 216,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/cf37f18dd363908b046be0163e58caa5ee24af90/plots%2Fscatter-constellation-diagram%2Fimplementations%2Fpygal.py",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/cf37f18dd363908b046be0163e58caa5ee24af90/plots%2Fscatter-constellation-diagram%2Fimplementations%2Fpygal.py",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fscatter-constellation-diagram%2Fimplementations%2Fpygal.py?ref=cf37f18dd363908b046be0163e58caa5ee24af90",
+      "patch": "@@ -0,0 +1,216 @@\n+\"\"\" pyplots.ai\n+scatter-constellation-diagram: Digital Modulation Constellation Diagram\n+Library: pygal 3.1.0 | Python 3.14.3\n+Quality: 84/100 | Created: 2026-03-17\n+\"\"\"\n+\n+import re\n+\n+import cairosvg\n+import numpy as np\n+import pygal\n+from pygal.style import Style\n+\n+\n+# Data — 16-QAM constellation with received symbols under additive Gaussian noise\n+np.random.seed(42)\n+\n+# Ideal 16-QAM constellation points on a 4x4 grid at +/-1, +/-3\n+ideal_vals = [-3, -1, 1, 3]\n+ideal_i = np.array([i for i in ideal_vals for _ in ideal_vals])\n+ideal_q = np.array([q for _ in ideal_vals for q in ideal_vals])\n+\n+# Generate received symbols — 1000 symbols with Gaussian noise (SNR ~20 dB)\n+n_symbols = 1000\n+symbol_indices = np.random.randint(0, 16, n_symbols)\n+snr_db = 20\n+signal_power = np.mean(ideal_i**2 + ideal_q**2)\n+noise_std = np.sqrt(signal_power * 10 ** (-snr_db / 10))\n+received_i = ideal_i[symbol_indices] + np.random.normal(0, noise_std, n_symbols)\n+received_q = ideal_q[symbol_indices] + np.random.normal(0, noise_std, n_symbols)\n+\n+# Add slight phase offset to outer symbols for realistic impairment\n+phase_offset = 0.015  # radians — subtle but visible on outer constellation\n+r = np.sqrt(ideal_i[symbol_indices] ** 2 + ideal_q[symbol_indices] ** 2)\n+received_i += -phase_offset * received_q * (r / r.max())\n+received_q += phase_offset * received_i * (r / r.max())\n+\n+# Compute EVM (Error Vector Magnitude) per symbol\n+error_vectors = np.sqrt((received_i - ideal_i[symbol_indices]) ** 2 + (received_q - ideal_q[symbol_indices]) ** 2)\n+avg_power = np.sqrt(signal_power)\n+evm_percent = float(np.mean(error_vectors) / avg_power * 100)\n+\n+# Classify symbols by error magnitude for visual storytelling\n+evm_per_symbol = error_vectors / avg_power * 100\n+p50, p85 = np.percentile(evm_per_symbol, 50), np.percentile(evm_per_symbol, 85)\n+low_mask = evm_per_symbol <= p50\n+mid_mask = (evm_per_symbol > p50) & (evm_per_symbol <= p85)\n+high_mask = evm_per_symbol > p85\n+\n+# Style — colorblind-safe palette: teal / purple / orange hierarchy\n+font = \"DejaVu Sans, Helvetica, Arial, sans-serif\"\n+boundary_color = \"#9ca8b5\"\n+custom_style = Style(\n+    background=\"white\",\n+    plot_background=\"#f4f6f9\",\n+    foreground=\"#16213e\",\n+    foreground_strong=\"#16213e\",\n+    foreground_subtle=\"#d8dce4\",\n+    guide_stroke_color=\"#d0d5de\",\n+    guide_stroke_dasharray=\"2, 6\",\n+    colors=(\n+        boundary_color,\n+        boundary_color,\n+        boundary_color,\n+        boundary_color,\n+        boundary_color,\n+        boundary_color,\n+        \"#1b7a8a\",  # Low EVM — teal\n+        \"#7b4dba\",  # Medium EVM — purple\n+        \"#e36414\",  # High EVM — orange\n+        \"#c1272d\",  # Ideal points — deep red\n+    ),\n+    font_family=font,\n+    title_font_family=font,\n+    title_font_size=54,\n+    label_font_size=44,\n+    major_label_font_size=40,\n+    legend_font_size=36,\n+    legend_font_family=font,\n+    value_font_size=32,\n+    tooltip_font_size=30,\n+    tooltip_font_family=font,\n+    opacity=0.68,\n+    opacity_hover=0.95,\n+    stroke_opacity=1,\n+    stroke_opacity_hover=1,\n+)\n+\n+# Custom axis labels — pygal dict-based label format for precise control\n+axis_labels = [{\"value\": v, \"label\": f\"{v:+.0f}\"} for v in [-4, -3, -2, -1, 0, 1, 2, 3, 4]]\n+\n+# Chart — square canvas for equal aspect ratio (constellation geometry)\n+chart = pygal.XY(\n+    width=3600,\n+    height=3600,\n+    style=custom_style,\n+    title=\"scatter-constellation-diagram · pygal · pyplots.ai\",\n+    x_title=\"In-Phase (I)\",\n+    y_title=\"Quadrature (Q)\",\n+    show_legend=True,\n+    legend_at_bottom=True,\n+    legend_at_bottom_columns=4,\n+    legend_box_size=26,\n+    stroke=False,\n+    dots_size=7,\n+    show_x_guides=True,\n+    show_y_guides=True,\n+    x_labels=axis_labels,\n+    y_labels=axis_labels,\n+    x_value_formatter=lambda x: f\"{x:+.1f}\",\n+    value_formatter=lambda y: f\"{y:+.1f}\",\n+    margin_bottom=140,\n+    margin_left=90,\n+    margin_right=55,\n+    margin_top=65,\n+    range=(-5, 5),\n+    xrange=(-5, 5),\n+    print_values=False,\n+    print_zeroes=False,\n+    truncate_legend=-1,\n+    js=[],\n+)\n+\n+# Decision boundaries — subtle dashed lines at +/-2, 0\n+boundary_vals = [-2.0, 0.0, 2.0]\n+for bv in boundary_vals:\n+    chart.add(\n+        None,\n+        [{\"value\": (bv, -4.8)}, {\"value\": (bv, 4.8)}],\n+        stroke=True,\n+        show_dots=False,\n+        stroke_style={\"width\": 3, \"dasharray\": \"12, 8\", \"linecap\": \"butt\"},\n+    )\n+    chart.add(\n+        None,\n+        [{\"value\": (-4.8, bv)}, {\"value\": (4.8, bv)}],\n+        stroke=True,\n+        show_dots=False,\n+        stroke_style={\"width\": 3, \"dasharray\": \"12, 8\", \"linecap\": \"butt\"},\n+    )\n+\n+# Received symbols split by error magnitude — creates visual heat effect\n+low_points = [\n+    {\n+        \"value\": (float(received_i[i]), float(received_q[i])),\n+        \"label\": f\"I={received_i[i]:+.2f}  Q={received_q[i]:+.2f}  EVM={evm_per_symbol[i]:.1f}%\",\n+    }\n+    for i in range(n_symbols)\n+    if low_mask[i]\n+]\n+mid_points = [\n+    {\n+        \"value\": (float(received_i[i]), float(received_q[i])),\n+        \"label\": f\"I={received_i[i]:+.2f}  Q={received_q[i]:+.2f}  EVM={evm_per_symbol[i]:.1f}%\",\n+    }\n+    for i in range(n_symbols)\n+    if mid_mask[i]\n+]\n+high_points = [\n+    {\n+        \"value\": (float(received_i[i]), float(received_q[i])),\n+        \"label\": f\"I={received_i[i]:+.2f}  Q={received_q[i]:+.2f}  EVM={evm_per_symbol[i]:.1f}%\",\n+    }\n+    for i in range(n_symbols)\n+    if high_mask[i]\n+]\n+\n+chart.add(f\"Low EVM (n={len(low_points)})\", low_points, stroke=False, dots_size=7)\n+chart.add(f\"Mid EVM (n={len(mid_points)})\", mid_points, stroke=False, dots_size=10)\n+chart.add(f\"High EVM (n={len(high_points)})\", high_points, stroke=False, dots_size=13)\n+\n+# Ideal constellation points — large prominent cross-markers via SVG post-processing\n+ideal_points = [\n+    {\"value\": (float(ideal_i[k]), float(ideal_q[k])), \"label\": f\"Ideal ({int(ideal_i[k]):+d}, {int(ideal_q[k]):+d})\"}\n+    for k in range(16)\n+]\n+chart.add(\"Ideal 16-QAM\", ideal_points, stroke=False, dots_size=20)\n+\n+# Render SVG — pygal's native format\n+svg_content = chart.render(is_unicode=True)\n+\n+# Inject styled EVM annotation box into SVG (leveraging pygal's SVG-native architecture)\n+evm_box = (\n+    f'<g transform=\"translate(420, 180)\">'\n+    f'<rect x=\"0\" y=\"0\" width=\"320\" height=\"60\" rx=\"8\" ry=\"8\" '\n+    f'fill=\"white\" fill-opacity=\"0.88\" stroke=\"#16213e\" stroke-width=\"2\"/>'\n+    f'<text x=\"160\" y=\"42\" font-size=\"40\" font-family=\"{font}\" '\n+    f'font-weight=\"bold\" fill=\"#16213e\" text-anchor=\"middle\">'\n+    f\"EVM = {evm_percent:.1f}%</text></g>\"\n+)\n+svg_content = svg_content.replace(\"</svg>\", f\"{evm_box}</svg>\")\n+\n+\n+# Replace ideal point circles (r=20) with cross markers via SVG post-processing\n+# This leverages pygal's SVG-native architecture for custom marker shapes\n+def replace_circle_with_cross(m):\n+    full = m.group(0)\n+    coords = re.search(r'cx=\"([^\"]+)\".*?cy=\"([^\"]+)\"', full)\n+    if not coords:\n+        return full\n+    cx, cy = float(coords.group(1)), float(coords.group(2))\n+    arm = 30\n+    return (\n+        f'<g><line x1=\"{cx - arm}\" y1=\"{cy}\" x2=\"{cx + arm}\" y2=\"{cy}\" '\n+        f'stroke=\"#c1272d\" stroke-width=\"8\" stroke-linecap=\"round\"/>'\n+        f'<line x1=\"{cx}\" y1=\"{cy - arm}\" x2=\"{cx}\" y2=\"{cy + arm}\" '\n+        f'stroke=\"#c1272d\" stroke-width=\"8\" stroke-linecap=\"round\"/></g>'\n+    )\n+\n+\n+svg_content = re.sub(r\"<circle[^>]*r=\\\"20\\\"[^>]*/?>\", replace_circle_with_cross, svg_content)\n+\n+# Save PNG via cairosvg and write HTML with embedded SVG\n+cairosvg.svg2png(bytestring=svg_content.encode(\"utf-8\"), write_to=\"plot.png\")\n+with open(\"plot.html\", \"w\") as f:\n+    f.write(svg_content)"
+    },
+    {
+      "sha": "c838eb93676d2c7e7534921270e5674428f38b2f",
+      "filename": "plots/scatter-constellation-diagram/metadata/pygal.yaml",
+      "status": "added",
+      "additions": 230,
+      "deletions": 0,
+      "changes": 230,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/cf37f18dd363908b046be0163e58caa5ee24af90/plots%2Fscatter-constellation-diagram%2Fmetadata%2Fpygal.yaml",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/cf37f18dd363908b046be0163e58caa5ee24af90/plots%2Fscatter-constellation-diagram%2Fmetadata%2Fpygal.yaml",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fscatter-constellation-diagram%2Fmetadata%2Fpygal.yaml?ref=cf37f18dd363908b046be0163e58caa5ee24af90",
+      "patch": "@@ -0,0 +1,230 @@\n+library: pygal\n+specification_id: scatter-constellation-diagram\n+created: '2026-03-17T23:21:33Z'\n+updated: '2026-03-17T23:52:33Z'\n+generated_by: claude-opus-4-5-20251101\n+workflow_run: 23220948643\n+issue: 4562\n+python_version: 3.14.3\n+library_version: 3.1.0\n+preview_url: https://storage.googleapis.com/pyplots-images/plots/scatter-constellation-diagram/pygal/plot.png\n+preview_thumb: https://storage.googleapis.com/pyplots-images/plots/scatter-constellation-diagram/pygal/plot_thumb.png\n+preview_html: https://storage.googleapis.com/pyplots-images/plots/scatter-constellation-diagram/pygal/plot.html\n+quality_score: 84\n+review:\n+  strengths:\n+  - Full spec compliance with all required features (16-QAM, cross markers, decision\n+    boundaries, EVM annotation, equal aspect)\n+  - Creative SVG post-processing for cross markers and styled annotation box leveraging\n+    pygal SVG-native architecture\n+  - EVM-based color classification creates meaningful visual hierarchy and data storytelling\n+  - Realistic wireless communications data with appropriate noise and phase offset\n+    modeling\n+  - Colorblind-safe teal/purple/orange palette with good contrast\n+  weaknesses:\n+  - Function definition (replace_circle_with_cross) breaks KISS flat structure\n+  - SVG regex replacement for markers is fragile and depends on specific pygal output\n+    format\n+  - Legend font size could be slightly larger for 3600px square canvas\n+  image_description: 'The plot shows a 16-QAM constellation diagram on a square canvas\n+    with a light gray-blue background (#f4f6f9). Sixteen clusters of received symbols\n+    are arranged in a 4x4 grid at I/Q coordinates +/-1, +/-3. Each ideal constellation\n+    point is marked with a red cross (+) marker. Received symbols are colored by EVM\n+    magnitude: teal (low EVM, ~500 points), purple (mid EVM, ~350 points), and orange\n+    (high EVM, ~150 points) with progressively larger dot sizes. Dashed gray decision\n+    boundary lines divide the plane at I = -2, 0, +2 and Q = -2, 0, +2. The title\n+    reads \"scatter-constellation-diagram · pygal · pyplots.ai\" at the top. Axes are\n+    labeled \"In-Phase (I)\" (x) and \"Quadrature (Q)\" (y) with signed tick labels from\n+    -4 to +4. An EVM annotation box in the upper-left reads \"EVM = 12.5%\". A four-column\n+    legend at the bottom identifies Low EVM, Mid EVM, High EVM, and Ideal 16-QAM series.'\n+  criteria_checklist:\n+    visual_quality:\n+      score: 27\n+      max: 30\n+      items:\n+      - id: VQ-01\n+        name: Text Legibility\n+        score: 7\n+        max: 8\n+        passed: true\n+        comment: Font sizes explicitly set (title=54, label=44, major_label=40, legend=36).\n+          All readable. Legend entries slightly small.\n+      - id: VQ-02\n+        name: No Overlap\n+        score: 6\n+        max: 6\n+        passed: true\n+        comment: No text collisions anywhere; legend columns well-spaced.\n+      - id: VQ-03\n+        name: Element Visibility\n+        score: 5\n+        max: 6\n+        passed: true\n+        comment: Dot size differentiation (7/10/13) aids readability; some intra-cluster\n+          overlap in dense regions.\n+      - id: VQ-04\n+        name: Color Accessibility\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: Teal/purple/orange palette is colorblind-safe with strong contrast.\n+      - id: VQ-05\n+        name: Layout & Canvas\n+        score: 3\n+        max: 4\n+        passed: true\n+        comment: Square canvas appropriate for equal aspect ratio. Outer margins slightly\n+          generous.\n+      - id: VQ-06\n+        name: Axis Labels & Title\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: In-Phase (I) and Quadrature (Q) are descriptive with standard notation.\n+    design_excellence:\n+      score: 13\n+      max: 20\n+      items:\n+      - id: DE-01\n+        name: Aesthetic Sophistication\n+        score: 5\n+        max: 8\n+        passed: true\n+        comment: Custom palette, light background, SVG cross markers, styled EVM box.\n+          Above defaults but not publication-level.\n+      - id: DE-02\n+        name: Visual Refinement\n+        score: 4\n+        max: 6\n+        passed: true\n+        comment: Subtle dashed guide lines, light background differentiation, customized\n+          margins.\n+      - id: DE-03\n+        name: Data Storytelling\n+        score: 4\n+        max: 6\n+        passed: true\n+        comment: EVM-based color classification creates meaningful visual hierarchy\n+          showing error distribution.\n+    spec_compliance:\n+      score: 15\n+      max: 15\n+      items:\n+      - id: SC-01\n+        name: Plot Type\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Correct XY scatter for constellation diagram.\n+      - id: SC-02\n+        name: Required Features\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: 'All features present: 16-QAM, cross markers, decision boundaries,\n+          EVM annotation, equal aspect, correct labels.'\n+      - id: SC-03\n+        name: Data Mapping\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: I/Q correctly mapped to x/y axes. All 16 constellation points visible.\n+      - id: SC-04\n+        name: Title & Legend\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: Title matches required format. Legend labels descriptive and match\n+          data series.\n+    data_quality:\n+      score: 14\n+      max: 15\n+      items:\n+      - id: DQ-01\n+        name: Feature Coverage\n+        score: 5\n+        max: 6\n+        passed: true\n+        comment: Shows noise scatter, EVM classification, phase offset. Could demonstrate\n+          additional impairment types.\n+      - id: DQ-02\n+        name: Realistic Context\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Real-world 16-QAM with SNR ~20 dB and phase offset.\n+      - id: DQ-03\n+        name: Appropriate Scale\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: Standard 16-QAM values at +/-1, +/-3. EVM of 12.5% realistic for\n+          given SNR.\n+    code_quality:\n+      score: 8\n+      max: 10\n+      items:\n+      - id: CQ-01\n+        name: KISS Structure\n+        score: 2\n+        max: 3\n+        passed: true\n+        comment: Mostly linear flow but includes replace_circle_with_cross function.\n+      - id: CQ-02\n+        name: Reproducibility\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: np.random.seed(42) ensures deterministic output.\n+      - id: CQ-03\n+        name: Clean Imports\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: 'All imports used: re, cairosvg, numpy, pygal, Style.'\n+      - id: CQ-04\n+        name: Code Elegance\n+        score: 1\n+        max: 2\n+        passed: true\n+        comment: SVG regex manipulation is fragile but necessary for pygal marker\n+          customization.\n+      - id: CQ-05\n+        name: Output & API\n+        score: 1\n+        max: 1\n+        passed: true\n+        comment: Saves as plot.png via cairosvg. No deprecated API.\n+    library_mastery:\n+      score: 7\n+      max: 10\n+      items:\n+      - id: LM-01\n+        name: Idiomatic Usage\n+        score: 4\n+        max: 5\n+        passed: true\n+        comment: Good use of pygal.XY, dict-based labels, Style class, stroke_style,\n+          legend config.\n+      - id: LM-02\n+        name: Distinctive Features\n+        score: 3\n+        max: 5\n+        passed: true\n+        comment: SVG post-processing leverages pygal SVG-native architecture. Dict-based\n+          label format is pygal-specific.\n+  verdict: APPROVED\n+impl_tags:\n+  dependencies:\n+  - cairosvg\n+  techniques:\n+  - annotations\n+  - custom-legend\n+  - manual-ticks\n+  patterns:\n+  - data-generation\n+  - iteration-over-groups\n+  dataprep: []\n+  styling:\n+  - alpha-blending\n+  - grid-styling"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "2ba974b1ee9deec797d7ba9a23ed4401defa542a",
+      "message": "feat(pygal): implement scatter-constellation-diagram",
+      "parent_shas": [
+        "f5ab65551bc6b055901777a8325425f2b185482c"
+      ]
+    },
+    {
+      "sha": "0bd4b6202e309f6768ebbfbbb18b0a6e338f6c5f",
+      "message": "chore(pygal): add metadata for scatter-constellation-diagram",
+      "parent_shas": [
+        "2ba974b1ee9deec797d7ba9a23ed4401defa542a"
+      ]
+    },
+    {
+      "sha": "6ae20dd5d3bfce481ac683ef07083e22e4b1322b",
+      "message": "chore(pygal): update quality score 78 and review feedback for scatter-constellation-diagram",
+      "parent_shas": [
+        "0bd4b6202e309f6768ebbfbbb18b0a6e338f6c5f"
+      ]
+    },
+    {
+      "sha": "27c32f50b37df80c2d1d44cb747c851e316aa4ac",
+      "message": "fix(pygal): address review feedback for scatter-constellation-diagram\n\nAttempt 1/3 - fixes based on AI review",
+      "parent_shas": [
+        "6ae20dd5d3bfce481ac683ef07083e22e4b1322b"
+      ]
+    },
+    {
+      "sha": "4cb0dc386d865493f847f1b380b07a0e4b50be66",
+      "message": "chore(pygal): update quality score 82 and review feedback for scatter-constellation-diagram",
+      "parent_shas": [
+        "27c32f50b37df80c2d1d44cb747c851e316aa4ac"
+      ]
+    },
+    {
+      "sha": "8f158bbba1ccd8e11122ed70bd9c6951a62e5f13",
+      "message": "fix(pygal): address review feedback for scatter-constellation-diagram\n\nAttempt 2/3 - fixes based on AI review",
+      "parent_shas": [
+        "4cb0dc386d865493f847f1b380b07a0e4b50be66"
+      ]
+    },
+    {
+      "sha": "fcb62659eea5b2ccf89a840cfc8f702c5c7f6b1e",
+      "message": "chore(pygal): update quality score 85 and review feedback for scatter-constellation-diagram",
+      "parent_shas": [
+        "8f158bbba1ccd8e11122ed70bd9c6951a62e5f13"
+      ]
+    },
+    {
+      "sha": "1a74745e1a22725290c1a1ecf8ef28e07096c363",
+      "message": "fix(pygal): address review feedback for scatter-constellation-diagram\n\nAttempt 3/3 - fixes based on AI review",
+      "parent_shas": [
+        "fcb62659eea5b2ccf89a840cfc8f702c5c7f6b1e"
+      ]
+    },
+    {
+      "sha": "b9d2eb3d6f1fe26e4503015a147c19fb170b867c",
+      "message": "chore(pygal): update quality score 84 and review feedback for scatter-constellation-diagram",
+      "parent_shas": [
+        "1a74745e1a22725290c1a1ecf8ef28e07096c363"
+      ]
+    },
+    {
+      "sha": "cf37f18dd363908b046be0163e58caa5ee24af90",
+      "message": "Merge branch 'main' into implementation/scatter-constellation-diagram/pygal",
+      "parent_shas": [
+        "b9d2eb3d6f1fe26e4503015a147c19fb170b867c",
+        "c1ecd795146174741a6d5255ce277c3d27eaa481"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__MarkusNeusinger__anyplot__pr4966.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4966__py2_py3__MarkusNeusinger__anyplot__pr4966\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4966__py2_py3__MarkusNeusinger__anyplot__pr4966\\rn"
+  }
+}

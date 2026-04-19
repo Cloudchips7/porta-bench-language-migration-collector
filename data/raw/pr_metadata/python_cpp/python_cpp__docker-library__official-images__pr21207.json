@@ -1,0 +1,78 @@
+{
+  "instance_id": "python_cpp__docker-library__official-images__pr21207",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "docker-library/official-images",
+  "pr_number": 21207,
+  "pr_url": "https://github.com/docker-library/official-images/pull/21207",
+  "repo": {
+    "full_name": "docker-library/official-images",
+    "clone_url": "https://github.com/docker-library/official-images.git",
+    "default_branch": "master",
+    "created_at": "2013-10-17T17:27:12Z",
+    "stars": 6943,
+    "license": "Apache-2.0",
+    "size_kb": 33394
+  },
+  "pull_request": {
+    "id": 3504262145,
+    "title": "Update python",
+    "body": "Changes:\r\n\r\n- https://github.com/docker-library/python/commit/ced4ac7c: Update 3.13 to 3.13.13\r\n- https://github.com/docker-library/python/commit/858441ad: Update 3.15-rc to 3.15.0a8\r\n- https://github.com/docker-library/python/commit/6cc07b27: Update 3.14 to 3.14.4",
+    "created_at": "2026-04-08T16:30:57Z",
+    "merged_at": "2026-04-08T17:15:11Z",
+    "base_sha": "eb3ff162ec2934ae28c0b25350f5cc8e855d3f9e",
+    "head_sha": "14158149068a1d85cb2e0460c679439f32ad5148",
+    "merge_commit_sha": "65b660896df89d37e4aefdf3fbaa9dceb18e33c6",
+    "labels": [
+      "library/python"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "82026b0127f4f36dfedb07cb5e949a95da1cda7e",
+  "final_sha": "14158149068a1d85cb2e0460c679439f32ad5148",
+  "changed_files": [
+    {
+      "sha": "26a623c76ef05d331398f14f46b87538f376a57a",
+      "filename": "library/python",
+      "status": "modified",
+      "additions": 57,
+      "deletions": 57,
+      "changes": 114,
+      "blob_url": "https://github.com/docker-library/official-images/blob/14158149068a1d85cb2e0460c679439f32ad5148/library%2Fpython",
+      "raw_url": "https://github.com/docker-library/official-images/raw/14158149068a1d85cb2e0460c679439f32ad5148/library%2Fpython",
+      "contents_url": "https://api.github.com/repos/docker-library/official-images/contents/library%2Fpython?ref=14158149068a1d85cb2e0460c679439f32ad5148",
+      "patch": "@@ -5,143 +5,143 @@ Maintainers: Tianon Gravi <admwiggin@gmail.com> (@tianon),\n GitRepo: https://github.com/docker-library/python.git\n Builder: buildkit\n \n-Tags: 3.15.0a7-trixie, 3.15-rc-trixie\n-SharedTags: 3.15.0a7, 3.15-rc\n+Tags: 3.15.0a8-trixie, 3.15-rc-trixie\n+SharedTags: 3.15.0a8, 3.15-rc\n Architectures: amd64, arm32v5, arm32v7, arm64v8, i386, ppc64le, riscv64, s390x\n-GitCommit: 50e3f493467278f72b4d79e0d54a69711b1d7bcf\n+GitCommit: 858441ad34107c179c8b83c3e8e33f36ee509bcb\n Directory: 3.15-rc/trixie\n \n-Tags: 3.15.0a7-slim-trixie, 3.15-rc-slim-trixie, 3.15.0a7-slim, 3.15-rc-slim\n+Tags: 3.15.0a8-slim-trixie, 3.15-rc-slim-trixie, 3.15.0a8-slim, 3.15-rc-slim\n Architectures: amd64, arm32v5, arm32v7, arm64v8, i386, ppc64le, riscv64, s390x\n-GitCommit: 50e3f493467278f72b4d79e0d54a69711b1d7bcf\n+GitCommit: 858441ad34107c179c8b83c3e8e33f36ee509bcb\n Directory: 3.15-rc/slim-trixie\n \n-Tags: 3.15.0a7-bookworm, 3.15-rc-bookworm\n+Tags: 3.15.0a8-bookworm, 3.15-rc-bookworm\n Architectures: amd64, arm32v5, arm32v7, arm64v8, i386, ppc64le, s390x\n-GitCommit: 50e3f493467278f72b4d79e0d54a69711b1d7bcf\n+GitCommit: 858441ad34107c179c8b83c3e8e33f36ee509bcb\n Directory: 3.15-rc/bookworm\n \n-Tags: 3.15.0a7-slim-bookworm, 3.15-rc-slim-bookworm\n+Tags: 3.15.0a8-slim-bookworm, 3.15-rc-slim-bookworm\n Architectures: amd64, arm32v5, arm32v7, arm64v8, i386, ppc64le, s390x\n-GitCommit: 50e3f493467278f72b4d79e0d54a69711b1d7bcf\n+GitCommit: 858441ad34107c179c8b83c3e8e33f36ee509bcb\n Directory: 3.15-rc/slim-bookworm\n \n-Tags: 3.15.0a7-alpine3.23, 3.15-rc-alpine3.23, 3.15.0a7-alpine, 3.15-rc-alpine\n+Tags: 3.15.0a8-alpine3.23, 3.15-rc-alpine3.23, 3.15.0a8-alpine, 3.15-rc-alpine\n Architectures: amd64, arm32v6, arm32v7, arm64v8, i386, ppc64le, riscv64, s390x\n-GitCommit: 50e3f493467278f72b4d79e0d54a69711b1d7bcf\n+GitCommit: 858441ad34107c179c8b83c3e8e33f36ee509bcb\n Directory: 3.15-rc/alpine3.23\n \n-Tags: 3.15.0a7-alpine3.22, 3.15-rc-alpine3.22\n+Tags: 3.15.0a8-alpine3.22, 3.15-rc-alpine3.22\n Architectures: amd64, arm32v6, arm32v7, arm64v8, i386, ppc64le, riscv64, s390x\n-GitCommit: 50e3f493467278f72b4d79e0d54a69711b1d7bcf\n+GitCommit: 858441ad34107c179c8b83c3e8e33f36ee509bcb\n Directory: 3.15-rc/alpine3.22\n \n-Tags: 3.15.0a7-windowsservercore-ltsc2025, 3.15-rc-windowsservercore-ltsc2025\n-SharedTags: 3.15.0a7-windowsservercore, 3.15-rc-windowsservercore, 3.15.0a7, 3.15-rc\n+Tags: 3.15.0a8-windowsservercore-ltsc2025, 3.15-rc-windowsservercore-ltsc2025\n+SharedTags: 3.15.0a8-windowsservercore, 3.15-rc-windowsservercore, 3.15.0a8, 3.15-rc\n Architectures: windows-amd64\n-GitCommit: 50e3f493467278f72b4d79e0d54a69711b1d7bcf\n+GitCommit: 858441ad34107c179c8b83c3e8e33f36ee509bcb\n Directory: 3.15-rc/windows/windowsservercore-ltsc2025\n Constraints: windowsservercore-ltsc2025\n Builder: classic\n \n-Tags: 3.15.0a7-windowsservercore-ltsc2022, 3.15-rc-windowsservercore-ltsc2022\n-SharedTags: 3.15.0a7-windowsservercore, 3.15-rc-windowsservercore, 3.15.0a7, 3.15-rc\n+Tags: 3.15.0a8-windowsservercore-ltsc2022, 3.15-rc-windowsservercore-ltsc2022\n+SharedTags: 3.15.0a8-windowsservercore, 3.15-rc-windowsservercore, 3.15.0a8, 3.15-rc\n Architectures: windows-amd64\n-GitCommit: 50e3f493467278f72b4d79e0d54a69711b1d7bcf\n+GitCommit: 858441ad34107c179c8b83c3e8e33f36ee509bcb\n Directory: 3.15-rc/windows/windowsservercore-ltsc2022\n Constraints: windowsservercore-ltsc2022\n Builder: classic\n \n-Tags: 3.14.3-trixie, 3.14-trixie, 3-trixie, trixie\n-SharedTags: 3.14.3, 3.14, 3, latest\n+Tags: 3.14.4-trixie, 3.14-trixie, 3-trixie, trixie\n+SharedTags: 3.14.4, 3.14, 3, latest\n Architectures: amd64, arm32v5, arm32v7, arm64v8, i386, ppc64le, riscv64, s390x\n-GitCommit: ce782e2435387d50d3a21a29c76d0eb4115057d3\n+GitCommit: 6cc07b27ad0df3769bbd1a2a1000a842634681d2\n Directory: 3.14/trixie\n \n-Tags: 3.14.3-slim-trixie, 3.14-slim-trixie, 3-slim-trixie, slim-trixie, 3.14.3-slim, 3.14-slim, 3-slim, slim\n+Tags: 3.14.4-slim-trixie, 3.14-slim-trixie, 3-slim-trixie, slim-trixie, 3.14.4-slim, 3.14-slim, 3-slim, slim\n Architectures: amd64, arm32v5, arm32v7, arm64v8, i386, ppc64le, riscv64, s390x\n-GitCommit: ce782e2435387d50d3a21a29c76d0eb4115057d3\n+GitCommit: 6cc07b27ad0df3769bbd1a2a1000a842634681d2\n Directory: 3.14/slim-trixie\n \n-Tags: 3.14.3-bookworm, 3.14-bookworm, 3-bookworm, bookworm\n+Tags: 3.14.4-bookworm, 3.14-bookworm, 3-bookworm, bookworm\n Architectures: amd64, arm32v5, arm32v7, arm64v8, i386, ppc64le, s390x\n-GitCommit: ce782e2435387d50d3a21a29c76d0eb4115057d3\n+GitCommit: 6cc07b27ad0df3769bbd1a2a1000a842634681d2\n Directory: 3.14/bookworm\n \n-Tags: 3.14.3-slim-bookworm, 3.14-slim-bookworm, 3-slim-bookworm, slim-bookworm\n+Tags: 3.14.4-slim-bookworm, 3.14-slim-bookworm, 3-slim-bookworm, slim-bookworm\n Architectures: amd64, arm32v5, arm32v7, arm64v8, i386, ppc64le, s390x\n-GitCommit: ce782e2435387d50d3a21a29c76d0eb4115057d3\n+GitCommit: 6cc07b27ad0df3769bbd1a2a1000a842634681d2\n Directory: 3.14/slim-bookworm\n \n-Tags: 3.14.3-alpine3.23, 3.14-alpine3.23, 3-alpine3.23, alpine3.23, 3.14.3-alpine, 3.14-alpine, 3-alpine, alpine\n+Tags: 3.14.4-alpine3.23, 3.14-alpine3.23, 3-alpine3.23, alpine3.23, 3.14.4-alpine, 3.14-alpine, 3-alpine, alpine\n Architectures: amd64, arm32v6, arm32v7, arm64v8, i386, ppc64le, riscv64, s390x\n-GitCommit: ce782e2435387d50d3a21a29c76d0eb4115057d3\n+GitCommit: 6cc07b27ad0df3769bbd1a2a1000a842634681d2\n Directory: 3.14/alpine3.23\n \n-Tags: 3.14.3-alpine3.22, 3.14-alpine3.22, 3-alpine3.22, alpine3.22\n+Tags: 3.14.4-alpine3.22, 3.14-alpine3.22, 3-alpine3.22, alpine3.22\n Architectures: amd64, arm32v6, arm32v7, arm64v8, i386, ppc64le, riscv64, s390x\n-GitCommit: ce782e2435387d50d3a21a29c76d0eb4115057d3\n+GitCommit: 6cc07b27ad0df3769bbd1a2a1000a842634681d2\n Directory: 3.14/alpine3.22\n \n-Tags: 3.14.3-windowsservercore-ltsc2025, 3.14-windowsservercore-ltsc2025, 3-windowsservercore-ltsc2025, windowsservercore-ltsc2025\n-SharedTags: 3.14.3-windowsservercore, 3.14-windowsservercore, 3-windowsservercore, windowsservercore, 3.14.3, 3.14, 3, latest\n+Tags: 3.14.4-windowsservercore-ltsc2025, 3.14-windowsservercore-ltsc2025, 3-windowsservercore-ltsc2025, windowsservercore-ltsc2025\n+SharedTags: 3.14.4-windowsservercore, 3.14-windowsservercore, 3-windowsservercore, windowsservercore, 3.14.4, 3.14, 3, latest\n Architectures: windows-amd64\n-GitCommit: ce782e2435387d50d3a21a29c76d0eb4115057d3\n+GitCommit: 6cc07b27ad0df3769bbd1a2a1000a842634681d2\n Directory: 3.14/windows/windowsservercore-ltsc2025\n Constraints: windowsservercore-ltsc2025\n Builder: classic\n \n-Tags: 3.14.3-windowsservercore-ltsc2022, 3.14-windowsservercore-ltsc2022, 3-windowsservercore-ltsc2022, windowsservercore-ltsc2022\n-SharedTags: 3.14.3-windowsservercore, 3.14-windowsservercore, 3-windowsservercore, windowsservercore, 3.14.3, 3.14, 3, latest\n+Tags: 3.14.4-windowsservercore-ltsc2022, 3.14-windowsservercore-ltsc2022, 3-windowsservercore-ltsc2022, windowsservercore-ltsc2022\n+SharedTags: 3.14.4-windowsservercore, 3.14-windowsservercore, 3-windowsservercore, windowsservercore, 3.14.4, 3.14, 3, latest\n Architectures: windows-amd64\n-GitCommit: ce782e2435387d50d3a21a29c76d0eb4115057d3\n+GitCommit: 6cc07b27ad0df3769bbd1a2a1000a842634681d2\n Directory: 3.14/windows/windowsservercore-ltsc2022\n Constraints: windowsservercore-ltsc2022\n Builder: classic\n \n-Tags: 3.13.12-trixie, 3.13-trixie\n-SharedTags: 3.13.12, 3.13\n+Tags: 3.13.13-trixie, 3.13-trixie\n+SharedTags: 3.13.13, 3.13\n Architectures: amd64, arm32v5, arm32v7, arm64v8, i386, ppc64le, riscv64, s390x\n-GitCommit: d7d46d97a9ffd58269d8d1d0218ce959362b4298\n+GitCommit: ced4ac7ca9f8f8bdbb113f06fe02c42895875aa4\n Directory: 3.13/trixie\n \n-Tags: 3.13.12-slim-trixie, 3.13-slim-trixie, 3.13.12-slim, 3.13-slim\n+Tags: 3.13.13-slim-trixie, 3.13-slim-trixie, 3.13.13-slim, 3.13-slim\n Architectures: amd64, arm32v5, arm32v7, arm64v8, i386, ppc64le, riscv64, s390x\n-GitCommit: d7d46d97a9ffd58269d8d1d0218ce959362b4298\n+GitCommit: ced4ac7ca9f8f8bdbb113f06fe02c42895875aa4\n Directory: 3.13/slim-trixie\n \n-Tags: 3.13.12-bookworm, 3.13-bookworm\n+Tags: 3.13.13-bookworm, 3.13-bookworm\n Architectures: amd64, arm32v5, arm32v7, arm64v8, i386, ppc64le, s390x\n-GitCommit: d7d46d97a9ffd58269d8d1d0218ce959362b4298\n+GitCommit: ced4ac7ca9f8f8bdbb113f06fe02c42895875aa4\n Directory: 3.13/bookworm\n \n-Tags: 3.13.12-slim-bookworm, 3.13-slim-bookworm\n+Tags: 3.13.13-slim-bookworm, 3.13-slim-bookworm\n Architectures: amd64, arm32v5, arm32v7, arm64v8, i386, ppc64le, s390x\n-GitCommit: d7d46d97a9ffd58269d8d1d0218ce959362b4298\n+GitCommit: ced4ac7ca9f8f8bdbb113f06fe02c42895875aa4\n Directory: 3.13/slim-bookworm\n \n-Tags: 3.13.12-alpine3.23, 3.13-alpine3.23, 3.13.12-alpine, 3.13-alpine\n+Tags: 3.13.13-alpine3.23, 3.13-alpine3.23, 3.13.13-alpine, 3.13-alpine\n Architectures: amd64, arm32v6, arm32v7, arm64v8, i386, ppc64le, riscv64, s390x\n-GitCommit: d7d46d97a9ffd58269d8d1d0218ce959362b4298\n+GitCommit: ced4ac7ca9f8f8bdbb113f06fe02c42895875aa4\n Directory: 3.13/alpine3.23\n \n-Tags: 3.13.12-alpine3.22, 3.13-alpine3.22\n+Tags: 3.13.13-alpine3.22, 3.13-alpine3.22\n Architectures: amd64, arm32v6, arm32v7, arm64v8, i386, ppc64le, riscv64, s390x\n-GitCommit: d7d46d97a9ffd58269d8d1d0218ce959362b4298\n+GitCommit: ced4ac7ca9f8f8bdbb113f06fe02c42895875aa4\n Directory: 3.13/alpine3.22\n \n-Tags: 3.13.12-windowsservercore-ltsc2025, 3.13-windowsservercore-ltsc2025\n-SharedTags: 3.13.12-windowsservercore, 3.13-windowsservercore, 3.13.12, 3.13\n+Tags: 3.13.13-windowsservercore-ltsc2025, 3.13-windowsservercore-ltsc2025\n+SharedTags: 3.13.13-windowsservercore, 3.13-windowsservercore, 3.13.13, 3.13\n Architectures: windows-amd64\n-GitCommit: d7d46d97a9ffd58269d8d1d0218ce959362b4298\n+GitCommit: ced4ac7ca9f8f8bdbb113f06fe02c42895875aa4\n Directory: 3.13/windows/windowsservercore-ltsc2025\n Constraints: windowsservercore-ltsc2025\n Builder: classic\n \n-Tags: 3.13.12-windowsservercore-ltsc2022, 3.13-windowsservercore-ltsc2022\n-SharedTags: 3.13.12-windowsservercore, 3.13-windowsservercore, 3.13.12, 3.13\n+Tags: 3.13.13-windowsservercore-ltsc2022, 3.13-windowsservercore-ltsc2022\n+SharedTags: 3.13.13-windowsservercore, 3.13-windowsservercore, 3.13.13, 3.13\n Architectures: windows-amd64\n-GitCommit: d7d46d97a9ffd58269d8d1d0218ce959362b4298\n+GitCommit: ced4ac7ca9f8f8bdbb113f06fe02c42895875aa4\n Directory: 3.13/windows/windowsservercore-ltsc2022\n Constraints: windowsservercore-ltsc2022\n Builder: classic"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "14158149068a1d85cb2e0460c679439f32ad5148",
+      "message": "Update python\n\nChanges:\n\n- https://github.com/docker-library/python/commit/ced4ac7c: Update 3.13 to 3.13.13\n- https://github.com/docker-library/python/commit/858441ad: Update 3.15-rc to 3.15.0a8\n- https://github.com/docker-library/python/commit/6cc07b27: Update 3.14 to 3.14.4",
+      "parent_shas": [
+        "82026b0127f4f36dfedb07cb5e949a95da1cda7e"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__docker-library__official-images__pr21207.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\docker-library__official-images__pr21207__python_cpp__docker-library__official-images__pr21207\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\docker-library__official-images__pr21207__python_cpp__docker-library__official-images__pr21207\\rn"
+  }
+}

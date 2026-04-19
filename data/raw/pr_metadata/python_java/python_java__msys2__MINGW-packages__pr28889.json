@@ -1,0 +1,76 @@
+{
+  "instance_id": "python_java__msys2__MINGW-packages__pr28889",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "msys2/MINGW-packages",
+  "pr_number": 28889,
+  "pr_url": "https://github.com/msys2/MINGW-packages/pull/28889",
+  "repo": {
+    "full_name": "msys2/MINGW-packages",
+    "clone_url": "https://github.com/msys2/MINGW-packages.git",
+    "default_branch": "master",
+    "created_at": "2013-11-16T13:47:02Z",
+    "stars": 2663,
+    "license": "BSD-3-Clause",
+    "size_kb": 131599
+  },
+  "pull_request": {
+    "id": 3515381784,
+    "title": "python-python-multipart: update to 0.0.26",
+    "body": "",
+    "created_at": "2026-04-10T18:12:11Z",
+    "merged_at": "2026-04-10T18:50:13Z",
+    "base_sha": "9405d355ecff5dee92ca0e1c1c830182037b247c",
+    "head_sha": "73a890ea3784bbdc764f710d84703495b6a2a91f",
+    "merge_commit_sha": "885ca2521862051f2b3dbe04317d43d1dda09b4d",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "9405d355ecff5dee92ca0e1c1c830182037b247c",
+  "final_sha": "73a890ea3784bbdc764f710d84703495b6a2a91f",
+  "changed_files": [
+    {
+      "sha": "28d13f1a29b247d2d9a907dafbf88ff365d1a003",
+      "filename": "mingw-w64-python-python-multipart/PKGBUILD",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/msys2/MINGW-packages/blob/73a890ea3784bbdc764f710d84703495b6a2a91f/mingw-w64-python-python-multipart%2FPKGBUILD",
+      "raw_url": "https://github.com/msys2/MINGW-packages/raw/73a890ea3784bbdc764f710d84703495b6a2a91f/mingw-w64-python-python-multipart%2FPKGBUILD",
+      "contents_url": "https://api.github.com/repos/msys2/MINGW-packages/contents/mingw-w64-python-python-multipart%2FPKGBUILD?ref=73a890ea3784bbdc764f710d84703495b6a2a91f",
+      "patch": "@@ -3,7 +3,7 @@\n _realname=python-multipart\n pkgbase=mingw-w64-python-${_realname}\n pkgname=(\"${MINGW_PACKAGE_PREFIX}-python-${_realname}\")\n-pkgver=0.0.24\n+pkgver=0.0.26\n pkgrel=1\n pkgdesc='A streaming multipart parser for Python (mingw-w64)'\n arch=('any')\n@@ -21,7 +21,7 @@ makedepends=(\"${MINGW_PACKAGE_PREFIX}-python-build\"\n              \"${MINGW_PACKAGE_PREFIX}-python-installer\"\n              \"${MINGW_PACKAGE_PREFIX}-python-hatchling\")\n source=(\"https://pypi.org/packages/source/${_realname::1}/${_realname}/${_realname/-/_}-${pkgver}.tar.gz\")\n-sha256sums=('9574c97e1c026e00bc30340ef7c7d76739512ab4dfd428fec8c330fa6a5cc3c8')\n+sha256sums=('08fadc45918cd615e26846437f50c5d6d23304da32c341f289a617127b081f17')\n \n prepare() {\n   cp -r \"${_realname/-/_}-${pkgver}\" \"python-build-${MSYSTEM}\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "73a890ea3784bbdc764f710d84703495b6a2a91f",
+      "message": "python-python-multipart: update to 0.0.26",
+      "parent_shas": [
+        "9405d355ecff5dee92ca0e1c1c830182037b247c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__msys2__MINGW-packages__pr28889.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\msys2__MINGW-packages__pr28889__python_java__msys2__MINGW-packages__pr28889\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\msys2__MINGW-packages__pr28889__python_java__msys2__MINGW-packages__pr28889\\rn"
+  }
+}

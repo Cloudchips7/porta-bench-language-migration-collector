@@ -1,0 +1,76 @@
+{
+  "instance_id": "java_python__opensensorhub__osh-core__pr345",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "opensensorhub/osh-core",
+  "pr_number": 345,
+  "pr_url": "https://github.com/opensensorhub/osh-core/pull/345",
+  "repo": {
+    "full_name": "opensensorhub/osh-core",
+    "clone_url": "https://github.com/opensensorhub/osh-core.git",
+    "default_branch": "master",
+    "created_at": "2015-10-17T15:38:58Z",
+    "stars": 40,
+    "license": "MPL-2.0",
+    "size_kb": 34284
+  },
+  "pull_request": {
+    "id": 3503516455,
+    "title": "Update SensorHubOsgi.java",
+    "body": "Currently all bundles are being registered and started. We need to allow fragment bundles to be registered but this type of bundle does not require activation as it contributes functionality to a host bundle\r\n\r\nThis is an example of an osgi closure in a module that contributes custom forms to sensorhub-web-ui-core\r\n\r\n```\r\nosgi {\r\n    manifest {\r\n        attributes('Bundle-Vendor': 'Botts Innovative Research, Inc.')\r\n        attributes('Bundle-SymbolicName': 'com.botts.ui.datafeed')\r\n        attributes('Bundle-Version': version)\r\n\r\n        // THIS is the important part:\r\n        attributes('Fragment-Host': 'org.sensorhub.sensorhub-webui-core')\r\n\r\n        attributes('-dsannotations': 'false')\r\n        attributes('Export-Package': '')\r\n        attributes('Import-Package': '*;resolution:=optional')\r\n    }\r\n}\r\n\r\n```\r\nIn order to satisfy this SensorHubOSGi needs to skip attempting to start bundles that have the Fragment-Host attribute",
+    "created_at": "2026-04-08T13:51:13Z",
+    "merged_at": "2026-04-10T10:07:20Z",
+    "base_sha": "0c3bae2adf1354026a706fe785dfb46b0e7bb094",
+    "head_sha": "18035a51ce6238f094b5d629fe59c9d7d876c0fe",
+    "merge_commit_sha": "ae5ac96ba6ce590d71442c69166c62f0f480dcba",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "0c3bae2adf1354026a706fe785dfb46b0e7bb094",
+  "final_sha": "18035a51ce6238f094b5d629fe59c9d7d876c0fe",
+  "changed_files": [
+    {
+      "sha": "46221329e95baa46b89404d41f81fe917a5b79c0",
+      "filename": "sensorhub-core-osgi/src/main/java/org/sensorhub/impl/osgi/SensorHubOsgi.java",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 2,
+      "changes": 8,
+      "blob_url": "https://github.com/opensensorhub/osh-core/blob/18035a51ce6238f094b5d629fe59c9d7d876c0fe/sensorhub-core-osgi%2Fsrc%2Fmain%2Fjava%2Forg%2Fsensorhub%2Fimpl%2Fosgi%2FSensorHubOsgi.java",
+      "raw_url": "https://github.com/opensensorhub/osh-core/raw/18035a51ce6238f094b5d629fe59c9d7d876c0fe/sensorhub-core-osgi%2Fsrc%2Fmain%2Fjava%2Forg%2Fsensorhub%2Fimpl%2Fosgi%2FSensorHubOsgi.java",
+      "contents_url": "https://api.github.com/repos/opensensorhub/osh-core/contents/sensorhub-core-osgi%2Fsrc%2Fmain%2Fjava%2Forg%2Fsensorhub%2Fimpl%2Fosgi%2FSensorHubOsgi.java?ref=18035a51ce6238f094b5d629fe59c9d7d876c0fe",
+      "patch": "@@ -129,7 +129,9 @@ public boolean accept(File dir, String name) {\n         for (var f: bundleJarFiles) {\n             LOGGER.info(\"Installing bundle \" + f);\n             var bundle = systemCtx.installBundle(REF_PREFIX + f.toPath().toString());\n-            bundle.start();\n+            if (bundle.getHeaders().get(\"Fragment-Host\") == null) {\n+                bundle.start();\n+            }\n         }\n         \n         // start all installed bundles\n@@ -144,7 +146,9 @@ public boolean accept(File dir, String name) {\n                 try\n                 {\n                     var bundle = systemCtx.installBundle(REF_PREFIX + path.toString());\n-                    bundle.start();\n+                    if (bundle.getHeaders().get(\"Fragment-Host\") == null) {\n+                        bundle.start();\n+                    }\n                 }\n                 catch (BundleException e)\n                 {"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "18035a51ce6238f094b5d629fe59c9d7d876c0fe",
+      "message": "Update SensorHubOsgi.java\n\nAllow registration of fragment bundles without requiring they be started",
+      "parent_shas": [
+        "0c3bae2adf1354026a706fe785dfb46b0e7bb094"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__opensensorhub__osh-core__pr345.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\opensensorhub__osh-core__pr345__java_python__opensensorhub__osh-core__pr345\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\opensensorhub__osh-core__pr345__java_python__opensensorhub__osh-core__pr345\\rn"
+  }
+}

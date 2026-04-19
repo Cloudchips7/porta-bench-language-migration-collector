@@ -1,0 +1,141 @@
+{
+  "instance_id": "py2_py3__cokelaer__bioservices__pr290",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "cokelaer/bioservices",
+  "pr_number": 290,
+  "pr_url": "https://github.com/cokelaer/bioservices/pull/290",
+  "repo": {
+    "full_name": "cokelaer/bioservices",
+    "clone_url": "https://github.com/cokelaer/bioservices.git",
+    "default_branch": "main",
+    "created_at": "2014-08-28T15:24:45Z",
+    "stars": 335,
+    "license": "NOASSERTION",
+    "size_kb": 7060
+  },
+  "pull_request": {
+    "id": 3343885956,
+    "title": "Add Python 3.13 and 3.14 compatibility",
+    "body": "Python 3.13 changed `__builtins__` in non-`__main__` modules to consistently be the module object (not a dict), breaking the Python 2 compatibility shim in `services.py`. Drops all remaining Python 2 dead code and extends CI coverage to 3.13/3.14.\n\n## Code fixes\n- **`services.py`**: Remove `if \"raw_input\" in __builtins__: input = raw_input` — this raises `TypeError` in Python 3.13+ since `in` on a module object is not supported. Also remove the `try/except urllib2` import fallback.\n- **`xmltools.py`**, **`hgnc.py`**: Remove `try/except urllib2` import fallbacks.\n\nThe offending pattern in `services.py`:\n```python\n# Raises TypeError in Python 3.13+: \"argument of type 'module' is not iterable\"\nif \"raw_input\" in __builtins__:\n    input = raw_input\n```\n\n## Config / CI\n- **`pyproject.toml`**: Add `Programming Language :: Python :: 3.13` and `3.14` classifiers.\n- **`ci.yml`**: Add `3.13` and `3.14` to the test matrix; update runner from EOL `ubuntu-18.04` → `ubuntu-latest`; bump `actions/checkout` to v4 and `actions/setup-python` to v5; add `permissions: contents: read`.\n\n> [!WARNING]\n>\n> <details>\n> <summary>Firewall rules blocked me from connecting to one or more addresses (expand for details)</summary>\n>\n> #### I tried to connect to the following addresses, but was blocked by firewall rules:\n>\n> - `www.uniprot.org`\n>   - Triggering command: `/usr/bin/python3 python3 -m pytest test/test_services.py test/test_xmltools.py -v --timeout=30` (dns block)\n>   - Triggering command: `/usr/bin/python3 python3 -m pytest test/test_services.py test/test_xmltools.py -v` (dns block)\n>\n> If you need me to access, download, or install something from one of these locations, you can either:\n>\n> - Configure [Actions setup steps](https://gh.io/copilot/actions-setup-steps) to set up my environment, which run before the firewall is enabled\n> - Add the appropriate URLs or hosts to the custom allowlist in this repository's [Copilot coding agent settings](https://github.com/cokelaer/bioservices/settings/copilot/coding_agent) (admins only)\n>\n> </details>\n\n<!-- START COPILOT CODING AGENT TIPS -->\n---\n\n✨ Let Copilot coding agent [set things up for you](https://github.com/cokelaer/bioservices/issues/new?title=✨+Set+up+Copilot+instructions&body=Configure%20instructions%20for%20this%20repository%20as%20documented%20in%20%5BBest%20practices%20for%20Copilot%20coding%20agent%20in%20your%20repository%5D%28https://gh.io/copilot-coding-agent-tips%29%2E%0A%0A%3COnboard%20this%20repo%3E&assignees=copilot) — coding agent works faster and does higher quality work when set up for your repo.\n",
+    "created_at": "2026-03-02T11:54:47Z",
+    "merged_at": "2026-03-02T12:15:23Z",
+    "base_sha": "9875ddc5bbdca76d6574ce210e97fef662356660",
+    "head_sha": "04b58c258944871e729c3c5338c514a407503d0b",
+    "merge_commit_sha": "88f061026231b3c0de1c8d31f7e7ec6371546365",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "0622553d49bb07b0a6ff1e63542f128f4ebb91d7",
+  "final_sha": "04b58c258944871e729c3c5338c514a407503d0b",
+  "changed_files": [
+    {
+      "sha": "d6da6d6180724c0135a831c4b8cceeb5d5a381bb",
+      "filename": ".github/workflows/ci.yml",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 4,
+      "changes": 10,
+      "blob_url": "https://github.com/cokelaer/bioservices/blob/04b58c258944871e729c3c5338c514a407503d0b/.github%2Fworkflows%2Fci.yml",
+      "raw_url": "https://github.com/cokelaer/bioservices/raw/04b58c258944871e729c3c5338c514a407503d0b/.github%2Fworkflows%2Fci.yml",
+      "contents_url": "https://api.github.com/repos/cokelaer/bioservices/contents/.github%2Fworkflows%2Fci.yml?ref=04b58c258944871e729c3c5338c514a407503d0b",
+      "patch": "@@ -19,18 +19,20 @@ on:\n \n jobs:\n   build-linux:\n-    runs-on: ubuntu-18.04\n+    runs-on: ubuntu-latest\n+    permissions:\n+      contents: read\n     strategy:\n       max-parallel: 5\n       matrix:\n-        python: ['3.9', '3.10', '3.11', '3.12']\n+        python: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']\n       fail-fast: false\n \n \n     steps:\n-    - uses: actions/checkout@v2\n+    - uses: actions/checkout@v4\n     - name: Set up Python 3.X\n-      uses: actions/setup-python@v2\n+      uses: actions/setup-python@v5\n       with:\n         python-version: ${{ matrix.python }}\n     - name: Install the package itself"
+    },
+    {
+      "sha": "9dbd29a18e47770cf5229d5e94453a45bbea2d34",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/cokelaer/bioservices/blob/04b58c258944871e729c3c5338c514a407503d0b/pyproject.toml",
+      "raw_url": "https://github.com/cokelaer/bioservices/raw/04b58c258944871e729c3c5338c514a407503d0b/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/cokelaer/bioservices/contents/pyproject.toml?ref=04b58c258944871e729c3c5338c514a407503d0b",
+      "patch": "@@ -23,6 +23,8 @@ classifiers = [\n         \"Programming Language :: Python :: 3.10\",\n         \"Programming Language :: Python :: 3.11\",\n         \"Programming Language :: Python :: 3.12\",\n+        \"Programming Language :: Python :: 3.13\",\n+        \"Programming Language :: Python :: 3.14\",\n         \"Topic :: Software Development :: Libraries :: Python Modules\",\n         \"Topic :: Scientific/Engineering :: Bio-Informatics\",\n         \"Topic :: Scientific/Engineering :: Information Analysis\","
+    },
+    {
+      "sha": "a7f4ec3157acf17873d78f99cd4976e49c9429d9",
+      "filename": "src/bioservices/hgnc.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 4,
+      "changes": 5,
+      "blob_url": "https://github.com/cokelaer/bioservices/blob/04b58c258944871e729c3c5338c514a407503d0b/src%2Fbioservices%2Fhgnc.py",
+      "raw_url": "https://github.com/cokelaer/bioservices/raw/04b58c258944871e729c3c5338c514a407503d0b/src%2Fbioservices%2Fhgnc.py",
+      "contents_url": "https://api.github.com/repos/cokelaer/bioservices/contents/src%2Fbioservices%2Fhgnc.py?ref=04b58c258944871e729c3c5338c514a407503d0b",
+      "patch": "@@ -42,10 +42,7 @@\n logger.name = __name__\n \n \n-try:\n-    from urllib.error import HTTPError\n-except:\n-    from urllib2 import HTTPError\n+from urllib.error import HTTPError\n \n \n __all__ = [\"HGNC\"]"
+    },
+    {
+      "sha": "a558c593700fac9b6523cfa594a8308ddef2b60f",
+      "filename": "src/bioservices/services.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 14,
+      "changes": 18,
+      "blob_url": "https://github.com/cokelaer/bioservices/blob/04b58c258944871e729c3c5338c514a407503d0b/src%2Fbioservices%2Fservices.py",
+      "raw_url": "https://github.com/cokelaer/bioservices/raw/04b58c258944871e729c3c5338c514a407503d0b/src%2Fbioservices%2Fservices.py",
+      "contents_url": "https://api.github.com/repos/cokelaer/bioservices/contents/src%2Fbioservices%2Fservices.py?ref=04b58c258944871e729c3c5338c514a407503d0b",
+      "patch": "@@ -24,20 +24,10 @@\n \n from bioservices.settings import BioServicesConfig\n \n-# fixing compatiblity python 2 and 3 related to merging or urllib and urllib2 in python 3\n-try:\n-    # python 3\n-    from urllib.request import urlopen\n-    from urllib.parse import urlparse, urlencode\n-    from urllib.error import HTTPError, URLError\n-    from urllib.request import Request\n-except:\n-    from urllib import urlencode\n-    from urllib2 import urlopen, Request, HTTPError, URLError\n-\n-# fixing compatibility issue of input/raw_input\n-if \"raw_input\" in __builtins__:\n-    input = raw_input\n+from urllib.request import urlopen\n+from urllib.parse import urlparse, urlencode\n+from urllib.error import HTTPError\n+from urllib.request import Request\n \n # Indded, we want suds_jurko instead\n sys.path = [x for x in sys.path if \"suds-\" not in x]"
+    },
+    {
+      "sha": "b7b70808957ab9f56d04585bcc2dc47e5933e169",
+      "filename": "src/bioservices/xmltools.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 5,
+      "changes": 7,
+      "blob_url": "https://github.com/cokelaer/bioservices/blob/04b58c258944871e729c3c5338c514a407503d0b/src%2Fbioservices%2Fxmltools.py",
+      "raw_url": "https://github.com/cokelaer/bioservices/raw/04b58c258944871e729c3c5338c514a407503d0b/src%2Fbioservices%2Fxmltools.py",
+      "contents_url": "https://api.github.com/repos/cokelaer/bioservices/contents/src%2Fbioservices%2Fxmltools.py?ref=04b58c258944871e729c3c5338c514a407503d0b",
+      "patch": "@@ -19,11 +19,8 @@\n \n import bs4\n \n-try:\n-    from urllib.error import HTTPError\n-    from urllib.request import urlopen\n-except:\n-    from urllib2 import HTTPError, urlopen\n+from urllib.error import HTTPError\n+from urllib.request import urlopen\n \n __all__ = [\"easyXML\", \"readXML\"]\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "53275b9652d12e137bf4a859021eac78a37a5f00",
+      "message": "Initial plan",
+      "parent_shas": [
+        "0622553d49bb07b0a6ff1e63542f128f4ebb91d7"
+      ]
+    },
+    {
+      "sha": "d6fcd7bd2e1aac83a164bc5d610e164ff88b7e7d",
+      "message": "Fix Python 3.13/3.14 compatibility: remove Python 2 shims, add classifiers, update CI\n\nCo-authored-by: cokelaer <778821+cokelaer@users.noreply.github.com>",
+      "parent_shas": [
+        "53275b9652d12e137bf4a859021eac78a37a5f00"
+      ]
+    },
+    {
+      "sha": "04b58c258944871e729c3c5338c514a407503d0b",
+      "message": "Merge branch 'main' into copilot/ensure-py3-13-and-py3-14-compatibility",
+      "parent_shas": [
+        "d6fcd7bd2e1aac83a164bc5d610e164ff88b7e7d",
+        "9875ddc5bbdca76d6574ce210e97fef662356660"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__cokelaer__bioservices__pr290.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\cokelaer__bioservices__pr290__py2_py3__cokelaer__bioservices__pr290\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\cokelaer__bioservices__pr290__py2_py3__cokelaer__bioservices__pr290\\rn"
+  }
+}

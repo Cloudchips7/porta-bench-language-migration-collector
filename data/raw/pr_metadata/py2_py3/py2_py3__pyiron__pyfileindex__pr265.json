@@ -1,0 +1,96 @@
+{
+  "instance_id": "py2_py3__pyiron__pyfileindex__pr265",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "pyiron/pyfileindex",
+  "pr_number": 265,
+  "pr_url": "https://github.com/pyiron/pyfileindex/pull/265",
+  "repo": {
+    "full_name": "pyiron/pyfileindex",
+    "clone_url": "https://github.com/pyiron/pyfileindex.git",
+    "default_branch": "main",
+    "created_at": "2019-07-15T11:48:06Z",
+    "stars": 9,
+    "license": "BSD-3-Clause",
+    "size_kb": 3027
+  },
+  "pull_request": {
+    "id": 3208210227,
+    "title": "Update pandas to 3.0.0",
+    "body": "\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\n## Summary by CodeRabbit\n\n* **Chores**\n  * Updated pandas dependency from version 2.3.3 to 3.0.0 in project configuration files.\n\n<sub>✏️ Tip: You can customize this high-level summary in your review settings.</sub>\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "created_at": "2026-01-25T11:18:37Z",
+    "merged_at": "2026-01-25T11:23:24Z",
+    "base_sha": "df7a23032fc6db76f1a5ad8657783c99ccf4de61",
+    "head_sha": "a6761a304ed543605bcc6ab755d5523e83dc2dbe",
+    "merge_commit_sha": "bd2766bf70d0027788a474ad0f6c16035af696a1",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "df7a23032fc6db76f1a5ad8657783c99ccf4de61",
+  "final_sha": "a6761a304ed543605bcc6ab755d5523e83dc2dbe",
+  "changed_files": [
+    {
+      "sha": "7a75b90c381c5e65b36998334e62e164268c50b0",
+      "filename": ".ci_support/environment.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pyiron/pyfileindex/blob/a6761a304ed543605bcc6ab755d5523e83dc2dbe/.ci_support%2Fenvironment.yml",
+      "raw_url": "https://github.com/pyiron/pyfileindex/raw/a6761a304ed543605bcc6ab755d5523e83dc2dbe/.ci_support%2Fenvironment.yml",
+      "contents_url": "https://api.github.com/repos/pyiron/pyfileindex/contents/.ci_support%2Fenvironment.yml?ref=a6761a304ed543605bcc6ab755d5523e83dc2dbe",
+      "patch": "@@ -4,4 +4,4 @@ dependencies:\n - coverage\n - hatchling =1.28.0\n - hatch-vcs =0.5.0\n-- pandas =2.3.3\n+- pandas =3.0.0"
+    },
+    {
+      "sha": "6009eb183492cd113de350e7591197da3805cefc",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/pyiron/pyfileindex/blob/a6761a304ed543605bcc6ab755d5523e83dc2dbe/pyproject.toml",
+      "raw_url": "https://github.com/pyiron/pyfileindex/raw/a6761a304ed543605bcc6ab755d5523e83dc2dbe/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/pyiron/pyfileindex/contents/pyproject.toml?ref=a6761a304ed543605bcc6ab755d5523e83dc2dbe",
+      "patch": "@@ -2,7 +2,7 @@\n requires = [\n     \"hatchling==1.28.0\",\n     \"hatch-vcs==0.5.0\",\n-    \"pandas==2.3.3\",\n+    \"pandas==3.0.0\",\n ]\n build-backend = \"hatchling.build\"\n \n@@ -30,7 +30,7 @@ classifiers = [\n     \"Programming Language :: Python :: 3.14\",\n ]\n dependencies = [\n-    \"pandas==2.3.3\",\n+    \"pandas==3.0.0\",\n ]\n dynamic = [\"version\"]\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "0857b3e8cd8cef9bbd52f44545e35c5822e7d34c",
+      "message": "Update pyproject.toml",
+      "parent_shas": [
+        "df7a23032fc6db76f1a5ad8657783c99ccf4de61"
+      ]
+    },
+    {
+      "sha": "a6761a304ed543605bcc6ab755d5523e83dc2dbe",
+      "message": "Update environment.yml",
+      "parent_shas": [
+        "0857b3e8cd8cef9bbd52f44545e35c5822e7d34c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "dependency_only",
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__pyiron__pyfileindex__pr265.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\pyiron__pyfileindex__pr265__py2_py3__pyiron__pyfileindex__pr265\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\pyiron__pyfileindex__pr265__py2_py3__pyiron__pyfileindex__pr265\\rn"
+  }
+}

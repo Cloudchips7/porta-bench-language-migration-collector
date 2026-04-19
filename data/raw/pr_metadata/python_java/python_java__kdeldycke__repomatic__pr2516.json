@@ -1,0 +1,94 @@
+{
+  "instance_id": "python_java__kdeldycke__repomatic__pr2516",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "kdeldycke/repomatic",
+  "pr_number": 2516,
+  "pr_url": "https://github.com/kdeldycke/repomatic/pull/2516",
+  "repo": {
+    "full_name": "kdeldycke/repomatic",
+    "clone_url": "https://github.com/kdeldycke/repomatic.git",
+    "default_branch": "main",
+    "created_at": "2021-12-09T15:04:12Z",
+    "stars": 45,
+    "license": "GPL-2.0",
+    "size_kb": 9763
+  },
+  "pull_request": {
+    "id": 3497681783,
+    "title": "Format Python",
+    "body": "### Description\n\nAuto-formats Python files with [autopep8](https://github.com/hhatto/autopep8) (comment wrapping) and [Ruff](https://docs.astral.sh/ruff/) (linting and formatting). When no `[tool.ruff]` section or `ruff.toml` is present, [repomatic's bundled defaults](https://github.com/kdeldycke/repomatic/blob/main/repomatic/data/ruff.toml) are applied at runtime. See the [`format-python` job documentation](https://github.com/kdeldycke/repomatic?tab=readme-ov-file#githubworkflowsautofixyaml-jobs) for details.\n\n> [!TIP]\n> Customize formatting and linting rules via [`[tool.ruff]`](https://docs.astral.sh/ruff/configuration/) and [`[tool.autopep8]`](https://github.com/hhatto/autopep8#configuration) in your `pyproject.toml`.\n\n\n> [!IMPORTANT]\n> If you suspect the PR content is outdated, **[click `Run workflow`](https://github.com/kdeldycke/repomatic/actions/workflows/autofix.yaml)** to refresh it manually before merging.\n\n\n<details><summary><code>Workflow metadata</code></summary>\n\n| Field | Value |\n| :-- | :-- |\n| **Trigger** | `push` |\n| **Actor** | @kdeldycke |\n| **Ref** | `main` |\n| **Commit** | [`fddd79b4`](https://github.com/kdeldycke/repomatic/commit/fddd79b4bb56dccb88d13783d051182ac2f38bd0) |\n| **Job** | [`format-python`](https://github.com/kdeldycke/repomatic/blob/fddd79b4bb56dccb88d13783d051182ac2f38bd0/.github/workflows/autofix.yaml) |\n| **Workflow** | [`autofix.yaml`](https://github.com/kdeldycke/repomatic/blob/fddd79b4bb56dccb88d13783d051182ac2f38bd0/.github/workflows/autofix.yaml) |\n| **Run** | [#4255.1](https://github.com/kdeldycke/repomatic/actions/runs/24079778138) |\n\n</details>\n\n---\n\n🏭 Generated with [repomatic](https://github.com/kdeldycke/repomatic) `6.11.1.dev0`",
+    "created_at": "2026-04-07T11:56:46Z",
+    "merged_at": "2026-04-07T14:24:27Z",
+    "base_sha": "fddd79b4bb56dccb88d13783d051182ac2f38bd0",
+    "head_sha": "74e936738d12306521c6ece9a485ead8bc344a3f",
+    "merge_commit_sha": "647f2f8a0fad380a07afda1495c83133a80f5c64",
+    "labels": [
+      "🤖 ci"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "fddd79b4bb56dccb88d13783d051182ac2f38bd0",
+  "final_sha": "74e936738d12306521c6ece9a485ead8bc344a3f",
+  "changed_files": [
+    {
+      "sha": "7749d738b70ac48d39274ac3a67543ed329cf52a",
+      "filename": "repomatic/uv.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 6,
+      "changes": 14,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/74e936738d12306521c6ece9a485ead8bc344a3f/repomatic%2Fuv.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/74e936738d12306521c6ece9a485ead8bc344a3f/repomatic%2Fuv.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/repomatic%2Fuv.py?ref=74e936738d12306521c6ece9a485ead8bc344a3f",
+      "patch": "@@ -37,8 +37,10 @@\n \n import tomlkit\n \n-from .pypi import get_changelog_url as get_pypi_changelog_url\n-from .pypi import get_source_url as get_pypi_source_url\n+from .pypi import (\n+    get_changelog_url as get_pypi_changelog_url,\n+    get_source_url as get_pypi_source_url,\n+)\n \n if sys.version_info >= (3, 11):\n     import tomllib\n@@ -927,9 +929,7 @@ def fetch_release_notes(\n             changelog_url = get_pypi_changelog_url(name)\n             if changelog_url:\n                 body = f\"[Changelog]({changelog_url})\"\n-                logging.debug(\n-                    f\"Using PyPI changelog URL for {name}: {changelog_url}\"\n-                )\n+                logging.debug(f\"Using PyPI changelog URL for {name}: {changelog_url}\")\n             else:\n                 logging.debug(f\"No release body or changelog for {name} {new}.\")\n         if body:\n@@ -1065,7 +1065,9 @@ def fix_vulnerable_deps(lock_path: Path) -> tuple[bool, str]:\n     if pyproject_path.exists():\n         upgraded = {name for name, _old, _new in changes}\n         needs_exemption = _packages_outside_cooldown(\n-            pyproject_path, lock_path, upgraded,\n+            pyproject_path,\n+            lock_path,\n+            upgraded,\n         )\n         if needs_exemption:\n             add_exclude_newer_packages(pyproject_path, needs_exemption)"
+    },
+    {
+      "sha": "67b31d0b9169d033d85ae1ac725c49384b952c60",
+      "filename": "tests/test_renovate.py",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 17,
+      "changes": 32,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/74e936738d12306521c6ece9a485ead8bc344a3f/tests%2Ftest_renovate.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/74e936738d12306521c6ece9a485ead8bc344a3f/tests%2Ftest_renovate.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/tests%2Ftest_renovate.py?ref=74e936738d12306521c6ece9a485ead8bc344a3f",
+      "patch": "@@ -25,6 +25,7 @@\n import pytest\n \n from repomatic.github.token import check_commit_statuses_permission\n+from repomatic.pypi import get_changelog_url\n from repomatic.renovate import (\n     RenovateCheckResult,\n     check_dependabot_config_absent,\n@@ -34,12 +35,11 @@\n     get_dependabot_config_path,\n     run_migration_checks,\n )\n-from repomatic.pypi import get_changelog_url\n from repomatic.uv import (\n     RELEASE_NOTES_MAX_LENGTH,\n     _format_upload_date,\n-    _parse_github_owner_repo,\n     _packages_outside_cooldown,\n+    _parse_github_owner_repo,\n     _parse_iso_datetime,\n     _parse_relative_duration,\n     add_exclude_newer_packages,\n@@ -741,10 +741,7 @@ def test_add_exclude_newer_packages_no_uv_section(tmp_path):\n def test_packages_outside_cooldown_filters_reachable(tmp_path):\n     \"\"\"Packages whose upload time is before the cutoff are not exempted.\"\"\"\n     pyproject = tmp_path / \"pyproject.toml\"\n-    pyproject.write_text(\n-        \"[tool.uv]\\n\"\n-        'exclude-newer = \"2026-04-01T00:00:00Z\"\\n'\n-    )\n+    pyproject.write_text('[tool.uv]\\nexclude-newer = \"2026-04-01T00:00:00Z\"\\n')\n     lock = tmp_path / \"uv.lock\"\n     lock.write_text(\n         \"version = 1\\n\\n\"\n@@ -760,18 +757,17 @@ def test_packages_outside_cooldown_filters_reachable(tmp_path):\n         'upload-time = \"2026-03-25T00:00:00Z\"\\n'\n     )\n     result = _packages_outside_cooldown(\n-        pyproject, lock, {\"pygments\", \"requests\"},\n+        pyproject,\n+        lock,\n+        {\"pygments\", \"requests\"},\n     )\n     assert result == set()\n \n \n def test_packages_outside_cooldown_keeps_unreachable(tmp_path):\n     \"\"\"Packages uploaded after the cutoff need an exemption.\"\"\"\n     pyproject = tmp_path / \"pyproject.toml\"\n-    pyproject.write_text(\n-        \"[tool.uv]\\n\"\n-        'exclude-newer = \"2026-03-25T00:00:00Z\"\\n'\n-    )\n+    pyproject.write_text('[tool.uv]\\nexclude-newer = \"2026-03-25T00:00:00Z\"\\n')\n     lock = tmp_path / \"uv.lock\"\n     lock.write_text(\n         \"version = 1\\n\\n\"\n@@ -787,7 +783,9 @@ def test_packages_outside_cooldown_keeps_unreachable(tmp_path):\n         'upload-time = \"2026-03-20T00:00:00Z\"\\n'\n     )\n     result = _packages_outside_cooldown(\n-        pyproject, lock, {\"pygments\", \"requests\"},\n+        pyproject,\n+        lock,\n+        {\"pygments\", \"requests\"},\n     )\n     # Only pygments is after the cutoff.\n     assert result == {\"pygments\"}\n@@ -796,10 +794,7 @@ def test_packages_outside_cooldown_keeps_unreachable(tmp_path):\n def test_packages_outside_cooldown_no_upload_time(tmp_path):\n     \"\"\"Packages without upload times are always exempted.\"\"\"\n     pyproject = tmp_path / \"pyproject.toml\"\n-    pyproject.write_text(\n-        \"[tool.uv]\\n\"\n-        'exclude-newer = \"2026-04-01T00:00:00Z\"\\n'\n-    )\n+    pyproject.write_text('[tool.uv]\\nexclude-newer = \"2026-04-01T00:00:00Z\"\\n')\n     lock = tmp_path / \"uv.lock\"\n     lock.write_text(\n         \"version = 1\\n\\n\"\n@@ -1278,7 +1273,10 @@ def test_format_release_notes_changelog_fallback():\n     result = format_release_notes(notes)\n     assert \"<details>\" in result\n     assert \"<summary>dpranke/pyjson5 (<code>json5</code>)</summary>\" in result\n-    assert \"[Changelog](https://github.com/dpranke/pyjson5/blob/master/README.md)\" in result\n+    assert (\n+        \"[Changelog](https://github.com/dpranke/pyjson5/blob/master/README.md)\"\n+        in result\n+    )\n     # No tag heading should appear.\n     assert \"#### [\" not in result\n     assert \"</details>\" in result"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "74e936738d12306521c6ece9a485ead8bc344a3f",
+      "message": "Format Python",
+      "parent_shas": [
+        "fddd79b4bb56dccb88d13783d051182ac2f38bd0"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__kdeldycke__repomatic__pr2516.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__repomatic__pr2516__python_java__kdeldycke__repomatic__pr2516\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__repomatic__pr2516__python_java__kdeldycke__repomatic__pr2516\\rn"
+  }
+}

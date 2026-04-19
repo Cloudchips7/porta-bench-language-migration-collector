@@ -1,0 +1,127 @@
+{
+  "instance_id": "cpp_python__RustPython__RustPython__pr7590",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "RustPython/RustPython",
+  "pr_number": 7590,
+  "pr_url": "https://github.com/RustPython/RustPython/pull/7590",
+  "repo": {
+    "full_name": "RustPython/RustPython",
+    "clone_url": "https://github.com/RustPython/RustPython.git",
+    "default_branch": "main",
+    "created_at": "2018-05-28T19:27:01Z",
+    "stars": 22017,
+    "license": "MIT",
+    "size_kb": 90610
+  },
+  "pull_request": {
+    "id": 3522699356,
+    "title": "Add `__callback__` property to weakref type",
+    "body": "RustPython's `weakref` type was missing the `__callback__` read-only property, blocking PyO3 weakref compatibility (e.g. `reference.getattr(\"__callback__\")` fails).\n\n### Changes\n\n- **`crates/vm/src/object/core.rs`**: Add `get_callback()` to `PyWeak` — reads the callback field under the stripe lock using the same double-check pattern as `upgrade()`\n- **`crates/vm/src/builtins/weakref.rs`**: Expose `__callback__` as a read-only `#[pygetset]`\n- **`Lib/test/test_weakref.py`**: Remove `expectedFailure` from `test_callback_attribute` and `test_callback_attribute_after_deletion`\n- **`extra_tests/snippets/stdlib_weakref.py`**: Add regression coverage\n\n```python\n>>> import weakref\n>>> class C: pass\n>>> o = C()\n>>> weakref.ref(o).__callback__ is None\nTrue\n>>> cb = lambda r: None\n>>> weakref.ref(o, cb).__callback__ is cb\nTrue\n```\n\nSemantics match CPython: returns the callback if alive, `None` if no callback was set or referent was collected (callback consumed during clear).",
+    "created_at": "2026-04-13T12:03:25Z",
+    "merged_at": "2026-04-13T14:58:59Z",
+    "base_sha": "7e5e0269417e81dcdcab188cfc3ac7380a71a14d",
+    "head_sha": "0d51428ec817c8699155473b9a1990c05166ee66",
+    "merge_commit_sha": "7e637e8cbd37a7ef01c5b0b0152d94ec82f323b2",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "7e5e0269417e81dcdcab188cfc3ac7380a71a14d",
+  "final_sha": "0d51428ec817c8699155473b9a1990c05166ee66",
+  "changed_files": [
+    {
+      "sha": "2e8e679c8d785897c6284b967a70a32e281dbbae",
+      "filename": "Lib/test/test_weakref.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/RustPython/RustPython/blob/0d51428ec817c8699155473b9a1990c05166ee66/Lib%2Ftest%2Ftest_weakref.py",
+      "raw_url": "https://github.com/RustPython/RustPython/raw/0d51428ec817c8699155473b9a1990c05166ee66/Lib%2Ftest%2Ftest_weakref.py",
+      "contents_url": "https://api.github.com/repos/RustPython/RustPython/contents/Lib%2Ftest%2Ftest_weakref.py?ref=0d51428ec817c8699155473b9a1990c05166ee66",
+      "patch": "@@ -993,7 +993,6 @@ def cb(wparent):\n         del root\n         gc.collect()\n \n-    @unittest.expectedFailure  # TODO: RUSTPYTHON\n     def test_callback_attribute(self):\n         x = Object(1)\n         callback = lambda ref: None\n@@ -1003,7 +1002,6 @@ def test_callback_attribute(self):\n         ref2 = weakref.ref(x)\n         self.assertIsNone(ref2.__callback__)\n \n-    @unittest.expectedFailure  # TODO: RUSTPYTHON\n     def test_callback_attribute_after_deletion(self):\n         x = Object(1)\n         ref = weakref.ref(x, self.callback)"
+    },
+    {
+      "sha": "0527142bb35fa5cd76dc5464c4a68699e5d3b7ef",
+      "filename": "crates/vm/src/builtins/weakref.rs",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/RustPython/RustPython/blob/0d51428ec817c8699155473b9a1990c05166ee66/crates%2Fvm%2Fsrc%2Fbuiltins%2Fweakref.rs",
+      "raw_url": "https://github.com/RustPython/RustPython/raw/0d51428ec817c8699155473b9a1990c05166ee66/crates%2Fvm%2Fsrc%2Fbuiltins%2Fweakref.rs",
+      "contents_url": "https://api.github.com/repos/RustPython/RustPython/contents/crates%2Fvm%2Fsrc%2Fbuiltins%2Fweakref.rs?ref=0d51428ec817c8699155473b9a1990c05166ee66",
+      "patch": "@@ -85,6 +85,11 @@ impl Initializer for PyWeak {\n     flags(BASETYPE)\n )]\n impl PyWeak {\n+    #[pygetset]\n+    fn __callback__(&self, vm: &VirtualMachine) -> PyObjectRef {\n+        vm.unwrap_or_none(self.get_callback())\n+    }\n+\n     #[pyclassmethod]\n     fn __class_getitem__(cls: PyTypeRef, args: PyObjectRef, vm: &VirtualMachine) -> PyGenericAlias {\n         PyGenericAlias::from_args(cls, args, vm)"
+    },
+    {
+      "sha": "cf49cc42a95f283c2944a244aa761bbc04dc27df",
+      "filename": "crates/vm/src/object/core.rs",
+      "status": "modified",
+      "additions": 23,
+      "deletions": 0,
+      "changes": 23,
+      "blob_url": "https://github.com/RustPython/RustPython/blob/0d51428ec817c8699155473b9a1990c05166ee66/crates%2Fvm%2Fsrc%2Fobject%2Fcore.rs",
+      "raw_url": "https://github.com/RustPython/RustPython/raw/0d51428ec817c8699155473b9a1990c05166ee66/crates%2Fvm%2Fsrc%2Fobject%2Fcore.rs",
+      "contents_url": "https://api.github.com/repos/RustPython/RustPython/contents/crates%2Fvm%2Fsrc%2Fobject%2Fcore.rs?ref=0d51428ec817c8699155473b9a1990c05166ee66",
+      "patch": "@@ -852,6 +852,29 @@ impl PyWeak {\n         self.wr_object.load(Ordering::Acquire).is_null()\n     }\n \n+    /// Get the callback associated with this weak reference.\n+    /// Returns `None` if there is no callback or if the referent has been\n+    /// collected (at which point the callback was already consumed).\n+    pub(crate) fn get_callback(&self) -> Option<PyObjectRef> {\n+        let obj_ptr = self.wr_object.load(Ordering::Acquire);\n+        if obj_ptr.is_null() {\n+            // Dead weakref: callback was consumed during clear\n+            return None;\n+        }\n+\n+        let _lock = weakref_lock::lock(obj_ptr as usize);\n+\n+        // Double-check under lock (clear may have run between our check and lock)\n+        let obj_ptr = self.wr_object.load(Ordering::Relaxed);\n+        if obj_ptr.is_null() {\n+            return None;\n+        }\n+\n+        // Safety: we hold the stripe lock that protects the callback field\n+        let callback = unsafe { &*self.callback.get() };\n+        callback.clone()\n+    }\n+\n     /// weakref_dealloc: remove from list if still linked.\n     fn drop_inner(&self) {\n         let obj_ptr = self.wr_object.load(Ordering::Acquire);"
+    },
+    {
+      "sha": "05d72275e9feb57b983cf7d61635ff7ff33ad55c",
+      "filename": "extra_tests/snippets/stdlib_weakref.py",
+      "status": "modified",
+      "additions": 24,
+      "deletions": 0,
+      "changes": 24,
+      "blob_url": "https://github.com/RustPython/RustPython/blob/0d51428ec817c8699155473b9a1990c05166ee66/extra_tests%2Fsnippets%2Fstdlib_weakref.py",
+      "raw_url": "https://github.com/RustPython/RustPython/raw/0d51428ec817c8699155473b9a1990c05166ee66/extra_tests%2Fsnippets%2Fstdlib_weakref.py",
+      "contents_url": "https://api.github.com/repos/RustPython/RustPython/contents/extra_tests%2Fsnippets%2Fstdlib_weakref.py?ref=0d51428ec817c8699155473b9a1990c05166ee66",
+      "patch": "@@ -13,6 +13,30 @@ class X:\n assert callable(b)\n assert b() is a\n \n+# Test __callback__ property\n+assert b.__callback__ is None, (\n+    \"weakref without callback should have __callback__ == None\"\n+)\n+\n+callback = lambda r: None\n+c = ref(a, callback)\n+assert c.__callback__ is callback, \"weakref with callback should return the callback\"\n+\n+# Test __callback__ is read-only\n+try:\n+    c.__callback__ = lambda r: None\n+    assert False, \"Setting __callback__ should raise AttributeError\"\n+except AttributeError:\n+    pass\n+\n+# Test __callback__ after referent deletion\n+x = X()\n+cb = lambda r: None\n+w = ref(x, cb)\n+assert w.__callback__ is cb\n+del x\n+assert w.__callback__ is None, \"__callback__ should be None after referent is collected\"\n+\n \n class G:\n     def __init__(self, h):"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "186e1fb97427d9b996ee8509c95c42203757a505",
+      "message": "Initial plan",
+      "parent_shas": [
+        "7e5e0269417e81dcdcab188cfc3ac7380a71a14d"
+      ]
+    },
+    {
+      "sha": "25b8c66b1e76cc86984518f41ac37f567515fab8",
+      "message": "Add __callback__ property to PyWeak for weakref compatibility\n\nAdd get_callback() method to PyWeak in core.rs that safely reads the\ncallback field under the stripe lock. Expose it as a read-only\n__callback__ property on the weakref type, matching CPython behavior:\n- Returns the callback function when one was provided and referent is alive\n- Returns None when no callback was provided\n- Returns None after the referent has been collected\n- Raises AttributeError on assignment (read-only)\n\nRemove @unittest.expectedFailure from test_callback_attribute and\ntest_callback_attribute_after_deletion in test_weakref.py.\n\nAdd regression tests to extra_tests/snippets/stdlib_weakref.py.\n\nAgent-Logs-Url: https://github.com/RustPython/RustPython/sessions/a8689daa-4476-4645-a935-0e13c7f7bb42\n\nCo-authored-by: youknowone <69878+youknowone@users.noreply.github.com>",
+      "parent_shas": [
+        "186e1fb97427d9b996ee8509c95c42203757a505"
+      ]
+    },
+    {
+      "sha": "0d51428ec817c8699155473b9a1990c05166ee66",
+      "message": "Fix ruff formatting in stdlib_weakref.py snippet\n\nAgent-Logs-Url: https://github.com/RustPython/RustPython/sessions/4995198f-e083-4dac-823a-166fcf54adc4\n\nCo-authored-by: youknowone <69878+youknowone@users.noreply.github.com>",
+      "parent_shas": [
+        "25b8c66b1e76cc86984518f41ac37f567515fab8"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__RustPython__RustPython__pr7590.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\RustPython__RustPython__pr7590__cpp_python__RustPython__RustPython__pr7590\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\RustPython__RustPython__pr7590__cpp_python__RustPython__RustPython__pr7590\\rn"
+  }
+}

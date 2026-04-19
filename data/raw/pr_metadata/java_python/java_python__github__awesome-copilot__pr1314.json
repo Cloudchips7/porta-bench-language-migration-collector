@@ -1,0 +1,127 @@
+{
+  "instance_id": "java_python__github__awesome-copilot__pr1314",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "github/awesome-copilot",
+  "pr_number": 1314,
+  "pr_url": "https://github.com/github/awesome-copilot/pull/1314",
+  "repo": {
+    "full_name": "github/awesome-copilot",
+    "clone_url": "https://github.com/github/awesome-copilot.git",
+    "default_branch": "main",
+    "created_at": "2025-06-11T16:57:39Z",
+    "stars": 30268,
+    "license": "MIT",
+    "size_kb": 61980
+  },
+  "pull_request": {
+    "id": 3494567343,
+    "title": "fix: Java cookbook recipes to compile with copilot-sdk-java 0.2.1-java.1",
+    "body": "## Summary\n\nFix compilation errors and documentation inaccuracies in Java cookbook recipes against the `copilot-sdk-java:0.2.1-java.1` API.\n\n## Issues Found & Fixed\n\n### Compilation failures (recipe/*.java)\n\n| Recipe | Issue | Fix |\n|--------|-------|-----|\n| `MultipleSessions.java` | `CopilotSession.destroy()` does not exist | Replaced with `close()` |\n| `AccessibilityReport.java` | `McpServerConfig` class does not exist | Replaced with `Map.of()` (matches `setMcpServers(Map<String, Object>)` signature) |\n\n### Documentation inaccuracies (*.md inline code)\n\n| File | Issue | Fix |\n|------|-------|-----|\n| `multiple-sessions.md` | `destroy()` in 2 code snippets | Replaced with `close()` |\n| `accessibility-report.md` | `McpServerConfig` in 2 code snippets | Replaced with `Map.of()` |\n| `error-handling.md` | `session.addTool()`, `ToolDefinition.builder()`, `ToolResultObject.success/error` — none exist | Replaced with `ToolDefinition.create()`, `SessionConfig.setTools()`, `CompletableFuture.completedFuture()` |\n\n## Verification\n\nAll 7 recipes compile successfully with `jbang build`:\n\n```\n✅ ErrorHandling.java OK\n✅ MultipleSessions.java OK\n✅ ManagingLocalFiles.java OK\n✅ PersistingSessions.java OK\n✅ PRVisualization.java OK\n✅ RalphLoop.java OK\n✅ AccessibilityReport.java OK\n```\n\n## No changes needed\n\nThese recipes were already correct:\n- `ErrorHandling.java` / `error-handling.md` (runnable file was fine; only docs section fixed)\n- `ManagingLocalFiles.java` / `managing-local-files.md`\n- `PersistingSessions.java` / `persisting-sessions.md`\n- `PRVisualization.java` / `pr-visualization.md`\n- `RalphLoop.java` / `ralph-loop.md`",
+    "created_at": "2026-04-06T19:13:06Z",
+    "merged_at": "2026-04-06T19:17:33Z",
+    "base_sha": "7c6c0be2f3933f590cd8ab92b2f2280b3e28f28b",
+    "head_sha": "aa6d771265810a07a858bdb2289e0e0dd83ea175",
+    "merge_commit_sha": "d14dc512894fa7f9e718dc541310b45e3695025c",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "7c6c0be2f3933f590cd8ab92b2f2280b3e28f28b",
+  "final_sha": "aa6d771265810a07a858bdb2289e0e0dd83ea175",
+  "changed_files": [
+    {
+      "sha": "83a1853c5a8e2c56745b7b6a1e6381b59a56db02",
+      "filename": "cookbook/copilot-sdk/java/accessibility-report.md",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 10,
+      "changes": 22,
+      "blob_url": "https://github.com/github/awesome-copilot/blob/aa6d771265810a07a858bdb2289e0e0dd83ea175/cookbook%2Fcopilot-sdk%2Fjava%2Faccessibility-report.md",
+      "raw_url": "https://github.com/github/awesome-copilot/raw/aa6d771265810a07a858bdb2289e0e0dd83ea175/cookbook%2Fcopilot-sdk%2Fjava%2Faccessibility-report.md",
+      "contents_url": "https://api.github.com/repos/github/awesome-copilot/contents/cookbook%2Fcopilot-sdk%2Fjava%2Faccessibility-report.md?ref=aa6d771265810a07a858bdb2289e0e0dd83ea175",
+      "patch": "@@ -67,11 +67,12 @@ public class AccessibilityReport {\n             client.start().get();\n \n             // Configure Playwright MCP server for browser automation\n-            var mcpConfig = new McpServerConfig()\n-                .setType(\"local\")\n-                .setCommand(\"npx\")\n-                .setArgs(List.of(\"@playwright/mcp@latest\"))\n-                .setTools(List.of(\"*\"));\n+            Map<String, Object> mcpConfig = Map.of(\n+                \"type\", \"local\",\n+                \"command\", \"npx\",\n+                \"args\", List.of(\"@playwright/mcp@latest\"),\n+                \"tools\", List.of(\"*\")\n+            );\n \n             var session = client.createSession(\n                 new SessionConfig()\n@@ -167,11 +168,12 @@ public class AccessibilityReport {\n The recipe configures a local MCP server that runs alongside the session:\n \n ```java\n-var mcpConfig = new McpServerConfig()\n-    .setType(\"local\")\n-    .setCommand(\"npx\")\n-    .setArgs(List.of(\"@playwright/mcp@latest\"))\n-    .setTools(List.of(\"*\"));\n+Map<String, Object> mcpConfig = Map.of(\n+    \"type\", \"local\",\n+    \"command\", \"npx\",\n+    \"args\", List.of(\"@playwright/mcp@latest\"),\n+    \"tools\", List.of(\"*\")\n+);\n \n var session = client.createSession(\n     new SessionConfig()"
+    },
+    {
+      "sha": "a21c4f755cea218b6946cae7bd44c6024e34b1e3",
+      "filename": "cookbook/copilot-sdk/java/error-handling.md",
+      "status": "modified",
+      "additions": 30,
+      "deletions": 15,
+      "changes": 45,
+      "blob_url": "https://github.com/github/awesome-copilot/blob/aa6d771265810a07a858bdb2289e0e0dd83ea175/cookbook%2Fcopilot-sdk%2Fjava%2Ferror-handling.md",
+      "raw_url": "https://github.com/github/awesome-copilot/raw/aa6d771265810a07a858bdb2289e0e0dd83ea175/cookbook%2Fcopilot-sdk%2Fjava%2Ferror-handling.md",
+      "contents_url": "https://api.github.com/repos/github/awesome-copilot/contents/cookbook%2Fcopilot-sdk%2Fjava%2Ferror-handling.md?ref=aa6d771265810a07a858bdb2289e0e0dd83ea175",
+      "patch": "@@ -150,27 +150,42 @@ try (var client = new CopilotClient()) {\n \n ## Handling tool errors\n \n-When defining tools, return an error result to signal a failure back to the model instead of throwing.\n+When defining tools, return an error string to signal a failure back to the model instead of throwing.\n \n ```java\n-import com.github.copilot.sdk.json.ToolResultObject;\n-\n-session.addTool(\n-    ToolDefinition.builder()\n-        .name(\"read_file\")\n-        .description(\"Read a file from disk\")\n-        .parameter(\"path\", \"string\", \"File path\", true)\n-        .build(),\n-    (args) -> {\n+import com.github.copilot.sdk.json.ToolDefinition;\n+import java.util.concurrent.CompletableFuture;\n+\n+var readFileTool = ToolDefinition.create(\n+    \"read_file\",\n+    \"Read a file from disk\",\n+    Map.of(\n+        \"type\", \"object\",\n+        \"properties\", Map.of(\n+            \"path\", Map.of(\"type\", \"string\", \"description\", \"File path\")\n+        ),\n+        \"required\", List.of(\"path\")\n+    ),\n+    invocation -> {\n         try {\n+            var path = (String) invocation.getArguments().get(\"path\");\n             var content = java.nio.file.Files.readString(\n-                java.nio.file.Path.of(args.get(\"path\").toString()));\n-            return ToolResultObject.success(content);\n-        } catch (IOException ex) {\n-            return ToolResultObject.error(\"Failed to read file: \" + ex.getMessage());\n+                java.nio.file.Path.of(path));\n+            return CompletableFuture.completedFuture(content);\n+        } catch (java.io.IOException ex) {\n+            return CompletableFuture.completedFuture(\n+                \"Error: Failed to read file: \" + ex.getMessage());\n         }\n     }\n );\n+\n+// Register tools when creating the session\n+var session = client.createSession(\n+    new SessionConfig()\n+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)\n+        .setModel(\"gpt-5\")\n+        .setTools(List.of(readFileTool))\n+).get();\n ```\n \n ## Best practices\n@@ -179,5 +194,5 @@ session.addTool(\n 2. **Unwrap `ExecutionException`**: Call `getCause()` to inspect the real error — the outer `ExecutionException` is just a `CompletableFuture` wrapper.\n 3. **Restore interrupt flag**: When catching `InterruptedException`, call `Thread.currentThread().interrupt()` to preserve the interrupted status.\n 4. **Set timeouts**: Use `get(timeout, TimeUnit)` instead of bare `get()` for any call that could block indefinitely.\n-5. **Return tool errors, don't throw**: Use `ToolResultObject.error()` so the model can recover gracefully.\n+5. **Return tool errors, don't throw**: Return an error string from the `CompletableFuture` so the model can recover gracefully.\n 6. **Log errors**: Capture error details for debugging — consider a logging framework like SLF4J for production applications."
+    },
+    {
+      "sha": "4508e565b48d530e8f2649b1467cce662123ca65",
+      "filename": "cookbook/copilot-sdk/java/multiple-sessions.md",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/github/awesome-copilot/blob/aa6d771265810a07a858bdb2289e0e0dd83ea175/cookbook%2Fcopilot-sdk%2Fjava%2Fmultiple-sessions.md",
+      "raw_url": "https://github.com/github/awesome-copilot/raw/aa6d771265810a07a858bdb2289e0e0dd83ea175/cookbook%2Fcopilot-sdk%2Fjava%2Fmultiple-sessions.md",
+      "contents_url": "https://api.github.com/repos/github/awesome-copilot/contents/cookbook%2Fcopilot-sdk%2Fjava%2Fmultiple-sessions.md?ref=aa6d771265810a07a858bdb2289e0e0dd83ea175",
+      "patch": "@@ -48,9 +48,9 @@ public class MultipleSessions {\n             session3.sendAndWait(new MessageOptions().setPrompt(\"How do I initialize a module?\")).get();\n \n             // Clean up all sessions\n-            session1.destroy().get();\n-            session2.destroy().get();\n-            session3.destroy().get();\n+            session1.close();\n+            session2.close();\n+            session3.close();\n         }\n     }\n }\n@@ -136,7 +136,7 @@ var session = client.createSession(new SessionConfig()\n \n session.sendAndWait(new MessageOptions().setPrompt(\"Hello!\")).get();\n \n-session.destroy().get();\n+session.close();\n client.stop().get();\n executor.shutdown();\n ```"
+    },
+    {
+      "sha": "b77f6419d568d09c5418ab499724ac0b6c0be098",
+      "filename": "cookbook/copilot-sdk/java/recipe/AccessibilityReport.java",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 5,
+      "changes": 11,
+      "blob_url": "https://github.com/github/awesome-copilot/blob/aa6d771265810a07a858bdb2289e0e0dd83ea175/cookbook%2Fcopilot-sdk%2Fjava%2Frecipe%2FAccessibilityReport.java",
+      "raw_url": "https://github.com/github/awesome-copilot/raw/aa6d771265810a07a858bdb2289e0e0dd83ea175/cookbook%2Fcopilot-sdk%2Fjava%2Frecipe%2FAccessibilityReport.java",
+      "contents_url": "https://api.github.com/repos/github/awesome-copilot/contents/cookbook%2Fcopilot-sdk%2Fjava%2Frecipe%2FAccessibilityReport.java?ref=aa6d771265810a07a858bdb2289e0e0dd83ea175",
+      "patch": "@@ -43,11 +43,12 @@ public static void main(String[] args) throws Exception {\n             client.start().get();\n \n             // Configure Playwright MCP server for browser automation\n-            var mcpConfig = new McpServerConfig()\n-                .setType(\"local\")\n-                .setCommand(\"npx\")\n-                .setArgs(List.of(\"@playwright/mcp@latest\"))\n-                .setTools(List.of(\"*\"));\n+            Map<String, Object> mcpConfig = Map.of(\n+                \"type\", \"local\",\n+                \"command\", \"npx\",\n+                \"args\", List.of(\"@playwright/mcp@latest\"),\n+                \"tools\", List.of(\"*\")\n+            );\n \n             var session = client.createSession(\n                 new SessionConfig()"
+    },
+    {
+      "sha": "615dab80bf5613e9701aafefa53bfab397da44e7",
+      "filename": "cookbook/copilot-sdk/java/recipe/MultipleSessions.java",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/github/awesome-copilot/blob/aa6d771265810a07a858bdb2289e0e0dd83ea175/cookbook%2Fcopilot-sdk%2Fjava%2Frecipe%2FMultipleSessions.java",
+      "raw_url": "https://github.com/github/awesome-copilot/raw/aa6d771265810a07a858bdb2289e0e0dd83ea175/cookbook%2Fcopilot-sdk%2Fjava%2Frecipe%2FMultipleSessions.java",
+      "contents_url": "https://api.github.com/repos/github/awesome-copilot/contents/cookbook%2Fcopilot-sdk%2Fjava%2Frecipe%2FMultipleSessions.java?ref=aa6d771265810a07a858bdb2289e0e0dd83ea175",
+      "patch": "@@ -30,8 +30,7 @@ public static void main(String[] args) throws Exception {\n             System.out.println(\"S3: \" + s3.sendAndWait(new MessageOptions().setPrompt(\"Explain pattern matching\")).get().getData().content());\n \n             // Clean up\n-            s1.destroy().get(); s2.destroy().get(); s3.destroy().get();\n-            client.stop().get();\n+            s1.close(); s2.close(); s3.close();\n         }\n     }\n }"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "aa6d771265810a07a858bdb2289e0e0dd83ea175",
+      "message": "fix: Java cookbook recipes to compile with copilot-sdk-java 0.2.1-java.1\n\nFix compilation errors and documentation inaccuracies in Java cookbook\nrecipes against the actual SDK API:\n\n- MultipleSessions: Replace non-existent destroy() with close()\n- AccessibilityReport: Replace non-existent McpServerConfig class with\n  Map<String, Object> (the actual type accepted by setMcpServers)\n- error-handling.md: Replace non-existent session.addTool(),\n  ToolDefinition.builder(), and ToolResultObject with actual SDK APIs\n  (ToolDefinition.create(), SessionConfig.setTools(),\n  CompletableFuture<Object> return type)\n\nAll 7 recipes now compile successfully with jbang build.\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>",
+      "parent_shas": [
+        "7c6c0be2f3933f590cd8ab92b2f2280b3e28f28b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "java_python_bridge_noise"
+    ],
+    "auto_signals": [
+      "java_python_bridge_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__github__awesome-copilot__pr1314.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\github__awesome-copilot__pr1314__java_python__github__awesome-copilot__pr1314\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\github__awesome-copilot__pr1314__java_python__github__awesome-copilot__pr1314\\rn"
+  }
+}

@@ -1,0 +1,268 @@
+{
+  "instance_id": "python_cpp__mouredev__roadmap-retos-programacion__pr9309",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "mouredev/roadmap-retos-programacion",
+  "pr_number": 9309,
+  "pr_url": "https://github.com/mouredev/roadmap-retos-programacion/pull/9309",
+  "repo": {
+    "full_name": "mouredev/roadmap-retos-programacion",
+    "clone_url": "https://github.com/mouredev/roadmap-retos-programacion.git",
+    "default_branch": "main",
+    "created_at": "2023-12-18T10:59:18Z",
+    "stars": 8154,
+    "license": "Apache-2.0",
+    "size_kb": 55901
+  },
+  "pull_request": {
+    "id": 3412553050,
+    "title": "#00 - Python, #01 - Python, #02 - Python, #03 - Python, #04 - Python, #05 - Python,",
+    "body": "## Describe tus cambios\r\n***(Opcional)*** *Sobre todo aconsejable si la \"Pull Request\" se corresponde con una corrección adicional y no con la presentación de un ejercicio.*\r\n\r\n## Comprobaciones\r\nAsegúrate de cumplir los siguientes puntos antes de realizar la \"Pull Request\":\r\n\r\n- [x] El título de mi Pull Request sigue este formato: \"#[número] - [lenguaje_utilizado]\". *(Ej: #00 - Python\")*\r\n- [x] El nombre el fichero se corresponde con el de mi usuario en GitHub más la extensión del lenguaje. *(Ej: mouredev.py)*\r\n- [x] El fichero de corrección se encuentra dentro del directorio del ejercicio y en una carpeta con el nombre del lenguaje de programación utilizado en minúsculas. *(Ej: Roadmap/00 - SINTAXIS, VARIABLES, TIPOS DE DATOS Y HOLA MUNDO/python/mouredev.py)*\r\n- [x] He revisado que el nombre del directorio del lenguaje no es conflictivo:\r\n\t- c#, no csharp\r\n\t- c++, no cplusplus\r\n\t- go, no golang\r\n\t- javascript, no js\r\n- [x] Únicamente he incluido los ficheros de ejercicios. No se aceptarán Pull Requests que contengan archivos adicionales asociados a editores de código o semejantes.\r\n\r\n## Información\r\n\r\n* Tienes toda la información sobre los retos semanales en [retosdeprogramacion.com/roadmap](https://retosdeprogramacion.com/roadmap).\r\n* Recuerda que tienes un grupo de apoyo llamado \"ejercicios-logica\" en [Discord](https://discord.gg/mouredev).\r\n",
+    "created_at": "2026-03-18T02:45:02Z",
+    "merged_at": "2026-04-06T10:15:43Z",
+    "base_sha": "1efa929ecb14570ee812e082d8e7df73bdb67c94",
+    "head_sha": "1bf17490094a5ed21119f4212e067151c3fa5af1",
+    "merge_commit_sha": "542f25aebcb734fe88bd8a0f580711027309e529",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "1efa929ecb14570ee812e082d8e7df73bdb67c94",
+  "final_sha": "1bf17490094a5ed21119f4212e067151c3fa5af1",
+  "changed_files": [
+    {
+      "sha": "268a96bf78b1ad91e9779c42c08f896abbccf443",
+      "filename": "Roadmap/00 - SINTAXIS, VARIABLES, TIPOS DE DATOS Y HOLA MUNDO/python/Sdg79.py",
+      "status": "added",
+      "additions": 23,
+      "deletions": 0,
+      "changes": 23,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F00%20-%20SINTAXIS%2C%20VARIABLES%2C%20TIPOS%20DE%20DATOS%20Y%20HOLA%20MUNDO%2Fpython%2FSdg79.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F00%20-%20SINTAXIS%2C%20VARIABLES%2C%20TIPOS%20DE%20DATOS%20Y%20HOLA%20MUNDO%2Fpython%2FSdg79.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F00%20-%20SINTAXIS%2C%20VARIABLES%2C%20TIPOS%20DE%20DATOS%20Y%20HOLA%20MUNDO%2Fpython%2FSdg79.py?ref=1bf17490094a5ed21119f4212e067151c3fa5af1",
+      "patch": "@@ -0,0 +1,23 @@\n+# https://www.python.org\n+\n+# Comentario en una línea\n+\n+\"\"\"\n+Comentario\n+en varias líneas\n+\"\"\"\n+\n+'''\n+Comentario\n+en varias líneas\n+'''\n+Nombre = \"Sergio\"\n+CONSTANTE = 0\n+\n+str = \"Dato string\"\n+int = 4 # Dato integer\n+float = 1.5  # Dato float\n+complex = (4 + 1j)  # Dato complex\n+bool = True  # Dato bool (true o false)\n+\n+print(\"¡Hola Python!\")"
+    },
+    {
+      "sha": "1e06658a2cad9aa3065e5efbd05c312ea2ca0640",
+      "filename": "Roadmap/01 - OPERADORES Y ESTRUCTURAS DE CONTROL/python/Sdg79.py",
+      "status": "added",
+      "additions": 109,
+      "deletions": 0,
+      "changes": 109,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F01%20-%20OPERADORES%20Y%20ESTRUCTURAS%20DE%20CONTROL%2Fpython%2FSdg79.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F01%20-%20OPERADORES%20Y%20ESTRUCTURAS%20DE%20CONTROL%2Fpython%2FSdg79.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F01%20-%20OPERADORES%20Y%20ESTRUCTURAS%20DE%20CONTROL%2Fpython%2FSdg79.py?ref=1bf17490094a5ed21119f4212e067151c3fa5af1",
+      "patch": "@@ -0,0 +1,109 @@\n+#Aritmeticos\n+numero1 = 4\n+numero2 = 10\n+suma = numero1 + numero2\n+print(suma)\n+resta = numero2 - numero1\n+print(resta)\n+multiplicacion = numero1 * numero2\n+print(multiplicacion)\n+division = numero2 / numero1\n+print(division)\n+modulo = numero2 % numero1\n+print(modulo)\n+exponente = numero2 ** numero1\n+print(exponente)\n+division_entera = numero2 // numero1\n+print(division_entera)\n+\n+#Comparación\n+print(f\"Numero 1 Igual al Numero 2: {numero1 == numero2}\")\n+print(f\"Numero 1 distinto al Numero 2: {numero1 != numero2}\")\n+print(f\"Numero 1 menor al Numero 2: {numero1 < numero2}\")\n+print(f\"Numero 1 mayor al Numero 2: {numero1 > numero2}\")\n+print(f\"Numero 1 menor o igual al Numero 2: {numero1 <= numero2}\")\n+print(f\"Numero 1 mayor o igual al Numero 2: {numero1 >= numero2}\")\n+\n+#Lógicos\n+print(f\"and Numero 1 = 4 y Numero 2 = 10: {numero1 == 4 and numero2 == 10}\")\n+print(f\"or Numero 1 = 4 o Numero 2 = 10: {numero1 == 4 or numero2 == 10}\")\n+print(f\"not Numero 1 = 4 y Numero 2 = 10: {not numero1 == 4 and numero2 == 10}\")\n+\n+#Asignación\n+numero1 = 4\n+print(numero1)\n+numero1 += 1\n+print(numero1)\n+numero1 -= 1\n+print(numero1)\n+numero1 *= 2\n+print(numero1)\n+numero1 /= 2\n+print(numero1)\n+numero1 %= 2\n+print(numero1)\n+numero2 //= 2\n+print(numero2)\n+numero2 **= 2\n+print(numero2)\n+numero1 = int(numero1)\n+numero1 &= 2\n+print(numero1)\n+numero2 |= 2\n+print(numero2)\n+numero2 ^= 2\n+print(numero2)\n+numero2 >>= 2\n+print(numero2)\n+numero2 <<= 2\n+print(numero2)\n+\n+#Identidad\n+print(numero1 is numero2)\n+print(numero1 is not numero2)\n+\n+#Pertenencia\n+print(f\"S en Sergio: {\"S\" in \"Sergio\"}\")\n+print(f\"S no en Sergio: {\"S\" not in \"Sergio\"}\")\n+\n+#Estructuras de control\n+edad = 45\n+if edad < 18:\n+    print(\"Es menor de Edad\")\n+elif edad < 30:\n+    print(\"Es una persona adulta joven, menor de 30 años\")\n+else:\n+    print(\"Es un adulto mayor de 30 años\")\n+\n+\n+for i in range(5):\n+    print(\"numero: \" + str(i))\n+    \n+\n+contador = 0\n+while contador <= 6:\n+    print(\"Numeros hasta el 6: \" + str(contador))\n+    contador += 1\n+\n+#Excepciones\n+\n+try:\n+    print(4/0)\n+except:\n+    print(\"Error, no se puede dividir por 0\")\n+finally:\n+    print(\"continúa la aplicación\")\n+\n+\"\"\"\n+ * Crea un programa que imprima por consola todos los números comprendidos\n+ * entre 10 y 55 (incluidos), pares, y que no son ni el 16 ni múltiplos de 3.\n+ *\n+ * Seguro que al revisar detenidamente las posibilidades has descubierto algo nuevo.\n+ */\n+ \"\"\"\n+\n+for i in range(56):\n+    if i % 2 == 0 and i >= 10:\n+        if i % 3 != 0 and i != 16:\n+            print(i)\n+    "
+    },
+    {
+      "sha": "9c922a33dfab99e408ed223bc2c0b5aebfb219d6",
+      "filename": "Roadmap/02 - FUNCIONES Y ALCANCE/python/Sdg79.py",
+      "status": "added",
+      "additions": 55,
+      "deletions": 0,
+      "changes": 55,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F02%20-%20FUNCIONES%20Y%20ALCANCE%2Fpython%2FSdg79.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F02%20-%20FUNCIONES%20Y%20ALCANCE%2Fpython%2FSdg79.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F02%20-%20FUNCIONES%20Y%20ALCANCE%2Fpython%2FSdg79.py?ref=1bf17490094a5ed21119f4212e067151c3fa5af1",
+      "patch": "@@ -0,0 +1,55 @@\n+\n+def mensaje ():\n+    print(\"Archivo cargado correctamente\")\n+\n+mensaje()\n+\n+def suma (num1, num2):\n+    print(num1 + num2)\n+\n+suma(4, 10)\n+\n+def resta (num1, num2):\n+    return (num1 - num2)\n+\n+print(resta(15, 10))\n+\n+def funcion1 ():\n+    def funcion2 ():\n+        print(\"Hola, buenas tardes\")\n+    funcion2()\n+\n+funcion1()\n+\n+# Funciones del lenguaje\n+print(\"Hola\")\n+print(type(\"Sergio\"))\n+#nombre = input(\"Cual es tu nombre: \")\n+#print(\"Hola \" + nombre)\n+\n+\n+variable_global = \"Hola\"\n+def saludo():\n+    variable_local = \"Sergio\"\n+    print(f\"{variable_global}, {variable_local}\")\n+\n+saludo()\n+\n+\n+# DIFICULTAD EXTRA\n+\n+def numeros(cadena1, cadena2):\n+    contador = 0\n+    for i in range (1, 101):\n+        if i % 3 == 0 and i % 5 == 0:\n+            print(f\"{cadena1} y {cadena2}\")\n+        elif i % 3 == 0:\n+            print(f\"{cadena1}\")\n+        elif i % 5 == 0:\n+            print(f\"{cadena2}\")\n+        else:\n+            print(i)\n+            contador += 1\n+    return contador\n+\n+print(numeros(\"Es multiplo de 3\", \"es multiplo de 5\"))\n\\ No newline at end of file"
+    },
+    {
+      "sha": "6397cfa6be243537e318beda71b717942e0dd337",
+      "filename": "Roadmap/03 - ESTRUCTURAS DE DATOS/python/Sdg79.py",
+      "status": "added",
+      "additions": 116,
+      "deletions": 0,
+      "changes": 116,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F03%20-%20ESTRUCTURAS%20DE%20DATOS%2Fpython%2FSdg79.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F03%20-%20ESTRUCTURAS%20DE%20DATOS%2Fpython%2FSdg79.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F03%20-%20ESTRUCTURAS%20DE%20DATOS%2Fpython%2FSdg79.py?ref=1bf17490094a5ed21119f4212e067151c3fa5af1",
+      "patch": "@@ -0,0 +1,116 @@\n+\n+lista = list()\n+lista = [2 ,5 ,3 ,4, 1]\n+lista.append(6) #añade al final\n+lista.remove(6)\n+print(lista[2])\n+lista[2] = 8\n+print(lista)\n+lista.sort()\n+print(lista)\n+\n+tupla = tuple()\n+tupla = (2, 5, 3, 4, 1)\n+print(tupla[2])\n+print(tupla)\n+tupla = tuple(sorted(tupla))\n+print(tupla)\n+\n+mi_set = set()\n+mi_set = {2, 5, 3, 4, 1}\n+mi_set.add(6)\n+print(mi_set)\n+mi_set.remove(6)\n+print(mi_set)\n+\n+diccionario = {}\n+diccionario = {\n+    \"numero1\": 3, \n+    \"numero2\": 5, \n+    \"numero3\": 1, \n+    \"numero4\": 2\n+    }\n+\n+print(diccionario)\n+diccionario[\"numero5\"] = 4\n+\n+diccionario[\"numero2\"] = 8\n+print(diccionario)\n+print(diccionario[\"numero1\"])\n+\n+del(diccionario[\"numero3\"])\n+print(diccionario)\n+\n+diccionario = dict(sorted(diccionario.items()))\n+print(diccionario)\n+\n+\n+ # DIFICULTAD EXTRA (opcional):\n+\n+contactos = {}\n+def validar_telefono(telefono):\n+    if telefono.isdigit() == False:\n+        print(\"El telefono es incorrecto\")\n+        return False\n+    elif len(telefono) != 11:\n+        print(\"el telefono debe contener 11 numeros\")\n+        return False\n+    else:\n+        return True\n+\n+def insertar():\n+    nombre = input(\"Ingrese el nombre del contacto: \")\n+    telefono = input(\"Ingrese el telefono: \")\n+    if validar_telefono(telefono) == True:\n+        contactos[nombre] = telefono\n+    print(contactos)\n+\n+def buscar():\n+    nombre = input(\"Ingrese el nombre del contacto a buscar: \")\n+    if nombre in contactos:\n+        print(f\"El telefono del contacto {nombre} es: {contactos[nombre]}\")\n+    else:\n+        print(\"El contacto no se encuentra\")\n+\n+\n+def actualizar():\n+    nombre = input(\"Ingrese el nombre del contacto a Actualizar: \")\n+    if nombre in contactos:\n+        telefono = input(\"Ingrese el telefono a actualizar: \")\n+        if validar_telefono(telefono) == True:\n+            contactos[nombre] = telefono\n+        print(\"El telefono del contacto se ha actualizado\")\n+    else:\n+        print(\"El contacto no se encuentra\")\n+\n+def eliminar():\n+    nombre = input(\"Ingrese el nombre del contacto a Eliminar: \")\n+    if nombre in contactos:\n+        del(contactos[nombre])\n+        print(\"El contacto se ha eliminado\")\n+    else:\n+        print(\"El contacto no se encuentra\")\n+\n+\n+def menu():\n+    while True:\n+        opcion = input(\"\"\"Ingrese la operacion deseada\n+                       I:Insertar\n+                       B:Buscar\n+                       A:Actualizar\n+                       E:Eliminar\n+                       S:Salir\\n\"\"\")\n+        if opcion == \"I\":\n+            insertar()\n+        elif opcion == \"B\":\n+            buscar()\n+        elif opcion == \"A\":\n+            actualizar()\n+        elif opcion == \"E\":\n+            eliminar()\n+        elif opcion == \"S\":\n+            break\n+        else:\n+            print(\"la opcion es incorrecta, selecciones una de la lista\")\n+\n+menu()\n\\ No newline at end of file"
+    },
+    {
+      "sha": "cd894764f6ec3fce947d3ca01e429a61eae558f0",
+      "filename": "Roadmap/04 - CADENAS DE CARACTERES/python/Sdg79.py",
+      "status": "added",
+      "additions": 66,
+      "deletions": 0,
+      "changes": 66,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F04%20-%20CADENAS%20DE%20CARACTERES%2Fpython%2FSdg79.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F04%20-%20CADENAS%20DE%20CARACTERES%2Fpython%2FSdg79.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F04%20-%20CADENAS%20DE%20CARACTERES%2Fpython%2FSdg79.py?ref=1bf17490094a5ed21119f4212e067151c3fa5af1",
+      "patch": "@@ -0,0 +1,66 @@\n+texto = \"Ejercicio cadenas de caracteres\"\n+print(texto)\n+print(texto * 3) #Repite 3 veces la cadena\n+caracteres = len(texto)\n+print(caracteres)\n+texto2 = \"Curso Mouredev\"\n+concatenar = texto + \", \" + texto2\n+print(concatenar)\n+print(texto[1]) #segundo caracter\n+print(texto[0:4]) #primeros 3 caracteres\n+print(texto[-1]) #ultimo caracter\n+print(texto[::-1]) #invierte texto\n+print(texto[-3:]) #ultimos 3 caracteres\n+print(texto[0:caracteres:2]) #salto caracteres\n+print(concatenar.capitalize()) #primera mayuscula\n+print(concatenar.title()) #primeras letras en mayuscula de todas la palabras\n+print(concatenar.count(\"c\")) #cuenta las letras c\n+print(concatenar.upper()) #Todo mayusculas\n+print(concatenar.lower()) #Todo minusculas\n+print(concatenar.find(\"c\")) #posicion de la cadena del caracter buscado\n+print(concatenar.rfind(\"c\")) #posicion desde el final de la cadena del caracter buscado\n+print(concatenar.index(\"cadenas\")) #posicion de inicio de la cadena de la cadena buscada\n+print(concatenar.isnumeric()) #si todos los caracteres son numericos\n+print(\"!\".join(concatenar)) #une los caracteres con el simbolo\n+print(concatenar.replace(\"cadenas\", \"CADENA\")) #Reemplazar una cadena\n+print(concatenar.split()) #Divide una cadena\n+\n+\n+\"\"\"\n+ * DIFICULTAD EXTRA:\n+ * Crea un programa que analice dos palabras diferentes y realice comprobaciones\n+ * para descubrir si son:\n+ * - Palíndromos\n+ * - Anagramas\n+ * - Isogramas\n+\"\"\"\n+\n+#polindromo = \"Radar\"\n+#anagrama = \"Amor\", \"Roma\"\n+#isogramas = \"\" #Un isograma es una palabra o frase en la que cada letra aparece el mismo número de veces\n+def isograma(word)-> bool:\n+    word_dict = dict()\n+    for contador in word:\n+        word_dict[contador] = word_dict.get(contador, 0) + 1\n+        isograma = True\n+        valores = list(word_dict.values())\n+        isograma_len = valores[0]\n+        for word_count in valores:\n+            if word_count != isograma_len:\n+                isograma = False\n+                break\n+\n+        return isograma\n+\n+\n+def tipo_palabra (palabra1, palabra2):\n+    if palabra1.lower() == palabra1[::-1].lower() and palabra2.lower() == palabra2[::-1].lower():\n+        print(f\"{palabra1} y {palabra2} son políndromos\")\n+    elif sorted(palabra1.lower()) == sorted(palabra2.lower()):\n+        print(f\"{palabra1} y {palabra2} son anagramas\")\n+    elif isograma(palabra1) == True:\n+        print(f\"{palabra1} es un isograma\")\n+        \n+    return\n+\n+tipo_palabra(\"Carlos\", \"Roma\")"
+    },
+    {
+      "sha": "12759e8e1839222919b7964751ffbc1a45deb4ba",
+      "filename": "Roadmap/05 - VALOR Y REFERENCIA/python/Sdg79.py",
+      "status": "added",
+      "additions": 53,
+      "deletions": 0,
+      "changes": 53,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F05%20-%20VALOR%20Y%20REFERENCIA%2Fpython%2FSdg79.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F05%20-%20VALOR%20Y%20REFERENCIA%2Fpython%2FSdg79.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F05%20-%20VALOR%20Y%20REFERENCIA%2Fpython%2FSdg79.py?ref=1bf17490094a5ed21119f4212e067151c3fa5af1",
+      "patch": "@@ -0,0 +1,53 @@\n+\n+numero = 4 #valor\n+cadena = \"Hola\" #valor\n+\n+diccionario = {\"nombre\" : \"Laura\"} #referencia\n+lista = [1, 2, 3] #referencia\n+\n+# Funcion por valor\n+def suma (numero):\n+    numero += 1\n+    print(numero)\n+\n+# Funcion por referencia\n+def agregado(lista):\n+    lista.append(4)\n+\n+suma(numero)\n+agregado(lista)\n+print(numero)\n+print(lista)\n+\n+\n+\n+# DIFICULTAD EXTRA:\n+\n+def valor(variable1, variable2):\n+    nuevavar1 = variable2\n+    nuevavar2 = variable1\n+    return nuevavar1, nuevavar2\n+\n+var1 = 4\n+var2 = 10\n+nuevavar1, nuevavar2 = valor(var1,var2)\n+\n+print(f\"Valor de la variable 1 Original: {var1}\")\n+print(f\"Valor de la variable 2 Original: {var2}\")\n+print(f\"Valor de la variable 1 Invertida: {nuevavar1}\")\n+print(f\"Valor de la variable 2 Invertida: {nuevavar2}\")\n+\n+\n+def referencia(referencia1, referencia2):\n+    transitoria1 = referencia2\n+    transitoria2 = referencia1\n+    return transitoria1, transitoria2\n+\n+ref1 = [4, 8, 12, 16]\n+ref2 = [5, 10, 15, 20]\n+nuevaref1, nuevaref2 = referencia(ref1,ref2)\n+\n+print(f\"Valor de la variable 1 Original: {ref1}\")\n+print(f\"Valor de la variable 2 Original: {ref2}\")\n+print(f\"Valor de la variable 1 Invertida: {nuevaref1}\")\n+print(f\"Valor de la variable 2 Invertida: {nuevaref2}\")\n\\ No newline at end of file"
+    },
+    {
+      "sha": "c8df69470f8e06914f8a4a735fe9050a6eb3cd5d",
+      "filename": "Roadmap/06 - RECURSIVIDAD/python/Sdg79.py",
+      "status": "added",
+      "additions": 36,
+      "deletions": 0,
+      "changes": 36,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F06%20-%20RECURSIVIDAD%2Fpython%2FSdg79.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F06%20-%20RECURSIVIDAD%2Fpython%2FSdg79.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F06%20-%20RECURSIVIDAD%2Fpython%2FSdg79.py?ref=1bf17490094a5ed21119f4212e067151c3fa5af1",
+      "patch": "@@ -0,0 +1,36 @@\n+\n+def recursividad(numero: int):\n+    if numero >= 0:\n+        print(numero)\n+        recursividad(numero - 1)\n+        \n+recursividad(100)\n+\n+#DIFICULTAD EXTRA:\n+\n+def factorial(numero: int):\n+    if numero < 0:\n+        print(\"El número debe ser positivo\")\n+        return 0\n+          \n+    elif numero == 1:\n+        return 1\n+        \n+    else:\n+        return numero * factorial(numero - 1)\n+\n+print(factorial(5))\n+\n+\n+def fibonacci(numero: int):\n+    if numero <= 0:\n+        print(\"El número debe ser mayor a 0\")\n+        return 0\n+    elif numero == 1:\n+        return 0\n+    elif numero == 2:\n+        return 1\n+    else:\n+        return fibonacci(numero - 1) + fibonacci(numero - 2) \n+        \n+print(fibonacci(5))\n\\ No newline at end of file"
+    },
+    {
+      "sha": "8a68325847b950ed55852c344f5233277d5153f8",
+      "filename": "Roadmap/07 - PILAS Y COLAS/python/Sdg79.py",
+      "status": "added",
+      "additions": 87,
+      "deletions": 0,
+      "changes": 87,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F07%20-%20PILAS%20Y%20COLAS%2Fpython%2FSdg79.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F07%20-%20PILAS%20Y%20COLAS%2Fpython%2FSdg79.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F07%20-%20PILAS%20Y%20COLAS%2Fpython%2FSdg79.py?ref=1bf17490094a5ed21119f4212e067151c3fa5af1",
+      "patch": "@@ -0,0 +1,87 @@\n+\n+pila = []\n+pila.append(\"Sergio\")\n+pila.append(\"Laura\")\n+pila.append(\"Mica\")\n+print(pila)\n+\n+del pila[-1]\n+# pila.pop() funcion del sitema para desapilar\n+print(pila)\n+\n+\n+cola = []\n+cola.append(\"Sergio\")\n+cola.append(\"Laura\")\n+cola.append(\"Mica\")\n+print(cola)\n+\n+del cola[0]\n+# cola.pop(0) funcion del sistema para eliminar el elemento 0\n+print(cola)\n+\n+\n+# DIFICULTAD EXTRA:\n+\n+cola = []\n+\n+def web():\n+    index = -1\n+    while True:\n+        seleccion = input(\"Ingrese una web o use las palabras adelante, atras, salir: \")\n+        if seleccion == \"adelante\":\n+            if len(cola)-1 == index:\n+                print(\"no hay mas paginas web\")\n+                print(cola[index])\n+            else:\n+                index += 1\n+                print(cola[index])\n+            \n+        elif seleccion == \"atras\":\n+            if (index + 1) == 0:\n+                print(\"No ha cargado ninguna pagina web\")\n+            elif index == 0:\n+                print(\"Es la primer pagina web\")\n+                print(cola[index])\n+            else:\n+                index -= 1\n+                print(cola[index])\n+            \n+        elif seleccion == \"salir\":\n+            print(cola)\n+            break\n+        else:\n+            cola.append(seleccion)\n+            index += 1\n+            print(cola[index])\n+            \n+web()\n+\n+\"\"\"\n+- Utilizando la implementación de cola y cadenas de texto, simula el mecanismo de una\n+ *   impresora compartida que recibe documentos y los imprime cuando así se le indica.\n+ *   La palabra \"imprimir\" imprime un elemento de la cola, el resto de palabras se\n+ *   interpretan como nombres de documentos.\n+ \"\"\"\n+\n+cola = []\n+\n+def impresora():\n+    while True:\n+        documento = input(\"Ingrese un documento o use las palabras imprimir o salir: \")\n+        if documento == \"imprimir\":\n+            if len(cola) == 0:\n+                print(\"no hay archivos para imprimir\")\n+            else:\n+                print(f\"Imprimiendo: {cola[0]}\")\n+                cola.pop(0)\n+\n+            \n+        elif documento == \"salir\":\n+            print(cola)\n+            break\n+        else:\n+            cola.append(documento)\n+            print(cola)\n+            \n+impresora()\n\\ No newline at end of file"
+    },
+    {
+      "sha": "6f3bc356ec806a07456cd83fb92da024fa71a52f",
+      "filename": "Roadmap/08 - CLASES/python/Sdg79.py",
+      "status": "added",
+      "additions": 70,
+      "deletions": 0,
+      "changes": 70,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F08%20-%20CLASES%2Fpython%2FSdg79.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F08%20-%20CLASES%2Fpython%2FSdg79.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F08%20-%20CLASES%2Fpython%2FSdg79.py?ref=1bf17490094a5ed21119f4212e067151c3fa5af1",
+      "patch": "@@ -0,0 +1,70 @@\n+\n+class Persona:\n+    def __init__(self, nombre, apellido, edad):\n+        self.nombre = nombre\n+        self.apellido = apellido\n+        self.edad = edad\n+    \n+    def persona_info(self):\n+        return f\"La persona de nombre {self.nombre} y apellido {self.apellido} tiene {self.edad} años.\"\n+\n+    def imprimir(self):\n+        print(datos.persona_info())   \n+\n+datos = Persona(\"Sergio\", \"Sanchez\", \"40\")\n+datos.imprimir()\n+\n+\"\"\"\n+ * DIFICULTAD EXTRA:\n+ * Implementa dos clases que representen las estructuras de Pila y Cola (estudiadas\n+ * en el ejercicio número 7 de la ruta de estudio)\n+ * - Deben poder inicializarse y disponer de operaciones para añadir, eliminar,\n+ *   retornar el número de elementos e imprimir todo su contenido.\n+\"\"\"\n+\n+class Pila:\n+    def __init__(self, contenido: list):\n+        self.contenido = contenido\n+        \n+    def añadir(self, libro):\n+        self.contenido.append(libro)\n+    \n+    def eliminar(self):\n+        self.contenido.pop(-1)\n+\n+    def cantidad(self):\n+        return len(self.contenido)\n+        \n+    def imprimir(self):\n+        print(self.contenido)\n+\n+libros = Pila([\"Python\", \"Visual Basic\", \"C++\"])\n+libros.añadir(\"Pascal\")\n+libros.imprimir()\n+libros.eliminar()\n+libros.imprimir()\n+print(libros.cantidad())\n+\n+\n+class Cola:\n+    def __init__(self, contenido: list):\n+        self.contenido = contenido\n+        \n+    def añadir(self, documento):\n+        self.contenido.append(documento)\n+    \n+    def eliminar(self):\n+        self.contenido.pop(0)\n+\n+    def cantidad(self):\n+        return len(self.contenido)\n+        \n+    def imprimir(self):\n+        print(self.contenido)\n+\n+documentos = Cola([\".pdf\", \".doc\", \".xlsx\"])\n+documentos.añadir(\"web\")\n+documentos.imprimir()\n+documentos.eliminar()\n+documentos.imprimir()\n+print(documentos.cantidad())\n\\ No newline at end of file"
+    },
+    {
+      "sha": "e7f54babff001d392a08d8b4f5e1ee949c28cbdb",
+      "filename": "Roadmap/09 - HERENCIA/python/Sdg79.py",
+      "status": "added",
+      "additions": 78,
+      "deletions": 0,
+      "changes": 78,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F09%20-%20HERENCIA%2Fpython%2FSdg79.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F09%20-%20HERENCIA%2Fpython%2FSdg79.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F09%20-%20HERENCIA%2Fpython%2FSdg79.py?ref=1bf17490094a5ed21119f4212e067151c3fa5af1",
+      "patch": "@@ -0,0 +1,78 @@\n+\n+class Animal:\n+    def __init__(self, nombre):\n+        self.nombre = nombre\n+\n+class Perro(Animal):\n+    def sonido(self):\n+        print(\"Guau\")\n+\n+class Gato(Animal):\n+    def sonido(self):\n+        print(\"Miau\")\n+\n+mi_perro = Perro(\"Mora\")\n+mi_perro.sonido()\n+mi_gato = Gato(\"Moña\")\n+mi_gato.sonido()\n+        \n+\n+#DIFICULTAD EXTRA:\n+\n+class Empleados:\n+    def __init__(self, ID: int, nombre: str):\n+        self.ID = ID\n+        self.nombre = nombre\n+        self.a_cargo = []\n+    def agregar(self, empleado):\n+        self.a_cargo.append(empleado)\n+\n+    def imprimir_empleados(self):\n+        for empleado in self.a_cargo:\n+            print(empleado.nombre)\n+    \n+class Gerentes(Empleados):\n+    def funciones_G(self):\n+        print(\"Funciones y tareas del Gerente\")\n+\n+class Gerentes_de_Proyectos(Empleados):\n+    def __init__(self, ID: int, nombre: str, proyecto: str):\n+        super().__init__(ID, nombre)\n+        self.proyecto = proyecto\n+\n+    def funciones_GP(self):    \n+        print(\"Funciones y tareas del Gerente de Proyectos\")\n+\n+class Programadores(Empleados):\n+    def __init__(self, ID: int, nombre: str, lenguaje: str):\n+        super().__init__(ID, nombre)\n+        self.lenguaje = lenguaje\n+    \n+    def codificar(self):\n+        print(\"Funciones y tareas del Programador\")\n+\n+gerente = Gerentes(1, \"Sergio\")\n+gerenteP1 = Gerentes_de_Proyectos(2, \"Laura\", \"Proyecto1\")\n+gerenteP2 = Gerentes_de_Proyectos(3, \"Vicky\", \"Proyecto2\")\n+programador1 = Programadores(4, \"Damian\", \"Python\")\n+programador2 = Programadores(5, \"María\", \"C++\")\n+programador3 = Programadores(6, \"Micaela\", \"VisualBasic\")\n+programador4 = Programadores(7, \"Sol\", \"Cobol\")\n+\n+gerente.agregar(gerenteP1)\n+gerente.agregar(gerenteP2)\n+\n+gerenteP1.agregar(programador1)\n+gerenteP1.agregar(programador2)\n+gerenteP2.agregar(programador3)\n+gerenteP2.agregar(programador4)\n+\n+gerente.funciones_G()\n+gerenteP1.funciones_GP()\n+gerenteP2.funciones_GP()\n+programador1.codificar()\n+\n+gerente.imprimir_empleados()\n+gerenteP1.imprimir_empleados()\n+gerenteP2.imprimir_empleados()\n+"
+    },
+    {
+      "sha": "60f3440d407515d6f982584e208e20f39554baa4",
+      "filename": "Roadmap/10 - EXCEPCIONES/python/Sdg79.py",
+      "status": "added",
+      "additions": 40,
+      "deletions": 0,
+      "changes": 40,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F10%20-%20EXCEPCIONES%2Fpython%2FSdg79.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/1bf17490094a5ed21119f4212e067151c3fa5af1/Roadmap%2F10%20-%20EXCEPCIONES%2Fpython%2FSdg79.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F10%20-%20EXCEPCIONES%2Fpython%2FSdg79.py?ref=1bf17490094a5ed21119f4212e067151c3fa5af1",
+      "patch": "@@ -0,0 +1,40 @@\n+\n+lista = [\"Sergio\", 4, \"Mica\"]\n+\n+try:\n+    print(lista[3])\n+except Exception as e:\n+    print(e)\n+    \n+\n+try:\n+    print(10/0)\n+except Exception as e:\n+    print(e)\n+\n+\n+# DIFICULTAD EXTRA:\n+\n+class IntTypeError(Exception):\n+    pass\n+\n+def proceso(parametros):\n+    try:\n+        if len(parametros) < 3:\n+            raise IndexError(\"Se a producido un IndexError\")\n+        elif type(parametros[1]) == int:\n+            raise IntTypeError(\"Error de integer en lista de cadena\")\n+        print(parametros[1])\n+        print(\"parametros ingresados\")\n+    except IndexError as e:\n+        print(e)\n+    except IntTypeError as e:\n+        print(e)\n+    except Exception as e:\n+        print(e)\n+    else:\n+        print(\"No se ha producido ningún error\")\n+    finally:\n+        print(\"La ejecución ha finalizado\")\n+\n+proceso(lista)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "295a1125fb79e5e14c17ac26d346550123919c75",
+      "message": "#00 - Python",
+      "parent_shas": [
+        "1efa929ecb14570ee812e082d8e7df73bdb67c94"
+      ]
+    },
+    {
+      "sha": "d5d9de2638774acf4360186c99287f3744571c07",
+      "message": "#01 - Python",
+      "parent_shas": [
+        "295a1125fb79e5e14c17ac26d346550123919c75"
+      ]
+    },
+    {
+      "sha": "f2c8b391f5bf61c58c45747ac7defcd0247024f7",
+      "message": "#02 - Python",
+      "parent_shas": [
+        "d5d9de2638774acf4360186c99287f3744571c07"
+      ]
+    },
+    {
+      "sha": "caec8a0abb9b7e62f2ad40d34e69d113c0db9b1a",
+      "message": "#03 - Python",
+      "parent_shas": [
+        "f2c8b391f5bf61c58c45747ac7defcd0247024f7"
+      ]
+    },
+    {
+      "sha": "47494afd8c045fab8edda39e2832a52b95b99fe0",
+      "message": "#04 - Python",
+      "parent_shas": [
+        "caec8a0abb9b7e62f2ad40d34e69d113c0db9b1a"
+      ]
+    },
+    {
+      "sha": "d254cc6536898ec6e6c863ef4b974c383d2546cc",
+      "message": "#05 - Python",
+      "parent_shas": [
+        "47494afd8c045fab8edda39e2832a52b95b99fe0"
+      ]
+    },
+    {
+      "sha": "1a0fed1f8eb0e3abe0aa94f199e9bbadddc3468a",
+      "message": "#06 - Python",
+      "parent_shas": [
+        "d254cc6536898ec6e6c863ef4b974c383d2546cc"
+      ]
+    },
+    {
+      "sha": "9eb2b9627c80087287ba2044827245345d13e656",
+      "message": "#07 - Python",
+      "parent_shas": [
+        "1a0fed1f8eb0e3abe0aa94f199e9bbadddc3468a"
+      ]
+    },
+    {
+      "sha": "b9f843b5665b01ed51f6e742194ae6f7c8cb001e",
+      "message": "#08 - Python",
+      "parent_shas": [
+        "9eb2b9627c80087287ba2044827245345d13e656"
+      ]
+    },
+    {
+      "sha": "3ee379fb20545b0d58e44359165179d839ba9eba",
+      "message": "#09 - Python",
+      "parent_shas": [
+        "b9f843b5665b01ed51f6e742194ae6f7c8cb001e"
+      ]
+    },
+    {
+      "sha": "1bf17490094a5ed21119f4212e067151c3fa5af1",
+      "message": "#10 - Python",
+      "parent_shas": [
+        "3ee379fb20545b0d58e44359165179d839ba9eba"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_tests_detected"
+    ],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__mouredev__roadmap-retos-programacion__pr9309.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\mouredev__roadmap-retos-programacion__pr9309__python_cpp__mouredev__roadmap-retos-programacion__pr9309\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\mouredev__roadmap-retos-programacion__pr9309__python_cpp__mouredev__roadmap-retos-programacion__pr9309\\rn"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "instance_id": "python_cpp__kfoltman__DerpCAM__pr2",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "kfoltman/DerpCAM",
+  "pr_number": 2,
+  "pr_url": "https://github.com/kfoltman/DerpCAM/pull/2",
+  "repo": {
+    "full_name": "kfoltman/DerpCAM",
+    "clone_url": "https://github.com/kfoltman/DerpCAM.git",
+    "default_branch": "master",
+    "created_at": "2021-02-12T16:28:19Z",
+    "stars": 37,
+    "license": "GPL-3.0",
+    "size_kb": 1828
+  },
+  "pull_request": {
+    "id": 3500123804,
+    "title": "Python module versions.",
+    "body": "With the change to `prepare.sh` it will now update Python modules to acceptable values according to `requirements.txt`.\r\n",
+    "created_at": "2026-04-07T21:12:50Z",
+    "merged_at": "2026-04-07T21:49:47Z",
+    "base_sha": "0b876b10b4768fd7dacc56f0b062967aeb2be53e",
+    "head_sha": "5ff1c02dc3e234cd28fee1e0cb8504c31d913a97",
+    "merge_commit_sha": "be2bb048e9cf2eee2c934a58ba54b4cad0b08e55",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "0b876b10b4768fd7dacc56f0b062967aeb2be53e",
+  "final_sha": "5ff1c02dc3e234cd28fee1e0cb8504c31d913a97",
+  "changed_files": [
+    {
+      "sha": "47c6a5965a9587fe8f2da12a546dcee29c23992d",
+      "filename": "prepare.sh",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/kfoltman/DerpCAM/blob/5ff1c02dc3e234cd28fee1e0cb8504c31d913a97/prepare.sh",
+      "raw_url": "https://github.com/kfoltman/DerpCAM/raw/5ff1c02dc3e234cd28fee1e0cb8504c31d913a97/prepare.sh",
+      "contents_url": "https://api.github.com/repos/kfoltman/DerpCAM/contents/prepare.sh?ref=5ff1c02dc3e234cd28fee1e0cb8504c31d913a97",
+      "patch": "@@ -13,7 +13,7 @@ if ! pkg-config 'eigen3 >= 3.0'; then\n fi\n virtualenv venv || exit 1\n source ./venv/bin/activate || exit 1\n-pip3 install -r requirements.txt || exit 1\n+pip3 install -r requirements.txt --upgrade || exit 1\n touch venv/probably_complete\n echo ''\n echo 'Installation complete! Use ./run.sh command to launch DerpCAM.'"
+    },
+    {
+      "sha": "124ac9a98d1d424cc5e82d8c586a4dd38f2ac6aa",
+      "filename": "requirements.txt",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/kfoltman/DerpCAM/blob/5ff1c02dc3e234cd28fee1e0cb8504c31d913a97/requirements.txt",
+      "raw_url": "https://github.com/kfoltman/DerpCAM/raw/5ff1c02dc3e234cd28fee1e0cb8504c31d913a97/requirements.txt",
+      "contents_url": "https://api.github.com/repos/kfoltman/DerpCAM/contents/requirements.txt?ref=5ff1c02dc3e234cd28fee1e0cb8504c31d913a97",
+      "patch": "@@ -1,7 +1,7 @@\n ezdxf >= 0.17.2\n-Shapely >= 1.8.2\n+Shapely >= 2.0, <= 2.1.2\n PyQt5 >= 5.15.6\n-pyvoronoi >= 1.0.7\n+pyvoronoi == 1.2.8\n pyclipr >= 0.1.7\n-HSM_nibble >= 0.1.0\n+HSM_nibble >= 0.2\n sortedcontainers >= 2.4.0"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "0b7a756329ce659d9abf10714f7a8ce5b9c2bff4",
+      "message": "Module versions.",
+      "parent_shas": [
+        "0b876b10b4768fd7dacc56f0b062967aeb2be53e"
+      ]
+    },
+    {
+      "sha": "5ff1c02dc3e234cd28fee1e0cb8504c31d913a97",
+      "message": "Module versions. 2.",
+      "parent_shas": [
+        "0b7a756329ce659d9abf10714f7a8ce5b9c2bff4"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__kfoltman__DerpCAM__pr2.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\kfoltman__DerpCAM__pr2__python_cpp__kfoltman__DerpCAM__pr2\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\kfoltman__DerpCAM__pr2__python_cpp__kfoltman__DerpCAM__pr2\\rn"
+  }
+}

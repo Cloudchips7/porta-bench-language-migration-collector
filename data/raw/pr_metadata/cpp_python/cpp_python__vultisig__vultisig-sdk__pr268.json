@@ -1,0 +1,223 @@
+{
+  "instance_id": "cpp_python__vultisig__vultisig-sdk__pr268",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "vultisig/vultisig-sdk",
+  "pr_number": 268,
+  "pr_url": "https://github.com/vultisig/vultisig-sdk/pull/268",
+  "repo": {
+    "full_name": "vultisig/vultisig-sdk",
+    "clone_url": "https://github.com/vultisig/vultisig-sdk.git",
+    "default_branch": "main",
+    "created_at": "2025-08-26T17:45:23Z",
+    "stars": 6,
+    "license": "MIT",
+    "size_kb": 89438
+  },
+  "pull_request": {
+    "id": 3529579118,
+    "title": "chore: version packages",
+    "body": "This PR was opened by the [Changesets release](https://github.com/changesets/action) GitHub action. When you're ready to do a release, you can merge this and publish to npm yourself or [setup this action to publish automatically](https://github.com/changesets/action#with-publishing). If you're not ready to do a release yet, that's fine, whenever you add more changesets to main, this PR will be updated.\n\n\n# Releases\n## @vultisig/mpc-native@0.1.3\n\n### Patch Changes\n\n-   [#267](https://github.com/vultisig/vultisig-sdk/pull/267) [`91aa66a`](https://github.com/vultisig/vultisig-sdk/commit/91aa66a0c23576546895d0946b486ae37cf1b23d) Thanks [@gomesalexandre](https://github.com/gomesalexandre)! - fix(mpc-native): make Android build green and runtime-functional\n\n    The Android side of `@vultisig/mpc-native` was non-functional end-to-end:\n    the Kotlin wrapper imported `godkls.Godkls` / `goschnorr.Goschnorr` (a\n    gomobile-style API that doesn't exist in the shipped AARs), the\n    `godklsJNI`/`goschnorrJNI` SWIG classes had no static `loadLibrary` initializer\n    so the underlying `.so` files were never resolved, and AGP 9+ refuses to\n    package the prebuilt AARs as `implementation` deps inside an AAR module\n    (`bundleDebugAar` fails with \"Direct local .aar file dependencies are not\n    supported\"). The result was that any consumer trying to import this package on\n    Android hit a Gradle config failure during build, and even a hand-patched\n    build crashed at first JNI call with `UnsatisfiedLinkError` /\n    `LIB_SERIALIZATION_ERROR`. This change makes the Android side actually work:\n\n    -   **Kotlin wrapper rewritten against the real SWIG bindings.** All\n        `Godkls.*`/`Goschnorr.*` calls replaced with the actual\n        `com.silencelaboratories.godkls.godkls.dkls_*` /\n        `com.silencelaboratories.goschnorr.goschnorr.schnorr_*` static methods.\n        Helper closures wrap the `tss_buffer` / `go_slice` / `Handle` lifecycle\n        with `try/finally` cleanup; a per-module `dklsHandles` /`schnorrHandles`\n        Long→Handle map preserves the existing JS-side handle ID surface. Optional\n        inputs (`keyId`, `messageHash`, `rootChainCode`) pass `null` (matching iOS\n        Swift) instead of an empty slice, and QC sessions for the no-keyshare /\n        old-party path use `Handle().apply { set_0(-1) }` (mirroring iOS\n        `Handle(_0: Int32(keyshareHandle ?? -1))`) so the C side branches correctly.\n    -   **Static `System.loadLibrary` initializer.** A `companion object { init { … } }`\n        loads `godkls`, `goschnorr`, `godklsswig`, `goschnorrswig` in dependency\n        order so the SWIG `.so` files find their underlying Go libs already in the\n        linker namespace. Wrapped in `try/catch` so a failed load surfaces a clean\n        error to JS at first call instead of crashing the host app on launch.\n    -   **Switched local AARs to `compileOnly`.** Direct `implementation files(libs/*.aar)`\n        is forbidden by AGP 9+ inside an AAR module. Using `compileOnly` lets the\n        Kotlin wrapper still see the SWIG classes for compilation; runtime\n        packaging is handled at the consuming **app** module via the new Expo\n        config plugin shipped at `app.plugin.js` (so consumers just add\n        `@vultisig/mpc-native` to their `app.json` `plugins` array and the AARs\n        end up on the final APK's runtime classpath).\n    -   **Replaced the prebuilt Android AARs.** The AARs in this package were\n        shipping a stripped/old `dkls-android` build whose `libgoschnorrswig.so`\n        carried an absolute-path `DT_NEEDED` baked from the original build host\n        (so `dlopen` of the SWIG lib failed at runtime on real devices), and\n        whose `libgoschnorr.so` rejected the FROST keyshare format used by\n        Vultisig vaults with `LIB_SERIALIZATION_ERROR` (Solana / Cardano / other\n        EdDSA chains couldn't sign). Replaced with the production-grade builds\n        shipped by the `vultisig/vultisig-android` app at `app/libs/`, which have\n        no absolute-path issue and accept the keyshare format end-to-end.\n\n## @vultisig/sdk@0.15.1\n\n### Patch Changes\n\n-   Updated dependencies \\[[`91aa66a`](https://github.com/vultisig/vultisig-sdk/commit/91aa66a0c23576546895d0946b486ae37cf1b23d)]:\n    -   @vultisig/mpc-native@0.1.3\n\n## @vultisig/example-browser@0.1.21\n\n### Patch Changes\n\n-   Updated dependencies \\[]:\n    -   @vultisig/sdk@0.15.1\n    -   @vultisig/examples-shared@0.1.5\n\n## @vultisig/example-electron@0.1.20\n\n### Patch Changes\n\n-   Updated dependencies \\[]:\n    -   @vultisig/sdk@0.15.1\n    -   @vultisig/examples-shared@0.1.5\n\n## @vultisig/examples-shared@0.1.5\n\n### Patch Changes\n\n-   Updated dependencies \\[]:\n    -   @vultisig/sdk@0.15.1\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\n## Summary by CodeRabbit\n\n* **Chores**\n  * Released patch version 0.1.3 for mpc-native\n  * Released patch version 0.15.1 for sdk with updated mpc-native dependency\n  * Released patch versions for example applications (browser 0.1.21, electron 0.1.20, shared 0.1.5)\n  * Updated CHANGELOG documentation across affected packages\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "created_at": "2026-04-14T16:49:02Z",
+    "merged_at": "2026-04-14T17:56:38Z",
+    "base_sha": "91aa66a0c23576546895d0946b486ae37cf1b23d",
+    "head_sha": "3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+    "merge_commit_sha": "ec460d568de264f2f8fefaedf1e4e04f03b803ee",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "91aa66a0c23576546895d0946b486ae37cf1b23d",
+  "final_sha": "3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+  "changed_files": [
+    {
+      "sha": "675008afce73cfeb8f0da1bbf578d55afc399f59",
+      "filename": ".changeset/fix-android-mpc-native.md",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 53,
+      "changes": 53,
+      "blob_url": "https://github.com/vultisig/vultisig-sdk/blob/91aa66a0c23576546895d0946b486ae37cf1b23d/.changeset%2Ffix-android-mpc-native.md",
+      "raw_url": "https://github.com/vultisig/vultisig-sdk/raw/91aa66a0c23576546895d0946b486ae37cf1b23d/.changeset%2Ffix-android-mpc-native.md",
+      "contents_url": "https://api.github.com/repos/vultisig/vultisig-sdk/contents/.changeset%2Ffix-android-mpc-native.md?ref=91aa66a0c23576546895d0946b486ae37cf1b23d",
+      "patch": "@@ -1,53 +0,0 @@\n----\n-'@vultisig/mpc-native': patch\n----\n-\n-fix(mpc-native): make Android build green and runtime-functional\n-\n-The Android side of `@vultisig/mpc-native` was non-functional end-to-end:\n-the Kotlin wrapper imported `godkls.Godkls` / `goschnorr.Goschnorr` (a\n-gomobile-style API that doesn't exist in the shipped AARs), the\n-`godklsJNI`/`goschnorrJNI` SWIG classes had no static `loadLibrary` initializer\n-so the underlying `.so` files were never resolved, and AGP 9+ refuses to\n-package the prebuilt AARs as `implementation` deps inside an AAR module\n-(`bundleDebugAar` fails with \"Direct local .aar file dependencies are not\n-supported\"). The result was that any consumer trying to import this package on\n-Android hit a Gradle config failure during build, and even a hand-patched\n-build crashed at first JNI call with `UnsatisfiedLinkError` /\n-`LIB_SERIALIZATION_ERROR`. This change makes the Android side actually work:\n-\n-- **Kotlin wrapper rewritten against the real SWIG bindings.** All\n-  `Godkls.*`/`Goschnorr.*` calls replaced with the actual\n-  `com.silencelaboratories.godkls.godkls.dkls_*` /\n-  `com.silencelaboratories.goschnorr.goschnorr.schnorr_*` static methods.\n-  Helper closures wrap the `tss_buffer` / `go_slice` / `Handle` lifecycle\n-  with `try/finally` cleanup; a per-module `dklsHandles` /`schnorrHandles`\n-  Long→Handle map preserves the existing JS-side handle ID surface. Optional\n-  inputs (`keyId`, `messageHash`, `rootChainCode`) pass `null` (matching iOS\n-  Swift) instead of an empty slice, and QC sessions for the no-keyshare /\n-  old-party path use `Handle().apply { set_0(-1) }` (mirroring iOS\n-  `Handle(_0: Int32(keyshareHandle ?? -1))`) so the C side branches correctly.\n-\n-- **Static `System.loadLibrary` initializer.** A `companion object { init { … } }`\n-  loads `godkls`, `goschnorr`, `godklsswig`, `goschnorrswig` in dependency\n-  order so the SWIG `.so` files find their underlying Go libs already in the\n-  linker namespace. Wrapped in `try/catch` so a failed load surfaces a clean\n-  error to JS at first call instead of crashing the host app on launch.\n-\n-- **Switched local AARs to `compileOnly`.** Direct `implementation files(libs/*.aar)`\n-  is forbidden by AGP 9+ inside an AAR module. Using `compileOnly` lets the\n-  Kotlin wrapper still see the SWIG classes for compilation; runtime\n-  packaging is handled at the consuming **app** module via the new Expo\n-  config plugin shipped at `app.plugin.js` (so consumers just add\n-  `@vultisig/mpc-native` to their `app.json` `plugins` array and the AARs\n-  end up on the final APK's runtime classpath).\n-\n-- **Replaced the prebuilt Android AARs.** The AARs in this package were\n-  shipping a stripped/old `dkls-android` build whose `libgoschnorrswig.so`\n-  carried an absolute-path `DT_NEEDED` baked from the original build host\n-  (so `dlopen` of the SWIG lib failed at runtime on real devices), and\n-  whose `libgoschnorr.so` rejected the FROST keyshare format used by\n-  Vultisig vaults with `LIB_SERIALIZATION_ERROR` (Solana / Cardano / other\n-  EdDSA chains couldn't sign). Replaced with the production-grade builds\n-  shipped by the `vultisig/vultisig-android` app at `app/libs/`, which have\n-  no absolute-path issue and accept the keyshare format end-to-end."
+    },
+    {
+      "sha": "a54edc7a8c00072eaf78b10f46dc4a88d5295a9a",
+      "filename": "examples/browser/CHANGELOG.md",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/vultisig/vultisig-sdk/blob/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/examples%2Fbrowser%2FCHANGELOG.md",
+      "raw_url": "https://github.com/vultisig/vultisig-sdk/raw/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/examples%2Fbrowser%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/vultisig/vultisig-sdk/contents/examples%2Fbrowser%2FCHANGELOG.md?ref=3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+      "patch": "@@ -1,5 +1,13 @@\n # @vultisig/example-browser\n \n+## 0.1.21\n+\n+### Patch Changes\n+\n+- Updated dependencies []:\n+  - @vultisig/sdk@0.15.1\n+  - @vultisig/examples-shared@0.1.5\n+\n ## 0.1.20\n \n ### Patch Changes"
+    },
+    {
+      "sha": "588d27c9a924c7f70f039a8517b3c526b8d9d59f",
+      "filename": "examples/browser/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/vultisig/vultisig-sdk/blob/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/examples%2Fbrowser%2Fpackage.json",
+      "raw_url": "https://github.com/vultisig/vultisig-sdk/raw/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/examples%2Fbrowser%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/vultisig/vultisig-sdk/contents/examples%2Fbrowser%2Fpackage.json?ref=3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@vultisig/example-browser\",\n-  \"version\": \"0.1.20\",\n+  \"version\": \"0.1.21\",\n   \"private\": true,\n   \"type\": \"module\",\n   \"scripts\": {"
+    },
+    {
+      "sha": "9cc1ef4f1f9268287dd2cc50bee2755c1d9af924",
+      "filename": "examples/electron/CHANGELOG.md",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/vultisig/vultisig-sdk/blob/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/examples%2Felectron%2FCHANGELOG.md",
+      "raw_url": "https://github.com/vultisig/vultisig-sdk/raw/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/examples%2Felectron%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/vultisig/vultisig-sdk/contents/examples%2Felectron%2FCHANGELOG.md?ref=3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+      "patch": "@@ -1,5 +1,13 @@\n # @vultisig/example-electron\n \n+## 0.1.20\n+\n+### Patch Changes\n+\n+- Updated dependencies []:\n+  - @vultisig/sdk@0.15.1\n+  - @vultisig/examples-shared@0.1.5\n+\n ## 0.1.19\n \n ### Patch Changes"
+    },
+    {
+      "sha": "702d714f4cc964784759fc9094ac23f7c5922060",
+      "filename": "examples/electron/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/vultisig/vultisig-sdk/blob/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/examples%2Felectron%2Fpackage.json",
+      "raw_url": "https://github.com/vultisig/vultisig-sdk/raw/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/examples%2Felectron%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/vultisig/vultisig-sdk/contents/examples%2Felectron%2Fpackage.json?ref=3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@vultisig/example-electron\",\n-  \"version\": \"0.1.19\",\n+  \"version\": \"0.1.20\",\n   \"private\": true,\n   \"main\": \"dist-electron/main.js\",\n   \"scripts\": {"
+    },
+    {
+      "sha": "2475e9cf49837a72b93e09f9555bef44d24552ea",
+      "filename": "examples/shared/CHANGELOG.md",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/vultisig/vultisig-sdk/blob/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/examples%2Fshared%2FCHANGELOG.md",
+      "raw_url": "https://github.com/vultisig/vultisig-sdk/raw/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/examples%2Fshared%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/vultisig/vultisig-sdk/contents/examples%2Fshared%2FCHANGELOG.md?ref=3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+      "patch": "@@ -1,5 +1,12 @@\n # @vultisig/examples-shared\n \n+## 0.1.5\n+\n+### Patch Changes\n+\n+- Updated dependencies []:\n+  - @vultisig/sdk@0.15.1\n+\n ## 0.1.4\n \n ### Patch Changes"
+    },
+    {
+      "sha": "bf7ae23b980acceb8b76743ddd0331d247de939a",
+      "filename": "examples/shared/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/vultisig/vultisig-sdk/blob/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/examples%2Fshared%2Fpackage.json",
+      "raw_url": "https://github.com/vultisig/vultisig-sdk/raw/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/examples%2Fshared%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/vultisig/vultisig-sdk/contents/examples%2Fshared%2Fpackage.json?ref=3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@vultisig/examples-shared\",\n-  \"version\": \"0.1.4\",\n+  \"version\": \"0.1.5\",\n   \"private\": true,\n   \"type\": \"module\",\n   \"main\": \"src/index.ts\","
+    },
+    {
+      "sha": "09d637116be97c936251ce798052c522c84b011d",
+      "filename": "packages/mpc-native/CHANGELOG.md",
+      "status": "modified",
+      "additions": 50,
+      "deletions": 0,
+      "changes": 50,
+      "blob_url": "https://github.com/vultisig/vultisig-sdk/blob/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/packages%2Fmpc-native%2FCHANGELOG.md",
+      "raw_url": "https://github.com/vultisig/vultisig-sdk/raw/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/packages%2Fmpc-native%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/vultisig/vultisig-sdk/contents/packages%2Fmpc-native%2FCHANGELOG.md?ref=3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+      "patch": "@@ -1,5 +1,55 @@\n # @vultisig/mpc-native\n \n+## 0.1.3\n+\n+### Patch Changes\n+\n+- [#267](https://github.com/vultisig/vultisig-sdk/pull/267) [`91aa66a`](https://github.com/vultisig/vultisig-sdk/commit/91aa66a0c23576546895d0946b486ae37cf1b23d) Thanks [@gomesalexandre](https://github.com/gomesalexandre)! - fix(mpc-native): make Android build green and runtime-functional\n+\n+  The Android side of `@vultisig/mpc-native` was non-functional end-to-end:\n+  the Kotlin wrapper imported `godkls.Godkls` / `goschnorr.Goschnorr` (a\n+  gomobile-style API that doesn't exist in the shipped AARs), the\n+  `godklsJNI`/`goschnorrJNI` SWIG classes had no static `loadLibrary` initializer\n+  so the underlying `.so` files were never resolved, and AGP 9+ refuses to\n+  package the prebuilt AARs as `implementation` deps inside an AAR module\n+  (`bundleDebugAar` fails with \"Direct local .aar file dependencies are not\n+  supported\"). The result was that any consumer trying to import this package on\n+  Android hit a Gradle config failure during build, and even a hand-patched\n+  build crashed at first JNI call with `UnsatisfiedLinkError` /\n+  `LIB_SERIALIZATION_ERROR`. This change makes the Android side actually work:\n+  - **Kotlin wrapper rewritten against the real SWIG bindings.** All\n+    `Godkls.*`/`Goschnorr.*` calls replaced with the actual\n+    `com.silencelaboratories.godkls.godkls.dkls_*` /\n+    `com.silencelaboratories.goschnorr.goschnorr.schnorr_*` static methods.\n+    Helper closures wrap the `tss_buffer` / `go_slice` / `Handle` lifecycle\n+    with `try/finally` cleanup; a per-module `dklsHandles` /`schnorrHandles`\n+    Long→Handle map preserves the existing JS-side handle ID surface. Optional\n+    inputs (`keyId`, `messageHash`, `rootChainCode`) pass `null` (matching iOS\n+    Swift) instead of an empty slice, and QC sessions for the no-keyshare /\n+    old-party path use `Handle().apply { set_0(-1) }` (mirroring iOS\n+    `Handle(_0: Int32(keyshareHandle ?? -1))`) so the C side branches correctly.\n+  - **Static `System.loadLibrary` initializer.** A `companion object { init { … } }`\n+    loads `godkls`, `goschnorr`, `godklsswig`, `goschnorrswig` in dependency\n+    order so the SWIG `.so` files find their underlying Go libs already in the\n+    linker namespace. Wrapped in `try/catch` so a failed load surfaces a clean\n+    error to JS at first call instead of crashing the host app on launch.\n+  - **Switched local AARs to `compileOnly`.** Direct `implementation files(libs/*.aar)`\n+    is forbidden by AGP 9+ inside an AAR module. Using `compileOnly` lets the\n+    Kotlin wrapper still see the SWIG classes for compilation; runtime\n+    packaging is handled at the consuming **app** module via the new Expo\n+    config plugin shipped at `app.plugin.js` (so consumers just add\n+    `@vultisig/mpc-native` to their `app.json` `plugins` array and the AARs\n+    end up on the final APK's runtime classpath).\n+  - **Replaced the prebuilt Android AARs.** The AARs in this package were\n+    shipping a stripped/old `dkls-android` build whose `libgoschnorrswig.so`\n+    carried an absolute-path `DT_NEEDED` baked from the original build host\n+    (so `dlopen` of the SWIG lib failed at runtime on real devices), and\n+    whose `libgoschnorr.so` rejected the FROST keyshare format used by\n+    Vultisig vaults with `LIB_SERIALIZATION_ERROR` (Solana / Cardano / other\n+    EdDSA chains couldn't sign). Replaced with the production-grade builds\n+    shipped by the `vultisig/vultisig-android` app at `app/libs/`, which have\n+    no absolute-path issue and accept the keyshare format end-to-end.\n+\n ## 0.1.2\n \n ### Patch Changes"
+    },
+    {
+      "sha": "f7afcbe50d68b0462cdfdec2610450c3cf7d918b",
+      "filename": "packages/mpc-native/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/vultisig/vultisig-sdk/blob/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/packages%2Fmpc-native%2Fpackage.json",
+      "raw_url": "https://github.com/vultisig/vultisig-sdk/raw/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/packages%2Fmpc-native%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/vultisig/vultisig-sdk/contents/packages%2Fmpc-native%2Fpackage.json?ref=3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@vultisig/mpc-native\",\n-  \"version\": \"0.1.2\",\n+  \"version\": \"0.1.3\",\n   \"description\": \"Native MPC engine for Vultisig SDK (React Native / Expo)\",\n   \"main\": \"src/index.ts\",\n   \"types\": \"src/index.ts\","
+    },
+    {
+      "sha": "db2ae59115330d06094245d8d6c030f81e555a95",
+      "filename": "packages/rujira/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/vultisig/vultisig-sdk/blob/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/packages%2Frujira%2Fpackage.json",
+      "raw_url": "https://github.com/vultisig/vultisig-sdk/raw/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/packages%2Frujira%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/vultisig/vultisig-sdk/contents/packages%2Frujira%2Fpackage.json?ref=3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+      "patch": "@@ -72,7 +72,7 @@\n     \"vitest\": \"^3.0.9\"\n   },\n   \"peerDependencies\": {\n-    \"@vultisig/sdk\": \">=0.15.0\"\n+    \"@vultisig/sdk\": \">=0.15.1\"\n   },\n   \"peerDependenciesMeta\": {\n     \"@vultisig/sdk\": {"
+    },
+    {
+      "sha": "7fedfac2271873d2166db3b2a801dca747416dbf",
+      "filename": "packages/sdk/CHANGELOG.md",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/vultisig/vultisig-sdk/blob/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/packages%2Fsdk%2FCHANGELOG.md",
+      "raw_url": "https://github.com/vultisig/vultisig-sdk/raw/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/packages%2Fsdk%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/vultisig/vultisig-sdk/contents/packages%2Fsdk%2FCHANGELOG.md?ref=3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+      "patch": "@@ -1,5 +1,12 @@\n # @vultisig/sdk\n \n+## 0.15.1\n+\n+### Patch Changes\n+\n+- Updated dependencies [[`91aa66a`](https://github.com/vultisig/vultisig-sdk/commit/91aa66a0c23576546895d0946b486ae37cf1b23d)]:\n+  - @vultisig/mpc-native@0.1.3\n+\n ## 0.15.0\n \n ### Minor Changes"
+    },
+    {
+      "sha": "e927ded28e537fee127acc4bdc704a1ff99ce70a",
+      "filename": "packages/sdk/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/vultisig/vultisig-sdk/blob/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/packages%2Fsdk%2Fpackage.json",
+      "raw_url": "https://github.com/vultisig/vultisig-sdk/raw/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/packages%2Fsdk%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/vultisig/vultisig-sdk/contents/packages%2Fsdk%2Fpackage.json?ref=3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@vultisig/sdk\",\n-  \"version\": \"0.15.0\",\n+  \"version\": \"0.15.1\",\n   \"description\": \"TypeScript SDK for secure multi-party computation and blockchain operations\",\n   \"type\": \"module\",\n   \"main\": \"dist/index.node.cjs\","
+    },
+    {
+      "sha": "36b08b03a5d73b3dc1c4c8fb41d991846af1a933",
+      "filename": "yarn.lock",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/vultisig/vultisig-sdk/blob/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/yarn.lock",
+      "raw_url": "https://github.com/vultisig/vultisig-sdk/raw/3f6817c0f8a59efa0c1f37a8631da917fee7f9fd/yarn.lock",
+      "contents_url": "https://api.github.com/repos/vultisig/vultisig-sdk/contents/yarn.lock?ref=3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+      "patch": "@@ -7141,7 +7141,7 @@ __metadata:\n     typescript: \"npm:^5.9.3\"\n     vitest: \"npm:^3.0.9\"\n   peerDependencies:\n-    \"@vultisig/sdk\": \">=0.15.0\"\n+    \"@vultisig/sdk\": \">=0.15.1\"\n   peerDependenciesMeta:\n     \"@vultisig/sdk\":\n       optional: true"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "3f6817c0f8a59efa0c1f37a8631da917fee7f9fd",
+      "message": "chore: version packages",
+      "parent_shas": [
+        "91aa66a0c23576546895d0946b486ae37cf1b23d"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__vultisig__vultisig-sdk__pr268.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\vultisig__vultisig-sdk__pr268__cpp_python__vultisig__vultisig-sdk__pr268\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\vultisig__vultisig-sdk__pr268__cpp_python__vultisig__vultisig-sdk__pr268\\rn"
+  }
+}

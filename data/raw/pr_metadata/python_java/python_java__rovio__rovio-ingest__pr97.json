@@ -1,0 +1,76 @@
+{
+  "instance_id": "python_java__rovio__rovio-ingest__pr97",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "rovio/rovio-ingest",
+  "pr_number": 97,
+  "pr_url": "https://github.com/rovio/rovio-ingest/pull/97",
+  "repo": {
+    "full_name": "rovio/rovio-ingest",
+    "clone_url": "https://github.com/rovio/rovio-ingest.git",
+    "default_branch": "main",
+    "created_at": "2021-03-26T12:09:38Z",
+    "stars": 44,
+    "license": "Apache-2.0",
+    "size_kb": 1078
+  },
+  "pull_request": {
+    "id": 3528074157,
+    "title": "Exclude python/.venv and python/dist from license header check",
+    "body": "Publish action failed on the licence check: https://github.com/rovio/rovio-ingest/actions/runs/24395626061/job/71252582602#step:15:37201\r\n\r\nThe license-maven-plugin does not respect .gitignore, so these generated/external directories must be explicitly excluded in pom.xml.",
+    "created_at": "2026-04-14T11:35:51Z",
+    "merged_at": "2026-04-14T12:11:52Z",
+    "base_sha": "15756ff85d3b737fa0398a6c5fd0f21b1496457c",
+    "head_sha": "43ad1850928763a2262d752bcd9c09448d965529",
+    "merge_commit_sha": "67aaff557d79b89e86c94d7217c8ffd5e262eb0e",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "15756ff85d3b737fa0398a6c5fd0f21b1496457c",
+  "final_sha": "43ad1850928763a2262d752bcd9c09448d965529",
+  "changed_files": [
+    {
+      "sha": "b896ed54bd4f559d584bad74fb894bd7049f6e0e",
+      "filename": "pom.xml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/rovio/rovio-ingest/blob/43ad1850928763a2262d752bcd9c09448d965529/pom.xml",
+      "raw_url": "https://github.com/rovio/rovio-ingest/raw/43ad1850928763a2262d752bcd9c09448d965529/pom.xml",
+      "contents_url": "https://api.github.com/repos/rovio/rovio-ingest/contents/pom.xml?ref=43ad1850928763a2262d752bcd9c09448d965529",
+      "patch": "@@ -521,6 +521,8 @@\n                             <excludes>\n                                 <exclude>src/test/resources/**</exclude>\n                                 <exclude>src/main/resources/**</exclude>\n+                                <exclude>python/.venv/**</exclude>\n+                                <exclude>python/dist/**</exclude>\n                             </excludes>\n                         </licenseSet>\n                     </licenseSets>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "43ad1850928763a2262d752bcd9c09448d965529",
+      "message": "Exclude python/.venv and python/dist from license header check\n\nThe license-maven-plugin does not respect .gitignore, so these\ngenerated/external directories must be explicitly excluded in pom.xml.",
+      "parent_shas": [
+        "15756ff85d3b737fa0398a6c5fd0f21b1496457c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__rovio__rovio-ingest__pr97.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\rovio__rovio-ingest__pr97__python_java__rovio__rovio-ingest__pr97\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\rovio__rovio-ingest__pr97__python_java__rovio__rovio-ingest__pr97\\rn"
+  }
+}

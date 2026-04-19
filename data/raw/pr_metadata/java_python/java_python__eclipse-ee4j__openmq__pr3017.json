@@ -1,0 +1,82 @@
+{
+  "instance_id": "java_python__eclipse-ee4j__openmq__pr3017",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "eclipse-ee4j/openmq",
+  "pr_number": 3017,
+  "pr_url": "https://github.com/eclipse-ee4j/openmq/pull/3017",
+  "repo": {
+    "full_name": "eclipse-ee4j/openmq",
+    "clone_url": "https://github.com/eclipse-ee4j/openmq.git",
+    "default_branch": "master",
+    "created_at": "2018-01-12T22:05:22Z",
+    "stars": 69,
+    "license": "NOASSERTION",
+    "size_kb": 23130
+  },
+  "pull_request": {
+    "id": 3522383253,
+    "title": "Use released Java 26",
+    "body": "",
+    "created_at": "2026-04-13T10:49:17Z",
+    "merged_at": "2026-04-13T12:16:22Z",
+    "base_sha": "072473237161143bcf07550f2b281a12a599fcf1",
+    "head_sha": "f0eaf3af01438a6e636493e639cfb2a31675fda2",
+    "merge_commit_sha": "f0eaf3af01438a6e636493e639cfb2a31675fda2",
+    "labels": [
+      "build",
+      "no-changelog"
+    ]
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "072473237161143bcf07550f2b281a12a599fcf1",
+  "final_sha": "f0eaf3af01438a6e636493e639cfb2a31675fda2",
+  "changed_files": [
+    {
+      "sha": "0144056cd1b0b7df1eeaa7b1e3de3695dc330bb9",
+      "filename": ".github/workflows/maven.yml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/eclipse-ee4j/openmq/blob/f0eaf3af01438a6e636493e639cfb2a31675fda2/.github%2Fworkflows%2Fmaven.yml",
+      "raw_url": "https://github.com/eclipse-ee4j/openmq/raw/f0eaf3af01438a6e636493e639cfb2a31675fda2/.github%2Fworkflows%2Fmaven.yml",
+      "contents_url": "https://api.github.com/repos/eclipse-ee4j/openmq/contents/.github%2Fworkflows%2Fmaven.yml?ref=f0eaf3af01438a6e636493e639cfb2a31675fda2",
+      "patch": "@@ -42,7 +42,7 @@ jobs:\n         java_version:\n         - 21\n         - 25\n-        - 26-ea\n+        - 26\n         mq_command: [\n                       'imqadmin',\n                       'imqbridgemgr',\n@@ -74,7 +74,7 @@ jobs:\n         java_version:\n         - 21\n         - 25\n-        - 26-ea\n+        - 26\n     uses: ./.github/workflows/test-stomp-bridge.yml\n     with:\n       java_version: ${{ matrix.java_version }}\n@@ -87,7 +87,7 @@ jobs:\n         java_version:\n         - 21\n         - 25\n-        - 26-ea\n+        - 26\n     uses: ./.github/workflows/test-selector.yml\n     with:\n       java_version: ${{ matrix.java_version }}\n@@ -105,7 +105,7 @@ jobs:\n         java_version:\n         - 21\n         - 25\n-        - 26-ea\n+        - 26\n     uses: ./.github/workflows/test-secure-sockets.yml\n     with:\n       java_version: ${{ matrix.java_version }}\n@@ -120,7 +120,7 @@ jobs:\n         java_version:\n         - 21\n         - 25\n-        - 26-ea\n+        - 26\n         exclude:\n         - os: macos-latest\n           java_version: 25"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "f0eaf3af01438a6e636493e639cfb2a31675fda2",
+      "message": "Use released Java 26",
+      "parent_shas": [
+        "072473237161143bcf07550f2b281a12a599fcf1"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "java_python_bridge_noise"
+    ],
+    "auto_signals": [
+      "java_python_bridge_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__eclipse-ee4j__openmq__pr3017.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\eclipse-ee4j__openmq__pr3017__java_python__eclipse-ee4j__openmq__pr3017\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\eclipse-ee4j__openmq__pr3017__java_python__eclipse-ee4j__openmq__pr3017\\rn"
+  }
+}

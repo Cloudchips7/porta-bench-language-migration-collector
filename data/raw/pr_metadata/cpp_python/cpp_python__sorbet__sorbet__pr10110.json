@@ -1,0 +1,95 @@
+{
+  "instance_id": "cpp_python__sorbet__sorbet__pr10110",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "sorbet/sorbet",
+  "pr_number": 10110,
+  "pr_url": "https://github.com/sorbet/sorbet/pull/10110",
+  "repo": {
+    "full_name": "sorbet/sorbet",
+    "clone_url": "https://github.com/sorbet/sorbet.git",
+    "default_branch": "master",
+    "created_at": "2018-06-26T18:13:06Z",
+    "stars": 3761,
+    "license": "Apache-2.0",
+    "size_kb": 211520
+  },
+  "pull_request": {
+    "id": 3494802881,
+    "title": "perf: Remove `c_reverse` from `fullUnresolvedPath`",
+    "body": "<!-- (optional) Explain your change, focusing on the details of the solution. This is a great place to call out user-visible changes. -->\n\n\n### Motivation\n<!-- Why make this change? Describe the problem, not the solution. This can also be a link to an issue. -->\n\nMaking some changes to `fullUnresolvedPath`, want to pull this out on its own to\nprove that nothing changes.\n\n\n### Test plan\n<!-- If you did not write tests for this change, replace the message below explaining why not. Why we should be confident this change is correct? If you changed the website, please include a screenshot of the proposed changes. -->\n\nExisting tests",
+    "created_at": "2026-04-06T20:15:57Z",
+    "merged_at": "2026-04-06T20:41:53Z",
+    "base_sha": "a48f830f47d9b7786a964893d16475d7b08c49ad",
+    "head_sha": "f4f6d928e24e959806fa56add86492b755710d2b",
+    "merge_commit_sha": "6d33f2d0f46feeea04df47ae1f25617ae2112a25",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "a48f830f47d9b7786a964893d16475d7b08c49ad",
+  "final_sha": "f4f6d928e24e959806fa56add86492b755710d2b",
+  "changed_files": [
+    {
+      "sha": "dfe351fef008c960531bb88d35da161ae3c2eb22",
+      "filename": "ast/Trees.cc",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/sorbet/sorbet/blob/f4f6d928e24e959806fa56add86492b755710d2b/ast%2FTrees.cc",
+      "raw_url": "https://github.com/sorbet/sorbet/raw/f4f6d928e24e959806fa56add86492b755710d2b/ast%2FTrees.cc",
+      "contents_url": "https://api.github.com/repos/sorbet/sorbet/contents/ast%2FTrees.cc?ref=f4f6d928e24e959806fa56add86492b755710d2b",
+      "patch": "@@ -349,6 +349,8 @@ optional<pair<core::SymbolRef, vector<core::NameRef>>> ConstantLit::fullUnresolv\n     }\n     ENFORCE(this->resolutionScopes() != nullptr && !this->resolutionScopes()->empty());\n \n+    // This list is in reverse order, but that doesn't matter because all we ever use this for is\n+    // for Type hashing, and don't care about the order for that.\n     vector<core::NameRef> namesFailedToResolve;\n     auto *nested = this;\n     {\n@@ -374,7 +376,6 @@ optional<pair<core::SymbolRef, vector<core::NameRef>>> ConstantLit::fullUnresolv\n         }\n         auto &orig = *nested->original();\n         namesFailedToResolve.emplace_back(orig.cnst);\n-        absl::c_reverse(namesFailedToResolve);\n     }\n     auto prefix = nested->resolutionScopes()->front();\n     return make_pair(prefix, move(namesFailedToResolve));"
+    },
+    {
+      "sha": "3987c59792a277f1f87d88c5ea4cd2306739a57e",
+      "filename": "core/types/printing.cc",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/sorbet/sorbet/blob/f4f6d928e24e959806fa56add86492b755710d2b/core%2Ftypes%2Fprinting.cc",
+      "raw_url": "https://github.com/sorbet/sorbet/raw/f4f6d928e24e959806fa56add86492b755710d2b/core%2Ftypes%2Fprinting.cc",
+      "contents_url": "https://api.github.com/repos/sorbet/sorbet/contents/core%2Ftypes%2Fprinting.cc?ref=f4f6d928e24e959806fa56add86492b755710d2b",
+      "patch": "@@ -36,7 +36,8 @@ string UnresolvedClassType::toStringWithTabs(const GlobalState &gs, int tabs) co\n \n string UnresolvedClassType::show(const GlobalState &gs, ShowOptions options) const {\n     return fmt::format(\"{}::{} (unresolved)\", this->scope.show(gs, options),\n-                       fmt::map_join(this->names, \"::\", [&](const auto &el) -> string { return el.show(gs); }));\n+                       fmt::map_join(this->names.rbegin(), this->names.rend(),\n+                                     \"::\", [&](const auto &el) -> string { return el.show(gs); }));\n }\n \n string UnresolvedAppliedType::toStringWithTabs(const GlobalState &gs, int tabs) const {"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d311c6c6ea18ad24a517dc24f83a016eb1ce6947",
+      "message": "perf: Remove `c_reverse` from `fullUnresolvedPath`\n\nMinor optimization",
+      "parent_shas": [
+        "a48f830f47d9b7786a964893d16475d7b08c49ad"
+      ]
+    },
+    {
+      "sha": "f4f6d928e24e959806fa56add86492b755710d2b",
+      "message": "Preserve the printing order",
+      "parent_shas": [
+        "d311c6c6ea18ad24a517dc24f83a016eb1ce6947"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__sorbet__sorbet__pr10110.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\sorbet__sorbet__pr10110__cpp_python__sorbet__sorbet__pr10110\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\sorbet__sorbet__pr10110__cpp_python__sorbet__sorbet__pr10110\\rn"
+  }
+}

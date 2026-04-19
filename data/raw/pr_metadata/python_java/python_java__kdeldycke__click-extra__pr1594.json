@@ -1,0 +1,94 @@
+{
+  "instance_id": "python_java__kdeldycke__click-extra__pr1594",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "kdeldycke/click-extra",
+  "pr_number": 1594,
+  "pr_url": "https://github.com/kdeldycke/click-extra/pull/1594",
+  "repo": {
+    "full_name": "kdeldycke/click-extra",
+    "clone_url": "https://github.com/kdeldycke/click-extra.git",
+    "default_branch": "main",
+    "created_at": "2021-10-18T08:02:27Z",
+    "stars": 114,
+    "license": "GPL-2.0",
+    "size_kb": 10592
+  },
+  "pull_request": {
+    "id": 3472148660,
+    "title": "Format Python",
+    "body": "### Description\n\nAuto-formats Python files with [autopep8](https://github.com/hhatto/autopep8) (comment wrapping) and [Ruff](https://docs.astral.sh/ruff/) (linting and formatting). When no `[tool.ruff]` section or `ruff.toml` is present, [repomatic's bundled defaults](https://github.com/kdeldycke/repomatic/blob/main/repomatic/data/ruff.toml) are applied at runtime. See the [`format-python` job documentation](https://github.com/kdeldycke/repomatic?tab=readme-ov-file#githubworkflowsautofixyaml-jobs) for details.\n\n> [!TIP]\n> Customize formatting and linting rules via [`[tool.ruff]`](https://docs.astral.sh/ruff/configuration/) and [`[tool.autopep8]`](https://github.com/hhatto/autopep8#configuration) in your `pyproject.toml`.\n\n\n> [!IMPORTANT]\n> If you suspect the PR content is outdated, **[click `Run workflow`](https://github.com/kdeldycke/click-extra/actions/workflows/autofix.yaml)** to refresh it manually before merging.\n\n\n<details><summary><code>Workflow metadata</code></summary>\n\n| Field | Value |\n| :-- | :-- |\n| **Trigger** | `push` |\n| **Actor** | @kdeldycke |\n| **Ref** | `main` |\n| **Commit** | [`4b4cb2e6`](https://github.com/kdeldycke/click-extra/commit/4b4cb2e6b684434cb2af7abfb85baad6f0be1cf8) |\n| **Job** | [`format-python`](https://github.com/kdeldycke/click-extra/blob/4b4cb2e6b684434cb2af7abfb85baad6f0be1cf8/.github/workflows/autofix.yaml) |\n| **Workflow** | [`autofix.yaml`](https://github.com/kdeldycke/click-extra/blob/4b4cb2e6b684434cb2af7abfb85baad6f0be1cf8/.github/workflows/autofix.yaml) |\n| **Run** | [#2496.1](https://github.com/kdeldycke/click-extra/actions/runs/23799780343) |\n\n</details>\n\n---\n\n🏭 Generated with [repomatic](https://github.com/kdeldycke/repomatic)",
+    "created_at": "2026-03-31T13:37:19Z",
+    "merged_at": "2026-03-31T13:50:14Z",
+    "base_sha": "4b4cb2e6b684434cb2af7abfb85baad6f0be1cf8",
+    "head_sha": "eed3b8388af852b429c811dadd0f0e6d632b9115",
+    "merge_commit_sha": "62b32952bc912c2e79a1fd82a3d1afa280b88040",
+    "labels": [
+      "🤖 ci"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "4b4cb2e6b684434cb2af7abfb85baad6f0be1cf8",
+  "final_sha": "eed3b8388af852b429c811dadd0f0e6d632b9115",
+  "changed_files": [
+    {
+      "sha": "807de4c379eefbd211e4ce94ac7578c34610db71",
+      "filename": "click_extra/version.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/eed3b8388af852b429c811dadd0f0e6d632b9115/click_extra%2Fversion.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/eed3b8388af852b429c811dadd0f0e6d632b9115/click_extra%2Fversion.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/click_extra%2Fversion.py?ref=eed3b8388af852b429c811dadd0f0e6d632b9115",
+      "patch": "@@ -273,9 +273,7 @@ def discover_package_init_files() -> list[Path]:\n     data = tomllib.loads(pyproject_path.read_text(encoding=\"utf-8\"))\n     scripts = data.get(\"project\", {}).get(\"scripts\", {})\n     if not scripts:\n-        logging.warning(\n-            \"No [project.scripts] entries found in pyproject.toml.\"\n-        )\n+        logging.warning(\"No [project.scripts] entries found in pyproject.toml.\")\n         return []\n \n     seen: set[Path] = set()"
+    },
+    {
+      "sha": "13c2c3817acd02537c764f20f2d44a28e308da25",
+      "filename": "tests/test_version.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 8,
+      "changes": 14,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/eed3b8388af852b429c811dadd0f0e6d632b9115/tests%2Ftest_version.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/eed3b8388af852b429c811dadd0f0e6d632b9115/tests%2Ftest_version.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/tests%2Ftest_version.py?ref=eed3b8388af852b429c811dadd0f0e6d632b9115",
+      "patch": "@@ -46,17 +46,17 @@\n     version_option,\n )\n from click_extra.commands import default_extra_params\n-from click_extra.version import (\n-    discover_package_init_files,\n-    prebake_dunder,\n-    prebake_version,\n-)\n from click_extra.pytest import (\n     command_decorators,\n     default_debug_colored_log_end,\n     default_debug_colored_logging,\n     default_debug_colored_version_details,\n )\n+from click_extra.version import (\n+    discover_package_init_files,\n+    prebake_dunder,\n+    prebake_version,\n+)\n \n from .conftest import skip_windows_colors\n \n@@ -720,9 +720,7 @@ def test_discover_deduplicates(tmp_path, monkeypatch):\n     \"\"\"Multiple scripts from the same package yield one path.\"\"\"\n     monkeypatch.chdir(tmp_path)\n     (tmp_path / \"pyproject.toml\").write_text(\n-        \"[project.scripts]\\n\"\n-        'cli1 = \"mypkg.cli:main\"\\n'\n-        'cli2 = \"mypkg.alt:run\"\\n',\n+        '[project.scripts]\\ncli1 = \"mypkg.cli:main\"\\ncli2 = \"mypkg.alt:run\"\\n',\n         encoding=\"utf-8\",\n     )\n     pkg = tmp_path / \"mypkg\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "eed3b8388af852b429c811dadd0f0e6d632b9115",
+      "message": "Format Python",
+      "parent_shas": [
+        "4b4cb2e6b684434cb2af7abfb85baad6f0be1cf8"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__kdeldycke__click-extra__pr1594.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__click-extra__pr1594__python_java__kdeldycke__click-extra__pr1594\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__click-extra__pr1594__python_java__kdeldycke__click-extra__pr1594\\rn"
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "instance_id": "cpp_python__pjsip__pjproject__pr4870",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "pjsip/pjproject",
+  "pr_number": 4870,
+  "pr_url": "https://github.com/pjsip/pjproject/pull/4870",
+  "repo": {
+    "full_name": "pjsip/pjproject",
+    "clone_url": "https://github.com/pjsip/pjproject.git",
+    "default_branch": "master",
+    "created_at": "2016-01-24T05:00:33Z",
+    "stars": 2583,
+    "license": "GPL-2.0",
+    "size_kb": 48328
+  },
+  "pull_request": {
+    "id": 3413179502,
+    "title": "Add PJSUA2 AudioMediaAiPort wrapper for AI media port",
+    "body": "## Summary\n\nWraps the experimental `pjmedia_ai_port` (from PR #4866) as a PJSUA2 `AudioMedia` subclass, enabling C++/Java/Python/C# applications to use the AI media port through the high-level API.\n\nRef: #4523\n\n## Usage\n\n```cpp\nAudioMediaAiPort ai;\nai.createPort();\nai.connect(\"wss://api.openai.com/v1/realtime?model=...\", apiKey);\n\n// Route call audio to/from AI\ncallMedia.startTransmit(ai);\nai.startTransmit(callMedia);\n\n// Later\nai.disconnect();\n```\n\nEvents (connected, transcript, etc.) are delivered via the virtual `onEvent()` callback, which can be overridden in C++ or target languages via SWIG directors.\n\n## Design\n\n- Uses **pjsua's SIP endpoint ioqueue and timer heap** for WebSocket I/O — no separate worker thread, pjsua's existing worker threads handle polling\n- Uses `pjmedia_ai_event_type` enum directly (no wrapper enum)\n- Destructor nulls the `user_data` back-pointer under grp_lock to prevent use-after-free from in-flight callbacks\n- Wrapper pool lifetime tied to grp_lock destroy handler to prevent premature release\n\n## Limitations\n\nThese are known limitations for reference in future improvements:\n- No SSL/TLS parameter configuration (e.g. certificate verification, client certs, cipher suites). The C API supports `ssl_param` but it is not yet exposed in the PJSUA2 wrapper.\n- No way to customize the OpenAI session configuration (voice, instructions, modalities) — currently hardcoded in the backend\n- No `isConnected()` / `getState()` query method — connection state can only be inferred from `onEvent()` callbacks\n- No JSON persistence (`readObject`/`writeObject`) for `AiMediaPortParam`\n\n## Changes\n\n| File | Description |\n|------|-------------|\n| `pjsip/include/pjsua2/media.hpp` | `AiMediaEvent`, `AiMediaPortParam`, `AudioMediaAiPort` class |\n| `pjsip/src/pjsua2/media.cpp` | Implementation (~120 lines) |\n| `pjmedia/include/pjmedia/ai_port.h` | Add `pjmedia_ai_port_set_user_data()` |\n| `pjmedia/src/pjmedia/ai_port.c` | Implement `set_user_data()` |\n| `pjmedia/include/pjmedia.h` | Add `ai_port.h` to umbrella header |\n| `pjsip-apps/src/swig/pjsua2.i` | Add director feature for `AudioMediaAiPort` |\n| `pjsip-apps/src/swig/symbols.lst` | Add `pjmedia_ai_event_type` |\n| `pjsip-apps/src/swig/symbols.i` | Regenerated with `importsym2.py` |\n| `pjsip-apps/src/swig/python/test.py` | Python SWIG test for AI port lifecycle + optional OpenAI connection |\n\n## Test plan\n- [x] Build verified on Linux (zero warnings)\n- [x] Build on Windows/MSVC (Release-Static, C++ lib clean)\n- [x] Python SWIG test: create, conf bridge register, destroy (WSL)\n- [x] Python SWIG test with OpenAI connection on MSYS2/MinGW (real audio, confirmed working)\n\nCo-Authored-By: Claude Code",
+    "created_at": "2026-03-18T06:51:25Z",
+    "merged_at": "2026-03-19T04:43:43Z",
+    "base_sha": "dbcf7fd7eba92699810e3a041c8501d939f8a172",
+    "head_sha": "3e90421e5cefcc8aacdee2f7f171feb15817b2c7",
+    "merge_commit_sha": "65fe079a6ed13d11edff7fe7703c805f41a7d3f6",
+    "labels": [
+      "type: enhancement",
+      "component: pjsua2"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "dbcf7fd7eba92699810e3a041c8501d939f8a172",
+  "final_sha": "3e90421e5cefcc8aacdee2f7f171feb15817b2c7",
+  "changed_files": [
+    {
+      "sha": "5e404583287211c21a34375729ec09cf8d10ac2d",
+      "filename": "pjmedia/include/pjmedia.h",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/pjsip/pjproject/blob/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjmedia%2Finclude%2Fpjmedia.h",
+      "raw_url": "https://github.com/pjsip/pjproject/raw/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjmedia%2Finclude%2Fpjmedia.h",
+      "contents_url": "https://api.github.com/repos/pjsip/pjproject/contents/pjmedia%2Finclude%2Fpjmedia.h?ref=3e90421e5cefcc8aacdee2f7f171feb15817b2c7",
+      "patch": "@@ -23,6 +23,7 @@\n  * @file pjmedia.h\n  * @brief PJMEDIA main header file.\n  */\n+#include <pjmedia/ai_port.h>\n #include <pjmedia/alaw_ulaw.h>\n #include <pjmedia/avi.h>\n #include <pjmedia/avi_stream.h>"
+    },
+    {
+      "sha": "576b8c1a51f769bec26e666b2b592fd389918716",
+      "filename": "pjmedia/include/pjmedia/ai_port.h",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 0,
+      "changes": 12,
+      "blob_url": "https://github.com/pjsip/pjproject/blob/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjmedia%2Finclude%2Fpjmedia%2Fai_port.h",
+      "raw_url": "https://github.com/pjsip/pjproject/raw/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjmedia%2Finclude%2Fpjmedia%2Fai_port.h",
+      "contents_url": "https://api.github.com/repos/pjsip/pjproject/contents/pjmedia%2Finclude%2Fpjmedia%2Fai_port.h?ref=3e90421e5cefcc8aacdee2f7f171feb15817b2c7",
+      "patch": "@@ -378,6 +378,18 @@ PJ_DECL(pj_status_t) pjmedia_ai_port_disconnect(pjmedia_ai_port *ai_port);\n  */\n PJ_DECL(void*) pjmedia_ai_port_get_user_data(pjmedia_ai_port *ai_port);\n \n+/**\n+ * Set the user data associated with the AI port. If callbacks may\n+ * be running concurrently, the caller should hold the port's\n+ * grp_lock (via pjmedia_ai_port_get_port()->grp_lock) when calling\n+ * this function.\n+ *\n+ * @param ai_port   The AI port instance.\n+ * @param user_data The user data pointer.\n+ */\n+PJ_DECL(void) pjmedia_ai_port_set_user_data(pjmedia_ai_port *ai_port,\n+                                             void *user_data);\n+\n /**\n  * Create an OpenAI Realtime API backend.\n  *"
+    },
+    {
+      "sha": "507f67156e03109919b2deb836b08544a7b0336c",
+      "filename": "pjmedia/src/pjmedia/ai_port.c",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/pjsip/pjproject/blob/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjmedia%2Fsrc%2Fpjmedia%2Fai_port.c",
+      "raw_url": "https://github.com/pjsip/pjproject/raw/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjmedia%2Fsrc%2Fpjmedia%2Fai_port.c",
+      "contents_url": "https://api.github.com/repos/pjsip/pjproject/contents/pjmedia%2Fsrc%2Fpjmedia%2Fai_port.c?ref=3e90421e5cefcc8aacdee2f7f171feb15817b2c7",
+      "patch": "@@ -801,3 +801,10 @@ PJ_DEF(void*) pjmedia_ai_port_get_user_data(pjmedia_ai_port *ai_port)\n     PJ_ASSERT_RETURN(ai_port, NULL);\n     return ai_port->user_data;\n }\n+\n+PJ_DEF(void) pjmedia_ai_port_set_user_data(pjmedia_ai_port *ai_port,\n+                                            void *user_data)\n+{\n+    PJ_ASSERT_ON_FAIL(ai_port, return);\n+    ai_port->user_data = user_data;\n+}"
+    },
+    {
+      "sha": "f5547fc09040489fb7a808ca77e6d50290e76952",
+      "filename": "pjsip-apps/src/swig/pjsua2.i",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/pjsip/pjproject/blob/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjsip-apps%2Fsrc%2Fswig%2Fpjsua2.i",
+      "raw_url": "https://github.com/pjsip/pjproject/raw/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjsip-apps%2Fsrc%2Fswig%2Fpjsua2.i",
+      "contents_url": "https://api.github.com/repos/pjsip/pjproject/contents/pjsip-apps%2Fsrc%2Fswig%2Fpjsua2.i?ref=3e90421e5cefcc8aacdee2f7f171feb15817b2c7",
+      "patch": "@@ -179,6 +179,7 @@ using namespace pj;\n %feature(\"director\") FindBuddyMatch;\n %feature(\"director\") AudioMediaPlayer;\n %feature(\"director\") AudioMediaPort;\n+%feature(\"director\") AudioMediaAiPort;\n %feature(\"director\") VideoRecorder;\n \n // PendingJob is only used on Python"
+    },
+    {
+      "sha": "1aee9f6c0cadca82931c1b0beb14cf34dcb41f39",
+      "filename": "pjsip-apps/src/swig/python/test.py",
+      "status": "modified",
+      "additions": 91,
+      "deletions": 0,
+      "changes": 91,
+      "blob_url": "https://github.com/pjsip/pjproject/blob/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjsip-apps%2Fsrc%2Fswig%2Fpython%2Ftest.py",
+      "raw_url": "https://github.com/pjsip/pjproject/raw/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjsip-apps%2Fsrc%2Fswig%2Fpython%2Ftest.py",
+      "contents_url": "https://api.github.com/repos/pjsip/pjproject/contents/pjsip-apps%2Fsrc%2Fswig%2Fpython%2Ftest.py?ref=3e90421e5cefcc8aacdee2f7f171feb15817b2c7",
+      "patch": "@@ -1,5 +1,6 @@\n import pjsua2 as pj\n import sys\n+import os\n import time\n from collections import deque\n import struct\n@@ -233,6 +234,95 @@ def ua_tonegen_test():\n \n     ep.libDestroy()\n \n+#\n+# AI Media Port test\n+#\n+class MyAiPort(pj.AudioMediaAiPort):\n+    \"\"\"Custom AI port that collects events.\"\"\"\n+    def __init__(self):\n+        super().__init__()\n+        self.events = []\n+        self.connected = False\n+        self.transcripts = []\n+\n+    def onEvent(self, event):\n+        self.events.append(event.type)\n+        if event.type == pj.PJMEDIA_AI_EVENT_CONNECTED:\n+            self.connected = True\n+            write(\"  [AI] Connected\\r\\n\")\n+        elif event.type == pj.PJMEDIA_AI_EVENT_DISCONNECTED:\n+            self.connected = False\n+            write(\"  [AI] Disconnected\\r\\n\")\n+        elif event.type == pj.PJMEDIA_AI_EVENT_TRANSCRIPT:\n+            self.transcripts.append(event.text)\n+            write(\"  [AI] \" + event.text + \"\\r\\n\")\n+        elif event.type == pj.PJMEDIA_AI_EVENT_RESPONSE_DONE:\n+            write(\"  [AI] Response done\\r\\n\")\n+\n+def ua_ai_port_test():\n+    write(\"AI media port test..\" + \"\\r\\n\")\n+    ep_cfg = pj.EpConfig()\n+\n+    ep = pj.Endpoint()\n+    ep.libCreate()\n+    ep.libInit(ep_cfg)\n+    ep.libStart()\n+\n+    # Create AI port with default params\n+    ai = MyAiPort()\n+    prm = pj.AiMediaPortParam()\n+    assert prm.vadEnabled == False\n+    assert prm.ptimeMsec == 20\n+\n+    ai.createPort(prm)\n+    write(\"  AI port created and registered to conf bridge\\r\\n\")\n+\n+    # Route audio: mic -> AI -> speaker\n+    ai.startTransmit(ep.audDevManager().getPlaybackDevMedia())\n+    ep.audDevManager().getCaptureDevMedia().startTransmit(ai)\n+    write(\"  Audio routing established\\r\\n\")\n+\n+    # Connect to OpenAI if API key is available\n+    api_key = os.environ.get(\"OPENAI_API_KEY\", \"\")\n+    if api_key:\n+        url = (\"wss://api.openai.com/v1/realtime\"\n+               \"?model=gpt-4o-mini-realtime-preview\")\n+        write(\"  Connecting to OpenAI..\\r\\n\")\n+        ai.connect(url, api_key)\n+\n+        # Wait for connection\n+        for i in range(150):\n+            ep.libHandleEvents(100)\n+            if ai.connected:\n+                break\n+\n+        if ai.connected:\n+            write(\"  Connected! Speak into your mic.\\r\\n\")\n+            write(\"  Press ENTER to stop.\\r\\n\")\n+            input()\n+\n+            write(\"  Disconnecting..\\r\\n\")\n+            ai.disconnect()\n+            # Let close handshake complete\n+            for i in range(20):\n+                ep.libHandleEvents(100)\n+        else:\n+            write(\"  Connection timeout (non-fatal)\\r\\n\")\n+    else:\n+        write(\"  OPENAI_API_KEY not set, skipping AI connection test\\r\\n\")\n+\n+    # Disconnect routing\n+    ai.stopTransmit(ep.audDevManager().getPlaybackDevMedia())\n+    ep.audDevManager().getCaptureDevMedia().stopTransmit(ai)\n+    write(\"  Audio routing disconnected\\r\\n\")\n+\n+    del ai\n+    write(\"  AI port destroyed\\r\\n\")\n+\n+    ep.libDestroy()\n+    write(\"  AI media port test OK\\r\\n\")\n+\n+\n class RandomIntVal():\n     def __init__(self):\n         self.value = randint(0, 100000)\n@@ -304,6 +394,7 @@ def ua_pending_job_test():\n     ua_run_test_exception()\n     ua_run_log_test()\n     ua_run_ua_test()\n+    ua_ai_port_test()\n     ua_tonegen_test()\n     ua_pending_job_test()\n     sys.exit(0)"
+    },
+    {
+      "sha": "5213132054c13f2f0b2f6ae4c6853100bee65b40",
+      "filename": "pjsip-apps/src/swig/symbols.i",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 0,
+      "changes": 11,
+      "blob_url": "https://github.com/pjsip/pjproject/blob/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjsip-apps%2Fsrc%2Fswig%2Fsymbols.i",
+      "raw_url": "https://github.com/pjsip/pjproject/raw/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjsip-apps%2Fsrc%2Fswig%2Fsymbols.i",
+      "contents_url": "https://api.github.com/repos/pjsip/pjproject/contents/pjsip-apps%2Fsrc%2Fswig%2Fsymbols.i?ref=3e90421e5cefcc8aacdee2f7f171feb15817b2c7",
+      "patch": "@@ -462,6 +462,17 @@ typedef enum pjmedia_vid_stream_rc_method\n     PJMEDIA_VID_STREAM_RC_SEND_THREAD = 2\n } pjmedia_vid_stream_rc_method;\n \n+typedef enum pjmedia_ai_event_type\n+{\n+    PJMEDIA_AI_EVENT_CONNECTED,\n+    PJMEDIA_AI_EVENT_DISCONNECTED,\n+    PJMEDIA_AI_EVENT_TRANSCRIPT,\n+    PJMEDIA_AI_EVENT_RESPONSE_START,\n+    PJMEDIA_AI_EVENT_RESPONSE_DONE,\n+    PJMEDIA_AI_EVENT_SPEECH_STARTED,\n+    PJMEDIA_AI_EVENT_SPEECH_STOPPED\n+} pjmedia_ai_event_type;\n+\n enum pjmedia_file_writer_option\n {\n     PJMEDIA_FILE_WRITE_PCM = 0,"
+    },
+    {
+      "sha": "5274efea0cf60f710269e75bfbb87e640cfd0e5f",
+      "filename": "pjsip-apps/src/swig/symbols.lst",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/pjsip/pjproject/blob/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjsip-apps%2Fsrc%2Fswig%2Fsymbols.lst",
+      "raw_url": "https://github.com/pjsip/pjproject/raw/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjsip-apps%2Fsrc%2Fswig%2Fsymbols.lst",
+      "contents_url": "https://api.github.com/repos/pjsip/pjproject/contents/pjsip-apps%2Fsrc%2Fswig%2Fsymbols.lst?ref=3e90421e5cefcc8aacdee2f7f171feb15817b2c7",
+      "patch": "@@ -21,6 +21,7 @@ pjmedia/videodev.h              pjmedia_vid_dev_hwnd_type\n pjmedia/vid_codec.h             pjmedia_vid_packing\n pjmedia/vid_conf.h              pjmedia_vid_conf_op_type\n pjmedia/vid_stream.h            pjmedia_vid_stream_rc_method\n+pjmedia/ai_port.h               pjmedia_ai_event_type\n pjmedia/wav_port.h              pjmedia_file_writer_option pjmedia_file_player_option\n \n pjmedia-audiodev/audiodev.h     pjmedia_aud_dev_route pjmedia_aud_dev_cap"
+    },
+    {
+      "sha": "9d3179870d4a8ccd77e500f98e32491de0dea018",
+      "filename": "pjsip/include/pjsua2/media.hpp",
+      "status": "modified",
+      "additions": 122,
+      "deletions": 0,
+      "changes": 122,
+      "blob_url": "https://github.com/pjsip/pjproject/blob/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjsip%2Finclude%2Fpjsua2%2Fmedia.hpp",
+      "raw_url": "https://github.com/pjsip/pjproject/raw/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjsip%2Finclude%2Fpjsua2%2Fmedia.hpp",
+      "contents_url": "https://api.github.com/repos/pjsip/pjproject/contents/pjsip%2Finclude%2Fpjsua2%2Fmedia.hpp?ref=3e90421e5cefcc8aacdee2f7f171feb15817b2c7",
+      "patch": "@@ -556,6 +556,128 @@ class AudioMediaPort : public AudioMedia\n     pjmedia_port *port;\n };\n \n+\n+/**\n+ * AI Media Port event data.\n+ */\n+struct AiMediaEvent\n+{\n+    /** Event type. */\n+    pjmedia_ai_event_type  type;\n+\n+    /** Status code. PJ_SUCCESS for informational events. */\n+    pj_status_t            status;\n+\n+    /** Text payload (transcript). Only valid for TRANSCRIPT events. */\n+    string                 text;\n+};\n+\n+\n+/**\n+ * AI Media Port creation parameters.\n+ */\n+struct AiMediaPortParam\n+{\n+    /**\n+     * Enable voice activity detection (VAD) on the TX path.\n+     * When enabled, silence frames are not sent to the AI service.\n+     *\n+     * Default: false\n+     */\n+    bool                vadEnabled;\n+\n+    /**\n+     * Ptime in milliseconds.\n+     *\n+     * Default: 20\n+     */\n+    unsigned            ptimeMsec;\n+\n+public:\n+    /** Default constructor */\n+    AiMediaPortParam() : vadEnabled(false), ptimeMsec(20) {}\n+};\n+\n+\n+/**\n+ * AI Media Port.\n+ *\n+ * This wraps pjmedia_ai_port as an AudioMedia object that can be\n+ * connected to the conference bridge. It bridges audio to/from\n+ * real-time AI services (e.g. OpenAI Realtime API) over WebSocket.\n+ *\n+ * Basic usage:\n+ * 1. Create with createPort() (uses the OpenAI Realtime API backend).\n+ * 2. Connect to the AI service with connect().\n+ * 3. Use startTransmit()/stopTransmit() to route audio from/to\n+ *    other conference bridge ports (e.g. AudioMedia from a call).\n+ * 4. Disconnect with disconnect() when done.\n+ *\n+ * Events (connected, transcript, etc.) are delivered via the\n+ * virtual onEvent() callback.\n+ */\n+class AudioMediaAiPort : public AudioMedia\n+{\n+public:\n+    /**\n+     * Constructor.\n+     */\n+    AudioMediaAiPort();\n+\n+    /**\n+     * Destructor. Disconnects from the AI service (if connected) and\n+     * unregisters the port from the conference bridge.\n+     */\n+    virtual ~AudioMediaAiPort();\n+\n+    /**\n+     * Create an AI media port with the OpenAI Realtime API backend and\n+     * register it to the conference bridge. The port operates at the\n+     * backend's native clock rate (e.g. 24kHz for OpenAI); the\n+     * conference bridge handles resampling.\n+     *\n+     * @param prm       Creation parameters.\n+     */\n+    void createPort(const AiMediaPortParam &prm = AiMediaPortParam())\n+                    PJSUA2_THROW(Error);\n+\n+    /**\n+     * Connect to the AI service asynchronously. The onEvent() callback\n+     * will be called with PJMEDIA_AI_EVENT_CONNECTED or\n+     * PJMEDIA_AI_EVENT_DISCONNECTED when complete.\n+     *\n+     * @param url           WebSocket URL (e.g.\n+     *                      \"wss://api.openai.com/v1/realtime?model=...\")\n+     * @param authToken     Authentication token (e.g. OpenAI API key).\n+     */\n+    void connect(const string &url, const string &authToken)\n+                 PJSUA2_THROW(Error);\n+\n+    /**\n+     * Disconnect from the AI service gracefully.\n+     */\n+    void disconnect() PJSUA2_THROW(Error);\n+\n+    /*\n+     * Callbacks\n+     */\n+\n+    /**\n+     * Called when an AI event occurs (connected, transcript, etc.).\n+     * This may be called from the ioqueue worker thread.\n+     *\n+     * @param event     The event data.\n+     */\n+    virtual void onEvent(const AiMediaEvent &event)\n+    { PJ_UNUSED_ARG(event); }\n+\n+private:\n+    pj_pool_t          *pool;\n+    pjmedia_ai_port    *aiPort;\n+    pjmedia_ai_backend *backend;\n+};\n+\n+\n /**\n  * This structure contains additional info about AudioMediaPlayer.\n  */"
+    },
+    {
+      "sha": "6a6671b67f81f5a270eb01abc193eb037b092ef7",
+      "filename": "pjsip/src/pjsua2/media.cpp",
+      "status": "modified",
+      "additions": 167,
+      "deletions": 0,
+      "changes": 167,
+      "blob_url": "https://github.com/pjsip/pjproject/blob/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjsip%2Fsrc%2Fpjsua2%2Fmedia.cpp",
+      "raw_url": "https://github.com/pjsip/pjproject/raw/3e90421e5cefcc8aacdee2f7f171feb15817b2c7/pjsip%2Fsrc%2Fpjsua2%2Fmedia.cpp",
+      "contents_url": "https://api.github.com/repos/pjsip/pjproject/contents/pjsip%2Fsrc%2Fpjsua2%2Fmedia.cpp?ref=3e90421e5cefcc8aacdee2f7f171feb15817b2c7",
+      "patch": "@@ -425,6 +425,173 @@ void AudioMediaPort::createPort(const string &name, MediaFormatAudio &fmt)\n \n ///////////////////////////////////////////////////////////////////////////////\n \n+static void ai_on_event_cb(pjmedia_ai_port *ai_port,\n+                            const pjmedia_ai_event *event)\n+{\n+    pjmedia_port *port = pjmedia_ai_port_get_port(ai_port);\n+    AudioMediaAiPort *amp;\n+\n+    /* Protect against use-after-free: check the back-pointer under\n+     * grp_lock so the callback sees NULL if destructor has run.\n+     */\n+    if (!port || !port->grp_lock)\n+        return;\n+\n+    pj_grp_lock_acquire(port->grp_lock);\n+    amp = static_cast<AudioMediaAiPort *>(\n+              pjmedia_ai_port_get_user_data(ai_port));\n+    if (!amp) {\n+        pj_grp_lock_release(port->grp_lock);\n+        return;\n+    }\n+\n+    {\n+        AiMediaEvent ev;\n+        ev.type = event->type;\n+        ev.status = event->status;\n+        if (event->text.slen > 0)\n+            ev.text.assign(event->text.ptr, event->text.slen);\n+\n+        pj_grp_lock_release(port->grp_lock);\n+        amp->onEvent(ev);\n+    }\n+}\n+\n+\n+AudioMediaAiPort::AudioMediaAiPort()\n+: pool(NULL), aiPort(NULL), backend(NULL)\n+{\n+}\n+\n+static void ai_wrapper_on_destroy(void *member)\n+{\n+    pj_pool_t *pool = static_cast<pj_pool_t *>(member);\n+    if (pool)\n+        pj_pool_release(pool);\n+}\n+\n+AudioMediaAiPort::~AudioMediaAiPort()\n+{\n+    if (aiPort) {\n+        /* Null the back-pointer under grp_lock so ai_on_event_cb\n+         * sees NULL and bails out, preventing use-after-free.\n+         */\n+        pjmedia_port *port = pjmedia_ai_port_get_port(aiPort);\n+        if (port && port->grp_lock) {\n+            pj_grp_lock_acquire(port->grp_lock);\n+            pjmedia_ai_port_set_user_data(aiPort, NULL);\n+            pj_grp_lock_release(port->grp_lock);\n+        }\n+\n+        PJSUA2_CATCH_IGNORE( disconnect() );\n+    }\n+\n+    PJSUA2_CATCH_IGNORE( unregisterMediaPort() );\n+\n+    if (aiPort) {\n+        pjmedia_port_destroy(pjmedia_ai_port_get_port(aiPort));\n+        aiPort = NULL;\n+    }\n+\n+    /* Note: pool is released by ai_wrapper_on_destroy() via\n+     * grp_lock destroy handler, not here. This ensures the pool\n+     * (which holds the backend struct) outlives the port.\n+     */\n+}\n+\n+void AudioMediaAiPort::createPort(const AiMediaPortParam &prm)\n+                                   PJSUA2_THROW(Error)\n+{\n+    pjmedia_ai_port_param ai_param;\n+    pjmedia_port *media_port;\n+    pjsip_endpoint *endpt;\n+    pj_status_t status;\n+\n+    if (pool) {\n+        PJSUA2_RAISE_ERROR(PJ_EEXISTS);\n+    }\n+\n+    pool = pjsua_pool_create(\"aiamp%p\", 4096, 4096);\n+    if (!pool) {\n+        PJSUA2_RAISE_ERROR(PJ_ENOMEM);\n+    }\n+\n+    /* Use pjsua's SIP endpoint ioqueue and timer heap so that\n+     * WebSocket I/O is polled by pjsua's existing worker threads.\n+     */\n+    endpt = pjsua_get_pjsip_endpt();\n+\n+    /* Create OpenAI backend */\n+    status = pjmedia_ai_openai_backend_create(pool, &backend);\n+    if (status != PJ_SUCCESS) {\n+        pj_pool_release(pool);\n+        pool = NULL;\n+        PJSUA2_RAISE_ERROR(status);\n+    }\n+\n+    /* Create AI port */\n+    pjmedia_ai_port_param_default(&ai_param);\n+    ai_param.ioqueue = pjsip_endpt_get_ioqueue(endpt);\n+    ai_param.timer_heap = pjsip_endpt_get_timer_heap(endpt);\n+    ai_param.cb.on_event = &ai_on_event_cb;\n+    ai_param.user_data = this;\n+    ai_param.backend = backend;\n+    ai_param.vad_enabled = prm.vadEnabled ? PJ_TRUE : PJ_FALSE;\n+    ai_param.ptime_msec = prm.ptimeMsec;\n+\n+    status = pjmedia_ai_port_create(pool, &ai_param, &aiPort);\n+    if (status != PJ_SUCCESS) {\n+        pj_pool_release(pool);\n+        pool = NULL;\n+        PJSUA2_RAISE_ERROR(status);\n+    }\n+\n+    media_port = pjmedia_ai_port_get_port(aiPort);\n+\n+    /* Register a grp_lock destroy handler so the wrapper pool (which\n+     * holds the backend struct) is released only after the port's\n+     * grp_lock ref-count reaches zero and all callbacks have completed.\n+     */\n+    pj_grp_lock_add_handler(media_port->grp_lock, pool,\n+                            pool, &ai_wrapper_on_destroy);\n+\n+    registerMediaPort2(media_port, pool);\n+}\n+\n+void AudioMediaAiPort::connect(const string &url, const string &authToken)\n+                                PJSUA2_THROW(Error)\n+{\n+    pj_str_t url_str, token_str;\n+    pj_status_t status;\n+\n+    if (!aiPort) {\n+        PJSUA2_RAISE_ERROR(PJ_EINVALIDOP);\n+    }\n+\n+    url_str = pj_str((char*)url.c_str());\n+    token_str = pj_str((char*)authToken.c_str());\n+\n+    status = pjmedia_ai_port_connect(aiPort, &url_str, &token_str);\n+    PJSUA2_CHECK_RAISE_ERROR(status);\n+}\n+\n+void AudioMediaAiPort::disconnect() PJSUA2_THROW(Error)\n+{\n+    pj_status_t status;\n+\n+    if (!aiPort) {\n+        return;\n+    }\n+\n+    status = pjmedia_ai_port_disconnect(aiPort);\n+    /* Ignore PJ_EINVALIDOP (not connected) */\n+    if (status != PJ_SUCCESS && status != PJ_EINVALIDOP) {\n+        PJSUA2_CHECK_RAISE_ERROR(status);\n+    }\n+}\n+\n+///////////////////////////////////////////////////////////////////////////////\n+\n AudioMediaPlayer::AudioMediaPlayer()\n : playerId(PJSUA_INVALID_ID)\n {"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "62593dd2b09933ac59049225cf92137d33120571",
+      "message": "Add PJSUA2 AudioMediaAiPort wrapper for AI media port\n\nWraps pjmedia_ai_port as a PJSUA2 AudioMedia subclass, enabling\nC++/Java/Python/C# apps to connect to AI services (e.g. OpenAI\nRealtime API) through the high-level API with startTransmit()/\nstopTransmit().\n\nChanges:\n- Add AudioMediaAiPort class with createPort(), connect(),\n  disconnect(), and virtual onEvent() callback\n- Add AiMediaEvent struct and AiMediaPortParam for C++ API\n- Use pjsua's SIP endpoint ioqueue/timer heap (no separate worker\n  thread needed)\n- Add pjmedia_ai_port_set_user_data() to C API for safe callback\n  invalidation on destruction\n- Add ai_port.h to pjmedia.h umbrella header\n- Update SWIG: director feature for AudioMediaAiPort, symbols.lst\n  entry for pjmedia_ai_event_type, regenerated symbols.i\n\nRef: #4523\n\nCo-Authored-By: Claude Code",
+      "parent_shas": [
+        "dbcf7fd7eba92699810e3a041c8501d939f8a172"
+      ]
+    },
+    {
+      "sha": "d0e71751d40f29c5aa12a8dc1c24c40f15d05c8f",
+      "message": "Address Copilot review on PJSUA2 AudioMediaAiPort\n\n- Fix pool lifetime: register grp_lock destroy handler to release\n  the wrapper pool (which holds the backend struct) only after the\n  port's ref-count reaches zero, preventing use-after-free if\n  pjmedia_port_destroy is deferred by the conference bridge\n- Remove fixed 200ms sleep from destructor, rely on grp_lock\n  ref-counting for proper synchronization\n- Document thread-safety requirement on set_user_data (caller must\n  hold grp_lock if callbacks may run concurrently)\n- Fix createPort() doc: clarify it uses OpenAI backend, not a\n  user-specified backend type\n\nCo-Authored-By: Claude Code",
+      "parent_shas": [
+        "62593dd2b09933ac59049225cf92137d33120571"
+      ]
+    },
+    {
+      "sha": "3e90421e5cefcc8aacdee2f7f171feb15817b2c7",
+      "message": "Add Python SWIG test and fix disconnect when not connected\n\n- Add ua_ai_port_test() to Python SWIG test: creates AI port,\n  registers to conf bridge, optionally connects to OpenAI if\n  OPENAI_API_KEY is set (interactive mic/speaker, ENTER to stop),\n  clean destroy\n- Fix disconnect() to silently ignore PJ_EINVALIDOP (not connected)\n  instead of raising an error\n\nCo-Authored-By: Claude Code",
+      "parent_shas": [
+        "d0e71751d40f29c5aa12a8dc1c24c40f15d05c8f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "cross_language_mapping_visible",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__pjsip__pjproject__pr4870.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\pjsip__pjproject__pr4870__cpp_python__pjsip__pjproject__pr4870\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\pjsip__pjproject__pr4870__cpp_python__pjsip__pjproject__pr4870\\rn"
+  }
+}

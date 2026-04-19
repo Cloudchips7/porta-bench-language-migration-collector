@@ -1,0 +1,93 @@
+{
+  "instance_id": "cpp_python__anagrambuild__swig-ts__pr131",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "anagrambuild/swig-ts",
+  "pr_number": 131,
+  "pr_url": "https://github.com/anagrambuild/swig-ts/pull/131",
+  "repo": {
+    "full_name": "anagrambuild/swig-ts",
+    "clone_url": "https://github.com/anagrambuild/swig-ts.git",
+    "default_branch": "main",
+    "created_at": "2025-04-04T10:41:04Z",
+    "stars": 8,
+    "license": "NOASSERTION",
+    "size_kb": 3880
+  },
+  "pull_request": {
+    "id": 3488149568,
+    "title": "chore: add missing changesets for PRs 129 and 130",
+    "body": "## Summary\n- add a missing changeset for PR #129 with `minor` bumps for `@swig-wallet/api`, `@swig-wallet/coder`, `@swig-wallet/developer`, `@swig-wallet/lib`, and `@swig-wallet/mcp-server`\n- add a missing changeset for PR #130 with `patch` bumps for `@swig-wallet/coder` and `@swig-wallet/lib`\n- capture the release notes needed for the already-merged feature/fix work without changing runtime code\n\n## Validation\n- reviewed the generated changeset entries for package names and bump types",
+    "created_at": "2026-04-04T02:57:54Z",
+    "merged_at": "2026-04-04T02:59:47Z",
+    "base_sha": "88c6662bd8fbba6165db6c7eab9acf04100a9527",
+    "head_sha": "6ab577ab9d7ed80542b56906eb013d34befe3d9d",
+    "merge_commit_sha": "446bb162aeca8c9a9a4b8db935dd2a3db7bfdf0e",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "88c6662bd8fbba6165db6c7eab9acf04100a9527",
+  "final_sha": "6ab577ab9d7ed80542b56906eb013d34befe3d9d",
+  "changed_files": [
+    {
+      "sha": "4504960819202293178afd0834971051ba7535d0",
+      "filename": ".changeset/pr129-rent-destination.md",
+      "status": "added",
+      "additions": 9,
+      "deletions": 0,
+      "changes": 9,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/6ab577ab9d7ed80542b56906eb013d34befe3d9d/.changeset%2Fpr129-rent-destination.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/6ab577ab9d7ed80542b56906eb013d34befe3d9d/.changeset%2Fpr129-rent-destination.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/.changeset%2Fpr129-rent-destination.md?ref=6ab577ab9d7ed80542b56906eb013d34befe3d9d",
+      "patch": "@@ -0,0 +1,9 @@\n+---\n+'@swig-wallet/api': minor\n+'@swig-wallet/coder': minor\n+'@swig-wallet/developer': minor\n+'@swig-wallet/lib': minor\n+'@swig-wallet/mcp-server': minor\n+---\n+\n+Add `RentDestination` action support across the TypeScript SDK so APIs, action builders, payload decoding, and MCP permission parsing can encode and accept rent-destination configs."
+    },
+    {
+      "sha": "61ee18f92f1487b6014549047c01d7e96a9a1902",
+      "filename": ".changeset/pr130-program-curated-payload.md",
+      "status": "added",
+      "additions": 6,
+      "deletions": 0,
+      "changes": 6,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/6ab577ab9d7ed80542b56906eb013d34befe3d9d/.changeset%2Fpr130-program-curated-payload.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/6ab577ab9d7ed80542b56906eb013d34befe3d9d/.changeset%2Fpr130-program-curated-payload.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/.changeset%2Fpr130-program-curated-payload.md?ref=6ab577ab9d7ed80542b56906eb013d34befe3d9d",
+      "patch": "@@ -0,0 +1,6 @@\n+---\n+'@swig-wallet/coder': patch\n+'@swig-wallet/lib': patch\n+---\n+\n+Fix `ProgramCurated` action encoding to include the reserved 32-byte payload so generated SignV2 instructions match on-chain expectations."
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "6ab577ab9d7ed80542b56906eb013d34befe3d9d",
+      "message": "chore: add missing changesets for PRs 129 and 130",
+      "parent_shas": [
+        "88c6662bd8fbba6165db6c7eab9acf04100a9527"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "ci_only",
+      "dependency_only",
+      "doc_only"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__anagrambuild__swig-ts__pr131.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\anagrambuild__swig-ts__pr131__cpp_python__anagrambuild__swig-ts__pr131\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\anagrambuild__swig-ts__pr131__cpp_python__anagrambuild__swig-ts__pr131\\rn"
+  }
+}

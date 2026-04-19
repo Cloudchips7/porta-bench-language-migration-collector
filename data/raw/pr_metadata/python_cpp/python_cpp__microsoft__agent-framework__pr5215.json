@@ -1,0 +1,186 @@
+{
+  "instance_id": "python_cpp__microsoft__agent-framework__pr5215",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "microsoft/agent-framework",
+  "pr_number": 5215,
+  "pr_url": "https://github.com/microsoft/agent-framework/pull/5215",
+  "repo": {
+    "full_name": "microsoft/agent-framework",
+    "clone_url": "https://github.com/microsoft/agent-framework.git",
+    "default_branch": "main",
+    "created_at": "2025-04-28T19:40:42Z",
+    "stars": 9556,
+    "license": "MIT",
+    "size_kb": 86688
+  },
+  "pull_request": {
+    "id": 3516313444,
+    "title": "Python: Update dependency",
+    "body": "### Motivation and Context\r\n\r\n<!-- Thank you for your contribution to the Agent Framework repo!\r\nPlease help reviewers and future users, providing the following information:\r\n  1. Why is this change required?\r\n  2. What problem does it solve?\r\n  3. What scenario does it contribute to?\r\n  4. If it fixes an open issue, please link to the issue here.\r\n-->\r\n\r\n### Description\r\n\r\n<!-- Describe your changes, the overall approach, the underlying design.\r\n     These notes will help understanding how your code works. Thanks! -->\r\n\r\n### Contribution Checklist\r\n\r\n<!-- Before submitting this PR, please make sure: -->\r\n\r\n- [ ] The code builds clean without any errors or warnings\r\n- [ ] The PR follows the [Contribution Guidelines](https://github.com/microsoft/agent-framework/blob/main/CONTRIBUTING.md)\r\n- [ ] All unit tests pass, and I have added new tests where possible\r\n- [ ] **Is this a breaking change?** If yes, add \"[BREAKING]\" prefix to the title of the PR.",
+    "created_at": "2026-04-10T23:04:03Z",
+    "merged_at": "2026-04-10T23:10:35Z",
+    "base_sha": "615ef9049f0232cfaf89f9664828037964fcf936",
+    "head_sha": "20de3b7105ac73cd48e4823435334570db3b4563",
+    "merge_commit_sha": "a98a585afbbef3d9d68b40223aafba93c2612e41",
+    "labels": [
+      "python"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "615ef9049f0232cfaf89f9664828037964fcf936",
+  "final_sha": "20de3b7105ac73cd48e4823435334570db3b4563",
+  "changed_files": [
+    {
+      "sha": "11ce27a4aa724e4e3724f7cc34c3875628563acd",
+      "filename": "python/packages/foundry_hosting/agent_framework_foundry_hosting/_responses.py",
+      "status": "modified",
+      "additions": 27,
+      "deletions": 26,
+      "changes": 53,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fpackages%2Ffoundry_hosting%2Fagent_framework_foundry_hosting%2F_responses.py",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fpackages%2Ffoundry_hosting%2Fagent_framework_foundry_hosting%2F_responses.py",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Ffoundry_hosting%2Fagent_framework_foundry_hosting%2F_responses.py?ref=20de3b7105ac73cd48e4823435334570db3b4563",
+      "patch": "@@ -3,7 +3,7 @@\n import asyncio\n from collections.abc import AsyncIterable\n \n-from agent_framework import Agent, ChatOptions, Content, HistoryProvider, Message\n+from agent_framework import ChatOptions, Content, HistoryProvider, Message, RawAgent, SupportsAgentRun\n from agent_framework._telemetry import append_to_user_agent\n from azure.ai.agentserver.responses import (\n     ResponseContext,\n@@ -31,9 +31,9 @@\n     OutputMessageContent,\n     OutputMessageContentOutputTextContent,\n     OutputMessageContentRefusalContent,\n+    ResponseStreamEvent,\n     SummaryTextContent,\n     TextContent,\n-    get_input_text,\n )\n from typing_extensions import Any, Sequence, cast\n \n@@ -45,11 +45,11 @@ class ResponsesHostServer(ResponsesAgentServerHost):\n \n     def __init__(\n         self,\n-        agent: Agent,\n+        agent: SupportsAgentRun,\n         *,\n         prefix: str = \"\",\n         options: ResponsesServerOptions | None = None,\n-        provider: ResponseProviderProtocol | None = None,\n+        store: ResponseProviderProtocol | None = None,\n         **kwargs: Any,\n     ) -> None:\n         \"\"\"Initialize a ResponsesHostServer.\n@@ -58,44 +58,38 @@ def __init__(\n             agent: The agent to handle responses for.\n             prefix: The URL prefix for the server.\n             options: Optional server options.\n-            provider: Optional response provider.\n+            store: Optional response store.\n             **kwargs: Additional keyword arguments.\n \n         Note:\n             The agent must not have a history provider with `load_messages=True`,\n             because history is managed by the hosting infrastructure.\n         \"\"\"\n-        super().__init__(prefix=prefix, options=options, provider=provider, **kwargs)\n+        super().__init__(prefix=prefix, options=options, store=store, **kwargs)\n \n-        self._validate_agent(agent)\n         self._agent = agent\n-        self.create_handler(self._handle_create)  # pyright: ignore[reportUnknownMemberType]\n-\n-        # Append the user agent prefix for telemetry purposes\n-        append_to_user_agent(self.USER_AGENT_PREFIX)\n-\n-    def _validate_agent(self, agent: Agent) -> None:\n-        \"\"\"Validate the agent to ensure it does not have a history provider with `load_messages=True`.\n-\n-        History is managed by the hosting infrastructure.\n-        \"\"\"\n-        for provider in agent.context_providers:\n+        for provider in getattr(self._agent, \"context_providers\", []):\n             if isinstance(provider, HistoryProvider) and provider.load_messages:\n                 raise RuntimeError(\n                     \"There shouldn't be a history provider with `load_messages=True` already present. \"\n                     \"History is managed by the hosting infrastructure.\"\n                 )\n \n+        self.create_handler(self._handle_create)  # pyright: ignore[reportUnknownMemberType]\n+\n+        # Append the user agent prefix for telemetry purposes\n+        append_to_user_agent(self.USER_AGENT_PREFIX)\n+\n     async def _handle_create(\n         self,\n         request: CreateResponse,\n         context: ResponseContext,\n         cancellation_signal: asyncio.Event,\n-    ) -> AsyncIterable[dict[str, Any]]:\n+    ) -> AsyncIterable[ResponseStreamEvent | dict[str, Any]]:\n         \"\"\"Handle the creation of a response.\"\"\"\n-        input_items = get_input_text(request)\n+        input_text = await context.get_input_text()\n         history = await context.get_history()\n-        messages = [*_to_messages(history), input_items]\n+        messages = [*_to_messages(history), input_text]\n \n         chat_options = _to_chat_options(request)\n \n@@ -108,7 +102,11 @@ async def _handle_create(\n \n         if request.stream is None or request.stream is False:\n             # Run the agent in non-streaming mode\n-            response = await self._agent.run(messages, stream=False, options=chat_options)\n+            if isinstance(self._agent, RawAgent):\n+                raw_agent = cast(\"RawAgent[Any]\", self._agent)  # pyright: ignore[reportUnknownMemberType]\n+                response = await raw_agent.run(messages, stream=False, options=chat_options)\n+            else:\n+                response = await self._agent.run(messages, stream=False)\n             for item in stream.output_item_message(response.text):\n                 yield item\n             yield stream.emit_completed()\n@@ -121,15 +119,18 @@ async def _handle_create(\n         yield text_content.emit_added()\n \n         # Invoke the MAF agent\n-        response_stream = self._agent.run(messages, stream=True, options=chat_options)\n+        if isinstance(self._agent, RawAgent):\n+            raw_agent = cast(\"RawAgent[Any]\", self._agent)  # pyright: ignore[reportUnknownMemberType]\n+            response_stream = raw_agent.run(messages, stream=True, options=chat_options)\n+        else:\n+            response_stream = self._agent.run(messages, stream=True)\n         async for update in response_stream:\n             if update.text:\n                 yield text_content.emit_delta(update.text)\n \n         # Complete the message\n-        final = await response_stream.get_final_response()\n-        yield text_content.emit_done(final.text)\n-        yield message_item.emit_content_done(text_content)\n+        yield text_content.emit_text_done()\n+        yield text_content.emit_done()\n         yield message_item.emit_done()\n \n         yield stream.emit_completed()"
+    },
+    {
+      "sha": "377e4de7e37b210b7a2967134ef5219cdf11917c",
+      "filename": "python/packages/foundry_hosting/pyproject.toml",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 6,
+      "changes": 18,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fpackages%2Ffoundry_hosting%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fpackages%2Ffoundry_hosting%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Ffoundry_hosting%2Fpyproject.toml?ref=20de3b7105ac73cd48e4823435334570db3b4563",
+      "patch": "@@ -24,15 +24,21 @@ classifiers = [\n ]\n dependencies = [\n     \"agent-framework-core>=1.0.0,<2\",\n-    \"azure-ai-agentserver-core\",\n-    \"azure-ai-agentserver-responses\",\n-    \"azure-ai-agentserver-invocations\"\n+    \"azure-ai-agentserver-core==2.0.0a20260410006\",\n+    \"azure-ai-agentserver-responses==1.0.0a20260410006\",\n+    \"azure-ai-agentserver-invocations==1.0.0a20260410006\",\n+    \"azure-monitor-opentelemetry-exporter>=1.0.0a1\"\n ]\n \n [tool.uv.sources]\n-azure-ai-agentserver-responses = { git = \"https://github.com/Azure/azure-sdk-for-python.git\", branch = \"agentserver/responses\", subdirectory = \"sdk/agentserver/azure-ai-agentserver-responses\" }\n-azure-ai-agentserver-invocations = { git = \"https://github.com/Azure/azure-sdk-for-python.git\", branch = \"agentserver/responses\", subdirectory = \"sdk/agentserver/azure-ai-agentserver-invocations\" }\n-azure-ai-agentserver-core = { git = \"https://github.com/Azure/azure-sdk-for-python.git\", branch = \"agentserver/responses\", subdirectory = \"sdk/agentserver/azure-ai-agentserver-core\" }\n+azure-ai-agentserver-responses = { index = \"azure-sdk-for-python\" }\n+azure-ai-agentserver-invocations = { index = \"azure-sdk-for-python\" }\n+azure-ai-agentserver-core = { index = \"azure-sdk-for-python\" }\n+azure-monitor-opentelemetry-exporter = { index = \"azure-sdk-for-python\" }\n+\n+[[tool.uv.index]]\n+name = \"azure-sdk-for-python\"\n+url = \"https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-python/pypi/simple/\"\n \n [tool.uv]\n prerelease = \"if-necessary-or-explicit\""
+    },
+    {
+      "sha": "d88b7f61d23fef327a82f1cd671425fc20a21b66",
+      "filename": "python/samples/05-end-to-end/hosted_agents/foundry_hosted_responses/01_basic/main.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F01_basic%2Fmain.py",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F01_basic%2Fmain.py",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F01_basic%2Fmain.py?ref=20de3b7105ac73cd48e4823435334570db3b4563",
+      "patch": "@@ -29,7 +29,7 @@ def main():\n         default_options={\"store\": False},\n     )\n \n-    server = ResponsesHostServer(agent, provider=InMemoryResponseProvider())\n+    server = ResponsesHostServer(agent, store=InMemoryResponseProvider())\n     server.run()\n \n "
+    },
+    {
+      "sha": "894b0247e0f29212cd473b96c2dcaa4d5e535c14",
+      "filename": "python/samples/05-end-to-end/hosted_agents/foundry_hosted_responses/02_local_tools/main.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F02_local_tools%2Fmain.py",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F02_local_tools%2Fmain.py",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F02_local_tools%2Fmain.py?ref=20de3b7105ac73cd48e4823435334570db3b4563",
+      "patch": "@@ -42,7 +42,7 @@ def main():\n         default_options={\"store\": False},\n     )\n \n-    server = ResponsesHostServer(agent, provider=InMemoryResponseProvider())\n+    server = ResponsesHostServer(agent, store=InMemoryResponseProvider())\n     server.run()\n \n "
+    },
+    {
+      "sha": "cb25d2ef96b9f5ebca7c9385c4fdc20ebf3304c1",
+      "filename": "python/samples/05-end-to-end/hosted_agents/foundry_hosted_responses/03_remote_mcp/main.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F03_remote_mcp%2Fmain.py",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F03_remote_mcp%2Fmain.py",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F03_remote_mcp%2Fmain.py?ref=20de3b7105ac73cd48e4823435334570db3b4563",
+      "patch": "@@ -45,7 +45,7 @@ def main():\n         default_options={\"store\": False},\n     )\n \n-    server = ResponsesHostServer(agent, provider=InMemoryResponseProvider())\n+    server = ResponsesHostServer(agent, store=InMemoryResponseProvider())\n     server.run()\n \n "
+    },
+    {
+      "sha": "58fad23c9709bab484054ca0e0e7e45d25a7a825",
+      "filename": "python/samples/05-end-to-end/hosted_agents/foundry_hosted_responses/04_workflows/main.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F04_workflows%2Fmain.py",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F04_workflows%2Fmain.py",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F04_workflows%2Fmain.py?ref=20de3b7105ac73cd48e4823435334570db3b4563",
+      "patch": "@@ -66,7 +66,7 @@ def main():\n         .as_agent()\n     )\n \n-    server = ResponsesHostServer(workflow_agent, provider=InMemoryResponseProvider())\n+    server = ResponsesHostServer(workflow_agent, store=InMemoryResponseProvider())\n     server.run()\n \n "
+    },
+    {
+      "sha": "bce794a9112c480b599dc206fbd60dc5d83b0ed7",
+      "filename": "python/samples/05-end-to-end/hosted_agents/foundry_hosted_responses/05_local_shell/main.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F05_local_shell%2Fmain.py",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F05_local_shell%2Fmain.py",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F05_local_shell%2Fmain.py?ref=20de3b7105ac73cd48e4823435334570db3b4563",
+      "patch": "@@ -55,7 +55,7 @@ def main():\n         default_options={\"store\": False},\n     )\n \n-    server = ResponsesHostServer(agent, provider=InMemoryResponseProvider())\n+    server = ResponsesHostServer(agent, store=InMemoryResponseProvider())\n     server.run()\n \n "
+    },
+    {
+      "sha": "894b0247e0f29212cd473b96c2dcaa4d5e535c14",
+      "filename": "python/samples/05-end-to-end/hosted_agents/foundry_hosted_responses/06_eval/main.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F06_eval%2Fmain.py",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F06_eval%2Fmain.py",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F06_eval%2Fmain.py?ref=20de3b7105ac73cd48e4823435334570db3b4563",
+      "patch": "@@ -42,7 +42,7 @@ def main():\n         default_options={\"store\": False},\n     )\n \n-    server = ResponsesHostServer(agent, provider=InMemoryResponseProvider())\n+    server = ResponsesHostServer(agent, store=InMemoryResponseProvider())\n     server.run()\n \n "
+    },
+    {
+      "sha": "fabbfd98efef7361cb6cbc2340bc305782b6419b",
+      "filename": "python/samples/05-end-to-end/hosted_agents/foundry_hosted_responses/07_foundry_memory/main.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F07_foundry_memory%2Fmain.py",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F07_foundry_memory%2Fmain.py",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fsamples%2F05-end-to-end%2Fhosted_agents%2Ffoundry_hosted_responses%2F07_foundry_memory%2Fmain.py?ref=20de3b7105ac73cd48e4823435334570db3b4563",
+      "patch": "@@ -79,7 +79,7 @@ async def main():\n         default_options={\"store\": False},\n     )\n \n-    server = ResponsesHostServer(agent, provider=InMemoryResponseProvider())\n+    server = ResponsesHostServer(agent, store=InMemoryResponseProvider())\n \n     try:\n         await server.run_async()"
+    },
+    {
+      "sha": "b991a447447bfda0e4f1e3958fab5c4014dbb58f",
+      "filename": "python/uv.lock",
+      "status": "modified",
+      "additions": 29,
+      "deletions": 16,
+      "changes": 45,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fuv.lock",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/20de3b7105ac73cd48e4823435334570db3b4563/python%2Fuv.lock",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fuv.lock?ref=20de3b7105ac73cd48e4823435334570db3b4563",
+      "patch": "@@ -344,7 +344,6 @@ all = [\n     { name = \"agent-framework-devui\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"agent-framework-durabletask\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"agent-framework-foundry\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n-    { name = \"agent-framework-foundry-hosting\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"agent-framework-foundry-local\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"agent-framework-github-copilot\", marker = \"(python_full_version >= '3.11' and sys_platform == 'darwin') or (python_full_version >= '3.11' and sys_platform == 'linux') or (python_full_version >= '3.11' and sys_platform == 'win32')\" },\n     { name = \"agent-framework-lab\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -373,7 +372,6 @@ requires-dist = [\n     { name = \"agent-framework-devui\", marker = \"extra == 'all'\", editable = \"packages/devui\" },\n     { name = \"agent-framework-durabletask\", marker = \"extra == 'all'\", editable = \"packages/durabletask\" },\n     { name = \"agent-framework-foundry\", marker = \"extra == 'all'\", editable = \"packages/foundry\" },\n-    { name = \"agent-framework-foundry-hosting\", marker = \"extra == 'all'\", editable = \"packages/foundry_hosting\" },\n     { name = \"agent-framework-foundry-local\", marker = \"extra == 'all'\", editable = \"packages/foundry_local\" },\n     { name = \"agent-framework-github-copilot\", marker = \"python_full_version >= '3.11' and extra == 'all'\", editable = \"packages/github_copilot\" },\n     { name = \"agent-framework-lab\", marker = \"extra == 'all'\", editable = \"packages/lab\" },\n@@ -502,21 +500,23 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-foundry-hosting\"\n-version = \"1.0.0b260402\"\n+version = \"1.0.0a260402\"\n source = { editable = \"packages/foundry_hosting\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"azure-ai-agentserver-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"azure-ai-agentserver-invocations\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"azure-ai-agentserver-responses\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n+    { name = \"azure-monitor-opentelemetry-exporter\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n ]\n \n [package.metadata]\n requires-dist = [\n     { name = \"agent-framework-core\", editable = \"packages/core\" },\n-    { name = \"azure-ai-agentserver-core\", git = \"https://github.com/Azure/azure-sdk-for-python.git?subdirectory=sdk%2Fagentserver%2Fazure-ai-agentserver-core&branch=agentserver%2Fresponses\" },\n-    { name = \"azure-ai-agentserver-invocations\", git = \"https://github.com/Azure/azure-sdk-for-python.git?subdirectory=sdk%2Fagentserver%2Fazure-ai-agentserver-invocations&branch=agentserver%2Fresponses\" },\n-    { name = \"azure-ai-agentserver-responses\", git = \"https://github.com/Azure/azure-sdk-for-python.git?subdirectory=sdk%2Fagentserver%2Fazure-ai-agentserver-responses&branch=agentserver%2Fresponses\" },\n+    { name = \"azure-ai-agentserver-core\", specifier = \"==2.0.0a20260410006\", index = \"https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-python/pypi/simple/\" },\n+    { name = \"azure-ai-agentserver-invocations\", specifier = \"==1.0.0a20260410006\", index = \"https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-python/pypi/simple/\" },\n+    { name = \"azure-ai-agentserver-responses\", specifier = \"==1.0.0a20260410006\", index = \"https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-python/pypi/simple/\" },\n+    { name = \"azure-monitor-opentelemetry-exporter\", specifier = \">=1.0.0a1\", index = \"https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-python/pypi/simple/\" },\n ]\n \n [[package]]\n@@ -1020,8 +1020,8 @@ wheels = [\n \n [[package]]\n name = \"azure-ai-agentserver-core\"\n-version = \"2.0.0b1\"\n-source = { git = \"https://github.com/Azure/azure-sdk-for-python.git?subdirectory=sdk%2Fagentserver%2Fazure-ai-agentserver-core&branch=agentserver%2Fresponses#43579f686f51ebed23b066d06c90a544c0070a0b\" }\n+version = \"2.0.0a20260410006\"\n+source = { registry = \"https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-python/pypi/simple/\" }\n dependencies = [\n     { name = \"azure-monitor-opentelemetry-exporter\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"hypercorn\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -1030,24 +1030,37 @@ dependencies = [\n     { name = \"opentelemetry-sdk\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"starlette\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n ]\n+sdist = { url = \"https://pkgs.dev.azure.com/azure-sdk/29ec6040-b234-4e31-b139-33dc4287b756/_packaging/3572dbf9-b5ef-433b-9137-fc4d7768e7cc/pypi/download/azure-ai-agentserver-core/2a20260410006/azure_ai_agentserver_core-2.0.0a20260410006.tar.gz\", hash = \"sha256:834de1dca553ed964819faf5d1c7564e58e03c667c276d04d458c8bb81d2aac4\" }\n+wheels = [\n+    { url = \"https://pkgs.dev.azure.com/azure-sdk/29ec6040-b234-4e31-b139-33dc4287b756/_packaging/3572dbf9-b5ef-433b-9137-fc4d7768e7cc/pypi/download/azure-ai-agentserver-core/2a20260410006/azure_ai_agentserver_core-2.0.0a20260410006-py3-none-any.whl\", hash = \"sha256:d0fd251635f4b52fbf24dbba916f7e8e173043f0ba9537bb335ab3a1ead1432a\" },\n+]\n \n [[package]]\n name = \"azure-ai-agentserver-invocations\"\n-version = \"1.0.0b1\"\n-source = { git = \"https://github.com/Azure/azure-sdk-for-python.git?subdirectory=sdk%2Fagentserver%2Fazure-ai-agentserver-invocations&branch=agentserver%2Fresponses#43579f686f51ebed23b066d06c90a544c0070a0b\" }\n+version = \"1.0.0a20260410006\"\n+source = { registry = \"https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-python/pypi/simple/\" }\n dependencies = [\n     { name = \"azure-ai-agentserver-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n ]\n+sdist = { url = \"https://pkgs.dev.azure.com/azure-sdk/29ec6040-b234-4e31-b139-33dc4287b756/_packaging/3572dbf9-b5ef-433b-9137-fc4d7768e7cc/pypi/download/azure-ai-agentserver-invocations/1a20260410006/azure_ai_agentserver_invocations-1.0.0a20260410006.tar.gz\", hash = \"sha256:6419d8524fbf5e5a3d94937108f928da70d1406bdfd83cd2e6cba9f5e54f07af\" }\n+wheels = [\n+    { url = \"https://pkgs.dev.azure.com/azure-sdk/29ec6040-b234-4e31-b139-33dc4287b756/_packaging/3572dbf9-b5ef-433b-9137-fc4d7768e7cc/pypi/download/azure-ai-agentserver-invocations/1a20260410006/azure_ai_agentserver_invocations-1.0.0a20260410006-py3-none-any.whl\", hash = \"sha256:5b9e3364d73bc2bb9581540cbf3172624fbc75be7739c95e4d70c83541bde008\" },\n+]\n \n [[package]]\n name = \"azure-ai-agentserver-responses\"\n-version = \"1.0.0b1\"\n-source = { git = \"https://github.com/Azure/azure-sdk-for-python.git?subdirectory=sdk%2Fagentserver%2Fazure-ai-agentserver-responses&branch=agentserver%2Fresponses#43579f686f51ebed23b066d06c90a544c0070a0b\" }\n+version = \"1.0.0a20260410006\"\n+source = { registry = \"https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-python/pypi/simple/\" }\n dependencies = [\n+    { name = \"aiohttp\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"azure-ai-agentserver-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"azure-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"isodate\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n ]\n+sdist = { url = \"https://pkgs.dev.azure.com/azure-sdk/29ec6040-b234-4e31-b139-33dc4287b756/_packaging/3572dbf9-b5ef-433b-9137-fc4d7768e7cc/pypi/download/azure-ai-agentserver-responses/1a20260410006/azure_ai_agentserver_responses-1.0.0a20260410006.tar.gz\", hash = \"sha256:795862c6abdd2794be04f685d3995b174364f1280fe7be507bcfa64b6359ec53\" }\n+wheels = [\n+    { url = \"https://pkgs.dev.azure.com/azure-sdk/29ec6040-b234-4e31-b139-33dc4287b756/_packaging/3572dbf9-b5ef-433b-9137-fc4d7768e7cc/pypi/download/azure-ai-agentserver-responses/1a20260410006/azure_ai_agentserver_responses-1.0.0a20260410006-py3-none-any.whl\", hash = \"sha256:e877eea7b2bb31c9766c69159e799aff112741eefb178bc3a3c7a07ce0b09dbb\" },\n+]\n \n [[package]]\n name = \"azure-ai-inference\"\n@@ -1163,8 +1176,8 @@ wheels = [\n \n [[package]]\n name = \"azure-monitor-opentelemetry-exporter\"\n-version = \"1.0.0b51\"\n-source = { registry = \"https://pypi.org/simple\" }\n+version = \"1.0.0a20260410001\"\n+source = { registry = \"https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-python/pypi/simple/\" }\n dependencies = [\n     { name = \"azure-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"azure-identity\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -1173,9 +1186,9 @@ dependencies = [\n     { name = \"opentelemetry-sdk\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n     { name = \"psutil\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n ]\n-sdist = { url = \"https://files.pythonhosted.org/packages/bc/a4/a6cd2d389bc1009300bcd57c9e2ace4b7e7ae1e5dc0bda415ee803629cf2/azure_monitor_opentelemetry_exporter-1.0.0b51.tar.gz\", hash = \"sha256:a6171c34326bcd6216938bb40d715c15f1f22984ac1986fc97231336d8ac4c3c\", size = 319837, upload-time = \"2026-04-06T21:45:46.378Z\" }\n+sdist = { url = \"https://pkgs.dev.azure.com/azure-sdk/29ec6040-b234-4e31-b139-33dc4287b756/_packaging/3572dbf9-b5ef-433b-9137-fc4d7768e7cc/pypi/download/azure-monitor-opentelemetry-exporter/1a20260410001/azure_monitor_opentelemetry_exporter-1.0.0a20260410001.tar.gz\", hash = \"sha256:24be6d2fa88454b08f1aa82958917681ff434f8a19d64c474ac8caebe125217e\" }\n wheels = [\n-    { url = \"https://files.pythonhosted.org/packages/ea/1a/6b0b7a6181b42709103a65a676c89fd5055cb1d1b281ebe10c49254a170f/azure_monitor_opentelemetry_exporter-1.0.0b51-py2.py3-none-any.whl\", hash = \"sha256:6572cac11f96e3b18ae1187cb35cf3b40d0004655dae8048896c41c765bea530\", size = 242104, upload-time = \"2026-04-06T21:45:47.856Z\" },\n+    { url = \"https://pkgs.dev.azure.com/azure-sdk/29ec6040-b234-4e31-b139-33dc4287b756/_packaging/3572dbf9-b5ef-433b-9137-fc4d7768e7cc/pypi/download/azure-monitor-opentelemetry-exporter/1a20260410001/azure_monitor_opentelemetry_exporter-1.0.0a20260410001-py2.py3-none-any.whl\", hash = \"sha256:77823990c3ec7f7bb400a1eb0d7edf99cad04f0b0e393d6f6dd3791bf7d0c0cf\" },\n ]\n \n [[package]]"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "20de3b7105ac73cd48e4823435334570db3b4563",
+      "message": "Update dependency",
+      "parent_shas": [
+        "615ef9049f0232cfaf89f9664828037964fcf936"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__microsoft__agent-framework__pr5215.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\microsoft__agent-framework__pr5215__python_cpp__microsoft__agent-framework__pr5215\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\microsoft__agent-framework__pr5215__python_cpp__microsoft__agent-framework__pr5215\\rn"
+  }
+}

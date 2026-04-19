@@ -1,0 +1,130 @@
+{
+  "instance_id": "python_java__kdeldycke__repomatic__pr2498",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "kdeldycke/repomatic",
+  "pr_number": 2498,
+  "pr_url": "https://github.com/kdeldycke/repomatic/pull/2498",
+  "repo": {
+    "full_name": "kdeldycke/repomatic",
+    "clone_url": "https://github.com/kdeldycke/repomatic.git",
+    "default_branch": "main",
+    "created_at": "2021-12-09T15:04:12Z",
+    "stars": 45,
+    "license": "GPL-2.0",
+    "size_kb": 9763
+  },
+  "pull_request": {
+    "id": 3485012237,
+    "title": "Format Python",
+    "body": "### Description\n\nAuto-formats Python files with [autopep8](https://github.com/hhatto/autopep8) (comment wrapping) and [Ruff](https://docs.astral.sh/ruff/) (linting and formatting). When no `[tool.ruff]` section or `ruff.toml` is present, [repomatic's bundled defaults](https://github.com/kdeldycke/repomatic/blob/main/repomatic/data/ruff.toml) are applied at runtime. See the [`format-python` job documentation](https://github.com/kdeldycke/repomatic?tab=readme-ov-file#githubworkflowsautofixyaml-jobs) for details.\n\n> [!TIP]\n> Customize formatting and linting rules via [`[tool.ruff]`](https://docs.astral.sh/ruff/configuration/) and [`[tool.autopep8]`](https://github.com/hhatto/autopep8#configuration) in your `pyproject.toml`.\n\n\n> [!IMPORTANT]\n> If you suspect the PR content is outdated, **[click `Run workflow`](https://github.com/kdeldycke/repomatic/actions/workflows/autofix.yaml)** to refresh it manually before merging.\n\n\n<details><summary><code>Workflow metadata</code></summary>\n\n| Field | Value |\n| :-- | :-- |\n| **Trigger** | `push` |\n| **Actor** | @kdeldycke |\n| **Ref** | `main` |\n| **Commit** | [`f00f6a56`](https://github.com/kdeldycke/repomatic/commit/f00f6a5632c80d3a1499ec0374d65a0431179bac) |\n| **Job** | [`format-python`](https://github.com/kdeldycke/repomatic/blob/f00f6a5632c80d3a1499ec0374d65a0431179bac/.github/workflows/autofix.yaml) |\n| **Workflow** | [`autofix.yaml`](https://github.com/kdeldycke/repomatic/blob/f00f6a5632c80d3a1499ec0374d65a0431179bac/.github/workflows/autofix.yaml) |\n| **Run** | [#4232.1](https://github.com/kdeldycke/repomatic/actions/runs/24063181282) |\n\n</details>\n\n---\n\n🏭 Generated with [repomatic](https://github.com/kdeldycke/repomatic) `6.10.1.dev0`",
+    "created_at": "2026-04-03T04:30:36Z",
+    "merged_at": "2026-04-07T03:58:33Z",
+    "base_sha": "f00f6a5632c80d3a1499ec0374d65a0431179bac",
+    "head_sha": "97492a38168fd278531cb880b1cecc7fcccbbe62",
+    "merge_commit_sha": "987e2c594d003af842ed3fc7d2d48219efa53dd8",
+    "labels": [
+      "🤖 ci"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "f00f6a5632c80d3a1499ec0374d65a0431179bac",
+  "final_sha": "97492a38168fd278531cb880b1cecc7fcccbbe62",
+  "changed_files": [
+    {
+      "sha": "c7b2075b079b071d7c9eb5fe5ef9696d4b0ff213",
+      "filename": "repomatic/git_ops.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/97492a38168fd278531cb880b1cecc7fcccbbe62/repomatic%2Fgit_ops.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/97492a38168fd278531cb880b1cecc7fcccbbe62/repomatic%2Fgit_ops.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/repomatic%2Fgit_ops.py?ref=97492a38168fd278531cb880b1cecc7fcccbbe62",
+      "patch": "@@ -50,9 +50,7 @@\n     depends on the size of the repository.\n \"\"\"\n \n-GITHUB_REMOTE_PATTERN = re.compile(\n-    r\"github\\.com[:/](?P<slug>[^/]+/[^/]+?)(?:\\.git)?$\"\n-)\n+GITHUB_REMOTE_PATTERN = re.compile(r\"github\\.com[:/](?P<slug>[^/]+/[^/]+?)(?:\\.git)?$\")\n \"\"\"Extracts an ``owner/repo`` slug from a GitHub remote URL.\n \n Handles both HTTPS (``https://github.com/owner/repo.git``) and SSH"
+    },
+    {
+      "sha": "17a27a90680dc2fab2c535b141e063ec2bdd118c",
+      "filename": "repomatic/github/workflow_sync.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 6,
+      "changes": 8,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/97492a38168fd278531cb880b1cecc7fcccbbe62/repomatic%2Fgithub%2Fworkflow_sync.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/97492a38168fd278531cb880b1cecc7fcccbbe62/repomatic%2Fgithub%2Fworkflow_sync.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/repomatic%2Fgithub%2Fworkflow_sync.py?ref=97492a38168fd278531cb880b1cecc7fcccbbe62",
+      "patch": "@@ -566,9 +566,7 @@ def extract_extra_jobs(\n     if not isinstance(jobs, dict):\n         return \"\"\n \n-    uses_pattern = re.compile(\n-        rf\"^{re.escape(repo)}/\\.github/workflows/[^@]+@.+$\"\n-    )\n+    uses_pattern = re.compile(rf\"^{re.escape(repo)}/\\.github/workflows/[^@]+@.+$\")\n     managed_key = None\n     for key, config in jobs.items():\n         if isinstance(config, dict) and uses_pattern.match(config.get(\"uses\", \"\")):\n@@ -1073,9 +1071,7 @@ def generate_workflows(\n \n             # Preserve extra downstream jobs from the existing file.\n             if target.exists():\n-                extra = extract_extra_jobs(\n-                    target.read_text(encoding=\"UTF-8\"), repo\n-                )\n+                extra = extract_extra_jobs(target.read_text(encoding=\"UTF-8\"), repo)\n                 if extra:\n                     content += extra\n "
+    },
+    {
+      "sha": "bd93d25600447ab9be0bc34d0d8ba2c96b7869da",
+      "filename": "repomatic/init_project.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 5,
+      "changes": 8,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/97492a38168fd278531cb880b1cecc7fcccbbe62/repomatic%2Finit_project.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/97492a38168fd278531cb880b1cecc7fcccbbe62/repomatic%2Finit_project.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/repomatic%2Finit_project.py?ref=97492a38168fd278531cb880b1cecc7fcccbbe62",
+      "patch": "@@ -49,6 +49,8 @@\n from pathlib import Path, PurePosixPath\n from urllib.request import urlretrieve\n \n+import tomlkit\n+\n from . import __version__\n from .config import Config, load_repomatic_config\n from .pyproject import resolve_source_paths\n@@ -70,8 +72,6 @@\n )\n from .tool_runner import TOOL_REGISTRY, find_unmodified_configs\n \n-import tomlkit\n-\n if sys.version_info >= (3, 11):\n     import tomllib\n else:\n@@ -862,9 +862,7 @@ def _init_workflows(\n         )\n         # Preserve extra downstream jobs from the existing file.\n         if existed:\n-            extra = extract_extra_jobs(\n-                target.read_text(encoding=\"UTF-8\"), repo\n-            )\n+            extra = extract_extra_jobs(target.read_text(encoding=\"UTF-8\"), repo)\n             if extra:\n                 content += extra\n         target.write_text(content, encoding=\"UTF-8\")"
+    },
+    {
+      "sha": "c5b2052c3e99a9bfc89feec35026af053da62391",
+      "filename": "tests/test_readme.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/97492a38168fd278531cb880b1cecc7fcccbbe62/tests%2Ftest_readme.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/97492a38168fd278531cb880b1cecc7fcccbbe62/tests%2Ftest_readme.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/tests%2Ftest_readme.py?ref=97492a38168fd278531cb880b1cecc7fcccbbe62",
+      "patch": "@@ -34,9 +34,7 @@\n # Different path lengths also cause different line-wrapping in the help output.\n # Strip the entire --config block (from \"--config\" to \"--no-config\") so the\n # README (written on macOS) matches CI (Linux/Windows).\n-_CONFIG_OPTION_RE = re.compile(\n-    r\"  --config CONFIG_PATH.+?(?=  --no-config)\", re.DOTALL\n-)\n+_CONFIG_OPTION_RE = re.compile(r\"  --config CONFIG_PATH.+?(?=  --no-config)\", re.DOTALL)\n \n \n def _readme_text() -> str:"
+    },
+    {
+      "sha": "b468c6c41c0150cba342321e879446b29cf18cc9",
+      "filename": "tests/test_workflow_sync.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/97492a38168fd278531cb880b1cecc7fcccbbe62/tests%2Ftest_workflow_sync.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/97492a38168fd278531cb880b1cecc7fcccbbe62/tests%2Ftest_workflow_sync.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/tests%2Ftest_workflow_sync.py?ref=97492a38168fd278531cb880b1cecc7fcccbbe62",
+      "patch": "@@ -358,7 +358,7 @@ def test_identify_custom_repo(tmp_path: Path) -> None:\n def test_extract_extra_jobs_single() -> None:\n     \"\"\"Preserve a single extra downstream job.\"\"\"\n     content = (\n-        \"---\\nname: Release\\n\\\"on\\\":\\n  push:\\n    branches:\\n\"\n+        '---\\nname: Release\\n\"on\":\\n  push:\\n    branches:\\n'\n         \"      - main\\n  workflow_dispatch:\\n\\njobs:\\n\\n  release:\\n\"\n         f\"    uses: {DEFAULT_REPO}/.github/workflows/release.yaml@v6.0.0\\n\"\n         \"    secrets:\\n\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "97492a38168fd278531cb880b1cecc7fcccbbe62",
+      "message": "Format Python",
+      "parent_shas": [
+        "f00f6a5632c80d3a1499ec0374d65a0431179bac"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__kdeldycke__repomatic__pr2498.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__repomatic__pr2498__python_java__kdeldycke__repomatic__pr2498\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__repomatic__pr2498__python_java__kdeldycke__repomatic__pr2498\\rn"
+  }
+}

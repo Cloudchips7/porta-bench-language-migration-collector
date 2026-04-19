@@ -1,0 +1,149 @@
+{
+  "instance_id": "python_java__apache__avro__pr3723",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "apache/avro",
+  "pr_number": 3723,
+  "pr_url": "https://github.com/apache/avro/pull/3723",
+  "repo": {
+    "full_name": "apache/avro",
+    "clone_url": "https://github.com/apache/avro.git",
+    "default_branch": "main",
+    "created_at": "2009-05-21T02:48:37Z",
+    "stars": 3264,
+    "license": "Apache-2.0",
+    "size_kb": 81067
+  },
+  "pull_request": {
+    "id": 3492412413,
+    "title": "[python] Fix python formatting",
+    "body": "<!--\r\n\r\n*Thank you very much for contributing to Apache Avro - we are happy that you want to help us improve Avro. To help the community review your contribution in the best possible way, please go through the checklist below, which will get the contribution into a shape in which it can be best reviewed.*\r\n\r\n*Please understand that we do not do this to make contributions to Avro a hassle. In order to uphold a high standard of quality for code contributions, while at the same time managing a large number of contributions, we need contributors to prepare the contributions well, and give reviewers enough contextual information for the review. Please also understand that contributions that do not follow this guide will take longer to review and thus typically be picked up with lower priority by the community.*\r\n\r\n## Contribution Checklist\r\n\r\n  - Make sure that the pull request corresponds to a [JIRA issue](https://issues.apache.org/jira/projects/AVRO/issues). Exceptions are made for typos in JavaDoc or documentation files, which need no JIRA issue.\r\n  \r\n  - Name the pull request in the form \"AVRO-XXXX: [component] Title of the pull request\", where *AVRO-XXXX* should be replaced by the actual issue number. \r\n    The *component* is optional, but can help identify the correct reviewers faster: either the language (\"java\", \"python\") or subsystem such as \"build\" or \"doc\" are good candidates.  \r\n\r\n  - Fill out the template below to describe the changes contributed by the pull request. That will give reviewers the context they need to do the review.\r\n  \r\n  - Make sure that the change passes the automated tests. You can [build the entire project](https://github.com/apache/avro/blob/main/BUILD.md) or just the [language-specific SDK](https://avro.apache.org/project/how-to-contribute/#unit-tests).\r\n\r\n  - Each pull request should address only one issue, not mix up code from multiple issues.\r\n  \r\n  - Each commit in the pull request has a meaningful commit message (including the JIRA id)\r\n\r\n  - Every commit message references Jira issues in their subject lines. In addition, commits follow the guidelines from [How to write a good git commit message](https://chris.beams.io/posts/git-commit/)\r\n    1. Subject is separated from body by a blank line\r\n    1. Subject is limited to 50 characters (not including Jira issue reference)\r\n    1. Subject does not end with a period\r\n    1. Subject uses the imperative mood (\"add\", not \"adding\")\r\n    1. Body wraps at 72 characters\r\n    1. Body explains \"what\" and \"why\", not \"how\"\r\n\r\n-->\r\n\r\n## What is the purpose of the change\r\n\r\nBuild fixes for **branch-1.12**\r\n\r\n```\r\nlint: commands[1]> black --check .\r\nwould reformat /home/ryanskraba/avro/lang/py/avro/constants.py\r\nwould reformat /home/ryanskraba/avro/lang/py/avro/name.py\r\nwould reformat /home/ryanskraba/avro/lang/py/avro/__main__.py\r\nwould reformat /home/ryanskraba/avro/lang/py/avro/datafile.py\r\nwould reformat /home/ryanskraba/avro/lang/py/avro/test/test_schema.py\r\n\r\nOh no! 💥 💔 💥\r\n5 files would be reformatted, 36 files would be left unchanged.\r\nlint: exit 1 (0.67 seconds) /home/ryanskraba/avro/lang/py> black --check . pid=27415\r\n  lint: FAIL code 1 (5.51=setup[4.71]+cmd[0.13,0.67] seconds)\r\n  evaluation failed :( (5.53 seconds)\r\nTIME: 909551 (00:15:09.551) DOCKER_IMAGE_NAME=\"tmp\" \\\r\n      DOCKER_RUN_XTRA_ARGS=\"--ulimit nofile=4096\" \\\r\n      DOCKER_BUILD_XTRA_ARGS=\"\" \\\r\n      DOCKER_RUN_ENTRYPOINT=\"./build.sh clean test\" \\\r\n      ./build.sh docker\r\n```\r\n\r\n## Verifying this change\r\n\r\nThis change is a trivial rework / code cleanup without any test coverage.\r\n\r\n`black --check .`\r\n\r\n## Documentation\r\n\r\n- Does this pull request introduce a new feature? (yes / **no**)\r\n- If yes, how is the feature documented? (**not applicable** / docs / JavaDocs / not documented)\r\n",
+    "created_at": "2026-04-06T09:32:41Z",
+    "merged_at": "2026-04-06T12:53:32Z",
+    "base_sha": "db5502351a76d311f9f51ea761298a25fc2637a0",
+    "head_sha": "4422a7483cd815d24bdbe2fc07194ebc8ab03d24",
+    "merge_commit_sha": "0ef23552679cef131dc1174ed5bd5edc60a581f5",
+    "labels": [
+      "Python"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "db5502351a76d311f9f51ea761298a25fc2637a0",
+  "final_sha": "4422a7483cd815d24bdbe2fc07194ebc8ab03d24",
+  "changed_files": [
+    {
+      "sha": "f1e1499f1f066d1c365502c0ff887e30ce9aaf1e",
+      "filename": "lang/py/avro/__main__.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/apache/avro/blob/4422a7483cd815d24bdbe2fc07194ebc8ab03d24/lang%2Fpy%2Favro%2F__main__.py",
+      "raw_url": "https://github.com/apache/avro/raw/4422a7483cd815d24bdbe2fc07194ebc8ab03d24/lang%2Fpy%2Favro%2F__main__.py",
+      "contents_url": "https://api.github.com/repos/apache/avro/contents/lang%2Fpy%2Favro%2F__main__.py?ref=4422a7483cd815d24bdbe2fc07194ebc8ab03d24",
+      "patch": "@@ -17,6 +17,7 @@\n # See the License for the specific language governing permissions and\n # limitations under the License.\n \"\"\"Command line utility for reading and writing Avro files.\"\"\"\n+\n import argparse\n import csv\n import functools"
+    },
+    {
+      "sha": "cef9e85daf820652c8fa5fcca1785e6497244b7a",
+      "filename": "lang/py/avro/constants.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/apache/avro/blob/4422a7483cd815d24bdbe2fc07194ebc8ab03d24/lang%2Fpy%2Favro%2Fconstants.py",
+      "raw_url": "https://github.com/apache/avro/raw/4422a7483cd815d24bdbe2fc07194ebc8ab03d24/lang%2Fpy%2Favro%2Fconstants.py",
+      "contents_url": "https://api.github.com/repos/apache/avro/contents/lang%2Fpy%2Favro%2Fconstants.py?ref=4422a7483cd815d24bdbe2fc07194ebc8ab03d24",
+      "patch": "@@ -19,7 +19,6 @@\n \n \"\"\"Contains Constants for Python Avro\"\"\"\n \n-\n DATE = \"date\"\n DECIMAL = \"decimal\"\n TIMESTAMP_MICROS = \"timestamp-micros\""
+    },
+    {
+      "sha": "8a5ce7b17f36d9bbccb787e511da1df81fcf4525",
+      "filename": "lang/py/avro/datafile.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/apache/avro/blob/4422a7483cd815d24bdbe2fc07194ebc8ab03d24/lang%2Fpy%2Favro%2Fdatafile.py",
+      "raw_url": "https://github.com/apache/avro/raw/4422a7483cd815d24bdbe2fc07194ebc8ab03d24/lang%2Fpy%2Favro%2Fdatafile.py",
+      "contents_url": "https://api.github.com/repos/apache/avro/contents/lang%2Fpy%2Favro%2Fdatafile.py?ref=4422a7483cd815d24bdbe2fc07194ebc8ab03d24",
+      "patch": "@@ -22,6 +22,7 @@\n \n https://avro.apache.org/docs/current/spec.html#Object+Container+Files\n \"\"\"\n+\n import io\n import json\n import warnings"
+    },
+    {
+      "sha": "898e53a49063a5f4a78721a53d5d1700496ec5f2",
+      "filename": "lang/py/avro/name.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/apache/avro/blob/4422a7483cd815d24bdbe2fc07194ebc8ab03d24/lang%2Fpy%2Favro%2Fname.py",
+      "raw_url": "https://github.com/apache/avro/raw/4422a7483cd815d24bdbe2fc07194ebc8ab03d24/lang%2Fpy%2Favro%2Fname.py",
+      "contents_url": "https://api.github.com/repos/apache/avro/contents/lang%2Fpy%2Favro%2Fname.py?ref=4422a7483cd815d24bdbe2fc07194ebc8ab03d24",
+      "patch": "@@ -18,6 +18,7 @@\n # limitations under the License.\n \n \"\"\"Contains the Name classes.\"\"\"\n+\n from typing import TYPE_CHECKING, Dict, Optional\n \n from avro.constants import PRIMITIVE_TYPES"
+    },
+    {
+      "sha": "c8d94811a21343734fe04e14b54a7484e95bfc5a",
+      "filename": "lang/py/avro/test/test_schema.py",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 20,
+      "changes": 30,
+      "blob_url": "https://github.com/apache/avro/blob/4422a7483cd815d24bdbe2fc07194ebc8ab03d24/lang%2Fpy%2Favro%2Ftest%2Ftest_schema.py",
+      "raw_url": "https://github.com/apache/avro/raw/4422a7483cd815d24bdbe2fc07194ebc8ab03d24/lang%2Fpy%2Favro%2Ftest%2Ftest_schema.py",
+      "contents_url": "https://api.github.com/repos/apache/avro/contents/lang%2Fpy%2Favro%2Ftest%2Ftest_schema.py?ref=4422a7483cd815d24bdbe2fc07194ebc8ab03d24",
+      "patch": "@@ -745,8 +745,7 @@ class TestMisc(unittest.TestCase):\n \n     def test_correct_recursive_extraction(self):\n         \"\"\"A recursive reference within a schema should be the same type every time.\"\"\"\n-        s = avro.schema.parse(\n-            \"\"\"{\n+        s = avro.schema.parse(\"\"\"{\n             \"type\": \"record\",\n             \"name\": \"X\",\n             \"fields\": [{\n@@ -756,8 +755,7 @@ def test_correct_recursive_extraction(self):\n                     \"name\": \"Y\",\n                     \"fields\": [{\"name\": \"Z\", \"type\": \"X\"}]}\n             }]\n-        }\"\"\"\n-        )\n+        }\"\"\")\n         t = avro.schema.parse(str(s.fields[0].type))\n         # If we've made it this far, the subschema was reasonably stringified; it ccould be reparsed.\n         self.assertEqual(\"X\", t.fields[0].type.name)\n@@ -1186,12 +1184,10 @@ def test_whitespace(self):\n         \"\"\"\n         Eliminate all whitespace in JSON outside of string literals.\n         \"\"\"\n-        s = avro.schema.parse(\n-            \"\"\"{\"type\": \"fixed\",\n+        s = avro.schema.parse(\"\"\"{\"type\": \"fixed\",\n             \"size\": 16,\n             \"name\": \"md5\"}\n-                \"\"\"\n-        )\n+                \"\"\")\n         self.assertEqual(\n             s.canonical_form,\n             self.compact_json_string({\"name\": \"md5\", \"type\": \"fixed\", \"size\": 16}),\n@@ -1270,8 +1266,7 @@ def test_union(self):\n         self.assertEqual(s.canonical_form, '[\"string\",\"null\",\"long\"]')\n \n     def test_large_record_handshake_request(self):\n-        s = avro.schema.parse(\n-            \"\"\"\n+        s = avro.schema.parse(\"\"\"\n             {\n             \"type\": \"record\",\n             \"name\": \"HandshakeRequest\",\n@@ -1289,8 +1284,7 @@ def test_large_record_handshake_request(self):\n                 }\n             ]\n             }\n-            \"\"\"\n-        )\n+            \"\"\")\n         self.assertEqual(\n             s.canonical_form,\n             (\n@@ -1303,8 +1297,7 @@ def test_large_record_handshake_request(self):\n         )\n \n     def test_large_record_handshake_response(self):\n-        s = avro.schema.parse(\n-            \"\"\"\n+        s = avro.schema.parse(\"\"\"\n             {\n             \"type\": \"record\",\n             \"name\": \"HandshakeResponse\",\n@@ -1327,8 +1320,7 @@ def test_large_record_handshake_response(self):\n                 \"name\": \"meta\",\n                 \"type\": [\"null\", {\"type\": \"map\", \"values\": \"bytes\"}]}]\n                 }\n-            \"\"\"\n-        )\n+            \"\"\")\n         self.assertEqual(\n             s.canonical_form,\n             (\n@@ -1343,8 +1335,7 @@ def test_large_record_handshake_response(self):\n         )\n \n     def test_large_record_interop(self):\n-        s = avro.schema.parse(\n-            \"\"\"\n+        s = avro.schema.parse(\"\"\"\n             {\n             \"type\": \"record\",\n             \"name\": \"Interop\",\n@@ -1391,8 +1382,7 @@ def test_large_record_interop(self):\n                 }\n             ]\n             }\n-            \"\"\"\n-        )\n+            \"\"\")\n         self.assertEqual(\n             s.canonical_form,\n             ("
+    },
+    {
+      "sha": "18e68739ae27b34bcd4887390f08be74a411a496",
+      "filename": "lang/py/setup.cfg",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/apache/avro/blob/4422a7483cd815d24bdbe2fc07194ebc8ab03d24/lang%2Fpy%2Fsetup.cfg",
+      "raw_url": "https://github.com/apache/avro/raw/4422a7483cd815d24bdbe2fc07194ebc8ab03d24/lang%2Fpy%2Fsetup.cfg",
+      "contents_url": "https://api.github.com/repos/apache/avro/contents/lang%2Fpy%2Fsetup.cfg?ref=4422a7483cd815d24bdbe2fc07194ebc8ab03d24",
+      "patch": "@@ -75,6 +75,7 @@ avro.tether =\n [options.extras_require]\n snappy = python-snappy\n zstandard = zstandard\n+mypy = mypy\n \n [aliases]\n dist = sdist --dist-dir ../../dist/py"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "1cfb45da1441a84ead9f6185f43d7314726f02c0",
+      "message": "[python] Fix python formatting",
+      "parent_shas": [
+        "db5502351a76d311f9f51ea761298a25fc2637a0"
+      ]
+    },
+    {
+      "sha": "4422a7483cd815d24bdbe2fc07194ebc8ab03d24",
+      "message": "Include typechecks setup",
+      "parent_shas": [
+        "1cfb45da1441a84ead9f6185f43d7314726f02c0"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "python_java_bridge_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__apache__avro__pr3723.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\apache__avro__pr3723__python_java__apache__avro__pr3723\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\apache__avro__pr3723__python_java__apache__avro__pr3723\\rn"
+  }
+}

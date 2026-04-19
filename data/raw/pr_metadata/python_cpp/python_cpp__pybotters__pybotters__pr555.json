@@ -1,0 +1,419 @@
+{
+  "instance_id": "python_cpp__pybotters__pybotters__pr555",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "pybotters/pybotters",
+  "pr_number": 555,
+  "pr_url": "https://github.com/pybotters/pybotters/pull/555",
+  "repo": {
+    "full_name": "pybotters/pybotters",
+    "clone_url": "https://github.com/pybotters/pybotters.git",
+    "default_branch": "main",
+    "created_at": "2021-03-24T11:28:06Z",
+    "stars": 456,
+    "license": "MIT",
+    "size_kb": 1564
+  },
+  "pull_request": {
+    "id": 3517056176,
+    "title": "Drop Python 3.9, add Python 3.14 support",
+    "body": "This updates the repository’s declared/tested Python support to include 3.14 and aligns the surrounding tooling/docs metadata with that support level. It also adjusts request tests for Python 3.14’s event-loop behavior without changing runtime code.\n\n- **Packaging and support metadata**\n  - Add the `Programming Language :: Python :: 3.14` classifier in `pyproject.toml`\n  - Extend `.python-version` to include `3.14` so multi-version checks exercise it\n\n- **Docs and tooling alignment**\n  - Move docs-related Python pins from `3.13` to `3.14` in:\n    - `.readthedocs.yml`\n    - `scripts/docs`\n    - `scripts/serve`\n\n- **Request test compatibility on 3.14**\n  - Keep `pybotters/request.py` unchanged\n  - Update `tests/test_request.py` to pass an explicit mock loop when constructing standalone `ClientRequest` instances outside an active event loop\n\n```python\nreq = ClientRequest(\n    method,\n    url,\n    params=None,\n    headers=None,\n    data=data,\n    auth=None,\n    loop=Mock(),\n)\n```",
+    "created_at": "2026-04-11T06:08:30Z",
+    "merged_at": "2026-04-11T06:18:26Z",
+    "base_sha": "f0b6ad4e790c167548700b0182c03fb8c5a8821c",
+    "head_sha": "58385d1129c4268d2027b2222eaa7079bf10378d",
+    "merge_commit_sha": "74ed65cffdbf55e475505e0811f7dbc2f772afd2",
+    "labels": [
+      "release-changed"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "f0b6ad4e790c167548700b0182c03fb8c5a8821c",
+  "final_sha": "58385d1129c4268d2027b2222eaa7079bf10378d",
+  "changed_files": [
+    {
+      "sha": "f1d9c78541ec201b4bc0df19285ed9aafb251002",
+      "filename": ".python-version",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/.python-version",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/.python-version",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/.python-version?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n-3.9\n 3.10\n 3.11\n 3.12\n 3.13\n+3.14"
+    },
+    {
+      "sha": "8058385f8d9bf491b9b8a49e03fab39f834ec08c",
+      "filename": ".readthedocs.yml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/.readthedocs.yml",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/.readthedocs.yml",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/.readthedocs.yml?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -3,13 +3,13 @@ version: 2\n build:\n   os: ubuntu-24.04\n   tools:\n-    python: \"3.13\"\n+    python: \"3.14\"\n   jobs:\n     create_environment:\n       - asdf plugin add uv\n       - asdf install uv latest\n       - asdf global uv latest\n-      - uv venv --python 3.13\n+      - uv venv --python 3.14\n     install:\n       - uv pip install -r requirements/docs.txt\n     build:"
+    },
+    {
+      "sha": "f748bc21ad3db38718e2bc8cb3a09292d49e81ba",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/README.md",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/README.md",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/README.md?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -67,7 +67,7 @@ It has the following features, making it useful for developing a trading bot.\n \n ## 🐍 Requires\n \n-Python 3.9+\n+Python 3.10+\n \n ## 🔧 Installation\n "
+    },
+    {
+      "sha": "d464924851f26dd9dd19ba9b909bb8f1626f96e2",
+      "filename": "docs/contributing.rst",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/docs%2Fcontributing.rst",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/docs%2Fcontributing.rst",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/docs%2Fcontributing.rst?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -14,7 +14,7 @@ TL;DR\n **ワークフロー**\n \n 0. (Optional) メンテナと議論が必要な場合 `Discussion <https://github.com/pybotters/pybotters/discussions>`_ または `Issue <https://github.com/pybotters/pybotters/pulls>`_ を作成する\n-1. マシンをセットアップする (Python 3.9, uv ...)\n+1. マシンをセットアップする (Python 3.10, uv ...)\n 2. リポジトリを Fork する\n 3. main ブランチを元に、変更する内容を表す名称のブランチ (トピックブランチ) を作成する\n 4. あなたのアイディアをソースコードに反映する 💎💎\n@@ -74,8 +74,8 @@ GitHub Codespaces は GitHub が提供するクラウドベースの開発環境\n Python\n ------\n \n-pybotters は最小要求を **Python 3.9** としています。\n-Python 3.9 の最新マイナーバージョンをインストールしてコーディングすることを推奨します。\n+pybotters は最小要求を **Python 3.10** としています。\n+Python 3.10 の最新マイナーバージョンをインストールしてコーディングすることを推奨します。\n \n Python のインストール方法は多岐にわたります。\n `こちらの記事 (python.jp) <https://www.python.jp/install/install.html>`__ を参考にするか、または次に紹介する **uv** を利用してください。"
+    },
+    {
+      "sha": "ca7430ccbc3700c4a70e94ebe9e47a1c8b497182",
+      "filename": "examples/datastore/binance.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fbinance.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fbinance.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fdatastore%2Fbinance.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "c3fed04fb3977e025026e671529df9b0dfb52d65",
+      "filename": "examples/datastore/bitbank.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fbitbank.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fbitbank.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fdatastore%2Fbitbank.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "84e11ca09facffe63cce7bb567d50407b527a115",
+      "filename": "examples/datastore/bitflyer.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fbitflyer.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fbitflyer.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fdatastore%2Fbitflyer.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "22d48e0fdfa5810352168cd7559defab466af7ba",
+      "filename": "examples/datastore/bitget.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fbitget.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fbitget.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fdatastore%2Fbitget.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "fdfc05e76b36f450c21e9debb9fed4452ceed72a",
+      "filename": "examples/datastore/bitmex.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fbitmex.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fbitmex.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fdatastore%2Fbitmex.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "2b10e323c883fd3adf78368f02aab8530f12564d",
+      "filename": "examples/datastore/bybit.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fbybit.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fbybit.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fdatastore%2Fbybit.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "78e1f89020ce6664a9fb3af5b507d293de9a6a8e",
+      "filename": "examples/datastore/coincheck.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fcoincheck.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fcoincheck.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fdatastore%2Fcoincheck.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "e2028e88474cf2042c848f20f6cda119a88ddc4b",
+      "filename": "examples/datastore/gmocoin.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fgmocoin.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fgmocoin.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fdatastore%2Fgmocoin.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "dc621d6282f51d0b588d4ce7ff1485755c979732",
+      "filename": "examples/datastore/hyperliquid.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fhyperliquid.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fhyperliquid.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fdatastore%2Fhyperliquid.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "26f9ef8917bc79c501ab3d34deae5081ed944b7b",
+      "filename": "examples/datastore/kucoin.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fkucoin.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fkucoin.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fdatastore%2Fkucoin.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "d7c0f80d4d459a53c5579028592766d3a2477e7e",
+      "filename": "examples/datastore/okx.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fokx.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fokx.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fdatastore%2Fokx.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "2b16f81eae31eea230acc1176909363c2a7496d3",
+      "filename": "examples/datastore/phemex.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fphemex.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fdatastore%2Fphemex.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fdatastore%2Fphemex.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "defdad5b380113f9cb79df70d172fa7d4720fe2c",
+      "filename": "examples/helpers/bitbank.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fhelpers%2Fbitbank.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fhelpers%2Fbitbank.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fhelpers%2Fbitbank.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters>=1.8\",\n # ]"
+    },
+    {
+      "sha": "3abdf87272e4e6070458b720c53d82f23781a93b",
+      "filename": "examples/helpers/gmocoin.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fhelpers%2Fgmocoin.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fhelpers%2Fgmocoin.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fhelpers%2Fgmocoin.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "2f6bb31b7a485e03bbf15bb7f60fc33b04ef89e9",
+      "filename": "examples/open_orders/coincheck.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fopen_orders%2Fcoincheck.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Fopen_orders%2Fcoincheck.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Fopen_orders%2Fcoincheck.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters>=1.10\",\n # ]"
+    },
+    {
+      "sha": "a767747356f033439cd05fe88d033600d98e2b3b",
+      "filename": "examples/order/hyperliquid.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Forder%2Fhyperliquid.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Forder%2Fhyperliquid.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Forder%2Fhyperliquid.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters>=1.7.0\",\n #     \"rich\","
+    },
+    {
+      "sha": "cc8e5b53c4d1bf6b5ac044dbe39df6f3a3ff60e6",
+      "filename": "examples/trading-bot/bitflyer.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Ftrading-bot%2Fbitflyer.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/examples%2Ftrading-bot%2Fbitflyer.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/examples%2Ftrading-bot%2Fbitflyer.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n # /// script\n-# requires-python = \">=3.9\"\n+# requires-python = \">=3.10\"\n # dependencies = [\n #     \"pybotters\",\n #     \"rich\","
+    },
+    {
+      "sha": "d5222dabf1bed8335870b0dadbde9fd6d78a0c0c",
+      "filename": "pybotters/models/okx.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 2,
+      "changes": 6,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/pybotters%2Fmodels%2Fokx.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/pybotters%2Fmodels%2Fokx.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/pybotters%2Fmodels%2Fokx.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -278,7 +278,9 @@ class _CandleStore(DataStore):\n \n     def _onmessage(self, msg: dict[str, Any]) -> None:\n         for item in msg[\"data\"]:\n-            self._update([{**msg[\"arg\"], **dict(zip(self._LIST_KEYS, item))}])\n+            self._update(\n+                [{**msg[\"arg\"], **dict(zip(self._LIST_KEYS, item, strict=False))}]\n+            )\n \n \n class Instruments(_UpdateStore): ...\n@@ -340,7 +342,7 @@ def _onmessage(self, msg: dict[str, Any]) -> None:\n                     item = {\n                         \"instId\": inst_id,\n                         \"side\": side,\n-                        **dict(zip(self._LIST_KEYS, item)),\n+                        **dict(zip(self._LIST_KEYS, item, strict=False)),\n                     }\n                     if item[\"sz\"] != \"0\":\n                         self._update([item])"
+    },
+    {
+      "sha": "29939b32b67df653d52e391c90ad9ac72694d684",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/pyproject.toml",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/pyproject.toml?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -6,7 +6,7 @@ build-backend = \"hatchling.build\"\n name = \"pybotters\"\n dynamic = [\"version\", \"readme\"]\n description = \"An advanced API client for python crypto bot traders\"\n-requires-python = \">=3.9\"\n+requires-python = \">=3.10\"\n license = \"MIT\"\n keywords = [\"aiohttp\", \"crypto\", \"exchange\", \"trading\"]\n authors = [\n@@ -16,11 +16,11 @@ classifiers = [\n     \"Development Status :: 5 - Production/Stable\",\n     \"Programming Language :: Python\",\n     \"Programming Language :: Python :: 3\",\n-    \"Programming Language :: Python :: 3.9\",\n     \"Programming Language :: Python :: 3.10\",\n     \"Programming Language :: Python :: 3.11\",\n     \"Programming Language :: Python :: 3.12\",\n     \"Programming Language :: Python :: 3.13\",\n+    \"Programming Language :: Python :: 3.14\",\n     \"License :: OSI Approved :: MIT License\",\n     \"Framework :: AsyncIO\",\n     \"Framework :: aiohttp\",\n@@ -36,7 +36,6 @@ classifiers = [\n ]\n dependencies = [\n     \"aiohttp>=3.7\",\n-    \"typing-extensions>=3.10 ; python_version < \\\"3.10\\\"\",\n ]\n \n [project.urls]"
+    },
+    {
+      "sha": "6549afb0a12a1ad21c8d0861e17ed895994a4968",
+      "filename": "requirements/dependencies.txt",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/requirements%2Fdependencies.txt",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/requirements%2Fdependencies.txt",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/requirements%2Fdependencies.txt?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,2 +1 @@\n aiohttp==3.13.5\n-typing-extensions==4.15.0 ; python_version < \"3.10\""
+    },
+    {
+      "sha": "8d642dab15c21daaf65384dd1cb0b9c8aaddec99",
+      "filename": "scripts/docs",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/scripts%2Fdocs",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/scripts%2Fdocs",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/scripts%2Fdocs?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -7,5 +7,5 @@ uv run \\\n     --with-requirements requirements/docs.txt \\\n     --isolated \\\n     --no-project \\\n-    --python 3.13 \\\n+    --python 3.14 \\\n     sphinx-build -T -b html docs \"${READTHEDOCS_OUTPUT:-docs/_build}/html\""
+    },
+    {
+      "sha": "47c9a31a105dc822b466165a8108f1736ffa62e0",
+      "filename": "scripts/serve",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/scripts%2Fserve",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/scripts%2Fserve",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/scripts%2Fserve?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -7,5 +7,5 @@ uv run \\\n     --with-requirements requirements/docs.txt \\\n     --isolated \\\n     --no-project \\\n-    --python 3.13 \\\n+    --python 3.14 \\\n     sphinx-autobuild docs docs/_build/html"
+    },
+    {
+      "sha": "4067ac73879292e558e53de18cd024be01468db9",
+      "filename": "tests/test_request.py",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 3,
+      "changes": 20,
+      "blob_url": "https://github.com/pybotters/pybotters/blob/58385d1129c4268d2027b2222eaa7079bf10378d/tests%2Ftest_request.py",
+      "raw_url": "https://github.com/pybotters/pybotters/raw/58385d1129c4268d2027b2222eaa7079bf10378d/tests%2Ftest_request.py",
+      "contents_url": "https://api.github.com/repos/pybotters/pybotters/contents/tests%2Ftest_request.py?ref=58385d1129c4268d2027b2222eaa7079bf10378d",
+      "patch": "@@ -1,5 +1,5 @@\n from typing import Any\r\n-from unittest.mock import patch\r\n+from unittest.mock import Mock, patch\r\n \r\n import pytest\r\n import pytest_mock\r\n@@ -110,7 +110,13 @@ def application_json(\n     ):\r\n         # Act\r\n         req = ClientRequest(\r\n-            \"GET\", test_input, params=None, headers=None, data={\"foo\": \"bar\"}, auth=None\r\n+            \"GET\",\r\n+            test_input,\r\n+            params=None,\r\n+            headers=None,\r\n+            data={\"foo\": \"bar\"},\r\n+            auth=None,\r\n+            loop=Mock(),\r\n         )\r\n \r\n     # Assert\r\n@@ -155,7 +161,15 @@ def test_request_content_type_hosts(test_input: tuple[str, URL, Any], expected:\n     method, url, data = test_input\r\n \r\n     # Act\r\n-    req = ClientRequest(method, url, params=None, headers=None, data=data, auth=None)\r\n+    req = ClientRequest(\r\n+        method,\r\n+        url,\r\n+        params=None,\r\n+        headers=None,\r\n+        data=data,\r\n+        auth=None,\r\n+        loop=Mock(),\r\n+    )\r\n \r\n     # Assert\r\n     assert req.body.decode() == expected\r"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "db3dcd8a61f90e81822fd79308d68d9ca5a41cfd",
+      "message": "Drop Python 3.9 support metadata\n\nAgent-Logs-Url: https://github.com/pybotters/pybotters/sessions/1936db30-c177-472d-a47a-8c9304eb1333\n\nCo-authored-by: MtkN1 <51289448+MtkN1@users.noreply.github.com>",
+      "parent_shas": [
+        "f0b6ad4e790c167548700b0182c03fb8c5a8821c"
+      ]
+    },
+    {
+      "sha": "941e25e8949201fd091d8c16a1fa0057d62010da",
+      "message": "Fix lint for Python 3.10 minimum support\n\nAgent-Logs-Url: https://github.com/pybotters/pybotters/sessions/1936db30-c177-472d-a47a-8c9304eb1333\n\nCo-authored-by: MtkN1 <51289448+MtkN1@users.noreply.github.com>",
+      "parent_shas": [
+        "db3dcd8a61f90e81822fd79308d68d9ca5a41cfd"
+      ]
+    },
+    {
+      "sha": "0b83bab4141d05345f447a70e94fc1d37e6b8c76",
+      "message": "Add Python 3.14 support declarations\n\nAgent-Logs-Url: https://github.com/pybotters/pybotters/sessions/b416047c-0e18-4a76-ab83-b91cbf543da0\n\nCo-authored-by: MtkN1 <51289448+MtkN1@users.noreply.github.com>",
+      "parent_shas": [
+        "941e25e8949201fd091d8c16a1fa0057d62010da"
+      ]
+    },
+    {
+      "sha": "85f28047761982b96a76811f56c7bedffca340bd",
+      "message": "Fix request construction on Python 3.14\n\nAgent-Logs-Url: https://github.com/pybotters/pybotters/sessions/b416047c-0e18-4a76-ab83-b91cbf543da0\n\nCo-authored-by: MtkN1 <51289448+MtkN1@users.noreply.github.com>",
+      "parent_shas": [
+        "0b83bab4141d05345f447a70e94fc1d37e6b8c76"
+      ]
+    },
+    {
+      "sha": "58385d1129c4268d2027b2222eaa7079bf10378d",
+      "message": "Update request tests for Python 3.14\n\nAgent-Logs-Url: https://github.com/pybotters/pybotters/sessions/ae8918dd-58f9-4daf-a497-6e481eb3e6a1\n\nCo-authored-by: MtkN1 <51289448+MtkN1@users.noreply.github.com>",
+      "parent_shas": [
+        "85f28047761982b96a76811f56c7bedffca340bd"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__pybotters__pybotters__pr555.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\pybotters__pybotters__pr555__python_cpp__pybotters__pybotters__pr555\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\pybotters__pybotters__pr555__python_cpp__pybotters__pybotters__pr555\\rn"
+  }
+}

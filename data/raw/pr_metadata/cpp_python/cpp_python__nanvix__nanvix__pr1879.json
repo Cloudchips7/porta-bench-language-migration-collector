@@ -1,0 +1,95 @@
+{
+  "instance_id": "cpp_python__nanvix__nanvix__pr1879",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "nanvix/nanvix",
+  "pr_number": 1879,
+  "pr_url": "https://github.com/nanvix/nanvix/pull/1879",
+  "repo": {
+    "full_name": "nanvix/nanvix",
+    "clone_url": "https://github.com/nanvix/nanvix.git",
+    "default_branch": "dev",
+    "created_at": "2013-07-04T17:27:49Z",
+    "stars": 224,
+    "license": "MIT",
+    "size_kb": 59053
+  },
+  "pull_request": {
+    "id": 3467338697,
+    "title": "[scripts] Remove outdated VS Code settings",
+    "body": "## Summary\n\nRemove outdated C/C++, assembly, and build-tool settings from VS Code configuration templates. The codebase is now fully Rust, so these entries no longer apply.\n\n## Changes\n\n### `settings-linux.json`\n- Remove `--with-cached-options` from `rust-analyzer.check.overrideCommand` (no longer supported by `z`).\n- Remove `C_Cpp.default.compilerPath` and `C_Cpp.files.exclude` settings.\n- Remove `[asm-intel-x86-generic]` language-specific overrides.\n- Remove C build artifact patterns (`*.d`, `*.o`, `*.out`) from `files.exclude`.\n- Remove header comment referencing GCC compiler path setup.\n\n### `settings-windows.json`\n- Remove comment about `C_Cpp.default.compilerPath` being intentionally omitted.\n- Remove `[asm-intel-x86-generic]` language-specific overrides.\n- Remove C build artifact patterns (`*.d`, `*.o`, `*.out`) from `files.exclude`.",
+    "created_at": "2026-03-30T16:01:24Z",
+    "merged_at": "2026-03-30T16:15:41Z",
+    "base_sha": "e92b2931a46852def10787052ef7438d638fa8c1",
+    "head_sha": "46829c57a67f2c3e5287c21516be092ec7d372d5",
+    "merge_commit_sha": "e167ddc4e9fe2c6481ece5d59e2795692351cf9c",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "e92b2931a46852def10787052ef7438d638fa8c1",
+  "final_sha": "46829c57a67f2c3e5287c21516be092ec7d372d5",
+  "changed_files": [
+    {
+      "sha": "7f0b6917b2a4e8c9f4fab83a617eeab9e821aa27",
+      "filename": "scripts/setup/vscode/settings-linux.json",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 27,
+      "changes": 30,
+      "blob_url": "https://github.com/nanvix/nanvix/blob/46829c57a67f2c3e5287c21516be092ec7d372d5/scripts%2Fsetup%2Fvscode%2Fsettings-linux.json",
+      "raw_url": "https://github.com/nanvix/nanvix/raw/46829c57a67f2c3e5287c21516be092ec7d372d5/scripts%2Fsetup%2Fvscode%2Fsettings-linux.json",
+      "contents_url": "https://api.github.com/repos/nanvix/nanvix/contents/scripts%2Fsetup%2Fvscode%2Fsettings-linux.json?ref=46829c57a67f2c3e5287c21516be092ec7d372d5",
+      "patch": "@@ -3,8 +3,6 @@\n // How to use:\n // 1. Create a folder named '.vscode' in the root of your Nanvix workspace.\n // 2. Copy this file into the '.vscode' folder as 'settings.json'.\n-// 3. Ensure the \"C_Cpp.default.compilerPath\" setting below points to the GCC binary of your Nanvix\n-//    toolchain.\n {\n     //==============================================================================================\n     // Editor Settings\n@@ -26,10 +24,7 @@\n     \"files.exclude\": {\n         \"**/__pycache__/**\": true,\n         \"target/**\": true,\n-        \"**/*.d\": true,\n-        \"**/*.elf\": true,\n-        \"**/*.o\": true,\n-        \"**/*.out\": true\n+        \"**/*.elf\": true\n     },\n     //==============================================================================================\n     // Rust Analyzer Settings\n@@ -39,26 +34,7 @@\n     \"rust-analyzer.check.overrideCommand\": [\n         \"./z\",\n         \"build\",\n-        \"--with-cached-options\",\n         \"--\",\n         \"check\"\n-    ],\n-    //==============================================================================================\n-    // C/C++ Settings\n-    //==============================================================================================\n-    \"C_Cpp.default.compilerPath\": \"${workspaceFolder}/toolchain/bin/i686-nanvix-gcc\",\n-    \"C_Cpp.files.exclude\": {\n-        \"sysroot-*/**\": true\n-    },\n-    //==============================================================================================\n-    // Assembly Settings\n-    //==============================================================================================\n-    \"[asm-intel-x86-generic]\": {\n-        \"vim.textwidth\": 80,\n-        \"editor.rulers\": [\n-            80\n-        ],\n-        \"editor.tabSize\": 4,\n-        \"editor.insertSpaces\": true\n-    }\n-}\n\\ No newline at end of file\n+    ]\n+}"
+    },
+    {
+      "sha": "e278390e8d194042608936fc317a18da19a60e98",
+      "filename": "scripts/setup/vscode/settings-windows.json",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 18,
+      "changes": 20,
+      "blob_url": "https://github.com/nanvix/nanvix/blob/46829c57a67f2c3e5287c21516be092ec7d372d5/scripts%2Fsetup%2Fvscode%2Fsettings-windows.json",
+      "raw_url": "https://github.com/nanvix/nanvix/raw/46829c57a67f2c3e5287c21516be092ec7d372d5/scripts%2Fsetup%2Fvscode%2Fsettings-windows.json",
+      "contents_url": "https://api.github.com/repos/nanvix/nanvix/contents/scripts%2Fsetup%2Fvscode%2Fsettings-windows.json?ref=46829c57a67f2c3e5287c21516be092ec7d372d5",
+      "patch": "@@ -16,8 +16,6 @@\n //   nanvixd, nanvix-test, and mkramfs.\n //   Guest and kernel crates are checked via cross-compilation targets like 'check-kernel' and\n //   'check-guest-binaries'; invoke them manually with 'z.ps1 build -- <target>' when needed.\n-// - 'C_Cpp.default.compilerPath' is intentionally omitted here because the guest cross-toolchain is not\n-//   installed natively on Windows by default.\n {\n     //==============================================================================================\n     // Editor Settings\n@@ -42,10 +40,7 @@\n     \"files.exclude\": {\n         \"**/__pycache__/**\": true,\n         \"target/**\": true,\n-        \"**/*.d\": true,\n-        \"**/*.elf\": true,\n-        \"**/*.o\": true,\n-        \"**/*.out\": true\n+        \"**/*.elf\": true\n     },\n     //==============================================================================================\n     // Rust Analyzer Settings\n@@ -74,16 +69,5 @@\n     ],\n     \"rust-analyzer.cargo.features\": [\n         \"standalone\"\n-    ],\n-    //==============================================================================================\n-    // Assembly Settings\n-    //==============================================================================================\n-    \"[asm-intel-x86-generic]\": {\n-        \"vim.textwidth\": 80,\n-        \"editor.rulers\": [\n-            80\n-        ],\n-        \"editor.tabSize\": 4,\n-        \"editor.insertSpaces\": true\n-    }\n+    ]\n }"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "4926758c39f66f82e29efc19ddb799af9445ee6b",
+      "message": "[scripts] B: Outdated VS Code Settings for Linux\n\nThe VS Code settings template for Linux (`settings-linux.json`) contained\nseveral outdated entries left over from when the project included C/C++ and\nassembly sources. The codebase is now fully Rust, so these settings no longer\napply.\n\nChanges:\n- Remove `--with-cached-options` from `rust-analyzer.check.overrideCommand`,\n  as this flag is no longer supported by the `z` build utility.\n- Remove `C_Cpp.default.compilerPath` and `C_Cpp.files.exclude` settings,\n  since no C/C++ source files remain in the repository.\n- Remove `[asm-intel-x86-generic]` language-specific overrides, since no\n  assembly files remain in the repository.\n- Remove C build artifact patterns (`*.d`, `*.o`, `*.out`) from\n  `files.exclude`, keeping only `*.elf`.\n- Remove the header comment referencing the GCC compiler path setup.",
+      "parent_shas": [
+        "e92b2931a46852def10787052ef7438d638fa8c1"
+      ]
+    },
+    {
+      "sha": "46829c57a67f2c3e5287c21516be092ec7d372d5",
+      "message": "[scripts] B: Outdated VS Code Settings for Windows\n\nThe Windows VS Code settings template (`settings-windows.json`) contained\nentries left over from when the project included C/C++ and assembly sources.\nThe codebase is now fully Rust, so these settings no longer apply.\n\nChanges:\n- Remove comment about `C_Cpp.default.compilerPath` being intentionally\n  omitted, since C/C++ tooling is no longer relevant.\n- Remove C build artifact patterns (`*.d`, `*.o`, `*.out`) from\n  `files.exclude`, keeping only `*.elf`.\n- Remove `[asm-intel-x86-generic]` language-specific overrides, since no\n  assembly files remain in the repository.",
+      "parent_shas": [
+        "4926758c39f66f82e29efc19ddb799af9445ee6b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__nanvix__nanvix__pr1879.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\nanvix__nanvix__pr1879__cpp_python__nanvix__nanvix__pr1879\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\nanvix__nanvix__pr1879__cpp_python__nanvix__nanvix__pr1879\\rn"
+  }
+}

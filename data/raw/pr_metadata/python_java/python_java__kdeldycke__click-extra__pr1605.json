@@ -1,0 +1,178 @@
+{
+  "instance_id": "python_java__kdeldycke__click-extra__pr1605",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "kdeldycke/click-extra",
+  "pr_number": 1605,
+  "pr_url": "https://github.com/kdeldycke/click-extra/pull/1605",
+  "repo": {
+    "full_name": "kdeldycke/click-extra",
+    "clone_url": "https://github.com/kdeldycke/click-extra.git",
+    "default_branch": "main",
+    "created_at": "2021-10-18T08:02:27Z",
+    "stars": 114,
+    "license": "GPL-2.0",
+    "size_kb": 10592
+  },
+  "pull_request": {
+    "id": 3481992909,
+    "title": "Format Python",
+    "body": "### Description\n\nAuto-formats Python files with [autopep8](https://github.com/hhatto/autopep8) (comment wrapping) and [Ruff](https://docs.astral.sh/ruff/) (linting and formatting). When no `[tool.ruff]` section or `ruff.toml` is present, [repomatic's bundled defaults](https://github.com/kdeldycke/repomatic/blob/main/repomatic/data/ruff.toml) are applied at runtime. See the [`format-python` job documentation](https://github.com/kdeldycke/repomatic?tab=readme-ov-file#githubworkflowsautofixyaml-jobs) for details.\n\n> [!TIP]\n> Customize formatting and linting rules via [`[tool.ruff]`](https://docs.astral.sh/ruff/configuration/) and [`[tool.autopep8]`](https://github.com/hhatto/autopep8#configuration) in your `pyproject.toml`.\n\n\n> [!IMPORTANT]\n> If you suspect the PR content is outdated, **[click `Run workflow`](https://github.com/kdeldycke/click-extra/actions/workflows/autofix.yaml)** to refresh it manually before merging.\n\n\n<details><summary><code>Workflow metadata</code></summary>\n\n| Field | Value |\n| :-- | :-- |\n| **Trigger** | `push` |\n| **Actor** | @kdeldycke |\n| **Ref** | `main` |\n| **Commit** | [`ddeaa263`](https://github.com/kdeldycke/click-extra/commit/ddeaa26346e1f1be0548e224e28116bcaa10cc5f) |\n| **Job** | [`format-python`](https://github.com/kdeldycke/click-extra/blob/ddeaa26346e1f1be0548e224e28116bcaa10cc5f/.github/workflows/autofix.yaml) |\n| **Workflow** | [`autofix.yaml`](https://github.com/kdeldycke/click-extra/blob/ddeaa26346e1f1be0548e224e28116bcaa10cc5f/.github/workflows/autofix.yaml) |\n| **Run** | [#2535.1](https://github.com/kdeldycke/click-extra/actions/runs/23943232774) |\n\n</details>\n\n---\n\n🏭 Generated with [repomatic](https://github.com/kdeldycke/repomatic) `6.10.0`",
+    "created_at": "2026-04-02T12:15:35Z",
+    "merged_at": "2026-04-03T11:11:05Z",
+    "base_sha": "ddeaa26346e1f1be0548e224e28116bcaa10cc5f",
+    "head_sha": "377dab6314ebf2f5fbecdd80f81db56eb4096380",
+    "merge_commit_sha": "97e24cd9597b7c01f5261333db4da73c10f6a89e",
+    "labels": [
+      "🤖 ci"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "ddeaa26346e1f1be0548e224e28116bcaa10cc5f",
+  "final_sha": "377dab6314ebf2f5fbecdd80f81db56eb4096380",
+  "changed_files": [
+    {
+      "sha": "836454ddae3e4fe610578ebb37f3a2a14eb9b817",
+      "filename": "click_extra/cli.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/377dab6314ebf2f5fbecdd80f81db56eb4096380/click_extra%2Fcli.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/377dab6314ebf2f5fbecdd80f81db56eb4096380/click_extra%2Fcli.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/click_extra%2Fcli.py?ref=377dab6314ebf2f5fbecdd80f81db56eb4096380",
+      "patch": "@@ -118,8 +118,7 @@ def render_matrix(ctx: click.Context, matrix: str) -> None:\n         headers = [\"Foreground \\u21b4 \\\\ Background \\u2192\"] + _ALL_COLORS\n         for fg in _ALL_COLORS:\n             row = [style(fg, fg=fg)]\n-            for bg in _ALL_COLORS:\n-                row.append(style(fg, fg=fg, bg=bg))\n+            row.extend(style(fg, fg=fg, bg=bg) for bg in _ALL_COLORS)\n             table.append(row)\n \n     elif matrix == \"styles\":"
+    },
+    {
+      "sha": "bca764073be5bc0d9543aad624fdefdd2c24d851",
+      "filename": "click_extra/colorize.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 16,
+      "changes": 21,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/377dab6314ebf2f5fbecdd80f81db56eb4096380/click_extra%2Fcolorize.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/377dab6314ebf2f5fbecdd80f81db56eb4096380/click_extra%2Fcolorize.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/click_extra%2Fcolorize.py?ref=377dab6314ebf2f5fbecdd80f81db56eb4096380",
+      "patch": "@@ -447,8 +447,7 @@ def _collect_params(\n                 # Use normalize_choice() to get the exact strings shown in the\n                 # metavar. Handles Enum names, case-folding, EnumChoice source.\n                 kw.choices.update(\n-                    param.type.normalize_choice(c, ctx)\n-                    for c in param.type.choices\n+                    param.type.normalize_choice(c, ctx) for c in param.type.choices\n                 )\n             elif isinstance(param.type, click.DateTime):\n                 # Highlight each datetime format string as a choice.\n@@ -527,11 +526,8 @@ def __init__(self, *args, **kwargs) -> None:\n \n     keywords: HelpKeywords = HelpKeywords()\n \n-\n     #: Matches range expressions like ``0<=x<=9``, ``x>=1024``, ``0<=x<100``.\n-    _range_re: ClassVar[re.Pattern] = re.compile(\n-        r\"(?:\\S+(?:<|<=))?x(?:<|<=|>|>=)\\S+\"\n-    )\n+    _range_re: ClassVar[re.Pattern] = re.compile(r\"(?:\\S+(?:<|<=))?x(?:<|<=|>|>=)\\S+\")\n     _bracket_re: ClassVar[re.Pattern] = re.compile(\n         r\"(  )\"  # 2 spaces (column or description spacing).\n         r\"\\[\"  # Opening bracket.\n@@ -587,10 +583,7 @@ def _style_bracket_fields(self, match: re.Match) -> str:\n                 styled.append(self.theme.bracket(part))\n \n         return (  # type: ignore[no-any-return]\n-            prefix\n-            + self.theme.bracket(\"[\")\n-            + \"\".join(styled)\n-            + self.theme.bracket(\"]\")\n+            prefix + self.theme.bracket(\"[\") + \"\".join(styled) + self.theme.bracket(\"]\")\n         )\n \n     def highlight_extra_keywords(self, help_text: str) -> str:\n@@ -653,9 +646,7 @@ def highlight_extra_keywords(self, help_text: str) -> str:\n         # Highlight options (long and short combined). Per-keyword lookbehind\n         # excludes the option's own leading symbol to prevent matching repeated\n         # prefixes (e.g. \"---debug\" should not match \"--debug\").\n-        all_options = sorted(\n-            kw.long_options | kw.short_options, key=len, reverse=True\n-        )\n+        all_options = sorted(kw.long_options | kw.short_options, key=len, reverse=True)\n         if all_options:\n             help_text = highlight(\n                 help_text,\n@@ -760,9 +751,7 @@ def highlight(\n             regex = pattern\n         # Treat as literal string and escape for regex.\n         elif isinstance(pattern, str):\n-            regex = re.compile(\n-                re.escape(pattern), re.IGNORECASE if ignore_case else 0\n-            )\n+            regex = re.compile(re.escape(pattern), re.IGNORECASE if ignore_case else 0)\n         else:\n             raise TypeError(f\"Unsupported pattern type: {pattern!r}\")\n "
+    },
+    {
+      "sha": "7d41aa82996c0cf47d1029a4a47f6b8a8a503997",
+      "filename": "click_extra/config.py",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 9,
+      "changes": 23,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/377dab6314ebf2f5fbecdd80f81db56eb4096380/click_extra%2Fconfig.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/377dab6314ebf2f5fbecdd80f81db56eb4096380/click_extra%2Fconfig.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/click_extra%2Fconfig.py?ref=377dab6314ebf2f5fbecdd80f81db56eb4096380",
+      "patch": "@@ -445,10 +445,12 @@ def flatten_config_keys(\n     for key, value in conf.items():\n         full_key = f\"{_prefix}{sep}{key}\" if _prefix else key\n         if isinstance(value, dict) and full_key not in opaque_keys:\n-            for sub_key, sub_value in flatten_config_keys(\n-                value, sep, opaque_keys, full_key\n-            ).items():\n-                items[sub_key] = sub_value\n+            items.update({\n+                sub_key: sub_value\n+                for sub_key, sub_value in flatten_config_keys(\n+                    value, sep, opaque_keys, full_key\n+                ).items()\n+            })\n         else:\n             items[full_key] = value\n     return items\n@@ -503,7 +505,9 @@ def _safe_get_type_hints(cls: type) -> dict[str, Any]:\n             module = sys.modules.get(cls.__module__, None)\n             globalns = getattr(module, \"__dict__\", {}) if module else {}\n             return get_type_hints(\n-                cls, globalns=globalns, localns=localns,\n+                cls,\n+                globalns=globalns,\n+                localns=localns,\n             )\n         except (NameError, AttributeError, TypeError, RecursionError):\n             pass\n@@ -616,9 +620,7 @@ def _from_dataclass(\n     )\n \n     normalized = (\n-        normalize_config_keys(remaining, opaque_keys=opaque)\n-        if normalize\n-        else remaining\n+        normalize_config_keys(remaining, opaque_keys=opaque) if normalize else remaining\n     )\n     flattened = flatten_config_keys(normalized, opaque_keys=opaque)\n \n@@ -699,7 +701,10 @@ def _make_schema_callable(\n         return None\n     if is_dataclass(schema):\n         return partial(\n-            _from_dataclass, schema, strict=strict, normalize=normalize,\n+            _from_dataclass,\n+            schema,\n+            strict=strict,\n+            normalize=normalize,\n         )\n     # Already a callable (Pydantic .model_validate, custom function, etc.).\n     return schema"
+    },
+    {
+      "sha": "507d6b18d4c270020d1b83f793dc2a7ecafaecfa",
+      "filename": "click_extra/testing.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 4,
+      "changes": 5,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/377dab6314ebf2f5fbecdd80f81db56eb4096380/click_extra%2Ftesting.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/377dab6314ebf2f5fbecdd80f81db56eb4096380/click_extra%2Ftesting.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/click_extra%2Ftesting.py?ref=377dab6314ebf2f5fbecdd80f81db56eb4096380",
+      "patch": "@@ -378,10 +378,7 @@ def regex_fullmatch_line_by_line(regex: re.Pattern | str, content: str) -> None:\n             # Multi-line groups like (?:...\\n)* get broken when the regex is\n             # split on \\n for line-by-line comparison. Fall back to reporting\n             # the overall content so the mismatch is diagnosable.\n-            msg = (\n-                f\"Full regex does not match output.\\n\"\n-                f\"Content:\\n{content}\"\n-            )\n+            msg = f\"Full regex does not match output.\\nContent:\\n{content}\"\n             raise AssertionError(msg) from None\n         if matched:\n             logging.debug("
+    },
+    {
+      "sha": "46fda4dbb184a017684f8ef3121b13c8bb0db1ff",
+      "filename": "click_extra/timer.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/377dab6314ebf2f5fbecdd80f81db56eb4096380/click_extra%2Ftimer.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/377dab6314ebf2f5fbecdd80f81db56eb4096380/click_extra%2Ftimer.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/click_extra%2Ftimer.py?ref=377dab6314ebf2f5fbecdd80f81db56eb4096380",
+      "patch": "@@ -40,9 +40,7 @@ class TimerOption(ExtraOption):\n \n     def print_timer(self) -> None:\n         \"\"\"Compute and print elapsed execution time.\"\"\"\n-        echo(\n-            f\"Execution time: {perf_counter() - self.start_time:0.3f} seconds.\"\n-        )\n+        echo(f\"Execution time: {perf_counter() - self.start_time:0.3f} seconds.\")\n \n     def register_timer_on_close(\n         self,"
+    },
+    {
+      "sha": "0f33073bcc0cda7d356f2180823083dadb9b4cd3",
+      "filename": "tests/test_colorize.py",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 29,
+      "changes": 44,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/377dab6314ebf2f5fbecdd80f81db56eb4096380/tests%2Ftest_colorize.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/377dab6314ebf2f5fbecdd80f81db56eb4096380/tests%2Ftest_colorize.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/tests%2Ftest_colorize.py?ref=377dab6314ebf2f5fbecdd80f81db56eb4096380",
+      "patch": "@@ -284,8 +284,7 @@ class Port(IntEnum):\n                 show_envvar=True,\n             ),\n             (\n-                theme.bracket(\"env var: \")\n-                + theme.envvar(\"THRESHOLD, TEST_THRESHOLD\"),\n+                theme.bracket(\"env var: \") + theme.envvar(\"THRESHOLD, TEST_THRESHOLD\"),\n                 theme.bracket(\"default: \") + theme.default(\"5\"),\n                 theme.range_label(\"1<=x<=10\"),\n                 theme.required(\"required\") + theme.bracket(\"]\"),\n@@ -328,7 +327,11 @@ class Port(IntEnum):\n                 help=\"Enable color output.\",\n             ),\n             (\n-                \" \" + theme.option(\"--color\") + \" / \" + theme.option(\"--no-color\") + \" \",\n+                \" \"\n+                + theme.option(\"--color\")\n+                + \" / \"\n+                + theme.option(\"--no-color\")\n+                + \" \",\n                 \" \"\n                 + theme.bracket(\"[\")\n                 + theme.bracket(\"default: \")\n@@ -475,11 +478,7 @@ class Port(IntEnum):\n                 help=\"Set priority to LOW or HIGH.\",\n             ),\n             (\n-                \"[\"\n-                + theme.choice(\"LOW\")\n-                + \"|\"\n-                + theme.choice(\"HIGH\")\n-                + \"]\",\n+                \"[\" + theme.choice(\"LOW\") + \"|\" + theme.choice(\"HIGH\") + \"]\",\n                 \" Set priority to \"\n                 + theme.choice(\"LOW\")\n                 + \" or \"\n@@ -493,13 +492,7 @@ class Port(IntEnum):\n                 [\"--port\"],\n                 type=click.Choice(Port),\n             ),\n-            (\n-                \"[\"\n-                + theme.choice(\"HTTP\")\n-                + \"|\"\n-                + theme.choice(\"HTTPS\")\n-                + \"]\",\n-            ),\n+            (\"[\" + theme.choice(\"HTTP\") + \"|\" + theme.choice(\"HTTPS\") + \"]\",),\n         ),\n         (\n             # EnumChoice with NAME source: case-folded names are displayed and\n@@ -508,13 +501,7 @@ class Port(IntEnum):\n                 [\"--priority\"],\n                 type=EnumChoice(Priority, choice_source=ChoiceSource.NAME),\n             ),\n-            (\n-                \"[\"\n-                + theme.choice(\"low\")\n-                + \"|\"\n-                + theme.choice(\"high\")\n-                + \"]\",\n-            ),\n+            (\"[\" + theme.choice(\"low\") + \"|\" + theme.choice(\"high\") + \"]\",),\n         ),\n         (\n             # EnumChoice with VALUE source: values are displayed and highlighted.\n@@ -654,11 +641,7 @@ class Port(IntEnum):\n         (\n             ExtraOption([\"-v\", \"--verbose\"], count=True, help=\"Increase verbosity.\"),\n             (\n-                \" \"\n-                + theme.option(\"-v\")\n-                + \", \"\n-                + theme.option(\"--verbose\")\n-                + \" \",\n+                \" \" + theme.option(\"-v\") + \", \" + theme.option(\"--verbose\") + \" \",\n                 \" Increase verbosity.\",\n             ),\n         ),\n@@ -973,7 +956,9 @@ def test_argument_highlight(params, expected, forbidden):\n         ),\n     ),\n )\n-def test_no_false_positive_highlight(params, help_text, expected_present, expected_absent):\n+def test_no_false_positive_highlight(\n+    params, help_text, expected_present, expected_absent\n+):\n     \"\"\"Verify that highlighting does not leak into compound words, URLs, dotted\n     names, already-styled regions, or partial-word matches.\"\"\"\n     cli = ExtraCommand(\"test\", params=params, help=help_text)\n@@ -1083,7 +1068,8 @@ def command4():\n         echo(\"Run click-extra command #4...\")\n \n     color_cli1.section(\"Subcommand group 1\", command1, command2)  # type: ignore[attr-defined]\n-    color_cli1.section(\"Extra commands\", command3, command4)  # type: ignore[attr-defined]\n+    # type: ignore[attr-defined]\n+    color_cli1.section(\"Extra commands\", command3, command4)\n \n     help_screen = (\n         r\"\\x1b\\[94m\\x1b\\[1m\\x1b\\[4mUsage:\\x1b\\[0m \\x1b\\[97mcolor-cli1\\x1b\\[0m \\x1b\\[36m\\x1b\\[2m\\[OPTIONS\\]\\x1b\\[0m \\x1b\\[36m\\x1b\\[2mCOMMAND \\[ARGS\\]\\.\\.\\.\\x1b\\[0m\\n\""
+    },
+    {
+      "sha": "6f53c3d2f6f426d6bef5c7a17f08cda9ad2a817d",
+      "filename": "tests/test_config.py",
+      "status": "modified",
+      "additions": 30,
+      "deletions": 6,
+      "changes": 36,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/377dab6314ebf2f5fbecdd80f81db56eb4096380/tests%2Ftest_config.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/377dab6314ebf2f5fbecdd80f81db56eb4096380/tests%2Ftest_config.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/tests%2Ftest_config.py?ref=377dab6314ebf2f5fbecdd80f81db56eb4096380",
+      "patch": "@@ -4163,7 +4163,11 @@ def subcommand():\n     )\n \n     result = invoke(\n-        type_aware_cli, \"--config\", str(conf_path), \"subcommand\", color=False,\n+        type_aware_cli,\n+        \"--config\",\n+        str(conf_path),\n+        \"subcommand\",\n+        color=False,\n     )\n     assert result.exit_code == 0\n     assert \"simple is 'hello'\" in result.stdout\n@@ -4213,7 +4217,11 @@ def subcommand():\n     )\n \n     result = invoke(\n-        meta_cli, \"--config\", str(conf_path), \"subcommand\", color=False,\n+        meta_cli,\n+        \"--config\",\n+        str(conf_path),\n+        \"subcommand\",\n+        color=False,\n     )\n     assert result.exit_code == 0\n     assert \"normal is 'top'\" in result.stdout\n@@ -4254,7 +4262,11 @@ def subcommand():\n     )\n \n     result = invoke(\n-        norm_cli, \"--config\", str(conf_path), \"subcommand\", color=False,\n+        norm_cli,\n+        \"--config\",\n+        str(conf_path),\n+        \"subcommand\",\n+        color=False,\n     )\n     assert result.exit_code == 0\n     # Default normalize_keys=True: kebab-key becomes kebab_key.\n@@ -4303,7 +4315,11 @@ def subcommand():\n     )\n \n     result = invoke(\n-        nested_dc_cli, \"--config\", str(conf_path), \"subcommand\", color=False,\n+        nested_dc_cli,\n+        \"--config\",\n+        str(conf_path),\n+        \"subcommand\",\n+        color=False,\n     )\n     assert result.exit_code == 0\n     assert \"name is 'hello'\" in result.stdout\n@@ -4362,7 +4378,11 @@ def subcommand():\n     )\n \n     result = invoke(\n-        matrix_cli, \"--config\", str(conf_path), \"subcommand\", color=False,\n+        matrix_cli,\n+        \"--config\",\n+        str(conf_path),\n+        \"subcommand\",\n+        color=False,\n     )\n     assert result.exit_code == 0\n     # Exclude list preserved with original keys.\n@@ -4412,7 +4432,11 @@ def subcommand():\n     )\n \n     result = invoke(\n-        default_dc_cli, \"--config\", str(conf_path), \"subcommand\", color=False,\n+        default_dc_cli,\n+        \"--config\",\n+        str(conf_path),\n+        \"subcommand\",\n+        color=False,\n     )\n     assert result.exit_code == 0\n     assert \"name is 'custom'\" in result.stdout"
+    },
+    {
+      "sha": "296ffb79b3e55adf9502eaedf8c0e02c543069bc",
+      "filename": "tests/test_envvar.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/377dab6314ebf2f5fbecdd80f81db56eb4096380/tests%2Ftest_envvar.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/377dab6314ebf2f5fbecdd80f81db56eb4096380/tests%2Ftest_envvar.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/tests%2Ftest_envvar.py?ref=377dab6314ebf2f5fbecdd80f81db56eb4096380",
+      "patch": "@@ -208,7 +208,8 @@ def envvars_test_cases():\n     broken_value_map = {k: False for k in working_value_map}\n \n     for (cmd_decorator, decorator_name), envvar_cases in matrix.items():\n-        for case_name, envvar_names in envvar_cases.items():  # type: ignore[attr-defined]\n+        # type: ignore[attr-defined]\n+        for case_name, envvar_names in envvar_cases.items():\n             value_map = (\n                 working_value_map if case_name == \"working_envvar\" else broken_value_map\n             )"
+    },
+    {
+      "sha": "3b202f00ad4fc86f97a840098c205f3bd2661713",
+      "filename": "tests/test_table.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1,
+      "changes": 4,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/377dab6314ebf2f5fbecdd80f81db56eb4096380/tests%2Ftest_table.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/377dab6314ebf2f5fbecdd80f81db56eb4096380/tests%2Ftest_table.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/tests%2Ftest_table.py?ref=377dab6314ebf2f5fbecdd80f81db56eb4096380",
+      "patch": "@@ -39,7 +39,9 @@ def test_table_formats_definition():\n     \"\"\"Check all table formats are accounted for and properly named.\"\"\"\n     # Formats from tabulate.\n     tabulate_formats = [\n-        (f.upper(), f.replace(\"_\", \"-\")) for f in tabulate._table_formats  # type: ignore[attr-defined]\n+        # type: ignore[attr-defined]\n+        (f.upper(), f.replace(\"_\", \"-\"))\n+        for f in tabulate._table_formats\n     ]\n \n     # Formats derived from CSV dialects."
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "377dab6314ebf2f5fbecdd80f81db56eb4096380",
+      "message": "Format Python",
+      "parent_shas": [
+        "ddeaa26346e1f1be0548e224e28116bcaa10cc5f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__kdeldycke__click-extra__pr1605.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__click-extra__pr1605__python_java__kdeldycke__click-extra__pr1605\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__click-extra__pr1605__python_java__kdeldycke__click-extra__pr1605\\rn"
+  }
+}

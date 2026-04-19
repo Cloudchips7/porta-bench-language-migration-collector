@@ -1,0 +1,90 @@
+{
+  "instance_id": "java_python__nf-core__mcmicro__pr139",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "nf-core/mcmicro",
+  "pr_number": 139,
+  "pr_url": "https://github.com/nf-core/mcmicro/pull/139",
+  "repo": {
+    "full_name": "nf-core/mcmicro",
+    "clone_url": "https://github.com/nf-core/mcmicro.git",
+    "default_branch": "dev",
+    "created_at": "2023-06-21T18:40:14Z",
+    "stars": 31,
+    "license": "MIT",
+    "size_kb": 3697
+  },
+  "pull_request": {
+    "id": 3223683388,
+    "title": "Use Nextflow file() and toUriString() for cloud storage compatibility",
+    "body": " ~Changes xmlPath input from val() to path() so Nextflow stages the file locally before processing.~\r\nUses Nextflow's file() function instead of Java's File class, and replace toString() with toUriString() to read XML content. This fixes \"No such file or directory\" errors when running on cloud platforms (AWS S3, Azure, GCS) via Seqera Platform.  \r\n\r\nNoted in review for PR #120 \r\n\r\n## PR checklist\r\n\r\n- [x] This comment contains a description of changes (with reason).\r\n- [ ] If you've fixed a bug or added code that should be tested, add tests!\r\n- [ ] If you've added a new tool - have you followed the pipeline conventions in the [contribution docs](https://github.com/nf-core/mcmicro/tree/master/.github/CONTRIBUTING.md)\r\n- [ ] If necessary, also make a PR on the nf-core/mcmicro _branch_ on the [nf-core/test-datasets](https://github.com/nf-core/test-datasets) repository.\r\n- [ ] Make sure your code lints (`nf-core pipelines lint`).\r\n- [ ] Ensure the test suite passes (`nextflow run . -profile test,docker --outdir <OUTDIR>`).\r\n- [ ] Check for unexpected warnings in debug mode (`nextflow run . -profile debug,test,docker --outdir <OUTDIR>`).\r\n- [ ] Usage Documentation in `docs/usage.md` is updated.\r\n- [ ] Output Documentation in `docs/output.md` is updated.\r\n- [ ] `CHANGELOG.md` is updated.\r\n- [ ] `README.md` is updated (including new tool citations and authors/contributors).\r\n",
+    "created_at": "2026-01-29T14:21:02Z",
+    "merged_at": "2026-02-03T15:37:45Z",
+    "base_sha": "d27bf2c2fba85cf61922c632190819843398b2a9",
+    "head_sha": "044dccaa1be2bea5195b85d81bdb63791287c156",
+    "merge_commit_sha": "fe80bb99982c5bef884148244e514887985b9562",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "d27bf2c2fba85cf61922c632190819843398b2a9",
+  "final_sha": "044dccaa1be2bea5195b85d81bdb63791287c156",
+  "changed_files": [
+    {
+      "sha": "5410f3c2d794746c85a5a1822a955634398e40ca",
+      "filename": "modules/local/omevalidation/main.nf",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/nf-core/mcmicro/blob/044dccaa1be2bea5195b85d81bdb63791287c156/modules%2Flocal%2Fomevalidation%2Fmain.nf",
+      "raw_url": "https://github.com/nf-core/mcmicro/raw/044dccaa1be2bea5195b85d81bdb63791287c156/modules%2Flocal%2Fomevalidation%2Fmain.nf",
+      "contents_url": "https://api.github.com/repos/nf-core/mcmicro/contents/modules%2Flocal%2Fomevalidation%2Fmain.nf?ref=044dccaa1be2bea5195b85d81bdb63791287c156",
+      "patch": "@@ -11,7 +11,7 @@ process OMEVALIDATION {\n     tuple val(meta), val(sample_meta), val(marker_meta)\n \n     exec:\n-    def xml = new XmlSlurper().parse(new File(xmlPath.toString()))\n+    def xml = new XmlSlurper().parseText(file(xmlPath.toUriString()).text)\n \n     /*\n     SAMPLESHEET DATA ----------------------------------------------------------------------------------------------"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "0c6c3c835f7f1d8123f7487c25890e64887cd9bf",
+      "message": "Change xmlPath input type to path",
+      "parent_shas": [
+        "d27bf2c2fba85cf61922c632190819843398b2a9"
+      ]
+    },
+    {
+      "sha": "6ffc9caa024d8050fedd89d19e0868267a4cbf54",
+      "message": "fix(omevalidation): use Nextflow file() for S3 compatibility",
+      "parent_shas": [
+        "0c6c3c835f7f1d8123f7487c25890e64887cd9bf"
+      ]
+    },
+    {
+      "sha": "044dccaa1be2bea5195b85d81bdb63791287c156",
+      "message": "fix(omevalidation): use toUriString() for cloud storage URIs",
+      "parent_shas": [
+        "6ffc9caa024d8050fedd89d19e0868267a4cbf54"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__nf-core__mcmicro__pr139.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\nf-core__mcmicro__pr139__java_python__nf-core__mcmicro__pr139\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\nf-core__mcmicro__pr139__java_python__nf-core__mcmicro__pr139\\rn"
+  }
+}

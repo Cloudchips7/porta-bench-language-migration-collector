@@ -1,0 +1,82 @@
+{
+  "instance_id": "java_python__liftwizard__liftwizard__pr3589",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "liftwizard/liftwizard",
+  "pr_number": 3589,
+  "pr_url": "https://github.com/liftwizard/liftwizard/pull/3589",
+  "repo": {
+    "full_name": "liftwizard/liftwizard",
+    "clone_url": "https://github.com/liftwizard/liftwizard.git",
+    "default_branch": "main",
+    "created_at": "2020-01-08T00:21:57Z",
+    "stars": 17,
+    "license": "Apache-2.0",
+    "size_kb": 12432
+  },
+  "pull_request": {
+    "id": 3424474293,
+    "title": "Bump org.openrewrite:rewrite-bom from 8.75.9 to 8.75.10",
+    "body": "Bumps [org.openrewrite:rewrite-bom](https://github.com/openrewrite/rewrite) from 8.75.9 to 8.75.10.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/openrewrite/rewrite/releases\">org.openrewrite:rewrite-bom's releases</a>.</em></p>\n<blockquote>\n<h2>8.75.10</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>Improve local NuGet development workflow by <a href=\"https://github.com/macsux\"><code>@​macsux</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7037\">openrewrite/rewrite#7037</a></li>\n<li>Skip RPC for Java-delegate recipes in cross-language composites by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7038\">openrewrite/rewrite#7038</a></li>\n<li>C#: Enable XML tree processing via RPC for csproj recipe support by <a href=\"https://github.com/macsux\"><code>@​macsux</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7039\">openrewrite/rewrite#7039</a></li>\n<li>C#: Fix print idempotency for attribute arguments with trailing comments by <a href=\"https://github.com/macsux\"><code>@​macsux</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7034\">openrewrite/rewrite#7034</a></li>\n<li>C#: Add <code>ParentTree</code> property and <code>PathToRoot()</code> to <code>Cursor</code> by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7040\">openrewrite/rewrite#7040</a></li>\n<li>Speed up CI: exclude slow C# RPC tests, add caching to C# build/test tasks by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7042\">openrewrite/rewrite#7042</a></li>\n<li>Simplify csharpPublishLocal to use local feed by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7041\">openrewrite/rewrite#7041</a></li>\n<li>Use try-with-resources by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7044\">openrewrite/rewrite#7044</a></li>\n<li>Gradle 9.4.1 entry in gradle wrapper versions CSV by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7046\">openrewrite/rewrite#7046</a></li>\n<li>C#: Make <code>Preconditions.Check</code> language-agnostic like Java by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7045\">openrewrite/rewrite#7045</a></li>\n<li>C#: Fix null-coalescing pattern that prevents node deletion in visitors by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7047\">openrewrite/rewrite#7047</a></li>\n<li>Prevent duplicate imports when unfolding star imports by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7001\">openrewrite/rewrite#7001</a></li>\n<li>C#: Fix <code>TrailingComma</code> markers on array initializers by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7052\">openrewrite/rewrite#7052</a></li>\n<li>Fix <a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7048\">#7048</a>: Support newer Gradle wrapper template variables by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7049\">openrewrite/rewrite#7049</a></li>\n<li>Python: Whitespace attachment fixes by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7051\">openrewrite/rewrite#7051</a></li>\n<li>C#: Fix <code>AutoFormat</code> on structurally modified subtrees by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7054\">openrewrite/rewrite#7054</a></li>\n<li>Java: fixing parsing of EnumValueSets with regards to leading space by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7043\">openrewrite/rewrite#7043</a></li>\n<li>Make CsprojParser public with pre-resolved solution support by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7056\">openrewrite/rewrite#7056</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.75.9...v8.75.10\">https://github.com/openrewrite/rewrite/compare/v8.75.9...v8.75.10</a></p>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/abfe7bb6597ddb61250f7e8ee17977daf998dfc0\"><code>abfe7bb</code></a> Make CsprojParser public and support pre-resolved solution metadata (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7056\">#7056</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/04e4d129d021a1d91b1501008caa1a065f0e9315\"><code>04e4d12</code></a> Java: fixing parsing of EnumValueSets with regards to leading space (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7043\">#7043</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/ed1051c0e4531aae3277abd75c234ae8fab647fa\"><code>ed1051c</code></a> C#: Fix <code>AutoFormat</code> on structurally modified subtrees (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7054\">#7054</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/552e6299577fe5c1cf2b4b5f37a8215944b54a22\"><code>552e629</code></a> Python: Whitespace attachment fixes (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7051\">#7051</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/0d67e996002b4a92156126165a049e2b2e3f14d6\"><code>0d67e99</code></a> Fix <a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7048\">#7048</a>: Support newer Gradle wrapper template variables (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7049\">#7049</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/11a24f31aa752447cd5c22b1ce8b713ef2e2b07d\"><code>11a24f3</code></a> Fix TrailingComma markers on array initializers in C# parser and printer (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7052\">#7052</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/2fe5ea8e47c97f4beab232b8a53d23f4bb45af3f\"><code>2fe5ea8</code></a> Prevent duplicate imports when unfolding star imports (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7001\">#7001</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/3eb553e011f0a4ea2e57e63f055eaaf5ae1b5d9a\"><code>3eb553e</code></a> Fix null-coalescing pattern in CSharpVisitor and JavaVisitor that prevents no...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/8384bac4ad30cc49d02d371cd4eaf3ffedc6c7ae\"><code>8384bac</code></a> C#: Make <code>Preconditions.Check</code> language-agnostic like Java (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7045\">#7045</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/bb70b81e8f847214860cd1dec1ea73576a3b36be\"><code>bb70b81</code></a> 9.4.1 (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7046\">#7046</a>)</li>\n<li>Additional commits viewable in <a href=\"https://github.com/openrewrite/rewrite/compare/v8.75.9...v8.75.10\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=org.openrewrite:rewrite-bom&package-manager=maven&previous-version=8.75.9&new-version=8.75.10)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)\n\n\n</details>",
+    "created_at": "2026-03-20T11:03:58Z",
+    "merged_at": "2026-03-20T12:01:17Z",
+    "base_sha": "b5262fa8f18c860494e8f49f214e3d8c9f3d48af",
+    "head_sha": "6c181b61f627412dae8f0e121669c91a25e728ce",
+    "merge_commit_sha": "6cb56a01ebdf050f056dcef39161401ff4351bab",
+    "labels": [
+      "dependencies",
+      "java"
+    ]
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "b5262fa8f18c860494e8f49f214e3d8c9f3d48af",
+  "final_sha": "6c181b61f627412dae8f0e121669c91a25e728ce",
+  "changed_files": [
+    {
+      "sha": "64112c196746859320b22eafb3649fccdd4d9a88",
+      "filename": "liftwizard-utility/liftwizard-rewrite/pom.xml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/liftwizard/liftwizard/blob/6c181b61f627412dae8f0e121669c91a25e728ce/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "raw_url": "https://github.com/liftwizard/liftwizard/raw/6c181b61f627412dae8f0e121669c91a25e728ce/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "contents_url": "https://api.github.com/repos/liftwizard/liftwizard/contents/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml?ref=6c181b61f627412dae8f0e121669c91a25e728ce",
+      "patch": "@@ -46,7 +46,7 @@\n             <dependency>\n                 <groupId>org.openrewrite</groupId>\n                 <artifactId>rewrite-bom</artifactId>\n-                <version>8.75.9</version>\n+                <version>8.75.10</version>\n                 <type>pom</type>\n                 <scope>import</scope>\n             </dependency>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "6c181b61f627412dae8f0e121669c91a25e728ce",
+      "message": "Bump org.openrewrite:rewrite-bom from 8.75.9 to 8.75.10\n\nBumps [org.openrewrite:rewrite-bom](https://github.com/openrewrite/rewrite) from 8.75.9 to 8.75.10.\n- [Release notes](https://github.com/openrewrite/rewrite/releases)\n- [Commits](https://github.com/openrewrite/rewrite/compare/v8.75.9...v8.75.10)\n\n---\nupdated-dependencies:\n- dependency-name: org.openrewrite:rewrite-bom\n  dependency-version: 8.75.10\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "b5262fa8f18c860494e8f49f214e3d8c9f3d48af"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__liftwizard__liftwizard__pr3589.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3589__java_python__liftwizard__liftwizard__pr3589\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3589__java_python__liftwizard__liftwizard__pr3589\\rn"
+  }
+}

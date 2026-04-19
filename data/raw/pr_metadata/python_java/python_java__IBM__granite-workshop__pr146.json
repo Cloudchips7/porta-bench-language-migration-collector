@@ -1,0 +1,240 @@
+{
+  "instance_id": "python_java__IBM__granite-workshop__pr146",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "IBM/granite-workshop",
+  "pr_number": 146,
+  "pr_url": "https://github.com/IBM/granite-workshop/pull/146",
+  "repo": {
+    "full_name": "IBM/granite-workshop",
+    "clone_url": "https://github.com/IBM/granite-workshop.git",
+    "default_branch": "main",
+    "created_at": "2024-09-11T07:14:40Z",
+    "stars": 44,
+    "license": "Apache-2.0",
+    "size_kb": 6155
+  },
+  "pull_request": {
+    "id": 3528776863,
+    "title": "uv python install",
+    "body": "Doc updates to add uv discussion to help install python.",
+    "created_at": "2026-04-14T14:06:32Z",
+    "merged_at": "2026-04-14T14:10:32Z",
+    "base_sha": "97acb8ac09980a76eed468d412893d99b483ee05",
+    "head_sha": "40421db747004c097d0b5767a06fd56d40bc16cb",
+    "merge_commit_sha": "242e1eaac155cdab5ef31757214ab93964d61b07",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "97acb8ac09980a76eed468d412893d99b483ee05",
+  "final_sha": "40421db747004c097d0b5767a06fd56d40bc16cb",
+  "changed_files": [
+    {
+      "sha": "b5b501a67f00534056510628178b2da64c2d6f92",
+      "filename": ".github/workflows/lint.yaml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/.github%2Fworkflows%2Flint.yaml",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/.github%2Fworkflows%2Flint.yaml",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/.github%2Fworkflows%2Flint.yaml?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -6,7 +6,7 @@ on:\n       - main\n     paths:\n       - '**.md'\n-      - '.markdownlint-cli2.yaml'\n+      - '.markdownlint-cli2.y?aml'\n       - '.github/workflows/lint.ya?ml' # This workflow\n \n env:"
+    },
+    {
+      "sha": "5e9fba7ae99b8e66db544600b8edeae37ebbf10e",
+      "filename": ".github/workflows/publish.yaml",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 4,
+      "changes": 14,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/.github%2Fworkflows%2Fpublish.yaml",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/.github%2Fworkflows%2Fpublish.yaml",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/.github%2Fworkflows%2Fpublish.yaml?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -11,7 +11,7 @@ on:\n       - 'data/**'\n       - 'docs/**'\n       - 'notebooks/**'\n-      - 'mkdocs.yml'\n+      - 'mkdocs.ya?ml'\n       - '.github/workflows/publish.ya?ml' # This workflow\n   workflow_dispatch:\n \n@@ -55,10 +55,16 @@ jobs:\n         if: ${{ github.event_name != 'pull_request' }}\n         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0\n \n+      - name: 'Setup Python'\n+        id: python\n+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0\n+        with:\n+          python-version: 3.12\n+\n       - name: 'Setup uv'\n         uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v8.0.0\n         with:\n-          python-version: 3.12\n+          python-version: ${{ steps.python.outputs.python-version }}\n           enable-cache: false\n \n       - name: 'Build website'\n@@ -72,15 +78,15 @@ jobs:\n           path: 'site/' # mkdocs default site_dir\n \n   publish:\n+    needs: build\n+    if: ${{ github.event_name != 'pull_request' }}\n     permissions:\n       pages: write\n       id-token: write\n     environment:\n       name: github-pages\n       url: ${{ steps.deployment.outputs.page_url }}\n     runs-on: ubuntu-latest\n-    needs: build\n-    if: ${{ github.event_name != 'pull_request' }}\n     steps:\n       - name: \"Harden Runner\"\n         uses: step-security/harden-runner@fe104658747b27e96e4f7e80cd0a94068e53901d # v2.16.1"
+    },
+    {
+      "sha": "f24dbebcb79db7249788fde13c5d9cb249d4af0f",
+      "filename": ".github/workflows/spellcheck.yaml",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 2,
+      "changes": 10,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/.github%2Fworkflows%2Fspellcheck.yaml",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/.github%2Fworkflows%2Fspellcheck.yaml",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/.github%2Fworkflows%2Fspellcheck.yaml?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -44,10 +44,16 @@ jobs:\n         with:\n           persist-credentials: false\n \n+      - name: 'Setup Python'\n+        id: python\n+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0\n+        with:\n+          python-version: 3.12\n+\n       - name: 'Setup uv'\n         uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v8.0.0\n         with:\n-          python-version: 3.12\n+          python-version: ${{ steps.python.outputs.python-version }}\n           enable-cache: false\n \n       - name: 'Install aspell'\n@@ -57,4 +63,4 @@ jobs:\n \n       - name: 'Check spelling'\n         run: |\n-          uvx -- pyspelling --config .spellcheck.yml\n+          uvx -- pyspelling --config .spellcheck.yaml"
+    },
+    {
+      "sha": "73137c69e4347172bbcde4aec289a189ed4622d9",
+      "filename": ".pre-commit-config.yaml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/.pre-commit-config.yaml",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/.pre-commit-config.yaml",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/.pre-commit-config.yaml?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -19,5 +19,5 @@ repos:\n     hooks:\n       - id: 'pyspelling'\n         args: [\n-          \"--config\", \".spellcheck.yml\"\n+          \"--config\", \".spellcheck.yaml\"\n         ]"
+    },
+    {
+      "sha": "de9aa9da4a8bc3c1b6357a722fd281973669156b",
+      "filename": ".spellcheck-en-custom.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/.spellcheck-en-custom.txt",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/.spellcheck-en-custom.txt",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/.spellcheck-en-custom.txt?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -52,5 +52,6 @@ TSFM\n TTM\n TTMs\n url\n+uv\n venv\n Zhao"
+    },
+    {
+      "sha": "3e866d379e785a5a7751af26341cbe15a44c381b",
+      "filename": ".spellcheck.yaml",
+      "status": "renamed",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/.spellcheck.yaml",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/.spellcheck.yaml",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/.spellcheck.yaml?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -8,7 +8,7 @@ matrix:\n     camel-case: true\n     mode: markdown\n   sources:\n-  - \"**/*.md|!REVIEWERS.md|!build/**|!.tox/**|!venv/**|!taxonomy/**|!docs/resources/**\"\n+  - \"**/*.md|!.tox/**|!venv/**|!.venv/**\"\n   dictionary:\n     wordlists:\n     - .spellcheck-en-custom.txt",
+      "previous_filename": ".spellcheck.yml"
+    },
+    {
+      "sha": "fa481cbb39a7895905822f3e9f8bf05b28fe78a1",
+      "filename": "docs/README.md",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 8,
+      "changes": 16,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2FREADME.md",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/docs%2FREADME.md?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -1,5 +1,5 @@\n ---\n-title: Granite Workshop\n+title: About the workshop\n description: Learn how to leverage the Granite Foundational Models\n logo: images/ibm-blue-background.png\n ---\n@@ -28,14 +28,14 @@ The introductory page of the workshop is broken down into the following sections\n \n ## Agenda\n \n-| | |\n+| Lab | Description |\n | :--- | :--- |\n-| [Lab 0: Pre-work](pre-work/README.md) | Pre-work for the workshop |\n-| [Lab 1: Document Summarization with Granite](lab-1/README.md) | Learn how to use an AI model to summarize a work of literature |\n-| [Lab 2: Retrieval Augmented Generation (RAG) with Langchain](lab-2/README.md) | Learn how to generate specific information from a large document |\n-| [Lab 3: Energy Demand Forecasting with Granite Timeseries (TTM)](lab-3/README.md) | Learn how to predict future trends using time series forecasting |\n-| [Lab 4: Entity Extraction from text using Granite](lab-4/README.md) | Learn how to use an AI model to extract entities from unstructured text. |\n-| [Lab 5: Multimodal RAG using Granite and Docling](lab-5/README.md) | Learn how to use AI models to generate specific information from unstructured PDFs with images. |\n+| [Lab 0. Pre-work](pre-work/README.md) | Pre-work for the workshop |\n+| [Lab 1. Document Summarization with Granite](lab-1/README.md) | Learn how to use an AI model to summarize a work of literature |\n+| [Lab 2. Retrieval Augmented Generation (RAG) with Langchain](lab-2/README.md) | Learn how to generate specific information from a large document |\n+| [Lab 3. Energy Demand Forecasting with Granite Timeseries (TTM)](lab-3/README.md) | Learn how to predict future trends using time series forecasting |\n+| [Lab 4. Entity Extraction from text using Granite](lab-4/README.md) | Learn how to use an AI model to extract entities from unstructured text. |\n+| [Lab 5. Multimodal RAG using Granite and Docling](lab-5/README.md) | Learn how to use AI models to generate specific information from unstructured PDFs with images. |\n \n ## Technology Used\n "
+    },
+    {
+      "sha": "eebebf42431ce4a03054edeedb0f372e482896d2",
+      "filename": "docs/lab-1/README.md",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 4,
+      "changes": 9,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2Flab-1%2FREADME.md",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2Flab-1%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/docs%2Flab-1%2FREADME.md?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -1,7 +1,8 @@\n ---\n-title: Granite Workshop Lab 1\n+title: Lab 1. Document Summarization with Granite\n description: Document Summarization with Granite\n logo: images/ibm-blue-background.png\n+notebook: notebooks/Summarize.ipynb\n ---\n \n # Document Summarization with Granite\n@@ -16,13 +17,13 @@ This lab is a [Jupyter notebook](https://jupyter.org/). Please follow the instru\n \n ## Lab\n \n-[![Document Summarization with Granite notebook](https://badgen.net/badge/icon/github?icon=github&label=View%20on \"View on GitHub\")]({{ config.repo_url }}/blob/{{ git.commit }}/notebooks/Summarize.ipynb){:target=\"_blank\"}\n-[![Document Summarization with Granite notebook](https://colab.research.google.com/assets/colab-badge.svg \"Open In Colab\")]({{ extra.colab_url }}/blob/{{ git.commit }}/notebooks/Summarize.ipynb){:target=\"_blank\"}\n+[![Document Summarization with Granite notebook](https://badgen.net/badge/icon/github?icon=github&label=View%20on \"View on GitHub\")]({{ config.repo_url }}/blob/{{ git.commit }}/{{ notebook }}){:target=\"_blank\"}\n+[![Document Summarization with Granite notebook](https://colab.research.google.com/assets/colab-badge.svg \"Open In Colab\")]({{ extra.colab_url }}/blob/{{ git.commit }}/{{ notebook }}){:target=\"_blank\"}\n \n To run the notebook from your command line in Jupyter using the active virtual environment from the [pre-work](../pre-work/README.md#install-jupyter), run:\n \n ```shell\n-jupyter notebook notebooks/Summarize.ipynb\n+jupyter notebook {{ notebook }}\n ```\n \n The path of the notebook file above is relative to the `granite-workshop` folder from the git clone in the [pre-work](../pre-work/README.md#clone-the-granite-workshop-repository)."
+    },
+    {
+      "sha": "8deb5b0447005a6f20f354ce83b1b8c6a5d97f03",
+      "filename": "docs/lab-2/README.md",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 4,
+      "changes": 9,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2Flab-2%2FREADME.md",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2Flab-2%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/docs%2Flab-2%2FREADME.md?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -1,7 +1,8 @@\n ---\n-title: Granite Workshop Lab 2\n+title: Lab 2. Retrieval Augmented Generation (RAG) with Langchain\n description: Retrieval Augmented Generation (RAG) with Langchain\n logo: images/ibm-blue-background.png\n+notebook: notebooks/RAG_with_Langchain.ipynb\n ---\n \n # Retrieval Augmented Generation (RAG) with Langchain\n@@ -16,13 +17,13 @@ This lab is a [Jupyter notebook](https://jupyter.org/). Please follow the instru\n \n ## Lab\n \n-[![Retrieval Augmented Generation (RAG) with Langchain notebook](https://badgen.net/badge/icon/github?icon=github&label=View%20on \"View on GitHub\")]({{ config.repo_url }}/blob/{{ git.commit }}/notebooks/RAG_with_Langchain.ipynb){:target=\"_blank\"}\n-[![Retrieval Augmented Generation (RAG) with Langchain notebook](https://colab.research.google.com/assets/colab-badge.svg \"Open In Colab\")]({{ extra.colab_url }}/blob/{{ git.commit }}/notebooks/RAG_with_Langchain.ipynb){:target=\"_blank\"}\n+[![Retrieval Augmented Generation (RAG) with Langchain notebook](https://badgen.net/badge/icon/github?icon=github&label=View%20on \"View on GitHub\")]({{ config.repo_url }}/blob/{{ git.commit }}/{{ notebook }}){:target=\"_blank\"}\n+[![Retrieval Augmented Generation (RAG) with Langchain notebook](https://colab.research.google.com/assets/colab-badge.svg \"Open In Colab\")]({{ extra.colab_url }}/blob/{{ git.commit }}/{{ notebook }}){:target=\"_blank\"}\n \n To run the notebook from your command line in Jupyter using the active virtual environment from the [pre-work](../pre-work/README.md#install-jupyter), run:\n \n ```shell\n-jupyter notebook notebooks/RAG_with_Langchain.ipynb\n+jupyter notebook {{ notebook }}\n ```\n \n The path of the notebook file above is relative to the `granite-workshop` folder from the git clone in the [pre-work](../pre-work/README.md#clone-the-granite-workshop-repository)."
+    },
+    {
+      "sha": "df5bcf5eb5bf8033424620cb23a0c568809cde1e",
+      "filename": "docs/lab-3/README.md",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 4,
+      "changes": 9,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2Flab-3%2FREADME.md",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2Flab-3%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/docs%2Flab-3%2FREADME.md?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -1,7 +1,8 @@\n ---\n-title: Granite Workshop Lab 3\n+title: Lab 3. Energy Demand Forecasting with Granite Timeseries (TTM)\n description: Energy Demand Forecasting with Granite Timeseries (TTM)\n logo: images/ibm-blue-background.png\n+notebook: notebooks/Time_Series_Getting_Started.ipynb\n ---\n \n # Energy Demand Forecasting with Granite Timeseries (TTM)\n@@ -16,13 +17,13 @@ This lab is a [Jupyter notebook](https://jupyter.org/). Please follow the instru\n \n ## Lab\n \n-[![Energy Demand Forecasting with Granite Timeseries (TTM) notebook](https://badgen.net/badge/icon/github?icon=github&label=View%20on \"View on GitHub\")]({{ config.repo_url }}/blob/{{ git.commit }}/notebooks/Time_Series_Getting_Started.ipynb){:target=\"_blank\"}\n-[![Energy Demand Forecasting with Granite Timeseries (TTM) notebook](https://colab.research.google.com/assets/colab-badge.svg \"Open In Colab\")]({{ extra.colab_url }}/blob/{{ git.commit }}/notebooks/Time_Series_Getting_Started.ipynb){:target=\"_blank\"}\n+[![Energy Demand Forecasting with Granite Timeseries (TTM) notebook](https://badgen.net/badge/icon/github?icon=github&label=View%20on \"View on GitHub\")]({{ config.repo_url }}/blob/{{ git.commit }}/{{ notebook }}){:target=\"_blank\"}\n+[![Energy Demand Forecasting with Granite Timeseries (TTM) notebook](https://colab.research.google.com/assets/colab-badge.svg \"Open In Colab\")]({{ extra.colab_url }}/blob/{{ git.commit }}/{{ notebook }}){:target=\"_blank\"}\n \n To run the notebook from your command line in Jupyter using the active virtual environment from the [pre-work](../pre-work/README.md#install-jupyter), run:\n \n ```shell\n-jupyter notebook notebooks/Time_Series_Getting_Started.ipynb\n+jupyter notebook {{ notebook }}\n ```\n \n The path of the notebook file above is relative to the `granite-workshop` folder from the git clone in the [pre-work](../pre-work/README.md#clone-the-granite-workshop-repository)."
+    },
+    {
+      "sha": "6156de55837d451a5b6f5881d12fba944ea57467",
+      "filename": "docs/lab-4/README.md",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 4,
+      "changes": 9,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2Flab-4%2FREADME.md",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2Flab-4%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/docs%2Flab-4%2FREADME.md?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -1,7 +1,8 @@\n ---\n-title: Granite Workshop Lab 4\n+title: Lab 4. Entity Extraction from text using Granite\n description: Entity Extraction from text using Granite\n logo: images/ibm-blue-background.png\n+notebook: notebooks/entity_extraction.ipynb\n ---\n \n # Entity Extraction from text using Granite\n@@ -16,13 +17,13 @@ This lab is a [Jupyter notebook](https://jupyter.org/). Please follow the instru\n \n ## Lab\n \n-[![Entity Extraction from text using Granite notebook](https://badgen.net/badge/icon/github?icon=github&label=View%20on \"View on GitHub\")]({{ config.repo_url }}/blob/{{ git.commit }}/notebooks/entity_extraction.ipynb){:target=\"_blank\"}\n-[![Entity Extraction from text using Granite notebook](https://colab.research.google.com/assets/colab-badge.svg \"Open In Colab\")]({{ extra.colab_url }}/blob/{{ git.commit }}/notebooks/entity_extraction.ipynb){:target=\"_blank\"}\n+[![Entity Extraction from text using Granite notebook](https://badgen.net/badge/icon/github?icon=github&label=View%20on \"View on GitHub\")]({{ config.repo_url }}/blob/{{ git.commit }}/{{ notebook }}){:target=\"_blank\"}\n+[![Entity Extraction from text using Granite notebook](https://colab.research.google.com/assets/colab-badge.svg \"Open In Colab\")]({{ extra.colab_url }}/blob/{{ git.commit }}/{{ notebook }}){:target=\"_blank\"}\n \n To run the notebook from your command line in Jupyter using the active virtual environment from the [pre-work](../pre-work/README.md#install-jupyter), run:\n \n ```shell\n-jupyter notebook notebooks/entity_extraction.ipynb\n+jupyter notebook {{ notebook }}\n ```\n \n The path of the notebook file above is relative to the `granite-workshop` folder from the git clone in the [pre-work](../pre-work/README.md#clone-the-granite-workshop-repository)."
+    },
+    {
+      "sha": "016d4230521efe72c1420d1a951a1051b5d1f9ca",
+      "filename": "docs/lab-5/README.md",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 4,
+      "changes": 9,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2Flab-5%2FREADME.md",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2Flab-5%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/docs%2Flab-5%2FREADME.md?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -1,7 +1,8 @@\n ---\n-title: Granite Workshop Lab 5\n+title: Lab 5. Multimodal RAG using Granite and Docling\n description: Multimodal RAG using Granite and Docling\n logo: images/ibm-blue-background.png\n+notebook: notebooks/Granite_Multimodal_RAG.ipynb\n ---\n \n # Multimodal RAG using Granite and Docling\n@@ -18,13 +19,13 @@ This lab is a [Jupyter notebook](https://jupyter.org/). Please follow the instru\n \n ## Lab\n \n-[![Multimodal RAG using Granite and Docling](https://badgen.net/badge/icon/github?icon=github&label=View%20on \"View on GitHub\")]({{ config.repo_url }}/blob/{{ git.commit }}/notebooks/Granite_Multimodal_RAG.ipynb){:target=\"_blank\"}\n-[![Multimodal RAG using Granite and Docling](https://colab.research.google.com/assets/colab-badge.svg \"Open In Colab\")]({{ extra.colab_url }}/blob/{{ git.commit }}/notebooks/Granite_Multimodal_RAG.ipynb){:target=\"_blank\"}\n+[![Multimodal RAG using Granite and Docling](https://badgen.net/badge/icon/github?icon=github&label=View%20on \"View on GitHub\")]({{ config.repo_url }}/blob/{{ git.commit }}/{{ notebook }}){:target=\"_blank\"}\n+[![Multimodal RAG using Granite and Docling](https://colab.research.google.com/assets/colab-badge.svg \"Open In Colab\")]({{ extra.colab_url }}/blob/{{ git.commit }}/{{ notebook }}){:target=\"_blank\"}\n \n To run the notebook from your command line in Jupyter using the active virtual environment from the [pre-work](../pre-work/README.md#install-jupyter), run:\n \n ```shell\n-jupyter notebook notebooks/Granite_Multimodal_RAG.ipynb\n+jupyter notebook {{ notebook }}\n ```\n \n The path of the notebook file above is relative to the `granite-workshop` folder from the git clone in the [pre-work](../pre-work/README.md#clone-the-granite-workshop-repository)."
+    },
+    {
+      "sha": "c8ba253a665400474d1fb2777328425070e984fb",
+      "filename": "docs/pre-work/README.md",
+      "status": "modified",
+      "additions": 84,
+      "deletions": 43,
+      "changes": 127,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2Fpre-work%2FREADME.md",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/docs%2Fpre-work%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/docs%2Fpre-work%2FREADME.md?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -1,44 +1,60 @@\n ---\n-title: Granite Workshop Pre-work\n+title: Pre-work\n description: Preparation for the Granite Workshop\n logo: images/ibm-blue-background.png\n ---\n \n # Pre-work\n \n-The labs in the workshop are [Jupyter notebooks](https://jupyter.org/). The notebooks can be run on your computer or remotely on the [Google Colab](https://colab.research.google.com) service. Check out [Running the Granite Notebooks](#running-the-granite-notebooks) section on how to setup the way you want to run the notebooks.\n+The labs in the workshop are [Jupyter notebooks](https://jupyter.org/). The notebooks can be run on your computer or remotely on the [Google Colab](https://colab.research.google.com) service.\n \n-## Running the Granite Notebooks\n+# Running the Notebooks\n \n-The notebooks can be run:\n+Follow the instructions corresponding to how you want to run the notebooks:\n \n-- [Locally on your computer](#running-the-granite-notebooks-locally) OR\n-- [Remotely on the Google Colab service](#running-the-granite-notebooks-remotely-colab)\n+- [Locally on your computer](#running-the-notebooks-locally) OR\n+- [Remotely on the Google Colab service](#running-the-notebooks-remotely-colab)\n \n-Follow the instructions in one of the sections that follow on how you would like to run the notebooks.\n-\n-## Running the Granite Notebooks Locally\n+## Running the Notebooks Locally\n \n It is recommended if you want to run the lab notebooks locally on your computer that you have:\n \n - A computer or laptop\n - Knowledge of [Git](https://git-scm.com/) and [Python](https://www.python.org/)\n \n-If not, then it recommended to go to the [Running the Granite Notebooks Remotely (Colab)](#running-the-granite-notebooks-remotely-colab) section instead.\n+If not, then it recommended to go to the [Running the Notebooks Remotely (Colab)](#running-the-notebooks-remotely-colab) section instead.\n \n Running the lab notebooks locally on your computer requires the following steps:\n \n - [Local Prerequisites](#local-prerequisites)\n-- [Clone the Granite Workshop Repository](#clone-the-granite-workshop-repository)\n-- [Serving the Granite AI Models](#serving-the-granite-ai-models)\n+- [Serving the Granite AI Models for locally run Notebooks](#serving-the-granite-ai-models-for-locally-run-notebooks)\n+- [Clone the Workshop Repository](#clone-the-workshop-repository)\n - [Install Jupyter](#install-jupyter)\n \n ### Local Prerequisites\n \n - Git\n-- Python 3.10, 3.11, or 3.12\n+- Python 3.11, 3.12, or 3.13\n+\n+/// tip | Installing Python\n+\n+If you don't have Python installed, or the installed version is not one of the versions supported by this workshop, you should consider installing and using the [`uv` tool](https://docs.astral.sh/uv/getting-started/installation/) to assist in installing the proper Python version.\n+`uv` works on macOS, Linux, and Windows.\n+Once `uv` is installed, you can install Python 3.13 with\n \n-### Clone the Granite Workshop Repository\n+```shell\n+uv python install --default 3.13\n+```\n+\n+You can then update the shell configurations files to add the Python commands to the PATH.\n+\n+```shell\n+uv python update-shell\n+```\n+\n+///\n+\n+### Clone the Workshop Repository\n \n Clone the workshop repo and cd into the repo directory.\n \n@@ -47,22 +63,21 @@ git clone https://github.com/IBM/granite-workshop.git\n cd granite-workshop\n ```\n \n-### Serving the Granite AI Models\n+### Serving the Granite AI Models for locally run Notebooks\n \n-The labs require Granite models to be served by an AI model runtime so that the models can be invoked or called. There are 2 options to serve the models as follows:\n+The labs require Granite models to be served by an AI model runtime so that the models can be invoked or called. The following sections provide instructions to either run the models in the cloud using [Replicate](https://replicate.com/) or locally using [Ollama](https://ollama.com/).\n \n-- [Replicate AI Cloud Platform](#replicate-ai-cloud-platform) OR\n-- [Running Ollama Locally](#running-ollama-locally)\n-\n-[Lab 5: Multimodal RAG using Granite and Docling](../lab-5/README.md) requires Replicate.\n+/// note | Requires Replicate\n+[Lab 5. Multimodal RAG using Granite and Docling](../lab-5/README.md) requires Replicate.\n+///\n \n #### Replicate AI Cloud Platform\n \n [Replicate](https://replicate.com/) is a cloud platform that will host and serve AI models for you.\n \n 1. Create a [Replicate](https://replicate.com/) account. You will need a [GitHub](https://github.com/) account to do this.\n \n-1. Add credit to your Replicate Account (optional). To remove a barrier to entry to try the Granite models on the Replicate platform, use [this link](https://replicate.com/invites/a8717bfe-2f3d-4a52-88ed-1356231cdf03) to add a small amount of credit to your Replicate account.\n+1. Add credit to your Replicate Account (optional). To remove a barrier to entry to try the models on the Replicate platform, use [this link](https://replicate.fyi/ibm) to add a small amount of credit to your Replicate account.\n \n 1. Create a Replicate [API Token](https://replicate.com/account/api-tokens).\n \n@@ -72,51 +87,63 @@ The labs require Granite models to be served by an AI model runtime so that the\n     export REPLICATE_API_TOKEN=<your_replicate_api_token>\n     ```\n \n-#### Running Ollama Locally\n+#### Local Model Inference with Ollama\n+\n+If you want to run the AI models locally on your computer, you can use [Ollama](https://ollama.com/).\n \n-If you want to run the AI models locally on your computer, you can use [Ollama](https://ollama.com/). You will need to have a computer with:\n+Ollama is a lightweight tool for running LLMs locally from the command line.\n+\n+You will need to have a computer with:\n \n - GPU processor\n - At least 32GB RAM, preferably more\n \n-!!! note \"Tested system\"\n-    This was tested on a Macbook with an M1 processor and 32GB RAM. It maybe possible to serve models with a CPU and less memory.\n+/// note | Tested system\n+This was tested on a MacBook with an M1 processor and 32GB RAM. It maybe possible to serve models with a CPU and less memory.\n+///\n+\n+/// tip | Apple Silicon\n+If you have a Mac with Apple Silicon (M1/M2/M3), Ollama can leverage the Metal GPU for accelerated inference.\n+///\n \n If you computer is unable to serve the models, then it is recommended to go to the [Replicate AI Cloud Platform](#replicate-ai-cloud-platform) section instead.\n \n Running Ollama locally on your computer requires the following steps:\n \n-1. [Download and install Ollama](https://github.com/ollama/ollama?tab=readme-ov-file#ollama), if you haven't already. **A recent version of Ollama is required, so please upgrade if on an older version.**\n+1. Download and install [Ollama](https://ollama.com/download) for your platform.\n \n-    On macOS, you can use Homebrew to install with\n+2. Pull the Granite model:\n \n     ```shell\n-    brew install ollama\n+    ollama pull ibm/granite4:micro\n     ```\n \n-1. Start the Ollama server. You will leave this running during the workshop.\n+3. Ollama runs automatically and exposes an OpenAI-compatible API at <http://localhost:11434>\n \n-    ```shell\n-    ollama serve\n-    ```\n+### Install Jupyter\n+\n+/// note | Use a virtual environment\n+Before installing dependencies and to avoid conflicts in your environment, it is advisable to use a [virtual environment (venv)](https://docs.python.org/3/library/venv.html).\n+///\n+\n+1. Create virtual environment:\n \n-1. In another terminal window, pull down the Granite models you will want to use in the workshop. Larger models take more memory to run but can give better results.\n+    /// tab | uv\n \n     ```shell\n-    ollama pull ibm/granite4:micro\n+    uv venv --clear --seed --python 3.13 venv\n     ```\n \n-### Install Jupyter\n-\n-!!! note \"Use a virtual environment\"\n-    Before installing dependencies and to avoid conflicts in your environment, it is advisable to use a [virtual environment (venv)](https://docs.python.org/3/library/venv.html).\n+    ///\n \n-1. Create virtual environment:\n+    /// tab | venv\n \n     ```shell\n     python3 -m venv --upgrade-deps --clear venv\n     ```\n \n+    ///\n+\n 1. Activate the virtual environment by running:\n \n     ```shell\n@@ -125,10 +152,22 @@ Running Ollama locally on your computer requires the following steps:\n \n 1. Install Jupyter notebook in the virtual environment:\n \n+    /// tab | uv\n+\n+    ```shell\n+    uv pip install notebook ipywidgets\n+    ```\n+\n+    ///\n+\n+    /// tab | venv\n+\n     ```shell\n     python3 -m pip install --require-virtualenv notebook ipywidgets\n     ```\n \n+    ///\n+\n     For more information, see the [Jupyter installation instructions](https://jupyter.org/install)\n \n 1. To open a notebook in Jupyter (in the active virtual environment), run:\n@@ -137,18 +176,20 @@ Running Ollama locally on your computer requires the following steps:\n     jupyter notebook <notebook-file-path>\n     ```\n \n-## Running the Granite Notebooks Remotely (Colab)\n+## Running the Notebooks Remotely (Colab)\n \n Running the lab notebooks remotely using [Google Colab](https://colab.research.google.com) requires the following steps:\n \n - [Colab Prerequisites](#colab-prerequisites)\n - [Serving the Granite AI Models for Colab](#serving-the-granite-ai-models-for-colab)\n \n-!!! note \"Notebook execution speed tip\" The default execution runtime in Colab uses a CPU. Consider using a different Colab runtime to increase execution speed, especially in situations where you may have other constraints such as a slow network connection. From the navigation bar, select `Runtime->Change runtime type`, then select either GPU- or TPU-based hardware acceleration.\n+/// note | Notebook execution speed tip\n+The default execution runtime in Colab uses a CPU. Consider using a different Colab runtime to increase execution speed, especially in situations where you may have other constraints such as a slow network connection. From the navigation bar, select `Runtime->Change runtime type`, then select either GPU- or TPU-based hardware acceleration.\n+///\n \n ### Colab Prerequisites\n \n-- [Google Colab](https://colab.research.google.com) requires a Google account that you're logged into\n+- [Google Colab](https://colab.research.google.com) requires a Google account that you're logged into.\n \n ### Serving the Granite AI Models for Colab\n \n@@ -160,7 +201,7 @@ The labs require Granite models to be served by an AI model runtime so that the\n \n 1. Create a [Replicate](https://replicate.com/) account. You will need a [GitHub](https://github.com/) account to do this.\n \n-1. Add credit to your Replicate Account (optional). To remove a barrier to entry to try the Granite models on the Replicate platform, use [this link](https://replicate.com/invites/a8717bfe-2f3d-4a52-88ed-1356231cdf03) to add a small amount of credit to your Replicate account.\n+1. Add credit to your Replicate Account (optional). To remove a barrier to entry to try the Granite models on the Replicate platform, use [this link](https://replicate.fyi/ibm) to add a small amount of credit to your Replicate account.\n \n 1. Create a Replicate [API Token](https://replicate.com/account/api-tokens).\n "
+    },
+    {
+      "sha": "e0288a1a6cacc2afadaf3c3792b027eb2987788a",
+      "filename": "mkdocs.yml",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 3,
+      "changes": 21,
+      "blob_url": "https://github.com/IBM/granite-workshop/blob/40421db747004c097d0b5767a06fd56d40bc16cb/mkdocs.yml",
+      "raw_url": "https://github.com/IBM/granite-workshop/raw/40421db747004c097d0b5767a06fd56d40bc16cb/mkdocs.yml",
+      "contents_url": "https://api.github.com/repos/IBM/granite-workshop/contents/mkdocs.yml?ref=40421db747004c097d0b5767a06fd56d40bc16cb",
+      "patch": "@@ -73,17 +73,34 @@ extra:\n # Extensions\n markdown_extensions:\n   - abbr\n-  - admonition\n   - attr_list\n   - def_list\n   - footnotes\n   - meta\n+  - tables\n   - toc:\n       permalink: true\n   - pymdownx.arithmatex:\n       generic: true\n   - pymdownx.betterem:\n       smart_enable: all\n+  - pymdownx.blocks.admonition:\n+      types:\n+        - note\n+        - abstract\n+        - info\n+        - tip\n+        - success\n+        - question\n+        - warning\n+        - failure\n+        - danger\n+        - bug\n+        - example\n+        - quote\n+  - pymdownx.blocks.caption:\n+  - pymdownx.blocks.tab:\n+      alternate_style: true\n   - pymdownx.caret\n   - pymdownx.critic\n   - pymdownx.details\n@@ -102,8 +119,6 @@ markdown_extensions:\n         - name: mermaid\n           class: mermaid\n           format: !!python/name:pymdownx.superfences.fence_code_format\n-  - pymdownx.tabbed:\n-      alternate_style: true\n   - pymdownx.tasklist:\n       custom_checkbox: true\n   - pymdownx.tilde"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "2dbef83c9809ec8c1abd78c576d5a796b964753d",
+      "message": "Update workflows\n\nSigned-off-by: BJ Hargrave <hargrave@us.ibm.com>",
+      "parent_shas": [
+        "97acb8ac09980a76eed468d412893d99b483ee05"
+      ]
+    },
+    {
+      "sha": "40421db747004c097d0b5767a06fd56d40bc16cb",
+      "message": "Doc updates\n\nInclude restructuring of pre-work to include uv and new Replicate\ncredit link.\n\nSigned-off-by: BJ Hargrave <hargrave@us.ibm.com>",
+      "parent_shas": [
+        "2dbef83c9809ec8c1abd78c576d5a796b964753d"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__IBM__granite-workshop__pr146.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\IBM__granite-workshop__pr146__python_java__IBM__granite-workshop__pr146\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\IBM__granite-workshop__pr146__python_java__IBM__granite-workshop__pr146\\rn"
+  }
+}

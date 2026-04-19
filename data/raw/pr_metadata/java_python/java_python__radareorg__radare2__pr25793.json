@@ -1,0 +1,151 @@
+{
+  "instance_id": "java_python__radareorg__radare2__pr25793",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "radareorg/radare2",
+  "pr_number": 25793,
+  "pr_url": "https://github.com/radareorg/radare2/pull/25793",
+  "repo": {
+    "full_name": "radareorg/radare2",
+    "clone_url": "https://github.com/radareorg/radare2.git",
+    "default_branch": "master",
+    "created_at": "2012-07-03T07:42:26Z",
+    "stars": 23451,
+    "license": "NOASSERTION",
+    "size_kb": 194834
+  },
+  "pull_request": {
+    "id": 3517343446,
+    "title": "Java",
+    "body": "<!--\r\nRead https://github.com/radareorg/radare2/blob/master/DEVELOPERS.md\r\n* PR title must be capitalized, concise and use ##tags\r\n* If the PR is fixing a ticket use 'Fix #1234 - ..' in the commit message\r\n* Follow the coding style, add tests and documentation if necessary\r\n-->\r\n\r\n- [ ] Mark this if you consider it ready to merge\r\n- [ ] I've added tests (optional)\r\n- [ ] I wrote some lines in the [book](https://github.com/radareorg/radare2book) (optional)\r\n\r\n**Description**\r\n\r\n<!-- explain your changes if necessary -->\r\n",
+    "created_at": "2026-04-11T09:48:03Z",
+    "merged_at": "2026-04-11T10:13:09Z",
+    "base_sha": "56b59dfe5eabe430f1f87b013c48efbad796d2ff",
+    "head_sha": "550858ed691e7a42e23d80a6075d1501a62420c6",
+    "merge_commit_sha": "422894a901ffd16e2efad956025dcb2c97ae80a0",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "cdb14c65415e342c8a98285c39ee40312285c656",
+  "final_sha": "550858ed691e7a42e23d80a6075d1501a62420c6",
+  "changed_files": [
+    {
+      "sha": "2dace30e3caa0e2e29e8ae9313a2c5a269e6e954",
+      "filename": "libr/arch/p/java/plugin.c",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 4,
+      "changes": 4,
+      "blob_url": "https://github.com/radareorg/radare2/blob/550858ed691e7a42e23d80a6075d1501a62420c6/libr%2Farch%2Fp%2Fjava%2Fplugin.c",
+      "raw_url": "https://github.com/radareorg/radare2/raw/550858ed691e7a42e23d80a6075d1501a62420c6/libr%2Farch%2Fp%2Fjava%2Fplugin.c",
+      "contents_url": "https://api.github.com/repos/radareorg/radare2/contents/libr%2Farch%2Fp%2Fjava%2Fplugin.c?ref=550858ed691e7a42e23d80a6075d1501a62420c6",
+      "patch": "@@ -314,10 +314,6 @@ static int java_cmd_ext(RAnal *anal, const char* input) {\n \t\treturn -1;\n \t}\n \tswitch (*input) {\n-\tcase 'c':\n-\t\t// reset bytes counter for case operations\n-\t\tr_java_new_method ();\n-\t\tbreak;\n \tcase 'u':\n \t\tif (input[1] == 't') {\n \t\t\tjava_update_anal_types (anal, obj);"
+    },
+    {
+      "sha": "076c02872fa15d387e5f9e437bd500802b231654",
+      "filename": "shlr/java/class.c",
+      "status": "modified",
+      "additions": 579,
+      "deletions": 1565,
+      "changes": 2144,
+      "blob_url": "https://github.com/radareorg/radare2/blob/550858ed691e7a42e23d80a6075d1501a62420c6/shlr%2Fjava%2Fclass.c",
+      "raw_url": "https://github.com/radareorg/radare2/raw/550858ed691e7a42e23d80a6075d1501a62420c6/shlr%2Fjava%2Fclass.c",
+      "contents_url": "https://api.github.com/repos/radareorg/radare2/contents/shlr%2Fjava%2Fclass.c?ref=550858ed691e7a42e23d80a6075d1501a62420c6"
+    },
+    {
+      "sha": "3ca7ffd805d608b7b460f6a7a91d0074bc3b52f6",
+      "filename": "shlr/java/class.h",
+      "status": "modified",
+      "additions": 33,
+      "deletions": 169,
+      "changes": 202,
+      "blob_url": "https://github.com/radareorg/radare2/blob/550858ed691e7a42e23d80a6075d1501a62420c6/shlr%2Fjava%2Fclass.h",
+      "raw_url": "https://github.com/radareorg/radare2/raw/550858ed691e7a42e23d80a6075d1501a62420c6/shlr%2Fjava%2Fclass.h",
+      "contents_url": "https://api.github.com/repos/radareorg/radare2/contents/shlr%2Fjava%2Fclass.h?ref=550858ed691e7a42e23d80a6075d1501a62420c6",
+      "patch": "@@ -4,8 +4,6 @@\n #define _INCLUDE_JAVA_CLASS_H_\n \n #include <r_types.h>\n-#undef U\n-#define U(x) x\n #include <r_list.h>\n #include <r_bin.h>\n #include <sdb/sdb.h>\n@@ -798,23 +796,19 @@ typedef struct r_bin_java_obj_t {\n \tRStrConstPool constpool;\n } RBinJavaObj;\n \n-R_API RList * U(r_bin_java_get_interface_names)(RBinJavaObj * bin);\n-R_API RBinJavaCPTypeObj* U(r_bin_java_get_item_from_cp)(RBinJavaObj *bin, int i);\n+R_API RBinJavaCPTypeObj* r_bin_java_get_item_from_cp(RBinJavaObj *bin, int i);\n R_API RBinJavaCPTypeObj* r_bin_java_get_item_from_bin_cp_list(RBinJavaObj *bin, ut64 idx);\n R_API ut8 * r_bin_java_cp_get_idx_bytes(RBinJavaObj *bin, ut16 idx, ut32 *out_sz);\n R_API RList * r_bin_java_get_lib_names(RBinJavaObj * bin);\n R_API RList* r_bin_java_get_sections(RBinJavaObj *bin);\n-R_API RList* r_bin_java_get_fields(RBinJavaObj *bin);\n R_API char* r_bin_java_get_version(RBinJavaObj* bin);\n R_API RBinAddr * r_bin_java_get_entrypoint(RBinJavaObj* bin, int sym);\n R_API RList* r_bin_java_get_entrypoints(RBinJavaObj* bin);\n-R_API ut64 r_bin_java_get_main(RBinJavaObj* bin);\n R_API RList* r_bin_java_get_symbols(RBinJavaObj* bin);\n R_API RList* r_bin_java_get_strings(RBinJavaObj* bin);\n R_API void* r_bin_java_free(RBinJavaObj* bin);\n R_API RBinJavaObj* r_bin_java_new(const char* file, ut64 baddr, Sdb * kv);\n R_API RBinJavaObj* r_bin_java_new_buf(RBuffer* buf, ut64 baddr, Sdb * kv);\n-R_API int r_bin_java_valid_class(const ut8 *buf, ut64 buf_sz);\n \n // Stuff used to manage Java Class File Constant Information\n typedef struct r_bin_java_object_allocs_t {\n@@ -887,204 +881,74 @@ typedef struct{\n } RBinJavaRefMetas;\n \n \n-typedef struct java_const_value_str_t {\n-\tut32 len;\n-\tchar *str;\n-} _JavaStr;\n \n-typedef struct java_const_value_ref_t {\n-\tchar *class_name;\n-\tchar *name;\n-\tchar *desc;\n-\tut8 is_method;\n-\tut8 is_field;\n-} _JavaRef;\n+\n+// free bin lists\n+\n \n \n-typedef struct java_const_value_t {\n-\tconst char * type;\n-\tunion {\n-\t\tut8 _null;\n-\t\tut8 _char;\n-\t\tut8 _byte;\n-\t\tut64 _long;\n-\t\tdouble _double;\n-\t\tut32 _int;\n-\t\tfloat _float;\n-\t\tut16 _short;\n-\t\tut8 _bool;\n-\t\t_JavaStr * _str;\n-\t\t_JavaRef * _ref;\n-\t} value;\n-} ConstJavaValue;\n-\n-R_API ut8* r_bin_java_get_attr_buf(RBinJavaObj *bin,  ut64 sz, const ut64 offset, const ut8 *buf, const ut64 len);\n-R_API char* r_bin_java_get_name_from_cp_item_list(RList *cp_list, ut64 idx);\n-R_API char* r_bin_java_get_utf8_from_cp_item_list(RList *cp_list, ut64 idx);\n-R_API ut32 r_bin_java_get_utf8_len_from_cp_item_list(RList *cp_list, ut64 idx);\n-R_API char* r_bin_java_get_desc_from_cp_item_list(RList *cp_list, ut64 idx);\n-R_API char* r_bin_java_get_item_name_from_cp_item_list(RList *cp_list, RBinJavaCPTypeObj *obj, int depth);\n-R_API char* r_bin_java_get_item_desc_from_cp_item_list(RList *cp_list, RBinJavaCPTypeObj *obj, int depth);\n-\n-R_API char* r_bin_java_get_name_from_bin_cp_list(RBinJavaObj *bin, ut64 idx);\n-R_API char* r_bin_java_get_utf8_from_bin_cp_list(RBinJavaObj *bin, ut64 idx);\n-R_API ut32 r_bin_java_get_utf8_len_from_bin_cp_list(RBinJavaObj *bin, ut64 idx);\n-R_API char* r_bin_java_get_desc_from_bin_cp_list(RBinJavaObj *bin, ut64 idx);\n-R_API char* r_bin_java_get_item_name_from_bin_cp_list(RBinJavaObj *bin, RBinJavaCPTypeObj *obj);\n-R_API char* r_bin_java_get_item_desc_from_bin_cp_list(RBinJavaObj *bin, RBinJavaCPTypeObj *obj);\n \n-// free bin lists\n \n-R_API char * r_bin_java_print_utf8_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_name_and_type_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_double_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_long_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_float_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_integer_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_string_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_classref_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_fieldref_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_methodref_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_interfacemethodref_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_unknown_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_null_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_methodtype_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_invokedynamic_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_methodhandle_cp_stringify(RBinJavaCPTypeObj* obj);\n-R_API char * r_bin_java_print_class_cp_stringify(RBinJavaCPTypeObj* obj);\n-\n-\n-R_API RBinSymbol* r_bin_java_create_new_symbol_from_field_with_access_flags(RBinJavaField *fm_type);\n-R_API RBinSymbol* r_bin_java_create_new_symbol_from_ref(RBinJavaObj *bin, RBinJavaCPTypeObj *obj, ut64 baddr);\n-R_API RBinSymbol* r_bin_java_create_new_symbol_from_method(RBinJavaField *fm_type);\n-\n-R_API ut64 r_bin_java_get_method_code_offset(RBinJavaField *fm_type);\n-R_API ut64 r_bin_java_get_method_code_size(RBinJavaField *fm_type);\n-R_API ut64 r_bin_java_get_class_entrypoint(RBinJavaObj* bin);\n-\n-R_API RBinJavaCPTypeObj *r_bin_java_find_cp_ref_info(RBinJavaObj *bin, ut16 name_and_typeidx);\n-R_API RBinJavaCPTypeObj *r_bin_java_find_cp_ref_info_from_name_and_type(RBinJavaObj *bin, ut16 name_idx, ut16 descriptor_idx);\n-R_API RBinJavaCPTypeObj *r_bin_java_find_cp_name_and_type_info(RBinJavaObj *bin, ut16 name_idx, ut16 descriptor_idx);\n-\n-R_API RBinClass* r_bin_java_allocate_r_bin_class(void);\n R_API RList *r_bin_java_get_classes(RBinJavaObj *bin);\n-R_API RList *r_bin_java_enum_class_methods(RBinJavaObj *bin, ut16 class_idx);\n-R_API RList *r_bin_java_enum_class_fields(RBinJavaObj *bin, ut16 class_idx);\n-R_API ut64 r_bin_java_find_method_offset(RBinJavaObj *bin, const char* method_name);\n \n-R_API RBinJavaField * r_bin_java_get_method_code_attribute_with_addr(RBinJavaObj *bin, ut64 addr);\n R_API RList * r_bin_java_get_method_exception_table_with_addr(RBinJavaObj *bin, ut64 addr);\n \n-R_API const RList* r_bin_java_get_methods_list(RBinJavaObj* bin);\n-R_API const RBinJavaObj* r_bin_java_get_bin_obj(const char *name);\n-R_API int r_bin_java_update_file(const char *key, RBinJavaObj *bin_obj);\n-R_API RBinJavaObj * r_bin_java_get_sdb_bin_obj(const char * filename);\n-R_API RList * r_bin_java_get_bin_obj_list(void);\n R_API RList* r_bin_java_get_bin_obj_list_thru_obj(RBinJavaObj *bin_obj);\n R_API char * r_bin_java_get_this_class_name(RBinJavaObj *bin_obj);\n R_API char * r_bin_java_build_obj_key(RBinJavaObj *bin);\n \n-R_API RList * r_bin_java_extract_type_values(const char *arg_str);\n-R_API int r_bin_java_extract_reference_name(const char * input_str, char ** ref_str, ut8 array_cnt);\n R_API RList * r_bin_java_extract_all_bin_type_values(RBinJavaObj * bin_obj);\n \n R_API RList * r_bin_java_get_method_definitions(RBinJavaObj *bin);\n-R_API char * r_bin_java_get_definition(RBinJavaField *fm_type);\n-R_API char * r_bin_java_get_method_definition(RBinJavaField *fm_type);\n R_API RList * r_bin_java_get_field_definitions(RBinJavaObj *bin);\n-R_API char * r_bin_java_get_field_definition(RBinJavaField *fm_type);\n R_API RList * r_bin_java_get_import_definitions(RBinJavaObj *bin);\n R_API RList * r_bin_java_get_field_offsets(RBinJavaObj *bin);\n-R_API RList * U(r_bin_java_get_method_offsets)(RBinJavaObj *bin);\n+R_API RList * r_bin_java_get_method_offsets(RBinJavaObj *bin);\n \n-R_API ut16 U(r_bin_java_calculate_method_access_value)(const char * access_flags_str);\n-R_API ut16 U(r_bin_java_calculate_field_access_value)(const char * access_flags_str);\n-R_API ut32 U(r_bin_java_calculate_class_access_value)(const char * access_flags_str);\n+R_API ut16 r_bin_java_calculate_method_access_value(const char * access_flags_str);\n+R_API ut16 r_bin_java_calculate_field_access_value(const char * access_flags_str);\n+R_API ut32 r_bin_java_calculate_class_access_value(const char * access_flags_str);\n \n-R_API RList * U(retrieve_all_method_access_string_and_value)(void);\n-R_API RList * U(retrieve_all_field_access_string_and_value)(void);\n-R_API RList * U(retrieve_all_class_access_string_and_value)(void);\n+R_API RList * retrieve_all_method_access_string_and_value(void);\n+R_API RList * retrieve_all_field_access_string_and_value(void);\n+R_API RList * retrieve_all_class_access_string_and_value(void);\n \n-R_API char * U(r_bin_java_resolve)(RBinJavaObj *obj, int idx, ut8 space_bn_name_type);\n R_API char * r_bin_java_resolve_with_space(RBinJavaObj *obj, int idx);\n R_API char * r_bin_java_resolve_without_space(RBinJavaObj *BIN_OBJ, int idx);\n-R_API char * U(r_bin_java_resolve_cp_idx_type)(RBinJavaObj *BIN_OBJ, int idx);\n-R_API char * U(r_bin_java_resolve_b64_encode)(RBinJavaObj *BIN_OBJ, ut16 idx);\n-R_API ut64 U(r_bin_java_resolve_cp_idx_address)(RBinJavaObj *BIN_OBJ, int idx);\n-R_API char * U(r_bin_java_resolve_cp_idx_tostring)(RBinJavaObj *BIN_OBJ, int idx);\n-R_API int U(r_bin_java_resolve_cp_idx_print_summary)(RBinJavaObj *BIN_OBJ, int idx);\n-\n-R_API struct java_const_value_t * U(r_bin_java_resolve_to_const_value)(RBinJavaObj *BIN_OBJ, int idx);\n-R_API void U(r_bin_java_free_const_value)(struct java_const_value_t * cp_value);\n-\n-R_API char * U(r_bin_java_get_fcn_name)(RBinJavaField *fm_type);\n-R_API RList * r_bin_java_get_args(RBinJavaField *fm_type);\n-R_API RList * r_bin_java_get_ret(RBinJavaField *fm_type);\n-\n-R_API RList * U(r_bin_java_get_args_from_bin)(RBinJavaObj *bin_obj, ut64 addr);\n-R_API RList * U(r_bin_java_get_ret_from_bin)(RBinJavaObj *bin_obj, ut64 addr);\n-R_API char * U(r_bin_java_get_fcn_name_from_bin)(RBinJavaObj *bin_obj, ut64 addr);\n-R_API int U(r_bin_java_is_method_static)(RBinJavaObj *bin_obj, ut64 addr);\n-\n-R_API ut8 r_bin_java_does_cp_idx_ref_method(RBinJavaObj *BIN_OBJ, int idx);\n-R_API ut8 r_bin_java_does_cp_idx_ref_field(RBinJavaObj *BIN_OBJ, int idx);\n-R_API int U(r_bin_java_is_method_protected)(RBinJavaObj *bin_obj, ut64 addr);\n-R_API int U(r_bin_java_is_method_private)(RBinJavaObj *bin_obj, ut64 addr);\n-R_API RBinJavaAttrInfo* r_bin_java_get_method_code_attribute(const RBinJavaField *method);\n+R_API char * r_bin_java_resolve_cp_idx_type(RBinJavaObj *BIN_OBJ, int idx);\n+R_API char * r_bin_java_resolve_b64_encode(RBinJavaObj *BIN_OBJ, ut16 idx);\n+R_API ut64 r_bin_java_resolve_cp_idx_address(RBinJavaObj *BIN_OBJ, int idx);\n+R_API char * r_bin_java_resolve_cp_idx_tostring(RBinJavaObj *BIN_OBJ, int idx);\n+R_API int r_bin_java_resolve_cp_idx_print_summary(RBinJavaObj *BIN_OBJ, int idx);\n+\n+\n \n // Generic getters (methods and fields)\n-R_API char * U(r_bin_java_get_name)(RBinJavaObj *bin_obj, ut32 idx, bool is_method);\n-R_API int U(r_bin_java_print_idx_summary)(RBinJavaObj *bin_obj, ut32 idx, bool is_method);\n-R_API ut32 U(r_bin_java_get_count)(RBinJavaObj *bin_obj, bool is_method);\n-R_API RList * U(r_bin_java_get_num_names)(RBinJavaObj *bin_obj, bool is_method);\n-\n-\n-\n-R_API RList * U(r_bin_java_find_cp_const_by_val)(RBinJavaObj *bin_obj, const ut8 *bytes, ut32 len, const char t);\n-R_API char U(r_bin_java_resolve_cp_idx_tag)(RBinJavaObj *BIN_OBJ, int idx);\n-\n-R_API int U(r_bin_java_integer_cp_set)(RBinJavaObj *bin, ut16 idx, ut32 val );\n-R_API int U(r_bin_java_float_cp_set)(RBinJavaObj *bin, ut16 idx, float val );\n-R_API int U(r_bin_java_long_cp_set)(RBinJavaObj *bin, ut16 idx, ut64 val );\n-R_API int U(r_bin_java_double_cp_set)(RBinJavaObj *bin, ut16 idx, ut32 val );\n-R_API int U(r_bin_java_utf8_cp_set)(RBinJavaObj *bin, ut16 idx, const ut8* buffer, ut32 len);\n-R_API ut8 * U(r_bin_java_cp_get_bytes)(ut8 tag, ut32 *out_sz, const ut8 *buf, const ut64 len);\n-R_API ut8 * U(r_bin_java_cp_idx_get_bytes)(RBinJavaObj *bin, ut16 idx, ut32 *out_sz);\n-R_API ut32 U(r_bin_java_cp_get_size)(RBinJavaObj *bin, ut16 idx);\n-\n-R_API ut64 r_bin_java_parse_cp_pool(RBinJavaObj *bin, const ut64 offset, const ut8 * buf, const ut64 len);\n-R_API ut64 r_bin_java_parse_interfaces(RBinJavaObj *bin, const ut64 offset, const ut8 * buf, const ut64 len);\n-R_API ut64 r_bin_java_parse_fields(RBinJavaObj *bin, const ut64 offset, const ut8 * buf, const ut64 len);\n-R_API ut64 r_bin_java_parse_methods(RBinJavaObj *bin, const ut64 offset, const ut8 * buf, const ut64 len);\n-R_API ut64 r_bin_java_parse_attrs(RBinJavaObj *bin, const ut64 offset, const ut8 * buf, const ut64 len);\n+R_API char * r_bin_java_get_name(RBinJavaObj *bin_obj, ut32 idx, bool is_method);\n+R_API int r_bin_java_print_idx_summary(RBinJavaObj *bin_obj, ut32 idx, bool is_method);\n+R_API ut32 r_bin_java_get_count(RBinJavaObj *bin_obj, bool is_method);\n+R_API RList * r_bin_java_get_num_names(RBinJavaObj *bin_obj, bool is_method);\n+\n+\n+\n+R_API RList * r_bin_java_find_cp_const_by_val(RBinJavaObj *bin_obj, const ut8 *bytes, ut32 len, const char t);\n+R_API char r_bin_java_resolve_cp_idx_tag(RBinJavaObj *BIN_OBJ, int idx);\n+\n+R_API ut8 * r_bin_java_cp_get_bytes(ut8 tag, ut32 *out_sz, const ut8 *buf, const ut64 len);\n+R_API ut32 r_bin_java_cp_get_size(RBinJavaObj *bin, ut16 idx);\n+\n R_API int r_bin_java_load_bin(RBinJavaObj *bin, const ut8 * buf, ut64 len);\n R_API void r_bin_add_import(RBinJavaObj * bin, RBinJavaCPTypeObj *cp_obj, const char * type);\n-R_API void r_bin_java_set_imports(RBinJavaObj* bin);\n R_API RList* r_bin_java_get_imports(RBinJavaObj* bin);\n \n-R_API ut64 U(r_bin_java_get_method_start)(RBinJavaObj *bin, RBinJavaField *method);\n-R_API ut64 U(r_bin_java_get_method_end)(RBinJavaObj *bin, RBinJavaField *method);\n+R_API ut64 r_bin_java_get_method_start(RBinJavaObj *bin, RBinJavaField *method);\n+R_API ut64 r_bin_java_get_method_end(RBinJavaObj *bin, RBinJavaField *method);\n \n-R_API ut8 * r_bin_java_cp_get_fref_bytes(RBinJavaObj *bin, ut32 *out_sz, ut8 tag, ut16 cn_idx, ut16 fn_idx, ut16 ft_idx );\n-R_API ut8 * U(r_bin_java_cp_append_method_ref)(RBinJavaObj *bin, ut32 *out_sz, ut16 cn_idx, ut16 fn_idx, ut16 ft_idx );\n-R_API ut8 * U(r_bin_java_cp_append_field_ref)(RBinJavaObj *bin, ut32 *out_sz, ut16 cn_idx, ut16 fn_idx, ut16 ft_idx );\n-R_API char * U(r_bin_java_unmangle_without_flags)(const char *name, const char *descriptor);\n-R_API char * r_bin_java_unmangle(const char *flags, const char *name, const char *descriptor);\n \n-R_API void r_bin_java_get_field_json_definitions(RBinJavaObj *bin, PJ *pj);\n-R_API void r_bin_java_get_method_json_definitions(RBinJavaObj *bin, PJ *pj);\n-R_API void r_bin_java_get_import_json_definitions(RBinJavaObj *bin, PJ *pj);\n-R_API void r_bin_java_get_interface_json_definitions(RBinJavaObj *bin, PJ *pj);\n \n-R_API void r_bin_java_get_fm_type_definition_json(RBinJavaObj *bin, RBinJavaField *fm_type, PJ *pj, bool is_method);\n-R_API void r_bin_java_get_definition_json(RBinJavaObj *bin, RBinJavaField *fm_type, PJ *pj, bool is_method);\n-R_API void r_bin_java_get_field_json_definition(RBinJavaObj *bin, RBinJavaField *fm_type, PJ *pj);\n-R_API void r_bin_java_get_method_json_definition(RBinJavaObj *bin, RBinJavaField *fm_type, PJ *pj);\n-R_API void r_bin_java_get_class_info_json(RBinJavaObj *bin, PJ *pj);\n \n R_API char *r_bin_java_get_bin_obj_json(RBinJavaObj *bin);\n R_API ut64 r_bin_java_calc_class_size(ut8* bytes, ut64 size);\n-R_API int r_bin_java_valid_class(const ut8 * buf, ut64 buf_sz);\n \n /* Access flag type constants */\n #define JAVA_FLAG_TYPE_METHOD 0"
+    },
+    {
+      "sha": "50379d90dd41e4ed5af9a39d4453ecc2b9586906",
+      "filename": "shlr/java/code.c",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 7,
+      "changes": 7,
+      "blob_url": "https://github.com/radareorg/radare2/blob/550858ed691e7a42e23d80a6075d1501a62420c6/shlr%2Fjava%2Fcode.c",
+      "raw_url": "https://github.com/radareorg/radare2/raw/550858ed691e7a42e23d80a6075d1501a62420c6/shlr%2Fjava%2Fcode.c",
+      "contents_url": "https://api.github.com/repos/radareorg/radare2/contents/shlr%2Fjava%2Fcode.c?ref=550858ed691e7a42e23d80a6075d1501a62420c6",
+      "patch": "@@ -213,13 +213,6 @@ R_API int java_print_opcode(RBinJavaObj *obj, ut64 addr, int idx, const ut8 *byt\n \treturn JAVA_OPS[idx].size;\n }\n \n-R_API void r_java_new_method(void) {\n-\t// no-op: switch state is now local to each disasm call\n-}\n-\n-R_API void U(r_java_set_obj)(RBinJavaObj *obj) {\n-}\n-\n R_API int r_java_disasm(RBinJavaObj *obj, ut64 addr, const ut8 *bytes, int len, char *output, int outlen) {\n \tR_RETURN_VAL_IF_FAIL (bytes && output && outlen > 0, -1);\n \tif (len > 0) {"
+    },
+    {
+      "sha": "1cdbc16f266cacc412aa191324b3c0c7f6c73f64",
+      "filename": "shlr/java/code.h",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/radareorg/radare2/blob/550858ed691e7a42e23d80a6075d1501a62420c6/shlr%2Fjava%2Fcode.h",
+      "raw_url": "https://github.com/radareorg/radare2/raw/550858ed691e7a42e23d80a6075d1501a62420c6/shlr%2Fjava%2Fcode.h",
+      "contents_url": "https://api.github.com/repos/radareorg/radare2/contents/shlr%2Fjava%2Fcode.h?ref=550858ed691e7a42e23d80a6075d1501a62420c6",
+      "patch": "@@ -16,7 +16,5 @@ extern const struct java_op JAVA_OPS[JAVA_OPS_COUNT];\n R_API int java_print_opcode(RBinJavaObj *obj, ut64 addr, int idx, const ut8 *bytes, int len, char *output, int outlen);\n R_API int r_java_disasm(RBinJavaObj *obj, ut64 addr, const ut8 *bytes, int len, char *output, int outlen);\n R_API int r_java_assemble(ut64 addr, ut8 *bytes, const char *string);\n-//R_API void r_java_set_obj(RBinJavaObj *obj);\n-R_API void r_java_new_method(void);\n \n #endif"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "3a0e4734d6f2b2b3d29206d5fb3eac5f4c9649fd",
+      "message": "One step",
+      "parent_shas": [
+        "cdb14c65415e342c8a98285c39ee40312285c656"
+      ]
+    },
+    {
+      "sha": "59351cf548aeae9f37b8cdb896785852008cbd21",
+      "message": "Two step",
+      "parent_shas": [
+        "3a0e4734d6f2b2b3d29206d5fb3eac5f4c9649fd"
+      ]
+    },
+    {
+      "sha": "792393291aed7eb830df0f8763ed897657271bb5",
+      "message": "lol more",
+      "parent_shas": [
+        "59351cf548aeae9f37b8cdb896785852008cbd21"
+      ]
+    },
+    {
+      "sha": "e176222fa9286cb4290603a34b0d8c03fe4c4e1a",
+      "message": "more",
+      "parent_shas": [
+        "792393291aed7eb830df0f8763ed897657271bb5"
+      ]
+    },
+    {
+      "sha": "550858ed691e7a42e23d80a6075d1501a62420c6",
+      "message": "i",
+      "parent_shas": [
+        "e176222fa9286cb4290603a34b0d8c03fe4c4e1a"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__radareorg__radare2__pr25793.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\radareorg__radare2__pr25793__java_python__radareorg__radare2__pr25793\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\radareorg__radare2__pr25793__java_python__radareorg__radare2__pr25793\\rn"
+  }
+}

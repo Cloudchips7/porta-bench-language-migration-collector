@@ -1,0 +1,411 @@
+{
+  "instance_id": "python_java__config-i1__smooth__pr348",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "config-i1/smooth",
+  "pr_number": 348,
+  "pr_url": "https://github.com/config-i1/smooth/pull/348",
+  "repo": {
+    "full_name": "config-i1/smooth",
+    "clone_url": "https://github.com/config-i1/smooth.git",
+    "default_branch": "master",
+    "created_at": "2016-01-25T12:06:26Z",
+    "stars": 96,
+    "license": "LGPL-2.1",
+    "size_kb": 39788
+  },
+  "pull_request": {
+    "id": 3513433535,
+    "title": "Python",
+    "body": "## What issue does this PR fix?\r\n\r\nCloses #344 \r\n## Language\r\n\r\n- [ ] R\r\n- [x ] Python\r\n- [ ] Both\r\n\r\n## Package version\r\n\r\nThis is a new version of smooth, v 1.0.1, built on 1.0.0\r\n\r\n## Development environment\r\n\r\nUbuntu 25.10\r\n\r\n## AI assistance\r\n\r\n- [ x] AI was used in the creation of this PR\r\n\r\n**If yes — how was AI used?**\r\n\r\nClaude code did the translation from R to Python and created the necessary tests. Running this in Python indeed works.\r\n",
+    "created_at": "2026-04-10T10:31:11Z",
+    "merged_at": "2026-04-10T15:06:55Z",
+    "base_sha": "03b9c06b07a06da1ee4f35a0793080e688f81aae",
+    "head_sha": "fa92de3b65e5fd60820ec40fe73b6cf488188468",
+    "merge_commit_sha": "1610ec46f01273034da78c08ce6d7f28160b06e1",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "82a3f2378cedc575c9931d10e16f741d1052fbd7",
+  "final_sha": "fa92de3b65e5fd60820ec40fe73b6cf488188468",
+  "changed_files": [
+    {
+      "sha": "cfded58d34644a5fb405ca35b26732c587ac0e3d",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/README.md",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/README.md",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/README.md?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -13,7 +13,6 @@ Python:\n [![PyPI version](https://img.shields.io/pypi/v/smooth.svg)](https://pypi.org/project/smooth/)\n [![PyPI - Downloads](https://img.shields.io/pypi/dm/smooth.svg)](https://pypi.org/project/smooth/)\n [![Python CI](https://github.com/config-i1/smooth/actions/workflows/python_ci.yml/badge.svg)](https://github.com/config-i1/smooth/actions/workflows/python_ci.yml)\n-[![Python versions](https://img.shields.io/pypi/pyversions/smooth.svg)](https://pypi.org/project/smooth/)\n \n \n The **smooth** package implements Single Source of Error (SSOE) state-space models for forecasting and time series analysis, available for both R and Python."
+    },
+    {
+      "sha": "b82b4e6656459c8b4d31a8da6f5610dfa4e0c94e",
+      "filename": "python/README.md",
+      "status": "modified",
+      "additions": 51,
+      "deletions": 2,
+      "changes": 53,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2FREADME.md",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2FREADME.md?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -1,4 +1,4 @@\n-# smooth (Python)\n+# smooth\n \n [![PyPI version](https://img.shields.io/pypi/v/smooth.svg)](https://pypi.org/project/smooth/)\n [![PyPI - Downloads](https://img.shields.io/pypi/dm/smooth.svg)](https://pypi.org/project/smooth/)\n@@ -7,7 +7,22 @@\n [![License: LGPL-2.1](https://img.shields.io/badge/License-LGPL--2.1-blue.svg)](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)\n \n \n-Python implementation of the **smooth** package for time series forecasting using Single Source of Error (SSOE) state-space models.\n+Python implementation of the **smooth** package for forecasting and time series analysis using Single Source of Error (SSOE) state-space models.\n+\n+The package includes the following models:\n+\n+- [ADAM](https://openforecast.org/adam/) - Augmented Dynamic Adaptive Model, uniting exponential smoothing, ARIMA and regression, implemented in the `ADAM` class.\n+- [ETS](https://github.com/config-i1/smooth/wiki/ES) - Exponential Smoothing in the SSOE state space form, implemented in the `ES` class.\n+\n+All of these are implemented with the support of the following features:\n+\n+- Automatic components selection in ETS and forecasts combination\n+- Explanatory variables\n+- Multiple seasonal models (e.g. for high frequency data)\n+- Advanced loss functions\n+- Fine tuning of any elements of ADAM/ETS/ARIMA/Regression\n+- A variety of prediction interval construction methods\n+\n \n ![hex-sticker of the smooth package for Python](https://github.com/config-i1/smooth/blob/master/python/img/smooth-python-web.png?raw=true)\n \n@@ -57,6 +72,40 @@ model.fit(y)\n forecasts = model.predict(h=12)\n ```\n \n+## ADAMX — ADAM with Explanatory Variables\n+\n+```python\n+import numpy as np\n+from smooth import ADAM\n+\n+# Simulate data where y depends on two external regressors\n+rng = np.random.default_rng(42)\n+n = 120\n+X = rng.standard_normal((n, 2))\n+y = 10 + 2 * X[:, 0] - 1.5 * X[:, 1] + rng.standard_normal(n)\n+\n+# Fit ETSX(AAN) — use all regressors with fixed coefficients\n+model = ADAM(model=\"AAN\", regressors=\"use\")\n+model.fit(y, X)\n+print(model)           # shows fitted coefficients including xreg\n+\n+# Forecast 12 steps ahead with future regressor values\n+X_future = rng.standard_normal((12, 2))\n+fc = model.predict(h=12, X=X_future)\n+print(fc.mean)\n+\n+# Automatic variable selection (drops insignificant regressors)\n+model_sel = ADAM(model=\"AAN\", regressors=\"select\")\n+model_sel.fit(y, X)\n+\n+# Adaptive (time-varying) regressor coefficients\n+model_adp = ADAM(model=\"AAN\", regressors=\"adapt\")\n+model_adp.fit(y, X)\n+```\n+\n+`X` accepts a NumPy array or a pandas DataFrame (column names are preserved as regressor names).\n+`regressors` controls treatment: `\"use\"` (fixed coefficients), `\"select\"` (stepwise selection via greybox), or `\"adapt\"` (ETS-style time-varying coefficients).\n+\n ## Documentation\n \n - [GitHub Wiki](https://github.com/config-i1/smooth/wiki) - Full documentation"
+    },
+    {
+      "sha": "1f0cf908a50e45baf7f583c2c2dbf932c9d758c1",
+      "filename": "python/pyproject.toml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fpyproject.toml",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fpyproject.toml?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -4,7 +4,7 @@ build-backend = \"scikit_build_core.build\"\n \n [project]\n name = \"smooth\"\n-version = \"1.0.0\"\n+version = \"1.0.1\"\n description = \"Python version of the smooth forecasting library\"\n readme = \"README.md\"\n requires-python = \">=3.10\"\n@@ -14,7 +14,8 @@ dependencies = [\n     \"pandas>=2.0\",\n     \"nlopt\",\n     \"scipy>=1.11.0,<1.16.0\",\n-    \"statsmodels\"\n+    \"statsmodels\",\n+    \"greybox\",\n ]\n \n [tool.setuptools.packages.find]"
+    },
+    {
+      "sha": "6bde58d971db58e3eb5762c88e923ead971e661f",
+      "filename": "python/src/smooth/adam_general/core/adam.py",
+      "status": "modified",
+      "additions": 23,
+      "deletions": 7,
+      "changes": 30,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fadam.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fadam.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fadam.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -15,6 +15,7 @@\n from smooth.adam_general.core.forecaster import forecaster, preparator\n from smooth.adam_general.core.utils.ic import calculate_ic_weights, ic_function\n from smooth.adam_general.core.utils.n_param import NParam\n+from smooth.adam_general.core.utils.utils import SMOOTHER_DEFAULT\n \n # Note: adam_cpp instance is stored in self and passed to forecasting functions\n \n@@ -383,7 +384,7 @@ def __init__(\n         # specific to losses or distributions\n         reg_lambda: Optional[float] = None,\n         gnorm_shape: Optional[float] = None,\n-        smoother: Literal[\"lowess\", \"ma\", \"global\"] = \"lowess\",\n+        smoother: Literal[\"lowess\", \"ma\", \"global\"] = SMOOTHER_DEFAULT,\n         **kwargs,\n     ) -> None:\n         \"\"\"\n@@ -496,7 +497,7 @@ def __init__(\n             Regularization parameter specifically for LASSO/RIDGE losses.\n         gnorm_shape : Optional[float], default=None\n             Shape parameter 's' for the generalized normal distribution.\n-        smoother : Literal[\"lowess\", \"ma\", \"global\"], default=\"lowess\"\n+        smoother : Literal[\"lowess\", \"ma\", \"global\"], default=\"global\"\n             Smoother type for time series decomposition in initial state estimation.\n \n             - \"lowess\": Uses LOWESS (Locally Weighted Scatterplot Smoothing) for both\n@@ -784,7 +785,7 @@ def fit(\n         # instance attributes\n \n         # Check parameters and prepare data\n-        self._check_parameters(y)\n+        self._check_parameters(y, X)\n         # Execute model estimation or selection based on model_do\n         if self._model_type[\"model_do\"] == \"estimate\":\n             self._execute_estimation()\n@@ -2153,6 +2154,15 @@ def predict(\n         if occurrence is not None:\n             self._occurrence[\"occurrence\"] = occurrence\n \n+        # Store new_xreg for forecast period (used in _generate_point_forecasts)\n+        if X is not None and self._explanatory.get(\"xreg_model\"):\n+            new_xreg = np.asarray(X, dtype=float)\n+            if new_xreg.ndim == 1:\n+                new_xreg = new_xreg.reshape(-1, 1)\n+            self._explanatory[\"new_xreg\"] = new_xreg\n+        else:\n+            self._explanatory.pop(\"new_xreg\", None)\n+\n         # Validate prediction inputs and prepare data for forecasting\n         self._validate_prediction_inputs()\n         self._prepare_prediction_data()\n@@ -2210,14 +2220,16 @@ def predict_intervals(\n             nsim=nsim,\n         )\n \n-    def _check_parameters(self, ts):\n+    def _check_parameters(self, ts, X=None):\n         \"\"\"\n         Check parameters using parameters_checker and store results.\n \n         Parameters\n         ----------\n         ts : NDArray or pd.Series\n             Time series data (numpy array or pandas Series).\n+        X : NDArray or pd.DataFrame, optional\n+            External regressors, shape (len(ts), n_features).\n         \"\"\"\n         # Convert ar_order, i_order, ma_order to orders format expected by\n         # parameters_checker\n@@ -2267,6 +2279,8 @@ def _check_parameters(self, ts):\n             fast=self.fast,\n             lambda_param=self.lambda_param,\n             frequency=self.frequency,\n+            X=X,\n+            regressors=self.regressors,\n         )\n \n     def _handle_lasso_ridge_special_case(self):\n@@ -2418,9 +2432,11 @@ def _update_parameters_number(self, n_param_estimated):\n         # Update the n_param table\n         if \"n_param\" in self._general:\n             n_param = self._general[\"n_param\"]\n-            # The n_param_estimated from optimizer is the total internal params\n-            # We need to update it based on what was actually estimated\n-            n_param.estimated[\"internal\"] = n_param_estimated\n+            # n_param_estimated = len(B) = internal_in_B + xreg_in_B\n+            # Subtract xreg (correctly set by build_n_param_table) to get internal\n+            n_param.estimated[\"internal\"] = (\n+                n_param_estimated - n_param.estimated[\"xreg\"]\n+            )\n \n             # Handle likelihood loss case - scale parameter is estimated\n             if self._general[\"loss\"] == \"likelihood\":"
+    },
+    {
+      "sha": "f28801e7968c21c8d4f523ee4eb47eaf01e2d819",
+      "filename": "python/src/smooth/adam_general/core/checker/parameter_checks.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fchecker%2Fparameter_checks.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fchecker%2Fparameter_checks.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fchecker%2Fparameter_checks.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -371,6 +371,7 @@ def _check_initial(\n         \"initial_arima\": None,\n         \"initial_arima_estimate\": True,\n         \"initial_arima_number\": 0,\n+        \"initial_xreg\": None,\n         \"initial_xreg_estimate\": True,\n         \"initial_xreg_provided\": False,\n     }\n@@ -494,6 +495,13 @@ def _check_initial(\n             else:\n                 result[\"initial_arima_number\"] = 1\n \n+        # Process xreg initial\n+        if \"xreg\" in initial:\n+            result[\"initial_xreg\"] = np.asarray(initial[\"xreg\"], dtype=float).reshape(\n+                -1, 1\n+            )\n+            result[\"initial_xreg_provided\"] = True\n+\n         # Mark overall initial as not estimated\n         result[\"initial_estimate\"] = False\n "
+    },
+    {
+      "sha": "161029a625dc6aa86a28284bbcbd1d24a96a7b99",
+      "filename": "python/src/smooth/adam_general/core/checker/parameters_checker.py",
+      "status": "modified",
+      "additions": 235,
+      "deletions": 25,
+      "changes": 260,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fchecker%2Fparameters_checker.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fchecker%2Fparameters_checker.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fchecker%2Fparameters_checker.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -1,3 +1,5 @@\n+import warnings\n+\n import numpy as np\n import pandas as pd\n \n@@ -59,6 +61,8 @@ def parameters_checker(\n     nsim=10000,\n     scenarios=False,\n     ellipsis=None,\n+    X=None,\n+    regressors=\"use\",\n ):\n     \"\"\"\n     Validate and process all ADAM model parameters before estimation.\n@@ -529,6 +533,14 @@ def parameters_checker(\n     obs_in_sample = occ_info[\"obs_in_sample\"]\n     obs_nonzero = occ_info[\"obs_nonzero\"]\n     occurrence_model = occ_info[\"occurrence_model\"]\n+\n+    #####################\n+    # X validation\n+    #####################\n+    has_xreg, X, xreg_number, xreg_names_from_input = _validate_x(\n+        X, obs_all=occ_info[\"obs_in_sample\"]\n+    )\n+\n     #####################\n     # 2) Check Lags\n     #####################\n@@ -584,7 +596,7 @@ def parameters_checker(\n         trend_type=ets_info[\"trend_type\"],\n         season_type=ets_info[\"season_type\"],\n         lags_model_seasonal=lags_model_seasonal,\n-        xreg_model=False,  # Will be updated when xreg is implemented\n+        xreg_model=has_xreg,\n         silent=silent,\n     )\n \n@@ -597,7 +609,7 @@ def parameters_checker(\n         trend_type=ets_info[\"trend_type\"],\n         season_type=ets_info[\"season_type\"],\n         arima_model=arima_model,\n-        xreg_model=False,  # Will be updated when xreg is implemented\n+        xreg_model=has_xreg,\n         silent=silent,\n     )\n \n@@ -697,10 +709,10 @@ def parameters_checker(\n         ma_required=any(ma_orders) if ma_orders else False,\n         ma_estimate=arima_info.get(\"ma_estimate\", True),\n         ma_orders=ma_orders,\n-        xreg_model=False,  # Will be updated when xreg is implemented\n-        xreg_number=0,\n-        initial_xreg_estimate=False,\n-        persistence_xreg_estimate=False,\n+        xreg_model=has_xreg,\n+        xreg_number=xreg_number,\n+        initial_xreg_estimate=has_xreg,\n+        persistence_xreg_estimate=(has_xreg and regressors == \"adapt\"),\n     )\n \n     # Restrict models pool based on sample size (R lines 2641-2944)\n@@ -714,7 +726,7 @@ def parameters_checker(\n         season_type=ets_info[\"season_type\"],\n         models_pool=ets_info.get(\"models_pool\"),\n         allow_multiplicative=allow_multiplicative,\n-        xreg_number=0,  # Will be updated when xreg is implemented\n+        xreg_number=xreg_number,\n         silent=silent,\n         n_param_max=n_param_max,\n         damped=ets_info.get(\"damped\", False),\n@@ -768,15 +780,17 @@ def parameters_checker(\n         init_info[\"initial_level_estimate\"] = False\n \n     # Setup model type dictionary\n-    model_type_dict = _organize_model_type_info(ets_info, arima_info, xreg_model=False)\n+    model_type_dict = _organize_model_type_info(\n+        ets_info, arima_info, xreg_model=has_xreg\n+    )\n \n     # Apply additional sample size adjustments\n     model_type_dict = _adjust_model_for_sample_size(\n         model_info=model_type_dict,\n         obs_nonzero=obs_nonzero,\n         lags_model_max=max_lag,\n         allow_multiplicative=allow_multiplicative,\n-        xreg_number=0,\n+        xreg_number=xreg_number,\n         silent=silent,\n     )\n \n@@ -795,7 +809,7 @@ def parameters_checker(\n         lags_model=lags_model,\n         lags_model_seasonal=lags_model_seasonal,\n         lags_model_arima=lags_model_arima,\n-        xreg_model=False,  # Will be updated when xreg is implemented\n+        xreg_model=has_xreg,\n     )\n \n     # Create occurrence dictionary\n@@ -939,6 +953,7 @@ def parameters_checker(\n         \"initial_arima\": init_info[\"initial_arima\"],\n         \"initial_arima_estimate\": init_info[\"initial_arima_estimate\"],\n         \"initial_arima_number\": init_info[\"initial_arima_number\"],\n+        \"initial_xreg\": init_info.get(\"initial_xreg\"),\n         \"initial_xreg_estimate\": init_info[\"initial_xreg_estimate\"],\n         \"initial_xreg_provided\": init_info[\"initial_xreg_provided\"],\n         \"n_iterations\": init_info[\"n_iterations\"],\n@@ -962,21 +977,45 @@ def parameters_checker(\n         \"select\": arima_info.get(\"select\", False),\n     }\n \n-    # Initialize explanatory variables dictionary\n-    xreg_dict = {\n-        \"xreg_model\": False,\n-        \"regressors\": None,\n-        \"xreg_model_initials\": None,\n-        \"xreg_data\": None,\n-        \"xreg_number\": 0,\n-        \"xreg_names\": None,\n-        \"response_name\": None,\n-        \"formula\": None,\n-        \"xreg_parameters_missing\": None,\n-        \"xreg_parameters_included\": None,\n-        \"xreg_parameters_estimated\": None,\n-        \"xreg_parameters_persistence\": None,\n-    }\n+    # Build explanatory variables dictionary\n+    if has_xreg:\n+        xreg_dict = _process_xreg(\n+            X=X,\n+            regressors=regressors,\n+            y_in_sample=observations_dict[\"y_in_sample\"],\n+            obs_in_sample=observations_dict[\"obs_in_sample\"],\n+            distribution=distribution,\n+            ic=ic,\n+            xreg_names_from_input=xreg_names_from_input,\n+            initial_xreg=initials_dict.get(\"initial_xreg\"),\n+        )\n+        # For \"select\": if no variables survived selection, disable xreg\n+        if not xreg_dict[\"xreg_model\"]:\n+            has_xreg = False\n+            model_type_dict[\"xreg_model\"] = False\n+        else:\n+            # Update persistence and initials based on regressors mode\n+            if regressors == \"adapt\":\n+                persistence_dict[\"persistence_xreg_estimate\"] = True\n+                initials_dict[\"initial_xreg_estimate\"] = True\n+            else:\n+                persistence_dict[\"persistence_xreg_estimate\"] = False\n+                initials_dict[\"initial_xreg_estimate\"] = True\n+    else:\n+        xreg_dict = {\n+            \"xreg_model\": False,\n+            \"regressors\": None,\n+            \"xreg_model_initials\": None,\n+            \"xreg_data\": None,\n+            \"xreg_number\": 0,\n+            \"xreg_names\": None,\n+            \"response_name\": None,\n+            \"formula\": None,\n+            \"xreg_parameters_missing\": None,\n+            \"xreg_parameters_included\": None,\n+            \"xreg_parameters_estimated\": None,\n+            \"xreg_parameters_persistence\": None,\n+        }\n \n     # Calculate number of parameters using the new n_param table structure\n     from smooth.adam_general.core.utils.n_param import build_n_param_table\n@@ -1020,3 +1059,174 @@ def parameters_checker(\n         xreg_dict,\n         params_info,\n     )\n+\n+\n+# ---------------------------------------------------------------------------\n+# Explanatory-variable helpers\n+# ---------------------------------------------------------------------------\n+\n+\n+def _validate_x(X, obs_all):\n+    \"\"\"Validate and normalise the X matrix; return (has_xreg, X, n_cols, names).\"\"\"\n+    if X is None:\n+        return False, None, 0, None\n+\n+    if hasattr(X, \"columns\"):\n+        names = list(X.columns)\n+        X = X.values\n+    else:\n+        names = None\n+\n+    X = np.asarray(X, dtype=float)\n+    if X.ndim == 1:\n+        X = X.reshape(-1, 1)\n+\n+    n = len(X)\n+    if n > obs_all:\n+        X = X[:obs_all]\n+    elif n < obs_all:\n+        pad = obs_all - n\n+        warnings.warn(\n+            f\"X has {n} rows but y has {obs_all}. \"\n+            f\"The last row of X will be repeated {pad} time(s) to match.\",\n+            stacklevel=4,\n+        )\n+        X = np.vstack([X, np.tile(X[-1], (pad, 1))])\n+\n+    return True, X, X.shape[1], names\n+\n+\n+def _map_distribution_for_greybox(distribution):\n+    \"\"\"Map a smooth distribution string to the nearest greybox ALM distribution.\"\"\"\n+    _map = {\n+        \"dnorm\": \"dnorm\",\n+        \"dlnorm\": \"dlnorm\",\n+        \"dgamma\": \"dgamma\",\n+        \"dlaplace\": \"dlaplace\",\n+        \"ds\": \"ds\",\n+        \"dgnorm\": \"dgnorm\",\n+        \"dinvgauss\": \"dinvgauss\",\n+    }\n+    return _map.get(distribution, \"dnorm\")\n+\n+\n+def _process_xreg(\n+    X,\n+    regressors,\n+    y_in_sample,\n+    obs_in_sample,\n+    distribution,\n+    ic,\n+    xreg_names_from_input=None,\n+    initial_xreg=None,\n+):\n+    \"\"\"Process explanatory variables and return a populated xreg_dict.\n+\n+    Parameters\n+    ----------\n+    X : np.ndarray, shape (obs_all, p)\n+    regressors : {\"use\", \"select\", \"adapt\"}\n+    y_in_sample : array-like, shape (obs_in_sample,)\n+    obs_in_sample : int\n+    distribution : str  smooth distribution name\n+    ic : str  information criterion for stepwise selection\n+    xreg_names_from_input : list[str] or None\n+    initial_xreg : np.ndarray or None\n+        User-supplied initial coefficient values, shape (p, 1). If provided,\n+        skips ALM computation and uses these values as optimizer seed.\n+\n+    Returns\n+    -------\n+    dict  populated xreg_dict (xreg_model may be False if selection drops all vars)\n+    \"\"\"\n+    from greybox import ALM\n+\n+    n_cols = X.shape[1]\n+    X_in_sample = X[:obs_in_sample]\n+    y_is = np.asarray(y_in_sample, dtype=float)\n+\n+    # Default names\n+    xreg_names = (\n+        xreg_names_from_input\n+        if xreg_names_from_input is not None\n+        else [f\"x{i + 1}\" for i in range(n_cols)]\n+    )\n+\n+    # ---------- variable selection ----------\n+    selected_mask = np.ones(n_cols, dtype=bool)\n+    if regressors == \"select\":\n+        import pandas as pd\n+        from greybox import stepwise\n+\n+        df_sw = pd.DataFrame(X_in_sample, columns=xreg_names)\n+        df_sw.insert(0, \"y\", y_is)\n+        sw_dist = _map_distribution_for_greybox(distribution)\n+        try:\n+            sw_model = stepwise(df_sw, ic=ic, distribution=sw_dist, silent=True)\n+            sel_names = sw_model._feature_names or []\n+            selected_mask = np.array([n in sel_names for n in xreg_names])\n+        except Exception:\n+            pass  # keep all variables on failure\n+\n+        if not selected_mask.any():\n+            # No variables selected — return disabled xreg_dict\n+            return {\n+                \"xreg_model\": False,\n+                \"regressors\": regressors,\n+                \"xreg_model_initials\": None,\n+                \"xreg_data\": None,\n+                \"xreg_number\": 0,\n+                \"xreg_names\": None,\n+                \"response_name\": None,\n+                \"formula\": None,\n+                \"xreg_parameters_missing\": None,\n+                \"xreg_parameters_included\": None,\n+                \"xreg_parameters_estimated\": None,\n+                \"xreg_parameters_persistence\": None,\n+            }\n+\n+    # Apply selection mask\n+    X_selected = X[:, selected_mask]\n+    X_in_sel = X_selected[:obs_in_sample]\n+    names_selected = [n for n, s in zip(xreg_names, selected_mask) if s]\n+    p = X_selected.shape[1]\n+\n+    # ---------- initialise coefficients ----------\n+    if initial_xreg is not None:\n+        initial_xreg_flat = np.asarray(initial_xreg, dtype=float).ravel()\n+        if len(initial_xreg_flat) != p:\n+            raise ValueError(\n+                f\"initial['xreg'] has {len(initial_xreg_flat)} values \"\n+                f\"but model has {p} regressors.\"\n+            )\n+        initial_coefs = initial_xreg_flat\n+    else:\n+        alm_dist = _map_distribution_for_greybox(distribution)\n+        X_aug = np.column_stack([np.ones(obs_in_sample), X_in_sel])\n+        try:\n+            alm = ALM(distribution=alm_dist)\n+            alm.fit(X_aug, y_is, feature_names=names_selected)\n+            initial_coefs = np.asarray(alm.coef, dtype=float)\n+        except Exception:\n+            initial_coefs = np.zeros(p)\n+\n+    # Store as a 2-element list [additive_dict, multiplicative_dict_or_None].\n+    # initialization.py selects [0] for additive errors and [1] for multiplicative;\n+    # setting [1]=None makes it always fall back to [0].\n+    # Shape must be (p, 1) so it broadcasts into the (p, lags_model_max) mat_vt slice.\n+    xreg_initials = [{\"initial_xreg\": initial_coefs.reshape(-1, 1)}, None]\n+\n+    return {\n+        \"xreg_model\": True,\n+        \"regressors\": regressors,\n+        \"xreg_model_initials\": xreg_initials,\n+        \"xreg_data\": X_selected,\n+        \"xreg_number\": p,\n+        \"xreg_names\": names_selected,\n+        \"response_name\": None,\n+        \"formula\": None,\n+        \"xreg_parameters_missing\": None,\n+        \"xreg_parameters_included\": None,\n+        \"xreg_parameters_estimated\": [1] * p,\n+        \"xreg_parameters_persistence\": list(range(1, p + 1)),\n+    }"
+    },
+    {
+      "sha": "3d4f36ebed4d118b87da6c027eb606516a117958",
+      "filename": "python/src/smooth/adam_general/core/creator/architector.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 3,
+      "changes": 11,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Farchitector.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Farchitector.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Farchitector.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -224,10 +224,15 @@ def architector(\n     # Set up lags\n     lags_dict = _setup_lags(lags_dict, model_type_dict, components_dict)\n \n+    # Add xreg lag=1 entries to lags_model_all\n+    # R: lagsModelAll <- c(lagsModelAll, rep(1, xregNumber))\n+    xreg_number = (\n+        explanatory_checked.get(\"xreg_number\", 0) if explanatory_checked else 0\n+    )\n+    if xreg_number > 0:\n+        lags_dict[\"lags_model_all\"] = lags_dict[\"lags_model_all\"] + [1] * xreg_number\n+\n     # Calculate total number of components\n-    # This should equal the size of lags_model_all vector OR\n-    #  the sum of: components_number_ets + components_number_arima + xreg_number + (1 if\n-    # constant_required)\n     components_number_all = len(lags_dict[\"lags_model_all\"])\n \n     # Verify it matches the alternative calculation"
+    },
+    {
+      "sha": "fd5c525ae83acb2467f70550ba619cc502352866",
+      "filename": "python/src/smooth/adam_general/core/creator/creator.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 7,
+      "changes": 12,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Fcreator.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Fcreator.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Fcreator.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -30,7 +30,7 @@ def creator(\n     # Components info\n     components_dict,\n     explanatory_checked=None,\n-    smoother=\"lowess\",\n+    smoother=\"global\",\n ):\n     \"\"\"\n     Create state-space matrices for ADAM model representation.\n@@ -533,12 +533,10 @@ def _setup_measurement_vector(matrices, model_params, explanatory_checked):\n \n     # If xreg are provided, then fill in the respective values in Wt vector\n     if explanatory_checked[\"xreg_model\"]:\n-        mat_wt[\n-            :,\n-            components_number_ets + components_number_arima : components_number_ets\n-            + components_number_arima\n-            + explanatory_checked[\"xreg_number\"],\n-        ] = explanatory_checked[\"xreg_data\"]\n+        n_xreg_rows = len(explanatory_checked[\"xreg_data\"])\n+        col_start = components_number_ets + components_number_arima\n+        col_end = col_start + explanatory_checked[\"xreg_number\"]\n+        mat_wt[:n_xreg_rows, col_start:col_end] = explanatory_checked[\"xreg_data\"]\n \n     # Damping parameter value\n     if ets_model and model_is_trendy:"
+    },
+    {
+      "sha": "ee6356aea0318eeefbf1c0810e058a1169aa7508",
+      "filename": "python/src/smooth/adam_general/core/creator/filler.py",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 9,
+      "changes": 22,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Ffiller.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Ffiller.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Ffiller.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -186,23 +186,24 @@ def filler(\n                     j += n_seasonal_to_estimate\n                 i = components_dict[\"components_number_ets\"] - 1\n \n-        # Persistence of xreg\n+        # Persistence of xreg (delta parameters for adapt mode)\n         if (\n             explanatory_checked[\"xreg_model\"]\n             and persistence_checked[\"persistence_xreg_estimate\"]\n         ):\n             xreg_persistence_number = max(\n                 explanatory_checked[\"xreg_parameters_persistence\"]\n             )\n-            xreg_indices = slice(\n-                j + components_dict[\"components_number_arima\"],\n-                j\n+            xreg_start = (\n+                components_dict[\"components_number_ets\"]\n                 + components_dict[\"components_number_arima\"]\n-                + len(explanatory_checked[\"xreg_parameters_persistence\"]),\n             )\n-            matrices_dict[\"vec_g\"][xreg_indices] = B[j : j + xreg_persistence_number][\n+            xreg_values = B[j : j + xreg_persistence_number][\n                 np.array(explanatory_checked[\"xreg_parameters_persistence\"]) - 1\n             ]\n+            matrices_dict[\"vec_g\"][xreg_start : xreg_start + len(xreg_values), 0] = (\n+                xreg_values\n+            )\n             j += xreg_persistence_number\n \n     # Damping parameter\n@@ -442,15 +443,18 @@ def filler(\n         and initials_checked[\"initial_estimate\"]\n         and initials_checked[\"initial_xreg_estimate\"]\n     ):\n-        xreg_number_to_estimate = sum(explanatory_checked[\"xreg_parameters_estimated\"])\n+        xreg_params_est = np.asarray(\n+            explanatory_checked[\"xreg_parameters_estimated\"], dtype=int\n+        )\n+        xreg_number_to_estimate = int(xreg_params_est.sum())\n         xreg_indices = (\n             components_dict[\"components_number_ets\"]\n             + components_dict[\"components_number_arima\"]\n-            + np.where(explanatory_checked[\"xreg_parameters_estimated\"] == 1)[0]\n+            + np.where(xreg_params_est == 1)[0]\n         )\n \n         matrices_dict[\"mat_vt\"][xreg_indices, : lags_dict[\"lags_model_max\"]] = B[\n-            j : j + xreg_number_to_estimate\n+            j : j + xreg_number_to_estimate, np.newaxis\n         ]\n \n         j += xreg_number_to_estimate"
+    },
+    {
+      "sha": "73d725f23ece22052c670ef34d17df59db143fbd",
+      "filename": "python/src/smooth/adam_general/core/creator/initialiser.py",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 20,
+      "changes": 37,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Finitialiser.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Finitialiser.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Finitialiser.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -718,27 +718,24 @@ def initialiser(\n             Bu[j : j + initials_checked[\"initial_arima_number\"]] = np.inf\n         j += initials_checked[\"initial_arima_number\"]\n \n-    if initials_checked[\"initial_xreg_estimate\"] and explanatory_checked[\"xreg_model\"]:\n-        #  For complete and backcasting, we do NOT estimate xreg initials in the main B\n-        # vector\n-        #  (because they are handled by the backcasting procedure itself or\n-        # pre-estimated)\n-        if initials_checked[\"initial_type\"] not in [\"backcasting\", \"complete\"]:\n-            xreg_number_to_estimate = sum(\n-                explanatory_checked[\"xreg_parameters_estimated\"]\n+    if (\n+        initials_checked[\"initial_xreg_estimate\"]\n+        and explanatory_checked[\"xreg_model\"]\n+        and initials_checked[\"initial_type\"] != \"complete\"\n+    ):\n+        xreg_number_to_estimate = sum(explanatory_checked[\"xreg_parameters_estimated\"])\n+        if xreg_number_to_estimate > 0:\n+            xreg_start = (\n+                components_dict[\"components_number_ets\"]\n+                + components_dict[\"components_number_arima\"]\n             )\n-            if xreg_number_to_estimate > 0:\n-                B[j : j + xreg_number_to_estimate] = adam_created[\"mat_vt\"][\n-                    components_dict[\"components_number_ets\"]\n-                    + components_dict[\"components_number_arima\"],\n-                    0,\n-                ]\n-                names.extend(\n-                    [f\"xreg{idx + 1}\" for idx in range(xreg_number_to_estimate)]\n-                )\n-                Bl[j : j + xreg_number_to_estimate] = -np.inf\n-                Bu[j : j + xreg_number_to_estimate] = np.inf\n-                j += xreg_number_to_estimate\n+            B[j : j + xreg_number_to_estimate] = adam_created[\"mat_vt\"][\n+                xreg_start : xreg_start + xreg_number_to_estimate, 0\n+            ]\n+            names.extend([f\"xreg{idx + 1}\" for idx in range(xreg_number_to_estimate)])\n+            Bl[j : j + xreg_number_to_estimate] = -np.inf\n+            Bu[j : j + xreg_number_to_estimate] = np.inf\n+            j += xreg_number_to_estimate\n \n     if constants_checked[\"constant_estimate\"]:\n         j += 1"
+    },
+    {
+      "sha": "a141ab6f36bbb94bc9dca8417e5dff757d5331ba",
+      "filename": "python/src/smooth/adam_general/core/estimator/estimator.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 34,
+      "changes": 41,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Festimator%2Festimator.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Festimator%2Festimator.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Festimator%2Festimator.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -44,7 +44,7 @@ def estimator(\n     ftol_rel=1e-8,\n     ftol_abs=0,\n     algorithm=\"NLOPT_LN_NELDERMEAD\",\n-    smoother=\"lowess\",\n+    smoother=\"global\",\n ):\n     \"\"\"\n     Estimate parameters for ADAM model using non-linear optimization.\n@@ -285,7 +285,7 @@ def estimator(\n         - 'profile_dict': Updated profile dictionary\n         - 'components_dict': Components information\n \n-    smoother : str, default=\"lowess\"\n+    smoother : str, default=\"global\"\n         Smoother type for time series decomposition used in initial state estimation.\n \n         - \"lowess\": Uses LOWESS for both trend and seasonal extraction\n@@ -451,8 +451,8 @@ def estimator(\n         lags_dict,\n         observations_dict,\n         arima_dict,\n-        constant_dict,\n         explanatory_dict,\n+        constant_dict,\n         profiles_recent_table,\n         profiles_recent_provided,\n     )\n@@ -489,37 +489,10 @@ def estimator(\n         phi_dict=phi_dict,\n         profile_dict=profile_dict,\n     )\n-    # Get initial parameter vector and bounds\n-    if B_initial is not None:\n-        B = B_initial\n-    else:\n-        B = b_values[\"B\"]\n-    if lb is None:\n-        lb = b_values[\"Bl\"]\n-    if ub is None:\n-        ub = b_values[\"Bu\"]\n-\n-    # Ensure bounds are compatible with B\n-    if B_initial is not None:\n-        # Extend bounds if necessary\n-        if len(lb) != len(B):\n-            # This shouldn't happen if B_initial has correct length, but safety first\n-            if len(lb) < len(B):\n-                lb = np.pad(\n-                    lb, (0, len(B) - len(lb)), \"constant\", constant_values=-np.inf\n-                )\n-                ub = np.pad(\n-                    ub, (0, len(B) - len(ub)), \"constant\", constant_values=np.inf\n-                )\n-\n-        # Check compatibility\n-        if np.any(B < lb) or np.any(B > ub):\n-            # Adjust bounds to accommodate B\n-            lb = np.minimum(lb, B)\n-            ub = np.maximum(ub, B)\n-            # Maybe relax bounds slightly\n-            lb[B < lb] -= 1e-5\n-            ub[B > ub] += 1e-5\n+    # Get initial parameter vector and bounds; user-provided values are used as-is\n+    B = np.asarray(B_initial, dtype=float) if B_initial is not None else b_values[\"B\"]\n+    lb = np.asarray(lb, dtype=float) if lb is not None else b_values[\"Bl\"]\n+    ub = np.asarray(ub, dtype=float) if ub is not None else b_values[\"Bu\"]\n \n     # Step 4: Set up ARIMA polynomials if needed\n     ar_polynomial_matrix, ma_polynomial_matrix = _setup_arima_polynomials("
+    },
+    {
+      "sha": "944f4512807653156b2e17691e3a887ce0c4d653",
+      "filename": "python/src/smooth/adam_general/core/estimator/selector.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Festimator%2Fselector.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Festimator%2Fselector.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Festimator%2Fselector.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -152,7 +152,7 @@ def _estimate_model(\n     ftol_rel=1e-8,\n     ftol_abs=0,\n     algorithm=\"NLOPT_LN_NELDERMEAD\",\n-    smoother=\"lowess\",\n+    smoother=\"global\",\n ):\n     \"\"\"\n     Estimate a single model and calculate its information criterion.\n@@ -258,7 +258,7 @@ def _run_branch_and_bound(\n     ftol_rel=1e-8,\n     ftol_abs=0,\n     algorithm=\"NLOPT_LN_NELDERMEAD\",\n-    smoother=\"lowess\",\n+    smoother=\"global\",\n     silent=False,\n ):\n     \"\"\"\n@@ -580,7 +580,7 @@ def _estimate_all_models(\n     # Pre-computed results from branch-and-bound\n     precomputed_results=None,\n     precomputed_models=None,\n-    smoother=\"lowess\",\n+    smoother=\"global\",\n ):\n     \"\"\"\n     Estimate all models in the provided pool.\n@@ -741,7 +741,7 @@ def selector(\n     ftol_rel=1e-8,\n     ftol_abs=0,\n     algorithm=\"NLOPT_LN_NELDERMEAD\",\n-    smoother=\"lowess\",\n+    smoother=\"global\",\n ):\n     \"\"\"\n     Automatic model selection for ADAM using information criteria and Branch & Bound."
+    },
+    {
+      "sha": "2a8abe556494e354a6e4d7418833473b7fdd1fd6",
+      "filename": "python/src/smooth/adam_general/core/estimator/two_stage.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Festimator%2Ftwo_stage.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Festimator%2Ftwo_stage.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Festimator%2Ftwo_stage.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -30,7 +30,7 @@ def _run_two_stage_estimator(\n     ftol_rel=1e-8,\n     ftol_abs=0,\n     algorithm=\"NLOPT_LN_NELDERMEAD\",\n-    smoother=\"lowess\",\n+    smoother=\"global\",\n ):\n     \"\"\"\n     Internal function to handle two-stage initialization within estimator.\n@@ -93,8 +93,8 @@ def _run_two_stage_estimator(\n         lags_dict,\n         observations_dict,\n         arima_dict,\n-        constant_dict,\n         explanatory_dict,\n+        constant_dict,\n         profiles_recent_table,\n         profiles_recent_provided,\n     )"
+    },
+    {
+      "sha": "6588f5c7a9e9709b35c1f967275bc3350ad91657",
+      "filename": "python/src/smooth/adam_general/core/forecaster/forecaster.py",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 0,
+      "changes": 17,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fforecaster%2Fforecaster.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fforecaster%2Fforecaster.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fforecaster%2Fforecaster.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -230,6 +230,23 @@ def _generate_point_forecasts(\n         model_prepared, observations_dict, lags_dict, general_dict\r\n     )\r\n \r\n+    # Inject new_xreg values into the forecast measurement matrix.\r\n+    # The xreg columns of mat_wt must contain X values for the *forecast* period,\r\n+    # not the last h rows of the in-sample X (which _prepare_matrices_for_forecast\r\n+    # would have copied).  If the caller passed new_xreg, overwrite those columns.\r\n+    new_xreg = explanatory_checked.get(\"new_xreg\") if explanatory_checked else None\r\n+    if (\r\n+        explanatory_checked\r\n+        and explanatory_checked.get(\"xreg_model\")\r\n+        and new_xreg is not None\r\n+    ):\r\n+        xreg_start = (\r\n+            components_dict[\"components_number_ets\"]\r\n+            + components_dict[\"components_number_arima\"]\r\n+        )\r\n+        xreg_end = xreg_start + explanatory_checked[\"xreg_number\"]\r\n+        mat_wt[:, xreg_start:xreg_end] = new_xreg\r\n+\r\n     # Prepare data for adam_forecaster\r\n     profiles_recent_table = np.asfortranarray(\r\n         model_prepared[\"profiles_recent_table\"], dtype=np.float64\r"
+    },
+    {
+      "sha": "1696bf8adc1d810e91e3685dea51f61cf797bbe1",
+      "filename": "python/src/smooth/adam_general/core/utils/n_param.py",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 5,
+      "changes": 18,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Futils%2Fn_param.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Futils%2Fn_param.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Futils%2Fn_param.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -243,8 +243,12 @@ def count_internal_params(\n     elif phi_dict.get(\"phi_required\", False):\n         n_provided += 1\n \n-    # Initial states\n-    if initials_checked.get(\"initial_estimate\", True):\n+    # Initial states — only counted when optimised (optimal/two-stage),\n+    # not for backcasting/complete\n+    initial_type = initials_checked.get(\"initial_type\", \"optimal\")\n+    initial_optimised = initial_type in [\"optimal\", \"two-stage\"]\n+\n+    if initial_optimised and initials_checked.get(\"initial_estimate\", True):\n         # Level initial\n         if initials_checked.get(\"initial_level_estimate\", True):\n             n_estimated += 1\n@@ -264,8 +268,8 @@ def count_internal_params(\n                 n_estimated += n_seasonal_init\n             else:\n                 n_provided += n_seasonal_init\n-    else:\n-        # All initials provided\n+    elif not initials_checked.get(\"initial_estimate\", True):\n+        # All initials explicitly provided (fixed)\n         if model_type_dict.get(\"ets_model\", False):\n             n_provided += 1  # level\n             if model_type_dict.get(\"trend_type\", \"N\") != \"N\":\n@@ -384,8 +388,12 @@ def build_n_param_table(\n     n_param.estimated[\"internal\"] = n_internal_est\n     n_param.provided[\"internal\"] = n_internal_prov\n \n-    # Count xreg parameters\n+    # Count xreg parameters — for \"complete\" initial type, xreg is estimated via\n+    # backcasting (not in B), so R does not count it as a free parameter\n     n_xreg_est, n_xreg_prov = count_xreg_params(explanatory_checked)\n+    if initials_checked.get(\"initial_type\") == \"complete\":\n+        n_xreg_prov += n_xreg_est\n+        n_xreg_est = 0\n     n_param.estimated[\"xreg\"] = n_xreg_est\n     n_param.provided[\"xreg\"] = n_xreg_prov\n "
+    },
+    {
+      "sha": "ee18c8a76cd2c84d84c0960ebd7ecc75806bc62c",
+      "filename": "python/src/smooth/adam_general/core/utils/utils.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Futils%2Futils.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Futils%2Futils.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Futils%2Futils.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -14,6 +14,9 @@\n \n # Note: Custom lowess_r function is kept as reference/fallback implementation\n \n+# Default smoother for ADAM/ES model initialisation (msdecompose keeps \"lowess\")\n+SMOOTHER_DEFAULT = \"global\"\n+\n \n def lowess_r(x, y, f=2 / 3, nsteps=3, delta=None):\n     \"\"\""
+    },
+    {
+      "sha": "e3b0f7a53bb35a74007775a0642097a4604dd5b1",
+      "filename": "python/tests/R scripts/2026-04-09-etsX-R.R",
+      "status": "added",
+      "additions": 10,
+      "deletions": 0,
+      "changes": 10,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Ftests%2FR%20scripts%2F2026-04-09-etsX-R.R",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Ftests%2FR%20scripts%2F2026-04-09-etsX-R.R",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Ftests%2FR%20scripts%2F2026-04-09-etsX-R.R?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -0,0 +1,10 @@\n+devtools::load_all(\".\")\n+\n+xreg <- read.csv(\"python/tests/data/etsx_data.csv\")\n+\n+model <- adam(xreg, model=\"AAN\", regressors=\"use\", h=5, holdout=T, smoother=\"global\")\n+model\n+\n+forecast(model, h=5, newdata=tail(xreg,5))\n+\n+coef(model)"
+    },
+    {
+      "sha": "e3d108441905be57b8bdad3baa3c142c36a41bd0",
+      "filename": "python/tests/data/etsx_data.csv",
+      "status": "added",
+      "additions": 121,
+      "deletions": 0,
+      "changes": 121,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Ftests%2Fdata%2Fetsx_data.csv",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Ftests%2Fdata%2Fetsx_data.csv",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Ftests%2Fdata%2Fetsx_data.csv?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -0,0 +1,121 @@\n+\"y\",\"x1\",\"x2\"\n+14.2531372187582,1.37095844714667,-1.49362506731629\n+12.0743261779179,-0.564698171396089,-1.4704357414368\n+11.7976849079747,0.363128411337339,0.124702386197007\n+14.0095476010582,0.63286260496104,-0.996639134884037\n+9.43063351821373,0.404268323140999,-0.0018226143047082\n+12.4800999835922,-0.106124516091484,-0.428258881425815\n+14.9604242343517,1.51152199743894,-0.613671606449495\n+12.8209812271642,-0.0946590384130976,-2.02467784541911\n+16.5775771320923,2.01842371387704,-1.22474795035999\n+8.63391191106639,-0.062714099052421,0.179516441117938\n+10.6621521752528,1.30486965422349,0.567620594423535\n+15.36165726667,2.28664539270111,-0.492877353553475\n+6.02368841511952,-1.38886070111234,6.28840653511241e-05\n+7.94810699985506,-0.278788766817371,1.12288964337997\n+8.87127961235306,-0.133321336393658,1.43985574297619\n+11.8836977257841,0.635950398070074,-1.09711376840582\n+8.86903274333006,-0.284252921416072,-0.117319560250177\n+2.93140549626176,-2.65645542090478,1.2014984009197\n+4.80606439387231,-2.44046692857552,-0.469729580566301\n+12.3356469589826,1.32011334573019,-0.0524694849389963\n+10.3886391708701,-0.306638594078475,-0.0861072982370896\n+8.73844667286976,-1.78130843398,-0.887679017906432\n+10.707037960835,-0.171917355759621,-0.444684004884738\n+10.6219610539101,1.2146746991726,-0.0294448790882381\n+14.3571934592906,1.89519346126497,-0.413868849057924\n+8.53375591607358,-0.4304691316062,1.1133860233682\n+11.0201455343547,-0.25726938276893,-0.480992841653982\n+6.93261090440725,-1.76316308519478,-0.433169032600729\n+7.17497103627069,0.460097354831271,0.696862576552103\n+10.3655295066372,-0.639994875960119,-1.05636841317091\n+11.5456996566928,0.455450123241219,-0.0406984751512149\n+13.7827954877041,0.704837337228819,-1.55154482234759\n+10.4768652602622,1.03510352196992,1.16716954923568\n+9.62418117411547,-0.608926375407211,-0.273645701374081\n+11.3151284975541,0.50495512329797,-0.467845324672254\n+9.73333935958419,-1.71700867907334,-1.23825232798621\n+8.91311843378094,-0.784459008379496,-0.00776203377732663\n+8.25593780799985,-0.850907594176518,-0.80028217795166\n+7.35339865141792,-2.41420764994663,-0.533492329950436\n+9.34519128241745,0.0361226068922556,1.28767524558459\n+11.4993599694456,0.205998600200254,-0.175525870242127\n+9.22292957694309,-0.361057298548666,-1.07178238415068\n+10.7022098040925,0.758163235699517,0.163206882467382\n+9.7262117865783,-0.726704827076575,-0.36273841562795\n+6.42213959675826,-1.36828104441929,0.590013547987339\n+9.06501546384226,0.432818025888717,1.43242192773099\n+12.3258459631613,-0.811393176186672,-0.992692511109493\n+11.3878467526724,1.44410126172125,0.454650297580283\n+6.89656039182644,-0.431446202613345,0.0848980586784873\n+10.241642665838,0.655647883402207,0.895565582264545\n+10.3009208975839,0.321925265203947,-0.229778138946266\n+7.62343456851019,-0.783838940880375,0.836619068460613\n+14.9566541077984,1.57572751979198,-1.74505586133669\n+10.9636657097997,0.642899305717316,1.68945892131337\n+8.75864835384392,0.0897606465996057,0.864777978518578\n+10.3019299718815,0.276550747291463,-0.150775988885748\n+13.3658268358327,0.679288816055271,-1.44900713013917\n+10.0777161067216,0.0898328865790817,0.643008700041982\n+3.3863695231748,-2.99309008315293,0.483193863814768\n+8.95368260748211,0.284882953530659,-0.00635562642138871\n+9.03372610739796,-0.367234642740975,0.151455892862424\n+12.006866752918,0.185230564865609,-0.584108970349804\n+10.6494282686582,0.581823727365507,0.368806732630242\n+13.0925642866205,1.39973682729268,0.294654339719516\n+8.81783231406606,-0.727292059474465,-0.279259373342575\n+14.5515529110467,1.30254263204414,-1.33623665489315\n+10.1029424779486,0.335848119752074,0.700748818440034\n+12.2386609007599,1.03850609869762,0.554196622274033\n+11.8495215277514,0.920728568290646,-0.836306592801415\n+13.8001510438975,0.720878162866862,-1.59458816200624\n+7.53536207073284,-1.04311893856785,0.204958580587634\n+9.57833854000697,-0.0901863866107067,-0.34508797797289\n+9.83375940801325,0.623518161999544,0.252611703364455\n+9.40322502871132,-0.953523357772344,-1.29400246548455\n+10.9399057574358,-0.542828814573857,-0.959170444380363\n+9.11700805865986,0.580996497681682,1.0857748536799\n+10.1458073090903,0.768178737834591,0.403774904715714\n+10.2112201914875,0.463767588540167,0.586487536719298\n+4.26889050084036,-0.885776297409679,1.81522844615395\n+8.65307983603739,-1.09978089864786,0.128821428602383\n+15.5422124599884,1.51270700980493,-2.00092923773151\n+10.2043058905944,0.257921437532031,0.33377719743357\n+8.47089909885595,0.0884402291595864,1.17132512735879\n+6.66865739258642,-0.120896537539089,2.0595392422993\n+11.4860166494826,-1.19432889516053,-1.37686159824052\n+12.1249491874115,0.611996898040387,-1.15085556562711\n+11.7699228528751,-0.217139845746521,-0.705821394760121\n+11.2471434480052,-0.182756706331922,-1.05405578207719\n+12.0001024365493,0.93334632857116,-0.645743723142491\n+11.8528495235147,0.821773110508249,-0.185377967676503\n+15.332837514991,1.39211637593427,-1.20122205073999\n+5.56667516902132,-0.476173923054674,2.03697216698315\n+10.3669527689308,0.650348560726305,0.107774744885547\n+13.0611471702863,1.39111045639,-0.0841081005055806\n+8.02358962387611,-1.1107888794479,0.495619641604594\n+8.14883371239519,-0.860792586877842,0.0374151861179653\n+6.54762814016658,-1.13173868085377,-0.13208803695591\n+3.5597149612917,-1.4592139995024,1.4767874235521\n+9.71711509654254,0.0799825532411612,-0.217030210092104\n+12.7047038600623,0.65320433964919,-1.28360220409223\n+11.8020018504903,1.20096537559849,0.385667890443402\n+13.2872695556254,1.04475108716773,-0.351512873529092\n+8.3416598077823,-1.00320864683985,-0.521796093356269\n+14.1852808210634,1.84848190167275,-1.06813120068717\n+8.63101032246283,-0.666773408757817,0.428365903266692\n+10.7475119452922,0.105513812456069,-0.174018234426995\n+9.53933371270498,-0.422255881868856,0.515667728648029\n+8.42436671257068,-0.122350171954971,-0.234365277305921\n+11.4514602966305,0.188193034501498,-0.658503425821771\n+9.71632890381861,0.119160957997006,1.25023660407872\n+11.0816342716157,-0.0250925508674029,-0.271763715111397\n+7.96166463630706,0.108072727942033,0.947951995875196\n+11.5640316602385,-0.485435235846668,-1.20158243010894\n+8.81881301319023,-0.504217130687904,-0.466116096375502\n+6.62843142167035,-1.66109907991481,-0.26935139515318\n+11.0093149370777,-0.382333726873818,-0.390965408130861\n+6.66149365446675,-0.5126502578778,1.34870701199171\n+16.2664751976027,2.7018910003448,-0.0227647012984126\n+6.61820105218622,-1.36211623118972,0.24422585110345\n+10.1117075941652,0.137256218558607,-0.942371707863923"
+    },
+    {
+      "sha": "357a4a0c6744bd59b6bfe3487cabbf336d253f56",
+      "filename": "python/tests/notebooks/2026-04-09-etsX.ipynb",
+      "status": "added",
+      "additions": 73,
+      "deletions": 0,
+      "changes": 73,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Ftests%2Fnotebooks%2F2026-04-09-etsX.ipynb",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Ftests%2Fnotebooks%2F2026-04-09-etsX.ipynb",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Ftests%2Fnotebooks%2F2026-04-09-etsX.ipynb?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -0,0 +1,73 @@\n+{\n+ \"cells\": [\n+  {\n+   \"cell_type\": \"code\",\n+   \"execution_count\": 1,\n+   \"id\": \"a80e251e\",\n+   \"metadata\": {},\n+   \"outputs\": [\n+    {\n+     \"name\": \"stdout\",\n+     \"output_type\": \"stream\",\n+     \"text\": [\n+      \"Time elapsed: 0.04 seconds\\n\",\n+      \"Model estimated using ADAM() function: ETSX(AAN)\\n\",\n+      \"With backcasting initialisation\\n\",\n+      \"Distribution assumed in the model: Normal\\n\",\n+      \"Loss function type: likelihood; Loss function value: 160.0966\\n\",\n+      \"Persistence vector g:\\n\",\n+      \" alpha   beta\\n\",\n+      \"0.0731 0.0000\\n\",\n+      \"Sample size: 115\\n\",\n+      \"Number of estimated parameters: 5\\n\",\n+      \"Number of degrees of freedom: 110\\n\",\n+      \"Information criteria:\\n\",\n+      \"      AIC      AICc       BIC      BICc\\n\",\n+      \" 330.1932  330.7437  343.9179  345.2238\\n\"\n+     ]\n+    },\n+    {\n+     \"data\": {\n+      \"text/plain\": [\n+       \"          mean\\n\",\n+       \"115   9.533903\\n\",\n+       \"116   6.708331\\n\",\n+       \"117  14.751402\\n\",\n+       \"118   6.707029\\n\",\n+       \"119  11.255719\"\n+      ]\n+     },\n+     \"execution_count\": null,\n+     \"metadata\": {},\n+     \"output_type\": \"execute_result\"\n+    }\n+   ],\n+   \"source\": [\n+    \"import numpy as np\\n\",\n+    \"import pandas as pd\\n\",\n+    \"\\n\",\n+    \"from smooth import ADAM\\n\",\n+    \"\\n\",\n+    \"df = pd.read_csv(\\\"../data/etsx_data.csv\\\")\\n\",\n+    \"\\n\",\n+    \"y = df[\\\"y\\\"]\\n\",\n+    \"X = df[[\\\"x1\\\", \\\"x2\\\"]]\\n\",\n+    \"\\n\",\n+    \"model = ADAM(model=\\\"AAN\\\", regressors=\\\"use\\\", h=5, holdout=True)\\n\",\n+    \"model.fit(y, X)\\n\",\n+    \"\\n\",\n+    \"\\n\",\n+    \"print(model.summary())\\n\",\n+    \"\\n\",\n+    \"model.predict(5, X.tail(5))\\n\"\n+   ]\n+  }\n+ ],\n+ \"metadata\": {\n+  \"language_info\": {\n+   \"name\": \"python\"\n+  }\n+ },\n+ \"nbformat\": 4,\n+ \"nbformat_minor\": 5\n+}"
+    },
+    {
+      "sha": "1bacb824313d3b1fd9b5c745da679e0e5c6b1b1f",
+      "filename": "python/tests/test_adam_airpassengers.py",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 13,
+      "changes": 26,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Ftests%2Ftest_adam_airpassengers.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Ftests%2Ftest_adam_airpassengers.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Ftests%2Ftest_adam_airpassengers.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -62,7 +62,7 @@ def test_aan_model_fit(self):\n         model.fit(AIRPASSENGERS)\n \n         # Reference loss value\n-        expected_loss = 755.937489\n+        expected_loss = 755.065923\n         actual_loss = model.loss_value\n         assert np.isclose(actual_loss, expected_loss, rtol=1e-4), \\\n             f\"AAN loss {actual_loss} differs from expected {expected_loss}\"\n@@ -150,8 +150,8 @@ def test_ana_partial_persistence_level(self):\n         assert model.persistence_level_ == 0.4\n \n         # Loss should be higher than optimal since alpha is fixed\n-        # Reference: optimal loss is ~586, with alpha=0.4 it's ~713\n-        expected_loss = 713.407063\n+        # Reference: optimal loss is ~586, with alpha=0.4 it's ~649\n+        expected_loss = 649.145309\n         actual_loss = model.loss_value\n         assert np.isclose(actual_loss, expected_loss, rtol=1e-3), \\\n             f\"Loss with alpha=0.4: {actual_loss} differs from expected {expected_loss}\"\n@@ -261,7 +261,7 @@ def test_ana_optimal_initial(self):\n         model = ADAM(model=\"ANA\", lags=[12], initial=\"optimal\")\n         model.fit(AIRPASSENGERS)\n \n-        expected_loss = 593.375675\n+        expected_loss = 588.474062\n         actual_loss = model.loss_value\n         assert np.isclose(actual_loss, expected_loss, rtol=1e-4), \\\n             f\"ANA optimal loss {actual_loss} differs from expected {expected_loss}\"\n@@ -281,7 +281,7 @@ def test_aaa_backcasting_initial(self):\n         model = ADAM(model=\"AAA\", lags=[12], initial=\"backcasting\")\n         model.fit(AIRPASSENGERS)\n \n-        expected_loss = 565.381907\n+        expected_loss = 565.313766\n         actual_loss = model.loss_value\n         assert np.isclose(actual_loss, expected_loss, rtol=1e-4), \\\n             f\"AAA backcasting loss {actual_loss} differs from expected {expected_loss}\"\n@@ -291,7 +291,7 @@ def test_aaa_optimal_initial(self):\n         model = ADAM(model=\"AAA\", lags=[12], initial=\"optimal\")\n         model.fit(AIRPASSENGERS)\n \n-        expected_loss = 565.815441\n+        expected_loss = 569.312991\n         actual_loss = model.loss_value\n         assert np.isclose(actual_loss, expected_loss, rtol=1e-4), \\\n             f\"AAA optimal loss {actual_loss} differs from expected {expected_loss}\"\n@@ -301,7 +301,7 @@ def test_aaa_two_stage_initial(self):\n         model = ADAM(model=\"AAA\", lags=[12], initial=\"two-stage\")\n         model.fit(AIRPASSENGERS)\n \n-        expected_loss = 565.188104\n+        expected_loss = 565.123455\n         actual_loss = model.loss_value\n         assert np.isclose(actual_loss, expected_loss, rtol=1e-4), \\\n             f\"AAA two-stage loss {actual_loss} differs from expected {expected_loss}\"\n@@ -343,7 +343,7 @@ def test_aaa_no_persistence(self):\n         model = ADAM(model=\"AAA\", lags=[12])\n         model.fit(AIRPASSENGERS)\n \n-        expected_loss = 565.381907\n+        expected_loss = 565.313766\n         actual_loss = model.loss_value\n         assert np.isclose(actual_loss, expected_loss, rtol=1e-4), \\\n             f\"AAA loss {actual_loss} differs from expected {expected_loss}\"\n@@ -361,7 +361,7 @@ def test_aaa_alpha_only(self):\n         assert model.persistence_level_ == 0.5\n \n         # Reference loss with alpha=0.5\n-        expected_loss = 703.748569\n+        expected_loss = 636.965563\n         actual_loss = model.loss_value\n         assert np.isclose(actual_loss, expected_loss, rtol=1e-3), \\\n             f\"AAA alpha=0.5 loss {actual_loss} differs from expected {expected_loss}\"\n@@ -376,7 +376,7 @@ def test_aaa_alpha_beta(self):\n         assert model.persistence_trend_ == 0.1\n \n         # Reference loss\n-        expected_loss = 722.992495\n+        expected_loss = 654.328174\n         actual_loss = model.loss_value\n         assert np.isclose(actual_loss, expected_loss, rtol=1e-3), \\\n             f\"AAA alpha=0.5, beta=0.1 loss {actual_loss} differs from expected {expected_loss}\"\n@@ -401,9 +401,9 @@ def test_aaa_estimated_persistence_values(self):\n \n         B = model.coef\n         # Reference values\n-        expected_alpha = 0.23373680\n-        expected_beta = 0.00056139\n-        expected_gamma = 0.76623396\n+        expected_alpha = 0.24444748\n+        expected_beta = 0.00108759\n+        expected_gamma = 0.75490673\n \n         assert np.isclose(B[0], expected_alpha, rtol=1e-3), \\\n             f\"Alpha {B[0]} differs from expected {expected_alpha}\""
+    },
+    {
+      "sha": "3c8b1cd7fd8f1e3ed8a0a5678fd249d9f6a5d5c0",
+      "filename": "python/tests/test_adam_explanatory.py",
+      "status": "added",
+      "additions": 297,
+      "deletions": 0,
+      "changes": 297,
+      "blob_url": "https://github.com/config-i1/smooth/blob/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Ftests%2Ftest_adam_explanatory.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/fa92de3b65e5fd60820ec40fe73b6cf488188468/python%2Ftests%2Ftest_adam_explanatory.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Ftests%2Ftest_adam_explanatory.py?ref=fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "patch": "@@ -0,0 +1,297 @@\n+\"\"\"Tests for ADAM with explanatory variables (ETSX models).\n+\n+Data generated in R:\n+    set.seed(42)\n+    n <- 120\n+    x1 <- rnorm(n); x2 <- rnorm(n)\n+    y <- 10 + 2*x1 - 1.5*x2 + rnorm(n)\n+    write.csv(data.frame(y=y, x1=x1, x2=x2), \"tests/data/etsx_data.csv\", row.names=FALSE)\n+\n+R reference (adam(df, model=\"AAN\", regressors=\"use\", formula=y~x1+x2)):\n+    smoother=\"global\" (default since smooth v4.4.1 / Python v1.0.1)\n+    alpha=0.00890, beta=0, x1=1.915, x2=-1.461\n+    AIC=339.2135\n+    Fitted[1:5]=[15.24117, 11.48431, 10.92935, 13.08419, 11.19438]\n+    Forecast[1:3]=[10.91767, 7.99035, 9.92983] (using last 12 rows as X_new)\n+\"\"\"\n+\n+from pathlib import Path\n+\n+import numpy as np\n+import pandas as pd\n+import pytest\n+\n+from smooth import ADAM\n+\n+DATA_PATH = Path(__file__).parent / \"data\" / \"etsx_data.csv\"\n+\n+# R reference values (adam, smoother=\"global\", no holdout)\n+R_AIC = 339.2135\n+R_FITTED_5 = [15.24117, 11.48431, 10.92935, 13.08419, 11.19438]\n+R_FORECAST_3 = [10.91767, 7.99035, 9.92983]\n+R_COEF_ALPHA = 0.00890\n+R_COEF_X1 = 1.915\n+R_COEF_X2 = -1.461\n+\n+\n+@pytest.fixture\n+def etsx_data():\n+    df = pd.read_csv(DATA_PATH)\n+    return df[\"y\"].values, df[[\"x1\", \"x2\"]].values\n+\n+\n+# --- regressors=\"use\" ---\n+\n+def test_etsx_use_fits(etsx_data):\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\")\n+    model.fit(y, X)\n+    assert model._explanatory[\"xreg_model\"] is True\n+    assert model._explanatory[\"xreg_number\"] == 2\n+\n+\n+def test_etsx_use_aic_matches_r(etsx_data):\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\")\n+    model.fit(y, X)\n+    assert abs(model.aic - R_AIC) < 1.0\n+\n+\n+def test_etsx_use_coefs_match_r(etsx_data):\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\")\n+    model.fit(y, X)\n+    # B = [alpha, beta, x1, x2]\n+    B = model.coef\n+    assert abs(B[0] - R_COEF_ALPHA) < 0.01\n+    assert abs(B[2] - R_COEF_X1) < 0.1\n+    assert abs(B[3] - R_COEF_X2) < 0.1\n+\n+\n+def test_etsx_use_fitted_matches_r(etsx_data):\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\")\n+    model.fit(y, X)\n+    assert np.allclose(model.fitted[:5].values, R_FITTED_5, atol=0.1)\n+\n+\n+def test_etsx_use_forecast_matches_r(etsx_data):\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\")\n+    model.fit(y, X)\n+    X_new = X[-12:]\n+    fc = model.predict(h=12, X=X_new)\n+    assert np.allclose(fc.mean.values[:3], R_FORECAST_3, atol=0.1)\n+\n+\n+def test_etsx_use_forecast_shape(etsx_data):\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\")\n+    model.fit(y, X)\n+    rng = np.random.default_rng(99)\n+    X_new = rng.standard_normal((12, 2))\n+    fc = model.predict(h=12, X=X_new)\n+    assert len(fc.mean) == 12\n+    assert not np.any(np.isnan(fc.mean.values))\n+\n+\n+def test_etsx_use_states_shape(etsx_data):\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\")\n+    model.fit(y, X)\n+    # AAN + 2 xreg = 4 state rows\n+    assert model.states.shape[0] == 4\n+    assert model.states.shape[1] == len(y) + 1\n+\n+\n+# --- regressors=\"select\" ---\n+\n+def test_etsx_select_fits(etsx_data):\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"select\")\n+    model.fit(y, X)\n+    assert model._explanatory[\"xreg_model\"] is True\n+\n+\n+def test_etsx_select_keeps_signal(etsx_data):\n+    \"\"\"Both signal variables should be selected from the data.\"\"\"\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"select\")\n+    model.fit(y, X)\n+    assert model._explanatory[\"xreg_number\"] == 2\n+\n+\n+def test_etsx_select_drops_noise(etsx_data):\n+    \"\"\"Noise columns should be dropped by stepwise selection.\"\"\"\n+    y, X = etsx_data\n+    rng = np.random.default_rng(7)\n+    X_noise = np.column_stack([X, rng.standard_normal((len(y), 3))])\n+    model = ADAM(model=\"AAN\", regressors=\"select\")\n+    model.fit(y, X_noise)\n+    assert model._explanatory[\"xreg_number\"] <= 2\n+\n+\n+# --- regressors=\"adapt\" ---\n+\n+def test_etsx_adapt_fits(etsx_data):\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"adapt\")\n+    model.fit(y, X)\n+    assert model._explanatory[\"xreg_model\"] is True\n+\n+\n+def test_etsx_adapt_states_shape(etsx_data):\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"adapt\")\n+    model.fit(y, X)\n+    # Level + trend + 2 adaptive xreg = 4 rows\n+    assert model.states.shape[0] == 4\n+\n+\n+def test_etsx_adapt_aic_better_than_null(etsx_data):\n+    \"\"\"Adapt model should fit reasonably (AIC finite).\"\"\"\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"adapt\")\n+    model.fit(y, X)\n+    assert np.isfinite(model.aic)\n+\n+\n+# --- edge cases ---\n+\n+def test_etsx_single_regressor(etsx_data):\n+    y, X = etsx_data\n+    model = ADAM(model=\"ANN\", regressors=\"use\")\n+    model.fit(y, X[:, :1])\n+    assert model._explanatory[\"xreg_number\"] == 1\n+    assert model.states.shape[0] == 2  # level + 1 xreg\n+\n+\n+def test_etsx_holdout(etsx_data):\n+    y, X = etsx_data\n+    h = 12\n+    model = ADAM(model=\"AAN\", regressors=\"use\", holdout=True, h=h)\n+    model.fit(y, X)\n+    fc = model.predict(h=h, X=X[-h:])\n+    assert len(fc.mean) == h\n+\n+\n+def test_etsx_no_x_fits_plain_ets(etsx_data):\n+    \"\"\"regressors='use' with no X just fits a plain ETS model.\"\"\"\n+    y, _ = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\")\n+    model.fit(y)\n+    assert model._explanatory.get(\"xreg_model\") is False\n+\n+\n+def test_etsx_short_x_pads_with_warning(etsx_data):\n+    \"\"\"X shorter than y: last row is repeated and a warning is issued.\"\"\"\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\")\n+    with pytest.warns(UserWarning, match=\"repeated\"):\n+        model.fit(y, X[:-5])\n+    assert model._explanatory[\"xreg_number\"] == 2\n+\n+\n+def test_etsx_dataframe_x(etsx_data):\n+    y, X = etsx_data\n+    X_df = pd.DataFrame(X, columns=[\"x1\", \"x2\"])\n+    model = ADAM(model=\"AAN\", regressors=\"use\")\n+    model.fit(y, X_df)\n+    assert model._explanatory[\"xreg_number\"] == 2\n+    assert model._explanatory[\"xreg_names\"] == [\"x1\", \"x2\"]\n+\n+\n+# --- initial type R/Python equivalence ---\n+# R reference: adam(df, model=\"AAN\", regressors=\"use\", formula=y~x1+x2, initial=X)\n+\n+def test_etsx_initial_backcasting(etsx_data):\n+    \"\"\"initial='backcasting': xreg coefs in B, AIC and fitted match R.\"\"\"\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\", initial=\"backcasting\")\n+    model.fit(y, X)\n+    B = model.coef\n+    # R (smoother=\"global\"): alpha=0.00890, x1=1.91508, x2=-1.46058, AIC=339.2135\n+    assert abs(B[0] - 0.00890) < 0.02\n+    assert abs(B[2] - 1.91508) < 0.1\n+    assert abs(B[3] - (-1.46058)) < 0.1\n+    assert abs(model.aic - 339.2135) < 1.0\n+    assert abs(model.fitted.values[0] - 15.241) < 0.5\n+\n+\n+def test_etsx_initial_complete_no_xreg_in_b(etsx_data):\n+    \"\"\"initial='complete': xreg coefs NOT in B (backcasting handles them).\"\"\"\n+    y, X = etsx_data\n+    model_bc = ADAM(model=\"AAN\", regressors=\"use\", initial=\"backcasting\")\n+    model_bc.fit(y, X)\n+    model_co = ADAM(model=\"AAN\", regressors=\"use\", initial=\"complete\")\n+    model_co.fit(y, X)\n+    # \"complete\" B must have 2 fewer params (the 2 xreg coefs are excluded)\n+    assert len(model_co.coef) == len(model_bc.coef) - 2\n+    # AIC and fitted[0] should be close to R reference (smoother=\"global\")\n+    assert abs(model_co.aic - 335.2486) < 1.5\n+    assert abs(model_co.fitted.values[0] - 15.265) < 0.5\n+\n+\n+def test_etsx_initial_optimal(etsx_data):\n+    \"\"\"initial='optimal': xreg coefs in B (after ETS initials), match R reference.\"\"\"\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\", initial=\"optimal\")\n+    model.fit(y, X)\n+    B = model.coef\n+    # For \"optimal\", B = [alpha, beta, level_init, trend_init, x1, x2]\n+    # R (smoother=\"global\"): x1=1.91839, x2=-1.47938, AIC=338.46, fitted[0]=14.956\n+    assert abs(B[-2] - 1.91839) < 0.15\n+    assert abs(B[-1] - (-1.47938)) < 0.15\n+    assert abs(model.aic - 338.4623) < 2.0\n+    assert abs(model.fitted.values[0] - 14.956) < 0.5\n+\n+\n+def test_etsx_initial_two_stage(etsx_data):\n+    \"\"\"initial='two-stage': xreg coefs in B (after ETS initials), match R reference.\"\"\"\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\", initial=\"two-stage\")\n+    model.fit(y, X)\n+    B = model.coef\n+    # For \"two-stage\", B = [alpha, beta, level_init, trend_init, x1, x2]\n+    # R (smoother=\"global\"): x1=1.91726, x2=-1.47840, AIC=338.37, fitted[0]=14.959\n+    assert abs(B[-2] - 1.91726) < 0.15\n+    assert abs(B[-1] - (-1.47840)) < 0.15\n+    assert abs(model.aic - 338.3654) < 2.0\n+    assert abs(model.fitted.values[0] - 14.959) < 0.5\n+\n+\n+# --- initial={\"xreg\": [...]} ---\n+\n+def test_initial_xreg_accepted(etsx_data):\n+    \"\"\"initial={'xreg': [...]} is accepted and model fits without error.\"\"\"\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\", initial={\"xreg\": [2.0, -1.5]})\n+    model.fit(y, X)\n+    assert model._explanatory[\"xreg_model\"] is True\n+\n+\n+def test_initial_xreg_converges_to_same_result(etsx_data):\n+    \"\"\"Different xreg seeds converge to the same loss value.\"\"\"\n+    y, X = etsx_data\n+    m1 = ADAM(model=\"AAN\", regressors=\"use\", initial={\"xreg\": [0.0, 0.0]})\n+    m1.fit(y, X)\n+    m2 = ADAM(model=\"AAN\", regressors=\"use\", initial={\"xreg\": [2.0, -1.5]})\n+    m2.fit(y, X)\n+    assert abs(m1.loss_value - m2.loss_value) < 1.0\n+\n+\n+def test_initial_xreg_wrong_length_raises(etsx_data):\n+    \"\"\"initial={'xreg': [...]} with wrong length raises ValueError.\"\"\"\n+    y, X = etsx_data  # X has 2 columns\n+    model = ADAM(model=\"AAN\", regressors=\"use\", initial={\"xreg\": [1.0]})\n+    with pytest.raises(ValueError, match=\"xreg\"):\n+        model.fit(y, X)\n+\n+\n+def test_initial_xreg_combined_with_level(etsx_data):\n+    \"\"\"initial dict can mix 'xreg' with other keys.\"\"\"\n+    y, X = etsx_data\n+    model = ADAM(model=\"AAN\", regressors=\"use\",\n+                 initial={\"level\": 10.0, \"xreg\": [2.0, -1.5]})\n+    model.fit(y, X)\n+    assert model._explanatory[\"xreg_model\"] is True"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "4d58a41562e0c7cab8475c8f4900d54703df19df",
+      "message": "Merge pull request #336 from config-i1/master\n\nBringing up to speed",
+      "parent_shas": [
+        "82a3f2378cedc575c9931d10e16f741d1052fbd7",
+        "761410e11bada456b4a652baaa14368708059c3f"
+      ]
+    },
+    {
+      "sha": "1ef555b61254d94e6fa321098551d09ab36076cf",
+      "message": "Merge pull request #341 from config-i1/master\n\nRestarting the work with the explanatory variables",
+      "parent_shas": [
+        "4d58a41562e0c7cab8475c8f4900d54703df19df",
+        "03b9c06b07a06da1ee4f35a0793080e688f81aae"
+      ]
+    },
+    {
+      "sha": "207d9b5017fdfa688732918612b68f5e462625ef",
+      "message": "First try to introduce explanatory variables",
+      "parent_shas": [
+        "1ef555b61254d94e6fa321098551d09ab36076cf"
+      ]
+    },
+    {
+      "sha": "c07d0f228f6b6e9b525980c321001898bec899ac",
+      "message": "ADAMX should work now",
+      "parent_shas": [
+        "207d9b5017fdfa688732918612b68f5e462625ef"
+      ]
+    },
+    {
+      "sha": "a90549b24081bc1030242faa630dd47cabc57332",
+      "message": "Tuning of provided xreg and for the passed initial B values",
+      "parent_shas": [
+        "c07d0f228f6b6e9b525980c321001898bec899ac"
+      ]
+    },
+    {
+      "sha": "7c291822cacbd5ad73b68c6a67b5caf05224963a",
+      "message": "v1.0.1",
+      "parent_shas": [
+        "a90549b24081bc1030242faa630dd47cabc57332"
+      ]
+    },
+    {
+      "sha": "e9f3232af0d97fba16461b23e99f718836b49448",
+      "message": "Example of work with xreg",
+      "parent_shas": [
+        "7c291822cacbd5ad73b68c6a67b5caf05224963a"
+      ]
+    },
+    {
+      "sha": "79079986bf3e8869ff36906a8cdd6324c5724de6",
+      "message": "A bit more info and fixes in badges",
+      "parent_shas": [
+        "e9f3232af0d97fba16461b23e99f718836b49448"
+      ]
+    },
+    {
+      "sha": "98296e86c4ae00448a610398122209a5bbd6c65a",
+      "message": "R script with ADAMX",
+      "parent_shas": [
+        "79079986bf3e8869ff36906a8cdd6324c5724de6"
+      ]
+    },
+    {
+      "sha": "9f5302b6f8c0e82dbce11e85bc1b262c02c428d5",
+      "message": "Test to make sure R aligns with Python",
+      "parent_shas": [
+        "98296e86c4ae00448a610398122209a5bbd6c65a"
+      ]
+    },
+    {
+      "sha": "b1b692ad160df2e1dcce8102c19db43d4c988e23",
+      "message": "smoother=\"global\" is now default in Python, aligning with R v4.4.1.",
+      "parent_shas": [
+        "9f5302b6f8c0e82dbce11e85bc1b262c02c428d5"
+      ]
+    },
+    {
+      "sha": "0d96cadb4bee53ec2e7801562c29132f5660df71",
+      "message": "ruffing the code",
+      "parent_shas": [
+        "b1b692ad160df2e1dcce8102c19db43d4c988e23"
+      ]
+    },
+    {
+      "sha": "cf49c96c65db037f185c2217dd6444e53c288af7",
+      "message": "Reformatted the files",
+      "parent_shas": [
+        "0d96cadb4bee53ec2e7801562c29132f5660df71"
+      ]
+    },
+    {
+      "sha": "fa92de3b65e5fd60820ec40fe73b6cf488188468",
+      "message": "Fixes in path",
+      "parent_shas": [
+        "cf49c96c65db037f185c2217dd6444e53c288af7"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "adds_new_tests",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__config-i1__smooth__pr348.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\config-i1__smooth__pr348__python_java__config-i1__smooth__pr348\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\config-i1__smooth__pr348__python_java__config-i1__smooth__pr348\\rn"
+  }
+}

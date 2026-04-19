@@ -1,0 +1,163 @@
+{
+  "instance_id": "py2_py3__python__mypy__pr20693",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "python/mypy",
+  "pr_number": 20693,
+  "pr_url": "https://github.com/python/mypy/pull/20693",
+  "repo": {
+    "full_name": "python/mypy",
+    "clone_url": "https://github.com/python/mypy.git",
+    "default_branch": "master",
+    "created_at": "2012-12-07T13:30:23Z",
+    "stars": 20377,
+    "license": "NOASSERTION",
+    "size_kb": 82560
+  },
+  "pull_request": {
+    "id": 3226489592,
+    "title": "Improve \"Name is not defined\" errors with fuzzy matching",
+    "body": "This PR collects all visible names in the current scope and uses fuzzy matching to provide suggestions in the error messages",
+    "created_at": "2026-01-30T06:12:03Z",
+    "merged_at": "2026-03-30T15:50:21Z",
+    "base_sha": "69a0925bbf08cad3858c1b4abf06fe6f497fdb24",
+    "head_sha": "cba38077a019f99f8208cabdd68aaa2a7506cb72",
+    "merge_commit_sha": "620af7057dc25f3ef856ee885237609be8526852",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "3cae656ce264f00ac5417b0559a8cba1453f5eb5",
+  "final_sha": "cba38077a019f99f8208cabdd68aaa2a7506cb72",
+  "changed_files": [
+    {
+      "sha": "283ad57f12def025672a4653eef7ba16d188d5cb",
+      "filename": "mypy/semanal.py",
+      "status": "modified",
+      "additions": 45,
+      "deletions": 0,
+      "changes": 45,
+      "blob_url": "https://github.com/python/mypy/blob/cba38077a019f99f8208cabdd68aaa2a7506cb72/mypy%2Fsemanal.py",
+      "raw_url": "https://github.com/python/mypy/raw/cba38077a019f99f8208cabdd68aaa2a7506cb72/mypy%2Fsemanal.py",
+      "contents_url": "https://api.github.com/repos/python/mypy/contents/mypy%2Fsemanal.py?ref=cba38077a019f99f8208cabdd68aaa2a7506cb72",
+      "patch": "@@ -7475,6 +7475,18 @@ def name_not_defined(self, name: str, ctx: Context, namespace: str | None = None\n             self.record_incomplete_ref()\n             return\n         message = f'Name \"{name}\" is not defined'\n+        if (\n+            not self.msg.prefer_simple_messages()\n+            and \".\" not in name\n+            and not (name.startswith(\"__\") and name.endswith(\"__\"))\n+            and f\"builtins.{name}\" not in SUGGESTED_TEST_FIXTURES\n+            and ctx.line not in self.errors.ignored_lines.get(self.errors.file, {})\n+        ):\n+            alternatives = self._get_names_in_scope()\n+            alternatives.discard(name)\n+            matches = best_matches(name, alternatives, n=3)\n+            if matches:\n+                message += f\"; did you mean {pretty_seq(matches, 'or')}?\"\n         self.fail(message, ctx, code=codes.NAME_DEFINED)\n \n         if f\"builtins.{name}\" in SUGGESTED_TEST_FIXTURES:\n@@ -7499,6 +7511,39 @@ def name_not_defined(self, name: str, ctx: Context, namespace: str | None = None\n             ).format(module=module, name=lowercased[fullname].rsplit(\".\", 1)[-1])\n             self.note(hint, ctx, code=codes.NAME_DEFINED)\n \n+    def _get_names_in_scope(self) -> set[str]:\n+        \"\"\"Collect all names visible in the current scope for fuzzy matching suggestions.\n+\n+        This includes:\n+        - Local variables (from function scopes)\n+        - Class attributes (only when directly in class body, not in methods)\n+        - Global/module-level names\n+        - Builtins\n+        \"\"\"\n+        names: set[str] = set()\n+\n+        for table in self.locals:\n+            if table is not None:\n+                names.update(table.keys())\n+\n+        if self.is_class_scope():\n+            assert self.type is not None\n+            names.update(self.type.names.keys())\n+\n+        names.update(self.globals.keys())\n+\n+        b = self.globals.get(\"__builtins__\", None)\n+        if b:\n+            assert isinstance(b.node, MypyFile)\n+            for builtin_name in b.node.names.keys():\n+                if not (\n+                    len(builtin_name) > 1 and builtin_name[0] == \"_\" and builtin_name[1] != \"_\"\n+                ):\n+                    names.add(builtin_name)\n+\n+        # Filter out internal/dunder names that aren't useful as suggestions\n+        return {n for n in names if not n.startswith(\"__\")}\n+\n     def already_defined(\n         self, name: str, ctx: Context, original_ctx: SymbolTableNode | SymbolNode | None, noun: str\n     ) -> None:"
+    },
+    {
+      "sha": "e4d9f663496a51905b6901d47f5dcbefc42a565f",
+      "filename": "test-data/unit/check-errorcodes.test",
+      "status": "modified",
+      "additions": 71,
+      "deletions": 0,
+      "changes": 71,
+      "blob_url": "https://github.com/python/mypy/blob/cba38077a019f99f8208cabdd68aaa2a7506cb72/test-data%2Funit%2Fcheck-errorcodes.test",
+      "raw_url": "https://github.com/python/mypy/raw/cba38077a019f99f8208cabdd68aaa2a7506cb72/test-data%2Funit%2Fcheck-errorcodes.test",
+      "contents_url": "https://api.github.com/repos/python/mypy/contents/test-data%2Funit%2Fcheck-errorcodes.test?ref=cba38077a019f99f8208cabdd68aaa2a7506cb72",
+      "patch": "@@ -21,6 +21,77 @@ def f() -> None:\n [file m.py]\n [builtins fixtures/module.pyi]\n \n+[case testErrorCodeUndefinedNameSuggestion]\n+my_variable = 42\n+my_constant = 100\n+\n+x = my_variabel  # E: Name \"my_variabel\" is not defined; did you mean \"my_variable\"?  [name-defined]\n+\n+def calculate_sum(items: int) -> int:\n+    return items\n+\n+calculate_summ(1)  # E: Name \"calculate_summ\" is not defined; did you mean \"calculate_sum\"?  [name-defined]\n+\n+class MyClass:\n+    pass\n+\n+y = MyClas()  # E: Name \"MyClas\" is not defined; did you mean \"MyClass\"?  [name-defined]\n+\n+unknown_xyz  # E: Name \"unknown_xyz\" is not defined  [name-defined]\n+[builtins fixtures/module.pyi]\n+\n+[case testErrorCodeUndefinedNameSuggestionLocal]\n+def foo() -> None:\n+    local_value = 10\n+    x = local_valeu  # E: Name \"local_valeu\" is not defined; did you mean \"local_value\"?  [name-defined]\n+[builtins fixtures/module.pyi]\n+\n+[case testErrorCodeUndefinedNameSuggestionOuterScope]\n+top_level_var = 42\n+\n+def foo() -> None:\n+    x = top_level_vr  # E: Name \"top_level_vr\" is not defined; did you mean \"top_level_var\"?  [name-defined]\n+[builtins fixtures/module.pyi]\n+\n+[case testErrorCodeUndefinedNameSuggestionClassBody]\n+class Foo:\n+    class_attr = 10\n+    x = class_atr  # E: Name \"class_atr\" is not defined; did you mean \"class_attr\"?  [name-defined]\n+[builtins fixtures/module.pyi]\n+\n+[case testErrorCodeUndefinedNameSuggestionFromImport]\n+from m import some_function\n+\n+some_functon(1)  # E: Name \"some_functon\" is not defined; did you mean \"some_function\"?  [name-defined]\n+\n+[file m.py]\n+def some_function(x: int) -> int:\n+    return x\n+[builtins fixtures/module.pyi]\n+\n+[case testErrorCodeUndefinedNameSuggestionBuiltin]\n+x = lenn  # E: Name \"lenn\" is not defined; did you mean \"len\"?  [name-defined]\n+[builtins fixtures/len.pyi]\n+\n+[case testErrorCodeUndefinedNameSuggestionClassMethod]\n+class Foo:\n+    class_attr = 10\n+    def method(self) -> None:\n+        x = class_atr  # E: Name \"class_atr\" is not defined  [name-defined]\n+[builtins fixtures/module.pyi]\n+\n+[case testErrorCodeUndefinedNameSuggestionMultiple]\n+total_count = 1\n+total_counts = 2\n+x = total_countt  # E: Name \"total_countt\" is not defined; did you mean \"total_count\" or \"total_counts\"?  [name-defined]\n+[builtins fixtures/module.pyi]\n+\n+[case testErrorCodeUndefinedNameSuggestionIgnored]\n+my_variable = 42\n+x = my_variabel  # type: ignore[name-defined]\n+y = my_variabel  # type: ignore\n+[builtins fixtures/module.pyi]\n+\n [case testErrorCodeUnclassifiedError]\n class A:\n     def __init__(self) -> int: \\"
+    },
+    {
+      "sha": "6c91d0d2d5ce1994a12fd26479c5cfc2d80bdfac",
+      "filename": "test-data/unit/pythoneval.test",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/python/mypy/blob/cba38077a019f99f8208cabdd68aaa2a7506cb72/test-data%2Funit%2Fpythoneval.test",
+      "raw_url": "https://github.com/python/mypy/raw/cba38077a019f99f8208cabdd68aaa2a7506cb72/test-data%2Funit%2Fpythoneval.test",
+      "contents_url": "https://api.github.com/repos/python/mypy/contents/test-data%2Funit%2Fpythoneval.test?ref=cba38077a019f99f8208cabdd68aaa2a7506cb72",
+      "patch": "@@ -608,7 +608,7 @@ def f(x: _T) -> None: pass\n s: FrozenSet\n [out]\n _program.py:2: error: Name \"_T\" is not defined\n-_program.py:3: error: Name \"FrozenSet\" is not defined\n+_program.py:3: error: Name \"FrozenSet\" is not defined; did you mean \"frozenset\"?\n \n [case testVarArgsFunctionSubtyping]\n import typing"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "6ca3d6fb3d1a6f5466f4dfbc819e0ffd8c27d040",
+      "message": "added fuzzy matching for name not defined errors",
+      "parent_shas": [
+        "3cae656ce264f00ac5417b0559a8cba1453f5eb5"
+      ]
+    },
+    {
+      "sha": "115b8316b86e30afbf66c5f7d7700393f076caa9",
+      "message": "added test to validate suggestions",
+      "parent_shas": [
+        "6ca3d6fb3d1a6f5466f4dfbc819e0ffd8c27d040"
+      ]
+    },
+    {
+      "sha": "31d0bd2bfa0ed0c8c0ca301191d6a3695c1fa6fd",
+      "message": "fix filtering names bug and be more strict on name collection",
+      "parent_shas": [
+        "115b8316b86e30afbf66c5f7d7700393f076caa9"
+      ]
+    },
+    {
+      "sha": "55a8efcefddf65d4c5e440f3c931e15fee7cebe3",
+      "message": "added prefer_simple_messages feature gate",
+      "parent_shas": [
+        "31d0bd2bfa0ed0c8c0ca301191d6a3695c1fa6fd"
+      ]
+    },
+    {
+      "sha": "1dcdd5f44c567f707ccaceff649970778fe5941c",
+      "message": "skip fuzzy matching for ignored errors",
+      "parent_shas": [
+        "55a8efcefddf65d4c5e440f3c931e15fee7cebe3"
+      ]
+    },
+    {
+      "sha": "ce1d1efb4546bac0027cf8af12013cf3b88c76ad",
+      "message": "rename",
+      "parent_shas": [
+        "1dcdd5f44c567f707ccaceff649970778fe5941c"
+      ]
+    },
+    {
+      "sha": "cae911d7e8510018757cbcc0fdcaeb9c0730ca88",
+      "message": "add test for ignored error",
+      "parent_shas": [
+        "ce1d1efb4546bac0027cf8af12013cf3b88c76ad"
+      ]
+    },
+    {
+      "sha": "9d0b73d568e35e6b2de54d816826a9a3e17144ab",
+      "message": "add more test cases",
+      "parent_shas": [
+        "cae911d7e8510018757cbcc0fdcaeb9c0730ca88"
+      ]
+    },
+    {
+      "sha": "ba25bd9492eec8221371e55a800327a0cea49ac3",
+      "message": "simplified ignored error checking",
+      "parent_shas": [
+        "9d0b73d568e35e6b2de54d816826a9a3e17144ab"
+      ]
+    },
+    {
+      "sha": "cba38077a019f99f8208cabdd68aaa2a7506cb72",
+      "message": "[pre-commit.ci] auto fixes from pre-commit.com hooks\n\nfor more information, see https://pre-commit.ci",
+      "parent_shas": [
+        "ba25bd9492eec8221371e55a800327a0cea49ac3"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__python__mypy__pr20693.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\python__mypy__pr20693__py2_py3__python__mypy__pr20693\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\python__mypy__pr20693__py2_py3__python__mypy__pr20693\\rn"
+  }
+}

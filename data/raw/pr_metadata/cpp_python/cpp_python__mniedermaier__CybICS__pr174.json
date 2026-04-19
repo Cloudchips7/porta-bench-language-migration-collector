@@ -1,0 +1,76 @@
+{
+  "instance_id": "cpp_python__mniedermaier__CybICS__pr174",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "mniedermaier/CybICS",
+  "pr_number": 174,
+  "pr_url": "https://github.com/mniedermaier/CybICS/pull/174",
+  "repo": {
+    "full_name": "mniedermaier/CybICS",
+    "clone_url": "https://github.com/mniedermaier/CybICS.git",
+    "default_branch": "main",
+    "created_at": "2023-11-23T00:06:09Z",
+    "stars": 59,
+    "license": "MIT",
+    "size_kb": 90147
+  },
+  "pull_request": {
+    "id": 3424031986,
+    "title": "Fix CodeQL: remove c-cpp (builds inside Docker)",
+    "body": "## Summary\n- CodeQL C/C++ analysis fails because the C code (STM32 firmware via Zephyr, OpenPLC) is built inside Docker containers — autobuild cannot instrument these builds\n- Remove `c-cpp` from the CodeQL language matrix, keeping only `python`\n- C/C++ static analysis is already covered by the existing **flawfinder** workflow\n\n## Test plan\n- [ ] Verify CodeQL workflow passes with Python-only analysis\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "created_at": "2026-03-20T08:59:29Z",
+    "merged_at": "2026-03-20T08:59:44Z",
+    "base_sha": "8535bb439982705caa54648d0d9d5ecaf4fa8e39",
+    "head_sha": "04c9ef414caafc5942bef71559632a4a7a7a27de",
+    "merge_commit_sha": "c9e539bba5f884c0486ff76eccf79ca0c591f3b3",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "8535bb439982705caa54648d0d9d5ecaf4fa8e39",
+  "final_sha": "04c9ef414caafc5942bef71559632a4a7a7a27de",
+  "changed_files": [
+    {
+      "sha": "6baa0c46d0ed48efe680754bb1db5ada5bee9c51",
+      "filename": ".github/workflows/codeql.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/mniedermaier/CybICS/blob/04c9ef414caafc5942bef71559632a4a7a7a27de/.github%2Fworkflows%2Fcodeql.yml",
+      "raw_url": "https://github.com/mniedermaier/CybICS/raw/04c9ef414caafc5942bef71559632a4a7a7a27de/.github%2Fworkflows%2Fcodeql.yml",
+      "contents_url": "https://api.github.com/repos/mniedermaier/CybICS/contents/.github%2Fworkflows%2Fcodeql.yml?ref=04c9ef414caafc5942bef71559632a4a7a7a27de",
+      "patch": "@@ -19,7 +19,7 @@ jobs:\n     strategy:\n       fail-fast: false\n       matrix:\n-        language: [ python, c-cpp ]\n+        language: [ python ]\n \n     steps:\n     - name: Checkout repository"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "04c9ef414caafc5942bef71559632a4a7a7a27de",
+      "message": "Remove c-cpp from CodeQL analysis (builds inside Docker)\n\nThe C/C++ code (STM32 firmware, OpenPLC) is built inside Docker\ncontainers, so CodeQL autobuild cannot instrument the compilation.\nThe C code is already covered by flawfinder for static analysis.\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "8535bb439982705caa54648d0d9d5ecaf4fa8e39"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__mniedermaier__CybICS__pr174.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\mniedermaier__CybICS__pr174__cpp_python__mniedermaier__CybICS__pr174\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\mniedermaier__CybICS__pr174__cpp_python__mniedermaier__CybICS__pr174\\rn"
+  }
+}

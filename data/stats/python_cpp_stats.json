@@ -1,34 +1,41 @@
 {
   "scenario": "language_migration",
   "subtype": "python_cpp",
-  "raw_pr_count": 100,
-  "unique_pr_count": 28,
-  "collect_candidate_count": 5,
-  "auto_filtered_candidate_count": 3,
-  "auto_excluded_count": 2,
-  "enrich_error_count": 0,
+  "raw_pr_count": 800,
+  "unique_pr_count": 696,
+  "collect_candidate_count": 150,
+  "auto_filtered_candidate_count": 29,
+  "auto_excluded_count": 120,
+  "enrich_error_count": 1,
   "manual_positive_count": 0,
   "manual_negative_count": 0,
   "manual_uncertain_count": 0,
   "processed_candidate_count": 0,
   "has_tests_before_ratio": 1.0,
-  "adds_new_tests_ratio": 0.0,
+  "adds_new_tests_ratio": 0.2414,
   "query_hit_rate": {
-    "query_j": 5
+    "query_j": 5,
+    "query_k": 145
   },
   "auto_exclude_reason_breakdown": {
-    "no_code_changes": 1,
-    "python_cpp_wrapper_noise": 1
+    "bot_generated_pr": 24,
+    "ci_only": 24,
+    "dependency_only": 19,
+    "doc_only": 19,
+    "no_code_changes": 50,
+    "no_tests_detected": 2,
+    "python_cpp_wrapper_noise": 51,
+    "too_many_commits": 6
   },
   "migration_type_breakdown": {
-    "cross_language_migration": 3
+    "cross_language_migration": 29
   },
   "implementation_scope_breakdown": {},
   "logic_equivalence_scope_breakdown": {},
   "reproducible_breakdown": {
-    "unknown": 3
+    "unknown": 29
   },
   "issue_rewrite_ready_breakdown": {
-    "needs_check": 3
+    "needs_check": 29
   }
 }

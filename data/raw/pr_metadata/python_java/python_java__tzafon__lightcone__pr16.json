@@ -1,0 +1,139 @@
+{
+  "instance_id": "python_java__tzafon__lightcone__pr16",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "tzafon/lightcone",
+  "pr_number": 16,
+  "pr_url": "https://github.com/tzafon/lightcone/pull/16",
+  "repo": {
+    "full_name": "tzafon/lightcone",
+    "clone_url": "https://github.com/tzafon/lightcone.git",
+    "default_branch": "main",
+    "created_at": "2026-02-08T12:22:42Z",
+    "stars": 11,
+    "license": "Apache-2.0",
+    "size_kb": 17282
+  },
+  "pull_request": {
+    "id": 3518301946,
+    "title": "sync: update Python SDK",
+    "body": "Automated sync from lightcone-python at commit `78babe6`.",
+    "created_at": "2026-04-11T21:53:01Z",
+    "merged_at": "2026-04-11T23:10:33Z",
+    "base_sha": "9dcf619f1a05b73713ee54de2590ec95b0c50b4b",
+    "head_sha": "278fcd0d31f28f3ad0c96ad6144ac45d440de4d6",
+    "merge_commit_sha": "708c27c5f87206b75466c8fde16e5b3429a7a1e6",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "9dcf619f1a05b73713ee54de2590ec95b0c50b4b",
+  "final_sha": "278fcd0d31f28f3ad0c96ad6144ac45d440de4d6",
+  "changed_files": [
+    {
+      "sha": "daf0fd564c4fd17fc1890708aa2afaae35e96b1c",
+      "filename": "sdks/python/pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/tzafon/lightcone/blob/278fcd0d31f28f3ad0c96ad6144ac45d440de4d6/sdks%2Fpython%2Fpyproject.toml",
+      "raw_url": "https://github.com/tzafon/lightcone/raw/278fcd0d31f28f3ad0c96ad6144ac45d440de4d6/sdks%2Fpython%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/tzafon/lightcone/contents/sdks%2Fpython%2Fpyproject.toml?ref=278fcd0d31f28f3ad0c96ad6144ac45d440de4d6",
+      "patch": "@@ -1,6 +1,6 @@\n [project]\n name = \"tzafon\"\n-version = \"2.35.0\"\n+version = \"2.37.1\"\n description = \"The official Python library for the lightcone API\"\n dynamic = [\"readme\"]\n license = \"Apache-2.0\""
+    },
+    {
+      "sha": "63b8cd602a6f4a18847e64705148daca83310b0f",
+      "filename": "sdks/python/src/tzafon/_utils/_utils.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/tzafon/lightcone/blob/278fcd0d31f28f3ad0c96ad6144ac45d440de4d6/sdks%2Fpython%2Fsrc%2Ftzafon%2F_utils%2F_utils.py",
+      "raw_url": "https://github.com/tzafon/lightcone/raw/278fcd0d31f28f3ad0c96ad6144ac45d440de4d6/sdks%2Fpython%2Fsrc%2Ftzafon%2F_utils%2F_utils.py",
+      "contents_url": "https://api.github.com/repos/tzafon/lightcone/contents/sdks%2Fpython%2Fsrc%2Ftzafon%2F_utils%2F_utils.py?ref=278fcd0d31f28f3ad0c96ad6144ac45d440de4d6",
+      "patch": "@@ -86,8 +86,9 @@ def _extract_items(\n     index += 1\n     if is_dict(obj):\n         try:\n-            # We are at the last entry in the path so we must remove the field\n-            if (len(path)) == index:\n+            # Remove the field if there are no more dict keys in the path,\n+            # only \"<array>\" traversal markers or end.\n+            if all(p == \"<array>\" for p in path[index:]):\n                 item = obj.pop(key)\n             else:\n                 item = obj[key]"
+    },
+    {
+      "sha": "c43cd389219b31558aa1a4badb364e8b153f9d6f",
+      "filename": "sdks/python/src/tzafon/_version.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/tzafon/lightcone/blob/278fcd0d31f28f3ad0c96ad6144ac45d440de4d6/sdks%2Fpython%2Fsrc%2Ftzafon%2F_version.py",
+      "raw_url": "https://github.com/tzafon/lightcone/raw/278fcd0d31f28f3ad0c96ad6144ac45d440de4d6/sdks%2Fpython%2Fsrc%2Ftzafon%2F_version.py",
+      "contents_url": "https://api.github.com/repos/tzafon/lightcone/contents/sdks%2Fpython%2Fsrc%2Ftzafon%2F_version.py?ref=278fcd0d31f28f3ad0c96ad6144ac45d440de4d6",
+      "patch": "@@ -1,4 +1,4 @@\n # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.\n \n __title__ = \"tzafon\"\n-__version__ = \"2.35.0\"  # x-release-please-version\n+__version__ = \"2.37.1\"  # x-release-please-version"
+    },
+    {
+      "sha": "717d3c16753906cc6e0f80de78c3db6f98db8682",
+      "filename": "sdks/python/src/tzafon/lib/computer_session.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/tzafon/lightcone/blob/278fcd0d31f28f3ad0c96ad6144ac45d440de4d6/sdks%2Fpython%2Fsrc%2Ftzafon%2Flib%2Fcomputer_session.py",
+      "raw_url": "https://github.com/tzafon/lightcone/raw/278fcd0d31f28f3ad0c96ad6144ac45d440de4d6/sdks%2Fpython%2Fsrc%2Ftzafon%2Flib%2Fcomputer_session.py",
+      "contents_url": "https://api.github.com/repos/tzafon/lightcone/contents/sdks%2Fpython%2Fsrc%2Ftzafon%2Flib%2Fcomputer_session.py?ref=278fcd0d31f28f3ad0c96ad6144ac45d440de4d6",
+      "patch": "@@ -51,9 +51,9 @@ def create(self, kind: str = \"browser\", **kwargs: Any) -> ComputerSession:\n         \"\"\"\n         response = self._client.computers.create(kind=kind, **kwargs)\n         assert response.id is not None\n-        display = kwargs.get(\"display\") or {}\n-        width = display.get(\"width\", 1024)\n-        height = display.get(\"height\", 768)\n+        display: dict[str, Any] = kwargs.get(\"display\") or {}\n+        width: int = display.get(\"width\", 1024)\n+        height: int = display.get(\"height\", 768)\n         return ComputerSession(self._client, response.id, width=width, height=height)\n \n "
+    },
+    {
+      "sha": "866a4e5c2e19038fdf2f3500dec31cd259d97ef6",
+      "filename": "sdks/python/src/tzafon/types/response_create_params.py",
+      "status": "modified",
+      "additions": 118,
+      "deletions": 0,
+      "changes": 118,
+      "blob_url": "https://github.com/tzafon/lightcone/blob/278fcd0d31f28f3ad0c96ad6144ac45d440de4d6/sdks%2Fpython%2Fsrc%2Ftzafon%2Ftypes%2Fresponse_create_params.py",
+      "raw_url": "https://github.com/tzafon/lightcone/raw/278fcd0d31f28f3ad0c96ad6144ac45d440de4d6/sdks%2Fpython%2Fsrc%2Ftzafon%2Ftypes%2Fresponse_create_params.py",
+      "contents_url": "https://api.github.com/repos/tzafon/lightcone/contents/sdks%2Fpython%2Fsrc%2Ftzafon%2Ftypes%2Fresponse_create_params.py?ref=278fcd0d31f28f3ad0c96ad6144ac45d440de4d6",
+      "patch": "@@ -49,6 +49,11 @@\n     \"InputUnionMember1ResponseFileSearchToolCallParamResult\",\n     \"InputUnionMember1ResponseComputerToolCallParam\",\n     \"InputUnionMember1ResponseComputerToolCallParamAction\",\n+    \"InputUnionMember1ResponseComputerToolCallParamActionActionPointAndType\",\n+    \"InputUnionMember1ResponseComputerToolCallParamActionActionMouseDown\",\n+    \"InputUnionMember1ResponseComputerToolCallParamActionActionMouseUp\",\n+    \"InputUnionMember1ResponseComputerToolCallParamActionActionKeyDown\",\n+    \"InputUnionMember1ResponseComputerToolCallParamActionActionKeyUp\",\n     \"InputUnionMember1ResponseComputerToolCallParamPendingSafetyCheck\",\n     \"InputUnionMember1ComputerCallOutput\",\n     \"InputUnionMember1ComputerCallOutputOutput\",\n@@ -105,6 +110,11 @@\n     \"InputUnionMember1ResponseFunctionWebSearchActionActionSearch\",\n     \"InputUnionMember1ResponseComputerToolCall\",\n     \"InputUnionMember1ResponseComputerToolCallAction\",\n+    \"InputUnionMember1ResponseComputerToolCallActionActionPointAndType\",\n+    \"InputUnionMember1ResponseComputerToolCallActionActionMouseDown\",\n+    \"InputUnionMember1ResponseComputerToolCallActionActionMouseUp\",\n+    \"InputUnionMember1ResponseComputerToolCallActionActionKeyDown\",\n+    \"InputUnionMember1ResponseComputerToolCallActionActionKeyUp\",\n     \"InputUnionMember1ResponseComputerToolCallPendingSafetyCheck\",\n     \"InputUnionMember1ResponseReasoningItem\",\n     \"InputUnionMember1ResponseReasoningItemContent\",\n@@ -428,6 +438,56 @@ class InputUnionMember1ResponseFileSearchToolCallParam(TypedDict, total=False, e\n     results: Optional[Iterable[InputUnionMember1ResponseFileSearchToolCallParamResult]]\n \n \n+class InputUnionMember1ResponseComputerToolCallParamActionActionPointAndType(  # type: ignore[call-arg]\n+    TypedDict, total=False, extra_items=object\n+):\n+    \"\"\"Click at a position then type text.\"\"\"\n+\n+    text: Required[str]\n+\n+    type: Required[Literal[\"point_and_type\"]]\n+\n+    x: Required[int]\n+\n+    y: Required[int]\n+\n+\n+class InputUnionMember1ResponseComputerToolCallParamActionActionMouseDown(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]\n+    \"\"\"Press and hold the left mouse button at a position.\"\"\"\n+\n+    type: Required[Literal[\"mouse_down\"]]\n+\n+    x: Required[int]\n+\n+    y: Required[int]\n+\n+\n+class InputUnionMember1ResponseComputerToolCallParamActionActionMouseUp(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]\n+    \"\"\"Release the left mouse button at a position.\"\"\"\n+\n+    type: Required[Literal[\"mouse_up\"]]\n+\n+    x: Required[int]\n+\n+    y: Required[int]\n+\n+\n+class InputUnionMember1ResponseComputerToolCallParamActionActionKeyDown(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]\n+    \"\"\"Press and hold a key.\"\"\"\n+\n+    keys: Required[SequenceNotStr[str]]\n+\n+    type: Required[Literal[\"key_down\"]]\n+\n+\n+class InputUnionMember1ResponseComputerToolCallParamActionActionKeyUp(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]\n+    \"\"\"Release a held key.\"\"\"\n+\n+    keys: Required[SequenceNotStr[str]]\n+\n+    type: Required[Literal[\"key_up\"]]\n+\n+\n InputUnionMember1ResponseComputerToolCallParamAction: TypeAlias = Union[\n     ActionClickParam,\n     ActionDoubleClickParam,\n@@ -438,6 +498,11 @@ class InputUnionMember1ResponseFileSearchToolCallParam(TypedDict, total=False, e\n     ActionScrollParam,\n     ActionTypeParam,\n     ActionWaitParam,\n+    InputUnionMember1ResponseComputerToolCallParamActionActionPointAndType,\n+    InputUnionMember1ResponseComputerToolCallParamActionActionMouseDown,\n+    InputUnionMember1ResponseComputerToolCallParamActionActionMouseUp,\n+    InputUnionMember1ResponseComputerToolCallParamActionActionKeyDown,\n+    InputUnionMember1ResponseComputerToolCallParamActionActionKeyUp,\n ]\n \n \n@@ -1117,6 +1182,54 @@ class InputUnionMember1ResponseFunctionWebSearch(TypedDict, total=False, extra_i\n     type: Required[Literal[\"web_search_call\"]]\n \n \n+class InputUnionMember1ResponseComputerToolCallActionActionPointAndType(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]\n+    \"\"\"Click at a position then type text.\"\"\"\n+\n+    text: Required[str]\n+\n+    type: Required[Literal[\"point_and_type\"]]\n+\n+    x: Required[int]\n+\n+    y: Required[int]\n+\n+\n+class InputUnionMember1ResponseComputerToolCallActionActionMouseDown(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]\n+    \"\"\"Press and hold the left mouse button at a position.\"\"\"\n+\n+    type: Required[Literal[\"mouse_down\"]]\n+\n+    x: Required[int]\n+\n+    y: Required[int]\n+\n+\n+class InputUnionMember1ResponseComputerToolCallActionActionMouseUp(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]\n+    \"\"\"Release the left mouse button at a position.\"\"\"\n+\n+    type: Required[Literal[\"mouse_up\"]]\n+\n+    x: Required[int]\n+\n+    y: Required[int]\n+\n+\n+class InputUnionMember1ResponseComputerToolCallActionActionKeyDown(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]\n+    \"\"\"Press and hold a key.\"\"\"\n+\n+    keys: Required[SequenceNotStr[str]]\n+\n+    type: Required[Literal[\"key_down\"]]\n+\n+\n+class InputUnionMember1ResponseComputerToolCallActionActionKeyUp(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]\n+    \"\"\"Release a held key.\"\"\"\n+\n+    keys: Required[SequenceNotStr[str]]\n+\n+    type: Required[Literal[\"key_up\"]]\n+\n+\n InputUnionMember1ResponseComputerToolCallAction: TypeAlias = Union[\n     ActionClickParam,\n     ActionDoubleClickParam,\n@@ -1127,6 +1240,11 @@ class InputUnionMember1ResponseFunctionWebSearch(TypedDict, total=False, extra_i\n     ActionScrollParam,\n     ActionTypeParam,\n     ActionWaitParam,\n+    InputUnionMember1ResponseComputerToolCallActionActionPointAndType,\n+    InputUnionMember1ResponseComputerToolCallActionActionMouseDown,\n+    InputUnionMember1ResponseComputerToolCallActionActionMouseUp,\n+    InputUnionMember1ResponseComputerToolCallActionActionKeyDown,\n+    InputUnionMember1ResponseComputerToolCallActionActionKeyUp,\n ]\n \n "
+    },
+    {
+      "sha": "e76345abcb404ecc28b3c725ca999b381b11647d",
+      "filename": "sdks/python/src/tzafon/types/response_create_response.py",
+      "status": "modified",
+      "additions": 118,
+      "deletions": 0,
+      "changes": 118,
+      "blob_url": "https://github.com/tzafon/lightcone/blob/278fcd0d31f28f3ad0c96ad6144ac45d440de4d6/sdks%2Fpython%2Fsrc%2Ftzafon%2Ftypes%2Fresponse_create_response.py",
+      "raw_url": "https://github.com/tzafon/lightcone/raw/278fcd0d31f28f3ad0c96ad6144ac45d440de4d6/sdks%2Fpython%2Fsrc%2Ftzafon%2Ftypes%2Fresponse_create_response.py",
+      "contents_url": "https://api.github.com/repos/tzafon/lightcone/contents/sdks%2Fpython%2Fsrc%2Ftzafon%2Ftypes%2Fresponse_create_response.py?ref=278fcd0d31f28f3ad0c96ad6144ac45d440de4d6",
+      "patch": "@@ -33,6 +33,11 @@\n     \"OutputResponseFunctionToolCall\",\n     \"OutputResponseComputerToolCall\",\n     \"OutputResponseComputerToolCallAction\",\n+    \"OutputResponseComputerToolCallActionActionPointAndType\",\n+    \"OutputResponseComputerToolCallActionActionMouseDown\",\n+    \"OutputResponseComputerToolCallActionActionMouseUp\",\n+    \"OutputResponseComputerToolCallActionActionKeyDown\",\n+    \"OutputResponseComputerToolCallActionActionKeyUp\",\n     \"OutputResponseComputerToolCallPendingSafetyCheck\",\n     \"Usage\",\n ]\n@@ -149,6 +154,114 @@ def __getattr__(self, attr: str) -> object: ...\n         __pydantic_extra__: Dict[str, object]\n \n \n+class OutputResponseComputerToolCallActionActionPointAndType(BaseModel):\n+    \"\"\"Click at a position then type text.\"\"\"\n+\n+    text: str\n+\n+    type: Literal[\"point_and_type\"]\n+\n+    x: int\n+\n+    y: int\n+\n+    if TYPE_CHECKING:\n+        # Some versions of Pydantic <2.8.0 have a bug and don’t allow assigning a\n+        # value to this field, so for compatibility we avoid doing it at runtime.\n+        __pydantic_extra__: Dict[str, object] = FieldInfo(init=False)  # pyright: ignore[reportIncompatibleVariableOverride]\n+\n+        # Stub to indicate that arbitrary properties are accepted.\n+        # To access properties that are not valid identifiers you can use `getattr`, e.g.\n+        # `getattr(obj, '$type')`\n+        def __getattr__(self, attr: str) -> object: ...\n+    else:\n+        __pydantic_extra__: Dict[str, object]\n+\n+\n+class OutputResponseComputerToolCallActionActionMouseDown(BaseModel):\n+    \"\"\"Press and hold the left mouse button at a position.\"\"\"\n+\n+    type: Literal[\"mouse_down\"]\n+\n+    x: int\n+\n+    y: int\n+\n+    if TYPE_CHECKING:\n+        # Some versions of Pydantic <2.8.0 have a bug and don’t allow assigning a\n+        # value to this field, so for compatibility we avoid doing it at runtime.\n+        __pydantic_extra__: Dict[str, object] = FieldInfo(init=False)  # pyright: ignore[reportIncompatibleVariableOverride]\n+\n+        # Stub to indicate that arbitrary properties are accepted.\n+        # To access properties that are not valid identifiers you can use `getattr`, e.g.\n+        # `getattr(obj, '$type')`\n+        def __getattr__(self, attr: str) -> object: ...\n+    else:\n+        __pydantic_extra__: Dict[str, object]\n+\n+\n+class OutputResponseComputerToolCallActionActionMouseUp(BaseModel):\n+    \"\"\"Release the left mouse button at a position.\"\"\"\n+\n+    type: Literal[\"mouse_up\"]\n+\n+    x: int\n+\n+    y: int\n+\n+    if TYPE_CHECKING:\n+        # Some versions of Pydantic <2.8.0 have a bug and don’t allow assigning a\n+        # value to this field, so for compatibility we avoid doing it at runtime.\n+        __pydantic_extra__: Dict[str, object] = FieldInfo(init=False)  # pyright: ignore[reportIncompatibleVariableOverride]\n+\n+        # Stub to indicate that arbitrary properties are accepted.\n+        # To access properties that are not valid identifiers you can use `getattr`, e.g.\n+        # `getattr(obj, '$type')`\n+        def __getattr__(self, attr: str) -> object: ...\n+    else:\n+        __pydantic_extra__: Dict[str, object]\n+\n+\n+class OutputResponseComputerToolCallActionActionKeyDown(BaseModel):\n+    \"\"\"Press and hold a key.\"\"\"\n+\n+    keys: List[str]\n+\n+    type: Literal[\"key_down\"]\n+\n+    if TYPE_CHECKING:\n+        # Some versions of Pydantic <2.8.0 have a bug and don’t allow assigning a\n+        # value to this field, so for compatibility we avoid doing it at runtime.\n+        __pydantic_extra__: Dict[str, object] = FieldInfo(init=False)  # pyright: ignore[reportIncompatibleVariableOverride]\n+\n+        # Stub to indicate that arbitrary properties are accepted.\n+        # To access properties that are not valid identifiers you can use `getattr`, e.g.\n+        # `getattr(obj, '$type')`\n+        def __getattr__(self, attr: str) -> object: ...\n+    else:\n+        __pydantic_extra__: Dict[str, object]\n+\n+\n+class OutputResponseComputerToolCallActionActionKeyUp(BaseModel):\n+    \"\"\"Release a held key.\"\"\"\n+\n+    keys: List[str]\n+\n+    type: Literal[\"key_up\"]\n+\n+    if TYPE_CHECKING:\n+        # Some versions of Pydantic <2.8.0 have a bug and don’t allow assigning a\n+        # value to this field, so for compatibility we avoid doing it at runtime.\n+        __pydantic_extra__: Dict[str, object] = FieldInfo(init=False)  # pyright: ignore[reportIncompatibleVariableOverride]\n+\n+        # Stub to indicate that arbitrary properties are accepted.\n+        # To access properties that are not valid identifiers you can use `getattr`, e.g.\n+        # `getattr(obj, '$type')`\n+        def __getattr__(self, attr: str) -> object: ...\n+    else:\n+        __pydantic_extra__: Dict[str, object]\n+\n+\n OutputResponseComputerToolCallAction: TypeAlias = Union[\n     ActionClick,\n     ActionDoubleClick,\n@@ -159,6 +272,11 @@ def __getattr__(self, attr: str) -> object: ...\n     ActionScroll,\n     ActionType,\n     ActionWait,\n+    OutputResponseComputerToolCallActionActionPointAndType,\n+    OutputResponseComputerToolCallActionActionMouseDown,\n+    OutputResponseComputerToolCallActionActionMouseUp,\n+    OutputResponseComputerToolCallActionActionKeyDown,\n+    OutputResponseComputerToolCallActionActionKeyUp,\n ]\n \n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "278fcd0d31f28f3ad0c96ad6144ac45d440de4d6",
+      "message": "sync: update Python SDK (4aa3eec)",
+      "parent_shas": [
+        "9dcf619f1a05b73713ee54de2590ec95b0c50b4b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "python_java_bridge_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__tzafon__lightcone__pr16.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\tzafon__lightcone__pr16__python_java__tzafon__lightcone__pr16\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\tzafon__lightcone__pr16__python_java__tzafon__lightcone__pr16\\rn"
+  }
+}

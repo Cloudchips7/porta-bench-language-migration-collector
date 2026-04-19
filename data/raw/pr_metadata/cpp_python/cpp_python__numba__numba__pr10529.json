@@ -1,0 +1,102 @@
+{
+  "instance_id": "cpp_python__numba__numba__pr10529",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "numba/numba",
+  "pr_number": 10529,
+  "pr_url": "https://github.com/numba/numba/pull/10529",
+  "repo": {
+    "full_name": "numba/numba",
+    "clone_url": "https://github.com/numba/numba.git",
+    "default_branch": "main",
+    "created_at": "2012-03-08T11:12:43Z",
+    "stars": 10983,
+    "license": "BSD-2-Clause",
+    "size_kb": 81725
+  },
+  "pull_request": {
+    "id": 3502996605,
+    "title": "Updated int_ to map to int64 instead of `ctypes.c_long`",
+    "body": "Resolves https://github.com/numba/numba/issues/10524\r\n\r\nAs titled, \r\n\r\nThis PR maps the `int_` type to `ctypes.c_int64` instead of `ctypes.c_long` since the NumPy `int_` datatype actually alaises NumPy `int64` datatype",
+    "created_at": "2026-04-08T11:58:15Z",
+    "merged_at": "2026-04-14T21:38:14Z",
+    "base_sha": "283c087d59648b65f78aeb4b2758d61a8fb66c84",
+    "head_sha": "8f5ea99bb25cd1f49c070c732f58cc93478179dd",
+    "merge_commit_sha": "71dd151f235ba669030a3f6814ce58a60f10e12a",
+    "labels": [
+      "3 - Ready for Review",
+      "skip_release_notes"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "b2b3bd6768742362d9a6b4101cf98109cd4f6ed2",
+  "final_sha": "8f5ea99bb25cd1f49c070c732f58cc93478179dd",
+  "changed_files": [
+    {
+      "sha": "3f3de21a5b55ec8629975973958ed6a6a89ed4ec",
+      "filename": "numba/core/types/__init__.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/numba/numba/blob/8f5ea99bb25cd1f49c070c732f58cc93478179dd/numba%2Fcore%2Ftypes%2F__init__.py",
+      "raw_url": "https://github.com/numba/numba/raw/8f5ea99bb25cd1f49c070c732f58cc93478179dd/numba%2Fcore%2Ftypes%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/numba/numba/contents/numba%2Fcore%2Ftypes%2F__init__.py?ref=8f5ea99bb25cd1f49c070c732f58cc93478179dd",
+      "patch": "@@ -155,8 +155,8 @@\n uchar = np_uchar = byte = _make_unsigned(ctypes.c_ubyte)\n short = np_short = _make_signed(ctypes.c_short)\n ushort = np_ushort = _make_unsigned(ctypes.c_ushort)\n-int_ = np_int_ = _make_signed(ctypes.c_long)\n-uint = np_uint = _make_unsigned(ctypes.c_long)\n+int_ = np_int_ = np_intp\n+uint = np_uint = np_uintp\n intc = np_intc = _make_signed(ctypes.c_int) # C-compat int\n uintc = np_uintc = _make_unsigned(ctypes.c_uint) # C-compat uint\n long_ = np_long = _make_signed(ctypes.c_long)  # C-compat long"
+    },
+    {
+      "sha": "840782d95c16918a730545e5c45500ff46e3f534",
+      "filename": "numba/tests/test_typenames.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 7,
+      "changes": 11,
+      "blob_url": "https://github.com/numba/numba/blob/8f5ea99bb25cd1f49c070c732f58cc93478179dd/numba%2Ftests%2Ftest_typenames.py",
+      "raw_url": "https://github.com/numba/numba/raw/8f5ea99bb25cd1f49c070c732f58cc93478179dd/numba%2Ftests%2Ftest_typenames.py",
+      "contents_url": "https://api.github.com/repos/numba/numba/contents/numba%2Ftests%2Ftest_typenames.py?ref=8f5ea99bb25cd1f49c070c732f58cc93478179dd",
+      "patch": "@@ -1,16 +1,13 @@\n-import numpy as np\n-\n from numba.core import types\n import unittest\n \n+import numpy as np\n+\n \n class TestTypeNames(unittest.TestCase):\n     def test_numpy_integers(self):\n-        expect = getattr(types, \"int%d\" % (np.dtype(\"int\").itemsize * 8))\n-        self.assertEqual(types.int_, expect)\n-\n-        expect = getattr(types, \"uint%d\" % (np.dtype(\"uint\").itemsize * 8))\n-        self.assertEqual(types.uint, expect)\n+        self.assertEqual(types.int_.bitwidth, np.dtype(np.intp).itemsize * 8)\n+        self.assertEqual(types.uint.bitwidth, np.dtype(np.uintp).itemsize * 8)\n \n \n if __name__ == '__main__':"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "a5cc9ebbaf87cba95206dff9c55cfede9a8896aa",
+      "message": "Updated intp_ to map to np_intp and uint to map to np_unintp",
+      "parent_shas": [
+        "b2b3bd6768742362d9a6b4101cf98109cd4f6ed2"
+      ]
+    },
+    {
+      "sha": "8f5ea99bb25cd1f49c070c732f58cc93478179dd",
+      "message": "Used NumPy for bitwidth testing",
+      "parent_shas": [
+        "a5cc9ebbaf87cba95206dff9c55cfede9a8896aa"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__numba__numba__pr10529.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\numba__numba__pr10529__cpp_python__numba__numba__pr10529\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\numba__numba__pr10529__cpp_python__numba__numba__pr10529\\rn"
+  }
+}

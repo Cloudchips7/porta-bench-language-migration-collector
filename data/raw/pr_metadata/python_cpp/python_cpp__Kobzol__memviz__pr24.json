@@ -1,0 +1,363 @@
+{
+  "instance_id": "python_cpp__Kobzol__memviz__pr24",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "Kobzol/memviz",
+  "pr_number": 24,
+  "pr_url": "https://github.com/Kobzol/memviz/pull/24",
+  "repo": {
+    "full_name": "Kobzol/memviz",
+    "clone_url": "https://github.com/Kobzol/memviz.git",
+    "default_branch": "main",
+    "created_at": "2024-09-13T12:18:30Z",
+    "stars": 8,
+    "license": "MIT",
+    "size_kb": 1226
+  },
+  "pull_request": {
+    "id": 3490959031,
+    "title": "Python UI refinements",
+    "body": "This pr adds:\r\n- ordering of heap objects using DFS \r\n- hiding objects when parent object is closed\r\n- persisting object state (open/closed) between steps \r\n- readme update",
+    "created_at": "2026-04-05T20:52:50Z",
+    "merged_at": "2026-04-07T15:53:41Z",
+    "base_sha": "cfe2081891f8f09c023d6f1d70ca6bdd52cb3ef5",
+    "head_sha": "12ad3cc9e2d0913c476febe071f03c8b93340841",
+    "merge_commit_sha": "c6a05ac5bc6ae315e71c81cb973fade215eb7095",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "cfe2081891f8f09c023d6f1d70ca6bdd52cb3ef5",
+  "final_sha": "12ad3cc9e2d0913c476febe071f03c8b93340841",
+  "changed_files": [
+    {
+      "sha": "3b751739f9cfbaca28dc0b19b562278bedae3dfe",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/README.md",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/README.md",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/README.md?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -1,7 +1,7 @@\n # Memviz\n \n `Memviz` is a Visual Studio code extension designed to visualize the address space (stack, heap, variables, etc.)\n-of C programs. Something like [Python tutor](https://pythontutor.com/), but directly in VSCode.\n+of C and Python programs. Something like [Python tutor](https://pythontutor.com/), but directly in VSCode.\n \n It is primarily designed to help students of the [Introduction to Programming](https://github.com/geordi/upr-course) course at VSB-TUO.\n "
+    },
+    {
+      "sha": "da8fe3e1d261f6b865e87872f6f0d710f8d70d52",
+      "filename": "extension/README.md",
+      "status": "modified",
+      "additions": 29,
+      "deletions": 8,
+      "changes": 37,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/extension%2FREADME.md",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/extension%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/extension%2FREADME.md?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -1,20 +1,26 @@\n # Memory visualizer\n \n-This extension is designed to visualize the address space of (primarily C) programs.\n+This extension is designed to visualize the address space of C and Python programs.\n It has been created as an education tool for the [Introduction to Programming](https://github.com/geordi/upr-course) at VSB-TUO, but it can be used as a general visualization tool.\n \n+![](./img/screen-1.png)\n+\n+## Requirements and compatibility\n+### C\n > The extension is currently only compatible with x64 Linux programs and the GDB debugger.\n > It requires GDB 12.1 or newer!\n \n-![](./img/screen-1.png)\n+> You have to compile your program with debug symbols (e.g. `gcc -g`) for the visualization (and debugging itself) to work!\n+\n+### Python\n+> Compatible with **Python 3.10** or newer. \n+> Works using the standard VS Code Python debugger (`debugpy`).\n \n ## How to use\n \n-Simply start a normal debugging session of a _C_ file (using e.g. `F5`) using the `GDB` debugger.\n+Simply start a normal debugging session of a _C_ or _Python_ file (using e.g. `F5`).\n `Memviz` will then open a webview that will visualize the state of the program once it stops on a breakpoint.\n \n-> You have to compile your program with debug symbols (e.g. `gcc -g`) for the visualization (and debugging itself) to work!\n-\n The visualized components are interactive. You can e.g. expand/collapse stack frames, displays byte values of scalar\n values or change the start index of array elements that are displayed.\n \n@@ -27,7 +33,7 @@ When you open the `Run and Debug` container in the Activity Bar on the left, you\n ![](./img/screen-configuration-panel.png)\n \n ## Features\n-\n+### C-specific features\n - Memory visualization\n   - Stack frames\n   - Scalars (integers, floats, chars)\n@@ -44,14 +50,29 @@ When you open the `Run and Debug` container in the Activity Bar on the left, you\n - Simple tracking of variable initialization\n   - Note that the initialization tracking is offset by one line, i.e. the variable is assumed to be initialized on the line where it is declared.\n \n+### Python-specific features\n+- Type Support\n+  - Scalars (int, float, bool, None)\n+  - Collections (list, tuple, dict, set, frozenset)\n+  - Class instances and their attributes\n+  - Strings\n+- Initially shows only two levels on nested values\n+- Lazy loading for collections, strings and class instances\n+- Interactive References\n+  - Collections and class instances are shown as detached nodes with reference arrows\n+  - Hovering over an object highlights all its references\n+  - Clicking the source of a reference automatically highlights and jumps to the target object\n+\n ## Planned/WIP features\n \n - Dark/light mode that reacts to VSCode theme\n \n-## Unsupported features\n+## Unsupported features and limitations\n \n - Multiple threads\n-- Bitfields\n+- C Bitfields\n+- Very large Python stack frames (with hundreds of variables) might hit communication limit resulting with an error\n+\n \n ## Examples\n "
+    },
+    {
+      "sha": "42710e223ae71eb6304b8bc039dcfbedacfe9c8b",
+      "filename": "extension/src/reactor/webviewMessageHandler/debugpy.ts",
+      "status": "modified",
+      "additions": 29,
+      "deletions": 4,
+      "changes": 33,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/extension%2Fsrc%2Freactor%2FwebviewMessageHandler%2Fdebugpy.ts",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/extension%2Fsrc%2Freactor%2FwebviewMessageHandler%2Fdebugpy.ts",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/extension%2Fsrc%2Freactor%2FwebviewMessageHandler%2Fdebugpy.ts?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -93,10 +93,30 @@ export class DebugpyWebviewMessageHandler extends WebviewMessageHandler<\n       const stackTrace = await this.getCurrentStackTrace(session);\n       const selectedFrame = stackTrace.find((frame) => frame.id === frameId);\n \n+      const emptyResponse: Omit<\n+        GetPythonVariablesRepresentationRes,\n+        \"requestId\" | \"resolverId\"\n+      > = {\n+        kind: \"get-python-variables-representation\",\n+        data: {\n+          variables: {\n+            places: [],\n+            values: [],\n+          },\n+        },\n+      } as const;\n+\n       if (!selectedFrame) {\n-        throw new Error(\n-          `Could not find stack frame for frame id ${frameId} while resolving debugpy variables`,\n+        // fast stepping can cause that the frame for which variables representation\n+        // is requested is already gone by the time the request is processed\n+        console.debug(\n+          `Frame ${frameId} no longer present in the stack trace. Returning empty variables representation.`,\n+          {\n+            frameId,\n+            stoppedPlace,\n+          },\n         );\n+        return emptyResponse;\n       }\n \n       const matchingPlaces = stackTrace.filter(\n@@ -108,9 +128,14 @@ export class DebugpyWebviewMessageHandler extends WebviewMessageHandler<\n       );\n \n       if (placeOccurrence < 0) {\n-        throw new Error(\n-          `Could not find frame with id ${frameId} for ${stoppedPlace.name}:${stoppedPlace.line}`,\n+        console.debug(\n+          `Frame ${frameId} no longer present in the stack trace. Returning empty variables representation.`,\n+          {\n+            frameId,\n+            stoppedPlace,\n+          },\n         );\n+        return emptyResponse;\n       }\n \n       const variables = await session.createVariablesRepresentation("
+    },
+    {
+      "sha": "a1568075eefcb1192aa665972d31e68f94154956",
+      "filename": "extension/static/scripts/debugpy/memviz_get_variables_info.py",
+      "status": "modified",
+      "additions": 41,
+      "deletions": 16,
+      "changes": 57,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/extension%2Fstatic%2Fscripts%2Fdebugpy%2Fmemviz_get_variables_info.py",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/extension%2Fstatic%2Fscripts%2Fdebugpy%2Fmemviz_get_variables_info.py",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/extension%2Fstatic%2Fscripts%2Fdebugpy%2Fmemviz_get_variables_info.py?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -12,7 +12,7 @@\n \n \n RETURN_VALUES_DICT_NAME = \"__pydevd_ret_val_dict\"\n-SEQUENCE_LOAD_ITEM_COUNT = 15\n+SEQUENCE_LOAD_ITEM_COUNT = 20\n STR_LOAD_CHAR_COUNT = 100\n \n \n@@ -207,6 +207,10 @@ class Variables:\n     values: List[BaseVal]\n \n \n+class MissingPlaceOccurrenceError(ValueError):\n+    pass\n+\n+\n def get_str_default_load_content(val: str) -> str:\n     count = min(len(val), STR_LOAD_CHAR_COUNT)\n     return val[:count]\n@@ -307,17 +311,21 @@ def get_frame_by_place(\n                 return frame\n             occurence_counter += 1\n \n-    raise ValueError(\n+    raise MissingPlaceOccurrenceError(\n         f\"Could not find place occurrence {place_occurrence} for function '{frame_name}' at line {frame_line} in file {debugged_file_path}\"\n     )\n \n \n-def check_type(value: Any, expected_types: Tuple[str, ...]) -> None:\n+def check_type(value: Any, expected_types: Tuple[type, ...]) -> None:\n+    # check if value is instance of any of the expected types including subclasses\n+    if isinstance(value, expected_types):\n+        return\n+\n     value_type = type(value).__name__\n-    if value_type not in expected_types:\n-        raise ValueError(\n-            f\"Value {value} is of type {value_type}, expected one of {expected_types}.\"\n-        )\n+    expected_type_names = tuple(t.__name__ for t in expected_types)\n+    raise ValueError(\n+        f\"Value {value} is of type {value_type}, expected one of {expected_type_names}.\"\n+    )\n \n \n def validate_slicing_params(\n@@ -361,12 +369,22 @@ def get_variables(\n     frame_line: int,\n     place_occurrence: int,\n ) -> Variables:\n-    frame_info = get_frame_by_place(\n-        debugged_file_path,\n-        frame_name,\n-        frame_line,\n-        place_occurrence,\n-    )\n+    try:\n+        frame_info = get_frame_by_place(\n+            debugged_file_path,\n+            frame_name,\n+            frame_line,\n+            place_occurrence,\n+        )\n+    except MissingPlaceOccurrenceError:\n+        # In case of fast stepping over it can happen that\n+        # the specified place occurrence is already gone\n+        # by the time the request is processed.\n+        # In that case, empty variables info is returned\n+        # TODO: it should be communicated to the frontend\n+        # that the place is not accessible anymore instead\n+        # of just returning empty variables info\n+        return Variables(places=[], values=[])\n     arg_names = get_argument_names(frame_info)\n     frame = frame_info.frame\n \n@@ -436,7 +454,7 @@ def get_flat_collection_elements(\n ) -> List[BaseVal]:\n     value = IdMap.get(collection_id)\n \n-    allowed_types = (\"list\", \"tuple\", \"set\", \"frozenset\")\n+    allowed_types = (list, tuple, set, frozenset)\n     check_type(value, allowed_types)\n     validate_slicing_params(value, start_index, element_count)\n \n@@ -455,7 +473,7 @@ def get_dict_entries(\n     pair_count: int,\n ) -> List[KeyValuePair]:\n     value = IdMap.get(dict_id)\n-    check_type(value, (\"dict\",))\n+    check_type(value, (dict,))\n     validate_slicing_params(value, start_index, pair_count)\n \n     entries = []\n@@ -479,7 +497,7 @@ def get_string_contents(\n \n     value = IdMap.get(str_id)\n \n-    check_type(value, (\"str\",))\n+    check_type(value, (str,))\n     validate_slicing_params(value, start_index, length)\n \n     return value[start_index : start_index + length]\n@@ -507,8 +525,15 @@ def get_object(object_id: PythonId) -> ObjectVal:\n                 inspect.isdatadescriptor(static_attr_value)\n                 or inspect.isgetsetdescriptor(static_attr_value)\n                 or inspect.ismemberdescriptor(static_attr_value)\n+                or hasattr(static_attr_value, \"__get__\")\n             ):\n                 attr.is_descriptor = True\n+                # only return the value if it's defined in the instance's __dict__\n+                # to avoid dynamic resolution of descriptors\n+                if attr_name in getattr(obj, \"__dict__\", {}):\n+                    dict_value = obj.__dict__[attr_name]\n+                    attr.value = make_value(dict_value)\n+                    IdMap.register(attr.value.id, dict_value)\n \n             else:\n                 # need to get the attribute value dynamically to check if it's a method"
+    },
+    {
+      "sha": "0037e56d3a536b386dcbee34d15d2e308d000230",
+      "filename": "memviz-ui/package.json",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fpackage.json",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/memviz-ui%2Fpackage.json?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -20,7 +20,6 @@\n     \"@types/jest\": \"^29.5.13\",\n     \"@types/vscode-webview\": \"^1.57.5\",\n     \"@vitejs/plugin-vue\": \"^6.0.4\",\n-    \"@vue/test-utils\": \"^2.4.6\",\n     \"esbuild\": \"^0.23.1\",\n     \"esbuild-plugin-vue3\": \"^0.5.1\",\n     \"jest\": \"^29.7.0\","
+    },
+    {
+      "sha": "4c43a52e1e1aeb5659d3ea102fed9d0a9f0076bf",
+      "filename": "memviz-ui/src/visualization/debugpy/component-state.ts",
+      "status": "added",
+      "additions": 30,
+      "deletions": 0,
+      "changes": 30,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponent-state.ts",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponent-state.ts",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponent-state.ts?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -0,0 +1,30 @@\n+import type { PythonId } from \"process-def/debugpy\";\n+\n+export interface ComponentStateValue {\n+  kind: string;\n+  isOpen: boolean;\n+  collectionPageIndex?: number;\n+  collectionItemCount?: number;\n+}\n+\n+export class ComponentState {\n+  private cache = new Map<PythonId, ComponentStateValue>();\n+\n+  getState(id: PythonId, currentKind: string): ComponentStateValue | undefined {\n+    const state = this.cache.get(id);\n+    if (state && state.kind !== currentKind) {\n+      // if the kind has changed, the cached state is no longer valid\n+      this.cache.delete(id);\n+      return undefined;\n+    }\n+    return state;\n+  }\n+\n+  setState(id: PythonId, state: ComponentStateValue): void {\n+    this.cache.set(id, state);\n+  }\n+\n+  clear(): void {\n+    this.cache.clear();\n+  }\n+}"
+    },
+    {
+      "sha": "91750d854b790e0d2abbde7bae48a97eec8d4972",
+      "filename": "memviz-ui/src/visualization/debugpy/components/heap/heap-block.vue",
+      "status": "modified",
+      "additions": 35,
+      "deletions": 3,
+      "changes": 38,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fheap%2Fheap-block.vue",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fheap%2Fheap-block.vue",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fheap%2Fheap-block.vue?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -1,6 +1,7 @@\n <script setup lang=\"ts\">\n import type { PythonId } from \"process-def/debugpy\";\n import {\n+  computed,\n   onBeforeUnmount,\n   onMounted,\n   onUpdated,\n@@ -9,20 +10,25 @@ import {\n   watch,\n } from \"vue\";\n import ValueComponent from \"../value/value.vue\";\n-import { debugpyComponentMap } from \"../../store\";\n+import { debugpyComponentMap, highlightedId } from \"../../store\";\n import { assert } from \"../../../../utils\";\n import { ComponentUnsubscribeFn } from \"../../component-map\";\n \n const props = defineProps<{\n   id: PythonId;\n }>();\n \n+const isHighlighted = computed(() => highlightedId.value === props.id);\n+\n async function updateComponentInMap() {\n   assert(elementRef.value !== null, \"component has not been mounted yet\");\n \n-  // This is required to wait for browser relayout, to make sure\n-  // that the element has the final layout before it is registered\n   window.requestAnimationFrame(() => {\n+    const currentComponent = debugpyComponentMap.value.getComponent(props.id);\n+    if (currentComponent?.element === elementRef.value) {\n+      return;\n+    }\n+\n     removeComponentFromMap();\n \n     if (elementRef.value !== null) {\n@@ -66,6 +72,7 @@ watch(\n <template>\n   <div\n     class=\"heap-block\"\n+    :class=\"{ highlight: isHighlighted }\"\n     :ref=\"(el: any) => (elementRef = el)\"\n     @mouseenter.stop=\"highlightArrows\"\n     @mouseleave.stop=\"unhighlightArrows\"\n@@ -87,4 +94,29 @@ watch(\n   border: 1px solid #5f5f5f;\n   border-top: none;\n }\n+\n+.highlight {\n+  backface-visibility: hidden;\n+  animation: ripple-out-large 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);\n+}\n+\n+@keyframes ripple-out-large {\n+  0% {\n+    box-shadow:\n+      0 0 0 0 rgba(255, 121, 73, 0),\n+      0 0 0 0 rgba(255, 121, 73, 0);\n+  }\n+\n+  20% {\n+    box-shadow:\n+      0 0 0 6px rgba(255, 121, 73, 0.8),\n+      0 0 20px 6px rgba(255, 121, 73, 0.4);\n+  }\n+\n+  100% {\n+    box-shadow:\n+      0 0 0 12px rgba(255, 121, 73, 0),\n+      0 0 50px 35px rgba(255, 121, 73, 0);\n+  }\n+}\n </style>"
+    },
+    {
+      "sha": "ff6c57770b5a9b407fb0c094b2c5fe1566fc0639",
+      "filename": "memviz-ui/src/visualization/debugpy/components/heap/heap.vue",
+      "status": "modified",
+      "additions": 25,
+      "deletions": 8,
+      "changes": 33,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fheap%2Fheap.vue",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fheap%2Fheap.vue",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fheap%2Fheap.vue?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -1,11 +1,12 @@\n <script setup lang=\"ts\">\n import { computed } from \"vue\";\n-import type { PythonId } from \"process-def/debugpy\";\n+import { type PythonId, ValueKind } from \"process-def/debugpy\";\n import {\n   DisplayMode,\n   valueDisplaySettings,\n } from \"../../value-display-settings\";\n-import { frameVisibilityState, valueState } from \"../../store\";\n+import { objectVisibilityState, valueState } from \"../../store\";\n+import { appState } from \"../../../store\";\n import MemorySlot from \"../memory-slot.vue\";\n import type { RichValue } from \"../../type/type\";\n \n@@ -19,7 +20,7 @@ function isDetachedValue(value: RichValue): boolean {\n function collectReachableIds(\n   valuesById: Map<PythonId, RichValue>,\n ): Set<PythonId> {\n-  const queue = Array.from(visibleRootIds.value);\n+  const queue = [...visibleRootIds.value];\n   const reachableIds = new Set(queue);\n \n   while (queue.length > 0) {\n@@ -29,7 +30,14 @@ function collectReachableIds(\n     const value = valuesById.get(id);\n     if (!value) continue;\n \n-    for (const childId of value.getFetchedChildIds()) {\n+    let childIds = value.getFetchedChildIds();\n+    if (childIds)\n+      childIds = objectVisibilityState.filterVisibleChildIds(\n+        value.id,\n+        childIds,\n+      );\n+\n+    for (const childId of childIds) {\n       if (reachableIds.has(childId)) continue;\n \n       queue.push(childId);\n@@ -40,11 +48,20 @@ function collectReachableIds(\n   return reachableIds;\n }\n \n-const values = computed(() => valueState.value.getValues());\n const visibleRootIds = computed(() => {\n-  return frameVisibilityState.getVisibleSourceObjectIds();\n+  const orderedFrameIds = appState.value.processState.stackTrace.frames\n+    .slice()\n+    .sort((a, b) => b.index - a.index)\n+    .map((frame) => frame.id);\n+  return objectVisibilityState.getOrderedVisibleSourceObjectIds(\n+    orderedFrameIds,\n+  );\n });\n \n+const values = computed(() =>\n+  valueState.value.getOrderedValues(visibleRootIds.value),\n+);\n+\n const visibleValues = computed(() => {\n   const valuesById = new Map(values.value.map((value) => [value.id, value]));\n   const visibleIds = collectReachableIds(valuesById);\n@@ -69,8 +86,8 @@ const visibleValues = computed(() => {\n \n <style lang=\"scss\" scoped>\n .heap {\n-  min-width: 300px;\n-  max-width: 500px;\n+  min-width: 500px;\n+  max-width: 700px;\n }\n \n .header {"
+    },
+    {
+      "sha": "faf883f52493ca76ead01eb6dd3692ea6dafa876",
+      "filename": "memviz-ui/src/visualization/debugpy/components/places/stack-frame.vue",
+      "status": "modified",
+      "additions": 31,
+      "deletions": 11,
+      "changes": 42,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fplaces%2Fstack-frame.vue",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fplaces%2Fstack-frame.vue",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fplaces%2Fstack-frame.vue?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -1,13 +1,20 @@\n <script setup lang=\"ts\">\n import { Place } from \"process-def/debugpy\";\n-import { computed, onBeforeUnmount, ref, watch, watchEffect } from \"vue\";\n+import {\n+  computed,\n+  nextTick,\n+  onBeforeUnmount,\n+  ref,\n+  watch,\n+  watchEffect,\n+} from \"vue\";\n import type { Ref } from \"vue\";\n import { processResolver } from \"../../../store\";\n import TooltipContributor from \"../../../components/tooltip/tooltip-contributor.vue\";\n import { StackFrame } from \"process-def\";\n import NamedPlace from \"./named-place.vue\";\n import { formatLocation } from \"../../../utils/formatting\";\n-import { frameVisibilityState } from \"../../store\";\n+import { objectVisibilityState } from \"../../store\";\n \n const props = defineProps<{\n   frame: StackFrame;\n@@ -63,30 +70,43 @@ const expanded = ref(isTopFrame.value);\n \n watchEffect(() => {\n   if (!expanded.value || places.value === null) {\n-    frameVisibilityState.clearFrameSourceObjects(props.frame.id);\n+    objectVisibilityState.clearVisibleSourceObjectsForFrame(props.frame.id);\n     return;\n   }\n \n-  frameVisibilityState.setFrameSourceObjects(\n+  objectVisibilityState.setVisibleSourceObjectsForFrame(\n     props.frame.id,\n     places.value.map((place) => place.id),\n   );\n });\n \n watch(\n-  () => props.frame,\n-  (newFrame: StackFrame, oldFrame: StackFrame) => {\n-    if (newFrame.id !== oldFrame.id) {\n-      frameVisibilityState.clearFrameSourceObjects(oldFrame.id);\n+  () => props.frame.id,\n+  (newFrameId: number, oldFrameId: number) => {\n+    if (newFrameId !== oldFrameId) {\n+      objectVisibilityState.clearVisibleSourceObjectsForFrame(oldFrameId);\n     }\n-    if (newFrame.index != oldFrame.index || newFrame.name != oldFrame.name) {\n+  },\n+);\n+\n+watch(\n+  () => [props.frame.index, props.frame.name],\n+  ([newIndex, newName], [oldIndex, oldName]) => {\n+    if (newIndex !== oldIndex || newName !== oldName) {\n       expanded.value = isTopFrame.value;\n     }\n   },\n );\n \n watch(\n-  () => [props.frame, resolver.value],\n+  () => [\n+    props.frame.id,\n+    props.frame.name,\n+    props.frame.file,\n+    props.frame.line,\n+    props.frame.index,\n+    resolver.value,\n+  ],\n   () => {\n     requestId++;\n     isLoadingPlaces = false;\n@@ -104,7 +124,7 @@ watch(\n );\n \n onBeforeUnmount(() => {\n-  frameVisibilityState.clearFrameSourceObjects(props.frame.id);\n+  objectVisibilityState.clearVisibleSourceObjectsForFrame(props.frame.id);\n });\n \n // https://www.color-hex.com/color-palette/24003"
+    },
+    {
+      "sha": "75d58b283b2e08c616f05ea94840053848691d47",
+      "filename": "memviz-ui/src/visualization/debugpy/components/value/collection/dict.vue",
+      "status": "modified",
+      "additions": 112,
+      "deletions": 76,
+      "changes": 188,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fvalue%2Fcollection%2Fdict.vue",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fvalue%2Fcollection%2Fdict.vue",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fvalue%2Fcollection%2Fdict.vue?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -1,9 +1,9 @@\n <script setup lang=\"ts\">\n-import { computed, ref, watch, onMounted } from \"vue\";\n+import { computed, ref, watch } from \"vue\";\n import { processResolver } from \"../../../../store\";\n import { PythonId } from \"process-def/debugpy\";\n import MemorySlot from \"../../memory-slot.vue\";\n-import { valueState } from \"../../../store\";\n+import { componentState, objectVisibilityState, valueState } from \"../../../store\";\n import { LazyDictVal } from \"../../../type/lazy-value\";\n import { isDict } from \"../../../utils/types\";\n import { assert } from \"../../../../../utils\";\n@@ -21,6 +21,7 @@ const props = defineProps<{\n const currentIndex = ref(0);\n const visibleElementCount = ref(COLLECTION_ITEM_DISPLAY_COUNT_DEFAULT);\n const visiblePairs = ref<RichKeyValuePair[]>([]);\n+const isOpen = ref(false);\n \n function clampVisibleElementCount(count: number): number {\n   return Math.max(\n@@ -35,94 +36,136 @@ const pythonValue = computed(() => {\n   return val as LazyDictVal;\n });\n \n-const isFirstViewResolved = computed(() => {\n-  return pythonValue.value.areItemsFetched(0, visibleElementCount.value);\n-});\n-const hasLoaded = ref(isFirstViewResolved.value);\n-const isOpen = ref(isFirstViewResolved.value);\n-\n const totalElementCount = computed(() => pythonValue.value.pair_count);\n const canGoToPrevious = computed(() => currentIndex.value > 0);\n const canGoToNext = computed(\n-  () => currentIndex.value + visibleElementCount.value < totalElementCount.value\n+  () => currentIndex.value + visibleElementCount.value < totalElementCount.value,\n+);\n+const isFirstViewResolved = computed(() =>\n+  pythonValue.value.areItemsFetched(0, visibleElementCount.value),\n );\n \n-const goToPrevious = () => {\n-  if (canGoToPrevious.value) currentIndex.value--;\n-};\n+function clampCurrentIndex(index: number): number {\n+  return Math.max(0, Math.min(index, Math.max(totalElementCount.value - 1, 0)));\n+}\n \n-const goToNext = () => {\n-  if (canGoToNext.value) currentIndex.value++;\n-};\n+function saveState() {\n+  componentState.setState(props.id, {\n+    kind: pythonValue.value.kind,\n+    isOpen: isOpen.value,\n+    collectionPageIndex: currentIndex.value,\n+    collectionItemCount: visibleElementCount.value,\n+  });\n+}\n \n-const handleIndexInput = (event: Event) => {\n-  const target = event.target as HTMLInputElement;\n-  let newIndex = parseInt(target.value, 10);\n-  if (isNaN(newIndex)) return;\n-  if (newIndex < 0) newIndex = 0;\n-  if (newIndex >= totalElementCount.value) newIndex = totalElementCount.value - 1;\n-  currentIndex.value = newIndex;\n-};\n+function setStateToOpen(value: boolean) {\n+  isOpen.value = value;\n+  objectVisibilityState.setSourceObjectAsCollapsed(props.id, !value);\n+}\n \n-const handleVisibleCountInput = (event: Event) => {\n-  const target = event.target as HTMLInputElement;\n-  let nextCount = parseInt(target.value, 10);\n-  if (isNaN(nextCount)) return;\n-  nextCount = clampVisibleElementCount(nextCount);\n-  visibleElementCount.value = nextCount;\n-};\n+function restoreDictState() {\n+  const savedState = componentState.getState(props.id, pythonValue.value.kind);\n+  currentIndex.value = clampCurrentIndex(savedState?.collectionPageIndex ?? 0);\n+  visibleElementCount.value = clampVisibleElementCount(\n+    savedState?.collectionItemCount ?? COLLECTION_ITEM_DISPLAY_COUNT_DEFAULT,\n+  );\n+  setStateToOpen(savedState ? savedState.isOpen : isFirstViewResolved.value);\n+  visiblePairs.value = [];\n+}\n \n async function loadData() {\n   const resolver = processResolver.value;\n-  if (!resolver) return;\n+  if (!resolver || !isOpen.value) {\n+    return;\n+  }\n \n   const count = Math.min(\n     visibleElementCount.value,\n     totalElementCount.value - currentIndex.value,\n   );\n \n+  if (count <= 0) {\n+    visiblePairs.value = [];\n+    return;\n+  }\n+\n   visiblePairs.value = await pythonValue.value.getElements(\n     resolver.debugpy,\n     currentIndex.value,\n     count,\n   );\n }\n \n-async function onClick() {\n-  isOpen.value = true;\n-  if (!hasLoaded.value) {\n-    await loadData();\n-    hasLoaded.value = true;\n-  }\n-}\n-\n-function closeView() {\n-  isOpen.value = false;\n-}\n-\n-watch([currentIndex, visibleElementCount], loadData);\n-\n watch(\n-  () => props.id,\n+  [() => pythonValue.value, () => processResolver.value],\n   () => {\n-    currentIndex.value = 0;\n-    visiblePairs.value = [];\n-    hasLoaded.value = isFirstViewResolved.value;\n-    isOpen.value = isFirstViewResolved.value;\n+    restoreDictState();\n+    if (isOpen.value) {\n+      void loadData();\n+    }\n   },\n+  { immediate: true },\n );\n \n-onMounted(() => {\n-  if (isOpen.value) {\n-    loadData();\n-    hasLoaded.value = true;\n+const goToPrevious = () => {\n+  if (!canGoToPrevious.value) {\n+    return;\n   }\n-});\n+\n+  currentIndex.value--;\n+  saveState();\n+  void loadData();\n+};\n+\n+const goToNext = () => {\n+  if (!canGoToNext.value) {\n+    return;\n+  }\n+\n+  currentIndex.value++;\n+  saveState();\n+  void loadData();\n+};\n+\n+const handleIndexInput = (event: Event) => {\n+  const target = event.target as HTMLInputElement;\n+  const newIndex = parseInt(target.value, 10);\n+  if (Number.isNaN(newIndex)) {\n+    return;\n+  }\n+\n+  currentIndex.value = clampCurrentIndex(newIndex);\n+  saveState();\n+  void loadData();\n+};\n+\n+const handleVisibleCountInput = (event: Event) => {\n+  const target = event.target as HTMLInputElement;\n+  const newCount = parseInt(target.value, 10);\n+  if (Number.isNaN(newCount)) {\n+    return;\n+  }\n+\n+  visibleElementCount.value = clampVisibleElementCount(newCount);\n+  saveState();\n+  void loadData();\n+};\n+\n+function onClick() {\n+  setStateToOpen(true);\n+  saveState();\n+  void loadData();\n+}\n+\n+function closeView() {\n+  setStateToOpen(false);\n+  saveState();\n+}\n </script>\n \n <template>\n   <div v-if=\"pythonValue.pair_count > 0\" class=\"dict\">\n-    <div v-if=\"hasLoaded && isOpen\" class=\"collection-frame\">\n+    <div v-if=\"isOpen\" class=\"collection-frame\">\n       <div class=\"control-bar top\">\n         <div class=\"control-wrapper\">\n           <button class=\"nav-btn\" @click=\"goToPrevious\" :disabled=\"!canGoToPrevious\">\n@@ -140,7 +183,7 @@ onMounted(() => {\n       </div>\n \n       <div class=\"content-area\">\n-        <div class=\"pairs\">\n+        <div v-if=\"visiblePairs.length > 0\" class=\"pairs\">\n           <div v-for=\"(pair, index) in visiblePairs\" :key=\"index\" class=\"pair-row\" :style=\"`view-transition-name: pair-row-${index + currentIndex};`\">\n             <div class=\"key-cell\" :data-index=\"index + currentIndex\">\n               <MemorySlot :id=\"pair.key.id\" />\n@@ -149,7 +192,8 @@ onMounted(() => {\n             <MemorySlot :id=\"pair.value.id\" />\n           </div>\n         </div>\n-      </div> \n+        <div v-else class=\"loading\">Loading...</div>\n+      </div>\n \n       <div class=\"control-bar bottom\">\n         <button class=\"nav-btn\" @click=\"goToNext\" :disabled=\"!canGoToNext\">\n@@ -175,6 +219,12 @@ onMounted(() => {\n       cursor: pointer;\n     }\n   }\n+\n+  .loading {\n+    padding: 6px 8px;\n+    color: #555;\n+    font-style: italic;\n+  }\n }\n \n .collection-frame {\n@@ -217,8 +267,6 @@ onMounted(() => {\n   }\n }\n \n-\n-\n .field-label {\n   font-size: 0.72em;\n   line-height: 1;\n@@ -280,19 +328,15 @@ onMounted(() => {\n }\n \n .pairs {\n-\n-\n   .pair-row {\n     display: grid;\n     grid-template-columns: 1fr 1fr;\n \n-\n-\n     &:not(:last-child) {\n       border-bottom: 1px solid #858585;\n     }\n \n-    &>div {\n+    & > div {\n       position: relative;\n       padding: 5px;\n \n@@ -305,29 +349,21 @@ onMounted(() => {\n         right: -0.5px;\n         background: #858585;\n       }\n-\n-\n-\n     }\n   }\n \n-\n-\n   .key-cell {\n     background-color: #dae4ef;\n     position: relative;\n+    display: flex;\n+    flex-direction: row;\n \n     &::after {\n       content: attr(data-index);\n       position: absolute;\n       top: 5px;\n       right: 5px;\n     }\n-\n-    display: flex;\n-    flex-direction: row;\n-\n   }\n-\n }\n-</style>\n\\ No newline at end of file\n+</style>"
+    },
+    {
+      "sha": "6e48ab49548b0ed634833128b244cf810dca3d62",
+      "filename": "memviz-ui/src/visualization/debugpy/components/value/collection/flat-collection.vue",
+      "status": "modified",
+      "additions": 115,
+      "deletions": 73,
+      "changes": 188,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fvalue%2Fcollection%2Fflat-collection.vue",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fvalue%2Fcollection%2Fflat-collection.vue",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fvalue%2Fcollection%2Fflat-collection.vue?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -1,12 +1,20 @@\n <script setup lang=\"ts\">\n import { computed, ref, watch } from \"vue\";\n+import { ValueKind } from \"process-def/debugpy\";\n import SequenceCollection from \"./sequence-collection.vue\";\n import SetCollection from \"./set-collection.vue\";\n import {\n-  ValueKind,\n-} from \"process-def/debugpy\";\n-import { LazyFlatCollectionVal, LazyFrozenSetVal, LazyListVal, LazySetVal, LazyTupleVal } from \"../../../type/lazy-value\";\n-import { valueState } from \"../../../store\";\n+  LazyFlatCollectionVal,\n+  LazyFrozenSetVal,\n+  LazyListVal,\n+  LazySetVal,\n+  LazyTupleVal,\n+} from \"../../../type/lazy-value\";\n+import {\n+  componentState,\n+  objectVisibilityState,\n+  valueState,\n+} from \"../../../store\";\n import { assert } from \"../../../../../utils\";\n import { isFlatCollection } from \"../../../utils/types\";\n import {\n@@ -22,93 +30,133 @@ const props = defineProps<{\n const currentIndex = ref(0);\n const visibleElementCount = ref(COLLECTION_ITEM_DISPLAY_COUNT_DEFAULT);\n \n-function clampVisibleElementCount(count: number): number {\n-  return Math.max(\n-    COLLECTION_ITEM_DISPLAY_COUNT_MIN,\n-    Math.min(COLLECTION_ITEM_DISPLAY_COUNT_MAX, count),\n-  );\n-}\n-\n const pythonValue = computed(() => {\n-  let val = valueState.value.getValueOrThrow(props.id);\n+  const val = valueState.value.getValueOrThrow(props.id);\n   assert(\n     isFlatCollection(val),\n     `Value with id ${props.id} is not a LazyFlatCollectionVal`,\n   );\n   return val as LazyFlatCollectionVal;\n });\n-const isFirstViewResolved = computed(() => {\n-  return pythonValue.value.areItemsFetched(0, visibleElementCount.value);\n-});\n-const hasLoaded = ref(isFirstViewResolved.value);\n-const isOpen = ref(isFirstViewResolved.value);\n \n const totalElementCount = computed(() => pythonValue.value.element_count);\n+const isFirstViewResolved = computed(() =>\n+  pythonValue.value.areItemsFetched(0, visibleElementCount.value),\n+);\n+const isOpen = ref(isFirstViewResolved.value);\n const canGoToPrevious = computed(() => currentIndex.value > 0);\n const canGoToNext = computed(\n-  () => currentIndex.value + visibleElementCount.value < totalElementCount.value\n+  () => currentIndex.value + visibleElementCount.value < totalElementCount.value,\n );\n \n+function clampVisibleElementCount(count: number): number {\n+  return Math.max(\n+    COLLECTION_ITEM_DISPLAY_COUNT_MIN,\n+    Math.min(COLLECTION_ITEM_DISPLAY_COUNT_MAX, count),\n+  );\n+}\n+\n+function clampCurrentIndex(index: number): number {\n+  return Math.max(0, Math.min(index, Math.max(totalElementCount.value - 1, 0)));\n+}\n+\n+function saveState() {\n+  componentState.setState(props.id, {\n+    kind: pythonValue.value.kind,\n+    isOpen: isOpen.value,\n+    collectionPageIndex: currentIndex.value,\n+    collectionItemCount: visibleElementCount.value,\n+  });\n+}\n+\n+function setStateToOpen(value: boolean) {\n+  isOpen.value = value;\n+  objectVisibilityState.setSourceObjectAsCollapsed(props.id, !value);\n+}\n+\n+function restoreCollectionState() {\n+  const savedValue = componentState.getState(props.id, pythonValue.value.kind);\n+  currentIndex.value = clampCurrentIndex(savedValue?.collectionPageIndex ?? 0);\n+  visibleElementCount.value = clampVisibleElementCount(\n+    savedValue?.collectionItemCount ?? COLLECTION_ITEM_DISPLAY_COUNT_DEFAULT,\n+  );\n+  setStateToOpen(savedValue ? savedValue.isOpen : isFirstViewResolved.value);\n+}\n+\n+watch(\n+  () => pythonValue.value,\n+  () => {\n+    restoreCollectionState();\n+  },\n+  { immediate: true },\n+);\n \n const goToPrevious = () => {\n-  if (canGoToPrevious.value) currentIndex.value--;\n+  if (!canGoToPrevious.value) {\n+    return;\n+  }\n+\n+  currentIndex.value--;\n+  saveState();\n };\n \n const goToNext = () => {\n-  if (canGoToNext.value) currentIndex.value++;\n+  if (!canGoToNext.value) {\n+    return;\n+  }\n+\n+  currentIndex.value++;\n+  saveState();\n };\n \n const handleIndexInput = (event: Event) => {\n   const target = event.target as HTMLInputElement;\n-  let newIndex = parseInt(target.value, 10);\n-  if (isNaN(newIndex)) return;\n-  if (newIndex < 0) newIndex = 0;\n-  if (newIndex >= totalElementCount.value) newIndex = totalElementCount.value - 1;\n-  currentIndex.value = newIndex;\n+  const newIndex = parseInt(target.value, 10);\n+  if (Number.isNaN(newIndex)) {\n+    return;\n+  }\n+\n+  currentIndex.value = clampCurrentIndex(newIndex);\n+  saveState();\n };\n \n const handleVisibleCountInput = (event: Event) => {\n   const target = event.target as HTMLInputElement;\n-  let nextCount = parseInt(target.value, 10);\n-  if (isNaN(nextCount)) return;\n-  nextCount = clampVisibleElementCount(nextCount);\n-  visibleElementCount.value = nextCount;\n+  const newCount = parseInt(target.value, 10);\n+  if (Number.isNaN(newCount)) {\n+    return;\n+  }\n+\n+  visibleElementCount.value = clampVisibleElementCount(newCount);\n+  saveState();\n };\n \n function onClick() {\n-  isOpen.value = true;\n-  hasLoaded.value = true;\n+  setStateToOpen(true);\n+  saveState();\n }\n \n function closeView() {\n-  isOpen.value = false;\n+  setStateToOpen(false);\n+  saveState();\n }\n \n-watch(\n-  () => props.id,\n-  () => {\n-    currentIndex.value = 0;\n-    hasLoaded.value = isFirstViewResolved.value;\n-    isOpen.value = isFirstViewResolved.value;\n-  },\n-);\n-\n function isSequenceCollection(\n-  value: LazyFlatCollectionVal\n+  value: LazyFlatCollectionVal,\n ): value is LazyListVal | LazyTupleVal {\n   return value.kind === ValueKind.LIST || value.kind === ValueKind.TUPLE;\n }\n \n function isSetCollection(\n-  value: LazyFlatCollectionVal\n+  value: LazyFlatCollectionVal,\n ): value is LazySetVal | LazyFrozenSetVal {\n   return value.kind === ValueKind.SET || value.kind === ValueKind.FROZENSET;\n }\n </script>\n \n <template>\n   <div v-if=\"pythonValue.element_count > 0\" class=\"collection-wrapper\">\n-    <div v-if=\"hasLoaded && isOpen\" class=\"collection-frame\">\n+    <div v-if=\"isOpen\" class=\"collection-frame\">\n       <div class=\"control-bar top\">\n         <div class=\"control-wrapper\">\n           <button\n@@ -118,27 +166,28 @@ function isSetCollection(\n           >\n             &#9650\n           </button>\n-            <span class=\"field-label\">idx</span>\n-            <input\n-              class=\"index-input\"\n-              type=\"number\"\n-              :value=\"currentIndex\"\n-              @input=\"handleIndexInput\"\n-              :min=\"0\"\n-              :max=\"totalElementCount - 1\"\n-            />\n-            <span class=\"field-label\">count</span>\n-            <input\n-              class=\"count-input\"\n-              type=\"number\"\n-              :value=\"visibleElementCount\"\n-              @input=\"handleVisibleCountInput\"\n-              :min=\"COLLECTION_ITEM_DISPLAY_COUNT_MIN\"\n-              :max=\"COLLECTION_ITEM_DISPLAY_COUNT_MAX\"\n-            />\n+          <span class=\"field-label\">idx</span>\n+          <input\n+            class=\"index-input\"\n+            type=\"number\"\n+            :value=\"currentIndex\"\n+            @input=\"handleIndexInput\"\n+            :min=\"0\"\n+            :max=\"totalElementCount - 1\"\n+          />\n+          <span class=\"field-label\">count</span>\n+          <input\n+            class=\"count-input\"\n+            type=\"number\"\n+            :value=\"visibleElementCount\"\n+            @input=\"handleVisibleCountInput\"\n+            :min=\"COLLECTION_ITEM_DISPLAY_COUNT_MIN\"\n+            :max=\"COLLECTION_ITEM_DISPLAY_COUNT_MAX\"\n+          />\n           <button class=\"close-btn\" @click.stop=\"closeView\">×</button>\n         </div>\n       </div>\n+\n       <div class=\"content-area\">\n         <SequenceCollection\n           v-if=\"isSequenceCollection(pythonValue)\"\n@@ -160,7 +209,6 @@ function isSetCollection(\n           &#9660\n         </button>\n       </div>\n-      \n     </div>\n \n     <div v-if=\"!isOpen\" @click=\"onClick\" class=\"not-resolved\">\n@@ -204,22 +252,15 @@ function isSetCollection(\n \n .control-wrapper {\n   display: flex;\n-\n   width: 100%;\n \n-  &>* {\n+  & > * {\n     align-content: center;\n   }\n \n   & * {\n     box-sizing: border-box;\n   }\n-\n-  & input {\n-    padding-inline: 5px;\n-    line-height: 1;\n-    text-align: center;\n-  }\n }\n \n .field-label {\n@@ -238,7 +279,7 @@ function isSetCollection(\n   background: transparent;\n   cursor: pointer;\n   height: stretch;\n-  aspect-ratio: 1/1;\n+  aspect-ratio: 1 / 1;\n   padding: 0;\n \n   &:hover {\n@@ -281,8 +322,9 @@ function isSetCollection(\n .content-area {\n   width: 100%;\n }\n+\n .error {\n   padding: 5px;\n   color: red;\n }\n-</style>\n\\ No newline at end of file\n+</style>"
+    },
+    {
+      "sha": "70b19f605263cb5be6a1600fd2f455a6b9cf24f1",
+      "filename": "memviz-ui/src/visualization/debugpy/components/value/object/object.vue",
+      "status": "modified",
+      "additions": 88,
+      "deletions": 21,
+      "changes": 109,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fvalue%2Fobject%2Fobject.vue",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fvalue%2Fobject%2Fobject.vue",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fvalue%2Fobject%2Fobject.vue?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -1,13 +1,17 @@\n <script setup lang=\"ts\">\n import { computed, ref, watch } from \"vue\";\n import { processResolver } from \"../../../../store\";\n+import { PythonId } from \"process-def/debugpy\";\n import AttributeName from \"./attribute-name.vue\";\n import MemorySlot from \"../../memory-slot.vue\";\n import { LazyObjectVal } from \"../../../type/lazy-value\";\n import { assert } from \"../../../../../utils\";\n-import { valueState } from \"../../../store\";\n+import {\n+  componentState,\n+  objectVisibilityState,\n+  valueState,\n+} from \"../../../store\";\n import { isObject } from \"../../../utils/types\";\n-import { PythonId } from \"process-def/debugpy\";\n \n const props = defineProps<{\n   id: PythonId;\n@@ -18,44 +22,68 @@ const pythonValue = computed(() => {\n   assert(isObject(val), `Value with id ${props.id} is not a LazyObjectVal`);\n   return val as LazyObjectVal;\n });\n+\n const isResolved = computed(() => pythonValue.value.isResolved());\n-const attributes = computed(() => {\n-  return pythonValue.value.getFetchedAttributes();\n-});\n+const attributes = computed(() => pythonValue.value.getFetchedAttributes());\n const isOpen = ref(isResolved.value);\n \n async function loadData() {\n-  if (isResolved.value) return;\n+  if (isResolved.value) {\n+    return;\n+  }\n \n   const resolver = processResolver.value;\n-  if (!resolver) return;\n+  if (!resolver) {\n+    return;\n+  }\n \n   await pythonValue.value.getAttributes(resolver.debugpy);\n }\n \n-async function onClick() {\n-  if (!isResolved.value) {\n-    await loadData();\n+function setStateToOpen(value: boolean, persist = false) {\n+  isOpen.value = value;\n+  objectVisibilityState.setSourceObjectAsCollapsed(props.id, !value);\n+\n+  if (persist) {\n+    componentState.setState(props.id, {\n+      kind: pythonValue.value.kind,\n+      isOpen: value,\n+    });\n   }\n-  isOpen.value = true;\n }\n \n-function closeView() {\n-  isOpen.value = false;\n+function restoreOpenState() {\n+  const savedState = componentState.getState(props.id, pythonValue.value.kind);\n+  setStateToOpen(savedState ? savedState.isOpen : isResolved.value);\n }\n \n watch(\n-  () => props.id,\n+  [() => pythonValue.value, () => processResolver.value],\n   () => {\n-    isOpen.value = isResolved.value;\n+    restoreOpenState();\n+    if (isOpen.value) {\n+      void loadData();\n+    }\n   },\n+  { immediate: true },\n );\n+\n+async function onClick() {\n+  if (!isResolved.value) {\n+    await loadData();\n+  }\n+  setStateToOpen(true, true);\n+}\n+\n+function closeView() {\n+  setStateToOpen(false, true);\n+}\n </script>\n \n <template>\n   <div class=\"object\">\n     <div v-if=\"isResolved && isOpen\" class=\"resolved-object\">\n-      <table v-if=\"attributes && attributes.length > 0\">\n+      <table v-if=\"attributes && attributes.length > 0\" class=\"object-frame\">\n         <thead>\n           <tr>\n             <th colspan=\"2\" class=\"header-cell\">\n@@ -71,7 +99,7 @@ watch(\n             <td v-bind:colspan=\"attr.value ? 1 : 2\" class=\"attribute-name\">\n               <AttributeName :attribute=\"attr\" />\n             </td>\n-            <td v-if=\"attr.value\">\n+            <td v-if=\"attr.value\" class=\"attribute-value\">\n               <MemorySlot :id=\"attr.value.id\" />\n             </td>\n           </tr>\n@@ -86,6 +114,12 @@ watch(\n \n <style scoped lang=\"scss\">\n .object {\n+  display: flex;\n+  justify-content: start;\n+  flex-direction: column;\n+  max-width: 100%;\n+  min-width: 0;\n+\n   .not-resolved {\n     &:hover {\n       cursor: pointer;\n@@ -97,6 +131,8 @@ watch(\n   display: flex;\n   justify-content: start;\n   flex-direction: column;\n+  max-width: 100%;\n+  min-width: 0;\n }\n \n .empty-object {\n@@ -105,16 +141,26 @@ watch(\n   padding: 2px 5px;\n }\n \n-table {\n+.object-frame {\n+  width: 100%;\n+  max-width: 100%;\n   border-collapse: collapse;\n   border: 2px solid black;\n-  margin-top: 5px;\n+  margin-block-start: 5px;\n+  background: white;\n+  table-layout: fixed;\n \n   .header-content {\n     display: flex;\n     justify-content: space-between;\n     align-items: center;\n     width: 100%;\n+    padding-left: 5px;\n+    box-sizing: border-box;\n+  }\n+\n+  .header-cell {\n+    padding: 0;\n   }\n \n   .close-btn {\n@@ -132,12 +178,33 @@ table {\n     background-color: #bca9e1;\n     text-align: left;\n     font-weight: normal;\n-    padding-left: 5px;\n+    padding-left: 0;\n   }\n \n   td {\n     border-bottom: 1px solid #3f3f3f;\n-    padding: 2px 10px;\n+    padding: 2px 0px 2px 10px;\n+    vertical-align: top;\n+    min-width: 0;\n+    overflow-wrap: anywhere;\n+    word-break: break-word;\n+\n+    > * {\n+      max-width: 100%;\n+      min-width: 0;\n+    }\n+  }\n+\n+  tr:last-child td {\n+    border-bottom: none;\n   }\n }\n+\n+.attribute-name {\n+  width: 36%;\n+}\n+\n+.attribute-value {\n+  width: 64%;\n+}\n </style>"
+    },
+    {
+      "sha": "d2f5f51ebeb96bbd533f2ac523cb3a08429163cb",
+      "filename": "memviz-ui/src/visualization/debugpy/components/value/value-ref.vue",
+      "status": "modified",
+      "additions": 45,
+      "deletions": 5,
+      "changes": 50,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fvalue%2Fvalue-ref.vue",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fvalue%2Fvalue-ref.vue",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fcomponents%2Fvalue%2Fvalue-ref.vue?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -3,14 +3,14 @@ import {\n   computed,\n   onBeforeUnmount,\n   onMounted,\n-  onUpdated,\n   shallowRef,\n   ShallowRef,\n   watch,\n } from \"vue\";\n-import { debugpyComponentMap, valueState } from \"../../store\";\n+import { debugpyComponentMap, highlightedId, valueState } from \"../../store\";\n import { LeaderLineWithId } from \"../../component-map\";\n import { PythonId } from \"process-def/debugpy\";\n+import { nextTick } from \"vue\";\n \n const props = defineProps<{\n   id: PythonId;\n@@ -48,6 +48,10 @@ function tryAddArrow() {\n     return;\n   }\n \n+  if (arrow.value !== null && currentArrowTargetId.value === props.id) {\n+    return;\n+  }\n+\n   if (arrow.value !== null) {\n     tryRemoveArrow();\n   }\n@@ -71,8 +75,41 @@ function unhighlightArrows() {\n   debugpyComponentMap.value.unhighlightValue(props.id);\n }\n \n+function scrollToValueOnHeap() {\n+  const target = debugpyComponentMap.value.getComponent(props.id);\n+  if (!target) return;\n+\n+  target.element.scrollIntoView({\n+    behavior: \"smooth\",\n+    block: \"center\",\n+    inline: \"nearest\",\n+  });\n+\n+  triggerHighlight(props.id);\n+}\n+\n const elementRef: ShallowRef<HTMLDivElement | null> = shallowRef(null);\n const arrow: ShallowRef<LeaderLineWithId | null> = shallowRef(null);\n+let highlightTimeoutId: number | null = null;\n+\n+async function triggerHighlight(id: PythonId) {\n+  highlightedId.value = null;\n+\n+  await nextTick();\n+\n+  highlightedId.value = id;\n+\n+  if (highlightTimeoutId !== null) {\n+    window.clearTimeout(highlightTimeoutId);\n+  }\n+\n+  highlightTimeoutId = window.setTimeout(() => {\n+    if (highlightedId.value === id) {\n+      highlightedId.value = null;\n+    }\n+    highlightTimeoutId = null;\n+  }, 1200);\n+}\n \n watch(debugpyComponentMap, () => {\n   tryAddArrow();\n@@ -89,18 +126,20 @@ watch(\n onMounted(() => {\n   tryAddArrow();\n });\n-onUpdated(() => {\n-  tryAddArrow();\n-});\n onBeforeUnmount(() => {\n   tryRemoveArrow();\n+\n+  if (highlightTimeoutId !== null) {\n+    window.clearTimeout(highlightTimeoutId);\n+  }\n });\n </script>\n \n <template>\n   <div\n     class=\"value-ref-wrapper\"\n     :ref=\"(el: any) => (elementRef = el)\"\n+    @click.stop=\"scrollToValueOnHeap\"\n     @mouseenter.stop=\"highlightArrows\"\n     @mouseleave.stop=\"unhighlightArrows\"\n   >\n@@ -119,6 +158,7 @@ onBeforeUnmount(() => {\n   max-height: 100%;\n   height: stretch;\n   align-content: center;\n+  cursor: pointer;\n }\n \n .value-ref {"
+    },
+    {
+      "sha": "d684d889b471b6fea93857ab988d3dedb189a4ef",
+      "filename": "memviz-ui/src/visualization/debugpy/frame-visibility.ts",
+      "status": "modified",
+      "additions": 65,
+      "deletions": 22,
+      "changes": 87,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fframe-visibility.ts",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fframe-visibility.ts",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fframe-visibility.ts?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -14,42 +14,85 @@ function equals(a: Set<PythonId>, b: Set<PythonId>): boolean {\n   return true;\n }\n \n-export class FrameObjectsVisibilityState {\n+export class ObjectVisibilityState {\n   // frameId -> source object ids\n   private frameSourceObjects = ref(new Map<number, Set<PythonId>>());\n+  // set of collapsed object ids\n+  private collapsedSourceIds = ref(new Set<PythonId>());\n \n-  public setFrameSourceObjects(frameId: number, sourceObjIds: PythonId[]) {\n-    const nextSourceObjectIds = new Set(sourceObjIds);\n-    const currentSourceObjectIds = this.frameSourceObjects.value.get(frameId);\n+  public setVisibleSourceObjectsForFrame(\n+    frameId: number,\n+    sourceIds: PythonId[],\n+  ) {\n+    const newValue = new Set(sourceIds);\n+    const currentValue = this.frameSourceObjects.value.get(frameId);\n+    if (currentValue && equals(currentValue, newValue)) {\n+      return;\n+    }\n+    // create a new map instance to trigger reactivity\n+    const newMap = new Map(this.frameSourceObjects.value);\n+    newMap.set(frameId, newValue);\n+    this.frameSourceObjects.value = newMap;\n+  }\n \n-    if (\n-      currentSourceObjectIds &&\n-      equals(currentSourceObjectIds, nextSourceObjectIds)\n-    )\n+  public clearVisibleSourceObjectsForFrame(frameId: number) {\n+    if (!this.frameSourceObjects.value.has(frameId)) {\n       return;\n+    }\n \n-    const nextFrameSourceObjects = new Map(this.frameSourceObjects.value);\n-    nextFrameSourceObjects.set(frameId, nextSourceObjectIds);\n-    this.frameSourceObjects.value = nextFrameSourceObjects;\n+    // create a new map instance to trigger reactivity\n+    const newMap = new Map(this.frameSourceObjects.value);\n+    newMap.delete(frameId);\n+    this.frameSourceObjects.value = newMap;\n   }\n \n-  public clearFrameSourceObjects(frameId: number) {\n-    if (!this.frameSourceObjects.value.has(frameId)) {\n+  public setSourceObjectAsCollapsed(sourceId: PythonId, isCollapsed: boolean) {\n+    if (this.collapsedSourceIds.value.has(sourceId) === isCollapsed) {\n+      return;\n+    }\n+\n+    const newSet = new Set(this.collapsedSourceIds.value);\n+    if (isCollapsed) {\n+      newSet.add(sourceId);\n+    } else {\n+      newSet.delete(sourceId);\n+    }\n+    this.collapsedSourceIds.value = newSet;\n+  }\n+\n+  public clearCollapsedSources() {\n+    if (this.collapsedSourceIds.value.size === 0) {\n       return;\n     }\n \n-    const nextFrameSourceObjects = new Map(this.frameSourceObjects.value);\n-    nextFrameSourceObjects.delete(frameId);\n-    this.frameSourceObjects.value = nextFrameSourceObjects;\n+    this.collapsedSourceIds.value = new Set();\n   }\n \n-  public getVisibleSourceObjectIds(): Set<PythonId> {\n-    const ids = new Set<PythonId>();\n-    for (const sourceObjIds of this.frameSourceObjects.value.values()) {\n-      for (const id of sourceObjIds) {\n-        ids.add(id);\n+  public filterVisibleChildIds(\n+    sourceObjectId: PythonId,\n+    childIds: PythonId[],\n+  ): PythonId[] {\n+    if (this.collapsedSourceIds.value.has(sourceObjectId)) {\n+      return [];\n+    }\n+    return childIds;\n+  }\n+\n+  public getOrderedVisibleSourceObjectIds(frameIds: number[]): PythonId[] {\n+    const orderedIds: PythonId[] = [];\n+    const seenIds = new Set<PythonId>();\n+\n+    for (const frameId of frameIds) {\n+      const sourceObjectIds = this.frameSourceObjects.value.get(frameId);\n+      if (!sourceObjectIds) continue;\n+\n+      for (const id of sourceObjectIds) {\n+        if (seenIds.has(id)) continue;\n+        seenIds.add(id);\n+        orderedIds.push(id);\n       }\n     }\n-    return ids;\n+\n+    return orderedIds;\n   }\n }"
+    },
+    {
+      "sha": "bb1274acd78120fb8b494286ed4cafe1f1c0b747",
+      "filename": "memviz-ui/src/visualization/debugpy/store.ts",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 3,
+      "changes": 11,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fstore.ts",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fstore.ts",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fstore.ts?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -1,6 +1,8 @@\n-import { type ShallowRef, shallowRef } from \"vue\";\n+import type { PythonId } from \"process-def/debugpy\";\n+import { type Ref, type ShallowRef, ref, shallowRef } from \"vue\";\n import { ComponentMap as DebugpyComponentMap } from \"./component-map\";\n-import { FrameObjectsVisibilityState } from \"./frame-visibility\";\n+import { ComponentState } from \"./component-state\";\n+import { ObjectVisibilityState } from \"./frame-visibility\";\n import { ValueTracker } from \"./value-tracker\";\n \n export const valueState: ShallowRef<ValueTracker> = shallowRef(\n@@ -11,4 +13,7 @@ export const debugpyComponentMap: ShallowRef<DebugpyComponentMap> = shallowRef(\n   new DebugpyComponentMap(),\n );\n \n-export const frameVisibilityState = new FrameObjectsVisibilityState();\n+export const objectVisibilityState = new ObjectVisibilityState();\n+export const componentState = new ComponentState();\n+\n+export const highlightedId: Ref<PythonId | null> = ref(null);"
+    },
+    {
+      "sha": "34297d9accc57165437358cebd630de04ed33603",
+      "filename": "memviz-ui/src/visualization/debugpy/type/lazy-value.ts",
+      "status": "modified",
+      "additions": 20,
+      "deletions": 13,
+      "changes": 33,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Ftype%2Flazy-value.ts",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Ftype%2Flazy-value.ts",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Ftype%2Flazy-value.ts?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -57,6 +57,10 @@ abstract class LazyCollectionVal<TValue> extends SizedDescribedRichValue {\n   private pendingRequests: Map<BlockIndex, Promise<TValue>> = new Map();\n   private blocks: Cache<TValue> = new Cache<TValue>(CACHE_CAPACITY_BLOCKS);\n \n+  public override get_type_label(): string {\n+    return `${this.kind}[${this.getItemCount()}]`;\n+  }\n+\n   public setValues(values: TValue): void {\n     this.blocks.clear();\n     this.pendingRequests.clear();\n@@ -115,10 +119,7 @@ abstract class LazyCollectionVal<TValue> extends SizedDescribedRichValue {\n \n     for (let blockIdx = startBlockIdx; blockIdx <= endBlockIdx; blockIdx++) {\n       const blockStartItemIdx = this.getStartItemIndexForBlock(blockIdx);\n-      const blockEndItemIdx = Math.min(\n-        this.getEndItemIndexForBlock(blockIdx),\n-        this.getItemCount() - 1,\n-      );\n+      const blockEndItemIdx = this.getEndItemIndexForBlock(blockIdx) - 1;\n \n       // do not assign values into incomplete blocks\n       if (blockStartItemIdx < startIdx) continue;\n@@ -296,12 +297,10 @@ abstract class LazyCollectionVal<TValue> extends SizedDescribedRichValue {\n       const fetchEndIdx = this.getEndItemIndexForBlock(maxFetchBlockIdx);\n       const fetchCount = fetchEndIdx - fetchStartIdx;\n \n-      const fetchPromise = this.fetchItems(resolver, fetchStartIdx, fetchCount);\n-\n       if (!isCriticalPartFetched) {\n         try {\n           // await if critical part was missing\n-          await fetchPromise;\n+          await this.fetchItems(resolver, fetchStartIdx, fetchCount);\n         } catch (e) {\n           console.error(\n             `Failed to fetch items for ${this.id}, start=${fetchStartIdx}, count=${fetchCount}:`,\n@@ -310,12 +309,20 @@ abstract class LazyCollectionVal<TValue> extends SizedDescribedRichValue {\n           return this.getEmptyValue();\n         }\n       } else {\n-        fetchPromise.catch((e) =>\n-          console.error(\n-            `Background fetch failed for ${this.id}, start=${fetchStartIdx}, count=${fetchCount}:`,\n-            e,\n-          ),\n-        );\n+        // delay neighbor fetching to avoid blocking rendering\n+        setTimeout(() => {\n+          const delayedFetchPromise = this.fetchItems(\n+            resolver,\n+            fetchStartIdx,\n+            fetchCount,\n+          );\n+          delayedFetchPromise.catch((e) =>\n+            console.error(\n+              `Background fetch failed for ${this.id}, start=${fetchStartIdx}, count=${fetchCount}:`,\n+              e,\n+            ),\n+          );\n+        }, 300);\n       }\n     }\n "
+    },
+    {
+      "sha": "1de607d9166de157ce95e1a4fff7443460b628f4",
+      "filename": "memviz-ui/src/visualization/debugpy/value-tracker.ts",
+      "status": "modified",
+      "additions": 31,
+      "deletions": 2,
+      "changes": 33,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fvalue-tracker.ts",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fvalue-tracker.ts",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/memviz-ui%2Fsrc%2Fvisualization%2Fdebugpy%2Fvalue-tracker.ts?ref=12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "patch": "@@ -5,8 +5,37 @@ import type { RichValue } from \"./type/type\";\n export class ValueTracker {\n   private values = reactive(new Map<PythonId, RichValue>());\n \n-  getValues(): RichValue[] {\n-    return Array.from(this.values.values());\n+  getOrderedValues(rootValueIds: PythonId[]): RichValue[] {\n+    // pre-order DFS so parent values come before their children\n+    const ordered: RichValue[] = [];\n+    const visited = new Set<PythonId>();\n+\n+    const dfs = (id: PythonId) => {\n+      if (visited.has(id)) return;\n+      visited.add(id);\n+\n+      const val = this.values.get(id);\n+      if (!val) return;\n+\n+      ordered.push(val);\n+\n+      const innerIds = val.getFetchedChildIds() ?? [];\n+      for (const innerId of innerIds) {\n+        dfs(innerId);\n+      }\n+    };\n+\n+    for (const rootId of rootValueIds) {\n+      dfs(rootId);\n+    }\n+\n+    for (const val of this.values.values()) {\n+      if (!visited.has(val.id)) {\n+        dfs(val.id);\n+      }\n+    }\n+\n+    return ordered;\n   }\n \n   addValues(values: RichValue[]) {"
+    },
+    {
+      "sha": "7a24b42f340101beb0c81d62ca8edc35ee89cd50",
+      "filename": "package-lock.json",
+      "status": "modified",
+      "additions": 1832,
+      "deletions": 4064,
+      "changes": 5896,
+      "blob_url": "https://github.com/Kobzol/memviz/blob/12ad3cc9e2d0913c476febe071f03c8b93340841/package-lock.json",
+      "raw_url": "https://github.com/Kobzol/memviz/raw/12ad3cc9e2d0913c476febe071f03c8b93340841/package-lock.json",
+      "contents_url": "https://api.github.com/repos/Kobzol/memviz/contents/package-lock.json?ref=12ad3cc9e2d0913c476febe071f03c8b93340841"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "027da6760575501cf4cc61d84abd97daa2385a21",
+      "message": "fix list loading",
+      "parent_shas": [
+        "cfe2081891f8f09c023d6f1d70ca6bdd52cb3ef5"
+      ]
+    },
+    {
+      "sha": "85c57882dc914ec499e012bd4e17bf3b27f63ca8",
+      "message": "delay background fetch to avoid blocking rendering",
+      "parent_shas": [
+        "027da6760575501cf4cc61d84abd97daa2385a21"
+      ]
+    },
+    {
+      "sha": "d1c094dcdf0104f9dfe901477fc45ec5a212d405",
+      "message": "fix arrow adding",
+      "parent_shas": [
+        "85c57882dc914ec499e012bd4e17bf3b27f63ca8"
+      ]
+    },
+    {
+      "sha": "d1477d68dc64ef120094992e56ec347f4ad12dd8",
+      "message": "order heap objects using dfs",
+      "parent_shas": [
+        "d1c094dcdf0104f9dfe901477fc45ec5a212d405"
+      ]
+    },
+    {
+      "sha": "3b287da2d933a6f0a84d0792ac5b163d7ce1fb71",
+      "message": "hide nested objects after parent object is closed",
+      "parent_shas": [
+        "d1477d68dc64ef120094992e56ec347f4ad12dd8"
+      ]
+    },
+    {
+      "sha": "e34d051fd315965ecec80e396a6f21c442865c31",
+      "message": "highlight deferred object after clicking the reference",
+      "parent_shas": [
+        "3b287da2d933a6f0a84d0792ac5b163d7ce1fb71"
+      ]
+    },
+    {
+      "sha": "54a7b0a339051a681e01a02b1089626f0a88543e",
+      "message": "fix types check in inspection script",
+      "parent_shas": [
+        "e34d051fd315965ecec80e396a6f21c442865c31"
+      ]
+    },
+    {
+      "sha": "2412ee5cf39fdbe98f22f9bf871c575428f94ed4",
+      "message": "fix collection type label",
+      "parent_shas": [
+        "54a7b0a339051a681e01a02b1089626f0a88543e"
+      ]
+    },
+    {
+      "sha": "811b2cc9cd3e4f8dbe0979e1c04605f536fcf2d2",
+      "message": "update css",
+      "parent_shas": [
+        "2412ee5cf39fdbe98f22f9bf871c575428f94ed4"
+      ]
+    },
+    {
+      "sha": "86cc2f1a8ae1ad60e96e38fd70ab82aa077f4b3f",
+      "message": "remove unused dependency",
+      "parent_shas": [
+        "811b2cc9cd3e4f8dbe0979e1c04605f536fcf2d2"
+      ]
+    },
+    {
+      "sha": "066839712848c2d4b64a5f28201bf19f09d27f0f",
+      "message": "mention python support in readme",
+      "parent_shas": [
+        "86cc2f1a8ae1ad60e96e38fd70ab82aa077f4b3f"
+      ]
+    },
+    {
+      "sha": "132a27e16df03e1986094acac470324c2284b4b0",
+      "message": "keep objects open/closed when stepping through frames",
+      "parent_shas": [
+        "066839712848c2d4b64a5f28201bf19f09d27f0f"
+      ]
+    },
+    {
+      "sha": "12ad3cc9e2d0913c476febe071f03c8b93340841",
+      "message": "return empty variables when frame is not found due to fast stepping",
+      "parent_shas": [
+        "132a27e16df03e1986094acac470324c2284b4b0"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__Kobzol__memviz__pr24.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\Kobzol__memviz__pr24__python_cpp__Kobzol__memviz__pr24\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\Kobzol__memviz__pr24__python_cpp__Kobzol__memviz__pr24\\rn"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "instance_id": "java_python__liftwizard__liftwizard__pr3505",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "liftwizard/liftwizard",
+  "pr_number": 3505,
+  "pr_url": "https://github.com/liftwizard/liftwizard/pull/3505",
+  "repo": {
+    "full_name": "liftwizard/liftwizard",
+    "clone_url": "https://github.com/liftwizard/liftwizard.git",
+    "default_branch": "main",
+    "created_at": "2020-01-08T00:21:57Z",
+    "stars": 17,
+    "license": "Apache-2.0",
+    "size_kb": 12432
+  },
+  "pull_request": {
+    "id": 3330652996,
+    "title": "Bump org.openrewrite:rewrite-java-17 from 8.74.0 to 8.74.1",
+    "body": "Bumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.74.0 to 8.74.1.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/openrewrite/rewrite/releases\">org.openrewrite:rewrite-java-17's releases</a>.</em></p>\n<blockquote>\n<h2>8.74.1</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>Python: Fix ty 0.0.18 type checking diagnostics by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6806\">openrewrite/rewrite#6806</a></li>\n<li>Handle null class body in KotlinPrinter by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6805\">openrewrite/rewrite#6805</a></li>\n<li>Normalize ANTLR generated code by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6807\">openrewrite/rewrite#6807</a></li>\n<li>Normalize ANTLR generated code - continued by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6808\">openrewrite/rewrite#6808</a></li>\n<li>Python: Support ternary comparisons in PatternMatchingComparator by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6809\">openrewrite/rewrite#6809</a></li>\n<li>Make DeclarativeRecipe.accumulator thread-safe with ThreadLocal by <a href=\"https://github.com/kmccarp\"><code>@​kmccarp</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6810\">openrewrite/rewrite#6810</a></li>\n<li>Skip AddAnnotationProcessor when processor already in effective POM via ancestor by <a href=\"https://github.com/mcebanupgrade\"><code>@​mcebanupgrade</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6759\">openrewrite/rewrite#6759</a></li>\n<li>Python: Fix tuple parsing for parenthesized element with trailing comma by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6811\">openrewrite/rewrite#6811</a></li>\n<li>Python: Handle RPC deserialization errors in <code>PythonRewriteRpc#parseProject()</code> by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6812\">openrewrite/rewrite#6812</a></li>\n<li>Python: Fix pattern matching false positives and add template auto-parenthesization by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6814\">openrewrite/rewrite#6814</a></li>\n<li>Python: Pin <code>openrewrite</code> Python package version in RPC bootstrap by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6813\">openrewrite/rewrite#6813</a></li>\n<li>Python: register all existing recipes by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6815\">openrewrite/rewrite#6815</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.74.0...v8.74.1\">https://github.com/openrewrite/rewrite/compare/v8.74.0...v8.74.1</a></p>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/602ec884f76a351e9c93759316c88610255782a6\"><code>602ec88</code></a> Register all existing recipes (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6815\">#6815</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/02c48a75177ee1616a13794cc631293a40b20fe6\"><code>02c48a7</code></a> Python: Pin <code>openrewrite</code> Python package version in RPC bootstrap (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6813\">#6813</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/94163415950f7394f967340c85c57e7bdce796fb\"><code>9416341</code></a> Python: Fix pattern matching false positives and add template auto-parenthesi...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/e7f87109acf35350967e04b5343a22bb6c65fb67\"><code>e7f8710</code></a> Handle RPC deserialization errors in PythonRewriteRpc#parseProject() (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6812\">#6812</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/35854f88cd91617fac36c9ebb84b5bce67f224e3\"><code>35854f8</code></a> Python: Fix tuple parsing for parenthesized element with trailing comma outsi...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/b8da3dd911c0763c260d362c5d153881ccfe1689\"><code>b8da3dd</code></a> Use identity hash code due to overridden <code>hashCode</code> in Recipe</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/56da100aa9522d402a28e9f3f4bcf90d45628243\"><code>56da100</code></a> Make <code>Singleton</code> safe to cache</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/0d790f5839cdb734ac6c6d8d8785b16973b796ca\"><code>0d790f5</code></a> Skip AddAnnotationProcessor when processor already in effective POM via ances...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/447d3825ccaaa18b69a064b0f6f45d0d8074edcd\"><code>447d382</code></a> Make DeclarativeRecipe.accumulator thread-safe with ThreadLocal (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6810\">#6810</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/15ebbf27367b67ea07da2219f7987e2df5812cc3\"><code>15ebbf2</code></a> Python: Support ternary comparisons in PatternMatchingComparator (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6809\">#6809</a>)</li>\n<li>Additional commits viewable in <a href=\"https://github.com/openrewrite/rewrite/compare/v8.74.0...v8.74.1\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=org.openrewrite:rewrite-java-17&package-manager=maven&previous-version=8.74.0&new-version=8.74.1)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)\n\n\n</details>",
+    "created_at": "2026-02-26T12:04:59Z",
+    "merged_at": "2026-02-26T18:14:39Z",
+    "base_sha": "ee5ec7f535256e0a0c91263eaeaf458d67a680ab",
+    "head_sha": "b5e611bdb16ecff6a120a9410184634e1e5b827b",
+    "merge_commit_sha": "4f744ac47112bba94bb9a049125be3584905dc87",
+    "labels": [
+      "dependencies",
+      "java"
+    ]
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "ee5ec7f535256e0a0c91263eaeaf458d67a680ab",
+  "final_sha": "b5e611bdb16ecff6a120a9410184634e1e5b827b",
+  "changed_files": [
+    {
+      "sha": "75ef6b2044ccee54e0b5162e0fe114da4dcf55db",
+      "filename": "liftwizard-utility/liftwizard-rewrite/pom.xml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/liftwizard/liftwizard/blob/b5e611bdb16ecff6a120a9410184634e1e5b827b/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "raw_url": "https://github.com/liftwizard/liftwizard/raw/b5e611bdb16ecff6a120a9410184634e1e5b827b/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "contents_url": "https://api.github.com/repos/liftwizard/liftwizard/contents/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml?ref=b5e611bdb16ecff6a120a9410184634e1e5b827b",
+      "patch": "@@ -307,7 +307,7 @@\n                     <dependency>\n                         <groupId>org.openrewrite</groupId>\n                         <artifactId>rewrite-java-17</artifactId>\n-                        <version>8.74.0</version>\n+                        <version>8.74.1</version>\n                     </dependency>\n                 </dependencies>\n             </plugin>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "b5e611bdb16ecff6a120a9410184634e1e5b827b",
+      "message": "Bump org.openrewrite:rewrite-java-17 from 8.74.0 to 8.74.1\n\nBumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.74.0 to 8.74.1.\n- [Release notes](https://github.com/openrewrite/rewrite/releases)\n- [Commits](https://github.com/openrewrite/rewrite/compare/v8.74.0...v8.74.1)\n\n---\nupdated-dependencies:\n- dependency-name: org.openrewrite:rewrite-java-17\n  dependency-version: 8.74.1\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "ee5ec7f535256e0a0c91263eaeaf458d67a680ab"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__liftwizard__liftwizard__pr3505.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3505__java_python__liftwizard__liftwizard__pr3505\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3505__java_python__liftwizard__liftwizard__pr3505\\rn"
+  }
+}

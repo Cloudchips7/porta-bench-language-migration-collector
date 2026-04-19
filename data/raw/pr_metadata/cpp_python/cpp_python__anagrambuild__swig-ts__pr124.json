@@ -1,0 +1,225 @@
+{
+  "instance_id": "cpp_python__anagrambuild__swig-ts__pr124",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "anagrambuild/swig-ts",
+  "pr_number": 124,
+  "pr_url": "https://github.com/anagrambuild/swig-ts/pull/124",
+  "repo": {
+    "full_name": "anagrambuild/swig-ts",
+    "clone_url": "https://github.com/anagrambuild/swig-ts.git",
+    "default_branch": "main",
+    "created_at": "2025-04-04T10:41:04Z",
+    "stars": 8,
+    "license": "NOASSERTION",
+    "size_kb": 3880
+  },
+  "pull_request": {
+    "id": 3426256936,
+    "title": "Version Packages",
+    "body": "This PR was opened by the [Changesets release](https://github.com/changesets/action) GitHub action. When you're ready to do a release, you can merge this and the packages will be published to npm automatically. If you're not ready to do a release yet, that's fine, whenever you add more changesets to main, this PR will be updated.\n\n\n# Releases\n## @swig-wallet/lib@1.8.0\n\n### Minor Changes\n\n-   135b3aa: - Add `address`, `addressString`, `signerAddress`, `signerAddressString` properties and `matchesAddress()` method to Authority.\n    -   Add `address()` and `addressString()` to AuthorityInfo for converting policy-level pubkey bytes to on-chain authority address representation.\n    -   Add `findRolesByAuthorityAddress()` to Swig for looking up roles by authority address. Deprecate `id` and `signer` in favor of `address` and `signerAddress`.\n    -   Fix `Ox` typo to `0x` in `secp256k1AddressString`.\n\n### Patch Changes\n\n-   @swig-wallet/coder@1.8.0\n\n## @swig-wallet/classic@1.8.0\n\n### Patch Changes\n\n-   Updated dependencies [135b3aa]\n    -   @swig-wallet/lib@1.8.0\n    -   @swig-wallet/coder@1.8.0\n\n## @swig-wallet/developer@1.2.2\n\n### Patch Changes\n\n-   Updated dependencies [135b3aa]\n    -   @swig-wallet/lib@1.8.0\n\n## @swig-wallet/kit@1.8.0\n\n### Patch Changes\n\n-   Updated dependencies [135b3aa]\n    -   @swig-wallet/lib@1.8.0\n    -   @swig-wallet/coder@1.8.0\n\n## @swig-wallet/mcp-server@1.0.5\n\n### Patch Changes\n\n-   @swig-wallet/classic@1.8.0\n\n## @swig-wallet/coder@1.8.0\n\n\n",
+    "created_at": "2026-03-20T18:19:15Z",
+    "merged_at": "2026-03-20T19:03:39Z",
+    "base_sha": "4e0c46460be4a57e4dfa63a066e78bb9601f3699",
+    "head_sha": "54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+    "merge_commit_sha": "b821ba782d3b74609cc61cce4f13eaa182277b16",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "4e0c46460be4a57e4dfa63a066e78bb9601f3699",
+  "final_sha": "54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+  "changed_files": [
+    {
+      "sha": "5e0c0a6d5c138de885410899f4773f6fbb18b570",
+      "filename": ".changeset/bright-roles-shine.md",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 8,
+      "changes": 8,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4e0c46460be4a57e4dfa63a066e78bb9601f3699/.changeset%2Fbright-roles-shine.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4e0c46460be4a57e4dfa63a066e78bb9601f3699/.changeset%2Fbright-roles-shine.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/.changeset%2Fbright-roles-shine.md?ref=4e0c46460be4a57e4dfa63a066e78bb9601f3699",
+      "patch": "@@ -1,8 +0,0 @@\n----\n-\"@swig-wallet/lib\": minor\n----\n-\n-- Add `address`, `addressString`, `signerAddress`, `signerAddressString` properties and `matchesAddress()` method to Authority. \n-- Add `address()` and `addressString()` to AuthorityInfo for converting policy-level pubkey bytes to on-chain authority address representation. \n-- Add `findRolesByAuthorityAddress()` to Swig for looking up roles by authority address. Deprecate `id` and `signer` in favor of `address` and `signerAddress`. \n-- Fix `Ox` typo to `0x` in `secp256k1AddressString`."
+    },
+    {
+      "sha": "505e138bdfed9b50240b4c35e0075cf6c034a9b9",
+      "filename": "packages/classic/CHANGELOG.md",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fclassic%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fclassic%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fclassic%2FCHANGELOG.md?ref=54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+      "patch": "@@ -1,5 +1,13 @@\n # @swig-wallet/classic\n \n+## 1.8.0\n+\n+### Patch Changes\n+\n+- Updated dependencies [135b3aa]\n+  - @swig-wallet/lib@1.8.0\n+  - @swig-wallet/coder@1.8.0\n+\n ## 1.7.1\n \n ### Patch Changes"
+    },
+    {
+      "sha": "c5737ab203d0e2ecda5695a613590b69cd4b1298",
+      "filename": "packages/classic/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fclassic%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fclassic%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fclassic%2Fpackage.json?ref=54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/classic\",\n-  \"version\": \"1.7.1\",\n+  \"version\": \"1.8.0\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "21469d6bc3e953bf041a03a6f59dcc2f4fc503b8",
+      "filename": "packages/coder/CHANGELOG.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fcoder%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fcoder%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fcoder%2FCHANGELOG.md?ref=54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+      "patch": "@@ -1,5 +1,7 @@\n # @swig-wallet/coder\n \n+## 1.8.0\n+\n ## 1.7.1\n \n ## 1.7.0"
+    },
+    {
+      "sha": "c5b70d3a413f45a23128bc07e256510ca50cd4a2",
+      "filename": "packages/coder/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fcoder%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fcoder%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fcoder%2Fpackage.json?ref=54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/coder\",\n-  \"version\": \"1.7.1\",\n+  \"version\": \"1.8.0\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "134a1757e2459fe6491e80b750e6817cf0379f25",
+      "filename": "packages/developer/CHANGELOG.md",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fdeveloper%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fdeveloper%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fdeveloper%2FCHANGELOG.md?ref=54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+      "patch": "@@ -1,5 +1,12 @@\n # @swig-wallet/developer\n \n+## 1.2.2\n+\n+### Patch Changes\n+\n+- Updated dependencies [135b3aa]\n+  - @swig-wallet/lib@1.8.0\n+\n ## 1.2.1\n \n ### Patch Changes"
+    },
+    {
+      "sha": "6910dd87101b1a5e736361ae814c258026314127",
+      "filename": "packages/developer/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fdeveloper%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fdeveloper%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fdeveloper%2Fpackage.json?ref=54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/developer\",\n-  \"version\": \"1.2.1\",\n+  \"version\": \"1.2.2\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "d68b12fc7df772221c3b6bf27f01ee3c80a77c4c",
+      "filename": "packages/kit/CHANGELOG.md",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fkit%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fkit%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fkit%2FCHANGELOG.md?ref=54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+      "patch": "@@ -1,5 +1,13 @@\n # @swig-wallet/classic\n \n+## 1.8.0\n+\n+### Patch Changes\n+\n+- Updated dependencies [135b3aa]\n+  - @swig-wallet/lib@1.8.0\n+  - @swig-wallet/coder@1.8.0\n+\n ## 1.7.1\n \n ### Patch Changes"
+    },
+    {
+      "sha": "0ad44b350457bb28037bcb73ca7a1083b1f9c1e0",
+      "filename": "packages/kit/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fkit%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fkit%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fkit%2Fpackage.json?ref=54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/kit\",\n-  \"version\": \"1.7.1\",\n+  \"version\": \"1.8.0\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "417c279ac17b4ce0d741e2e083dbbe3360e6d06c",
+      "filename": "packages/lib/CHANGELOG.md",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 0,
+      "changes": 13,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Flib%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Flib%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Flib%2FCHANGELOG.md?ref=54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+      "patch": "@@ -1,5 +1,18 @@\n # @swig-wallet/classic\n \n+## 1.8.0\n+\n+### Minor Changes\n+\n+- 135b3aa: - Add `address`, `addressString`, `signerAddress`, `signerAddressString` properties and `matchesAddress()` method to Authority.\n+  - Add `address()` and `addressString()` to AuthorityInfo for converting policy-level pubkey bytes to on-chain authority address representation.\n+  - Add `findRolesByAuthorityAddress()` to Swig for looking up roles by authority address. Deprecate `id` and `signer` in favor of `address` and `signerAddress`.\n+  - Fix `Ox` typo to `0x` in `secp256k1AddressString`.\n+\n+### Patch Changes\n+\n+- @swig-wallet/coder@1.8.0\n+\n ## 1.7.1\n \n ### Patch Changes"
+    },
+    {
+      "sha": "dd5fa66278a92f7aa8e3cb29c3c0ed4693d91892",
+      "filename": "packages/lib/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Flib%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Flib%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Flib%2Fpackage.json?ref=54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/lib\",\n-  \"version\": \"1.7.1\",\n+  \"version\": \"1.8.0\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "021365427c9adbf074519499f5c4984d3f23b016",
+      "filename": "packages/mcp-server/CHANGELOG.md",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 0,
+      "changes": 6,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fmcp-server%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fmcp-server%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fmcp-server%2FCHANGELOG.md?ref=54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+      "patch": "@@ -1,5 +1,11 @@\n # @swig-wallet/mcp-server\n \n+## 1.0.5\n+\n+### Patch Changes\n+\n+- @swig-wallet/classic@1.8.0\n+\n ## 1.0.4\n \n ### Patch Changes"
+    },
+    {
+      "sha": "dad96ad35db3d34813c9a9ff60c81acf04e40e11",
+      "filename": "packages/mcp-server/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fmcp-server%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/54d13dfe41d9e08db8b083c5d31a8aebe9352036/packages%2Fmcp-server%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fmcp-server%2Fpackage.json?ref=54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/mcp-server\",\n-  \"version\": \"1.0.4\",\n+  \"version\": \"1.0.5\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "54d13dfe41d9e08db8b083c5d31a8aebe9352036",
+      "message": "Version Packages",
+      "parent_shas": [
+        "4e0c46460be4a57e4dfa63a066e78bb9601f3699"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__anagrambuild__swig-ts__pr124.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\anagrambuild__swig-ts__pr124__cpp_python__anagrambuild__swig-ts__pr124\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\anagrambuild__swig-ts__pr124__cpp_python__anagrambuild__swig-ts__pr124\\rn"
+  }
+}

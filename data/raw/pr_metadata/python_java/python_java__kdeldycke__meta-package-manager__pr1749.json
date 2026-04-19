@@ -1,0 +1,93 @@
+{
+  "instance_id": "python_java__kdeldycke__meta-package-manager__pr1749",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "kdeldycke/meta-package-manager",
+  "pr_number": 1749,
+  "pr_url": "https://github.com/kdeldycke/meta-package-manager/pull/1749",
+  "repo": {
+    "full_name": "kdeldycke/meta-package-manager",
+    "clone_url": "https://github.com/kdeldycke/meta-package-manager.git",
+    "default_branch": "main",
+    "created_at": "2016-08-17T16:14:34Z",
+    "stars": 573,
+    "license": "GPL-2.0",
+    "size_kb": 34312
+  },
+  "pull_request": {
+    "id": 3514051589,
+    "title": "Format Python",
+    "body": "### Description\n\nAuto-formats Python files with [autopep8](https://github.com/hhatto/autopep8) (comment wrapping) and [Ruff](https://docs.astral.sh/ruff/) (linting and formatting). When no `[tool.ruff]` section or `ruff.toml` is present, [repomatic's bundled defaults](https://github.com/kdeldycke/repomatic/blob/main/repomatic/data/ruff.toml) are applied at runtime. See the [`format-python` job documentation](https://github.com/kdeldycke/repomatic?tab=readme-ov-file#githubworkflowsautofixyaml-jobs) for details.\n\n> [!TIP]\n> Customize formatting and linting rules via [`[tool.ruff]`](https://docs.astral.sh/ruff/configuration/) and [`[tool.autopep8]`](https://github.com/hhatto/autopep8#configuration) in your `pyproject.toml`.\n\n\n> [!IMPORTANT]\n> If you suspect the PR content is outdated, **[click `Run workflow`](https://github.com/kdeldycke/meta-package-manager/actions/workflows/autofix.yaml)** to refresh it manually before merging.\n\n\n<details><summary><code>Workflow metadata</code></summary>\n\n| Field | Value |\n| :-- | :-- |\n| **Trigger** | `push` |\n| **Actor** | @kdeldycke |\n| **Ref** | `main` |\n| **Commit** | [`c7c0a48b`](https://github.com/kdeldycke/meta-package-manager/commit/c7c0a48bf4334c1decff0b1d60b0069447778ac0) |\n| **Job** | [`format-python`](https://github.com/kdeldycke/meta-package-manager/blob/c7c0a48bf4334c1decff0b1d60b0069447778ac0/.github/workflows/autofix.yaml) |\n| **Workflow** | [`autofix.yaml`](https://github.com/kdeldycke/meta-package-manager/blob/c7c0a48bf4334c1decff0b1d60b0069447778ac0/.github/workflows/autofix.yaml) |\n| **Run** | [#2746.1](https://github.com/kdeldycke/meta-package-manager/actions/runs/24340219127) |\n\n</details>\n\n---\n\n🏭 Generated with [repomatic](https://github.com/kdeldycke/repomatic) `6.12.0`",
+    "created_at": "2026-04-10T13:06:25Z",
+    "merged_at": "2026-04-13T12:15:51Z",
+    "base_sha": "c7c0a48bf4334c1decff0b1d60b0069447778ac0",
+    "head_sha": "f96956a2cad5e6ef794b461b6f70def6dc3c3982",
+    "merge_commit_sha": "6c6ad5ab724ba623eb92561f62be8810ccfea34a",
+    "labels": [
+      "🤖 ci"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "c7c0a48bf4334c1decff0b1d60b0069447778ac0",
+  "final_sha": "f96956a2cad5e6ef794b461b6f70def6dc3c3982",
+  "changed_files": [
+    {
+      "sha": "5fab38a0e3959314d253ee55e5e83663f1c786b1",
+      "filename": "meta_package_manager/cli.py",
+      "status": "modified",
+      "additions": 24,
+      "deletions": 7,
+      "changes": 31,
+      "blob_url": "https://github.com/kdeldycke/meta-package-manager/blob/f96956a2cad5e6ef794b461b6f70def6dc3c3982/meta_package_manager%2Fcli.py",
+      "raw_url": "https://github.com/kdeldycke/meta-package-manager/raw/f96956a2cad5e6ef794b461b6f70def6dc3c3982/meta_package_manager%2Fcli.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/meta-package-manager/contents/meta_package_manager%2Fcli.py?ref=f96956a2cad5e6ef794b461b6f70def6dc3c3982",
+      "patch": "@@ -54,7 +54,6 @@\n )\n from click_extra.table import (\n     SERIALIZATION_FORMATS,\n-    TableFormat,\n     print_data,\n     print_sorted_table,\n )\n@@ -260,7 +259,6 @@ def bar_plugin_path(ctx: Context, param: Parameter, value: str | None):\n     ctx.exit()\n \n \n-\n @group(\n     # XXX Default verbosity has been changed in Click Extra 4.0.0 from INFO to WARNING.\n     context_settings={\"default_map\": {\"verbosity\": \"INFO\"}},\n@@ -522,7 +520,12 @@ def managers(ctx):\n                 {expt.error for expt in manager.cli_errors},\n             )\n \n-        print_data(manager_data, table_format, root_element=\"mpm\", package=\"meta-package-manager\")\n+        print_data(\n+            manager_data,\n+            table_format,\n+            root_element=\"mpm\",\n+            package=\"meta-package-manager\",\n+        )\n         ctx.exit()\n \n     # Human-friendly content rendering.\n@@ -649,7 +652,12 @@ def installed(ctx, duplicates):\n     # Machine-friendly data rendering.\n     table_format = ctx.meta[\"click_extra.table_format\"]\n     if table_format in SERIALIZATION_FORMATS:\n-        print_data(installed_data, table_format, root_element=\"mpm\", package=\"meta-package-manager\")\n+        print_data(\n+            installed_data,\n+            table_format,\n+            root_element=\"mpm\",\n+            package=\"meta-package-manager\",\n+        )\n         ctx.exit()\n \n     # Human-friendly content rendering.\n@@ -734,7 +742,12 @@ def outdated(ctx, plugin_output):\n     # Machine-friendly data rendering.\n     table_format = ctx.meta[\"click_extra.table_format\"]\n     if table_format in SERIALIZATION_FORMATS:\n-        print_data(outdated_data, table_format, root_element=\"mpm\", package=\"meta-package-manager\")\n+        print_data(\n+            outdated_data,\n+            table_format,\n+            root_element=\"mpm\",\n+            package=\"meta-package-manager\",\n+        )\n         ctx.exit()\n \n     # Xbar/SwiftBar-friendly plugin rendering.\n@@ -853,7 +866,9 @@ def search(ctx, extended, exact, refilter, query):\n     # Machine-friendly data rendering.\n     table_format = ctx.meta[\"click_extra.table_format\"]\n     if table_format in SERIALIZATION_FORMATS:\n-        print_data(matches, table_format, root_element=\"mpm\", package=\"meta-package-manager\")\n+        print_data(\n+            matches, table_format, root_element=\"mpm\", package=\"meta-package-manager\"\n+        )\n         ctx.exit()\n \n     # Prepare highlighting helpers.\n@@ -928,7 +943,9 @@ def which(ctx, cli_names):\n             }\n             for manager in ctx.obj.selected_managers()\n         ]\n-        print_data(cli_data, table_format, root_element=\"mpm\", package=\"meta-package-manager\")\n+        print_data(\n+            cli_data, table_format, root_element=\"mpm\", package=\"meta-package-manager\"\n+        )\n         ctx.exit()\n \n     # Print table."
+    },
+    {
+      "sha": "764a72a66dcf33f3101affd61720c9f690932a53",
+      "filename": "meta_package_manager/output.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 4,
+      "changes": 5,
+      "blob_url": "https://github.com/kdeldycke/meta-package-manager/blob/f96956a2cad5e6ef794b461b6f70def6dc3c3982/meta_package_manager%2Foutput.py",
+      "raw_url": "https://github.com/kdeldycke/meta-package-manager/raw/f96956a2cad5e6ef794b461b6f70def6dc3c3982/meta_package_manager%2Foutput.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/meta-package-manager/contents/meta_package_manager%2Foutput.py?ref=f96956a2cad5e6ef794b461b6f70def6dc3c3982",
+      "patch": "@@ -23,19 +23,16 @@\n import sys\n from functools import cached_property, partial\n from io import StringIO\n-from operator import itemgetter\n from pathlib import Path\n from unittest.mock import patch\n \n from boltons.iterutils import flatten\n-from boltons.strutils import strip_ansi\n-from click_extra import echo, style\n+from click_extra import echo\n from click_extra.colorize import default_theme as theme\n from click_extra.table import TableFormat, render_table\n \n from .bar_plugin import MPMPlugin\n from .pool import pool\n-from .version import TokenizedString\n \n if sys.version_info >= (3, 11):\n     from enum import StrEnum"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "f96956a2cad5e6ef794b461b6f70def6dc3c3982",
+      "message": "Format Python",
+      "parent_shas": [
+        "c7c0a48bf4334c1decff0b1d60b0069447778ac0"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__kdeldycke__meta-package-manager__pr1749.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__meta-package-manager__pr1749__python_java__kdeldycke__meta-package-manager__pr1749\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__meta-package-manager__pr1749__python_java__kdeldycke__meta-package-manager__pr1749\\rn"
+  }
+}

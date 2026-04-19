@@ -1,0 +1,76 @@
+{
+  "instance_id": "java_python__Wafler1__transportia__pr14",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "Wafler1/transportia",
+  "pr_number": 14,
+  "pr_url": "https://github.com/Wafler1/transportia/pull/14",
+  "repo": {
+    "full_name": "Wafler1/transportia",
+    "clone_url": "https://github.com/Wafler1/transportia.git",
+    "default_branch": "master",
+    "created_at": "2025-10-24T21:25:14Z",
+    "stars": 33,
+    "license": "GPL-3.0",
+    "size_kb": 12960
+  },
+  "pull_request": {
+    "id": 3473330761,
+    "title": "Java version",
+    "body": "",
+    "created_at": "2026-03-31T18:06:47Z",
+    "merged_at": "2026-03-31T18:06:52Z",
+    "base_sha": "dbbea542b775eea59dfc0045104e9523957c958a",
+    "head_sha": "7e1ca7b70db3a06c43f1008b7da05c40f4119b7e",
+    "merge_commit_sha": "b6c777841e1932dd1f637314f49faa81605ca180",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "3dbdbe51f649e9dd3884762ceb8fb5f32eeef9cb",
+  "final_sha": "7e1ca7b70db3a06c43f1008b7da05c40f4119b7e",
+  "changed_files": [
+    {
+      "sha": "669ae67d7913ab66a63c433aac0fa911cb676294",
+      "filename": ".github/workflows/release.yml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/Wafler1/transportia/blob/7e1ca7b70db3a06c43f1008b7da05c40f4119b7e/.github%2Fworkflows%2Frelease.yml",
+      "raw_url": "https://github.com/Wafler1/transportia/raw/7e1ca7b70db3a06c43f1008b7da05c40f4119b7e/.github%2Fworkflows%2Frelease.yml",
+      "contents_url": "https://api.github.com/repos/Wafler1/transportia/contents/.github%2Fworkflows%2Frelease.yml?ref=7e1ca7b70db3a06c43f1008b7da05c40f4119b7e",
+      "patch": "@@ -21,7 +21,7 @@ jobs:\n         uses: actions/setup-java@v5\n         with:\n           distribution: oracle\n-          java-version: '17'\n+          java-version: '25'\n \n       - name: Set Up Flutter\n         uses: subosito/flutter-action@v2\n@@ -72,4 +72,4 @@ jobs:\n             \"transportia-arm64-v8a-$APP_VERSION.apk\" \\\n             --title \"$RELEASE_TITLE\" \\\n             --notes \"Automatic release from branch '${{ github.ref_name }}' for commit ${{ github.sha }}\" \\\n-            --target \"${{ github.sha }}\"\n\\ No newline at end of file\n+            --target \"${{ github.sha }}\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "7e1ca7b70db3a06c43f1008b7da05c40f4119b7e",
+      "message": "Java version",
+      "parent_shas": [
+        "3dbdbe51f649e9dd3884762ceb8fb5f32eeef9cb"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__Wafler1__transportia__pr14.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\Wafler1__transportia__pr14__java_python__Wafler1__transportia__pr14\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\Wafler1__transportia__pr14__java_python__Wafler1__transportia__pr14\\rn"
+  }
+}

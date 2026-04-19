@@ -1,0 +1,117 @@
+{
+  "instance_id": "cpp_python__mckinsey__agents-at-scale-ark__pr1861",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "mckinsey/agents-at-scale-ark",
+  "pr_number": 1861,
+  "pr_url": "https://github.com/mckinsey/agents-at-scale-ark/pull/1861",
+  "repo": {
+    "full_name": "mckinsey/agents-at-scale-ark",
+    "clone_url": "https://github.com/mckinsey/agents-at-scale-ark.git",
+    "default_branch": "main",
+    "created_at": "2025-08-28T15:48:47Z",
+    "stars": 375,
+    "license": "NOASSERTION",
+    "size_kb": 113718
+  },
+  "pull_request": {
+    "id": 3524142687,
+    "title": "fix: upgrade Go to 1.26.2 for CVE-2026-27140",
+    "body": "CVE-2026-27140 (CVSS 8.8 HIGH) — code execution vulnerability in SWIG code generation in cmd/go. SWIG filenames containing 'cgo' with crafted payloads bypass trust checks, enabling arbitrary code execution at build time. Affects Go < 1.25.9 and Go 1.26.0–1.26.1.\r\n\r\nThe Dockerfiles were already updated to 1.26.2 in a prior dependabot PR. This commit updates the remaining pinned versions in go.mod and CI workflow files.\r\n\r\nReferences:\r\n- https://cve.circl.lu/api/cve/CVE-2026-27140\r\n- https://pkg.go.dev/vuln/GO-2026-4871\r\n- https://go.dev/cl/763768\r\n\r\n## Checklist\r\n\r\n- [ ] Follow the [contributor guide](./CONTRIBUTING.md)\r\n- [ ] End-to-end tests pass\r\n- [ ] Unit tests for essential parts of your code, e.g. APIs exposed via SDKs or endpoints\r\n- [ ] Update `./docs`\r\n- [ ] Recognize contributors with \"@all-contributors please add <person> for <code, bug, docs, etc>\"\r\n- [ ] Linked issues #eg101 ",
+    "created_at": "2026-04-13T17:04:33Z",
+    "merged_at": "2026-04-13T17:26:09Z",
+    "base_sha": "6221cf811f0e62b8f9761334e4ad24d38df04b82",
+    "head_sha": "b7097b500f40ff6d4f4f84900c19909ae6a516db",
+    "merge_commit_sha": "20da8b1054bd90f67025a3de9e4e9317bfa97182",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "6221cf811f0e62b8f9761334e4ad24d38df04b82",
+  "final_sha": "b7097b500f40ff6d4f4f84900c19909ae6a516db",
+  "changed_files": [
+    {
+      "sha": "1222979e7343bf99af8efb6b782aa5d4acd92ec3",
+      "filename": ".github/workflows/cicd.yaml",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/mckinsey/agents-at-scale-ark/blob/b7097b500f40ff6d4f4f84900c19909ae6a516db/.github%2Fworkflows%2Fcicd.yaml",
+      "raw_url": "https://github.com/mckinsey/agents-at-scale-ark/raw/b7097b500f40ff6d4f4f84900c19909ae6a516db/.github%2Fworkflows%2Fcicd.yaml",
+      "contents_url": "https://api.github.com/repos/mckinsey/agents-at-scale-ark/contents/.github%2Fworkflows%2Fcicd.yaml?ref=b7097b500f40ff6d4f4f84900c19909ae6a516db",
+      "patch": "@@ -150,7 +150,7 @@ jobs:\n       - uses: actions/checkout@v6\n       - uses: actions/setup-go@v5\n         with:\n-          go-version: \"1.26.1\"\n+          go-version: \"1.26.2\"\n           cache: true\n           cache-dependency-path: |\n             ark/go.sum\n@@ -192,7 +192,7 @@ jobs:\n \n       - uses: actions/setup-go@v5\n         with:\n-          go-version: \"1.26.1\"\n+          go-version: \"1.26.2\"\n           cache: true\n           cache-dependency-path: |\n             ark/go.sum\n@@ -1047,7 +1047,7 @@ jobs:\n       - name: Setup Go for coverage tools\n         uses: actions/setup-go@v5\n         with:\n-          go-version: \"1.26.1\"\n+          go-version: \"1.26.2\"\n \n       - name: Install Python coverage tools\n         run: |\n@@ -1293,7 +1293,7 @@ jobs:\n       - name: Set up Go\n         uses: actions/setup-go@v5\n         with:\n-          go-version: '1.26.1'\n+          go-version: '1.26.2'\n \n       - name: Run GoReleaser\n         uses: goreleaser/goreleaser-action@v6"
+    },
+    {
+      "sha": "2e25549e586d410f89c8d4a78c18b81731b605ef",
+      "filename": ".github/workflows/sonar_scan.yaml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/mckinsey/agents-at-scale-ark/blob/b7097b500f40ff6d4f4f84900c19909ae6a516db/.github%2Fworkflows%2Fsonar_scan.yaml",
+      "raw_url": "https://github.com/mckinsey/agents-at-scale-ark/raw/b7097b500f40ff6d4f4f84900c19909ae6a516db/.github%2Fworkflows%2Fsonar_scan.yaml",
+      "contents_url": "https://api.github.com/repos/mckinsey/agents-at-scale-ark/contents/.github%2Fworkflows%2Fsonar_scan.yaml?ref=b7097b500f40ff6d4f4f84900c19909ae6a516db",
+      "patch": "@@ -102,7 +102,7 @@ jobs:\n         if: steps.check-coverage.outputs.found == 'false'\n         uses: actions/setup-go@v5\n         with:\n-          go-version: \"1.26.1\"\n+          go-version: \"1.26.2\"\n           cache: true\n           cache-dependency-path: ark/go.sum\n "
+    },
+    {
+      "sha": "2392bb46a2108304be88ba91ee688298426ecc36",
+      "filename": "ark/go.mod",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/mckinsey/agents-at-scale-ark/blob/b7097b500f40ff6d4f4f84900c19909ae6a516db/ark%2Fgo.mod",
+      "raw_url": "https://github.com/mckinsey/agents-at-scale-ark/raw/b7097b500f40ff6d4f4f84900c19909ae6a516db/ark%2Fgo.mod",
+      "contents_url": "https://api.github.com/repos/mckinsey/agents-at-scale-ark/contents/ark%2Fgo.mod?ref=b7097b500f40ff6d4f4f84900c19909ae6a516db",
+      "patch": "@@ -1,6 +1,6 @@\n module mckinsey.com/ark\n \n-go 1.26.1\n+go 1.26.2\n \n require (\n \tgithub.com/Azure/azure-sdk-for-go/sdk/azcore v1.20.0"
+    },
+    {
+      "sha": "8d7f75047ff1ba4814abdacf59589ec14e56c7bf",
+      "filename": "tools/fark/go.mod",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/mckinsey/agents-at-scale-ark/blob/b7097b500f40ff6d4f4f84900c19909ae6a516db/tools%2Ffark%2Fgo.mod",
+      "raw_url": "https://github.com/mckinsey/agents-at-scale-ark/raw/b7097b500f40ff6d4f4f84900c19909ae6a516db/tools%2Ffark%2Fgo.mod",
+      "contents_url": "https://api.github.com/repos/mckinsey/agents-at-scale-ark/contents/tools%2Ffark%2Fgo.mod?ref=b7097b500f40ff6d4f4f84900c19909ae6a516db",
+      "patch": "@@ -1,6 +1,6 @@\n module mckinsey.com/ark/tools/fark\n \n-go 1.26.1\n+go 1.26.2\n \n require (\n \tgithub.com/spf13/cobra v1.9.1"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "b7097b500f40ff6d4f4f84900c19909ae6a516db",
+      "message": "fix: upgrade Go to 1.26.2 for CVE-2026-27140\n\nCVE-2026-27140 (CVSS 8.8 HIGH) — code execution vulnerability in SWIG\ncode generation in cmd/go. SWIG filenames containing 'cgo' with crafted\npayloads bypass trust checks, enabling arbitrary code execution at build\ntime. Affects Go < 1.25.9 and Go 1.26.0–1.26.1.\n\nThe Dockerfiles were already updated to 1.26.2 in a prior dependabot PR.\nThis commit updates the remaining pinned versions in go.mod and CI\nworkflow files.\n\nReferences:\n- https://cve.circl.lu/api/cve/CVE-2026-27140\n- https://pkg.go.dev/vuln/GO-2026-4871\n- https://go.dev/cl/763768\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "6221cf811f0e62b8f9761334e4ad24d38df04b82"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__mckinsey__agents-at-scale-ark__pr1861.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\mckinsey__agents-at-scale-ark__pr1861__cpp_python__mckinsey__agents-at-scale-ark__pr1861\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\mckinsey__agents-at-scale-ark__pr1861__cpp_python__mckinsey__agents-at-scale-ark__pr1861\\rn"
+  }
+}

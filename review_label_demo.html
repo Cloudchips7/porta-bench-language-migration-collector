@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>语言迁移样本标注演示</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --panel: #fffdf8;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #d6cfc1;
+      --accent: #0f766e;
+      --accent-soft: #dff4ef;
+      --warn: #9a3412;
+      --warn-soft: #ffedd5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, #e7f3ef 0, #f5f1e8 38%),
+        linear-gradient(180deg, #f7f4ed 0%, #efe7d8 100%);
+    }
+    .page {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 28px 22px 40px;
+    }
+    .hero {
+      padding: 24px 26px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(248,244,236,.95));
+      box-shadow: 0 18px 50px rgba(31, 41, 55, .08);
+    }
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      line-height: 1.2;
+    }
+    .hero p {
+      margin: 0;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.95fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 14px 40px rgba(31, 41, 55, .06);
+    }
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .chip {
+      background: #faf6ee;
+      border: 1px solid #e6dece;
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+    .chip .label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .chip .value {
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 600;
+    }
+    .callout {
+      margin: 14px 0 0;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid #cde8e2;
+      background: var(--accent-soft);
+      line-height: 1.7;
+    }
+    .warning {
+      border: 1px solid #f4c7a1;
+      background: var(--warn-soft);
+      color: var(--warn);
+    }
+    .section-title {
+      margin: 16px 0 10px;
+      font-size: 15px;
+      color: var(--muted);
+      letter-spacing: .02em;
+    }
+    .files, .notes, .checklist {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.75;
+    }
+    .files li, .notes li, .checklist li {
+      margin-bottom: 6px;
+    }
+    .form-grid {
+      display: grid;
+      gap: 14px;
+    }
+    .field {
+      padding: 14px;
+      border: 1px solid #e7dece;
+      border-radius: 16px;
+      background: #fffaf2;
+    }
+    .field h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+    .field p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 14px;
+    }
+    .options {
+      display: grid;
+      gap: 8px;
+    }
+    label.option {
+      display: block;
+      padding: 10px 12px;
+      border: 1px solid #d9d2c4;
+      border-radius: 12px;
+      background: #fff;
+      cursor: pointer;
+    }
+    label.option input {
+      margin-right: 8px;
+    }
+    select, input[type="text"], textarea {
+      width: 100%;
+      margin-top: 6px;
+      border: 1px solid #d5ccbb;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+      background: #fff;
+    }
+    textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+    .sticky {
+      position: sticky;
+      top: 20px;
+    }
+    .output {
+      white-space: pre-wrap;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.65;
+      background: #10251f;
+      color: #ddf7ef;
+      border-radius: 16px;
+      padding: 16px;
+      min-height: 240px;
+      margin-top: 14px;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font: inherit;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(15, 118, 110, .22);
+    }
+    button.secondary {
+      background: #e8dfcf;
+      color: #3d3527;
+      box-shadow: none;
+    }
+    .legend {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .legend-item {
+      padding: 12px 14px;
+      border: 1px solid #e5dccd;
+      border-radius: 14px;
+      background: #fff;
+    }
+    .legend-item strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+    @media (max-width: 1100px) {
+      .grid { grid-template-columns: 1fr; }
+      .sticky { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>语言迁移样本标注演示页</h1>
+      <p>
+        这页用一个真实样本演示 <code>review_zh.csv</code> 里需要人工填写的标签应该怎么标。
+        左边是样本证据，右边是需要你们点选或填写的字段。这个例子故意选了一个比较“标准”的正例，
+        这样你可以先建立直觉，再回头看那些更模糊的样本。
+      </p>
+    </section>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>样本信息</h2>
+        <div class="summary">
+          <div class="chip"><span class="label">样本 ID</span><span class="value">cpp_python__arendst__Tasmota__pr24599</span></div>
+          <div class="chip"><span class="label">子类型</span><span class="value">C/C++ 到 Python</span></div>
+          <div class="chip"><span class="label">仓库</span><span class="value">arendst/Tasmota</span></div>
+          <div class="chip"><span class="label">Stars</span><span class="value">24254</span></div>
+          <div class="chip"><span class="label">PR 标题</span><span class="value">Berry solidification made possible with Python runtime</span></div>
+          <div class="chip"><span class="label">PR 链接</span><span class="value">#24599</span></div>
+        </div>
+
+        <div class="callout">
+          <strong>为什么这个样本适合做演示：</strong><br />
+          PR 正文明确写了 <code>The Berry runtime was ported from C to Python</code>，
+          而且新增了大量 Python 文件，语义上非常接近“把同一块核心逻辑从 C/C++ 翻到 Python”。
+        </div>
+
+        <div class="section-title">PR 正文里的关键信号</div>
+        <ul class="notes">
+          <li>明确说了：<strong>Berry runtime was ported from C to Python</strong>。</li>
+          <li>说明迁移目标不是随便加个脚本，而是把 Berry 运行时的固化阶段搬进 Python 工具链。</li>
+          <li>还说到 <strong>byte-to-byte compatible</strong>，说明新旧逻辑在功能上高度对应。</li>
+        </ul>
+
+        <div class="section-title">关键改动文件</div>
+        <ul class="files">
+          <li><code>lib/libesp32/berry/berry_port/__init__.py</code></li>
+          <li><code>lib/libesp32/berry/berry_port/__main__.py</code></li>
+          <li><code>lib/libesp32/berry/berry_port/be_filelib.py</code></li>
+          <li>同一个 PR 同时保留了原 Berry 的 C 实现上下文，并新增成体系的 Python 端口代码。</li>
+        </ul>
+
+        <div class="callout warning">
+          <strong>这个例子怎么判断“不是 wrapper/binding 噪声”：</strong><br />
+          如果只是 wrapper，通常会看到 <code>pybind</code>、<code>bindings</code>、<code>JNI</code> 一类词，
+          或者只是把 C API 包一层给 Python 调。这个例子不是，它直接说“runtime 从 C 迁到 Python”，
+          而且新增的是完整 Python 运行时入口和模块。
+        </div>
+
+        <div class="section-title">本例推荐标注思路</div>
+        <ol class="checklist">
+          <li><strong>manual_label</strong>：标成 <code>positive</code>。因为迁移意图明确，且改动触及核心实现。</li>
+          <li><strong>implementation_scope</strong>：标成 <code>partial_feature_migration</code>。因为迁移的是 Berry runtime/solidification 这一块，不是整个 Tasmota 仓库全部从 C/C++ 变成 Python。</li>
+          <li><strong>logic_equivalence_scope</strong>：标成 <code>same_logic_translation</code>。PR 自己说明新旧实现是 byte-to-byte compatible，说明逻辑对应关系很强。</li>
+          <li><strong>source_language / target_language</strong>：分别是 <code>c++</code> 和 <code>python</code>。这里项目统一把 C 和 C++ 归到 <code>c++</code> 这一类。</li>
+          <li><strong>migration_pattern</strong>：可以写成“Berry 运行时从 C 迁移到 Python，并把固化流程转入 Python 工具链”。</li>
+          <li><strong>reproducible</strong>：保守写 <code>unknown</code>。因为虽然 PR 说 tested，但我们还没有亲自复现实验。</li>
+          <li><strong>issue_rewrite_ready</strong>：先写 <code>needs_check</code>。因为还要确认能不能单独抽成一个清晰任务。</li>
+          <li><strong>leakage_risk</strong>：建议 <code>medium</code>。PR 明说了迁移方向，但没有把完整 patch 解法直接暴露成教程。</li>
+          <li><strong>exclude_reason</strong>：正例留空。</li>
+          <li><strong>cross_check_status</strong>：第一次标注先填 <code>pending</code>。</li>
+          <li><strong>notes</strong>：写清“为什么是正例、为什么是 partial 而不是 full”。</li>
+        </ol>
+      </section>
+
+      <aside class="panel sticky">
+        <h2>交互式标注区</h2>
+        <p style="margin-top:0;color:var(--muted);line-height:1.7;">
+          右侧这些就是你们真正需要人工填写的重点字段。选完之后，下面会自动生成一份建议结果，方便你复制回 CSV。
+        </p>
+
+        <div class="form-grid">
+          <div class="field">
+            <h3>1. manual_label 人工标签</h3>
+            <p>决定这条样本最后收不收。正例是“真迁移”，负例是“噪声”，不确定是“需要二次复核”。</p>
+            <div class="options">
+              <label class="option"><input type="radio" name="manual_label" value="positive" checked>positive / 正例</label>
+              <label class="option"><input type="radio" name="manual_label" value="negative">negative / 负例</label>
+              <label class="option"><input type="radio" name="manual_label" value="uncertain">uncertain / 不确定</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <h3>2. implementation_scope 实现范围</h3>
+            <p>判断迁移的是一个功能模块，还是整个仓库的主体实现。</p>
+            <div class="options">
+              <label class="option"><input type="radio" name="implementation_scope" value="partial_feature_migration" checked>partial_feature_migration / 部分功能迁移</label>
+              <label class="option"><input type="radio" name="implementation_scope" value="full_repo_translation">full_repo_translation / 整仓翻译</label>
+              <label class="option"><input type="radio" name="implementation_scope" value="not_applicable">not_applicable / 不适用</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <h3>3. logic_equivalence_scope 逻辑对应关系</h3>
+            <p>判断新旧实现是不是同一逻辑的翻译，还是只替换了一部分，或者根本看不清。</p>
+            <div class="options">
+              <label class="option"><input type="radio" name="logic_equivalence_scope" value="same_logic_translation" checked>same_logic_translation / 同一逻辑翻译</label>
+              <label class="option"><input type="radio" name="logic_equivalence_scope" value="partial_logic_replacement">partial_logic_replacement / 部分逻辑替换</label>
+              <label class="option"><input type="radio" name="logic_equivalence_scope" value="unclear_logic_mapping">unclear_logic_mapping / 逻辑不清</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <h3>4. source / target language</h3>
+            <p>跨语言样本通常已经有默认值，但人工需要确认方向有没有搞反。</p>
+            <div class="options">
+              <label class="option">source_language
+                <select id="source_language">
+                  <option value="c++" selected>c++ / C/C++</option>
+                  <option value="python">python / Python</option>
+                  <option value="java">java / Java</option>
+                </select>
+              </label>
+              <label class="option">target_language
+                <select id="target_language">
+                  <option value="python" selected>python / Python</option>
+                  <option value="c++">c++ / C/C++</option>
+                  <option value="java">java / Java</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <h3>5. migration_pattern 迁移模式说明</h3>
+            <p>用一句人话写清楚“从什么迁到什么、迁的是哪块逻辑”。这个字段很适合后面做汇报和抽样分析。</p>
+            <textarea id="migration_pattern">Berry 运行时从 C 迁移到 Python，并将固化流程转入 Python 工具链。</textarea>
+          </div>
+
+          <div class="field">
+            <h3>6. reproducible / issue_rewrite_ready / leakage_risk</h3>
+            <p>这三个字段决定后面能不能把它做成 benchmark 任务。</p>
+            <div class="options">
+              <label class="option">reproducible
+                <select id="reproducible">
+                  <option value="unknown" selected>unknown / 待确认</option>
+                  <option value="yes">yes / 可复现</option>
+                  <option value="no">no / 不可复现</option>
+                </select>
+              </label>
+              <label class="option">issue_rewrite_ready
+                <select id="issue_rewrite_ready">
+                  <option value="needs_check" selected>needs_check / 还需检查</option>
+                  <option value="yes">yes / 可直接改写 issue</option>
+                  <option value="no">no / 暂不适合</option>
+                </select>
+              </label>
+              <label class="option">leakage_risk
+                <select id="leakage_risk">
+                  <option value="medium" selected>medium / 中</option>
+                  <option value="low">low / 低</option>
+                  <option value="high">high / 高</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <h3>7. reviewer / cross_check_status / notes</h3>
+            <p>这是人工流程字段。谁标的、是否复核过、为什么这么标，都放这里。</p>
+            <input id="reviewer" type="text" value="你的名字" />
+            <select id="cross_check_status">
+              <option value="pending" selected>pending / 待复核</option>
+              <option value="checked">checked / 已复核</option>
+              <option value="disagreed">disagreed / 有分歧</option>
+            </select>
+            <textarea id="notes">PR 正文明确说明 Berry runtime 从 C 迁移到 Python；新增 Python 端口代码量大，且目标是替代原运行时逻辑。属于强正例，但迁移范围集中在运行时/固化模块，不是整仓翻译。</textarea>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="renderBtn">生成推荐标注结果</button>
+          <button id="copyBtn" class="secondary">复制结果</button>
+        </div>
+
+        <div id="output" class="output"></div>
+
+        <div class="legend">
+          <div class="legend-item">
+            <strong>这个例子的推荐答案</strong>
+            manual_label = positive<br />
+            implementation_scope = partial_feature_migration<br />
+            logic_equivalence_scope = same_logic_translation
+          </div>
+          <div class="legend-item">
+            <strong>什么时候改成 negative</strong>
+            如果你发现它只是 wrapper、binding、SDK、bridge，或者根本没有“同一逻辑替换”，就应该标成 negative。
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    function getRadioValue(name) {
+      const checked = document.querySelector(`input[name="${name}"]:checked`);
+      return checked ? checked.value : "";
+    }
+
+    function buildResult() {
+      const result = {
+        instance_id: "cpp_python__arendst__Tasmota__pr24599",
+        manual_label: getRadioValue("manual_label"),
+        implementation_scope: getRadioValue("implementation_scope"),
+        logic_equivalence_scope: getRadioValue("logic_equivalence_scope"),
+        source_language: document.getElementById("source_language").value,
+        target_language: document.getElementById("target_language").value,
+        migration_pattern: document.getElementById("migration_pattern").value.trim(),
+        reproducible: document.getElementById("reproducible").value,
+        issue_rewrite_ready: document.getElementById("issue_rewrite_ready").value,
+        leakage_risk: document.getElementById("leakage_risk").value,
+        exclude_reason: "",
+        reviewer: document.getElementById("reviewer").value.trim(),
+        cross_check_status: document.getElementById("cross_check_status").value,
+        notes: document.getElementById("notes").value.trim()
+      };
+
+      if (result.manual_label === "negative") {
+        result.exclude_reason = "请补一个英文排除原因，例如 binding_wrapper_noise 或 unclear_logic_mapping";
+      }
+
+      return result;
+    }
+
+    function renderOutput() {
+      const data = buildResult();
+      const lines = [
+        "建议写回 CSV 的字段：",
+        "",
+        `instance_id = ${data.instance_id}`,
+        `manual_label = ${data.manual_label}`,
+        `implementation_scope = ${data.implementation_scope}`,
+        `logic_equivalence_scope = ${data.logic_equivalence_scope}`,
+        `source_language = ${data.source_language}`,
+        `target_language = ${data.target_language}`,
+        "source_version = ",
+        "target_version = ",
+        `migration_pattern = ${data.migration_pattern}`,
+        `reproducible = ${data.reproducible}`,
+        `issue_rewrite_ready = ${data.issue_rewrite_ready}`,
+        `leakage_risk = ${data.leakage_risk}`,
+        `exclude_reason = ${data.exclude_reason}`,
+        `reviewer = ${data.reviewer}`,
+        `cross_check_status = ${data.cross_check_status}`,
+        `notes = ${data.notes}`
+      ];
+      document.getElementById("output").textContent = lines.join("\n");
+    }
+
+    document.getElementById("renderBtn").addEventListener("click", renderOutput);
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      renderOutput();
+      const text = document.getElementById("output").textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("推荐标注结果已经复制到剪贴板。");
+      } catch (err) {
+        alert("复制失败，但结果已经显示在下方。");
+      }
+    });
+
+    renderOutput();
+  </script>
+</body>
+</html>

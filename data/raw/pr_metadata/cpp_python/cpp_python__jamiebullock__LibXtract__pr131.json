@@ -1,0 +1,224 @@
+{
+  "instance_id": "cpp_python__jamiebullock__LibXtract__pr131",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "jamiebullock/LibXtract",
+  "pr_number": 131,
+  "pr_url": "https://github.com/jamiebullock/LibXtract/pull/131",
+  "repo": {
+    "full_name": "jamiebullock/LibXtract",
+    "clone_url": "https://github.com/jamiebullock/LibXtract.git",
+    "default_branch": "main",
+    "created_at": "2012-05-31T15:16:08Z",
+    "stars": 230,
+    "license": "MIT",
+    "size_kb": 1563
+  },
+  "pull_request": {
+    "id": 3497647823,
+    "title": "feat: reinstate Java SWIG bindings with array support",
+    "body": "## Summary\n\n- Remove `#ifndef SWIGJAVA` guard that excluded `carrays.i` and `%array_class` from Java bindings, preventing creation of `double *` and `int *` arrays\n- Java bindings now have `doubleArray` and `intArray` classes with `new`/`delete`/`getitem`/`setitem`/`cast` methods, making vector functions (spectrum, autocorrelation, mfcc, etc.) usable\n- Add `java` target to `swig/Makefile` with platform-specific library extension (`.dylib` on macOS, `.so` on Linux)\n\nCloses #12\n\n## Test plan\n\n- [x] `make && make check` passes (375 assertions, 61 test cases)\n- [x] `make -C swig java` generates 31 Java classes and compiles cleanly\n- [x] Runtime smoke test: `doubleArray`/`intArray` create, read, and write correctly via JNI\n- [ ] Verify on Linux",
+    "created_at": "2026-04-07T11:48:41Z",
+    "merged_at": "2026-04-07T16:03:28Z",
+    "base_sha": "5f6abbf67cc335068e91922d91a753653130152a",
+    "head_sha": "44d9e92f8894c8a60634659f9bdb6d741b5a714f",
+    "merge_commit_sha": "14354e5c62f65f6d05d3bea572b976e1aead7f4e",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "5f6abbf67cc335068e91922d91a753653130152a",
+  "final_sha": "44d9e92f8894c8a60634659f9bdb6d741b5a714f",
+  "changed_files": [
+    {
+      "sha": "b9caf0cb840c9532e92ca741ae1a2cc414b36e6a",
+      "filename": ".github/workflows/ci.yml",
+      "status": "modified",
+      "additions": 44,
+      "deletions": 10,
+      "changes": 54,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/44d9e92f8894c8a60634659f9bdb6d741b5a714f/.github%2Fworkflows%2Fci.yml",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/44d9e92f8894c8a60634659f9bdb6d741b5a714f/.github%2Fworkflows%2Fci.yml",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/.github%2Fworkflows%2Fci.yml?ref=44d9e92f8894c8a60634659f9bdb6d741b5a714f",
+      "patch": "@@ -9,34 +9,68 @@ on:\n jobs:\n   build-and-test:\n     strategy:\n+      fail-fast: false\n       matrix:\n-        os: [ubuntu-latest, windows-latest]\n+        os: [ubuntu-latest, macos-latest, windows-latest]\n     runs-on: ${{ matrix.os }}\n \n     steps:\n       - uses: actions/checkout@v4\n \n+      - name: Setup Java\n+        uses: actions/setup-java@v4\n+        with:\n+          distribution: temurin\n+          java-version: 17\n+\n       - name: Setup MSYS2 (Windows)\n         if: runner.os == 'Windows'\n         uses: msys2/setup-msys2@v2\n         with:\n           msystem: MINGW64\n-          install: mingw-w64-x86_64-gcc make\n+          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-python mingw-w64-x86_64-swig make\n \n-      - name: Build (Linux)\n+      - name: Install SWIG (Linux)\n         if: runner.os == 'Linux'\n-        run: make -C src\n+        run: sudo apt-get install -y swig\n \n-      - name: Build (Windows)\n+      - name: Install SWIG (macOS)\n+        if: runner.os == 'macOS'\n+        run: brew install swig\n+\n+      - name: Build and test (Linux)\n+        if: runner.os == 'Linux'\n+        run: |\n+          make\n+          make check\n+\n+      - name: Build and test (macOS)\n+        if: runner.os == 'macOS'\n+        run: |\n+          make\n+          make check\n+\n+      - name: Build and test (Windows)\n         if: runner.os == 'Windows'\n         shell: msys2 {0}\n-        run: make -C src\n+        run: |\n+          make\n+          make check\n \n-      - name: Test (Linux)\n+      - name: SWIG bindings (Linux)\n         if: runner.os == 'Linux'\n-        run: make check\n+        run: make -C swig check\n+        env:\n+          JAVA_HOME: ${{ env.JAVA_HOME }}\n+          PYTHON: python3\n+\n+      - name: SWIG bindings (macOS)\n+        if: runner.os == 'macOS'\n+        run: make -C swig check\n+        env:\n+          JAVA_HOME: ${{ env.JAVA_HOME }}\n \n-      - name: Test (Windows)\n+      - name: SWIG bindings (Windows)\n         if: runner.os == 'Windows'\n         shell: msys2 {0}\n-        run: make check\n+        run: PYTHON=python make -C swig check-python"
+    },
+    {
+      "sha": "f43e4259938269d2bc98af2c4bed867acd8fdaaa",
+      "filename": "examples/simpletest/simpletest.cpp",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/44d9e92f8894c8a60634659f9bdb6d741b5a714f/examples%2Fsimpletest%2Fsimpletest.cpp",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/44d9e92f8894c8a60634659f9bdb6d741b5a714f/examples%2Fsimpletest%2Fsimpletest.cpp",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/examples%2Fsimpletest%2Fsimpletest.cpp?ref=44d9e92f8894c8a60634659f9bdb6d741b5a714f",
+      "patch": "@@ -89,7 +89,7 @@ void fill_wavetable(const float frequency, waveform_type type)\n                 wavetable[i] = ((phase / (double)PERIOD) * 2) - 1.;\n                 break;\n             case NOISE:\n-                wavetable[i] = ((random() % 1000) / 500.0) - 1;\n+                wavetable[i] = ((rand() % 1000) / 500.0) - 1;\n                 break; \n         }\n     }"
+    },
+    {
+      "sha": "1b782bfb6bd098cd77cab59d78b75302d65c90d1",
+      "filename": "swig/Makefile",
+      "status": "modified",
+      "additions": 42,
+      "deletions": 7,
+      "changes": 49,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/44d9e92f8894c8a60634659f9bdb6d741b5a714f/swig%2FMakefile",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/44d9e92f8894c8a60634659f9bdb6d741b5a714f/swig%2FMakefile",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2FMakefile?ref=44d9e92f8894c8a60634659f9bdb6d741b5a714f",
+      "patch": "@@ -2,36 +2,71 @@ NAME = xtract\n \n OS := $(shell uname)\n \n-# Assume that since we're building the python bindings, we have a python installed!\n-INCLUDEPY = $(shell python -m sysconfig | grep -w INCLUDEPY | awk '{print $$3}')\n+PYTHON ?= python3\n+INCLUDEPY = $(shell $(PYTHON) -m sysconfig | grep -w INCLUDEPY | awk '{print $$3}')\n+PYTHON_LDFLAGS = $(shell $(PYTHON)-config --ldflags --embed 2>/dev/null || echo \"\")\n+\n+PYTHON_EXT_SUFFIX = $(shell $(PYTHON) -c \"import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX') or '.so')\" 2>/dev/null)\n \n ifeq ($(OS), Darwin)\n     CFLAGS=-g -c\n     LDFLAGS=-bundle -flat_namespace -undefined suppress\n     LIBS=-framework Accelerate\n+    JAVA_LIB_SUFFIX=dylib\n+    LIBXTRACT=../src/lib$(NAME).a\n+    LINK_LIB=$(LIBXTRACT)\n else\n     CFLAGS=-g -c -fPIC\n     LDFLAGS=-shared\n-    LIBS=\n+    LIBS=-lm\n+    JAVA_LIB_SUFFIX=so\n+    LIBXTRACT=$(wildcard ../src/lib$(NAME).a ../src/lib$(NAME).lib)\n+    LINK_LIB=-Wl,--whole-archive $(LIBXTRACT) -Wl,--no-whole-archive\n endif\n \n-.PHONY: python\n+.PHONY: python java check check-python check-java\n \n python:\n \t@swig -I../include -python $(NAME).i\n \t@$(CC) $(CFLAGS) $(NAME)_wrap.c -o $(NAME)_wrap.o -I$(INCLUDEPY) -I../include\n-\t@$(CC) $(LDFLAGS) ../src/lib$(NAME).a $(NAME)_wrap.o -o _$(NAME).so $(LIBS)\n+\t@$(CC) $(LDFLAGS) $(LINK_LIB) $(NAME)_wrap.o -o _$(NAME)$(PYTHON_EXT_SUFFIX) $(LIBS) $(PYTHON_LDFLAGS)\n+\n+java:\n+ifndef JAVA_HOME\n+\t$(error JAVA_HOME is not set. Set it to your JDK installation directory)\n+endif\n+\t@mkdir -p java\n+\t@swig -I../include -java -package $(NAME) -outdir java $(NAME).i\n+\t@$(CC) $(CFLAGS) $(NAME)_wrap.c -o $(NAME)_wrap.o -I$(JAVA_HOME)/include -I$(wildcard $(JAVA_HOME)/include/darwin $(JAVA_HOME)/include/linux $(JAVA_HOME)/include/win32) -I../include\n+\t@$(CC) $(LDFLAGS) $(LINK_LIB) $(NAME)_wrap.o -o libj$(NAME).$(JAVA_LIB_SUFFIX) $(LIBS)\n+\t@javac java/*.java\n+\n+check: check-python check-java\n+\n+check-python: python\n+\t@echo \"Running Python bindings test...\"\n+\t@PYTHONPATH=. $(PYTHON) test.py\n+\n+check-java: java\n+\t@echo \"Running Java bindings test...\"\n+\t@mkdir -p $(NAME)\n+\t@cp java/*.class $(NAME)/\n+\t@javac -cp . test.java\n+\t@java -Djava.library.path=. -cp . test\n+\t@$(RM) -r $(NAME) test.class\n \n install: python\n-\t@SITE_DIR=$$(python -c \"import site; print(site.getsitepackages()[0])\") && \\\n+\t@SITE_DIR=$$($(PYTHON) -c \"import site; print(site.getsitepackages()[0])\") && \\\n \tinstall -d \"$$SITE_DIR\" && \\\n-\tinstall _$(NAME).so \"$$SITE_DIR\" && \\\n+\tinstall _$(NAME)$(PYTHON_EXT_SUFFIX) \"$$SITE_DIR\" && \\\n \tinstall -m 644 $(NAME).py \"$$SITE_DIR\"\n \n clean:\n \t@$(RM) *.o\n \t@$(RM) *.pyc\n \t@$(RM) *.so\n+\t@$(RM) *.dylib\n \t@$(RM) $(NAME)_wrap.c\n \t@$(RM) $(NAME).py\n+\t@$(RM) -r java\n "
+    },
+    {
+      "sha": "f679b240d1d48c3242119a594a8194b2fd215242",
+      "filename": "swig/test.java",
+      "status": "added",
+      "additions": 66,
+      "deletions": 0,
+      "changes": 66,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/44d9e92f8894c8a60634659f9bdb6d741b5a714f/swig%2Ftest.java",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/44d9e92f8894c8a60634659f9bdb6d741b5a714f/swig%2Ftest.java",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2Ftest.java?ref=44d9e92f8894c8a60634659f9bdb6d741b5a714f",
+      "patch": "@@ -0,0 +1,66 @@\n+import xtract.*;\n+\n+public class test {\n+    public static void main(String[] args) {\n+\n+        try {\n+            System.loadLibrary(\"jxtract\");\n+        }\n+        catch (UnsatisfiedLinkError e) {\n+            System.out.println(\"Failed to load the library \\\"jxtract\\\"\");\n+            System.out.println(e.toString());\n+            System.exit(1);\n+        }\n+\n+        System.out.println(\"\\nRunning libxtract Java bindings test...\\n\");\n+\n+        int len = 8;\n+\n+        doubleArray a = new doubleArray(len);\n+        StringBuilder temp = new StringBuilder();\n+\n+        for (int i = 0; i < len; i++) {\n+            a.setitem(i, 2.0 * i);\n+            if (i > 0) temp.append(\", \");\n+            temp.append(2.0 * i);\n+        }\n+\n+        double[] meanResult = new double[1];\n+        xtract.xtract_mean(a.cast(), len, null, meanResult);\n+        double mean = meanResult[0];\n+        System.out.printf(\"The mean of %s is: %.2f%n\", temp, mean);\n+\n+        doubleArray argv = new doubleArray(1);\n+        argv.setitem(0, mean);\n+\n+        double[] varianceResult = new double[1];\n+        xtract.xtract_variance(a.cast(), len,\n+                xtract.doublea_to_voidp(argv.cast()), varianceResult);\n+        System.out.printf(\"The variance is %.2f%n\", varianceResult[0]);\n+\n+        System.out.println(\"Computing spectrum...\");\n+\n+        doubleArray specArgv = new doubleArray(4);\n+        specArgv.setitem(0, 44100.0 / len);\n+        specArgv.setitem(1, xtract_spectrum_.XTRACT_MAGNITUDE_SPECTRUM.swigValue());\n+        specArgv.setitem(2, 0.0);\n+        specArgv.setitem(3, 0.0);\n+\n+        xtract.xtract_init_fft(len, xtract_features_.XTRACT_SPECTRUM.swigValue());\n+\n+        doubleArray result = new doubleArray(len);\n+        xtract.xtract_spectrum(a.cast(), len,\n+                xtract.doublea_to_voidp(specArgv.cast()), result.cast());\n+\n+        for (int i = 0; i < len; i++) {\n+            System.out.println(result.getitem(i));\n+        }\n+\n+        System.out.println(\"\\nFinished!\\n\");\n+\n+        a.delete();\n+        argv.delete();\n+        specArgv.delete();\n+        result.delete();\n+    }\n+}"
+    },
+    {
+      "sha": "39840888abbcda4ef8150258ee289bf715c025e4",
+      "filename": "swig/test.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 3,
+      "changes": 9,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/44d9e92f8894c8a60634659f9bdb6d741b5a714f/swig%2Ftest.py",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/44d9e92f8894c8a60634659f9bdb6d741b5a714f/swig%2Ftest.py",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2Ftest.py?ref=44d9e92f8894c8a60634659f9bdb6d741b5a714f",
+      "patch": "@@ -1,9 +1,12 @@\n-#!/usr/bin/python\n+#!/usr/bin/env python3\n+\n+import sys\n \n try:\n     import xtract\n-except ImportError:\n-    print('Failed to load the library \"xtract\"')\n+except ImportError as e:\n+    print('Failed to load the library \"xtract\": ' + str(e))\n+    sys.exit(1)\n \n print('\\nRunning libxtract Python bindings test...\\n')\n "
+    },
+    {
+      "sha": "e80a65157647e5cfca63fcd658dcb02cdd482860",
+      "filename": "swig/xtract.i",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 6,
+      "changes": 8,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/44d9e92f8894c8a60634659f9bdb6d741b5a714f/swig%2Fxtract.i",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/44d9e92f8894c8a60634659f9bdb6d741b5a714f/swig%2Fxtract.i",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2Fxtract.i?ref=44d9e92f8894c8a60634659f9bdb6d741b5a714f",
+      "patch": "@@ -1,8 +1,6 @@\n %module xtract\n %include typemaps.i\n-#ifndef SWIGJAVA\n %include carrays.i\n-#endif\n %include stdint.i\n \n %{\n@@ -77,10 +75,8 @@\n \n %}\n \n-#ifndef SWIGJAVA\n-%array_class(double, doubleArray); \n-%array_class(int, intArray); \n-#endif\n+%array_class(double, doubleArray);\n+%array_class(int, intArray);\n %apply double *OUTPUT { double *result };\n \n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "131e56de83df3905f5ef248627d498c4388d4645",
+      "message": "feat: reinstate Java SWIG bindings with array support\n\nRemove the #ifndef SWIGJAVA guard that excluded carrays.i and\n%array_class from Java, preventing creation of double* and int*\narrays. Java bindings now have doubleArray and intArray classes\nwith new/delete/getitem/setitem/cast methods, making vector\nfunctions usable.\n\nAdd a java target to swig/Makefile that generates and compiles\nthe Java bindings with correct platform-specific library extension.\n\nVerified: SWIG generates 31 Java classes, javac compiles them,\nand doubleArray/intArray work correctly at runtime via JNI.\n\nCloses #12",
+      "parent_shas": [
+        "5f6abbf67cc335068e91922d91a753653130152a"
+      ]
+    },
+    {
+      "sha": "9266188c9cfe3d9952db6444913ac123c7bae288",
+      "message": "fix: require JAVA_HOME instead of auto-detecting JDK path\n\nThe java -XshowSettings parsing was brittle and format-dependent.\nRequire JAVA_HOME to be set explicitly, which is standard practice\nfor Java projects.",
+      "parent_shas": [
+        "131e56de83df3905f5ef248627d498c4388d4645"
+      ]
+    },
+    {
+      "sha": "aa10ea2c9e772e909877f9936fea5264f0e69806",
+      "message": "feat: add Java test mirroring test.py\n\nTests mean, variance, and spectrum extraction using doubleArray\nto verify Java SWIG bindings work end-to-end. Based on the\noriginal test.java from 2012, updated for double precision and\ncurrent API.",
+      "parent_shas": [
+        "9266188c9cfe3d9952db6444913ac123c7bae288"
+      ]
+    },
+    {
+      "sha": "5f4f65bfe02e9b461c7ea015c5ea07adf11ef278",
+      "message": "fix: use xtract package name for Java bindings\n\nMatch the convention used by Python bindings (import xtract).",
+      "parent_shas": [
+        "aa10ea2c9e772e909877f9936fea5264f0e69806"
+      ]
+    },
+    {
+      "sha": "b6b96143d60d5f738563c825d0270348545850dc",
+      "message": "fix: rename Java native library to jxtract\n\nMatch the original naming convention. Library is now libjxtract.dylib\n(macOS) / libjxtract.so (Linux).",
+      "parent_shas": [
+        "5f4f65bfe02e9b461c7ea015c5ea07adf11ef278"
+      ]
+    },
+    {
+      "sha": "70359d9e75973744832a0e7a9740e1b2614cf1b0",
+      "message": "feat: add SWIG binding tests to CI and swig/Makefile check target\n\nAdd make check target to swig/Makefile that builds and runs both\nPython and Java binding tests. Use PYTHON variable (default python3)\nfor portability.\n\nUpdate CI workflow:\n- Add macOS to the build matrix\n- Install SWIG on all platforms\n- Run swig check (Python + Java) on Linux and macOS\n- Run swig check-python on Windows (Java/JNI under MSYS2 is fragile)",
+      "parent_shas": [
+        "b6b96143d60d5f738563c825d0270348545850dc"
+      ]
+    },
+    {
+      "sha": "48c817ce41520883a9956b4019d2e822e6d098ba",
+      "message": "fix: CI failures — add -lm on Linux, fix MSYS2 packages, disable fail-fast\n\n- Link _xtract.so with -lm on Linux (math functions from libxtract.a)\n- Fix MSYS2 package names to use mingw-w64-x86_64- prefix\n- Use python (not python3) under MSYS2\n- Disable fail-fast so all platforms report independently\n- Exit test.py on import failure instead of continuing with undefined xtract\n- Use python3 as default PYTHON, configurable via env var",
+      "parent_shas": [
+        "70359d9e75973744832a0e7a9740e1b2614cf1b0"
+      ]
+    },
+    {
+      "sha": "527b6b743e9df4ac419fbd9952215555a1ebe660",
+      "message": "fix: CI failures — whole-archive linking on Linux, random() portability\n\n- Use --whole-archive when linking libxtract.a into SWIG shared\n  libraries on Linux, so all symbols (including xtract_free_window)\n  are included. Static archive linking otherwise only pulls in\n  object files that resolve existing undefined symbols.\n- Replace POSIX random() with portable rand() in simpletest.cpp\n  to fix Windows/MinGW build.",
+      "parent_shas": [
+        "48c817ce41520883a9956b4019d2e822e6d098ba"
+      ]
+    },
+    {
+      "sha": "78c5844c2191ff564fe4a4059b7857e695d485fe",
+      "message": "fix: Windows CI — find libxtract.lib and simplify link commands\n\nOn Windows/MSYS2 the static library is libxtract.lib not libxtract.a.\nUse wildcard to find whichever exists. Also consolidate the\nplatform-specific link logic into LINK_LIB variable to avoid\nrepeated ifeq blocks.",
+      "parent_shas": [
+        "527b6b743e9df4ac419fbd9952215555a1ebe660"
+      ]
+    },
+    {
+      "sha": "5771ad5d28dfdb7164dd11ac8fdbfd0621215474",
+      "message": "fix: skip SWIG bindings on Windows CI\n\nMSYS2 Python extensions require explicit linking against libpython\nwhich needs additional setup. The core library and unit tests still\nrun on Windows; SWIG bindings are tested on Linux and macOS.",
+      "parent_shas": [
+        "78c5844c2191ff564fe4a4059b7857e695d485fe"
+      ]
+    },
+    {
+      "sha": "a5dc09401b0799800e30518fde9e5b28f97e0c80",
+      "message": "Revert \"fix: skip SWIG bindings on Windows CI\"\n\nThis reverts commit 5771ad5d28dfdb7164dd11ac8fdbfd0621215474.",
+      "parent_shas": [
+        "5771ad5d28dfdb7164dd11ac8fdbfd0621215474"
+      ]
+    },
+    {
+      "sha": "0a87d241cdb96743ef41c194d5a8a3df69e4727f",
+      "message": "fix: link Python extensions against libpython on Windows\n\nOn Windows/MinGW, all symbols must be resolved at link time.\nAdd $(PYTHON)-config --ldflags --embed to the Python extension\nlink step to pick up -lpython3.x on platforms that require it.\nFalls back to empty string if python-config is not available.",
+      "parent_shas": [
+        "a5dc09401b0799800e30518fde9e5b28f97e0c80"
+      ]
+    },
+    {
+      "sha": "44d9e92f8894c8a60634659f9bdb6d741b5a714f",
+      "message": "fix: use correct Python extension suffix on Windows (.pyd not .so)\n\nQuery Python's EXT_SUFFIX via sysconfig to get the platform-correct\nextension module filename. On Windows/MSYS2 this produces .pyd,\non Linux .cpython-3xx-linux-gnu.so, on macOS .cpython-3xx-darwin.so.",
+      "parent_shas": [
+        "0a87d241cdb96743ef41c194d5a8a3df69e4727f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "cross_language_mapping_visible",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__jamiebullock__LibXtract__pr131.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\jamiebullock__LibXtract__pr131__cpp_python__jamiebullock__LibXtract__pr131\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\jamiebullock__LibXtract__pr131__cpp_python__jamiebullock__LibXtract__pr131\\rn"
+  }
+}

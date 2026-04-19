@@ -1,0 +1,587 @@
+{
+  "instance_id": "java_python__antgroup__YASA-Engine__pr81",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "antgroup/YASA-Engine",
+  "pr_number": 81,
+  "pr_url": "https://github.com/antgroup/YASA-Engine/pull/81",
+  "repo": {
+    "full_name": "antgroup/YASA-Engine",
+    "clone_url": "https://github.com/antgroup/YASA-Engine.git",
+    "default_branch": "main",
+    "created_at": "2025-09-04T10:51:39Z",
+    "stars": 267,
+    "license": "Apache-2.0",
+    "size_kb": 5539
+  },
+  "pull_request": {
+    "id": 3042937007,
+    "title": "feat: Implement a comprehensive Python import path resolver",
+    "body": "Implement a comprehensive Python import path resolver that handles both absolute and relative imports with a sys.path-like search mechanism\n\n## Summary by Sourcery\n\nIntroduce a more robust Python import resolution mechanism and integrate type-aware call graph construction across languages, along with minor stability and configurability improvements.\n\nNew Features:\n- Add a Python import path resolver that supports sys.path-like absolute and relative import resolution based on project structure.\n- Introduce pluggable type-related info resolvers for Java and Go analyzers to enable type-based call graph construction.\n- Add a configurable call graph algorithm option (cgAlgo) exposed via CLI for selecting call graph construction strategies.\n\nBug Fixes:\n- Improve handling of Python import processing to avoid crashes when sourcefile or AST structures are missing and better manage circular imports.\n- Guard function body processing and call graph node creation against non-function AST nodes to prevent runtime errors.\n- Ensure graph dumping includes a fallback fullName for nodes when function symbol information is unavailable.\n\nEnhancements:\n- Refine call graph generation to use type-based algorithms (CHA) when available for Go, Java, and generic callgraph checkers, with a default fallback path.\n- Extend memory space member lookup to optionally respect a limit parameter, enabling more controlled resolution in type-related analysis.\n- Adjust graph serialization to ignore internal entry_point nodes while preserving essential location and naming metadata.\n\n<!-- CURSOR_SUMMARY -->\n---\n\n> [!NOTE]\n> Adds a robust Python import path resolver and rewrites import processing (absolute/relative, packages, circulars) with a small safety guard in generic function-definition handling.\n> \n> - **Python Analyzer**:\n>   - **Import handling overhaul**: Replaces path math with resolver-driven logic in `processImportDirect` to support absolute/relative imports, packages (`__init__.py`), and field imports; normalizes paths, checks cache, prevents circular imports, and falls back to predefined modules when unresolved.\n>   - Removes unused file utilities and integrates `resolveImportPath`/`resolveRelativeImport`; introduces `searchPaths` field for future sys.path-like resolution.\n> - **Import Resolver (new)**:\n>   - Adds `python-import-resolver.ts` implementing `buildSearchPaths`, `findProjectRoot`, `resolveAbsoluteImport`, `resolveRelativeImport`, and `resolveImportPath`.\n> - **Core Analyzer**:\n>   - Guards function body iteration in `processFunctionDefinition` by verifying `node.body.body` is an array before processing nested `FunctionDefinition`s.\n> \n> <sup>Written by [Cursor Bugbot](https://cursor.com/dashboard?tab=bugbot) for commit 79a28c897cdea2fe32d0503f7603fff916392bef. This will update automatically on new commits. Configure [here](https://cursor.com/dashboard?tab=bugbot).</sup>\n<!-- /CURSOR_SUMMARY -->",
+    "created_at": "2025-11-25T09:25:42Z",
+    "merged_at": "2025-11-25T09:42:13Z",
+    "base_sha": "7e3010046c675c86595671d79f073370eecad740",
+    "head_sha": "79a28c897cdea2fe32d0503f7603fff916392bef",
+    "merge_commit_sha": "90fe3ee6baabff3958498ab37ed4556a11e7a8b9",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "d83e9cb6921ac6faf85072ccdc335eef984f5fc6",
+  "final_sha": "79a28c897cdea2fe32d0503f7603fff916392bef",
+  "changed_files": [
+    {
+      "sha": "127570371f9cb57ec0b0ae849e623feca56c6982",
+      "filename": "src/engine/analyzer/common/analyzer.ts",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 3,
+      "changes": 8,
+      "blob_url": "https://github.com/antgroup/YASA-Engine/blob/79a28c897cdea2fe32d0503f7603fff916392bef/src%2Fengine%2Fanalyzer%2Fcommon%2Fanalyzer.ts",
+      "raw_url": "https://github.com/antgroup/YASA-Engine/raw/79a28c897cdea2fe32d0503f7603fff916392bef/src%2Fengine%2Fanalyzer%2Fcommon%2Fanalyzer.ts",
+      "contents_url": "https://api.github.com/repos/antgroup/YASA-Engine/contents/src%2Fengine%2Fanalyzer%2Fcommon%2Fanalyzer.ts?ref=79a28c897cdea2fe32d0503f7603fff916392bef",
+      "patch": "@@ -1633,9 +1633,11 @@ class Analyzer extends MemSpace {\n     if (node.body) {\n       // TODO: handle function declaration better\n       fclos = this.createFuncScope(node, scope)\n-      for (const body of node?.body?.body) {\n-        if (body.type === 'FunctionDefinition') {\n-          this.processInstruction(fclos, body, state)\n+      if (node.body.body && Array.isArray(node?.body?.body)) {\n+        for (const body of node.body.body) {\n+          if (body.type === 'FunctionDefinition') {\n+            this.processInstruction(fclos, body, state)\n+          }\n         }\n       }\n     } else {"
+    },
+    {
+      "sha": "427ad6dfab7595d4157fce1016bbfc3513335d94",
+      "filename": "src/engine/analyzer/python/common/python-analyzer.ts",
+      "status": "modified",
+      "additions": 101,
+      "deletions": 119,
+      "changes": 220,
+      "blob_url": "https://github.com/antgroup/YASA-Engine/blob/79a28c897cdea2fe32d0503f7603fff916392bef/src%2Fengine%2Fanalyzer%2Fpython%2Fcommon%2Fpython-analyzer.ts",
+      "raw_url": "https://github.com/antgroup/YASA-Engine/raw/79a28c897cdea2fe32d0503f7603fff916392bef/src%2Fengine%2Fanalyzer%2Fpython%2Fcommon%2Fpython-analyzer.ts",
+      "contents_url": "https://api.github.com/repos/antgroup/YASA-Engine/contents/src%2Fengine%2Fanalyzer%2Fpython%2Fcommon%2Fpython-analyzer.ts?ref=79a28c897cdea2fe32d0503f7603fff916392bef",
+      "patch": "@@ -10,9 +10,8 @@ const {\n const logger = require('../../../../util/logger')(__filename)\n const Config = require('../../../../config')\n const { ErrorCode, Errors } = require('../../../../util/error-code')\n-const { normalizeAndJoin, assembleFullPath } = require('../../../../util/file-util')\n+const { assembleFullPath } = require('../../../../util/file-util')\n const path = require('path')\n-const fs = require('fs-extra')\n const SourceLine = require('../../common/source-line')\n const Uuid = require('node-uuid')\n const Scope = require('../../common/scope')\n@@ -27,6 +26,7 @@ const globby = require('fast-glob')\n const _ = require('lodash')\n const { getSourceNameList } = require('./entrypoint-collector/python-entrypoint')\n const { handleException } = require('../../common/exception-handler')\n+const { resolveImportPath } = require('./python-import-resolver')\n \n /**\n  *\n@@ -48,6 +48,9 @@ class PythonAnalyzer extends (Analyzer as any) {\n \n     this.fileList = []\n     this.astManager = {}\n+    // 搜索路径列表（类似 Python 的 sys.path）\n+    // 用于解析绝对导入，按优先级排序\n+    this.searchPaths = []\n   }\n \n   /**\n@@ -402,161 +405,140 @@ class PythonAnalyzer extends (Analyzer as any) {\n   }\n \n   /**\n+   * 处理 Python import 语句\n    *\n    * @param scope\n    * @param node\n    * @param state\n    */\n   processImportDirect(scope: any, node: any, state: any) {\n-    const { options } = this\n     let { from, imported } = node\n     let sourcefile\n     while (imported) {\n       sourcefile = imported.loc.sourcefile\n       if (sourcefile) break\n-      imported = from.parent\n+      imported = from?.parent\n     }\n     if (!sourcefile) {\n       handleException(\n         null,\n         'Error occurred in PythonAnalyzer.processImportDirect: failed to sourcefile in ast',\n         'Error occurred in PythonAnalyzer.processImportDirect: failed to sourcefile in ast'\n       )\n-      return\n+      return UndefinedValue()\n     }\n-    const importName = imported.value?.replaceAll('.', '/') || imported.name?.replaceAll('.', '/')\n-    const parts = Config.maindir.split('/')\n-    const appName = parts[parts.length - 1]\n+    const sourceFileAbs = path.resolve(sourcefile.toString())\n+    const projectRoot = Config.maindir?.replace(/\\/$/, '') || path.dirname(sourceFileAbs)\n+\n+    let importPath: string | null = null\n+    let modulePath: string | null = null\n+\n     if (!from) {\n-      let pathname = normalizeAndJoin(path.dirname(sourcefile.toString()), importName)\n-      if (this.fileList.includes(`${pathname}.py`)) {\n-        pathname = `${pathname}.py`\n-        const m = this.moduleManager.field[pathname]\n-        if (m) return m\n-        try {\n-          const ast = this.astManager[pathname]\n-          if (ast) return this.processModule(ast, pathname, false as any)\n-        } catch (e) {\n-          handleException(\n-            e,\n-            `Error: PythonAnalyzer.processImportDirect: failed to loading: ${pathname}`,\n-            `Error: PythonAnalyzer.processImportDirect: failed to loading: ${pathname}`\n-          )\n-        }\n-      } else if (fs.existsSync(pathname) && fs.statSync(pathname) && fs.statSync(pathname).isDirectory()) {\n-        const index = pathname?.indexOf(appName)\n-        const packageNames = pathname.substring(index).split('/')\n-        let packageValue = this.packageManager\n-        let packageName\n-        for (packageName of packageNames) {\n-          packageValue = packageValue?.field[packageName]\n-        }\n-        if (packageValue) return packageValue\n-        const initFilePath = `${pathname}/__init__.py`\n-        if (this.fileList.includes(initFilePath)) {\n-          try {\n-            const ast = this.astManager[initFilePath]\n-            if (ast) return this.processModule(ast, initFilePath, false as any)\n-          } catch (e) {\n-            handleException(\n-              e,\n-              `Error: PythonAnalyzer.processImportDirect: failed to loading: ${initFilePath}`,\n-              `Error: PythonAnalyzer.processImportDirect: failed to loading: ${initFilePath}`\n-            )\n+      // 处理 \"import module\" 形式的导入\n+      const importName = imported.value || imported.name\n+      if (importName) {\n+        importPath = resolveImportPath(importName, sourceFileAbs, this.fileList, projectRoot)\n+      }\n+    } else {\n+      // 处理 \"from module import ...\" 形式的导入\n+      const fromValue = from.value\n+      if (fromValue) {\n+        if (fromValue.startsWith('.')) {\n+          // 相对导入，需要区分两种情况：\n+          // 1. \"from .. import moduleName\" - 导入整个模块，fromValue 只有点号（如 \"..\"）\n+          // 2. \"from ..moduleName import fieldName\" - 从模块中导入字段，fromValue 包含点号和模块名（如 \"..moduleName\"）\n+          const onlyDots = /^\\.+$/.test(fromValue)\n+          if (onlyDots) {\n+            const moduleName = imported?.name && imported.name !== '*' ? imported.name : null\n+            const { resolveRelativeImport } = require('./python-import-resolver')\n+            importPath = resolveRelativeImport(fromValue, sourceFileAbs, this.fileList, moduleName || undefined)\n+            // 不设置 modulePath，因为这是导入整个模块，应该返回整个模块对象\n+          } else {\n+            importPath = resolveImportPath(fromValue, sourceFileAbs, this.fileList, projectRoot)\n+            if (imported && imported.name && imported.name !== '*') {\n+              modulePath = imported.name\n+            }\n+          }\n+        } else {\n+          // 绝对导入\n+          importPath = resolveImportPath(fromValue, sourceFileAbs, this.fileList, projectRoot)\n+          if (imported && imported.name && imported.name !== '*') {\n+            modulePath = imported.name\n           }\n         }\n-      } else {\n-        return this.loadPredefinedModule(scope, importName, 'syslib_from')\n       }\n-      return UndefinedValue()\n     }\n-    const fname = from?.value.replace(/(?<=[^.])\\./g, '/')\n-    let pathname = normalizeAndJoin(path.dirname(sourcefile.toString()), fname)\n-    if (this.fileList.includes(`${pathname}.py`)) {\n-      pathname = `${pathname}.py`\n-      let m = this.moduleManager.field[pathname]\n-      if (m) {\n-        if (imported && imported.name !== '*') {\n-          const field = m.field[imported.name]\n+\n+    // 如果 resolver 找到了路径，加载模块\n+    if (importPath) {\n+      const normalizedPath = path.normalize(importPath)\n+\n+      let targetPath = normalizedPath\n+      if (!targetPath.endsWith('.py')) {\n+        // 可能是包目录，检查是否有 __init__.py\n+        const initFile = path.join(targetPath, '__init__.py')\n+        if (this.fileList.some((f: string) => path.normalize(f) === path.normalize(initFile))) {\n+          targetPath = initFile\n+        } else {\n+          // 尝试添加 .py 扩展名\n+          const pyFile = `${targetPath}.py`\n+          if (this.fileList.some((f: string) => path.normalize(f) === path.normalize(pyFile))) {\n+            targetPath = pyFile\n+          }\n+        }\n+      }\n+\n+      const cachedModule = this.moduleManager.field[targetPath]\n+      if (cachedModule) {\n+        if (modulePath) {\n+          const field = cachedModule.field?.[modulePath]\n           if (field) return field\n         }\n-        return m\n+        return cachedModule\n       }\n+\n+      // 加载并处理模块\n+      // 检查是否已经在处理中，防止循环导入导致的无限递归\n+      const processingKey = `processing_${targetPath}`\n+      if ((this as any)[processingKey]) {\n+        logger.warn(`Circular import detected for: ${targetPath}`)\n+        return UndefinedValue()\n+      }\n+\n       try {\n-        const ast = this.astManager[pathname]\n+        ;(this as any)[processingKey] = true\n+        const ast = this.astManager[targetPath]\n         if (ast) {\n-          m = this.processModule(ast, pathname, false as any)\n-          if (m) {\n-            if (imported && imported.name !== '*') {\n-              const field = m.field[imported.name]\n-              if (field) return field\n+          const module = this.processModule(ast, targetPath, false as any)\n+          if (module) {\n+            if (modulePath) {\n+              const field = module.field?.[modulePath]\n+              if (field) {\n+                delete (this as any)[processingKey]\n+                return field\n+              }\n             }\n-            return m\n+            delete (this as any)[processingKey]\n+            return module\n           }\n         }\n+        delete (this as any)[processingKey]\n       } catch (e) {\n+        delete (this as any)[processingKey]\n         handleException(\n           e,\n-          `Error: PythonAnalyzer.processImportDirect: failed to loading: ${pathname}`,\n-          `Error: PythonAnalyzer.processImportDirect: failed to loading: ${pathname}`\n+          `Error: PythonAnalyzer.processImportDirect: failed to loading: ${targetPath}`,\n+          `Error: PythonAnalyzer.processImportDirect: failed to loading: ${targetPath}`\n         )\n       }\n-    } else if (fs.existsSync(pathname) && fs.statSync(pathname) && fs.statSync(pathname).isDirectory()) {\n-      const importPath = `${pathname}/${importName}.py`\n-      if (this.fileList.includes(importPath)) {\n-        const m = this.moduleManager.field[importPath]\n-        if (m) return m\n-        try {\n-          const ast = this.astManager[importPath]\n-          if (ast) return this.processModule(ast, importPath, false as any)\n-        } catch (e) {\n-          handleException(\n-            e,\n-            `Error: PythonAnalyzer.processImportDirect: failed to loading: ${importPath}`,\n-            `Error: PythonAnalyzer.processImportDirect: failed to loading: ${importPath}`\n-          )\n-        }\n-      } else {\n-        const index = pathname?.indexOf(appName)\n-        const packageNames = pathname.substring(index).split('/')\n-        let packageValue = this.packageManager\n-        let packageName\n-        for (packageName of packageNames) {\n-          packageValue = packageValue?.field[packageName]\n-        }\n-        if (packageValue) {\n-          if (imported && imported.name !== '*') {\n-            const field = packageValue.field[imported.name]\n-            if (field) return field\n-          }\n-          return packageValue\n-        }\n-        for (const file of this.fileList) {\n-          if (file.startsWith(pathname) && path.basename(file) === '__init__.py') {\n-            try {\n-              const ast = this.astManager[file]\n-              if (ast) {\n-                packageValue = this.processModule(ast, file, false as any)\n-                if (imported && imported.name !== '*') {\n-                  const field = packageValue.field[imported.name]\n-                  if (field) return field\n-                }\n-                return packageValue\n-              }\n-            } catch (e) {\n-              handleException(\n-                e,\n-                `Error: PythonAnalyzer.processImportDirect: failed to loading: ${file}`,\n-                `Error: PythonAnalyzer.processImportDirect: failed to loading: ${file}`\n-              )\n-            }\n-          }\n-        }\n-      }\n-    } else {\n-      // 三方库\n-      return this.loadPredefinedModule(scope, imported?.name, from?.value)\n     }\n+\n+    // 如果找不到，尝试作为三方库处理\n+    const importName = from?.value || imported?.value || imported?.name\n+    if (importName) {\n+      return this.loadPredefinedModule(scope, imported?.name || importName, from?.value || 'syslib_from')\n+    }\n+\n     return UndefinedValue()\n   }\n "
+    },
+    {
+      "sha": "41105128668c0df49180af36daae5f5b3e0f90bd",
+      "filename": "src/engine/analyzer/python/common/python-import-resolver.ts",
+      "status": "added",
+      "additions": 396,
+      "deletions": 0,
+      "changes": 396,
+      "blob_url": "https://github.com/antgroup/YASA-Engine/blob/79a28c897cdea2fe32d0503f7603fff916392bef/src%2Fengine%2Fanalyzer%2Fpython%2Fcommon%2Fpython-import-resolver.ts",
+      "raw_url": "https://github.com/antgroup/YASA-Engine/raw/79a28c897cdea2fe32d0503f7603fff916392bef/src%2Fengine%2Fanalyzer%2Fpython%2Fcommon%2Fpython-import-resolver.ts",
+      "contents_url": "https://api.github.com/repos/antgroup/YASA-Engine/contents/src%2Fengine%2Fanalyzer%2Fpython%2Fcommon%2Fpython-import-resolver.ts?ref=79a28c897cdea2fe32d0503f7603fff916392bef",
+      "patch": "@@ -0,0 +1,396 @@\n+/**\n+ * Python Import Path Resolver\n+ *\n+ * 核心思想：\n+ * 1. 维护一个搜索路径列表（类似 Python 的 sys.path）\n+ * 2. 从当前文件向上查找，识别所有可能的包根目录\n+ * 3. 对于绝对导入，从所有搜索路径中查找\n+ * 4. 对于相对导入，从当前文件所在目录开始查找\n+ */\n+\n+const path = require('path')\n+const Config = require('../../../../config')\n+const handleException = require('../../common/exception-handler')\n+\n+/**\n+ * 构建搜索路径列表\n+ * 参考 Python 的 sys.path 机制，按优先级排序：\n+ * 1. 当前文件所在目录\n+ * 2. 从当前文件向上查找的所有包含 __init__.py 的包目录\n+ * 3. 项目根目录（Config.maindir）\n+ * 4. 项目根目录的所有子目录（如果包含 Python 文件）\n+ *\n+ * @param sourceFile - 当前源文件的绝对路径\n+ * @param fileList - 所有 Python 文件的列表\n+ * @param projectRoot - 项目根目录\n+ * @returns 搜索路径列表（按优先级排序）\n+ */\n+function buildSearchPaths(sourceFile: string, fileList: string[], projectRoot: string): string[] {\n+  const searchPaths: string[] = []\n+\n+  if (!sourceFile || !fileList || !projectRoot) {\n+    return searchPaths\n+  }\n+\n+  try {\n+    const normalizedProjectRoot = path.normalize(projectRoot.replace(/\\/$/, ''))\n+\n+    // 1. 当前文件所在目录（最高优先级）\n+    const currentDir = path.dirname(sourceFile)\n+    if (currentDir && !searchPaths.includes(currentDir)) {\n+      searchPaths.push(currentDir)\n+    }\n+\n+    // 2. 从当前文件向上查找所有包含 __init__.py 的包目录\n+    let dir = currentDir\n+    let loopCount = 0\n+    const maxLoops = 10 // 防止无限循环\n+\n+    while (dir && dir !== normalizedProjectRoot && dir !== path.dirname(dir) && loopCount < maxLoops) {\n+      try {\n+        const initFile = path.join(dir, '__init__.py')\n+        if (\n+          fileList.some((f: string) => {\n+            return path.normalize(f) === path.normalize(initFile)\n+          }) &&\n+          !searchPaths.includes(dir)\n+        ) {\n+          searchPaths.push(dir)\n+        }\n+        const parentDir = path.dirname(dir)\n+        if (parentDir === dir) break\n+        dir = parentDir\n+        loopCount++\n+      } catch (e) {\n+        handleException(\n+          e,\n+          `[buildSearchPaths] Error searching package directories at ${dir}`,\n+          `[buildSearchPaths] Error searching package directories at ${dir}`\n+        )\n+        break\n+      }\n+    }\n+\n+    // 3. 项目根目录\n+    if (normalizedProjectRoot && !searchPaths.includes(normalizedProjectRoot)) {\n+      searchPaths.push(normalizedProjectRoot)\n+    }\n+\n+    // 4. 项目根目录的所有直接子目录（如果包含 Python 文件）\n+    try {\n+      const subDirsWithPythonFiles = new Set<string>()\n+      const normalizedProjectRootWithSep = normalizedProjectRoot + path.sep\n+\n+      for (const file of fileList) {\n+        try {\n+          const normalizedFile = path.normalize(file)\n+          if (normalizedFile.startsWith(normalizedProjectRootWithSep)) {\n+            const relativePath = normalizedFile.substring(normalizedProjectRootWithSep.length)\n+            const firstDirIndex = relativePath.indexOf(path.sep)\n+\n+            if (firstDirIndex > 0) {\n+              // 文件在子目录中，提取第一个目录名\n+              const firstDir = relativePath.substring(0, firstDirIndex)\n+              const subDirPath = path.join(normalizedProjectRoot, firstDir)\n+              subDirsWithPythonFiles.add(path.normalize(subDirPath))\n+            }\n+          }\n+        } catch (e) {\n+          handleException(\n+            e,\n+            `[buildSearchPaths] Error processing file in subdirectory search: ${e}, file: ${file}`,\n+            `[buildSearchPaths] Error processing file in subdirectory search: ${e}, file: ${file}`\n+          )\n+          continue\n+        }\n+      }\n+\n+      for (const subDir of subDirsWithPythonFiles) {\n+        if (!searchPaths.includes(subDir)) {\n+          searchPaths.push(subDir)\n+        }\n+      }\n+    } catch (e) {\n+      handleException(\n+        e,\n+        `[buildSearchPaths] Error processing subdirectories of ${normalizedProjectRoot}`,\n+        `[buildSearchPaths] Error processing subdirectories of ${normalizedProjectRoot}`\n+      )\n+    }\n+  } catch (e) {\n+    // 如果整个函数出错，至少返回当前目录\n+    const currentDir = path.dirname(sourceFile)\n+    if (currentDir && !searchPaths.includes(currentDir)) {\n+      searchPaths.push(currentDir)\n+    }\n+  }\n+\n+  return searchPaths\n+}\n+\n+/**\n+ * 从给定目录向上查找，直到找到包含所有文件的公共父目录\n+ *\n+ * @param fileList - 所有文件的列表\n+ * @param startDir - 起始目录\n+ * @returns 项目根目录\n+ */\n+function findProjectRoot(fileList: string[], startDir: string): string {\n+  if (!fileList || fileList.length === 0) {\n+    return startDir || process.cwd()\n+  }\n+\n+  if (!startDir) {\n+    startDir = process.cwd()\n+  }\n+\n+  try {\n+    const normalizedStartDir = path.normalize(startDir.replace(/\\/$/, ''))\n+\n+    const normalizedFiles: string[] = []\n+    for (const f of fileList) {\n+      const normalizedFile = path.normalize(f)\n+      if (normalizedFile.startsWith(normalizedStartDir + path.sep) || normalizedFile === normalizedStartDir) {\n+        normalizedFiles.push(normalizedFile)\n+      }\n+    }\n+\n+    if (normalizedFiles.length === 0) {\n+      return normalizedStartDir\n+    }\n+\n+    let commonPrefix = path.dirname(normalizedFiles[0])\n+    let loopCount = 0\n+    const maxLoops = 10 // 防止无限循环\n+\n+    // 确保 commonPrefix 在 startDir 下\n+    while (\n+      !commonPrefix.startsWith(normalizedStartDir) &&\n+      commonPrefix !== path.dirname(commonPrefix) &&\n+      loopCount < maxLoops\n+    ) {\n+      const parentPrefix = path.dirname(commonPrefix)\n+      if (parentPrefix === commonPrefix) break\n+      commonPrefix = parentPrefix\n+      loopCount++\n+    }\n+\n+    // 如果 commonPrefix 不在 startDir 下，使用 startDir\n+    if (!commonPrefix.startsWith(normalizedStartDir)) {\n+      return normalizedStartDir\n+    }\n+\n+    for (const file of normalizedFiles) {\n+      if (loopCount >= maxLoops) break\n+      const dir = path.dirname(file)\n+      // 找到公共前缀，但不能超出 startDir\n+      while (\n+        !dir.startsWith(commonPrefix) &&\n+        commonPrefix.startsWith(normalizedStartDir) &&\n+        commonPrefix !== path.dirname(commonPrefix) &&\n+        loopCount < maxLoops\n+      ) {\n+        const parentPrefix = path.dirname(commonPrefix)\n+        if (parentPrefix === commonPrefix || !parentPrefix.startsWith(normalizedStartDir)) break\n+        commonPrefix = parentPrefix\n+        loopCount++\n+      }\n+    }\n+\n+    return commonPrefix.startsWith(normalizedStartDir) ? normalizedStartDir : commonPrefix\n+  } catch (e) {\n+    // 如果出错，返回 startDir\n+    return startDir || process.cwd()\n+  }\n+}\n+\n+/**\n+ * 解析绝对导入路径\n+ * 从所有搜索路径中查找模块\n+ *\n+ * @param modulePath - 模块路径\n+ * @param searchPaths - 搜索路径列表\n+ * @param fileList - 所有 Python 文件的列表\n+ * @returns 解析后的文件路径，如果找不到返回 null\n+ */\n+function resolveAbsoluteImport(modulePath: string, searchPaths: string[], fileList: string[]): string | null {\n+  const fsPath = modulePath.replace(/\\./g, path.sep)\n+\n+  for (const searchPath of searchPaths) {\n+    // 尝试作为文件查找\n+    const filePath = path.join(searchPath, `${fsPath}.py`)\n+    const normalizedFilePath = path.normalize(filePath)\n+    if (fileList.some((f) => path.normalize(f) === normalizedFilePath)) {\n+      return normalizedFilePath\n+    }\n+\n+    // 尝试作为包目录查找（包含 __init__.py）\n+    const packagePath = path.join(searchPath, fsPath)\n+    const normalizedPackagePath = path.normalize(packagePath)\n+    const initFile = path.join(normalizedPackagePath, '__init__.py')\n+    if (fileList.some((f) => path.normalize(f) === path.normalize(initFile))) {\n+      return normalizedPackagePath\n+    }\n+\n+    // 尝试查找包内的模块文件\n+    const packageModulePath = path.join(normalizedPackagePath, `${path.basename(fsPath)}.py`)\n+    if (fileList.some((f) => path.normalize(f) === path.normalize(packageModulePath))) {\n+      return packageModulePath\n+    }\n+  }\n+\n+  return null\n+}\n+\n+/**\n+ * 解析相对导入路径\n+ * 从当前文件所在目录开始查找\n+ *\n+ * 相对导入规则：\n+ * - 向上层级数 = 点号数量 - 1\n+ * - `..` 表示父包/目录本身（用于 `from .. import module`）\n+ *\n+ * @param relativePath - 相对路径（如 \".module\" 或 \"..parent.module\" 或 \"..\" 或 \"....\"）\n+ * @param currentFile - 当前文件的绝对路径\n+ * @param fileList - 所有 Python 文件的列表\n+ * @param moduleName - 可选的模块名（用于 `from .. import moduleName` 的情况）\n+ * @returns 解析后的文件路径，如果找不到返回 null\n+ */\n+function resolveRelativeImport(\n+  relativePath: string,\n+  currentFile: string,\n+  fileList: string[],\n+  moduleName?: string\n+): string | null {\n+  if (!relativePath || !currentFile || !fileList) {\n+    return null\n+  }\n+\n+  const currentDir = path.dirname(path.normalize(currentFile))\n+\n+  let modulePath = relativePath\n+\n+  // 计算前导点号的数量\n+  let upLevels = 0\n+  let dotIndex = 0\n+\n+  while (dotIndex < modulePath.length && modulePath[dotIndex] === '.') {\n+    upLevels++\n+    dotIndex++\n+  }\n+\n+  // 计算目标目录\n+  let targetDir = currentDir\n+  if (upLevels > 1) {\n+    const levelsToGoUp = upLevels - 1\n+    const normalizedDir = path.normalize(currentDir)\n+    const isAbsolute = path.isAbsolute(normalizedDir)\n+    const parts = normalizedDir.split(path.sep).filter((p: string) => p !== '')\n+\n+    const targetLevel = parts.length - levelsToGoUp\n+\n+    if (targetLevel < 0) {\n+      return null\n+    }\n+\n+    if (targetLevel === 0) {\n+      // 到达根目录\n+      targetDir = isAbsolute ? path.sep : '.'\n+    } else {\n+      const targetParts = parts.slice(0, targetLevel)\n+      if (isAbsolute) {\n+        targetDir = path.sep + targetParts.join(path.sep)\n+      } else {\n+        targetDir = targetParts.join(path.sep) || '.'\n+      }\n+    }\n+\n+    const normalizedTarget = path.normalize(targetDir)\n+    if (normalizedTarget === normalizedDir && levelsToGoUp > 0) {\n+      // 路径没有变化，说明已经到达根目录但还需要向上（用于验证）\n+      return null\n+    }\n+  }\n+\n+  if (dotIndex > 0) {\n+    modulePath = modulePath.substring(dotIndex).replace(/^\\/+/, '')\n+  }\n+\n+  // 处理 `from .. import moduleName` 的情况\n+  // 如果 relativePath 只有点号（如 \"..\"），使用 moduleName\n+  if (!modulePath && moduleName) {\n+    modulePath = moduleName\n+  }\n+\n+  // 如果没有模块路径（只有点号且没有 moduleName），返回当前目录\n+  if (!modulePath) {\n+    return targetDir\n+  }\n+\n+  const fsPath = modulePath.replace(/\\./g, path.sep)\n+\n+  // 尝试作为文件查找\n+  const filePath = path.join(targetDir, `${fsPath}.py`)\n+  const normalizedFilePath = path.normalize(filePath)\n+  const foundFile = fileList.find((f: string) => {\n+    return path.normalize(f) === normalizedFilePath\n+  })\n+  if (foundFile) {\n+    return normalizedFilePath\n+  }\n+\n+  // 尝试作为包目录查找（包含 __init__.py）\n+  const packagePath = path.join(targetDir, fsPath)\n+  const normalizedPackagePath = path.normalize(packagePath)\n+  const initFile = path.join(normalizedPackagePath, '__init__.py')\n+  const foundInit = fileList.find((f: string) => {\n+    return path.normalize(f) === path.normalize(initFile)\n+  })\n+  if (foundInit) {\n+    return normalizedPackagePath\n+  }\n+\n+  // 尝试查找包内的模块文件（例如：A/module.py）\n+  const packageModulePath = path.join(normalizedPackagePath, `${path.basename(fsPath)}.py`)\n+  const foundPackageModule = fileList.find((f: string) => {\n+    return path.normalize(f) === path.normalize(packageModulePath)\n+  })\n+  if (foundPackageModule) {\n+    return packageModulePath\n+  }\n+\n+  return null\n+}\n+\n+/**\n+ * import解析函数，根据导入类型（绝对或相对）选择合适的解析策略\n+ *\n+ * @param importPath - 导入路径（from 子句的值，如 \"A.cross_module_003_T_a\" 或 \".module\"）\n+ * @param currentFile - 当前文件的绝对路径\n+ * @param fileList - 所有 Python 文件的列表\n+ * @param projectRoot - 项目根目录（可选，如果不提供则从 fileList 推断）\n+ * @returns 解析后的文件路径，如果找不到返回 null\n+ */\n+function resolveImportPath(\n+  importPath: string,\n+  currentFile: string,\n+  fileList: string[],\n+  projectRoot?: string\n+): string | null {\n+  if (!importPath) {\n+    return null\n+  }\n+  const root = projectRoot || findProjectRoot(fileList, Config.maindir || process.cwd())\n+  const searchPaths = buildSearchPaths(currentFile, fileList, root)\n+\n+  if (importPath.startsWith('.')) {\n+    return resolveRelativeImport(importPath, currentFile, fileList)\n+  }\n+  return resolveAbsoluteImport(importPath, searchPaths, fileList)\n+}\n+\n+export = {\n+  resolveImportPath,\n+  resolveRelativeImport,\n+}\n+"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "47522331b17ff6d993f55809a8bd969b32caccdc",
+      "message": "add .gitignore",
+      "parent_shas": [
+        "d83e9cb6921ac6faf85072ccdc335eef984f5fc6"
+      ]
+    },
+    {
+      "sha": "76f818fade54b66933089c7e3e609598f56a096b",
+      "message": "fixbug",
+      "parent_shas": [
+        "47522331b17ff6d993f55809a8bd969b32caccdc"
+      ]
+    },
+    {
+      "sha": "10d2b1beeba2636633d9c68010555b9c4dcd758b",
+      "message": "add sinks",
+      "parent_shas": [
+        "76f818fade54b66933089c7e3e609598f56a096b"
+      ]
+    },
+    {
+      "sha": "f7e10f226ef4fb42119f1b6997fb574176df1295",
+      "message": "update version",
+      "parent_shas": [
+        "10d2b1beeba2636633d9c68010555b9c4dcd758b"
+      ]
+    },
+    {
+      "sha": "85ec428782a33b09572134ab06632d4a3e86c7d3",
+      "message": "PullRequest: 31 更新版本、添加sinks、修复bug、添加.gitignore并修改配置文件及入口点代码\n\nMerge branch 'yayi-202511-patch of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/31\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "d83e9cb6921ac6faf85072ccdc335eef984f5fc6",
+        "f7e10f226ef4fb42119f1b6997fb574176df1295"
+      ]
+    },
+    {
+      "sha": "2a7a0bee64fa0ff9d836350e00f4e11def39b6de",
+      "message": "Merge remote-tracking branch 'antcode/master' into yayi-202511-patch",
+      "parent_shas": [
+        "4b36f3f5968cff3d2859081770a50f94f4d3c71b",
+        "85ec428782a33b09572134ab06632d4a3e86c7d3"
+      ]
+    },
+    {
+      "sha": "34fbfdfe24f41629d99f80a238c523a840ee428c",
+      "message": "add docs",
+      "parent_shas": [
+        "f7e10f226ef4fb42119f1b6997fb574176df1295"
+      ]
+    },
+    {
+      "sha": "604274ec773ce3d42c752f54e50ed3d377fed344",
+      "message": "PullRequest: 32 add docs\n\nMerge branch 'yayi-202511-patch of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/32\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "85ec428782a33b09572134ab06632d4a3e86c7d3",
+        "34fbfdfe24f41629d99f80a238c523a840ee428c"
+      ]
+    },
+    {
+      "sha": "6b51451e9543dc0a05d3e87b5f038ba35a4d3168",
+      "message": "Merge branch 'master' into yayi-202511-patch",
+      "parent_shas": [
+        "2a7a0bee64fa0ff9d836350e00f4e11def39b6de",
+        "604274ec773ce3d42c752f54e50ed3d377fed344"
+      ]
+    },
+    {
+      "sha": "f587588137ffa363883c6145a0d0a939ab11646d",
+      "message": "fixbug: correct symbol value handling for VariableDeclaration",
+      "parent_shas": [
+        "34fbfdfe24f41629d99f80a238c523a840ee428c"
+      ]
+    },
+    {
+      "sha": "0a467909016cebc55ce008b56945e04e3b211386",
+      "message": "update python-benchmark-expect",
+      "parent_shas": [
+        "f587588137ffa363883c6145a0d0a939ab11646d"
+      ]
+    },
+    {
+      "sha": "17a53e3675d60b626202d442286e889b9221a646",
+      "message": "PullRequest: 33 fixbug: correct symbol value handling for VariableDeclaration\n\nMerge branch 'yayi-202511-patch of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/33\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "604274ec773ce3d42c752f54e50ed3d377fed344",
+        "0a467909016cebc55ce008b56945e04e3b211386"
+      ]
+    },
+    {
+      "sha": "2827ad3fd05b38e172eae4803c9be4a7ae61deb7",
+      "message": "fixbug: correct symbol value handling for VariableDeclaration",
+      "parent_shas": [
+        "6b51451e9543dc0a05d3e87b5f038ba35a4d3168"
+      ]
+    },
+    {
+      "sha": "3bcfda1ee5b978a3bfd6b9df89d35b619225e08b",
+      "message": "update python-benchmark-expect",
+      "parent_shas": [
+        "2827ad3fd05b38e172eae4803c9be4a7ae61deb7"
+      ]
+    },
+    {
+      "sha": "82396ba018b0f129911ec9a28c73d35c76e4a920",
+      "message": "Merge branch 'main' into yayi-202511-patch",
+      "parent_shas": [
+        "3bcfda1ee5b978a3bfd6b9df89d35b619225e08b",
+        "7c84934988526e96461ac63ceb4b4aaae4e20530"
+      ]
+    },
+    {
+      "sha": "22cf3abe827b4b88f3d2254ca240a6e00e68d33e",
+      "message": "fixbug: Differentiate VariableDeclaration and AssignmentExpression usage",
+      "parent_shas": [
+        "0a467909016cebc55ce008b56945e04e3b211386"
+      ]
+    },
+    {
+      "sha": "896ae050d31e2666161858f4b4ce190191c55405",
+      "message": "update pythonbenchmark-expect.result",
+      "parent_shas": [
+        "22cf3abe827b4b88f3d2254ca240a6e00e68d33e"
+      ]
+    },
+    {
+      "sha": "3e65f11b32f4b036fc7be1f3294f8d1f2693f24f",
+      "message": "PullRequest: 34 fixbug: Differentiate VariableDeclaration and AssignmentExpression usage\n\nMerge branch 'yayi-202511-patch of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/34\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "17a53e3675d60b626202d442286e889b9221a646",
+        "896ae050d31e2666161858f4b4ce190191c55405"
+      ]
+    },
+    {
+      "sha": "fc7ddce2c61b5f76e48700cc62481cb9e772d287",
+      "message": "Merge branch 'master' into yayi-202511-patch\n\n# Conflicts:\n#\tsrc/engine/analyzer/python/common/python-analyzer.ts\n#\ttest/python/expect/pythonbenchmark-expect.result",
+      "parent_shas": [
+        "82396ba018b0f129911ec9a28c73d35c76e4a920",
+        "3e65f11b32f4b036fc7be1f3294f8d1f2693f24f"
+      ]
+    },
+    {
+      "sha": "224af871dc113a631432328940f7ca150da13ece",
+      "message": "Merge branch 'main' into yayi-202511-patch\n\n# Conflicts:\n#\tsrc/engine/analyzer/python/common/python-analyzer.ts\n#\ttest/python/expect/pythonbenchmark-expect.result",
+      "parent_shas": [
+        "fc7ddce2c61b5f76e48700cc62481cb9e772d287",
+        "97f0edf5d6cd155d9d87913208fdf86aba810034"
+      ]
+    },
+    {
+      "sha": "5e75b78cbb97f29484bde9f0d3206ce03b537943",
+      "message": "PullRequest: 35 refactor: 重构性能追踪器并优化日志系统\n\nMerge branch 'cherry-pick-pr216-pr219 of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/35\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>\n\n\n* refactor: 重构性能追踪器并优化日志系统",
+      "parent_shas": [
+        "3e65f11b32f4b036fc7be1f3294f8d1f2693f24f"
+      ]
+    },
+    {
+      "sha": "ba23ab185b23868347bee918f3220e5b1d1d8b8f",
+      "message": "fixbug",
+      "parent_shas": [
+        "896ae050d31e2666161858f4b4ce190191c55405"
+      ]
+    },
+    {
+      "sha": "fc6272b4af26f39f576a48b0bcdb6e2aa87289ec",
+      "message": "PullRequest: 36 fixbug\n\nMerge branch 'yayi-202511-patch of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/36\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "5e75b78cbb97f29484bde9f0d3206ce03b537943",
+        "ba23ab185b23868347bee918f3220e5b1d1d8b8f"
+      ]
+    },
+    {
+      "sha": "ddda870627ff46960cf579ed7d2dadb61519f7b4",
+      "message": "Merge branch 'master' into yayi-202511-patch",
+      "parent_shas": [
+        "224af871dc113a631432328940f7ca150da13ece",
+        "fc6272b4af26f39f576a48b0bcdb6e2aa87289ec"
+      ]
+    },
+    {
+      "sha": "31d4ca4e44832f34879cc5c498c8a41ebb53c7e6",
+      "message": "Merge branch 'main' into yayi-202511-patch",
+      "parent_shas": [
+        "ddda870627ff46960cf579ed7d2dadb61519f7b4",
+        "c32ef3989064e40a976508223013cd0a8c41568d"
+      ]
+    },
+    {
+      "sha": "ca1431aefbfa7fee5d4e51d4d7f04771b7661a21",
+      "message": "update pythonbenchmark-expect.result",
+      "parent_shas": [
+        "ba23ab185b23868347bee918f3220e5b1d1d8b8f"
+      ]
+    },
+    {
+      "sha": "16402af60d1fe0bfdab70af21a47d9248ede8bb5",
+      "message": "feat: add support for python FuncCallReturnValueTaintSource and FuncCallArgTaintSource",
+      "parent_shas": [
+        "ca1431aefbfa7fee5d4e51d4d7f04771b7661a21"
+      ]
+    },
+    {
+      "sha": "a63ff9d898aaab72c3b2b9f794e7cdbf06690025",
+      "message": "Merge branch 'master' into yayi-202511-patch",
+      "parent_shas": [
+        "16402af60d1fe0bfdab70af21a47d9248ede8bb5",
+        "fc6272b4af26f39f576a48b0bcdb6e2aa87289ec"
+      ]
+    },
+    {
+      "sha": "6e0f1342b69d47796cf97e230defa5f0c00593c9",
+      "message": "PullRequest: 37 feat: add support for python FuncCallReturnValueTaintSource and FuncCallArgTaintSource\n\nMerge branch 'yayi-202511-patch of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/37\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "fc6272b4af26f39f576a48b0bcdb6e2aa87289ec",
+        "a63ff9d898aaab72c3b2b9f794e7cdbf06690025"
+      ]
+    },
+    {
+      "sha": "d56f2b6254d3d0e3878e1ffe71fb8cfbb36e34c1",
+      "message": "Merge branch 'main' into yayi-202511-patch",
+      "parent_shas": [
+        "31d4ca4e44832f34879cc5c498c8a41ebb53c7e6",
+        "852950b22e3f5f2895a4e94c3924aca71f3254e1"
+      ]
+    },
+    {
+      "sha": "12182b5fd0d0a7834d2d0b1c362ee4ce13113191",
+      "message": "Merge branch 'master' into yayi-202511-patch",
+      "parent_shas": [
+        "d56f2b6254d3d0e3878e1ffe71fb8cfbb36e34c1",
+        "6e0f1342b69d47796cf97e230defa5f0c00593c9"
+      ]
+    },
+    {
+      "sha": "5a9f4b79cf5d4ce9cc58b1c138816bfe51b52859",
+      "message": "feat: add code formatting configuration file",
+      "parent_shas": [
+        "a63ff9d898aaab72c3b2b9f794e7cdbf06690025"
+      ]
+    },
+    {
+      "sha": "83e7692fd504cb404baacad9bd259fbfb6cd325e",
+      "message": "PullRequest: 38 feat: add code formatting configuration file\n\nMerge branch 'yayi-202511-patch of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/38\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "6e0f1342b69d47796cf97e230defa5f0c00593c9",
+        "5a9f4b79cf5d4ce9cc58b1c138816bfe51b52859"
+      ]
+    },
+    {
+      "sha": "4e65f3c25e8b11d3ad21df4f535c808a915c5e54",
+      "message": "Merge branch 'main' of https://github.com/antgroup/YASA-Engine into yayi-202511-patch",
+      "parent_shas": [
+        "12182b5fd0d0a7834d2d0b1c362ee4ce13113191",
+        "420b5ac52af99c8644382f023f31cdbbd5d226ec"
+      ]
+    },
+    {
+      "sha": "39d19f2335ed140ee07195d55ae259b6f30ce827",
+      "message": "Merge branch 'master' of code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT into yayi-202511-patch",
+      "parent_shas": [
+        "4e65f3c25e8b11d3ad21df4f535c808a915c5e54",
+        "83e7692fd504cb404baacad9bd259fbfb6cd325e"
+      ]
+    },
+    {
+      "sha": "b57d0a093602fdef25c5894f2c04f167716c3c04",
+      "message": "Merge branch 'main' into yayi-202511-patch",
+      "parent_shas": [
+        "39d19f2335ed140ee07195d55ae259b6f30ce827",
+        "795fd3c982503d809827cd529afc76ec3c1f0e74"
+      ]
+    },
+    {
+      "sha": "842d2ceae7049fd742cc12526bc808f058c6b06a",
+      "message": "PullRequest: 39 merge github into antcode\n\nMerge branch 'yayi-202511-patch of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/39\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "83e7692fd504cb404baacad9bd259fbfb6cd325e",
+        "b57d0a093602fdef25c5894f2c04f167716c3c04"
+      ]
+    },
+    {
+      "sha": "34ec782ab1ac7740158f9f9191e5d5ba8bc496bf",
+      "message": "fix: 修复诊断日志重复输出问题\n\n- 移除 getInstructionDetails() 方法中的重复日志输出\n- 日志输出统一在 logPerformance() 方法中处理\n- 修复 symbolInterpretDetail1/2/3 在诊断日志中重复出现的问题\n\n影响：\n- 诊断日志文件不再包含重复的性能统计条目\n- 日志输出更加清晰和一致",
+      "parent_shas": [
+        "842d2ceae7049fd742cc12526bc808f058c6b06a"
+      ]
+    },
+    {
+      "sha": "25ce88296e05b51b190af4d1eac1781069cc5d41",
+      "message": "fix: 修复 TypeScript 类型错误",
+      "parent_shas": [
+        "34ec782ab1ac7740158f9f9191e5d5ba8bc496bf"
+      ]
+    },
+    {
+      "sha": "59a5f2fe0d6c3f09cfb3f45986412cf75a02cb05",
+      "message": "PullRequest: 40 修复 TypeScript 类型错误并优化诊断日志输出\n\nMerge branch 'cherry-pick-f8682ac7 of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/40\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "842d2ceae7049fd742cc12526bc808f058c6b06a",
+        "25ce88296e05b51b190af4d1eac1781069cc5d41"
+      ]
+    },
+    {
+      "sha": "48f77ed1a3b1099fc7d3d796985108b1dd6810f0",
+      "message": "fix: 添加缺失的 TypeRelatedInfoResolver 依赖文件\n\n从 yasa2/master 同步以下依赖文件以修复 TypeScript 编译错误：\n- src/resolver/common/visitor.ts\n- src/resolver/common/value/ast-and-scope.ts\n- src/resolver/common/value/class-hierarchy.ts\n- src/resolver/common/value/declaration.ts\n- src/resolver/common/value/invocation.ts\n- src/resolver/common/value/type-related-info-result.ts\n\n这些文件是 type-related-info-resolver.ts 所需的依赖模块。",
+      "parent_shas": [
+        "25ce88296e05b51b190af4d1eac1781069cc5d41"
+      ]
+    },
+    {
+      "sha": "64f1b40caf526bb2e32263ebbfe8184c713dc20c",
+      "message": "PullRequest: 41 fix: 添加缺失的 TypeRelatedInfoResolver 依赖文件\n\nMerge branch 'cherry-pick-f8682ac7 of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/41\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "59a5f2fe0d6c3f09cfb3f45986412cf75a02cb05",
+        "48f77ed1a3b1099fc7d3d796985108b1dd6810f0"
+      ]
+    },
+    {
+      "sha": "d37d2ee5dfbdbbbc797db5dcddaab2752a19432d",
+      "message": "fixbug: process nested function definitions in function body",
+      "parent_shas": [
+        "5a9f4b79cf5d4ce9cc58b1c138816bfe51b52859"
+      ]
+    },
+    {
+      "sha": "990f3292b34d2ec6f8975576bc967eabedc3c99f",
+      "message": "fixbug: remove unused code",
+      "parent_shas": [
+        "d37d2ee5dfbdbbbc797db5dcddaab2752a19432d"
+      ]
+    },
+    {
+      "sha": "593b6af0f0a509b8872ee8eb9fbb8f207cb40115",
+      "message": "feat: add auto build.sh",
+      "parent_shas": [
+        "990f3292b34d2ec6f8975576bc967eabedc3c99f"
+      ]
+    },
+    {
+      "sha": "fcb62b304ee26f99ce0a390482abbee110a818c7",
+      "message": "Merge remote-tracking branch 'origin/yayi-202511-patch' into yayi-202511-patch\n\n# Conflicts:\n#\tpackage.json",
+      "parent_shas": [
+        "593b6af0f0a509b8872ee8eb9fbb8f207cb40115",
+        "b57d0a093602fdef25c5894f2c04f167716c3c04"
+      ]
+    },
+    {
+      "sha": "0c69dfb94da7e5b79a8238ab575ae44e5a22cccd",
+      "message": "PullRequest: 42 新增构建脚本并修复多个代码问题\n\nMerge branch 'yayi-202511-patch of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/42\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "64f1b40caf526bb2e32263ebbfe8184c713dc20c",
+        "fcb62b304ee26f99ce0a390482abbee110a818c7"
+      ]
+    },
+    {
+      "sha": "9eecdba49943dbfdd028d15bf48d6f489786376a",
+      "message": "Merge branch 'main' of https://github.com/antgroup/YASA-Engine into yayi-202511-patch",
+      "parent_shas": [
+        "b57d0a093602fdef25c5894f2c04f167716c3c04",
+        "4677569f048f92e25d8520fc84ea6be1969e4680"
+      ]
+    },
+    {
+      "sha": "c061cdeb689428ca41804ab13cee4f778f1304d4",
+      "message": "Merge branch 'master' of code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT into yayi-202511-patch",
+      "parent_shas": [
+        "9eecdba49943dbfdd028d15bf48d6f489786376a",
+        "0c69dfb94da7e5b79a8238ab575ae44e5a22cccd"
+      ]
+    },
+    {
+      "sha": "458501cdc833b7cb34f8fee2290e73ffff64bf24",
+      "message": "fixbug",
+      "parent_shas": [
+        "fcb62b304ee26f99ce0a390482abbee110a818c7"
+      ]
+    },
+    {
+      "sha": "2e5d57dc9f2c271f64918946fe07597c896de82f",
+      "message": "PullRequest: 43 fixbug\n\nMerge branch 'yayi-202511-patch of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/43\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "0c69dfb94da7e5b79a8238ab575ae44e5a22cccd",
+        "458501cdc833b7cb34f8fee2290e73ffff64bf24"
+      ]
+    },
+    {
+      "sha": "28f5ec80b5c98ac92f197667aa1de197dafcc899",
+      "message": "Merge branch 'master' into yayi-202511-patch",
+      "parent_shas": [
+        "c061cdeb689428ca41804ab13cee4f778f1304d4",
+        "2e5d57dc9f2c271f64918946fe07597c896de82f"
+      ]
+    },
+    {
+      "sha": "67ebea9b85854ce84fc78f19c65c7eb7b55e87fa",
+      "message": "Merge branch 'main' into yayi-202511-patch",
+      "parent_shas": [
+        "28f5ec80b5c98ac92f197667aa1de197dafcc899",
+        "2626249f286a525d923f195972381e6be1b471df"
+      ]
+    },
+    {
+      "sha": "bc05c0feab7f7db439c9dabe9f74bd7768f590c9",
+      "message": "fixbug: filter class instance objects in call graph construction",
+      "parent_shas": [
+        "458501cdc833b7cb34f8fee2290e73ffff64bf24"
+      ]
+    },
+    {
+      "sha": "57236f6a96905814d1fb20ae95b4303f1687a56a",
+      "message": "Merge branch 'master' into yayi-202511-patch",
+      "parent_shas": [
+        "bc05c0feab7f7db439c9dabe9f74bd7768f590c9",
+        "2e5d57dc9f2c271f64918946fe07597c896de82f"
+      ]
+    },
+    {
+      "sha": "12eadd6cfd3828d87ced50c8d6c1644305d5337d",
+      "message": "PullRequest: 44 fixbug: filter class instance objects in call graph construction\n\nMerge branch 'yayi-202511-patch of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/44\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "2e5d57dc9f2c271f64918946fe07597c896de82f",
+        "57236f6a96905814d1fb20ae95b4303f1687a56a"
+      ]
+    },
+    {
+      "sha": "fab53b4bd8622366b14350b2dbf3f9b81af92061",
+      "message": "Merge branch 'main' of https://github.com/antgroup/YASA-Engine into yayi-202511-patch",
+      "parent_shas": [
+        "67ebea9b85854ce84fc78f19c65c7eb7b55e87fa",
+        "465e03022966e329b128d3cd3e2a85771dc810a9"
+      ]
+    },
+    {
+      "sha": "a2f4324ccd563a33d484c625bb3ee20b2487ec6b",
+      "message": "Merge branch 'master' of code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT into yayi-202511-patch",
+      "parent_shas": [
+        "fab53b4bd8622366b14350b2dbf3f9b81af92061",
+        "12eadd6cfd3828d87ced50c8d6c1644305d5337d"
+      ]
+    },
+    {
+      "sha": "444ecaf3019494c15b83e7c675180b7d15f8fa62",
+      "message": "PullRequest: 45 基于类型分析的CallGraph构建\n\nMerge branch 'out2github-benben-20251124 of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/45\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>\n\n\n* :sparkles: data structure of type resolver\n* :sparkles: find uast node for type resolver\n* :sparkles: resolve type related info of expression\n* :sparkles: treat definiteType as uast\n* :sparkles: resolve uast expression nodes\n* :sparkles: find class hierarchy\n* :sparkles: resolve expressions and types\n* :sparkles: support generate call graph by type\n* :sparkles: resolve expressions and types\n* :sparkles: type resolver support cache\n* :sparkles: optimize the logic of finding md by polymorphism\n* :art: change resolver dir\n* :art: merge preResolve to resolve\n* :art: merge preResolve to resolve\n* :bug: fix npe\n* :art: code structure optimize\n* :sparkles: add id to callgrah fullName if this is no fclos\n* :loud_sound: add log of making callgraph\n* :sparkles: support finding entrypoint by type resolver",
+      "parent_shas": [
+        "12eadd6cfd3828d87ced50c8d6c1644305d5337d"
+      ]
+    },
+    {
+      "sha": "8a3a66ddda921d25bf0b74d42f1fc801a9061f0f",
+      "message": "fixbug",
+      "parent_shas": [
+        "57236f6a96905814d1fb20ae95b4303f1687a56a"
+      ]
+    },
+    {
+      "sha": "8a139b1783854fb3b63a64184a7cc72b8b664465",
+      "message": "feat: Implement a comprehensive Python import path resolver that handles both\nabsolute and relative imports with a sys.path-like search mechanism",
+      "parent_shas": [
+        "8a3a66ddda921d25bf0b74d42f1fc801a9061f0f"
+      ]
+    },
+    {
+      "sha": "ea9b382041c1f5a21482d3c423f5110a44a36af7",
+      "message": "Merge branch 'master' into yayi-202511-patch",
+      "parent_shas": [
+        "8a139b1783854fb3b63a64184a7cc72b8b664465",
+        "444ecaf3019494c15b83e7c675180b7d15f8fa62"
+      ]
+    },
+    {
+      "sha": "a1e9d9b3f33a2cd6ec91010d6d67dcb661cc64b4",
+      "message": "PullRequest: 46 feat: Implement a comprehensive Python import path resolver that handles both absolute and relative imports with a sys.path-like search mechanism\n\nMerge branch 'yayi-202511-patch of git@code.alipay.com:UnifiedProgramAnalysis/YASA_ENGINE_OUT.git into master\n\nhttps://code.alipay.com/UnifiedProgramAnalysis/YASA_ENGINE_OUT/pull_requests/46\n\n\nReviewed-by: 九佛 <shishaosen.sss@antgroup.com>",
+      "parent_shas": [
+        "444ecaf3019494c15b83e7c675180b7d15f8fa62",
+        "ea9b382041c1f5a21482d3c423f5110a44a36af7"
+      ]
+    },
+    {
+      "sha": "41d24e966c199d59199747a7958e904f41d7eb0b",
+      "message": "Merge branch 'master' into yayi-202511-patch",
+      "parent_shas": [
+        "a2f4324ccd563a33d484c625bb3ee20b2487ec6b",
+        "a1e9d9b3f33a2cd6ec91010d6d67dcb661cc64b4"
+      ]
+    },
+    {
+      "sha": "79a28c897cdea2fe32d0503f7603fff916392bef",
+      "message": "Merge branch 'main' into yayi-202511-patch",
+      "parent_shas": [
+        "41d24e966c199d59199747a7958e904f41d7eb0b",
+        "7e3010046c675c86595671d79f073370eecad740"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes",
+      "too_many_commits"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__antgroup__YASA-Engine__pr81.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\antgroup__YASA-Engine__pr81__java_python__antgroup__YASA-Engine__pr81\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\antgroup__YASA-Engine__pr81__java_python__antgroup__YASA-Engine__pr81\\rn"
+  }
+}

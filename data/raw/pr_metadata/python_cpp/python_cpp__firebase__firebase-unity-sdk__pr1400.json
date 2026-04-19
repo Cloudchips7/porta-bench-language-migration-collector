@@ -1,0 +1,468 @@
+{
+  "instance_id": "python_cpp__firebase__firebase-unity-sdk__pr1400",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "firebase/firebase-unity-sdk",
+  "pr_number": 1400,
+  "pr_url": "https://github.com/firebase/firebase-unity-sdk/pull/1400",
+  "repo": {
+    "full_name": "firebase/firebase-unity-sdk",
+    "clone_url": "https://github.com/firebase/firebase-unity-sdk.git",
+    "default_branch": "main",
+    "created_at": "2020-09-25T16:55:49Z",
+    "stars": 314,
+    "license": "Apache-2.0",
+    "size_kb": 13899
+  },
+  "pull_request": {
+    "id": 3322013912,
+    "title": "Functions rewrite in C#",
+    "body": "### Description\r\n> Provide details of the change, and generalize the change in the PR title above.\r\n\r\nFunctions rewrite in C# with the goal of making this a non breaking change. \r\n\r\nThere is a couple of quirks with the reimplementation. In the previous iteration we  used the C++ Variant object class that would do some type conversion. Now I have attempt to rewrite these type conversion in C#. This is just a bit odd as technically we are sending all ints as longs to the firebase functions. This is consistent with the previous implementation just a bit odd. \r\n\r\nThe second quirk is the how the bearer token is expected to be handled between AI logic and Functions. So we need to pipe through this specific name in each product.\r\n\r\n***\r\n### Testing\r\n> Describe how you've tested these changes.\r\n\r\n\r\nRan both the functions and AI test locally in unity. \r\n***\r\n\r\n### Type of Change\r\nPlace an `x` the applicable box:\r\n- [ ] Bug fix. Add the issue # below if applicable.\r\n- [ ] New feature. A non-breaking change which adds functionality.\r\n- [X] Other, such as a build process or documentation change.\r\n***\r\n\r\n",
+    "created_at": "2026-02-24T18:16:42Z",
+    "merged_at": "2026-03-31T14:39:00Z",
+    "base_sha": "6285e581094a040c34a8d42f7f6a115e7aeb98c9",
+    "head_sha": "52d92b84d2033d5be3fca03211906772627afd98",
+    "merge_commit_sha": "e083450676fc5441ff1dac36213a1769e798ea47",
+    "labels": [
+      "tests: failed"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "6285e581094a040c34a8d42f7f6a115e7aeb98c9",
+  "final_sha": "52d92b84d2033d5be3fca03211906772627afd98",
+  "changed_files": [
+    {
+      "sha": "d43825e363287df84334e9dbb79c1c81758a90e3",
+      "filename": "CMakeLists.txt",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 3,
+      "changes": 3,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/CMakeLists.txt",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/CMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/CMakeLists.txt?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -309,9 +309,6 @@ if (FIREBASE_INCLUDE_FIRESTORE)\n endif()\n if (FIREBASE_INCLUDE_FUNCTIONS)\n   add_subdirectory(functions)\n-  list(APPEND TARGET_LINK_LIB_NAMES \"firebase_functions\" \"firebase_functions_swig\")\n-  list(APPEND DOCUMENTATION_ONLY_LIB_NAMES \"firebase_functions_swig\")\n-  list(APPEND PROJECT_LIST_HEADER \"  X(Functions)\")\n endif()\n if (FIREBASE_INCLUDE_MESSAGING)\n   add_subdirectory(messaging)"
+    },
+    {
+      "sha": "11a59a67b88f9a7501f8e767830140cef045d305",
+      "filename": "app/src/internal/FirebaseInterops.cs",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/app%2Fsrc%2Finternal%2FFirebaseInterops.cs",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/app%2Fsrc%2Finternal%2FFirebaseInterops.cs",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/app%2Fsrc%2Finternal%2FFirebaseInterops.cs?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -404,7 +404,7 @@ internal static async Task<string> GetAuthTokenAsync(FirebaseApp firebaseApp)\n     }\n \n     // Adds the other Firebase tokens to the HttpRequest, as available.\n-    internal static async Task AddFirebaseTokensAsync(HttpRequestMessage request, FirebaseApp firebaseApp)\n+    internal static async Task AddFirebaseTokensAsync(HttpRequestMessage request, FirebaseApp firebaseApp, string authTokenPrefix = \"Firebase\")\n     {\n       string appCheckToken = await GetAppCheckTokenAsync(firebaseApp);\n       if (!string.IsNullOrEmpty(appCheckToken))\n@@ -415,12 +415,12 @@ internal static async Task AddFirebaseTokensAsync(HttpRequestMessage request, Fi\n       string authToken = await GetAuthTokenAsync(firebaseApp);\n       if (!string.IsNullOrEmpty(authToken))\n       {\n-        request.Headers.Add(authHeader, $\"Firebase {authToken}\");\n+        request.Headers.Add(authHeader, $\"{authTokenPrefix} {authToken}\");\n       }\n     }\n \n     // Adds the other Firebase tokens to the WebSocket, as available.\n-    internal static async Task AddFirebaseTokensAsync(ClientWebSocket socket, FirebaseApp firebaseApp)\n+    internal static async Task AddFirebaseTokensAsync(ClientWebSocket socket, FirebaseApp firebaseApp, string authTokenPrefix = \"Firebase\")\n     {\n       string appCheckToken = await GetAppCheckTokenAsync(firebaseApp);\n       if (!string.IsNullOrEmpty(appCheckToken))\n@@ -431,7 +431,7 @@ internal static async Task AddFirebaseTokensAsync(ClientWebSocket socket, Fireba\n       string authToken = await GetAuthTokenAsync(firebaseApp);\n       if (!string.IsNullOrEmpty(authToken))\n       {\n-        socket.Options.SetRequestHeader(authHeader, $\"Firebase {authToken}\");\n+        socket.Options.SetRequestHeader(authHeader, $\"{authTokenPrefix} {authToken}\");\n       }\n     }\n   }"
+    },
+    {
+      "sha": "917069fddfa88ae02604cd4ec5771d4fceac6ec4",
+      "filename": "app/src/internal/HttpHelpers.cs",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/app%2Fsrc%2Finternal%2FHttpHelpers.cs",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/app%2Fsrc%2Finternal%2FHttpHelpers.cs",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/app%2Fsrc%2Finternal%2FHttpHelpers.cs?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -24,7 +24,7 @@ namespace Firebase.Internal\n   // Helper functions to help handling the Http calls.\n   internal static class HttpHelpers\n   {\n-    internal static async Task SetRequestHeaders(HttpRequestMessage request, FirebaseApp firebaseApp)\n+    internal static async Task SetRequestHeaders(HttpRequestMessage request, FirebaseApp firebaseApp, string authPrefix = \"Firebase\")\n     {\n       request.Headers.Add(\"x-goog-api-key\", firebaseApp.Options.ApiKey);\n       string version = FirebaseInterops.GetVersionInfoSdkVersion();\n@@ -35,7 +35,7 @@ internal static async Task SetRequestHeaders(HttpRequestMessage request, Firebas\n         request.Headers.Add(\"X-Firebase-AppVersion\", UnityEngine.Application.version);\n       }\n       // Add additional Firebase tokens to the header.\n-      await FirebaseInterops.AddFirebaseTokensAsync(request, firebaseApp);\n+      await FirebaseInterops.AddFirebaseTokensAsync(request, firebaseApp, authPrefix);\n     }\n \n     // Helper function to throw an exception if the Http Response indicates failure."
+    },
+    {
+      "sha": "92d3c61d8e01fb5bd22792828778d4b9e07d15f7",
+      "filename": "docs/readme.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/docs%2Freadme.md",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/docs%2Freadme.md",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/docs%2Freadme.md?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -115,6 +115,7 @@ Release Notes\n       breaking change for custom providers, which must now implement the new\n       `GetLimitedUseTokenAsync` method. If a custom provider does not support\n       this feature, it can return a standard token from this method.\n+    - Functions: Rewrote internal serialization logic to C#. Removes dependency on internal C++ implementation.\n \n ### 13.8.0\n -   Changes"
+    },
+    {
+      "sha": "67cee856e45909017898fe75e905c23bccb1ac83",
+      "filename": "firebaseai/src/FunctionCalling.cs",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/firebaseai%2Fsrc%2FFunctionCalling.cs",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/firebaseai%2Fsrc%2FFunctionCalling.cs",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/firebaseai%2Fsrc%2FFunctionCalling.cs?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -17,7 +17,6 @@\n using System;\n using System.Collections.Generic;\n using System.Linq;\n-using Firebase.AI.Internal;\n \n namespace Firebase.AI\n {"
+    },
+    {
+      "sha": "58b1d34cac8d2a8f206ae0c631209c184c15dacc",
+      "filename": "firebaseai/src/LiveGenerativeModel.cs",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/firebaseai%2Fsrc%2FLiveGenerativeModel.cs",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/firebaseai%2Fsrc%2FLiveGenerativeModel.cs",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/firebaseai%2Fsrc%2FLiveGenerativeModel.cs?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -21,7 +21,6 @@\n using System.Text;\n using System.Threading;\n using System.Threading.Tasks;\n-using Firebase.AI.Internal;\n using Google.MiniJSON;\n \n namespace Firebase.AI"
+    },
+    {
+      "sha": "ab421c894234b56c2ed4db01fb40249397396b79",
+      "filename": "functions/CMakeLists.txt",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 76,
+      "changes": 90,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2FCMakeLists.txt",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2FCMakeLists.txt?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -12,85 +12,23 @@\n # See the License for the specific language governing permissions and\n # limitations under the License.\n \n-# CMake file for the firebase functions library\n+# CMake file for the Firebase Functions library\n \n-include(build_shared)\n+# Firebase Functions is different from the other Firebase libraries,\n+# as instead of prebuilding, we provide it as a source library.\n \n-# Firebase Functions Swig input files\n-set(firebase_functions_swig\n-  src/swig/functions.i\n+# Package every file under src, including subfolders, since we want them all.\n+unity_pack_folder(\n+  \"${FIREBASE_UNITY_DIR}/functions/src/\"\n+  PACK_PATH \"Firebase/FirebaseFunctions\"\n )\n \n-# Firebase Functions CSharp files\n-set(firebase_functions_src\n-  src/FirebaseFunctions.cs\n-  src/FunctionsException.cs\n-  src/HttpsCallableReference.cs\n-  src/HttpsCallableResult.cs\n-)\n-\n-firebase_swig_add_library(firebase_functions_swig\n-  NAMESPACE\n-    Firebase.Functions\n-  MODULE\n-    FirebaseCppFunctions\n-  SOURCES\n-    ${firebase_functions_swig}\n-  DEPENDS\n-    firebase_functions\n-)\n-\n-unity_pack_documentation_sources(functions\n+# For documentation, get all C# files recursively,\n+# which make up the public API.\n+file(GLOB_RECURSE firebase_functions_doc_src \"src/*.cs\")\n+# Filter out any files located in src/Internal\n+list(FILTER firebase_functions_doc_src EXCLUDE REGEX \"src/Internal/\")\n+unity_pack_documentation_sources(firebasefunctions\n   DOCUMENTATION_SOURCES\n-    ${firebase_functions_src}\n-    ${firebase_functions_swig_gen_src}\n-)\n-if (FIREBASE_GENERATE_SWIG_ONLY)\n-  unity_pack_documentation_sources(functions\n-    DOCUMENTATION_SOURCES\n-      ${firebase_functions_swig_gen_cpp_src}\n-  )\n-  return()\n-endif()\n-\n-mono_add_library(firebase_functions_cs\n-  MODULE\n-    Firebase.Functions\n-  SOURCES\n-    ${firebase_functions_src}\n-    ${firebase_functions_swig_gen_src}\n-  REFERENCES\n-    ${FIREBASE_PLATFORM_REF}\n-  DEPENDS\n-    firebase_functions_swig\n-)\n-\n-if(FIREBASE_IOS_BUILD)\n-  ios_pack(firebase_lib_functions libFirebaseCppFunctions DEPS firebase_functions firebase_functions_swig)\n-else()\n-build_firebase_shared(\n-  functions\n-  functions\n-  FirebaseCppFunctions\n-)\n-endif()\n-\n-unity_pack_cs(firebase_functions_cs)\n-\n-if (FIREBASE_INCLUDE_UNITY)\n-  generate_dependencies_xml(Functions\n-    FIREBASE_SPM_DEPS\n-      \"FirebaseFunctions|Firebase/Functions\"\n-    IOS_DEPS\n-      \"Firebase/Functions\"\n-    ANDROID_DEPS\n-      ${FIREBASE_FUNCTIONS_ANDROID_DEPS}\n-    ANDROID_SPEC\n-      \"functions\"\n-  )\n-endif()\n-\n-set_property(TARGET firebase_functions_cs\n-  PROPERTY FOLDER\n-  \"Firebase ${FIREBASE_PLATFORM_NAME}\"\n+    ${firebase_functions_doc_src}\n )"
+    },
+    {
+      "sha": "bab1cc27a5490f43cf54a11054c51e4cf422997b",
+      "filename": "functions/src/FirebaseFunctions.cs",
+      "status": "modified",
+      "additions": 80,
+      "deletions": 70,
+      "changes": 150,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FFirebaseFunctions.cs",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FFirebaseFunctions.cs",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2FFirebaseFunctions.cs?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -15,7 +15,9 @@\n  */\n \n using System;\n-using System.Collections.Generic;\n+using System.Collections.Concurrent;\n+using System.Reflection;\n+using System.Net.Http;\n \n namespace Firebase.Functions {\n   /// <summary>\n@@ -39,36 +41,67 @@ namespace Firebase.Functions {\n   ///   <see cref=\"FirebaseApp.DefaultInstance\" />.\n   /// </remarks>\n   public sealed class FirebaseFunctions {\n-    // Dictionary of FirebaseFunctions instances indexed by a key FirebaseFunctionsInternal.InstanceKey.\n-    private static readonly Dictionary<string, FirebaseFunctions> functionsByInstanceKey =\n-        new Dictionary<string, FirebaseFunctions>();\n+    private static readonly ConcurrentDictionary<string, FirebaseFunctions> _instances = new();\n \n-    // Proxy for the C++ firebase::functions::Functions object.\n-    private FirebaseFunctionsInternal functionsInternal;\n-    // Proxy for the C++ firebase::app:App object.\n-    private readonly FirebaseApp firebaseApp;\n-    // Key of this instance within functionsByInstanceKey.\n-    private string instanceKey;\n+    private readonly FirebaseApp _firebaseApp;\n+    private string _emulator_origin;\n+    private string _region;\n+    private EventInfo _appDisposedEvent;\n+    private MethodInfo _appDisposedMethod;\n+    private Delegate _onAppDisposedHandler;\n+\n+    private readonly HttpClient _httpClient;\n+\n+    private static void LogError(string message) {\n+#if FUNCTIONS_DEBUG_LOGGING\n+      UnityEngine.Debug.LogError(message);\n+#endif\n+    }\n+\n+    // Key of this instance within _instances\n+    private string _instanceKey;\n \n     /// <summary>\n-    /// Construct a this instance associated with the specified app and region.\n+    /// Construct an instance associated with the specified app and region.\n     /// </summary>\n-    /// <param name=\"functions\">C# proxy for firebase::functions::Functions.</param>\n-    /// <param name=\"app\">App the C# proxy functionsInternal was created from.</param>\n-    private FirebaseFunctions(FirebaseFunctionsInternal functions, FirebaseApp app,\n-        string region) {\n-      firebaseApp = app;\n-      firebaseApp.AppDisposed += OnAppDisposed;\n-      functionsInternal = functions;\n-      // As we know there is only one reference to the C++ firebase::functions::Functions object here\n-      // we'll let the proxy object take ownership so the C++ object can be deleted when the\n-      // proxy's Dispose() method is executed.\n-      functionsInternal.SetSwigCMemOwn(true);\n-      instanceKey = InstanceKey(app, region);\n+    private FirebaseFunctions(FirebaseApp app, string region) {\n+      _firebaseApp = app;\n+      _region = region;\n+      _instanceKey = InstanceKey(app, region);\n+\n+      // Default timeout is 70 seconds matching native SDKs.\n+      _httpClient = new HttpClient();\n+      _httpClient.Timeout = TimeSpan.FromSeconds(70);\n+\n+      try {\n+        var appType = _firebaseApp.GetType();\n+        _appDisposedEvent = appType.GetEvent(\"AppDisposed\", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);\n+\n+        if (_appDisposedEvent != null) {\n+          _appDisposedMethod = this.GetType().GetMethod(\"OnAppDisposed\", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);\n+\n+          _onAppDisposedHandler = Delegate.CreateDelegate(_appDisposedEvent.EventHandlerType, this, _appDisposedMethod);\n+\n+          var addMethod = _appDisposedEvent.GetAddMethod(true);\n+\n+          if (addMethod != null) {\n+            addMethod.Invoke(_firebaseApp, new object[] { _onAppDisposedHandler });\n+          }\n+          else {\n+            LogError(\"Found the event, but couldn't find its hidden 'add' method.\");\n+          }\n+        }\n+        else {\n+          LogError(\"AppDisposed event not found via reflection.\");\n+        }\n+      }\n+      catch (System.Exception ex) {\n+        LogError($\"Failed to attach to AppDisposed via reflection: {ex.Message}\");\n+      }\n     }\n \n     /// <summary>\n-    /// Remove the reference to this object from the functionsByInstanceKey dictionary.\n+    /// Remove the reference to this object from the _instances dictionary.\n     /// </summary>\n     ~FirebaseFunctions() {\n       Dispose();\n@@ -78,20 +111,20 @@ void OnAppDisposed(object sender, System.EventArgs eventArgs) {\n       Dispose();\n     }\n \n-    // Remove the reference to this instance from functionsByInstanceKey and dispose the proxy.\n+    // Remove the reference to this instance from _instances and clean up events.\n     private void Dispose() {\n       System.GC.SuppressFinalize(this);\n-      lock (functionsByInstanceKey) {\n-        if (functionsInternal == null) return;\n-        functionsByInstanceKey.Remove(instanceKey);\n \n-        functionsInternal.Dispose();\n-        functionsInternal = null;\n-\n-        firebaseApp.AppDisposed -= OnAppDisposed;\n+      _instances.TryRemove(_instanceKey, out _);\n+      if (_appDisposedEvent != null && _onAppDisposedHandler != null) {\n+        var removeMethod = _appDisposedEvent.GetRemoveMethod(true);\n+        removeMethod?.Invoke(_firebaseApp, new object[] { _onAppDisposedHandler });\n       }\n+      _httpClient.Dispose();\n     }\n \n+    internal HttpClient HttpClient { get { return _httpClient; } }\n+\n     /// <summary>\n     ///   Returns the\n     ///   <see cref=\"FirebaseFunctions\" />\n@@ -115,7 +148,7 @@ public static FirebaseFunctions DefaultInstance {\n     ///   <see cref=\"FirebaseFunctions\" />\n     ///   instance.\n     /// </summary>\n-    public FirebaseApp App { get { return firebaseApp; } }\n+    public FirebaseApp App { get { return _firebaseApp; } }\n \n     private static string InstanceKey(FirebaseApp app, string region) {\n       return app.Name + \"/\" + region;\n@@ -176,71 +209,48 @@ public static FirebaseFunctions GetInstance(string region) {\n     ///   instance.\n     /// </returns>\n     public static FirebaseFunctions GetInstance(FirebaseApp app, string region) {\n-      lock (functionsByInstanceKey) {\n-        var instanceKey = InstanceKey(app, region);\n-        FirebaseFunctions functions = null;\n-        if (functionsByInstanceKey.TryGetValue(instanceKey, out functions)) {\n-          if (functions != null) return functions;\n-        }\n-\n-        app = app ?? FirebaseApp.DefaultInstance;\n-        InitResult initResult;\n-        FirebaseFunctionsInternal functionsInternal =\n-          FirebaseFunctionsInternal.GetInstanceInternal(app, region, out initResult);\n-        if (initResult != InitResult.Success) {\n-          throw new Firebase.InitializationException(\n-              initResult,\n-              Firebase.ErrorMessages.DllNotFoundExceptionErrorMessage);\n-        } else if (functionsInternal == null) {\n-          LogUtil.LogMessage(LogLevel.Warning,\n-              \"Unable to create FirebaseFunctions.\");\n-          return null;\n-        }\n-\n-        functions = new FirebaseFunctions(functionsInternal, app, region);\n-        functionsByInstanceKey[instanceKey] = functions;\n-        return functions;\n+      if (app == null) {\n+        app = FirebaseApp.DefaultInstance;\n       }\n+\n+      string key = InstanceKey(app, region);\n+      return _instances.GetOrAdd(key, _ => new FirebaseFunctions(app, region));\n     }\n \n-    // Throw a NullReferenceException if this proxy references a deleted object.\n-    private void ThrowIfNull() {\n-      if (functionsInternal == null ||\n-          FirebaseFunctionsInternal.getCPtr(functionsInternal).Handle == System.IntPtr.Zero) {\n-        throw new System.NullReferenceException();\n-      }\n+    private string GetUrl(in string name) {\n+      string proj = _firebaseApp.Options.ProjectId;\n+      string url = string.IsNullOrEmpty(_emulator_origin)\n+        ? $\"https://{_region}-{proj}.cloudfunctions.net/{name}\"\n+        : $\"{_emulator_origin}/{proj}/{_region}/{name}\";\n+      return url;\n     }\n \n     /// <summary>\n     ///   Creates a <see cref=\"HttpsCallableReference\" /> given a name.\n     /// </summary>\n     public HttpsCallableReference GetHttpsCallable(string name) {\n-      ThrowIfNull();\n-      return new HttpsCallableReference(this, functionsInternal.GetHttpsCallable(name));\n+      return new HttpsCallableReference(this, GetUrl(name));\n     }\n \n     /// <summary>\n     ///   Creates a <see cref=\"HttpsCallableReference\" /> given a URL.\n     /// </summary>\n     public HttpsCallableReference GetHttpsCallableFromURL(string url) {\n-      ThrowIfNull();\n-      return new HttpsCallableReference(this, functionsInternal.GetHttpsCallableFromURL(url));\n+      return new HttpsCallableReference(this, url);\n     }\n \n     /// <summary>\n     ///   Creates a <see cref=\"HttpsCallableReference\" /> given a URL.\n     /// </summary>\n     public HttpsCallableReference GetHttpsCallableFromURL(Uri url) {\n-      ThrowIfNull();\n       return GetHttpsCallableFromURL(url.ToString());\n     }\n \n     /// <summary>\n     ///   Sets an origin of a Cloud Functions Emulator instance to use.\n     /// </summary>\n     public void UseFunctionsEmulator(string origin) {\n-      ThrowIfNull();\n-      functionsInternal.UseFunctionsEmulator(origin);\n+      _emulator_origin = origin;\n     }\n   }\n }"
+    },
+    {
+      "sha": "33a3f515508af68ef89f14ec574dcf298a9c0b1f",
+      "filename": "functions/src/FirebaseFunctions.cs.meta",
+      "status": "added",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FFirebaseFunctions.cs.meta",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FFirebaseFunctions.cs.meta",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2FFirebaseFunctions.cs.meta?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -0,0 +1,7 @@\n+fileFormatVersion: 2\n+guid: 43ac7ac9a9bf40d99085cf17989cf7f8\n+timeCreated: 1480838400\n+DefaultImporter:\n+  userData:\n+  assetBundleName:\n+  assetBundleVariant:"
+    },
+    {
+      "sha": "1ad935f1f7d3b4826b0dddf5b69dc48a8a28118d",
+      "filename": "functions/src/FunctionsErrorCodes.cs",
+      "status": "added",
+      "additions": 213,
+      "deletions": 0,
+      "changes": 213,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FFunctionsErrorCodes.cs",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FFunctionsErrorCodes.cs",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2FFunctionsErrorCodes.cs?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -0,0 +1,213 @@\n+/*\n+ * Copyright 2026 Google LLC\n+ *\n+ * Licensed under the Apache License, Version 2.0 (the \"License\");\n+ * you may not use this file except in compliance with the License.\n+ * You may obtain a copy of the License at\n+ *\n+ *      http://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing, software\n+ * distributed under the License is distributed on an \"AS IS\" BASIS,\n+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+ * See the License for the specific language governing permissions and\n+ * limitations under the License.\n+ */\n+\n+namespace Firebase.Functions\n+{\n+  /// <summary>\n+  /// Error code returned by Cloud Functions.\n+  /// Standard gRPC error codes, as defined in:\n+  /// https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto\n+  /// </summary>\n+  public enum FunctionsErrorCode\n+  {\n+        /// <summary>\n+        /// Not an error; returned on success\n+        ///\n+        /// HTTP Mapping: 200 OK\n+        /// </summary>\n+        None,\n+\n+        /// <summary>\n+        /// The operation was cancelled, typically by the caller.\n+        ///\n+        /// HTTP Mapping: 499 Client Closed Request\n+        /// </summary>\n+        Cancelled,\n+\n+        /// <summary>\n+        /// Unknown error.  For example, this error may be returned when\n+        /// a `Status` value received from another address space belongs to\n+        /// an error space that is not known in this address space.  Also\n+        /// errors raised by APIs that do not return enough error information\n+        /// may be converted to this error.\n+        ///\n+        /// HTTP Mapping: 500 Internal Server Error\n+        /// </summary>\n+        Unknown,\n+\n+        /// <summary>\n+        /// The client specified an invalid argument.  Note that this differs\n+        /// from `FAILED_PRECONDITION`.  `INVALID_ARGUMENT` indicates arguments\n+        /// that are problematic regardless of the state of the system\n+        /// (e.g., a malformed file name).\n+        ///\n+        /// HTTP Mapping: 400 Bad Request\n+        /// </summary>\n+        InvalidArgument,\n+\n+        /// <summary>\n+        /// The deadline expired before the operation could complete. For operations\n+        /// that change the state of the system, this error may be returned\n+        /// even if the operation has completed successfully.  For example, a\n+        /// successful response from a server could have been delayed long\n+        /// enough for the deadline to expire.\n+        ///\n+        /// HTTP Mapping: 504 Gateway Timeout\n+        /// </summary>\n+        DeadlineExceeded,\n+\n+        /// <summary>\n+        /// Some requested entity (e.g., file or directory) was not found.\n+        ///\n+        /// Note to server developers: if a request is denied for an entire class\n+        /// of users, such as gradual feature rollout or undocumented whitelist,\n+        /// `NOT_FOUND` may be used. If a request is denied for some users within\n+        /// a class of users, such as user-based access control, `PERMISSION_DENIED`\n+        /// must be used.\n+        ///\n+        /// HTTP Mapping: 404 Not Found\n+        /// </summary>\n+        NotFound,\n+\n+        /// <summary>\n+        /// The entity that a client attempted to create (e.g., file or directory)\n+        /// already exists.\n+        ///\n+        /// HTTP Mapping: 409 Conflict\n+        /// </summary>\n+        AlreadyExists,\n+\n+        /// <summary>\n+        /// The caller does not have permission to execute the specified\n+        /// operation. `PERMISSION_DENIED` must not be used for rejections\n+        /// caused by exhausting some resource (use `RESOURCE_EXHAUSTED`\n+        /// instead for those errors). `PERMISSION_DENIED` must not be\n+        /// used if the caller can not be identified (use `UNAUTHENTICATED`\n+        /// instead for those errors). This error code does not imply the\n+        /// request is valid or the requested entity exists or satisfies\n+        /// other pre-conditions.\n+        ///\n+        /// HTTP Mapping: 403 Forbidden\n+        /// </summary>\n+        PermissionDenied,\n+\n+        /// <summary>\n+        /// The request does not have valid authentication credentials for the\n+        /// operation.\n+        ///\n+        /// HTTP Mapping: 401 Unauthorized\n+        /// </summary>\n+        Unauthenticated,\n+\n+        /// <summary>\n+        /// Some resource has been exhausted, perhaps a per-user quota, or\n+        /// perhaps the entire file system is out of space.\n+        ///\n+        /// HTTP Mapping: 429 Too Many Requests\n+        /// </summary>\n+        ResourceExhausted,\n+\n+        /// <summary>\n+        /// The operation was rejected because the system is not in a state\n+        /// required for the operation's execution.  For example, the directory\n+        /// to be deleted is non-empty, an rmdir operation is applied to\n+        /// a non-directory, etc.\n+        ///\n+        /// Service implementors can use the following guidelines to decide\n+        /// between `FAILED_PRECONDITION`, `ABORTED`, and `UNAVAILABLE`:\n+        ///  (a) Use `UNAVAILABLE` if the client can retry just the failing call.\n+        ///  (b) Use `ABORTED` if the client should retry at a higher level\n+        ///      (e.g., when a client-specified test-and-set fails, indicating the\n+        ///      client should restart a read-modify-write sequence).\n+        ///  (c) Use `FAILED_PRECONDITION` if the client should not retry until\n+        ///      the system state has been explicitly fixed.  E.g., if an \"rmdir\"\n+        ///      fails because the directory is non-empty, `FAILED_PRECONDITION`\n+        ///      should be returned since the client should not retry unless\n+        ///      the files are deleted from the directory.\n+        ///\n+        /// HTTP Mapping: 400 Bad Request\n+        /// </summary>\n+        FailedPrecondition,\n+\n+        /// <summary>\n+        /// The operation was aborted, typically due to a concurrency issue such as\n+        /// a sequencer check failure or transaction abort.\n+        ///\n+        /// See the guidelines above for deciding between `FAILED_PRECONDITION`,\n+        /// `ABORTED`, and `UNAVAILABLE`.\n+        ///\n+        /// HTTP Mapping: 409 Conflict\n+        /// </summary>\n+        Aborted,\n+\n+        /// <summary>\n+        /// The operation was attempted past the valid range.  E.g., seeking or\n+        /// reading past end-of-file.\n+        ///\n+        /// Unlike `INVALID_ARGUMENT`, this error indicates a problem that may\n+        /// be fixed if the system state changes. For example, a 32-bit file\n+        /// system will generate `INVALID_ARGUMENT` if asked to read at an\n+        /// offset that is not in the range [0,2^32-1], but it will generate\n+        /// `OUT_OF_RANGE` if asked to read from an offset past the current\n+        /// file size.\n+        ///\n+        /// There is a fair bit of overlap between `FAILED_PRECONDITION` and\n+        /// `OUT_OF_RANGE`.  We recommend using `OUT_OF_RANGE` (the more specific\n+        /// error) when it applies so that callers who are iterating through\n+        /// a space can easily look for an `OUT_OF_RANGE` error to detect when\n+        /// they are done.\n+        ///\n+        /// HTTP Mapping: 400 Bad Request\n+        /// </summary>\n+        OutOfRange,\n+\n+        /// <summary>\n+        /// The operation is not implemented or is not supported/enabled in this\n+        /// service.\n+        ///\n+        /// HTTP Mapping: 501 Not Implemented\n+        /// </summary>\n+        Unimplemented,\n+\n+        /// <summary>\n+        /// Internal errors.  This means that some invariants expected by the\n+        /// underlying system have been broken.  This error code is reserved\n+        /// for serious errors.\n+        ///\n+        /// HTTP Mapping: 500 Internal Server Error\n+        /// </summary>\n+        Internal,\n+\n+        /// <summary>\n+        /// The service is currently unavailable.  This is most likely a\n+        /// transient condition, which can be corrected by retrying with\n+        /// a backoff.\n+        ///\n+        /// See the guidelines above for deciding between `FAILED_PRECONDITION`,\n+        /// `ABORTED`, and `UNAVAILABLE`.\n+        ///\n+        /// HTTP Mapping: 503 Service Unavailable\n+        /// </summary>\n+        Unavailable,\n+\n+        /// <summary>\n+        /// Unrecoverable data loss or corruption.\n+        ///\n+        /// HTTP Mapping: 500 Internal Server Error\n+        /// </summary>\n+        DataLoss\n+    }\n+}\n\\ No newline at end of file"
+    },
+    {
+      "sha": "1cbd0793a13dfe15efb78269dd7ce48de1d0147c",
+      "filename": "functions/src/FunctionsErrorCodes.cs.meta",
+      "status": "added",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FFunctionsErrorCodes.cs.meta",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FFunctionsErrorCodes.cs.meta",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2FFunctionsErrorCodes.cs.meta?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -0,0 +1,7 @@\n+fileFormatVersion: 2\n+guid: 4b5517e5a98f42bbbcd05834d98cbc5a\n+timeCreated: 1480838400\n+DefaultImporter:\n+  userData:\n+  assetBundleName:\n+  assetBundleVariant:"
+    },
+    {
+      "sha": "7bb50b97a0c5fa02bfd760ce528d0a1a590de7e2",
+      "filename": "functions/src/FunctionsException.cs",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 9,
+      "changes": 22,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FFunctionsException.cs",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FFunctionsException.cs",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2FFunctionsException.cs?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -15,26 +15,30 @@\n  */\n \n using System;\n-using System.Collections.Generic;\n-using System.Diagnostics;\n-using System.IO;\n-using System.Net;\n \n-namespace Firebase.Functions {\n+namespace Firebase.Functions\n+{\n   /// <summary>\n   ///   Represents an Exception resulting from an operation on a\n   ///   <see cref=\"FunctionsReference\" />\n   /// </summary>\n   [Serializable]\n-  public sealed class FunctionsException : Exception {\n+  public sealed class FunctionsException : Exception\n+  {\n     /// <returns>\n     /// A code that indicates the type of error that occurred. This value will\n-    /// be one of the set of constants defined on <see cref=\"FunctionsException\" />.\n+    /// be one of the set of constants defined on <see cref=\"FunctionsErrorCode\" />.\n     /// </returns>\n     public FunctionsErrorCode ErrorCode { get; private set; }\n \n-    internal FunctionsException(FirebaseException e): base(e.Message) {\n-      ErrorCode = (FunctionsErrorCode) e.ErrorCode;\n+    internal FunctionsException(FunctionsErrorCode code, string message) : base(message)\n+    {\n+      ErrorCode = code;\n+    }\n+\n+    internal FunctionsException(FirebaseException e) : base(e.Message)\n+    {\n+      ErrorCode = (FunctionsErrorCode)e.ErrorCode;\n     }\n   }\n }"
+    },
+    {
+      "sha": "89d03abfca20abc379b98ae267931a0510c0e727",
+      "filename": "functions/src/FunctionsException.cs.meta",
+      "status": "added",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FFunctionsException.cs.meta",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FFunctionsException.cs.meta",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2FFunctionsException.cs.meta?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -0,0 +1,7 @@\n+fileFormatVersion: 2\n+guid: eafe7c78c38e4ec6a97bc9b60c8db44a\n+timeCreated: 1480838400\n+DefaultImporter:\n+  userData:\n+  assetBundleName:\n+  assetBundleVariant:"
+    },
+    {
+      "sha": "47eb19ee77b24f694d38695dd943f8602f40e107",
+      "filename": "functions/src/HttpsCallableReference.cs",
+      "status": "modified",
+      "additions": 63,
+      "deletions": 33,
+      "changes": 96,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FHttpsCallableReference.cs",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FHttpsCallableReference.cs",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2FHttpsCallableReference.cs?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -15,32 +15,33 @@\n  */\n \n using System;\n-using System.IO;\n-using System.Runtime.InteropServices;\n-using System.Threading;\n using System.Threading.Tasks;\n+using System.Net.Http;\n+using Firebase.Functions.Internal;\n+using Firebase.Internal;\n+using System.Text;\n \n-namespace Firebase.Functions {\n+namespace Firebase.Functions\n+{\n   /// <summary>Represents a reference to a Google Cloud Functions HTTPS callable function.</summary>\n   /// <remarks>\n   ///   Represents a reference to a Google Cloud Functions HTTPS callable function.\n   ///   (see <a href=\"https://cloud.google.com/functions/\">Google Cloud Functions</a>)\n   /// </remarks>\n-  public sealed class HttpsCallableReference {\n+  public sealed class HttpsCallableReference\n+  {\n     // Functions object this reference was created from.\n-    private readonly FirebaseFunctions firebaseFunctions;\n-\n+    private readonly FirebaseFunctions _firebaseFunctions;\n+    private readonly string _url;\n     /// <summary>\n     /// Construct a wrapper around the HttpsCallableReferenceInternal object.\n     /// </summary>\n-    internal HttpsCallableReference(FirebaseFunctions functions,\n-      HttpsCallableReferenceInternal callableReferenceInternal) {\n-      firebaseFunctions = functions;\n-      Internal = callableReferenceInternal;\n+    internal HttpsCallableReference(FirebaseFunctions functions, string url)\n+    {\n+      _firebaseFunctions = functions;\n+      _url = url;\n     }\n \n-    private HttpsCallableReferenceInternal Internal { get; set; }\n-\n     /// <summary>\n     ///   Returns the\n     ///   <see cref=\"FirebaseFunctions\" />\n@@ -51,7 +52,7 @@ internal HttpsCallableReference(FirebaseFunctions functions,\n     ///   <see cref=\"FirebaseFunctions\" />\n     ///   service.\n     /// </returns>\n-    public FirebaseFunctions Functions { get { return firebaseFunctions; } }\n+    public FirebaseFunctions Functions { get { return _firebaseFunctions; } }\n \n     /// <summary>\n     ///   ...\n@@ -60,7 +61,8 @@ internal HttpsCallableReference(FirebaseFunctions functions,\n     ///   A <see cref=\"Task\"/>\n     ///   with the result of the function call.\n     /// </returns>\n-    public Task<HttpsCallableResult> CallAsync() {\n+    public Task<HttpsCallableResult> CallAsync()\n+    {\n       return CallAsync(null);\n     }\n \n@@ -72,26 +74,54 @@ public Task<HttpsCallableResult> CallAsync() {\n     ///   A <see cref=\"Task\"/>\n     ///   with the result of the function call.\n     /// </returns>\n-    public Task<HttpsCallableResult> CallAsync(object data) {\n-      var dataVariant = Variant.FromObject(data);\n-      return Internal.CallAsync(dataVariant).ContinueWith(task => {\n-        // We need to preserve the Internal object during the async call.\n-        if (Internal == null) {\n-          LogUtil.LogMessage(LogLevel.Error,\n-                                 \"The underlying object of the HttpsCallableReference was lost.\");\n-        }\n-        if (task.IsFaulted) {\n-          // Try to convert the exception into a FunctionsException.\n-          var ex = task.Exception;\n-          foreach (var inner in ex.InnerExceptions) {\n-            if (inner is FirebaseException) {\n-              throw new FunctionsException((FirebaseException) inner);\n-            }\n+    public Task<HttpsCallableResult> CallAsync(object data)\n+    {\n+      return InternalCallAsync(data);\n+    }\n+\n+    private StringContent MakeFunctionsRequest(object data)\n+    {\n+      var encodedData = FunctionsSerializer.Serialize(data);\n+      return new StringContent(encodedData, Encoding.UTF8, \"application/json\");\n+    }\n+\n+    private async Task<HttpsCallableResult> InternalCallAsync(object data)\n+    {\n+      HttpRequestMessage request = new(HttpMethod.Post, _url);\n+      // Functions uses Bearer tokens for authentication.\n+      // This is different from the default Firebase token prefix used by other Firebase services.\n+      await HttpHelpers.SetRequestHeaders(request, _firebaseFunctions.App, \"Bearer\");\n+      request.Content = MakeFunctionsRequest(data);\n+\n+#if FIREBASE_LOG_REST_CALLS\n+      UnityEngine.Debug.Log(\"Request:\\n\" + request.Content);\n+#endif\n+      // TODO pipe through cancellation tokens\n+      var response = await _firebaseFunctions.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);\n+      if (!response.IsSuccessStatusCode)\n+      {\n+        string errorBody = \"\";\n+        if (response.Content != null)\n+        {\n+          try\n+          {\n+            errorBody = await response.Content.ReadAsStringAsync();\n+          }\n+          catch (Exception e)\n+          {\n+            UnityEngine.Debug.LogWarning(\"Failed to read error response: \" + e.Message);\n           }\n-          throw ex;\n         }\n-        return new HttpsCallableResult(task.Result.data().ToObject());\n-      });\n+        throw FunctionsErrorParser.ParseError(response, errorBody);\n+      }\n+\n+      string result = await response.Content.ReadAsStringAsync();\n+\n+#if FIREBASE_LOG_REST_CALLS\n+      UnityEngine.Debug.Log(\"Response:\\n\" + result);\n+#endif\n+      var responseData = FunctionsSerializer.Deserialize(result);\n+      return new HttpsCallableResult(responseData);\n     }\n   }\n }"
+    },
+    {
+      "sha": "06c171bf1dac7245efa144e57bf9da86a09f39b9",
+      "filename": "functions/src/HttpsCallableReference.cs.meta",
+      "status": "added",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FHttpsCallableReference.cs.meta",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FHttpsCallableReference.cs.meta",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2FHttpsCallableReference.cs.meta?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -0,0 +1,7 @@\n+fileFormatVersion: 2\n+guid: 4ec2177516074a0f8babfb6c6fb8248d\n+timeCreated: 1480838400\n+DefaultImporter:\n+  userData:\n+  assetBundleName:\n+  assetBundleVariant:"
+    },
+    {
+      "sha": "a630e5e67bac9dbda62d52bee70aceb02988114e",
+      "filename": "functions/src/HttpsCallableResult.cs.meta",
+      "status": "added",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FHttpsCallableResult.cs.meta",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FHttpsCallableResult.cs.meta",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2FHttpsCallableResult.cs.meta?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -0,0 +1,7 @@\n+fileFormatVersion: 2\n+guid: bee4e914d1a4495bb74f509454f694fb\n+timeCreated: 1480838400\n+DefaultImporter:\n+  userData:\n+  assetBundleName:\n+  assetBundleVariant:"
+    },
+    {
+      "sha": "4a4c4ae16cc0a53064484f4cba491b2fd8821cfa",
+      "filename": "functions/src/Internal/FunctionsErrorParser.cs",
+      "status": "added",
+      "additions": 156,
+      "deletions": 0,
+      "changes": 156,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FInternal%2FFunctionsErrorParser.cs",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FInternal%2FFunctionsErrorParser.cs",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2FInternal%2FFunctionsErrorParser.cs?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -0,0 +1,156 @@\n+/*\n+* Copyright 2026 Google LLC\n+*\n+* Licensed under the Apache License, Version 2.0 (the \"License\");\n+* you may not use this file except in compliance with the License.\n+* You may obtain a copy of the License at\n+*\n+*      http://www.apache.org/licenses/LICENSE-2.0\n+*\n+* Unless required by applicable law or agreed to in writing, software\n+* distributed under the License is distributed on an \"AS IS\" BASIS,\n+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+* See the License for the specific language governing permissions and\n+* limitations under the License.\n+*/\n+\n+using System;\n+using System.Collections.Generic;\n+using System.Net.Http;\n+using Google.MiniJSON;\n+\n+namespace Firebase.Functions.Internal\n+{\n+  // Helper class to map HTTP responses to FunctionsErrorCode and extract error details.\n+  internal static class FunctionsErrorParser\n+  {\n+    /// <summary>\n+    /// Maps an HTTP status code to the corresponding FunctionsErrorCode.\n+    /// Default is Internal if no specific mapping exists.\n+    /// </summary>\n+    internal static FunctionsErrorCode MapHttpStatusToEnum(int httpStatusCode)\n+    {\n+      switch (httpStatusCode)\n+      {\n+        case 200: return FunctionsErrorCode.None;\n+        case 400: return FunctionsErrorCode.InvalidArgument;\n+        case 401: return FunctionsErrorCode.Unauthenticated;\n+        case 403: return FunctionsErrorCode.PermissionDenied;\n+        case 404: return FunctionsErrorCode.NotFound;\n+        case 409: return FunctionsErrorCode.AlreadyExists;\n+        case 429: return FunctionsErrorCode.ResourceExhausted;\n+        case 499: return FunctionsErrorCode.Cancelled;\n+        case 500: return FunctionsErrorCode.Internal;\n+        case 501: return FunctionsErrorCode.Unimplemented;\n+        case 503: return FunctionsErrorCode.Unavailable;\n+        case 504: return FunctionsErrorCode.DeadlineExceeded;\n+        // This shouldn't happen, but the iOS and Android SDKs default to INTERNAL.\n+        default: return FunctionsErrorCode.Internal;\n+      }\n+    }\n+\n+    /// <summary>\n+    /// Maps a canonical status string (e.g., from a JSON error response) to the corresponding FunctionsErrorCode.\n+    /// Default is Internal if no specific mapping exists.\n+    /// </summary>\n+    internal static FunctionsErrorCode MapStatusStringToEnum(string status)\n+    {\n+      switch (status)\n+      {\n+        case \"OK\": return FunctionsErrorCode.None;\n+        case \"CANCELLED\": return FunctionsErrorCode.Cancelled;\n+        case \"UNKNOWN\": return FunctionsErrorCode.Unknown;\n+        case \"INVALID_ARGUMENT\": return FunctionsErrorCode.InvalidArgument;\n+        case \"DEADLINE_EXCEEDED\": return FunctionsErrorCode.DeadlineExceeded;\n+        case \"NOT_FOUND\": return FunctionsErrorCode.NotFound;\n+        case \"ALREADY_EXISTS\": return FunctionsErrorCode.AlreadyExists;\n+        case \"PERMISSION_DENIED\": return FunctionsErrorCode.PermissionDenied;\n+        case \"RESOURCE_EXHAUSTED\": return FunctionsErrorCode.ResourceExhausted;\n+        case \"FAILED_PRECONDITION\": return FunctionsErrorCode.FailedPrecondition;\n+        case \"ABORTED\": return FunctionsErrorCode.Aborted;\n+        case \"OUT_OF_RANGE\": return FunctionsErrorCode.OutOfRange;\n+        case \"UNIMPLEMENTED\": return FunctionsErrorCode.Unimplemented;\n+        case \"INTERNAL\": return FunctionsErrorCode.Internal;\n+        case \"UNAVAILABLE\": return FunctionsErrorCode.Unavailable;\n+        case \"DATA_LOSS\": return FunctionsErrorCode.DataLoss;\n+        case \"UNAUTHENTICATED\": return FunctionsErrorCode.Unauthenticated;\n+        default: return FunctionsErrorCode.Internal;\n+      }\n+    }\n+\n+    /// <summary>\n+    /// Returns a human-readable description for a given FunctionsErrorCode.\n+    /// </summary>\n+    internal static string ErrorDescription(FunctionsErrorCode code)\n+    {\n+      switch (code)\n+      {\n+        case FunctionsErrorCode.None: return \"OK\";\n+        case FunctionsErrorCode.Cancelled: return \"CANCELLED\";\n+        case FunctionsErrorCode.Unknown: return \"UNKNOWN\";\n+        case FunctionsErrorCode.InvalidArgument: return \"INVALID ARGUMENT\";\n+        case FunctionsErrorCode.DeadlineExceeded: return \"DEADLINE EXCEEDED\";\n+        case FunctionsErrorCode.NotFound: return \"NOT FOUND\";\n+        case FunctionsErrorCode.AlreadyExists: return \"ALREADY EXISTS\";\n+        case FunctionsErrorCode.PermissionDenied: return \"PERMISSION DENIED\";\n+        case FunctionsErrorCode.ResourceExhausted: return \"RESOURCE EXHAUSTED\";\n+        case FunctionsErrorCode.FailedPrecondition: return \"FAILED PRECONDITION\";\n+        case FunctionsErrorCode.Aborted: return \"ABORTED\";\n+        case FunctionsErrorCode.OutOfRange: return \"OUT OF RANGE\";\n+        case FunctionsErrorCode.Unimplemented: return \"UNIMPLEMENTED\";\n+        case FunctionsErrorCode.Internal: return \"INTERNAL\";\n+        case FunctionsErrorCode.Unavailable: return \"UNAVAILABLE\";\n+        case FunctionsErrorCode.DataLoss: return \"DATA LOSS\";\n+        case FunctionsErrorCode.Unauthenticated: return \"UNAUTHENTICATED\";\n+        default: return \"INTERNAL\";\n+      }\n+    }\n+\n+    /// <summary>\n+    /// Parses an HTTP response to extract the FunctionsErrorCode and error message,\n+    /// returning a FunctionsException containing these details.\n+    /// Fallbacks to HTTP status code if the JSON body cannot be parsed.\n+    /// </summary>\n+    internal static FunctionsException ParseError(HttpResponseMessage response, string responseBody)\n+    {\n+      int statusCode = (int)response.StatusCode;\n+      FunctionsErrorCode code = MapHttpStatusToEnum(statusCode);\n+      string message = ErrorDescription(code);\n+\n+      if (!string.IsNullOrEmpty(responseBody))\n+      {\n+        try\n+        {\n+          var jsonMap = Json.Deserialize(responseBody) as Dictionary<string, object>;\n+          if (jsonMap != null && jsonMap.TryGetValue(\"error\", out var errorObj) && errorObj is Dictionary<string, object> errorDict)\n+          {\n+            if (errorDict.TryGetValue(\"status\", out var statusStr) && statusStr is string s)\n+            {\n+              code = MapStatusStringToEnum(s);\n+              // If the code in the body is invalid, treat the whole response as malformed.\n+              if (code == FunctionsErrorCode.Internal && s != \"INTERNAL\")\n+              {\n+                return new FunctionsException(FunctionsErrorCode.Internal, \"INTERNAL\");\n+              }\n+            }\n+\n+            if (errorDict.TryGetValue(\"message\", out var msgStr) && msgStr is string msg)\n+            {\n+              message = msg;\n+            }\n+            else\n+            {\n+              message = ErrorDescription(code);\n+            }\n+          }\n+        }\n+        catch (Exception)\n+        {\n+          // Ignore parsing errors, we just use the HTTP status as fallback\n+        }\n+      }\n+\n+      return new FunctionsException(code, message);\n+    }\n+  }\n+}"
+    },
+    {
+      "sha": "1a0cded95f415cc336f59326a72836072988e5a7",
+      "filename": "functions/src/Internal/FunctionsErrorParser.cs.meta",
+      "status": "added",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FInternal%2FFunctionsErrorParser.cs.meta",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FInternal%2FFunctionsErrorParser.cs.meta",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2FInternal%2FFunctionsErrorParser.cs.meta?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -0,0 +1,7 @@\n+fileFormatVersion: 2\n+guid: 41ecdc2006a747c9a564e0322bccc69b\n+timeCreated: 1480838400\n+DefaultImporter:\n+  userData:\n+  assetBundleName:\n+  assetBundleVariant:"
+    },
+    {
+      "sha": "7cff69ef3044231ac56cb6f1343e7ce1afb0ed14",
+      "filename": "functions/src/Internal/FunctionsSerializer.cs",
+      "status": "added",
+      "additions": 236,
+      "deletions": 0,
+      "changes": 236,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FInternal%2FFunctionsSerializer.cs",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FInternal%2FFunctionsSerializer.cs",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2FInternal%2FFunctionsSerializer.cs?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -0,0 +1,236 @@\n+/*\n+* Copyright 2026 Google LLC\n+*\n+* Licensed under the Apache License, Version 2.0 (the \"License\");\n+* you may not use this file except in compliance with the License.\n+* You may obtain a copy of the License at\n+*\n+*      http://www.apache.org/licenses/LICENSE-2.0\n+*\n+* Unless required by applicable law or agreed to in writing, software\n+* distributed under the License is distributed on an \"AS IS\" BASIS,\n+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+* See the License for the specific language governing permissions and\n+* limitations under the License.\n+*/\n+\n+using System;\n+using System.Collections;\n+using System.Collections.Generic;\n+using Google.MiniJSON;\n+\n+namespace Firebase.Functions.Internal\n+{\n+  /// <summary>\n+  /// Helper functions to help encode and decode firebase functions data.\n+  /// A custom serializer is necessary on top of MiniJSON because Cloud Functions requires\n+  /// specific data formatting for its callable protocol. Specifically, it requires:\n+  /// 1. Request payloads to be wrapped in a `{\"data\": ...}` envelope.\n+  /// 2. Integers (longs) to be explicitly wrapped in `type.googleapis.com/google.protobuf.Int64Value` to avoid precision loss in JavaScript or generic JSON parsers.\n+  /// 3. Byte arrays (`byte[]`) to be wrapped in `type.googleapis.com/google.protobuf.BytesValue` and base64 encoded.\n+  /// 4. Response parsing to unwrap the `{\"data\": ...}` or `{\"result\": ...}` payload and parse standard error JSON formats into FunctionsException.\n+  /// </summary>\n+  internal static class FunctionsSerializer\n+  {\n+    /// <summary>\n+    /// Serializes an object into a JSON string suitable for the Cloud Functions callable protocol.\n+    /// This includes encoding specific types and wrapping the payload in a `{\"data\": ...}` envelope.\n+    /// </summary>\n+    internal static string Serialize(object data)\n+    {\n+      var encodedData = Encode(data);\n+      // The request body must be a JSON object with a \"data\" field.\n+      // See: https://firebase.google.com/docs/functions/callable-reference#request_body\n+      return Json.Serialize(new Dictionary<string, object>() { [\"data\"] = encodedData });\n+    }\n+\n+    /// <summary>\n+    /// Recursively encodes objects, lists, and dictionaries into types supported by the Cloud Functions backend.\n+    /// Specifically encodes longs using WrapLong and byte arrays using WrapBytes.\n+    /// </summary>\n+    internal static object Encode(object obj)\n+    {\n+      switch (obj)\n+      {\n+        case null:\n+          return null;\n+        case string s:\n+          return s;\n+        case int _:\n+        case short _:\n+        case byte _:\n+        case sbyte _:\n+        case ushort _:\n+        case uint _:\n+        case long _:\n+          // Consistent with legacy Variant, wrap all integers as Int64Value.\n+          return WrapLong(Convert.ToInt64(obj));\n+        case float f:\n+          return f;\n+        case double d:\n+          return d;\n+        case bool b:\n+          return b;\n+        case byte[] blob:\n+          return WrapBytes(blob);\n+        case IList list:\n+          return EncodeList(list);\n+        case IDictionary dict:\n+          return EncodeDictionary(dict);\n+        default:\n+          throw new ArgumentException($\"Invalid type {obj.GetType()} for encoding\");\n+      }\n+    }\n+\n+    private static List<object> EncodeList(IList list)\n+    {\n+      var newList = new List<object>();\n+      foreach (var item in list)\n+      {\n+        newList.Add(Encode(item));\n+      }\n+      return newList;\n+    }\n+\n+    private static Dictionary<string, object> EncodeDictionary(IDictionary dict)\n+    {\n+      var newDict = new Dictionary<string, object>();\n+      foreach (DictionaryEntry entry in dict)\n+      {\n+        if (entry.Key == null)\n+        {\n+          throw new ArgumentException(\"Dictionary keys cannot be null\");\n+        }\n+        newDict[entry.Key.ToString()] = Encode(entry.Value);\n+      }\n+      return newDict;\n+    }\n+\n+    /// <summary>\n+    /// Wraps an integer (long) in `type.googleapis.com/google.protobuf.Int64Value`\n+    /// to avoid precision loss in JavaScript or generic JSON parsers.\n+    /// </summary>\n+    private static object WrapLong(long value)\n+    {\n+      return new Dictionary<string, object>\n+      {\n+        { \"@type\", \"type.googleapis.com/google.protobuf.Int64Value\" },\n+        { \"value\", value.ToString() }\n+      };\n+    }\n+\n+    /// <summary>\n+    /// Wraps a byte array (`byte[]`) in `type.googleapis.com/google.protobuf.BytesValue`\n+    /// and base64 encodes the value.\n+    /// </summary>\n+    private static object WrapBytes(byte[] value)\n+    {\n+      return new Dictionary<string, object>\n+      {\n+        { \"@type\", \"type.googleapis.com/google.protobuf.BytesValue\" },\n+        { \"value\", Convert.ToBase64String(value) }\n+      };\n+    }\n+\n+    /// <summary>\n+    /// Deserializes a parsed JSON string from the Cloud Functions callable protocol.\n+    /// Unwraps the `{\"data\": ...}` or `{\"result\": ...}` payload and handles parsing\n+    /// standard error formats into FunctionsException if present.\n+    /// </summary>\n+    internal static object Deserialize(string data)\n+    {\n+      var deserializedData = Json.Deserialize(data);\n+\n+      if (deserializedData is Dictionary<string, object> dict)\n+      {\n+        if (dict.TryGetValue(\"error\", out var errorValue) && errorValue is Dictionary<string, object> errorDict)\n+        {\n+          string message = \"INTERNAL\";\n+          if (errorDict.TryGetValue(\"message\", out var msg) && msg is string s) message = s;\n+\n+          FunctionsErrorCode code = FunctionsErrorCode.Internal;\n+          if (errorDict.TryGetValue(\"status\", out var statusStr) && statusStr is string status)\n+          {\n+            code = FunctionsErrorParser.MapStatusStringToEnum(status);\n+          }\n+\n+          throw new FunctionsException(code, message);\n+        }\n+\n+        if (dict.TryGetValue(\"result\", out var resultValue))\n+        {\n+          return Decode(resultValue);\n+        }\n+\n+        if (dict.TryGetValue(\"data\", out var dataValue))\n+        {\n+          return Decode(dataValue);\n+        }\n+\n+        throw new FunctionsException(FunctionsErrorCode.Internal, \"Response is missing data field.\");\n+      }\n+\n+      throw new FunctionsException(FunctionsErrorCode.Internal, \"INTERNAL\");\n+    }\n+\n+    /// <summary>\n+    /// Recursively decodes a deserialized JSON object back into regular C# types.\n+    /// Specifically unwraps `Int64Value` and `BytesValue` Protocol Buffer formats.\n+    /// </summary>\n+    internal static object Decode(object obj)\n+    {\n+      if (obj is Dictionary<string, object> dict)\n+      {\n+        // Check for specific proto3 wrappers\n+        if (dict.TryGetValue(\"@type\", out var typeObj) && typeObj is string type)\n+        {\n+          if (type == \"type.googleapis.com/google.protobuf.Int64Value\")\n+          {\n+            if (dict.TryGetValue(\"value\", out var valueStr) && valueStr is string s)\n+            {\n+              if (long.TryParse(s, out long longValue))\n+              {\n+                return longValue;\n+              }\n+            }\n+          }\n+          else if (type == \"type.googleapis.com/google.protobuf.BytesValue\")\n+          {\n+            if (dict.TryGetValue(\"value\", out var valueStr) && valueStr is string s)\n+            {\n+              try\n+              {\n+                return Convert.FromBase64String(s);\n+              }\n+              catch (FormatException)\n+              {\n+                // Fallback to returning dictionary if invalid base64\n+              }\n+            }\n+          }\n+        }\n+\n+        // Recursively decode dictionary values\n+        var newDict = new Dictionary<string, object>();\n+        foreach (var kvp in dict)\n+        {\n+          newDict[kvp.Key] = Decode(kvp.Value);\n+        }\n+        return newDict;\n+      }\n+      else if (obj is List<object> list)\n+      {\n+        // Recursively decode list elements\n+        var newList = new List<object>();\n+        foreach (var item in list)\n+        {\n+          newList.Add(Decode(item));\n+        }\n+        return newList;\n+      }\n+\n+      // Return primitives as-is\n+      return obj;\n+    }\n+  }\n+}\n\\ No newline at end of file"
+    },
+    {
+      "sha": "35c90fc0f24f691b5c4e340ecf8d04facb88b6d6",
+      "filename": "functions/src/Internal/FunctionsSerializer.cs.meta",
+      "status": "added",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FInternal%2FFunctionsSerializer.cs.meta",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Fsrc%2FInternal%2FFunctionsSerializer.cs.meta",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2FInternal%2FFunctionsSerializer.cs.meta?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -0,0 +1,7 @@\n+fileFormatVersion: 2\n+guid: e541bc156dab48618e0d59f285ec37cd\n+timeCreated: 1480838400\n+DefaultImporter:\n+  userData:\n+  assetBundleName:\n+  assetBundleVariant:"
+    },
+    {
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "filename": "functions/src/empty.cc",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/6285e581094a040c34a8d42f7f6a115e7aeb98c9/functions%2Fsrc%2Fempty.cc",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/6285e581094a040c34a8d42f7f6a115e7aeb98c9/functions%2Fsrc%2Fempty.cc",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2Fempty.cc?ref=6285e581094a040c34a8d42f7f6a115e7aeb98c9"
+    },
+    {
+      "sha": "21dfc65c690cc07cfc5396dc7cadacb184ba32e8",
+      "filename": "functions/src/swig/functions.i",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 143,
+      "changes": 143,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/6285e581094a040c34a8d42f7f6a115e7aeb98c9/functions%2Fsrc%2Fswig%2Ffunctions.i",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/6285e581094a040c34a8d42f7f6a115e7aeb98c9/functions%2Fsrc%2Fswig%2Ffunctions.i",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Fsrc%2Fswig%2Ffunctions.i?ref=6285e581094a040c34a8d42f7f6a115e7aeb98c9",
+      "patch": "@@ -1,143 +0,0 @@\n-// Copyright 2018 Google Inc. All Rights Reserved.\n-//\n-// C# bindings for the Functions C++ interface.\n-\n-%module FunctionsInternal\n-\n-#ifdef USE_EXPORT_FIX\n-// Generate a function that we can reference to force linker\n-// to include the generated swig library symbols correctly\n-// see export_fix.cc for more details\n-%include \"app/src/export_fix.h\"\n-%{#include \"app/src/export_fix.h\"%}\n-#endif\n-\n-%pragma(csharp) moduleclassmodifiers=\"internal sealed class\"\n-%feature(\"flatnested\");\n-\n-%import \"app/src/swig/app.i\"\n-%include \"app/src/swig/future.i\"\n-%include \"app/src/swig/init_result.i\"\n-%include \"app/src/swig/null_check_this.i\"\n-%include \"app/src/swig/serial_dispose.i\"\n-\n-// Include required headers and predefined types for the generated C++ module.\n-%{\n-#include \"app/src/callback.h\"\n-#include \"app/src/cpp_instance_manager.h\"\n-#include \"functions/src/include/firebase/functions.h\"\n-%}\n-\n-%rename(\"FirebaseFunctionsInternal\") firebase::functions::Functions;\n-\n-// Generate a Task wrapper around functions specific Future<T> types.\n-%SWIG_FUTURE(Future_HttpsCallableResult, HttpsCallableResultInternal, internal,\n-             firebase::functions::HttpsCallableResult, FirebaseException)\n-\n-// Configure properties for get / set methods on the Functions class.\n-%attribute(firebase::functions::Functions, firebase::App*, App, app);\n-// TODO(klimt): Add this back when we add region support.\n-// %attributestring(firebase::functions::Functions, std::string, Region, region);\n-\n-%typemap(cscode) firebase::functions::Functions %{\n-  // Take / release ownership of the C++ object.\n-  internal void SetSwigCMemOwn(bool ownership) {\n-    swigCMemOwn = ownership;\n-  }\n-%}\n-\n-// Delete the C++ object if hasn't already been deleted.\n-#if SWIG_VERSION >= 0x040000\n-%typemap(csdisposing, methodname=\"Dispose\",\n-         parameters=\"bool disposing\", methodmodifiers=\"public\")\n-#else\n-%typemap(csdestruct, methodname=\"Dispose\", methodmodifiers=\"public\")\n-#endif\n-      firebase::functions::Functions {\n-    lock (FirebaseApp.disposeLock) {\n-      ReleaseReferenceInternal(this);\n-      swigCMemOwn = false;\n-      swigCPtr = new global::System.Runtime.InteropServices.HandleRef(\n-          null, global::System.IntPtr.Zero);\n-    }\n-}\n-\n-%rename(\"HttpsCallableReferenceInternal\") firebase::functions::HttpsCallableReference;\n-// Configure properties for get / set methods on the HttpsCallableReference class.\n-%attribute(firebase::functions::HttpsCallableReference, firebase::functions::Functions*,\n-           Functions, functions);\n-%attributestring(firebase::functions::HttpsCallableReference, bool,\n-                 IsValid, is_valid);\n-// Remove the copy operator as the proxy uses the copy constructor.\n-%ignore firebase::functions::HttpsCallableReference::operator=(const HttpsCallableReference&);\n-\n-%extend firebase::functions::HttpsCallableReference {\n-  // There's nothing to add for now.\n-}\n-\n-%rename(\"HttpsCallableResultInternal\") firebase::functions::HttpsCallableResult;\n-// Configure properties for get / set methods on the HttpsCallableResult class.\n-// TODO(klimt): Implement getting the Data from the result.\n-// %attributeref(firebase::functions::HttpsCallableResult, firebase::Variant, Data, data);\n-// Remove the copy operator as the proxy uses the copy constructor.\n-%ignore firebase::functions::HttpsCallableResult::operator=(const HttpsCallableResult&);\n-\n-%rename(\"FunctionsErrorCode\") firebase::functions::Error;\n-%rename(\"%(regex:/Error(.*)/\\\\1/)s\", %$isenumitem) \"\";\n-\n-// SWIG doesn't follow #include statements so forward declare all classes here\n-// so that proxies can be created for classes that are referenced before they\n-// definition is parsed.\n-namespace firebase {\n-namespace functions {\n-class HttpsCallableReference;\n-}  // namespace functions\n-}  // namespace firebase\n-\n-%{\n-namespace firebase {\n-namespace functions {\n-// Reference count manager for C++ Functions instance, using pointer as the key for\n-// searching.\n-static CppInstanceManager<Functions> g_functions_instances;\n-}  // namespace functions\n-}  // namespace firebase\n-%}\n-\n-%ignore firebase::functions::Functions::GetInstance;\n-%extend firebase::functions::Functions {\n-  // Get a C++ instance and increment the reference count to it\n-  %csmethodmodifiers GetInstanceInternal(App* app, const char* region, InitResult* init_result_out) \"internal\";\n-  static Functions* GetInstanceInternal(App* app, const char* region, InitResult* init_result_out) {\n-    // This is to protect from the race condition after GetInstance() is\n-    // called and before the pointer is added to g_functions_instances.\n-    ::firebase::MutexLock lock(\n-        ::firebase::functions::g_functions_instances.mutex());\n-\n-    firebase::functions::Functions* instance = firebase::functions::Functions::GetInstance(\n-        app, region, init_result_out);\n-    ::firebase::functions::g_functions_instances.AddReference(instance);\n-    return instance;\n-  }\n-\n-  // Release and decrement the reference count to a C++ instance\n-  %csmethodmodifiers ReleaseReferenceInternal(firebase::functions::Functions* instance) \"internal\";\n-  static void ReleaseReferenceInternal(firebase::functions::Functions* instance) {\n-    ::firebase::functions::g_functions_instances.ReleaseReference(instance);\n-  }\n-}\n-\n-// 314: Ignore warnings about the internal namespace being renamed to\n-// _internal as we flatten everything in the target namepsace.\n-// 516: Ignore warnings about overloaded methods being ignored.\n-// In all cases, the overload does the right thing e.g\n-// Functions::GetHttpsCallable(const char*) used instead of\n-// Functions::GetHttpsCallable(std::string&).\n-// 814: Globally disable warnings about methods not potentially throwing\n-// exceptions.  We know that *all* methods can potentially throw exceptions.\n-%warnfilter(314,516,844);\n-\n-%include \"functions/src/include/firebase/functions/common.h\"\n-%include \"functions/src/include/firebase/functions/callable_reference.h\"\n-%include \"functions/src/include/firebase/functions/callable_result.h\"\n-%include \"functions/src/include/firebase/functions.h\""
+    },
+    {
+      "sha": "7c2c9bc40b919581e4d49bd7511f3bc97953cb3e",
+      "filename": "functions/testapp/Assets/Firebase/Sample/Functions/.functions/functions/package.json",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 2,
+      "changes": 7,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/functions%2Ftestapp%2FAssets%2FFirebase%2FSample%2FFunctions%2F.functions%2Ffunctions%2Fpackage.json",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/functions%2Ftestapp%2FAssets%2FFirebase%2FSample%2FFunctions%2F.functions%2Ffunctions%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/functions%2Ftestapp%2FAssets%2FFirebase%2FSample%2FFunctions%2F.functions%2Ffunctions%2Fpackage.json?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -2,8 +2,11 @@\n   \"name\": \"functions\",\n   \"description\": \"Cloud Functions for Firebase Unity Quickstart\",\n   \"dependencies\": {\n-    \"firebase-admin\": \"~5.10.0\",\n-    \"firebase-functions\": \"0.9.0\"\n+    \"firebase-admin\": \"^11.8.0\",\n+    \"firebase-functions\": \"^4.3.0\"\n+  },\n+  \"engines\": {\n+    \"node\": \"20\"\n   },\n   \"private\": true\n }"
+    },
+    {
+      "sha": "8d5cfc66c29dbaecc6b1f5c06c07c65c4896351d",
+      "filename": "unity_packer/exports.json",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 52,
+      "changes": 54,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/52d92b84d2033d5be3fca03211906772627afd98/unity_packer%2Fexports.json",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/52d92b84d2033d5be3fca03211906772627afd98/unity_packer%2Fexports.json",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/unity_packer%2Fexports.json?ref=52d92b84d2033d5be3fca03211906772627afd98",
+      "patch": "@@ -1048,48 +1048,9 @@\n       \"name\": \"FirebaseFunctions.unitypackage\",\n       \"imports\": [\n         {\n-          \"importer\": \"PluginImporter\",\n-          \"platforms\": [\n-            \"Editor\",\n-            \"Standalone\",\n-            \"Android\"\n-          ],\n-          \"cpu\": \"AnyCPU\",\n-          \"paths\": [\n-            \"Firebase/Plugins/Firebase.Functions.dll\",\n-            \"Firebase/Plugins/Firebase.Functions.pdb\"\n-          ]\n-        },\n-        {\n-          \"importer\": \"PluginImporter\",\n-          \"platforms\": [\n-            \"iOS\",\n-            \"tvOS\"\n-          ],\n-          \"cpu\": \"AnyCPU\",\n-          \"paths\": [\n-            \"Firebase/Plugins/iOS/Firebase.Functions.dll\",\n-            \"Firebase/Plugins/iOS/Firebase.Functions.pdb\"\n-          ]\n-        },\n-        {\n-          \"importer\": \"PluginImporter\",\n-          \"platforms\": [\n-            \"iOS\"\n-          ],\n-          \"cpu\": \"AnyCPU\",\n-          \"paths\": [\n-            \"Plugins/iOS/Firebase/libFirebaseCppFunctions.a\"\n-          ]\n-        },\n-        {\n-          \"importer\": \"PluginImporter\",\n-          \"platforms\": [\n-            \"tvOS\"\n-          ],\n-          \"cpu\": \"AnyCPU\",\n+          \"importer\": \"DefaultImporter\",\n           \"paths\": [\n-            \"Plugins/tvOS/Firebase/libFirebaseCppFunctions.a\"\n+            \"Firebase/FirebaseFunctions/*\"\n           ]\n         },\n         {\n@@ -1099,17 +1060,6 @@\n             \"Firebase/m2repository/com/google/firebase/firebase-functions-unity/\"\n           ]\n         },\n-        {\n-          \"importer\": \"PluginImporter\",\n-          \"platforms\": [\n-            \"Editor\",\n-            \"Standalone\"\n-          ],\n-          \"cpu\": \"x86_64\",\n-          \"paths\": [\n-            \"Firebase/Plugins/x86_64/FirebaseCppFunctions*\"\n-          ]\n-        },\n         {\n           \"importer\": \"DefaultImporter\",\n           \"sections\": ["
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "32e56c0eeec5ba35c529c87223dd813327ccf404",
+      "message": "Feat: Rewrite Functions: get building again\n\nThis is the first phase where I get things building again.",
+      "parent_shas": [
+        "6285e581094a040c34a8d42f7f6a115e7aeb98c9"
+      ]
+    },
+    {
+      "sha": "963fc3108fb4eea2c92c17504f7c5bd6f4d8db5d",
+      "message": "Add in the functionality of functions class",
+      "parent_shas": [
+        "32e56c0eeec5ba35c529c87223dd813327ccf404"
+      ]
+    },
+    {
+      "sha": "57cf7844b4616542cbf8f8e7bdc08c641e436523",
+      "message": "MVP of happy path working",
+      "parent_shas": [
+        "963fc3108fb4eea2c92c17504f7c5bd6f4d8db5d"
+      ]
+    },
+    {
+      "sha": "18bc19db53820a45693431d6b686da3a0609f061",
+      "message": "Clean up and reattempt at dispose",
+      "parent_shas": [
+        "57cf7844b4616542cbf8f8e7bdc08c641e436523"
+      ]
+    },
+    {
+      "sha": "79e85d517b412e7021c50614f777de190e67fd99",
+      "message": "Auth clean up",
+      "parent_shas": [
+        "18bc19db53820a45693431d6b686da3a0609f061"
+      ]
+    },
+    {
+      "sha": "2586c8e1dc70ab0187f815fc56b7a5021015461b",
+      "message": "Update readme",
+      "parent_shas": [
+        "79e85d517b412e7021c50614f777de190e67fd99"
+      ]
+    },
+    {
+      "sha": "5ae3426b723bb7c0d471925bb043f3fa895b323b",
+      "message": "Fix up comments from gemini",
+      "parent_shas": [
+        "2586c8e1dc70ab0187f815fc56b7a5021015461b"
+      ]
+    },
+    {
+      "sha": "0c0ba0bca674d166c44ead411f068bbc617a6e73",
+      "message": "Add dictionary null check",
+      "parent_shas": [
+        "5ae3426b723bb7c0d471925bb043f3fa895b323b"
+      ]
+    },
+    {
+      "sha": "fa0e5a3a03c88a03f96da96dd9e7a6478d9060e8",
+      "message": "Make the interops and http helpers internal",
+      "parent_shas": [
+        "0c0ba0bca674d166c44ead411f068bbc617a6e73"
+      ]
+    },
+    {
+      "sha": "e5eb68f81c79414e9c857d3d073a76742da13d1b",
+      "message": "Add in meta files",
+      "parent_shas": [
+        "fa0e5a3a03c88a03f96da96dd9e7a6478d9060e8"
+      ]
+    },
+    {
+      "sha": "0b77c5e1b3d08909f7da5fa9d2a69065a154f610",
+      "message": "Clean up headers",
+      "parent_shas": [
+        "e5eb68f81c79414e9c857d3d073a76742da13d1b"
+      ]
+    },
+    {
+      "sha": "bc5bae588260a1ac8d41ca2cb13e92290e8a9c91",
+      "message": "Revert back formating changes",
+      "parent_shas": [
+        "0b77c5e1b3d08909f7da5fa9d2a69065a154f610"
+      ]
+    },
+    {
+      "sha": "a5491a58d6451a51473f845c49760b84980c06c8",
+      "message": "Clean up the file premissions",
+      "parent_shas": [
+        "bc5bae588260a1ac8d41ca2cb13e92290e8a9c91"
+      ]
+    },
+    {
+      "sha": "7148241899c52181f6536eecf9638e3986159447",
+      "message": "Fix up memory leak and keep the dispose handler around",
+      "parent_shas": [
+        "a5491a58d6451a51473f845c49760b84980c06c8"
+      ]
+    },
+    {
+      "sha": "e537fe66af5eda8941dd9cae889d522fff6ffd47",
+      "message": "Update the functions to be more modern",
+      "parent_shas": [
+        "7148241899c52181f6536eecf9638e3986159447"
+      ]
+    },
+    {
+      "sha": "99dc23c707d2e8f7dc8e5605194c5690052deacf",
+      "message": "Add in comments",
+      "parent_shas": [
+        "e537fe66af5eda8941dd9cae889d522fff6ffd47"
+      ]
+    },
+    {
+      "sha": "52d92b84d2033d5be3fca03211906772627afd98",
+      "message": "Add in error codes comments",
+      "parent_shas": [
+        "99dc23c707d2e8f7dc8e5605194c5690052deacf"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "python_cpp_wrapper_noise"
+    ],
+    "auto_signals": [
+      "python_cpp_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__firebase__firebase-unity-sdk__pr1400.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\firebase__firebase-unity-sdk__pr1400__python_cpp__firebase__firebase-unity-sdk__pr1400\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\firebase__firebase-unity-sdk__pr1400__python_cpp__firebase__firebase-unity-sdk__pr1400\\rn"
+  }
+}

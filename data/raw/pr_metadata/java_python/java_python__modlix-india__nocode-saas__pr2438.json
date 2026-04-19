@@ -1,0 +1,88 @@
+{
+  "instance_id": "java_python__modlix-india__nocode-saas__pr2438",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "modlix-india/nocode-saas",
+  "pr_number": 2438,
+  "pr_url": "https://github.com/modlix-india/nocode-saas/pull/2438",
+  "repo": {
+    "full_name": "modlix-india/nocode-saas",
+    "clone_url": "https://github.com/modlix-india/nocode-saas.git",
+    "default_branch": "master",
+    "created_at": "2022-08-09T05:17:37Z",
+    "stars": 10,
+    "license": "MIT",
+    "size_kb": 14626
+  },
+  "pull_request": {
+    "id": 3522198960,
+    "title": "Update ClientActivityController.java",
+    "body": "",
+    "created_at": "2026-04-13T10:05:33Z",
+    "merged_at": "2026-04-13T12:25:03Z",
+    "base_sha": "564babc1dc4e94456bfc3ad995f6b16de85fcf38",
+    "head_sha": "6677f8d63f0b9459257ae81bf6545a91c90f8449",
+    "merge_commit_sha": "13c0d83c698533dabb419a12205bb364cbac86d7",
+    "labels": [
+      "bug"
+    ]
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "564babc1dc4e94456bfc3ad995f6b16de85fcf38",
+  "final_sha": "6677f8d63f0b9459257ae81bf6545a91c90f8449",
+  "changed_files": [
+    {
+      "sha": "807f3e58afa3d9b6050a53313f677f5128960500",
+      "filename": "security/src/main/java/com/fincity/security/controller/ClientActivityController.java",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 0,
+      "changes": 13,
+      "blob_url": "https://github.com/modlix-india/nocode-saas/blob/6677f8d63f0b9459257ae81bf6545a91c90f8449/security%2Fsrc%2Fmain%2Fjava%2Fcom%2Ffincity%2Fsecurity%2Fcontroller%2FClientActivityController.java",
+      "raw_url": "https://github.com/modlix-india/nocode-saas/raw/6677f8d63f0b9459257ae81bf6545a91c90f8449/security%2Fsrc%2Fmain%2Fjava%2Fcom%2Ffincity%2Fsecurity%2Fcontroller%2FClientActivityController.java",
+      "contents_url": "https://api.github.com/repos/modlix-india/nocode-saas/contents/security%2Fsrc%2Fmain%2Fjava%2Fcom%2Ffincity%2Fsecurity%2Fcontroller%2FClientActivityController.java?ref=6677f8d63f0b9459257ae81bf6545a91c90f8449",
+      "patch": "@@ -7,7 +7,9 @@\n import org.springframework.data.domain.Sort;\n import org.springframework.http.ResponseEntity;\n import org.springframework.http.server.reactive.ServerHttpRequest;\n+import org.springframework.validation.DataBinder;\n import org.springframework.web.bind.annotation.GetMapping;\n+import org.springframework.web.bind.annotation.InitBinder;\n import org.springframework.web.bind.annotation.PathVariable;\n import org.springframework.web.bind.annotation.PostMapping;\n import org.springframework.web.bind.annotation.RequestBody;\n@@ -21,6 +23,8 @@\n \n import reactor.core.publisher.Mono;\n \n+import java.beans.PropertyEditorSupport;\n+\n @RestController\n @RequestMapping(\"api/security/client-activities\")\n public class ClientActivityController {\n@@ -31,6 +35,15 @@ public ClientActivityController(ClientActivityService service) {\n         this.service = service;\n     }\n \n+    @InitBinder\n+    public void initBinder(DataBinder binder) {\n+        binder.registerCustomEditor(ULong.class, new PropertyEditorSupport() {\n+            @Override\n+            public void setAsText(String text) {\n+                setValue(text == null ? null : ULong.valueOf(text));\n+            }\n+        });\n+    }\n     @PostMapping\n     public Mono<ResponseEntity<ClientActivity>> create(@RequestBody ClientActivity entity) {\n         return this.service.create(entity).map(ResponseEntity::ok);"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "4cac6f84f916b6c68397c5b61775ec0fae7b2cb8",
+      "message": "Update ClientActivityController.java",
+      "parent_shas": [
+        "564babc1dc4e94456bfc3ad995f6b16de85fcf38"
+      ]
+    },
+    {
+      "sha": "6677f8d63f0b9459257ae81bf6545a91c90f8449",
+      "message": "Added initBinder to convert incoming String data",
+      "parent_shas": [
+        "4cac6f84f916b6c68397c5b61775ec0fae7b2cb8"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "java_python_bridge_noise"
+    ],
+    "auto_signals": [
+      "java_python_bridge_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__modlix-india__nocode-saas__pr2438.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\modlix-india__nocode-saas__pr2438__java_python__modlix-india__nocode-saas__pr2438\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\modlix-india__nocode-saas__pr2438__java_python__modlix-india__nocode-saas__pr2438\\rn"
+  }
+}

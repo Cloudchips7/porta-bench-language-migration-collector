@@ -1,0 +1,88 @@
+{
+  "instance_id": "java_python__optics-dev__Monocle__pr1578",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "optics-dev/Monocle",
+  "pr_number": 1578,
+  "pr_url": "https://github.com/optics-dev/Monocle/pull/1578",
+  "repo": {
+    "full_name": "optics-dev/Monocle",
+    "clone_url": "https://github.com/optics-dev/Monocle.git",
+    "default_branch": "master",
+    "created_at": "2014-01-17T19:49:22Z",
+    "stars": 1694,
+    "license": "MIT",
+    "size_kb": 26708
+  },
+  "pull_request": {
+    "id": 3525392332,
+    "title": "Update Java versions",
+    "body": "",
+    "created_at": "2026-04-13T22:01:09Z",
+    "merged_at": "2026-04-13T22:09:31Z",
+    "base_sha": "abdc6089c6d53e3729c1c7ae27cf107bba84e713",
+    "head_sha": "336d61a1ec2c19ddf3a0f38f6d9a584ce9dc84d3",
+    "merge_commit_sha": "d028895cfa09cb8e880bd8dd8285f3a270ee85a8",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "abdc6089c6d53e3729c1c7ae27cf107bba84e713",
+  "final_sha": "336d61a1ec2c19ddf3a0f38f6d9a584ce9dc84d3",
+  "changed_files": [
+    {
+      "sha": "cca920166ad3bf0f2022b48bbc28394d090cc7b7",
+      "filename": ".github/workflows/ci.yml",
+      "status": "modified",
+      "additions": 38,
+      "deletions": 38,
+      "changes": 76,
+      "blob_url": "https://github.com/optics-dev/Monocle/blob/336d61a1ec2c19ddf3a0f38f6d9a584ce9dc84d3/.github%2Fworkflows%2Fci.yml",
+      "raw_url": "https://github.com/optics-dev/Monocle/raw/336d61a1ec2c19ddf3a0f38f6d9a584ce9dc84d3/.github%2Fworkflows%2Fci.yml",
+      "contents_url": "https://api.github.com/repos/optics-dev/Monocle/contents/.github%2Fworkflows%2Fci.yml?ref=336d61a1ec2c19ddf3a0f38f6d9a584ce9dc84d3",
+      "patch": "@@ -29,13 +29,13 @@ jobs:\n       matrix:\n         os: [ubuntu-22.04]\n         scala: [2.13, 3]\n-        java: [temurin@8, temurin@21]\n+        java: [temurin@11, temurin@25]\n         project: [rootJS, rootJVM, rootNative]\n         exclude:\n           - project: rootJS\n-            java: temurin@21\n+            java: temurin@25\n           - project: rootNative\n-            java: temurin@21\n+            java: temurin@25\n     runs-on: ${{ matrix.os }}\n     timeout-minutes: 60\n     steps:\n@@ -47,37 +47,37 @@ jobs:\n       - name: Setup sbt\n         uses: sbt/setup-sbt@v1\n \n-      - name: Setup Java (temurin@8)\n-        id: setup-java-temurin-8\n-        if: matrix.java == 'temurin@8'\n+      - name: Setup Java (temurin@11)\n+        id: setup-java-temurin-11\n+        if: matrix.java == 'temurin@11'\n         uses: actions/setup-java@v5\n         with:\n           distribution: temurin\n-          java-version: 8\n+          java-version: 11\n           cache: sbt\n \n       - name: sbt update\n-        if: matrix.java == 'temurin@8' && steps.setup-java-temurin-8.outputs.cache-hit == 'false'\n+        if: matrix.java == 'temurin@11' && steps.setup-java-temurin-11.outputs.cache-hit == 'false'\n         run: sbt +update\n \n-      - name: Setup Java (temurin@21)\n-        id: setup-java-temurin-21\n-        if: matrix.java == 'temurin@21'\n+      - name: Setup Java (temurin@25)\n+        id: setup-java-temurin-25\n+        if: matrix.java == 'temurin@25'\n         uses: actions/setup-java@v5\n         with:\n           distribution: temurin\n-          java-version: 21\n+          java-version: 25\n           cache: sbt\n \n       - name: sbt update\n-        if: matrix.java == 'temurin@21' && steps.setup-java-temurin-21.outputs.cache-hit == 'false'\n+        if: matrix.java == 'temurin@25' && steps.setup-java-temurin-25.outputs.cache-hit == 'false'\n         run: sbt +update\n \n       - name: Check that workflows are up to date\n         run: sbt githubWorkflowCheck\n \n       - name: Check formatting\n-        if: matrix.java == 'temurin@8' && matrix.os == 'ubuntu-22.04'\n+        if: matrix.java == 'temurin@11' && matrix.os == 'ubuntu-22.04'\n         run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' scalafmtCheckAll 'project /' scalafmtSbtCheck\n \n       - name: scalaJSLink\n@@ -92,11 +92,11 @@ jobs:\n         run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' test\n \n       - name: Check binary compatibility\n-        if: matrix.java == 'temurin@8' && matrix.os == 'ubuntu-22.04'\n+        if: matrix.java == 'temurin@11' && matrix.os == 'ubuntu-22.04'\n         run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' mimaReportBinaryIssues\n \n       - name: Generate API documentation\n-        if: matrix.java == 'temurin@8' && matrix.os == 'ubuntu-22.04'\n+        if: matrix.java == 'temurin@11' && matrix.os == 'ubuntu-22.04'\n         run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' doc\n \n       - name: Run documentation\n@@ -125,7 +125,7 @@ jobs:\n     strategy:\n       matrix:\n         os: [ubuntu-22.04]\n-        java: [temurin@8]\n+        java: [temurin@11]\n     runs-on: ${{ matrix.os }}\n     steps:\n       - name: Checkout current branch (full)\n@@ -136,30 +136,30 @@ jobs:\n       - name: Setup sbt\n         uses: sbt/setup-sbt@v1\n \n-      - name: Setup Java (temurin@8)\n-        id: setup-java-temurin-8\n-        if: matrix.java == 'temurin@8'\n+      - name: Setup Java (temurin@11)\n+        id: setup-java-temurin-11\n+        if: matrix.java == 'temurin@11'\n         uses: actions/setup-java@v5\n         with:\n           distribution: temurin\n-          java-version: 8\n+          java-version: 11\n           cache: sbt\n \n       - name: sbt update\n-        if: matrix.java == 'temurin@8' && steps.setup-java-temurin-8.outputs.cache-hit == 'false'\n+        if: matrix.java == 'temurin@11' && steps.setup-java-temurin-11.outputs.cache-hit == 'false'\n         run: sbt +update\n \n-      - name: Setup Java (temurin@21)\n-        id: setup-java-temurin-21\n-        if: matrix.java == 'temurin@21'\n+      - name: Setup Java (temurin@25)\n+        id: setup-java-temurin-25\n+        if: matrix.java == 'temurin@25'\n         uses: actions/setup-java@v5\n         with:\n           distribution: temurin\n-          java-version: 21\n+          java-version: 25\n           cache: sbt\n \n       - name: sbt update\n-        if: matrix.java == 'temurin@21' && steps.setup-java-temurin-21.outputs.cache-hit == 'false'\n+        if: matrix.java == 'temurin@25' && steps.setup-java-temurin-25.outputs.cache-hit == 'false'\n         run: sbt +update\n \n       - name: Download target directories (2.13, rootJS)\n@@ -257,7 +257,7 @@ jobs:\n     strategy:\n       matrix:\n         os: [ubuntu-22.04]\n-        java: [temurin@8]\n+        java: [temurin@11]\n     runs-on: ${{ matrix.os }}\n     steps:\n       - name: Checkout current branch (full)\n@@ -268,30 +268,30 @@ jobs:\n       - name: Setup sbt\n         uses: sbt/setup-sbt@v1\n \n-      - name: Setup Java (temurin@8)\n-        id: setup-java-temurin-8\n-        if: matrix.java == 'temurin@8'\n+      - name: Setup Java (temurin@11)\n+        id: setup-java-temurin-11\n+        if: matrix.java == 'temurin@11'\n         uses: actions/setup-java@v5\n         with:\n           distribution: temurin\n-          java-version: 8\n+          java-version: 11\n           cache: sbt\n \n       - name: sbt update\n-        if: matrix.java == 'temurin@8' && steps.setup-java-temurin-8.outputs.cache-hit == 'false'\n+        if: matrix.java == 'temurin@11' && steps.setup-java-temurin-11.outputs.cache-hit == 'false'\n         run: sbt +update\n \n-      - name: Setup Java (temurin@21)\n-        id: setup-java-temurin-21\n-        if: matrix.java == 'temurin@21'\n+      - name: Setup Java (temurin@25)\n+        id: setup-java-temurin-25\n+        if: matrix.java == 'temurin@25'\n         uses: actions/setup-java@v5\n         with:\n           distribution: temurin\n-          java-version: 21\n+          java-version: 25\n           cache: sbt\n \n       - name: sbt update\n-        if: matrix.java == 'temurin@21' && steps.setup-java-temurin-21.outputs.cache-hit == 'false'\n+        if: matrix.java == 'temurin@25' && steps.setup-java-temurin-25.outputs.cache-hit == 'false'\n         run: sbt +update\n \n       - name: Submit Dependencies"
+    },
+    {
+      "sha": "d8c6b15452f56db8467b2aeb54a01cb9ca97be35",
+      "filename": "build.sbt",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 1,
+      "changes": 6,
+      "blob_url": "https://github.com/optics-dev/Monocle/blob/336d61a1ec2c19ddf3a0f38f6d9a584ce9dc84d3/build.sbt",
+      "raw_url": "https://github.com/optics-dev/Monocle/raw/336d61a1ec2c19ddf3a0f38f6d9a584ce9dc84d3/build.sbt",
+      "contents_url": "https://api.github.com/repos/optics-dev/Monocle/contents/build.sbt?ref=336d61a1ec2c19ddf3a0f38f6d9a584ce9dc84d3",
+      "patch": "@@ -27,7 +27,10 @@ inThisBuild(\n       name = Some(\"Run documentation\"),\n       cond = Some(s\"matrix.scala == '2.13' && matrix.project == 'rootJVM'\")\n     ),\n-    githubWorkflowJavaVersions += JavaSpec.temurin(\"21\"),\n+    githubWorkflowJavaVersions := Seq(\n+      JavaSpec.temurin(\"11\"),\n+      JavaSpec.temurin(\"25\")\n+    ),\n     githubWorkflowPublishPostamble += WorkflowStep.Sbt(\n       List(\"docs/docusaurusPublishGhpages\"),\n       name = Some(\"Publish website\"),\n@@ -40,6 +43,7 @@ lazy val kindProjector = \"org.typelevel\" % \"kind-projector\" % \"0.13.4\" cross Cro\n \n lazy val buildSettings = Seq(\n   scalacOptions ++= Seq(\n+    \"-release:8\",\n     \"-encoding\",\n     \"UTF-8\",\n     \"-feature\","
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "336d61a1ec2c19ddf3a0f38f6d9a584ce9dc84d3",
+      "message": "Update Java versions",
+      "parent_shas": [
+        "abdc6089c6d53e3729c1c7ae27cf107bba84e713"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__optics-dev__Monocle__pr1578.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\optics-dev__Monocle__pr1578__java_python__optics-dev__Monocle__pr1578\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\optics-dev__Monocle__pr1578__java_python__optics-dev__Monocle__pr1578\\rn"
+  }
+}

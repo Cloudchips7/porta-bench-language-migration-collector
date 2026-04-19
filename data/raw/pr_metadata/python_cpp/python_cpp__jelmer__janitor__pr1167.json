@@ -1,0 +1,95 @@
+{
+  "instance_id": "python_cpp__jelmer__janitor__pr1167",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "jelmer/janitor",
+  "pr_number": 1167,
+  "pr_url": "https://github.com/jelmer/janitor/pull/1167",
+  "repo": {
+    "full_name": "jelmer/janitor",
+    "clone_url": "https://github.com/jelmer/janitor.git",
+    "default_branch": "main",
+    "created_at": "2020-03-22T20:08:31Z",
+    "stars": 13,
+    "license": "GPL-2.0",
+    "size_kb": 19862
+  },
+  "pull_request": {
+    "id": 3518360611,
+    "title": "Reduce python tests",
+    "body": "",
+    "created_at": "2026-04-11T22:47:09Z",
+    "merged_at": "2026-04-11T23:43:51Z",
+    "base_sha": "6bb9ba663ae50a692b28eb4c3a34260e9e1ba3e1",
+    "head_sha": "37846a723e754ae3f6641a85cf9a3340ca02601c",
+    "merge_commit_sha": "d6b68305954d45ee7a4ca7237b7b04730a71d84f",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "87185ae8289c6b20efb28e5ca38f0af6e75b3c42",
+  "final_sha": "37846a723e754ae3f6641a85cf9a3340ca02601c",
+  "changed_files": [
+    {
+      "sha": "aae8fce8ec02a76087018bcd44acc70e49e6bdd0",
+      "filename": ".github/workflows/python-package.yml",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 3,
+      "changes": 3,
+      "blob_url": "https://github.com/jelmer/janitor/blob/37846a723e754ae3f6641a85cf9a3340ca02601c/.github%2Fworkflows%2Fpython-package.yml",
+      "raw_url": "https://github.com/jelmer/janitor/raw/37846a723e754ae3f6641a85cf9a3340ca02601c/.github%2Fworkflows%2Fpython-package.yml",
+      "contents_url": "https://api.github.com/repos/jelmer/janitor/contents/.github%2Fworkflows%2Fpython-package.yml?ref=37846a723e754ae3f6641a85cf9a3340ca02601c",
+      "patch": "@@ -53,9 +53,6 @@ jobs:\n     strategy:\n       matrix:\n         python-version:\n-          - '3.9'\n-          - '3.10'\n-          - '3.11'\n           - '3.12'\n       fail-fast: false\n "
+    },
+    {
+      "sha": "0a2fb121e6a98efa0b7c1558109e194f1682e086",
+      "filename": "Cargo.toml",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/jelmer/janitor/blob/37846a723e754ae3f6641a85cf9a3340ca02601c/Cargo.toml",
+      "raw_url": "https://github.com/jelmer/janitor/raw/37846a723e754ae3f6641a85cf9a3340ca02601c/Cargo.toml",
+      "contents_url": "https://api.github.com/repos/jelmer/janitor/contents/Cargo.toml?ref=37846a723e754ae3f6641a85cf9a3340ca02601c",
+      "patch": "@@ -54,7 +54,6 @@ base64 = \"0.22\"\n redis = { workspace = true }\n axum = { workspace = true }\n rand = \"0.9\"\n-base64 = \"0.22\"\n \n [workspace.dependencies]\n rslock = { default-features = false, version = \"0.7\" }"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "46bb24db80eefa7bbd4d66b2fe3b41c7930c1b6b",
+      "message": "Fix duplicate base64 key in Cargo.toml",
+      "parent_shas": [
+        "87185ae8289c6b20efb28e5ca38f0af6e75b3c42"
+      ]
+    },
+    {
+      "sha": "37846a723e754ae3f6641a85cf9a3340ca02601c",
+      "message": "Reduce Python CI matrix to single version (3.12)",
+      "parent_shas": [
+        "46bb24db80eefa7bbd4d66b2fe3b41c7930c1b6b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__jelmer__janitor__pr1167.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\jelmer__janitor__pr1167__python_cpp__jelmer__janitor__pr1167\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\jelmer__janitor__pr1167__python_cpp__jelmer__janitor__pr1167\\rn"
+  }
+}

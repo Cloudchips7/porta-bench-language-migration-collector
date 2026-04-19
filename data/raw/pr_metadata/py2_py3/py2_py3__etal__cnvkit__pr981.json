@@ -1,0 +1,104 @@
+{
+  "instance_id": "py2_py3__etal__cnvkit__pr981",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "etal/cnvkit",
+  "pr_number": 981,
+  "pr_url": "https://github.com/etal/cnvkit/pull/981",
+  "repo": {
+    "full_name": "etal/cnvkit",
+    "clone_url": "https://github.com/etal/cnvkit.git",
+    "default_branch": "master",
+    "created_at": "2014-07-07T20:12:27Z",
+    "stars": 606,
+    "license": "NOASSERTION",
+    "size_kb": 121171
+  },
+  "pull_request": {
+    "id": 3230486189,
+    "title": "Fix \"import rna\" bugs: #944, #706, #596, #499",
+    "body": "Improve error messages to help triage.",
+    "created_at": "2026-01-31T10:00:22Z",
+    "merged_at": "2026-01-31T10:52:43Z",
+    "base_sha": "87b17e7a5bb1a0c75d48eb0e7bbb6500a4a38a48",
+    "head_sha": "6899e863988119656f241522dc81d7cd74ea4327",
+    "merge_commit_sha": "30e75597404cee060aaa7a10b25a127c7a181d38",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "87b17e7a5bb1a0c75d48eb0e7bbb6500a4a38a48",
+  "final_sha": "6899e863988119656f241522dc81d7cd74ea4327",
+  "changed_files": [
+    {
+      "sha": "e68defb6fbd4470753064337c734d5746f22caa2",
+      "filename": "cnvlib/rna.py",
+      "status": "modified",
+      "additions": 41,
+      "deletions": 2,
+      "changes": 43,
+      "blob_url": "https://github.com/etal/cnvkit/blob/6899e863988119656f241522dc81d7cd74ea4327/cnvlib%2Frna.py",
+      "raw_url": "https://github.com/etal/cnvkit/raw/6899e863988119656f241522dc81d7cd74ea4327/cnvlib%2Frna.py",
+      "contents_url": "https://api.github.com/repos/etal/cnvkit/contents/cnvlib%2Frna.py?ref=6899e863988119656f241522dc81d7cd74ea4327",
+      "patch": "@@ -279,6 +279,18 @@ def align_gene_info_to_samples(gene_info, sample_counts, tx_lengths, normal_ids)\n         sample_counts.shape,\n     )\n     sc, gi = sample_counts.align(gene_info, join=\"inner\", axis=0)\n+\n+    # Check that alignment resulted in some genes\n+    if len(gi) == 0:\n+        raise ValueError(\n+            \"No genes in common between sample data and gene resource file. \"\n+            f\"Sample data has {len(sample_counts)} genes, \"\n+            f\"gene resource has {len(gene_info)} genes. \"\n+            \"Check that gene IDs match between your input files and gene resource. \"\n+            \"Sample gene IDs (first 5): \" + \", \".join(sample_counts.index[:5].tolist()) + \"; \"\n+            \"Gene resource IDs (first 5): \" + \", \".join(gene_info.index[:5].tolist())\n+        )\n+\n     gi = gi.sort_values(by=[\"chromosome\", \"start\"])\n     sc = sc.loc[gi.index]\n \n@@ -287,6 +299,22 @@ def align_gene_info_to_samples(gene_info, sample_counts, tx_lengths, normal_ids)\n         # (RSEM results have this, TCGA gene counts don't)\n         gi[\"tx_length\"] = tx_lengths.loc[gi.index]\n \n+    # Validate transcript lengths before any calculations\n+    if (gi[\"tx_length\"] <= 0).any():\n+        n_invalid = (gi[\"tx_length\"] <= 0).sum()\n+        logging.warning(\n+            \"Found %d genes with invalid transcript length (<= 0); filtering these out\",\n+            n_invalid,\n+        )\n+        valid_idx = gi[\"tx_length\"] > 0\n+        gi = gi[valid_idx]\n+        sc = sc.loc[gi.index]\n+        if len(gi) == 0:\n+            raise ValueError(\n+                \"All genes have invalid transcript lengths (<= 0). \"\n+                \"Check your gene resource file or RSEM output.\"\n+            )\n+\n     # Calculate per-gene weights similarly to cnvlib.fix\n     # NB: chrX doesn't need special handling because with X-inactivation,\n     # expression should be similar in male and female samples, i.e. neutral is 0\n@@ -331,7 +359,16 @@ def normalize_read_depths(sample_depths, normal_ids):\n \n     Finally, convert to log2 ratios.\n     \"\"\"\n-    assert sample_depths.to_numpy().sum() > 0\n+    if sample_depths.to_numpy().sum() <= 0:\n+        raise ValueError(\n+            \"Sample read depths sum to zero or less. \"\n+            f\"Input shape: {sample_depths.shape}, \"\n+            f\"sum: {sample_depths.to_numpy().sum()}, \"\n+            f\"all values zero: {(sample_depths == 0).all().all()}, \"\n+            f\"has inf: {np.isinf(sample_depths.to_numpy()).any()}, \"\n+            f\"has nan: {sample_depths.isna().any().any()}. \"\n+            \"This likely indicates a problem with gene alignment or transcript lengths.\"\n+        )\n     sample_depths = sample_depths.fillna(0)\n     for _i in range(4):\n         # By-sample: 75%ile  among all genes\n@@ -405,9 +442,11 @@ def attach_gene_info_to_cnr(sample_counts, sample_data_log2, gene_info, read_len\n     # Fill NA fields with the lowest finite value in the same row.\n     # Only use NULL_LOG2_COVERAGE if all samples are NA / zero-depth.\n     gene_minima = sample_data_log2.min(axis=1, skipna=True)\n+    # If a gene has NaN across all samples, fill with NULL_LOG2_COVERAGE\n+    gene_minima = gene_minima.fillna(NULL_LOG2_COVERAGE)\n     assert not gene_minima.hasnans, gene_minima.head()\n     for (sample_id, sample_col), (_sid_log2, sample_log2) in zip(\n-        sample_counts.iteritems(), sample_data_log2.iteritems(), strict=False\n+        sample_counts.items(), sample_data_log2.items(), strict=False\n     ):\n         tx_len = cnr_info.tx_length\n         sample_depth = (read_len * sample_col / tx_len).rename(\"depth\")"
+    },
+    {
+      "sha": "487237fa4df7e2e8a1541951e618ba1eb1cdfd5a",
+      "filename": "test/test_rna.py",
+      "status": "added",
+      "additions": 210,
+      "deletions": 0,
+      "changes": 210,
+      "blob_url": "https://github.com/etal/cnvkit/blob/6899e863988119656f241522dc81d7cd74ea4327/test%2Ftest_rna.py",
+      "raw_url": "https://github.com/etal/cnvkit/raw/6899e863988119656f241522dc81d7cd74ea4327/test%2Ftest_rna.py",
+      "contents_url": "https://api.github.com/repos/etal/cnvkit/contents/test%2Ftest_rna.py?ref=6899e863988119656f241522dc81d7cd74ea4327",
+      "patch": "@@ -0,0 +1,210 @@\n+#!/usr/bin/env python\n+\"\"\"Unit tests for RNA import functionality (cnvlib.rna).\"\"\"\n+import logging\n+import unittest\n+\n+import numpy as np\n+import pandas as pd\n+\n+from cnvlib import rna\n+\n+logging.basicConfig(level=logging.ERROR, format=\"%(message)s\")\n+\n+\n+class RNAImportTests(unittest.TestCase):\n+    \"\"\"Tests for RNA import and processing functions.\"\"\"\n+\n+    def setUp(self):\n+        \"\"\"Create sample test data.\"\"\"\n+        # Sample gene counts DataFrame (genes x samples)\n+        self.sample_counts = pd.DataFrame(\n+            {\n+                \"sample1\": [100, 200, 50, 0, 150],\n+                \"sample2\": [120, 180, 45, 0, 140],\n+                \"sample3\": [90, 210, 55, 0, 160],\n+            },\n+            index=[\"ENSG00000001\", \"ENSG00000002\", \"ENSG00000003\", \"ENSG00000004\", \"ENSG00000005\"],\n+        )\n+\n+        # Gene info DataFrame\n+        self.gene_info = pd.DataFrame(\n+            {\n+                \"chromosome\": [\"chr1\", \"chr1\", \"chr2\", \"chr2\", \"chr3\"],\n+                \"start\": [1000, 5000, 10000, 15000, 20000],\n+                \"end\": [2000, 6000, 11000, 16000, 21000],\n+                \"gene\": [\"GENE1\", \"GENE2\", \"GENE3\", \"GENE4\", \"GENE5\"],\n+                \"gc\": [0.5, 0.6, 0.4, 0.55, 0.45],\n+                \"tx_length\": [1000, 1200, 800, 1100, 900],\n+            },\n+            index=[\"ENSG00000001\", \"ENSG00000002\", \"ENSG00000003\", \"ENSG00000004\", \"ENSG00000005\"],\n+        )\n+\n+        # Transcript lengths Series\n+        self.tx_lengths = pd.Series(\n+            [1000, 1200, 800, 1100, 900],\n+            index=[\"ENSG00000001\", \"ENSG00000002\", \"ENSG00000003\", \"ENSG00000004\", \"ENSG00000005\"],\n+        )\n+\n+    def test_align_gene_info_empty_intersection(self):\n+        \"\"\"Test error when no genes match between sample data and gene resource.\"\"\"\n+        # Create gene_info with completely different gene IDs\n+        mismatched_gene_info = self.gene_info.copy()\n+        mismatched_gene_info.index = [\"ENSG99990001\", \"ENSG99990002\", \"ENSG99990003\", \"ENSG99990004\", \"ENSG99990005\"]\n+\n+        with self.assertRaises(ValueError) as cm:\n+            rna.align_gene_info_to_samples(\n+                mismatched_gene_info, self.sample_counts, self.tx_lengths, []\n+            )\n+\n+        error_msg = str(cm.exception)\n+        self.assertIn(\"No genes in common\", error_msg)\n+        self.assertIn(\"Sample data has 5 genes\", error_msg)\n+        self.assertIn(\"gene resource has 5 genes\", error_msg)\n+        self.assertIn(\"ENSG00000001\", error_msg)  # Sample gene ID\n+        self.assertIn(\"ENSG99990001\", error_msg)  # Gene resource ID\n+\n+    def test_align_gene_info_invalid_tx_lengths(self):\n+        \"\"\"Test filtering of genes with invalid transcript lengths.\"\"\"\n+        # Create gene_info with some invalid tx_lengths\n+        # Pass tx_lengths=None so gene_info values are used\n+        invalid_gene_info = self.gene_info.copy()\n+        invalid_gene_info.loc[\"ENSG00000003\", \"tx_length\"] = 0\n+        invalid_gene_info.loc[\"ENSG00000004\", \"tx_length\"] = -100\n+\n+        result_gi, result_sc, result_log2 = rna.align_gene_info_to_samples(\n+            invalid_gene_info, self.sample_counts, tx_lengths=None, normal_ids=[]\n+        )\n+\n+        # Should have filtered out 2 genes with invalid tx_length\n+        self.assertEqual(len(result_gi), 3)\n+        self.assertNotIn(\"ENSG00000003\", result_gi.index)\n+        self.assertNotIn(\"ENSG00000004\", result_gi.index)\n+        # Valid genes should remain\n+        self.assertIn(\"ENSG00000001\", result_gi.index)\n+        self.assertIn(\"ENSG00000002\", result_gi.index)\n+        self.assertIn(\"ENSG00000005\", result_gi.index)\n+\n+    def test_align_gene_info_all_invalid_tx_lengths(self):\n+        \"\"\"Test error when all genes have invalid transcript lengths.\"\"\"\n+        # Create gene_info with all invalid tx_lengths\n+        # Pass tx_lengths=None so gene_info values are used\n+        invalid_gene_info = self.gene_info.copy()\n+        invalid_gene_info[\"tx_length\"] = 0\n+\n+        with self.assertRaises(ValueError) as cm:\n+            rna.align_gene_info_to_samples(\n+                invalid_gene_info, self.sample_counts, tx_lengths=None, normal_ids=[]\n+            )\n+\n+        error_msg = str(cm.exception)\n+        self.assertIn(\"All genes have invalid transcript lengths\", error_msg)\n+\n+    def test_normalize_read_depths_empty(self):\n+        \"\"\"Test error when sample depths are empty.\"\"\"\n+        empty_depths = pd.DataFrame()\n+\n+        with self.assertRaises(ValueError) as cm:\n+            rna.normalize_read_depths(empty_depths, [])\n+\n+        error_msg = str(cm.exception)\n+        self.assertIn(\"Sample read depths sum to zero or less\", error_msg)\n+        self.assertIn(\"Input shape:\", error_msg)\n+\n+    def test_normalize_read_depths_all_zeros(self):\n+        \"\"\"Test error when all sample depths are zero.\"\"\"\n+        zero_depths = pd.DataFrame(\n+            {\n+                \"sample1\": [0, 0, 0],\n+                \"sample2\": [0, 0, 0],\n+            },\n+            index=[\"gene1\", \"gene2\", \"gene3\"],\n+        )\n+\n+        with self.assertRaises(ValueError) as cm:\n+            rna.normalize_read_depths(zero_depths, [])\n+\n+        error_msg = str(cm.exception)\n+        self.assertIn(\"Sample read depths sum to zero or less\", error_msg)\n+        self.assertIn(\"all values zero: True\", error_msg)\n+\n+    def test_normalize_read_depths_valid(self):\n+        \"\"\"Test successful normalization with valid data.\"\"\"\n+        valid_depths = pd.DataFrame(\n+            {\n+                \"sample1\": [10.0, 20.0, 30.0],\n+                \"sample2\": [15.0, 25.0, 35.0],\n+            },\n+            index=[\"gene1\", \"gene2\", \"gene3\"],\n+        )\n+\n+        result = rna.normalize_read_depths(valid_depths, [])\n+\n+        # Should return normalized log2 values\n+        self.assertEqual(result.shape, valid_depths.shape)\n+        self.assertFalse(result.isna().any().any())\n+        # Values should be in reasonable log2 range\n+        self.assertTrue((result > -10).all().all())\n+        self.assertTrue((result < 10).all().all())\n+\n+    def test_attach_gene_info_nan_handling(self):\n+        \"\"\"Test that NaN values in gene_minima are properly handled.\"\"\"\n+        # Create sample data with all NaN for one gene\n+        sample_data_log2 = pd.DataFrame(\n+            {\n+                \"sample1\": [1.0, np.nan, 2.0],\n+                \"sample2\": [1.5, np.nan, 2.5],\n+                \"sample3\": [0.5, np.nan, 1.5],\n+            },\n+            index=[\"gene1\", \"gene2\", \"gene3\"],\n+        )\n+\n+        sample_counts = pd.DataFrame(\n+            {\n+                \"sample1\": [100, 0, 200],\n+                \"sample2\": [120, 0, 180],\n+                \"sample3\": [80, 0, 220],\n+            },\n+            index=[\"gene1\", \"gene2\", \"gene3\"],\n+        )\n+\n+        gene_info = pd.DataFrame(\n+            {\n+                \"chromosome\": [\"chr1\", \"chr1\", \"chr2\"],\n+                \"start\": [1000, 5000, 10000],\n+                \"end\": [2000, 6000, 11000],\n+                \"gene\": [\"GENE1\", \"GENE2\", \"GENE3\"],\n+                \"gc\": [0.5, 0.6, 0.4],\n+                \"tx_length\": [1000, 1200, 800],\n+                \"weight\": [1.0, 1.0, 1.0],\n+            },\n+            index=[\"gene1\", \"gene2\", \"gene3\"],\n+        )\n+\n+        # Should not raise an assertion error\n+        cnrs = list(rna.attach_gene_info_to_cnr(sample_counts, sample_data_log2, gene_info))\n+\n+        # Should have one CNR per sample\n+        self.assertEqual(len(cnrs), 3)\n+\n+        # Check that gene2 (all NaN) has been filled with NULL_LOG2_COVERAGE\n+        for cnr in cnrs:\n+            gene2_log2 = cnr.data[cnr.data[\"gene\"] == \"GENE2\"][\"log2\"].values[0]\n+            self.assertEqual(gene2_log2, rna.NULL_LOG2_COVERAGE)\n+\n+    def test_safe_log2_zero_handling(self):\n+        \"\"\"Test that safe_log2 handles zeros correctly.\"\"\"\n+        values = np.array([0, 1, 10, 100])\n+        min_log2 = -5\n+\n+        result = rna.safe_log2(values, min_log2)\n+\n+        # Zero should be converted to approximately min_log2\n+        self.assertAlmostEqual(result[0], min_log2, places=2)\n+        # Other values should be reasonable\n+        self.assertTrue(result[1] > min_log2)\n+        self.assertTrue(result[2] > result[1])\n+        self.assertTrue(result[3] > result[2])\n+\n+\n+if __name__ == \"__main__\":\n+    unittest.main()"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "1775d325790f9c3da06c74dbb725f3b9d9a7ebee",
+      "message": "rna: Replace NaN with NULL_LOG_COVERAGE (fixes #940)",
+      "parent_shas": [
+        "87b17e7a5bb1a0c75d48eb0e7bbb6500a4a38a48"
+      ]
+    },
+    {
+      "sha": "c68c102f5902e213723cb14169d1a25ec34c1003",
+      "message": "rna: check for possible gene ID mismatch, error cases (fixes #706)",
+      "parent_shas": [
+        "1775d325790f9c3da06c74dbb725f3b9d9a7ebee"
+      ]
+    },
+    {
+      "sha": "6899e863988119656f241522dc81d7cd74ea4327",
+      "message": "rna: bug fixes and new test suite",
+      "parent_shas": [
+        "c68c102f5902e213723cb14169d1a25ec34c1003"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "adds_new_tests",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__etal__cnvkit__pr981.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\etal__cnvkit__pr981__py2_py3__etal__cnvkit__pr981\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\etal__cnvkit__pr981__py2_py3__etal__cnvkit__pr981\\rn"
+  }
+}

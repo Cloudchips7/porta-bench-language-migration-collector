@@ -1,0 +1,79 @@
+{
+  "instance_id": "java_python__TheRenegadeCoder__sample-programs__pr5498",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "TheRenegadeCoder/sample-programs",
+  "pr_number": 5498,
+  "pr_url": "https://github.com/TheRenegadeCoder/sample-programs/pull/5498",
+  "repo": {
+    "full_name": "TheRenegadeCoder/sample-programs",
+    "clone_url": "https://github.com/TheRenegadeCoder/sample-programs.git",
+    "default_branch": "main",
+    "created_at": "2018-03-15T21:23:05Z",
+    "stars": 625,
+    "license": "MIT",
+    "size_kb": 27735
+  },
+  "pull_request": {
+    "id": 3511855409,
+    "title": "Modify Java tests",
+    "body": "Congrats on taking the first step to contributing to the Sample Programs repository maintained by [The Renegade Coder][renegade-coder]! \r\nFor simplicity, please make sure that your pull request includes one and only one contribution.\r\n\r\nPlease fill _one_ of the sections below as applicable.\r\nPlease also add any other relevant information to the Notes section at the bottom.\r\nYou may delete or just ignore any other sections.\r\nFor more information please refer to our [contributing documentation][contributing]\r\n\r\n\r\n## I Am Modifying an Existing Code Snippet or Existing Tests\r\n\r\n- [x] I fixed #5497\r\n- [x] I did not include any extra folders/libraries\r\n- [x] I have read about modifying existing code snippets or tests in the [contributing documentation][contributing-modifications]\r\n- [x] I have explained why this modification is _necessary_ either in the issue linked above or in the notes below\r\n- [x] I named the pull request using `Modify {PROJECT} {tests} in {LANGUAGE}` format\r\n\r\n\r\n## Other Notes\r\n\r\nIt is wiser to pin the container on the latest LTS, which is JDK 25 right now. I would've switched to JDK 26 as it released a month ago, but I don't want to change the image every 6 months.\r\n\r\n[renegade-coder]: https://therenegadecoder.com/\r\n[contributing-plagiarism]: https://github.com/TheRenegadeCoder/sample-programs/blob/master/.github/CONTRIBUTING.md#plagiarism\r\n[contributing-new-project]: https://github.com/TheRenegadeCoder/sample-programs/blob/master/.github/CONTRIBUTING.md#requirements-for-a-new-project\r\n[contributing-new-language]: https://github.com/TheRenegadeCoder/sample-programs/blob/master/.github/CONTRIBUTING.md#requirements-for-a-new-language\r\n[contributing-readme]: https://github.com/TheRenegadeCoder/sample-programs/blob/master/.github/CONTRIBUTING.md#create-readmes\r\n[contributing-tests-in-detail]: https://github.com/TheRenegadeCoder/sample-programs/blob/master/.github/CONTRIBUTING.md#tests-in-detail\r\n[contributing]: https://github.com/TheRenegadeCoder/sample-programs/blob/master/.github/CONTRIBUTING.md\r\n[sample-programs-project-list]: https://sampleprograms.io/projects/\r\n[contributing-modifications]: https://github.com/TheRenegadeCoder/sample-programs/blob/master/.github/CONTRIBUTING.md#modifying-existing-code-snippets\r\n",
+    "created_at": "2026-04-10T03:14:40Z",
+    "merged_at": "2026-04-10T12:02:10Z",
+    "base_sha": "eb7d8fdfe9f553cb425c8df59d9601280d3f639f",
+    "head_sha": "9539c4838e5e15d1fe064a40efe1faf9d228ab15",
+    "merge_commit_sha": "4480a4a48fb5d8bb1984f8065349b0f3875154ef",
+    "labels": [
+      "enhancement",
+      "tests"
+    ]
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "eb7d8fdfe9f553cb425c8df59d9601280d3f639f",
+  "final_sha": "9539c4838e5e15d1fe064a40efe1faf9d228ab15",
+  "changed_files": [
+    {
+      "sha": "b21082c5528092b29bb4e07086e4c2f285585c21",
+      "filename": "archive/j/java/testinfo.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/TheRenegadeCoder/sample-programs/blob/9539c4838e5e15d1fe064a40efe1faf9d228ab15/archive%2Fj%2Fjava%2Ftestinfo.yml",
+      "raw_url": "https://github.com/TheRenegadeCoder/sample-programs/raw/9539c4838e5e15d1fe064a40efe1faf9d228ab15/archive%2Fj%2Fjava%2Ftestinfo.yml",
+      "contents_url": "https://api.github.com/repos/TheRenegadeCoder/sample-programs/contents/archive%2Fj%2Fjava%2Ftestinfo.yml?ref=9539c4838e5e15d1fe064a40efe1faf9d228ab15",
+      "patch": "@@ -4,6 +4,6 @@ folder:\n \n container:\n   image: \"eclipse-temurin\"\n-  tag: \"23-alpine-3.21\"\n+  tag: \"25-alpine\"\n   build: \"javac {{ source.name}}{{ source.extension }}\"\n   cmd: \"java {{ source.name }}\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "9539c4838e5e15d1fe064a40efe1faf9d228ab15",
+      "message": "Upgrade Java container to JDK 25",
+      "parent_shas": [
+        "eb7d8fdfe9f553cb425c8df59d9601280d3f639f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__TheRenegadeCoder__sample-programs__pr5498.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\TheRenegadeCoder__sample-programs__pr5498__java_python__TheRenegadeCoder__sample-programs__pr5498\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\TheRenegadeCoder__sample-programs__pr5498__java_python__TheRenegadeCoder__sample-programs__pr5498\\rn"
+  }
+}

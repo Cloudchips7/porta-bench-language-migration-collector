@@ -1,0 +1,134 @@
+{
+  "instance_id": "py2_py3__scikit-hep__coffea__pr1487",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "scikit-hep/coffea",
+  "pr_number": 1487,
+  "pr_url": "https://github.com/scikit-hep/coffea/pull/1487",
+  "repo": {
+    "full_name": "scikit-hep/coffea",
+    "clone_url": "https://github.com/scikit-hep/coffea.git",
+    "default_branch": "master",
+    "created_at": "2018-11-29T13:47:57Z",
+    "stars": 143,
+    "license": "BSD-3-Clause",
+    "size_kb": 51974
+  },
+  "pull_request": {
+    "id": 3028360430,
+    "title": "fix: improve fcc tests branch filtering pattern",
+    "body": "The FCC file has these branches/subbranches:\r\n```\r\n 'PARAMETERS',\r\n 'PARAMETERS/_intMap',\r\n 'PARAMETERS/_intMap/_intMap.first',\r\n 'PARAMETERS/_intMap/_intMap.second',\r\n 'PARAMETERS/_floatMap',\r\n 'PARAMETERS/_floatMap/_floatMap.first',\r\n 'PARAMETERS/_floatMap/_floatMap.second',\r\n 'PARAMETERS/_stringMap',\r\n 'PARAMETERS/_stringMap/_stringMap.first',\r\n 'PARAMETERS/_stringMap/_stringMap.second'\r\n ```\r\nWhen we do `tree.iteritems()` to extract the base form, subbranch names only contain the subbranch part and not the full path. The function sees PARAMETERS first. Then it sees _intMap, then it sees _intMap.first and so on. Therefore, the filtering function `lambda x: \"PARAMETERS\" not in x` is not enough. I'm updating it to a regex to exclude `_*Map*` patterns too.",
+    "created_at": "2025-11-20T05:42:34Z",
+    "merged_at": "2025-11-20T17:01:57Z",
+    "base_sha": "316ec82aaabad6212331d2313ba6d18694bfb50f",
+    "head_sha": "5c5ad53891f575672c0cd8441e0449a285c0e029",
+    "merge_commit_sha": "b464528b919d52671f028148fd8b6fd2236618d1",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "37bd2cc0204edfcf36b630fd0c753b0b05a124c0",
+  "final_sha": "5c5ad53891f575672c0cd8441e0449a285c0e029",
+  "changed_files": [
+    {
+      "sha": "5ec27ebea80377b3c605e6b4ddea3e38ad13a400",
+      "filename": "src/coffea/nanoevents/schemas/fcc.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/scikit-hep/coffea/blob/5c5ad53891f575672c0cd8441e0449a285c0e029/src%2Fcoffea%2Fnanoevents%2Fschemas%2Ffcc.py",
+      "raw_url": "https://github.com/scikit-hep/coffea/raw/5c5ad53891f575672c0cd8441e0449a285c0e029/src%2Fcoffea%2Fnanoevents%2Fschemas%2Ffcc.py",
+      "contents_url": "https://api.github.com/repos/scikit-hep/coffea/contents/src%2Fcoffea%2Fnanoevents%2Fschemas%2Ffcc.py?ref=5c5ad53891f575672c0cd8441e0449a285c0e029",
+      "patch": "@@ -684,8 +684,8 @@ class FCC:\n     Notes\n     -----\n     FCCSchema: This schema has been made keeping the Spring2021 pre-generated samples (pre-edm4hep1).\n-    It's also tested with Winter2023 samples with the ``uproot_options={\"filter_name\": lambda x : \"PARAMETERS\" not in x}``\n-    parameter when loading the fileset. This removes the \"PARAMETERS\" branch that is unreadable in uproot.\n+    It's also tested with Winter2023 samples with the ``uproot_options={\"filter_name\": \"/^(?!.*(PARAMETERS|_.*Map))/\"}``\n+    parameter when loading the fileset. This removes the \"PARAMETERS\" branch and all its subbranches which are unreadable by uproot.\n     More Schema variants could be added later.\n \n     FCCSchema_edm4hep1: This schema supports FCC samples produced with edm4hep version >= 1. It inherits"
+    },
+    {
+      "sha": "1de39aa873c0068d38a7d830a6ba22c6843d7735",
+      "filename": "tests/test_nanoevents_edm4hep.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/scikit-hep/coffea/blob/5c5ad53891f575672c0cd8441e0449a285c0e029/tests%2Ftest_nanoevents_edm4hep.py",
+      "raw_url": "https://github.com/scikit-hep/coffea/raw/5c5ad53891f575672c0cd8441e0449a285c0e029/tests%2Ftest_nanoevents_edm4hep.py",
+      "contents_url": "https://api.github.com/repos/scikit-hep/coffea/contents/tests%2Ftest_nanoevents_edm4hep.py?ref=5c5ad53891f575672c0cd8441e0449a285c0e029",
+      "patch": "@@ -19,14 +19,14 @@ def _events(**kwargs):\n @pytest.fixture(scope=\"module\")\n def eager_events():\n     return _events(\n-        mode=\"eager\", iteritems_options={\"filter_name\": lambda x: \"PARAMETERS\" not in x}\n+        mode=\"eager\", iteritems_options={\"filter_name\": \"/^(?!.*(PARAMETERS|_.*Map))/\"}\n     )\n \n \n @pytest.fixture(scope=\"module\")\n def delayed_events():\n     return _events(\n-        mode=\"dask\", uproot_options={\"filter_name\": lambda x: \"PARAMETERS\" not in x}\n+        mode=\"dask\", uproot_options={\"filter_name\": \"/^(?!.*(PARAMETERS|_.*Map))/\"}\n     )\n \n "
+    },
+    {
+      "sha": "be6d832e30c7ac3a8bafaa966bbc515fd17e9ffa",
+      "filename": "tests/test_nanoevents_fcc_edm4hep1.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/scikit-hep/coffea/blob/5c5ad53891f575672c0cd8441e0449a285c0e029/tests%2Ftest_nanoevents_fcc_edm4hep1.py",
+      "raw_url": "https://github.com/scikit-hep/coffea/raw/5c5ad53891f575672c0cd8441e0449a285c0e029/tests%2Ftest_nanoevents_fcc_edm4hep1.py",
+      "contents_url": "https://api.github.com/repos/scikit-hep/coffea/contents/tests%2Ftest_nanoevents_fcc_edm4hep1.py?ref=5c5ad53891f575672c0cd8441e0449a285c0e029",
+      "patch": "@@ -20,14 +20,14 @@ def _events(**kwargs):\n @pytest.fixture(scope=\"module\")\n def eager_events():\n     return _events(\n-        mode=\"eager\", iteritems_options={\"filter_name\": lambda x: \"PARAMETERS\" not in x}\n+        mode=\"eager\", iteritems_options={\"filter_name\": \"/^(?!.*(PARAMETERS|_.*Map))/\"}\n     )\n \n \n @pytest.fixture(scope=\"module\")\n def delayed_events():\n     return _events(\n-        mode=\"dask\", uproot_options={\"filter_name\": lambda x: \"PARAMETERS\" not in x}\n+        mode=\"dask\", uproot_options={\"filter_name\": \"/^(?!.*(PARAMETERS|_.*Map))/\"}\n     )\n \n "
+    },
+    {
+      "sha": "b5febe2cbca1736f48c6a0bec9f474a9b7300777",
+      "filename": "tests/test_nanoevents_fcc_winter2023.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/scikit-hep/coffea/blob/5c5ad53891f575672c0cd8441e0449a285c0e029/tests%2Ftest_nanoevents_fcc_winter2023.py",
+      "raw_url": "https://github.com/scikit-hep/coffea/raw/5c5ad53891f575672c0cd8441e0449a285c0e029/tests%2Ftest_nanoevents_fcc_winter2023.py",
+      "contents_url": "https://api.github.com/repos/scikit-hep/coffea/contents/tests%2Ftest_nanoevents_fcc_winter2023.py?ref=5c5ad53891f575672c0cd8441e0449a285c0e029",
+      "patch": "@@ -19,14 +19,14 @@ def _events(**kwargs):\n @pytest.fixture(scope=\"module\")\n def eager_events():\n     return _events(\n-        mode=\"eager\", iteritems_options={\"filter_name\": lambda x: \"PARAMETERS\" not in x}\n+        mode=\"eager\", iteritems_options={\"filter_name\": \"/^(?!.*(PARAMETERS|_.*Map))/\"}\n     )\n \n \n @pytest.fixture(scope=\"module\")\n def delayed_events():\n     return _events(\n-        mode=\"dask\", uproot_options={\"filter_name\": lambda x: \"PARAMETERS\" not in x}\n+        mode=\"dask\", uproot_options={\"filter_name\": \"/^(?!.*(PARAMETERS|_.*Map))/\"}\n     )\n \n "
+    },
+    {
+      "sha": null,
+      "filename": "tests/test_taskvine_dask.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/scikit-hep/coffea/blob/5c5ad53891f575672c0cd8441e0449a285c0e029/tests%2Ftest_taskvine_dask.py",
+      "raw_url": "https://github.com/scikit-hep/coffea/raw/5c5ad53891f575672c0cd8441e0449a285c0e029/tests%2Ftest_taskvine_dask.py",
+      "contents_url": "https://api.github.com/repos/scikit-hep/coffea/contents/tests%2Ftest_taskvine_dask.py?ref=5c5ad53891f575672c0cd8441e0449a285c0e029"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "5c1b2048828023fbb06583d5e2aeea05e08fb766",
+      "message": "improve fcc tests branch filtering pattern",
+      "parent_shas": [
+        "37bd2cc0204edfcf36b630fd0c753b0b05a124c0"
+      ]
+    },
+    {
+      "sha": "5c5ad53891f575672c0cd8441e0449a285c0e029",
+      "message": "Merge branch 'master' into ikrommyd/improve-fcc-branch-filtering-pattern",
+      "parent_shas": [
+        "5c1b2048828023fbb06583d5e2aeea05e08fb766",
+        "316ec82aaabad6212331d2313ba6d18694bfb50f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__scikit-hep__coffea__pr1487.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\scikit-hep__coffea__pr1487__py2_py3__scikit-hep__coffea__pr1487\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\scikit-hep__coffea__pr1487__py2_py3__scikit-hep__coffea__pr1487\\rn"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "instance_id": "py2_py3__django-crispy-forms__django-crispy-forms__pr1433",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "django-crispy-forms/django-crispy-forms",
+  "pr_number": 1433,
+  "pr_url": "https://github.com/django-crispy-forms/django-crispy-forms/pull/1433",
+  "repo": {
+    "full_name": "django-crispy-forms/django-crispy-forms",
+    "clone_url": "https://github.com/django-crispy-forms/django-crispy-forms.git",
+    "default_branch": "main",
+    "created_at": "2011-11-01T11:48:03Z",
+    "stars": 5153,
+    "license": "MIT",
+    "size_kb": 3765
+  },
+  "pull_request": {
+    "id": 3388973091,
+    "title": "docs: replace 'basestring' with 'str'",
+    "body": "'basestring' is a remnant of Python 2 and the equivalent to 'str' in Python 3. Its use has been removed throughout the codebase with the removal of Python 2 support in #912 but was present in the docs until now.",
+    "created_at": "2026-03-12T11:18:59Z",
+    "merged_at": "2026-03-19T18:06:47Z",
+    "base_sha": "dc8007e35f3387cca3e799a6fc93226a5a808bdc",
+    "head_sha": "536d36023bdd749b535c1363bd965b488f0c3649",
+    "merge_commit_sha": "847873cf09f0ee96beb38273190860008a6712dd",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "dc8007e35f3387cca3e799a6fc93226a5a808bdc",
+  "final_sha": "536d36023bdd749b535c1363bd965b488f0c3649",
+  "changed_files": [
+    {
+      "sha": "645c6628e8560f3824692e8ac57539adbfa9cd31",
+      "filename": "docs/dynamic_layouts.rst",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/django-crispy-forms/django-crispy-forms/blob/536d36023bdd749b535c1363bd965b488f0c3649/docs%2Fdynamic_layouts.rst",
+      "raw_url": "https://github.com/django-crispy-forms/django-crispy-forms/raw/536d36023bdd749b535c1363bd965b488f0c3649/docs%2Fdynamic_layouts.rst",
+      "contents_url": "https://api.github.com/repos/django-crispy-forms/django-crispy-forms/contents/docs%2Fdynamic_layouts.rst?ref=536d36023bdd749b535c1363bd965b488f0c3649",
+      "patch": "@@ -184,12 +184,12 @@ filter\n \n This method will allow you to filter layout objects by its class type, applying actions to them::\n \n-    form.helper.filter(basestring).wrap(Field, css_class=\"hello\")\n+    form.helper.filter(str).wrap(Field, css_class=\"hello\")\n     form.helper.filter(Div).wrap(Field, css_class=\"hello\")\n \n You can filter several layout objects types at the same time::\n \n-    form.helper.filter(basestring, Div).wrap(Div, css_class=\"hello\")\n+    form.helper.filter(str, Div).wrap(Div, css_class=\"hello\")\n \n By default ``filter`` is not greedy, so it only searches first depth level. But you can tune it to search in different levels of depth with a kwarg ``max_level`` (By default set to 0). Let' see some examples, to clarify it. Imagine we have this layout::\n \n@@ -203,7 +203,7 @@ By default ``filter`` is not greedy, so it only searches first depth level. But\n \n If we did::\n \n-    form.helper.filter(basestring).wrap(Field, css_class=\"hello\")\n+    form.helper.filter(str).wrap(Field, css_class=\"hello\")\n \n Only ``field_1`` and ``field_3`` would be wrapped, resulting into::\n \n@@ -217,13 +217,13 @@ Only ``field_1`` and ``field_3`` would be wrapped, resulting into::\n \n If we wanted to search deeper, wrapping ``password``, we would need to set ``max_level`` to 2 or more::\n \n-    form.helper.filter(basestring, max_level=2).wrap(Field, css_class=\"hello\")\n+    form.helper.filter(str, max_level=2).wrap(Field, css_class=\"hello\")\n \n In other words ``max_level`` indicates the number of jumps crispy-forms can do within a layout object for matching. In this case getting into the first ``Div`` would be one jump, and getting into the next ``Div`` would be the second jump, thus ``max_level=2``.\n \n We can turn filter greedy, making it search as deep as possible, setting ``greedy`` to ``True``::\n \n-    form.helper.filter(basestring, greedy=True).wrap(Div, css_class=\"hello\")\n+    form.helper.filter(str, greedy=True).wrap(Div, css_class=\"hello\")\n \n **Parameters:**\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "536d36023bdd749b535c1363bd965b488f0c3649",
+      "message": "docs: replace 'basestring' with 'str'\n\n'basestring' is a remnant of Python 2 and the equivalent to 'str' in\nPython 3. Its use has been removed throughout the codebase with the\nremoval of Python 2 support in #912 but was present in the docs until\nnow.",
+      "parent_shas": [
+        "dc8007e35f3387cca3e799a6fc93226a5a808bdc"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__django-crispy-forms__django-crispy-forms__pr1433.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\django-crispy-forms__django-crispy-forms__pr1433__py2_py3__django-crispy-forms__django-crispy-forms__pr1433\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\django-crispy-forms__django-crispy-forms__pr1433__py2_py3__django-crispy-forms__django-crispy-forms__pr1433\\rn"
+  }
+}

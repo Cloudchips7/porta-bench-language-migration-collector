@@ -1,0 +1,414 @@
+{
+  "instance_id": "python_java__microsoft__agent-framework__pr4979",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "microsoft/agent-framework",
+  "pr_number": 4979,
+  "pr_url": "https://github.com/microsoft/agent-framework/pull/4979",
+  "repo": {
+    "full_name": "microsoft/agent-framework",
+    "clone_url": "https://github.com/microsoft/agent-framework.git",
+    "default_branch": "main",
+    "created_at": "2025-04-28T19:40:42Z",
+    "stars": 9556,
+    "license": "MIT",
+    "size_kb": 86688
+  },
+  "pull_request": {
+    "id": 3467822749,
+    "title": "Python: Update Python Packages for rc6",
+    "body": "### Motivation and Context\r\n\r\n<!-- Thank you for your contribution to the Agent Framework repo!\r\nPlease help reviewers and future users, providing the following information:\r\n  1. Why is this change required?\r\n  2. What problem does it solve?\r\n  3. What scenario does it contribute to?\r\n  4. If it fixes an open issue, please link to the issue here.\r\n-->\r\n\r\n### Description\r\n\r\n<!-- Describe your changes, the overall approach, the underlying design.\r\n     These notes will help understanding how your code works. Thanks! -->\r\n\r\n### Contribution Checklist\r\n\r\n<!-- Before submitting this PR, please make sure: -->\r\n\r\n- [x] The code builds clean without any errors or warnings\r\n- [x] The PR follows the [Contribution Guidelines](https://github.com/microsoft/agent-framework/blob/main/CONTRIBUTING.md)\r\n- [x] All unit tests pass, and I have added new tests where possible\r\n- [ ] **Is this a breaking change?** If yes, add \"[BREAKING]\" prefix to the title of the PR.",
+    "created_at": "2026-03-30T17:38:39Z",
+    "merged_at": "2026-03-30T21:19:02Z",
+    "base_sha": "05c53dce2d2849d6e2caf1c119a8c4f02da473e3",
+    "head_sha": "c01928348dac5671fd1bc79734fa194e1c00529b",
+    "merge_commit_sha": "0e00e5f8dd699fd2e335c5c5e69d8d110d8cb002",
+    "labels": [
+      "documentation",
+      "python",
+      "lab"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "05c53dce2d2849d6e2caf1c119a8c4f02da473e3",
+  "final_sha": "c01928348dac5671fd1bc79734fa194e1c00529b",
+  "changed_files": [
+    {
+      "sha": "bd9ff53f18aa530baa0a0a5b81df0e3547535aa4",
+      "filename": "python/CHANGELOG.md",
+      "status": "modified",
+      "additions": 31,
+      "deletions": 1,
+      "changes": 32,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2FCHANGELOG.md",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2FCHANGELOG.md?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0\n \n ## [Unreleased]\n \n+## [1.0.0rc6] - 2026-03-30\n+\n+### Added\n+\n+- **agent-framework-openai**: New package extracted from core for OpenAI and Azure OpenAI provider support ([#4818](https://github.com/microsoft/agent-framework/pull/4818))\n+- **agent-framework-foundry**: New package for Azure AI Foundry integration ([#4818](https://github.com/microsoft/agent-framework/pull/4818))\n+- **agent-framework-core**: Support `structuredContent` in MCP tool results and fix sampling options type ([#4763](https://github.com/microsoft/agent-framework/pull/4763))\n+- **agent-framework-core**: Include reasoning messages in `MESSAGES_SNAPSHOT` events ([#4844](https://github.com/microsoft/agent-framework/pull/4844))\n+- **agent-framework-core**: [BREAKING] Add context mode to `AgentExecutor` ([#4668](https://github.com/microsoft/agent-framework/pull/4668))\n+\n+### Changed\n+\n+- **agent-framework-core**: [BREAKING] Remove deprecated kwargs compatibility paths ([#4858](https://github.com/microsoft/agent-framework/pull/4858))\n+- **agent-framework-core**: [BREAKING] Reduce core dependencies and simplify optional integrations ([#4904](https://github.com/microsoft/agent-framework/pull/4904))\n+- **agent-framework-openai**: [BREAKING] Provider-leading client design & OpenAI package extraction ([#4818](https://github.com/microsoft/agent-framework/pull/4818))\n+- **agent-framework-openai**: [BREAKING] Fix OpenAI Azure routing and provider samples ([#4925](https://github.com/microsoft/agent-framework/pull/4925))\n+- **agent-framework-azure-ai**: Deprecate Azure AI v1 (Persistent Agents API) helper methods ([#4804](https://github.com/microsoft/agent-framework/pull/4804))\n+- **agent-framework-core**: Avoid duplicate agent response telemetry ([#4685](https://github.com/microsoft/agent-framework/pull/4685))\n+- **agent-framework-devui**: Bump `flatted` from 3.3.3 to 3.4.2 in frontend ([#4805](https://github.com/microsoft/agent-framework/pull/4805))\n+- **samples**: Move `ag_ui_workflow_handoff` demo from `demos/` to `05-end-to-end/` ([#4900](https://github.com/microsoft/agent-framework/pull/4900))\n+\n+### Fixed\n+\n+- **agent-framework-core**: Fix streaming path to emit `mcp_server_tool_result` on `output_item.done` instead of `output_item.added` ([#4821](https://github.com/microsoft/agent-framework/pull/4821))\n+- **agent-framework-a2a**: Fix `A2AAgent` to surface message content from in-progress `TaskStatusUpdateEvents` ([#4798](https://github.com/microsoft/agent-framework/pull/4798))\n+- **agent-framework-core**: Fix `PydanticSchemaGenerationError` when using `from __future__ import annotations` with `@tool` ([#4822](https://github.com/microsoft/agent-framework/pull/4822))\n+- **samples**: Fix broken samples for GitHub Copilot, declarative, and Responses API ([#4915](https://github.com/microsoft/agent-framework/pull/4915))\n+- **repo**: Fix: update PyRIT repository link from Azure/PyRIT to microsoft/PyRIT ([#4960](https://github.com/microsoft/agent-framework/pull/4960))\n+\n ## [1.0.0rc5] - 2026-03-19\n \n ### Added\n@@ -817,7 +846,8 @@ Release candidate for **agent-framework-core** and **agent-framework-azure-ai**\n \n For more information, see the [announcement blog post](https://devblogs.microsoft.com/foundry/introducing-microsoft-agent-framework-the-open-source-engine-for-agentic-ai-apps/).\n \n-[Unreleased]: https://github.com/microsoft/agent-framework/compare/python-1.0.0rc5...HEAD\n+[Unreleased]: https://github.com/microsoft/agent-framework/compare/python-1.0.0rc6...HEAD\n+[1.0.0rc6]: https://github.com/microsoft/agent-framework/compare/python-1.0.0rc5...python-1.0.0rc6\n [1.0.0rc5]: https://github.com/microsoft/agent-framework/compare/python-1.0.0rc4...python-1.0.0rc5\n [1.0.0rc4]: https://github.com/microsoft/agent-framework/compare/python-1.0.0rc3...python-1.0.0rc4\n [1.0.0rc3]: https://github.com/microsoft/agent-framework/compare/python-1.0.0rc2...python-1.0.0rc3"
+    },
+    {
+      "sha": "23b14cd01d11737154f10e07b30f4ce3a859065b",
+      "filename": "python/packages/a2a/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fa2a%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fa2a%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fa2a%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"A2A integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"a2a-sdk>=0.3.5,<0.3.24\",\n ]\n "
+    },
+    {
+      "sha": "dbe798fc81ca6d42e92b9f8bddfa492ef49fc9eb",
+      "filename": "python/packages/ag-ui/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fag-ui%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fag-ui%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fag-ui%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -1,6 +1,6 @@\n [project]\n name = \"agent-framework-ag-ui\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n description = \"AG-UI protocol integration for Agent Framework\"\n readme = \"README.md\"\n license-files = [\"LICENSE\"]\n@@ -22,7 +22,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"ag-ui-protocol==0.1.13\",\n     \"fastapi>=0.115.0,<0.133.1\",\n     \"uvicorn[standard]>=0.30.0,<0.42.0\""
+    },
+    {
+      "sha": "ff891245770ffe421e31d9c53086d4324b449758",
+      "filename": "python/packages/anthropic/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fanthropic%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fanthropic%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fanthropic%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Anthropic integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"anthropic>=0.80.0,<0.80.1\",\n ]\n "
+    },
+    {
+      "sha": "fc5f1e3b35824e4559f29185816ba666ee989e12",
+      "filename": "python/packages/azure-ai-search/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fazure-ai-search%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fazure-ai-search%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fazure-ai-search%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Azure AI Search integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"azure-search-documents>=11.7.0b2,<11.7.0b3\",\n ]\n "
+    },
+    {
+      "sha": "0a4e0cb66e695245e25f1e6bad8e21864a089ac9",
+      "filename": "python/packages/azure-ai/pyproject.toml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fazure-ai%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fazure-ai%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fazure-ai%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Azure AI Foundry integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0rc5\"\n+version = \"1.0.0rc6\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,8 +23,8 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n-    \"agent-framework-openai>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n+    \"agent-framework-openai>=1.0.0rc6\",\n     \"azure-ai-projects>=2.0.0,<3.0\",\n     \"azure-ai-agents>=1.2.0b5,<1.2.0b6\",\n     \"azure-ai-inference>=1.0.0b9,<1.0.0b10\","
+    },
+    {
+      "sha": "d1bc91d3c15a8344a86f7ccff6895dab76328d7a",
+      "filename": "python/packages/azure-cosmos/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fazure-cosmos%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fazure-cosmos%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fazure-cosmos%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Azure Cosmos DB history provider integration for Microsoft Agent\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"azure-cosmos>=4.3.0,<5\",\n ]\n "
+    },
+    {
+      "sha": "83f48ea16988fea3d4c09237d509cce505ce38d4",
+      "filename": "python/packages/azurefunctions/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fazurefunctions%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fazurefunctions%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fazurefunctions%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Azure Functions integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -22,7 +22,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"agent-framework-durabletask\",\n     \"azure-functions>=1.24.0,<2\",\n     \"azure-functions-durable>=1.3.1,<2\","
+    },
+    {
+      "sha": "1583d44098d10192b08830f6a4299cc8e6ac358a",
+      "filename": "python/packages/bedrock/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fbedrock%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fbedrock%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fbedrock%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Amazon Bedrock integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"boto3>=1.35.0,<2.0.0\",\n     \"botocore>=1.35.0,<2.0.0\",\n ]"
+    },
+    {
+      "sha": "7da827adcb705f7699b54db670b53d276ff737be",
+      "filename": "python/packages/chatkit/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fchatkit%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fchatkit%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fchatkit%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"OpenAI ChatKit integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -22,7 +22,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"openai-chatkit>=1.4.1,<2.0.0\",\n ]\n "
+    },
+    {
+      "sha": "b78e00cf4219c16f9bd1dc913156016e9142776e",
+      "filename": "python/packages/claude/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fclaude%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fclaude%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fclaude%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Claude Agent SDK integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"claude-agent-sdk>=0.1.36,<0.1.49\",\n ]\n "
+    },
+    {
+      "sha": "7a29537b7e1a10e7053061d64da5e0e0b68e6587",
+      "filename": "python/packages/copilotstudio/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fcopilotstudio%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fcopilotstudio%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fcopilotstudio%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Copilot Studio integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"microsoft-agents-copilotstudio-client>=0.3.1,<0.3.2\",\n ]\n "
+    },
+    {
+      "sha": "f002567381bcd031421e9028e137a3d2826b0d3c",
+      "filename": "python/packages/core/pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fcore%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fcore%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fcore%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Microsoft Agent Framework for building AI Agents with Python. Thi\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0rc5\"\n+version = \"1.0.0rc6\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\""
+    },
+    {
+      "sha": "64bcd0a7259aabbb89cf2fff9c95ce44596df875",
+      "filename": "python/packages/declarative/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fdeclarative%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fdeclarative%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fdeclarative%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Declarative specification support for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -22,7 +22,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"powerfx>=0.0.32,<0.0.35; python_version < '3.14'\",\n     \"pyyaml>=6.0,<7.0\",\n ]"
+    },
+    {
+      "sha": "1de35bd0cba41e0f3dc336721179f9f160ba72ef",
+      "filename": "python/packages/devui/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fdevui%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fdevui%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fdevui%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Debug UI for Microsoft Agent Framework with OpenAI-compatible API\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://github.com/microsoft/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n  dependencies = [\n-     \"agent-framework-core>=1.0.0rc5\",\n+     \"agent-framework-core>=1.0.0rc6\",\n      \"openai>=1.99.0,<3\",\n      \"opentelemetry-sdk>=1.39.0,<2\",\n      \"fastapi>=0.115.0,<0.133.1\","
+    },
+    {
+      "sha": "f2fe9af94bb13ccd8cc59398dcf4ffe3099582e2",
+      "filename": "python/packages/durabletask/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fdurabletask%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fdurabletask%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fdurabletask%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Durable Task integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -22,7 +22,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"durabletask>=1.3.0,<2\",\n     \"durabletask-azuremanaged>=1.3.0,<2\",\n     \"python-dateutil>=2.8.0,<3\","
+    },
+    {
+      "sha": "d07b5087fd11902e2666c07774dec38c5c22689d",
+      "filename": "python/packages/foundry/pyproject.toml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Ffoundry%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Ffoundry%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Ffoundry%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Cloud Azure AI Foundry integration for Microsoft Agent Framework.\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0rc5\"\n+version = \"1.0.0rc6\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,8 +23,8 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n-    \"agent-framework-openai>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n+    \"agent-framework-openai>=1.0.0rc6\",\n     \"azure-ai-projects>=2.0.0,<3.0\",\n ]\n "
+    },
+    {
+      "sha": "f43d6f2fded5cd975dc8d5225f63772461ac6e27",
+      "filename": "python/packages/foundry_local/pyproject.toml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Ffoundry_local%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Ffoundry_local%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Ffoundry_local%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Foundry Local integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,8 +23,8 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n-    \"agent-framework-openai>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n+    \"agent-framework-openai>=1.0.0rc6\",\n     \"foundry-local-sdk>=0.5.1,<0.5.2\",\n ]\n "
+    },
+    {
+      "sha": "5bcb2d3d8ac4e1eac0b1e6e62135846cadc428d3",
+      "filename": "python/packages/github_copilot/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fgithub_copilot%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fgithub_copilot%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fgithub_copilot%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"GitHub Copilot integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"github-copilot-sdk>=0.1.31,<0.1.33; python_version >= '3.11'\",\n ]\n "
+    },
+    {
+      "sha": "07ae248d0bb1a6c402acdd239e43e4e9a1c55b61",
+      "filename": "python/packages/lab/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Flab%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Flab%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Flab%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Experimental modules for Microsoft Agent Framework\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -22,7 +22,7 @@ classifiers = [\n   \"Programming Language :: Python :: 3.14\",\n ]\n dependencies = [\n-  \"agent-framework-core>=1.0.0rc5\",\n+  \"agent-framework-core>=1.0.0rc6\",\n ]\n \n [project.optional-dependencies]"
+    },
+    {
+      "sha": "46748866aecf341edcf62e55e2b619cc52abeb45",
+      "filename": "python/packages/mem0/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fmem0%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fmem0%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fmem0%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Mem0 integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"mem0ai>=1.0.0,<2\",\n ]\n "
+    },
+    {
+      "sha": "b10ea2706ff409754e5216ce2e63f0dbc6404c0f",
+      "filename": "python/packages/ollama/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Follama%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Follama%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Follama%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Ollama integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://learn.microsoft.com/en-us/agent-framework/\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"ollama>=0.5.3,<0.5.4\",\n ]\n "
+    },
+    {
+      "sha": "eb31ca5956dcb9970b3a25642362a6c4c9483963",
+      "filename": "python/packages/openai/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fopenai%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fopenai%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fopenai%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"OpenAI integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0rc5\"\n+version = \"1.0.0rc6\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"openai>=1.99.0,<3\",\n     \"packaging>=24.1,<25\",\n ]"
+    },
+    {
+      "sha": "e519086dbf33a6044a48f335ffbf039f707e9910",
+      "filename": "python/packages/orchestrations/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Forchestrations%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Forchestrations%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Forchestrations%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Orchestration patterns for Microsoft Agent Framework. Includes Se\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n ]\n \n [tool.uv]"
+    },
+    {
+      "sha": "183de4570c9b889a573411acbfb1ff20d9e64b7f",
+      "filename": "python/packages/purview/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fpurview%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fpurview%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fpurview%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Microsoft Purview (Graph dataSecurityAndGovernance) integration f\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://github.com/microsoft/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -24,7 +24,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"azure-core>=1.30.0,<2\",\n     \"httpx>=0.27.0,<0.29\",\n ]"
+    },
+    {
+      "sha": "9cb248ccf98af2421807b1ed810fe27f272862f0",
+      "filename": "python/packages/redis/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fredis%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpackages%2Fredis%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fredis%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Redis integration for Microsoft Agent Framework.\"\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core>=1.0.0rc5\",\n+    \"agent-framework-core>=1.0.0rc6\",\n     \"redis>=6.4.0,<7.2.1\",\n     \"redisvl>=0.11.0,<0.16\",\n     \"numpy>=2.2.6,<3\""
+    },
+    {
+      "sha": "a554ce97f1da915d36489eede71a834fbece39ed",
+      "filename": "python/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpyproject.toml",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpyproject.toml?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -4,7 +4,7 @@ description = \"Microsoft Agent Framework for building AI Agents with Python. Thi\n authors = [{ name = \"Microsoft\", email = \"af-support@microsoft.com\"}]\n readme = \"README.md\"\n requires-python = \">=3.10\"\n-version = \"1.0.0rc5\"\n+version = \"1.0.0rc6\"\n license-files = [\"LICENSE\"]\n urls.homepage = \"https://aka.ms/agent-framework\"\n urls.source = \"https://github.com/microsoft/agent-framework/tree/main/python\"\n@@ -23,7 +23,7 @@ classifiers = [\n   \"Typing :: Typed\",\n ]\n dependencies = [\n-    \"agent-framework-core[all]==1.0.0rc5\",\n+    \"agent-framework-core[all]==1.0.0rc6\",\n ]\n \n [dependency-groups]"
+    },
+    {
+      "sha": "590a78c791e3e307de4cfe739de4c2fa45d27b81",
+      "filename": "python/uv.lock",
+      "status": "modified",
+      "additions": 26,
+      "deletions": 26,
+      "changes": 52,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fuv.lock",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/c01928348dac5671fd1bc79734fa194e1c00529b/python%2Fuv.lock",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fuv.lock?ref=c01928348dac5671fd1bc79734fa194e1c00529b",
+      "patch": "@@ -94,7 +94,7 @@ wheels = [\n \n [[package]]\n name = \"agent-framework\"\n-version = \"1.0.0rc5\"\n+version = \"1.0.0rc6\"\n source = { virtual = \".\" }\n dependencies = [\n     { name = \"agent-framework-core\", extra = [\"all\"], marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -147,7 +147,7 @@ dev = [\n \n [[package]]\n name = \"agent-framework-a2a\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/a2a\" }\n dependencies = [\n     { name = \"a2a-sdk\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -162,7 +162,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-ag-ui\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/ag-ui\" }\n dependencies = [\n     { name = \"ag-ui-protocol\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -190,7 +190,7 @@ provides-extras = [\"dev\"]\n \n [[package]]\n name = \"agent-framework-anthropic\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/anthropic\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -205,7 +205,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-azure-ai\"\n-version = \"1.0.0rc5\"\n+version = \"1.0.0rc6\"\n source = { editable = \"packages/azure-ai\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -230,7 +230,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-azure-ai-search\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/azure-ai-search\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -245,7 +245,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-azure-cosmos\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/azure-cosmos\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -260,7 +260,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-azurefunctions\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/azurefunctions\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -282,7 +282,7 @@ dev = []\n \n [[package]]\n name = \"agent-framework-bedrock\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/bedrock\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -299,7 +299,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-chatkit\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/chatkit\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -314,7 +314,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-claude\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/claude\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -329,7 +329,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-copilotstudio\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/copilotstudio\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -344,7 +344,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-core\"\n-version = \"1.0.0rc5\"\n+version = \"1.0.0rc6\"\n source = { editable = \"packages/core\" }\n dependencies = [\n     { name = \"opentelemetry-api\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -416,7 +416,7 @@ provides-extras = [\"all\"]\n \n [[package]]\n name = \"agent-framework-declarative\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/declarative\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -441,7 +441,7 @@ dev = [{ name = \"types-pyyaml\", specifier = \"==6.0.12.20250915\" }]\n \n [[package]]\n name = \"agent-framework-devui\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/devui\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -479,7 +479,7 @@ provides-extras = [\"dev\", \"all\"]\n \n [[package]]\n name = \"agent-framework-durabletask\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/durabletask\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -506,7 +506,7 @@ dev = [{ name = \"types-python-dateutil\", specifier = \"==2.9.0.20260305\" }]\n \n [[package]]\n name = \"agent-framework-foundry\"\n-version = \"1.0.0rc5\"\n+version = \"1.0.0rc6\"\n source = { editable = \"packages/foundry\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -523,7 +523,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-foundry-local\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/foundry_local\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -540,7 +540,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-github-copilot\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/github_copilot\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -555,7 +555,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-lab\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/lab\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -636,7 +636,7 @@ dev = [\n \n [[package]]\n name = \"agent-framework-mem0\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/mem0\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -651,7 +651,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-ollama\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/ollama\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -666,7 +666,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-openai\"\n-version = \"1.0.0rc5\"\n+version = \"1.0.0rc6\"\n source = { editable = \"packages/openai\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -683,7 +683,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-orchestrations\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/orchestrations\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -694,7 +694,7 @@ requires-dist = [{ name = \"agent-framework-core\", editable = \"packages/core\" }]\n \n [[package]]\n name = \"agent-framework-purview\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/purview\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },\n@@ -711,7 +711,7 @@ requires-dist = [\n \n [[package]]\n name = \"agent-framework-redis\"\n-version = \"1.0.0b260319\"\n+version = \"1.0.0b260330\"\n source = { editable = \"packages/redis\" }\n dependencies = [\n     { name = \"agent-framework-core\", marker = \"sys_platform == 'darwin' or sys_platform == 'linux' or sys_platform == 'win32'\" },"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "145aeb871929d6ed8007eb1aab14318310524421",
+      "message": "python package update",
+      "parent_shas": [
+        "05c53dce2d2849d6e2caf1c119a8c4f02da473e3"
+      ]
+    },
+    {
+      "sha": "c01928348dac5671fd1bc79734fa194e1c00529b",
+      "message": "small fix",
+      "parent_shas": [
+        "145aeb871929d6ed8007eb1aab14318310524421"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes",
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "python_java_bridge_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__microsoft__agent-framework__pr4979.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\microsoft__agent-framework__pr4979__python_java__microsoft__agent-framework__pr4979\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\microsoft__agent-framework__pr4979__python_java__microsoft__agent-framework__pr4979\\rn"
+  }
+}

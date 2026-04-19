@@ -1,0 +1,90 @@
+{
+  "instance_id": "py2_py3__simplejson__simplejson__pr355",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "simplejson/simplejson",
+  "pr_number": 355,
+  "pr_url": "https://github.com/simplejson/simplejson/pull/355",
+  "repo": {
+    "full_name": "simplejson/simplejson",
+    "clone_url": "https://github.com/simplejson/simplejson.git",
+    "default_branch": "main",
+    "created_at": "2011-02-06T05:47:45Z",
+    "stars": 1710,
+    "license": "NOASSERTION",
+    "size_kb": 1471
+  },
+  "pull_request": {
+    "id": 3490940470,
+    "title": "Fix use-after-free and leak in encoder ident handling",
+    "body": "Fixes #349 (part of #348).\n\n## Changes\n\n1. **Fix double `Py_XDECREF` on `ident`** (Finding 14): When `PyDict_DelItem(s->markers, ident)` fails in `encoder_listencode_obj`, `ident` was XDECREF'd inside the `if` block, then XDECREF'd again unconditionally. Now uses a single `Py_DECREF` after the error check, matching the correct pattern in `encoder_listencode_dict` (line 3086).\n\n2. **Fix `ident` leak on `Py_EnterRecursiveCall` failure** (Finding 15): `ident` acquired via `PyLong_FromVoidPtr` was never released when `Py_EnterRecursiveCall` fails. Added `Py_XDECREF(ident)` before `return rv`.\n\n## Reproducers\n\nFinding 14 segfault (from issue):\n```python\nimport simplejson._speedups as sp\nimport decimal\n\nmarkers = {}\nclass Evil: pass\ncall_count = [0]\ndef bad_default(obj):\n    call_count[0] += 1\n    if call_count[0] <= 1:\n        markers.clear()\n        return \"safe\"\n    return str(obj)\n\nc_enc = sp.make_encoder(\n    markers, bad_default, sp.encode_basestring_ascii, None, \", \", \": \",\n    False, False, True, None, False, False, False, None,\n    None, \"utf-8\", False, False, decimal.Decimal, False,\n)\nc_enc(Evil(), 0)  # Segfault before fix\n```\n\nFound using [cext-review-toolkit](https://github.com/devdanzin/cext-review-toolkit).",
+    "created_at": "2026-04-05T20:36:43Z",
+    "merged_at": "2026-04-06T17:07:18Z",
+    "base_sha": "f7122a4f60659431b39acbf0b7ad96775642ee02",
+    "head_sha": "aa9182d79e36fd306c5d9970658c2ab03494d9c8",
+    "merge_commit_sha": "b328c4d40252a5a00c3a1ca65c5a6af5852ff0bd",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "f7122a4f60659431b39acbf0b7ad96775642ee02",
+  "final_sha": "aa9182d79e36fd306c5d9970658c2ab03494d9c8",
+  "changed_files": [
+    {
+      "sha": "63d36b9ff0d9854dabd192bcf166dc6347c507ab",
+      "filename": "simplejson/_speedups.c",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 3,
+      "changes": 7,
+      "blob_url": "https://github.com/simplejson/simplejson/blob/aa9182d79e36fd306c5d9970658c2ab03494d9c8/simplejson%2F_speedups.c",
+      "raw_url": "https://github.com/simplejson/simplejson/raw/aa9182d79e36fd306c5d9970658c2ab03494d9c8/simplejson%2F_speedups.c",
+      "contents_url": "https://api.github.com/repos/simplejson/simplejson/contents/simplejson%2F_speedups.c?ref=aa9182d79e36fd306c5d9970658c2ab03494d9c8",
+      "patch": "@@ -2937,8 +2937,10 @@ encoder_listencode_obj(PyEncoderObject *s, JSON_Accu *rval, PyObject *obj, Py_ss\n                     break;\n                 }\n             }\n-            if (Py_EnterRecursiveCall(\" while encoding a JSON object\"))\n+            if (Py_EnterRecursiveCall(\" while encoding a JSON object\")) {\n+                Py_XDECREF(ident);\n                 return rv;\n+            }\n             newobj = PyObject_CallOneArg(s->defaultfn, obj);\n             if (newobj == NULL) {\n                 Py_XDECREF(ident);\n@@ -2954,10 +2956,9 @@ encoder_listencode_obj(PyEncoderObject *s, JSON_Accu *rval, PyObject *obj, Py_ss\n             }\n             else if (ident != NULL) {\n                 if (PyDict_DelItem(s->markers, ident)) {\n-                    Py_XDECREF(ident);\n                     rv = -1;\n                 }\n-                Py_XDECREF(ident);\n+                Py_DECREF(ident);\n             }\n         }\n     } while (0);"
+    },
+    {
+      "sha": "43bf8953997776acfe9f7574ddac3f6753b97a93",
+      "filename": "simplejson/tests/test_check_circular.py",
+      "status": "modified",
+      "additions": 20,
+      "deletions": 0,
+      "changes": 20,
+      "blob_url": "https://github.com/simplejson/simplejson/blob/aa9182d79e36fd306c5d9970658c2ab03494d9c8/simplejson%2Ftests%2Ftest_check_circular.py",
+      "raw_url": "https://github.com/simplejson/simplejson/raw/aa9182d79e36fd306c5d9970658c2ab03494d9c8/simplejson%2Ftests%2Ftest_check_circular.py",
+      "contents_url": "https://api.github.com/repos/simplejson/simplejson/contents/simplejson%2Ftests%2Ftest_check_circular.py?ref=aa9182d79e36fd306c5d9970658c2ab03494d9c8",
+      "patch": "@@ -28,3 +28,23 @@ def test_circular_default(self):\n     def test_circular_off_default(self):\n         json.dumps([set()], default=default_iterable, check_circular=False)\n         self.assertRaises(TypeError, json.dumps, [set()], check_circular=False)\n+\n+    def test_default_callback_clears_markers(self):\n+        # Regression test: clearing the markers dict from inside the\n+        # default() callback must not cause a use-after-free on ident.\n+        markers = {}\n+        call_count = [0]\n+        class Custom:\n+            pass\n+        def bad_default(obj):\n+            call_count[0] += 1\n+            if call_count[0] <= 1:\n+                markers.clear()\n+                return \"safe\"\n+            return str(obj)\n+        # Should not crash (previously: segfault from double Py_XDECREF)\n+        try:\n+            json.dumps(Custom(), default=bad_default)\n+        except (TypeError, ValueError):\n+            pass\n+"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "aa9182d79e36fd306c5d9970658c2ab03494d9c8",
+      "message": "Fix use-after-free and leak in encoder ident handling\n\n- Fix double Py_XDECREF on `ident` in encoder_listencode_obj when\n  PyDict_DelItem(markers, ident) fails. The ident was XDECREF'd at\n  line 2957 inside the if-block, then again at line 2960 unconditionally.\n  This causes a use-after-free / refcount underflow segfault when the\n  default() callback clears the markers dict.\n\n- Fix ident leak on Py_EnterRecursiveCall failure. When the recursion\n  limit is hit, ident (from PyLong_FromVoidPtr) was never released,\n  leaking ~158 bytes per RecursionError.\n\nCloses #349\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "f7122a4f60659431b39acbf0b7ad96775642ee02"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__simplejson__simplejson__pr355.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\simplejson__simplejson__pr355__py2_py3__simplejson__simplejson__pr355\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\simplejson__simplejson__pr355__py2_py3__simplejson__simplejson__pr355\\rn"
+  }
+}

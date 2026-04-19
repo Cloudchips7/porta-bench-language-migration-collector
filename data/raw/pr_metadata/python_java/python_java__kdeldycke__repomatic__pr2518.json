@@ -1,0 +1,82 @@
+{
+  "instance_id": "python_java__kdeldycke__repomatic__pr2518",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "kdeldycke/repomatic",
+  "pr_number": 2518,
+  "pr_url": "https://github.com/kdeldycke/repomatic/pull/2518",
+  "repo": {
+    "full_name": "kdeldycke/repomatic",
+    "clone_url": "https://github.com/kdeldycke/repomatic.git",
+    "default_branch": "main",
+    "created_at": "2021-12-09T15:04:12Z",
+    "stars": 45,
+    "license": "GPL-2.0",
+    "size_kb": 9763
+  },
+  "pull_request": {
+    "id": 3501575780,
+    "title": "Format Python",
+    "body": "### Description\n\nAuto-formats Python files with [autopep8](https://github.com/hhatto/autopep8) (comment wrapping) and [Ruff](https://docs.astral.sh/ruff/) (linting and formatting). When no `[tool.ruff]` section or `ruff.toml` is present, [repomatic's bundled defaults](https://github.com/kdeldycke/repomatic/blob/main/repomatic/data/ruff.toml) are applied at runtime. See the [`format-python` job documentation](https://github.com/kdeldycke/repomatic?tab=readme-ov-file#githubworkflowsautofixyaml-jobs) for details.\n\n> [!TIP]\n> Customize formatting and linting rules via [`[tool.ruff]`](https://docs.astral.sh/ruff/configuration/) and [`[tool.autopep8]`](https://github.com/hhatto/autopep8#configuration) in your `pyproject.toml`.\n\n\n> [!IMPORTANT]\n> If you suspect the PR content is outdated, **[click `Run workflow`](https://github.com/kdeldycke/repomatic/actions/workflows/autofix.yaml)** to refresh it manually before merging.\n\n\n<details><summary><code>Workflow metadata</code></summary>\n\n| Field | Value |\n| :-- | :-- |\n| **Trigger** | `push` |\n| **Actor** | @kdeldycke |\n| **Ref** | `main` |\n| **Commit** | [`8ed36146`](https://github.com/kdeldycke/repomatic/commit/8ed361461c813d1822642e2f48e45079787851c2) |\n| **Job** | [`format-python`](https://github.com/kdeldycke/repomatic/blob/8ed361461c813d1822642e2f48e45079787851c2/.github/workflows/autofix.yaml) |\n| **Workflow** | [`autofix.yaml`](https://github.com/kdeldycke/repomatic/blob/8ed361461c813d1822642e2f48e45079787851c2/.github/workflows/autofix.yaml) |\n| **Run** | [#4261.1](https://github.com/kdeldycke/repomatic/actions/runs/24120682997) |\n\n</details>\n\n---\n\n🏭 Generated with [repomatic](https://github.com/kdeldycke/repomatic) `6.11.1.dev0`",
+    "created_at": "2026-04-08T06:09:33Z",
+    "merged_at": "2026-04-08T07:10:07Z",
+    "base_sha": "8ed361461c813d1822642e2f48e45079787851c2",
+    "head_sha": "8423275c50b8de0bf36c66a5410ccf8a13f10be2",
+    "merge_commit_sha": "288e71886433354eebac480c34332c7a324895f0",
+    "labels": [
+      "🤖 ci"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "8ed361461c813d1822642e2f48e45079787851c2",
+  "final_sha": "8423275c50b8de0bf36c66a5410ccf8a13f10be2",
+  "changed_files": [
+    {
+      "sha": "8a97b9992f363a6c88b679772d5884444a769cc1",
+      "filename": "tests/test_init_project.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 5,
+      "changes": 8,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/8423275c50b8de0bf36c66a5410ccf8a13f10be2/tests%2Ftest_init_project.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/8423275c50b8de0bf36c66a5410ccf8a13f10be2/tests%2Ftest_init_project.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/tests%2Ftest_init_project.py?ref=8423275c50b8de0bf36c66a5410ccf8a13f10be2",
+      "patch": "@@ -461,8 +461,8 @@ def test_init_config_lychee_preserves_other_sections() -> None:\n     \"\"\"Lychee init merges [tool.lychee] without stripping unrelated sections.\"\"\"\n     with NamedTemporaryFile(mode=\"w\", suffix=\".toml\", delete=False) as f:\n         f.write(\n-            '[tool.gitleaks]\\n'\n-            '[tool.gitleaks.allowlist]\\n'\n+            \"[tool.gitleaks]\\n\"\n+            \"[tool.gitleaks.allowlist]\\n\"\n             'description = \"false positives\"\\n'\n             'commits = [\"abc123\"]\\n'\n         )\n@@ -1477,9 +1477,7 @@ def test_bare_init_still_applies_scope_exclusion(\n     \"\"\"\n     pyproject = tmp_path / \"pyproject.toml\"\n     pyproject.write_text(\n-        '[project]\\nname = \"test\"\\n\\n'\n-        \"[tool.repomatic]\\n\"\n-        'include = [\"renovate\"]\\n',\n+        '[project]\\nname = \"test\"\\n\\n[tool.repomatic]\\ninclude = [\"renovate\"]\\n',\n         encoding=\"UTF-8\",\n     )\n     monkeypatch.chdir(tmp_path)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8423275c50b8de0bf36c66a5410ccf8a13f10be2",
+      "message": "Format Python",
+      "parent_shas": [
+        "8ed361461c813d1822642e2f48e45079787851c2"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__kdeldycke__repomatic__pr2518.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__repomatic__pr2518__python_java__kdeldycke__repomatic__pr2518\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__repomatic__pr2518__python_java__kdeldycke__repomatic__pr2518\\rn"
+  }
+}

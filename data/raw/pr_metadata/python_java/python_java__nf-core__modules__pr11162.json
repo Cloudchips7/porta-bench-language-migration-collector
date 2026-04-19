@@ -1,0 +1,133 @@
+{
+  "instance_id": "python_java__nf-core__modules__pr11162",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "nf-core/modules",
+  "pr_number": 11162,
+  "pr_url": "https://github.com/nf-core/modules/pull/11162",
+  "repo": {
+    "full_name": "nf-core/modules",
+    "clone_url": "https://github.com/nf-core/modules.git",
+    "default_branch": "master",
+    "created_at": "2019-07-26T08:51:31Z",
+    "stars": 410,
+    "license": "MIT",
+    "size_kb": 193070
+  },
+  "pull_request": {
+    "id": 3521958931,
+    "title": "Taxpasta python dependencies",
+    "body": "This PR updates taxpasta python dependencies.\r\n\r\n## PR checklist\r\n\r\n- [ ] This comment contains a description of changes (with reason).\r\n- [ ] If you've fixed a bug or added code that should be tested, add tests!\r\n- [ ] If you've added a new tool - have you followed the module conventions in the [contribution docs](https://github.com/nf-core/modules/tree/master/.github/CONTRIBUTING.md)\r\n- [ ] If necessary, include test data in your PR.\r\n- [ ] Remove all TODO statements.\r\n- [ ] Broadcast software version numbers to `topic: versions` - [See version_topics](https://nf-co.re/blog/2025/version_topics)\r\n- [ ] Follow the naming conventions.\r\n- [ ] Follow the parameters requirements.\r\n- [ ] Follow the input/output options guidelines.\r\n- [ ] Add a resource `label`\r\n- [ ] Use BioConda and BioContainers if possible to fulfil software requirements.\r\n- Ensure that the test works with either Docker / Singularity. Conda CI tests can be quite flaky:\r\n  - For modules:\r\n    - [ ] `nf-core modules test <MODULE> --profile docker`\r\n    - [ ] `nf-core modules test <MODULE> --profile singularity`\r\n    - [ ] `nf-core modules test <MODULE> --profile conda`\r\n  - For subworkflows:\r\n    - [ ] `nf-core subworkflows test <SUBWORKFLOW> --profile docker`\r\n    - [ ] `nf-core subworkflows test <SUBWORKFLOW> --profile singularity`\r\n    - [ ] `nf-core subworkflows test <SUBWORKFLOW> --profile conda`\r\n",
+    "created_at": "2026-04-13T09:11:16Z",
+    "merged_at": "2026-04-13T09:47:29Z",
+    "base_sha": "f99b33c967d9182d1dedbc7383d2c457cd02d9a2",
+    "head_sha": "5fb0f0f782b07e4fe4dad15bcc6aaddfb1efa28b",
+    "merge_commit_sha": "1b9d9c500cbadcb012359c2b631750cbaab6abd3",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "c5a6eb24293c7f53cfd4296551573136645e954a",
+  "final_sha": "5fb0f0f782b07e4fe4dad15bcc6aaddfb1efa28b",
+  "changed_files": [
+    {
+      "sha": "2dc4820a1e00c81bebaba48cfe97738ba7f942af",
+      "filename": "modules/nf-core/taxpasta/merge/environment.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/nf-core/modules/blob/5fb0f0f782b07e4fe4dad15bcc6aaddfb1efa28b/modules%2Fnf-core%2Ftaxpasta%2Fmerge%2Fenvironment.yml",
+      "raw_url": "https://github.com/nf-core/modules/raw/5fb0f0f782b07e4fe4dad15bcc6aaddfb1efa28b/modules%2Fnf-core%2Ftaxpasta%2Fmerge%2Fenvironment.yml",
+      "contents_url": "https://api.github.com/repos/nf-core/modules/contents/modules%2Fnf-core%2Ftaxpasta%2Fmerge%2Fenvironment.yml?ref=5fb0f0f782b07e4fe4dad15bcc6aaddfb1efa28b",
+      "patch": "@@ -5,3 +5,4 @@ channels:\n   - bioconda\n dependencies:\n   - bioconda::taxpasta=0.7.0\n+  - conda-forge::python=3.11"
+    },
+    {
+      "sha": "2dc4820a1e00c81bebaba48cfe97738ba7f942af",
+      "filename": "modules/nf-core/taxpasta/standardise/environment.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/nf-core/modules/blob/5fb0f0f782b07e4fe4dad15bcc6aaddfb1efa28b/modules%2Fnf-core%2Ftaxpasta%2Fstandardise%2Fenvironment.yml",
+      "raw_url": "https://github.com/nf-core/modules/raw/5fb0f0f782b07e4fe4dad15bcc6aaddfb1efa28b/modules%2Fnf-core%2Ftaxpasta%2Fstandardise%2Fenvironment.yml",
+      "contents_url": "https://api.github.com/repos/nf-core/modules/contents/modules%2Fnf-core%2Ftaxpasta%2Fstandardise%2Fenvironment.yml?ref=5fb0f0f782b07e4fe4dad15bcc6aaddfb1efa28b",
+      "patch": "@@ -5,3 +5,4 @@ channels:\n   - bioconda\n dependencies:\n   - bioconda::taxpasta=0.7.0\n+  - conda-forge::python=3.11"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "587a96022eb227c21b124702acc3b99ecfc64dcf",
+      "message": "Taxpasta python dependencies",
+      "parent_shas": [
+        "c5a6eb24293c7f53cfd4296551573136645e954a"
+      ]
+    },
+    {
+      "sha": "4a61ccc8e09ab50f05ef2a21167b68d727f5c717",
+      "message": "Update dependencies",
+      "parent_shas": [
+        "587a96022eb227c21b124702acc3b99ecfc64dcf"
+      ]
+    },
+    {
+      "sha": "3caf1c10a28c2036203059ba2dee37a7ee040b65",
+      "message": "Pin a python version",
+      "parent_shas": [
+        "4a61ccc8e09ab50f05ef2a21167b68d727f5c717"
+      ]
+    },
+    {
+      "sha": "af695bccbd2d33c0179549e44db68f2fbddb2684",
+      "message": "Merge branch 'master' into taxpasta_dependencies",
+      "parent_shas": [
+        "3caf1c10a28c2036203059ba2dee37a7ee040b65",
+        "f99b33c967d9182d1dedbc7383d2c457cd02d9a2"
+      ]
+    },
+    {
+      "sha": "837aaff5ba3fe04119cf10ff7bfd61563269a9b8",
+      "message": "Add python 3.10 instead",
+      "parent_shas": [
+        "3caf1c10a28c2036203059ba2dee37a7ee040b65"
+      ]
+    },
+    {
+      "sha": "60527127aea56e752cd1bc29050575c7fe1fd5c4",
+      "message": "Merge branch 'taxpasta_dependencies' of https://github.com/sofstam/modules into taxpasta_dependencies",
+      "parent_shas": [
+        "837aaff5ba3fe04119cf10ff7bfd61563269a9b8",
+        "af695bccbd2d33c0179549e44db68f2fbddb2684"
+      ]
+    },
+    {
+      "sha": "5fb0f0f782b07e4fe4dad15bcc6aaddfb1efa28b",
+      "message": "Pin back to one version",
+      "parent_shas": [
+        "60527127aea56e752cd1bc29050575c7fe1fd5c4"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "dependency_only",
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__nf-core__modules__pr11162.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\nf-core__modules__pr11162__python_java__nf-core__modules__pr11162\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\nf-core__modules__pr11162__python_java__nf-core__modules__pr11162\\rn"
+  }
+}

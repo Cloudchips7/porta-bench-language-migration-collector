@@ -1,0 +1,76 @@
+{
+  "instance_id": "java_python__sbt__sbt-eclipse__pr469",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "sbt/sbt-eclipse",
+  "pr_number": 469,
+  "pr_url": "https://github.com/sbt/sbt-eclipse/pull/469",
+  "repo": {
+    "full_name": "sbt/sbt-eclipse",
+    "clone_url": "https://github.com/sbt/sbt-eclipse.git",
+    "default_branch": "main",
+    "created_at": "2011-06-04T00:39:57Z",
+    "stars": 712,
+    "license": "Apache-2.0",
+    "size_kb": 1354
+  },
+  "pull_request": {
+    "id": 3518371623,
+    "title": "publish with java 17",
+    "body": "",
+    "created_at": "2026-04-11T22:57:24Z",
+    "merged_at": "2026-04-11T22:57:35Z",
+    "base_sha": "646ffe6c392974799e3b1083e6ece3d550e51c4b",
+    "head_sha": "595d36596982fce4bb0e55cdb39172d6b5590d03",
+    "merge_commit_sha": "edf405af4a416e7da2461e8f47ff37201c490359",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "646ffe6c392974799e3b1083e6ece3d550e51c4b",
+  "final_sha": "595d36596982fce4bb0e55cdb39172d6b5590d03",
+  "changed_files": [
+    {
+      "sha": "ae259bf5624f94e318824ab6f9edd5b4a8c7bf84",
+      "filename": ".github/workflows/publish.yml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/sbt/sbt-eclipse/blob/595d36596982fce4bb0e55cdb39172d6b5590d03/.github%2Fworkflows%2Fpublish.yml",
+      "raw_url": "https://github.com/sbt/sbt-eclipse/raw/595d36596982fce4bb0e55cdb39172d6b5590d03/.github%2Fworkflows%2Fpublish.yml",
+      "contents_url": "https://api.github.com/repos/sbt/sbt-eclipse/contents/.github%2Fworkflows%2Fpublish.yml?ref=595d36596982fce4bb0e55cdb39172d6b5590d03",
+      "patch": "@@ -8,7 +8,7 @@ on:\n \n jobs:\n   publish-artifacts:\n-    name: JDK 8\n+    name: JDK 17\n     runs-on: ubuntu-24.04\n     if: ${{ github.repository_owner == 'sbt' }}\n     steps:\n@@ -25,7 +25,7 @@ jobs:\n       - name: Install Adoptium Temurin OpenJDK\n         uses: coursier/setup-action@v3\n         with:\n-          jvm: adoptium:8\n+          jvm: adoptium:17\n \n       - name: Install sbt\n         uses: sbt/setup-sbt@v1"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "595d36596982fce4bb0e55cdb39172d6b5590d03",
+      "message": "publish with java 17",
+      "parent_shas": [
+        "646ffe6c392974799e3b1083e6ece3d550e51c4b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__sbt__sbt-eclipse__pr469.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\sbt__sbt-eclipse__pr469__java_python__sbt__sbt-eclipse__pr469\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\sbt__sbt-eclipse__pr469__java_python__sbt__sbt-eclipse__pr469\\rn"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "instance_id": "java_python__google__perfetto__pr5447",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "google/perfetto",
+  "pr_number": 5447,
+  "pr_url": "https://github.com/google/perfetto/pull/5447",
+  "repo": {
+    "full_name": "google/perfetto",
+    "clone_url": "https://github.com/google/perfetto.git",
+    "default_branch": "main",
+    "created_at": "2019-12-10T10:32:44Z",
+    "stars": 5806,
+    "license": "Apache-2.0",
+    "size_kb": 214598
+  },
+  "pull_request": {
+    "id": 3527995555,
+    "title": "Fix PerfettoTraceTest.java",
+    "body": "Updating tests to use the correct API was changed to use static_string as default.\r\n\r\n",
+    "created_at": "2026-04-14T11:16:34Z",
+    "merged_at": "2026-04-14T11:34:59Z",
+    "base_sha": "d5dc5e8d4473d676a7be884d1b82c1d7e1215eed",
+    "head_sha": "cbcfb00c31b72fc0a62e3863f5b0b9955c03643f",
+    "merge_commit_sha": "3b1ce344e12018bdd1807a89c1b0704c4f7bca59",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "4045821e449d6cae0cdf52384a568a7c1edb661c",
+  "final_sha": "cbcfb00c31b72fc0a62e3863f5b0b9955c03643f",
+  "changed_files": [
+    {
+      "sha": "dfcf63b243ecbabfba384838316d90cf41d9f8d3",
+      "filename": "src/android_sdk/java/test/dev/perfetto/sdk/test/PerfettoTraceTest.java",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 2,
+      "changes": 9,
+      "blob_url": "https://github.com/google/perfetto/blob/cbcfb00c31b72fc0a62e3863f5b0b9955c03643f/src%2Fandroid_sdk%2Fjava%2Ftest%2Fdev%2Fperfetto%2Fsdk%2Ftest%2FPerfettoTraceTest.java",
+      "raw_url": "https://github.com/google/perfetto/raw/cbcfb00c31b72fc0a62e3863f5b0b9955c03643f/src%2Fandroid_sdk%2Fjava%2Ftest%2Fdev%2Fperfetto%2Fsdk%2Ftest%2FPerfettoTraceTest.java",
+      "contents_url": "https://api.github.com/repos/google/perfetto/contents/src%2Fandroid_sdk%2Fjava%2Ftest%2Fdev%2Fperfetto%2Fsdk%2Ftest%2FPerfettoTraceTest.java?ref=cbcfb00c31b72fc0a62e3863f5b0b9955c03643f",
+      "patch": "@@ -388,7 +388,7 @@ public void testDynamicCounterTrack() throws Exception {\n     PerfettoTrace.Session session = new PerfettoTrace.Session(true, traceConfig.toByteArray());\n \n     PerfettoTrace.counter(FOO_CATEGORY, 42)\n-        .usingProcessCounterTrack(\"dynamic_counter\")\n+        .usingProcessCounterTrackWithDynamicName(\"dynamic_counter\")\n         .emit();\n \n     Trace trace = Trace.parseFrom(session.close());\n@@ -944,6 +944,11 @@ private void collectTrackNames(TracePacket packet) {\n       return;\n     }\n     TrackDescriptor desc = packet.getTrackDescriptor();\n-    mTrackNames.add(desc.getName());\n+    if (desc.hasName()) {\n+      mTrackNames.add(desc.getName());\n+    }\n+    if (desc.hasStaticName()) {\n+      mTrackNames.add(desc.getStaticName());\n+    }\n   }\n }"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "dc15eca456b3ea85f2e369e19e3364ef4499ea45",
+      "message": "Fix PerfettoTraceTest.java\n\nUpdating tests to use the correct API was changed to use\nstatic_string as default.",
+      "parent_shas": [
+        "4045821e449d6cae0cdf52384a568a7c1edb661c"
+      ]
+    },
+    {
+      "sha": "cbcfb00c31b72fc0a62e3863f5b0b9955c03643f",
+      "message": "Merge branch 'main' into dev/parthsane/fix_perfetto_trace_test",
+      "parent_shas": [
+        "dc15eca456b3ea85f2e369e19e3364ef4499ea45",
+        "d5dc5e8d4473d676a7be884d1b82c1d7e1215eed"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__google__perfetto__pr5447.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\google__perfetto__pr5447__java_python__google__perfetto__pr5447\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\google__perfetto__pr5447__java_python__google__perfetto__pr5447\\rn"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "instance_id": "py2_py3__googleapis__python-bigquery-pandas__pr469",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "googleapis/python-bigquery-pandas",
+  "pr_number": 469,
+  "pr_url": "https://github.com/googleapis/python-bigquery-pandas/pull/469",
+  "repo": {
+    "full_name": "googleapis/python-bigquery-pandas",
+    "clone_url": "https://github.com/googleapis/python-bigquery-pandas.git",
+    "default_branch": "main",
+    "created_at": "2017-02-08T13:07:19Z",
+    "stars": 490,
+    "license": "BSD-3-Clause",
+    "size_kb": 1730
+  },
+  "pull_request": {
+    "id": 825822895,
+    "title": "fix: avoid use of `Series.iteritems`, which is deprecated in pandas prerelease",
+    "body": "Thank you for opening a Pull Request! Before submitting your PR, there are a few things you can do to make sure it goes smoothly:\r\n- [ ] Make sure to open an issue as a [bug/issue](https://github.com/googleapis/python-bigquery-pandas/issues/new/choose) before writing your code!  That way we can discuss the change, evaluate designs, and agree on the general idea\r\n- [ ] Ensure the tests and linter pass\r\n- [ ] Code coverage does not decrease (if any source code was changed)\r\n- [ ] Appropriate docs were updated (if necessary)\r\n\r\nFixes #465 \r\nFixes #466 \r\n🦕\r\n",
+    "created_at": "2022-01-18T19:47:09Z",
+    "merged_at": "2022-01-19T15:53:19Z",
+    "base_sha": "d6234ccf799d72d5bd132cda54bb3a852f238995",
+    "head_sha": "76bd7ea1203a5e60a88690036cc6b11db1c97ab3",
+    "merge_commit_sha": "7379cdcd7eedcbc751a4002bdf90c12e810e6bcd",
+    "labels": [
+      "api: bigquery"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "4beeb544cfb7d2ad72b7b924cd041acf36da2554",
+  "final_sha": "76bd7ea1203a5e60a88690036cc6b11db1c97ab3",
+  "changed_files": [
+    {
+      "sha": "d3357719b5747cb79946ed2220514f758ab9fc1d",
+      "filename": "pandas_gbq/schema.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/googleapis/python-bigquery-pandas/blob/76bd7ea1203a5e60a88690036cc6b11db1c97ab3/pandas_gbq%2Fschema.py",
+      "raw_url": "https://github.com/googleapis/python-bigquery-pandas/raw/76bd7ea1203a5e60a88690036cc6b11db1c97ab3/pandas_gbq%2Fschema.py",
+      "contents_url": "https://api.github.com/repos/googleapis/python-bigquery-pandas/contents/pandas_gbq%2Fschema.py?ref=76bd7ea1203a5e60a88690036cc6b11db1c97ab3",
+      "patch": "@@ -116,7 +116,7 @@ def generate_bq_schema(dataframe, default_type=\"STRING\"):\n     }\n \n     fields = []\n-    for column_name, dtype in dataframe.dtypes.iteritems():\n+    for column_name, dtype in dataframe.dtypes.items():\n         fields.append(\n             {\"name\": column_name, \"type\": type_mapping.get(dtype.kind, default_type)}\n         )"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d4e8f8b9ecb4b898c28f4b61493e0aaf919fea0c",
+      "message": "fix: avoid iteritems deprecation in pandas prerelease",
+      "parent_shas": [
+        "4beeb544cfb7d2ad72b7b924cd041acf36da2554"
+      ]
+    },
+    {
+      "sha": "e6befd023577cff5e6a87b4130e01199d5ef7b01",
+      "message": "Merge branch 'main' into issue466-issue465-warnings",
+      "parent_shas": [
+        "d4e8f8b9ecb4b898c28f4b61493e0aaf919fea0c",
+        "891a00c8f202aa476ffb22b2fb92c01ffa84889a"
+      ]
+    },
+    {
+      "sha": "76bd7ea1203a5e60a88690036cc6b11db1c97ab3",
+      "message": "Merge branch 'main' into issue466-issue465-warnings",
+      "parent_shas": [
+        "e6befd023577cff5e6a87b4130e01199d5ef7b01",
+        "d6234ccf799d72d5bd132cda54bb3a852f238995"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__googleapis__python-bigquery-pandas__pr469.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\googleapis__python-bigquery-pandas__pr469__py2_py3__googleapis__python-bigquery-pandas__pr469\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\googleapis__python-bigquery-pandas__pr469__py2_py3__googleapis__python-bigquery-pandas__pr469\\rn"
+  }
+}

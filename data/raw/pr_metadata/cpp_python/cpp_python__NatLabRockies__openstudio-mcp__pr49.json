@@ -1,0 +1,136 @@
+{
+  "instance_id": "cpp_python__NatLabRockies__openstudio-mcp__pr49",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "NatLabRockies/openstudio-mcp",
+  "pr_number": 49,
+  "pr_url": "https://github.com/NatLabRockies/openstudio-mcp/pull/49",
+  "repo": {
+    "full_name": "NatLabRockies/openstudio-mcp",
+    "clone_url": "https://github.com/NatLabRockies/openstudio-mcp.git",
+    "default_branch": "develop",
+    "created_at": "2026-02-17T21:11:56Z",
+    "stars": 6,
+    "license": "NOASSERTION",
+    "size_kb": 4273
+  },
+  "pull_request": {
+    "id": 3518240220,
+    "title": "fix: silence openstudio stdout Logger to prevent Polyhedron/Space pollution",
+    "body": "## Summary\n\n- Adds `silence_openstudio_stdout_logger()` to `stdout_suppression.py`, called from `server.py::main()` before `redirect_c_stdout_to_stderr()`. Sets `standardOutLogger` level to `Fatal` via the intended Logger API — primary fix for Polyhedron/Space warnings reaching C stdout during `Space::volume()`.\n- Keeps the existing fd-1→fd-2 redirect as a backstop for SWIG memleak warnings in edge cases and future unknown C stdout writes.\n- Adds 3 regression tests (`tests/test_stdout_logger_silence.py`) including a falsification test that resets to Warn to prove the pollution is real.\n- Added to CI shard 5.\n\nFixes #48. Upstream SWIG memleak root cause filed as NatLabRockies/OpenStudio#5608 (PyPI wheel missed #5422's `SWIG_PYTHON_SILENT_MEMLEAK` define).\n\n## Test plan\n\n- [x] `pytest tests/test_stdout_logger_silence.py` — 3/3 pass\n- [x] Regression: `pytest tests/test_swig_memleak_cleanup.py tests/test_stdio_smoke.py tests/test_concurrent_tools.py tests/test_stdout_logger_silence.py` — 8/8 pass\n- [x] CI shard 5 green\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "created_at": "2026-04-11T21:00:17Z",
+    "merged_at": "2026-04-11T21:22:02Z",
+    "base_sha": "33f99be5e49476729ee0bab2b8b5f11591574121",
+    "head_sha": "3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76",
+    "merge_commit_sha": "6ee6a1530e0b9b4bfb5ac543f65b6f1bbb26d359",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "33f99be5e49476729ee0bab2b8b5f11591574121",
+  "final_sha": "3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76",
+  "changed_files": [
+    {
+      "sha": "ba4cf191c4bb54fc109cf5c733930b4ced95c923",
+      "filename": ".github/workflows/ci.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/NatLabRockies/openstudio-mcp/blob/3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76/.github%2Fworkflows%2Fci.yml",
+      "raw_url": "https://github.com/NatLabRockies/openstudio-mcp/raw/3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76/.github%2Fworkflows%2Fci.yml",
+      "contents_url": "https://api.github.com/repos/NatLabRockies/openstudio-mcp/contents/.github%2Fworkflows%2Fci.yml?ref=3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76",
+      "patch": "@@ -82,7 +82,7 @@ jobs:\n               ;;\n             5)\n               # HVAC supply sim smoke tests + hvac_validation + bar_building + concurrent regression\n-              FILES=\"tests/test_hvac_supply_sim.py tests/test_hvac_validation.py tests/test_bar_building.py tests/test_concurrent_tools.py\"\n+              FILES=\"tests/test_hvac_supply_sim.py tests/test_hvac_validation.py tests/test_bar_building.py tests/test_concurrent_tools.py tests/test_stdout_logger_silence.py\"\n               EXTRA_ENV=\"\"\n               ;;\n           esac"
+    },
+    {
+      "sha": "8d6ccd63f80e7804a54545386263f3b0e89e3492",
+      "filename": "CLAUDE.md",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 5,
+      "changes": 11,
+      "blob_url": "https://github.com/NatLabRockies/openstudio-mcp/blob/3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76/CLAUDE.md",
+      "raw_url": "https://github.com/NatLabRockies/openstudio-mcp/raw/3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76/CLAUDE.md",
+      "contents_url": "https://api.github.com/repos/NatLabRockies/openstudio-mcp/contents/CLAUDE.md?ref=3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76",
+      "patch": "@@ -36,11 +36,12 @@ Always use openstudio-mcp tools for BEM tasks:\n - Key modules: `model_manager.py` (load/get/save/clear model), `osm_helpers.py` (fetch_object, optional_name, list_all_as_dicts), `skills/__init__.py` (auto-discovers all skills)\n \n ## Stdout Suppression\n-Two real classes of stdout pollution corrupt MCP JSON-RPC — both caught by one fd redirect at startup.\n-- `stdout_suppression.py::redirect_c_stdout_to_stderr()` — called once in `server.py::main()` before `mcp.run()`. Permanently dups fd 1 → stderr; Python `sys.stdout` gets a private fd to the real MCP client pipe.\n-- **Class A — SWIG memleak warnings** (interpreter shutdown): `\"swig/python detected a memory leak of type 'boost::optional< ... > *'\"`. PyPI `openstudio==3.11.0` wheel was built WITHOUT `SWIG_PYTHON_SILENT_MEMLEAK`. Upstream SWIG#2638 / OpenStudio#5421; fix #5422 applied to .deb only, not the wheel we run.\n-- **Class B — Polyhedron Logger** (during ops): `[utilities.Polyhedron] <0> ...` from `Space::volume()`/`Space::floorArea()` on imperfect geometry via OpenStudio `LOG(Warn, ...)`. Unfiled upstream.\n-- `cbe6399`-style claims that FourPipeBeam / `add_baseline_system` emit stdout do NOT reproduce — the per-call wrappers that commit added are no-ops now; fd redirect covers real sources.\n+Two real classes of stdout pollution corrupt MCP JSON-RPC — two-layer defense at startup in `server.py::main()` before `mcp.run()`.\n+- **Class A — SWIG memleak warnings** (interpreter shutdown): `\"swig/python detected a memory leak of type 'boost::optional< ... > *'\"`. PyPI `openstudio==3.11.0` wheel built WITHOUT `SWIG_PYTHON_SILENT_MEMLEAK`. Upstream SWIG#2638 / OpenStudio#5421; fix #5422 applied to .deb only, not the wheel (filed as NatLabRockies/OpenStudio#5608).\n+- **Class B — OpenStudio Logger Polyhedron/Space** (during ops): `[utilities.Polyhedron]` / `[openstudio.model.Space]` warnings on stdout from `Space::volume()`/`floorArea()` on imperfect geometry. Default `standardOutLogger` sink runs at Warn level → C stdout.\n+- `stdout_suppression.py::silence_openstudio_stdout_logger()` — primary fix for Class B. Calls `openstudio.Logger.instance().standardOutLogger().setLogLevel(openstudio.Fatal)`. Uses intended Logger API, no fd manipulation.\n+- `stdout_suppression.py::redirect_c_stdout_to_stderr()` — backstop for Class A + unknowns. Permanently dups fd 1 → stderr; Python `sys.stdout` gets a private fd to the real MCP client pipe.\n+- `cbe6399`-style claims that FourPipeBeam / `add_baseline_system` emit stdout do NOT reproduce — per-call wrappers are no-ops now.\n - `suppress_openstudio_warnings()` retained as no-op for import compat\n - No action needed for new skills\n "
+    },
+    {
+      "sha": "290156f78b018905364bea54bf525b7401858666",
+      "filename": "mcp_server/server.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 1,
+      "changes": 6,
+      "blob_url": "https://github.com/NatLabRockies/openstudio-mcp/blob/3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76/mcp_server%2Fserver.py",
+      "raw_url": "https://github.com/NatLabRockies/openstudio-mcp/raw/3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76/mcp_server%2Fserver.py",
+      "contents_url": "https://api.github.com/repos/NatLabRockies/openstudio-mcp/contents/mcp_server%2Fserver.py?ref=3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76",
+      "patch": "@@ -4,7 +4,10 @@\n \n from mcp_server.config import ENABLE_CODE_MODE\n from mcp_server.skills import register_all_skills\n-from mcp_server.stdout_suppression import redirect_c_stdout_to_stderr\n+from mcp_server.stdout_suppression import (\n+    redirect_c_stdout_to_stderr,\n+    silence_openstudio_stdout_logger,\n+)\n \n mcp = FastMCP(\n     \"openstudio-mcp\",\n@@ -53,6 +56,7 @@\n \n \n def main():\n+    silence_openstudio_stdout_logger()\n     redirect_c_stdout_to_stderr()\n     mcp.run()\n "
+    },
+    {
+      "sha": "c84bfd82943ce1223ba6cd7f7c10a1fc1cf99e1e",
+      "filename": "mcp_server/stdout_suppression.py",
+      "status": "modified",
+      "additions": 48,
+      "deletions": 30,
+      "changes": 78,
+      "blob_url": "https://github.com/NatLabRockies/openstudio-mcp/blob/3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76/mcp_server%2Fstdout_suppression.py",
+      "raw_url": "https://github.com/NatLabRockies/openstudio-mcp/raw/3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76/mcp_server%2Fstdout_suppression.py",
+      "contents_url": "https://api.github.com/repos/NatLabRockies/openstudio-mcp/contents/mcp_server%2Fstdout_suppression.py?ref=3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76",
+      "patch": "@@ -1,26 +1,29 @@\n-\"\"\"Redirect C-level stdout to stderr to protect MCP JSON-RPC protocol.\n-\n-Two real sources of stdout pollution on our runtime (openstudio PyPI wheel\n-3.11.0) that would corrupt the JSON-RPC stream:\n-\n-1. SWIG memleak warnings at interpreter shutdown —\n-     \"swig/python detected a memory leak of type 'boost::optional< ... > *'\"\n-   Fires for boost::optional<Model>, boost::optional<double>, etc. The\n-   PyPI wheel was built WITHOUT SWIG_PYTHON_SILENT_MEMLEAK. Root cause is\n-   SWIG#2638 / NatLabRockies/OpenStudio#5421; fix #5422 was applied to the\n-   .deb build only, not the wheel we actually run.\n-\n-2. OpenStudio Logger output during Space::volume() / Space::floorArea() on\n-   models with imperfect geometry —\n-     \"[utilities.Polyhedron] <0> Polyhedron is not enclosed in original\n-      testing. Trying to add missing colinear points.\"\n-   Source: LOG(Warn, ...) in OpenStudio utilities/Polyhedron. Unfiled\n-   upstream as of 2026-04-11.\n-\n-Strategy: at process startup, permanently redirect fd 1 to stderr so ALL\n-C-level and logger writes go there harmlessly. Then replace Python's\n-sys.stdout with a wrapper around the saved original fd so FastMCP's stdio\n-transport still writes JSON-RPC to the real client pipe.\n+\"\"\"Keep stdout clean for MCP JSON-RPC on the openstudio PyPI wheel.\n+\n+Two real sources of stdout pollution on our runtime corrupt the JSON-RPC\n+stream. Two-layer defense at startup:\n+\n+Class A — SWIG memleak warnings at interpreter shutdown —\n+    \"swig/python detected a memory leak of type 'boost::optional< ... > *'\"\n+  Fires for boost::optional<Model>, boost::optional<double>, etc. The PyPI\n+  `openstudio==3.11.0` wheel was built WITHOUT SWIG_PYTHON_SILENT_MEMLEAK\n+  (root cause SWIG#2638; OpenStudio#5421 was \"fixed\" by #5422 for .deb only,\n+  wheel build missed it — filed as NatLabRockies/OpenStudio#5608).\n+  Caught by `redirect_c_stdout_to_stderr` (fd-level backstop).\n+\n+Class B — OpenStudio Logger output during Space::volume() / floorArea() —\n+    \"[utilities.Polyhedron] <0> Polyhedron is not enclosed in original\n+     testing. Trying to add missing colinear points.\"\n+    \"[openstudio.model.Space] <0> Object of type 'OS:Space' and named\n+     '...' is not enclosed, there are N edges that aren't used...\"\n+  Source: the default `standardOutLogger` sink runs at Warn level and\n+  writes to C stdout. Silenced via the intended Logger API in\n+  `silence_openstudio_stdout_logger()`.\n+\n+Call order in server.py::main():\n+  1. silence_openstudio_stdout_logger()  # primary fix for Class B\n+  2. redirect_c_stdout_to_stderr()       # backstop for Class A + unknowns\n+  3. mcp.run()\n \n Done once — no per-call suppression, no races, no missed callsites.\n \"\"\"\n@@ -33,10 +36,24 @@\n import sys\n \n \n+def silence_openstudio_stdout_logger():\n+    \"\"\"Set OpenStudio's standardOutLogger to Fatal level.\n+\n+    Primary defense for Class B (Polyhedron/Space Logger warnings).\n+    Uses the intended OpenStudio Logger API — no fd manipulation.\n+    Call at process startup before any SDK operations.\n+    \"\"\"\n+    import openstudio\n+    openstudio.Logger.instance().standardOutLogger().setLogLevel(openstudio.Fatal)\n+\n+\n def redirect_c_stdout_to_stderr():\n     \"\"\"Permanently redirect C-level stdout (fd 1) to stderr.\n \n-    Must be called before FastMCP's stdio_server() captures sys.stdout.\n+    Belt-and-suspenders backstop for anything the Logger config doesn't\n+    catch (SWIG memleak fprintfs under odd fd states, future unknown C\n+    stdout writes). Must be called before FastMCP's stdio_server()\n+    captures sys.stdout.\n     After this call:\n       - C code (printf, SWIG, OpenStudio internals) -> fd 1 -> stderr\n       - Python sys.stdout -> saved fd -> real MCP client pipe\n@@ -50,9 +67,12 @@ def redirect_c_stdout_to_stderr():\n     # Point fd 1 at stderr — all future C-level printf goes here\n     os.dup2(stderr_fd, stdout_fd)\n \n-    # Build a new Python stdout that writes to the saved fd.\n-    # Line buffering so each JSON-RPC message flushes immediately.\n-    binary = io.open(saved_fd, \"wb\", closefd=True)\n+    # Build a new Python stdout that writes to the saved fd. This file must\n+    # outlive the function — it becomes sys.stdout for the rest of the\n+    # process, so a context manager would close it prematurely.\n+    # PTH123: Path.open() takes a path, not an fd — builtin open is correct here.\n+    # SIM115: this file intentionally outlives the function.\n+    binary = open(saved_fd, \"wb\", closefd=True)  # noqa: SIM115, PTH123\n     text = io.TextIOWrapper(binary, encoding=\"utf-8\", line_buffering=True)\n     sys.stdout = text\n \n@@ -67,10 +87,8 @@ def suppress_openstudio_warnings():\n \n def _redirect_stdout_to_stderr_at_exit():\n     \"\"\"Safety net: ensure fd 1 points to stderr during interpreter shutdown.\"\"\"\n-    try:\n+    with contextlib.suppress(Exception):\n         os.dup2(2, 1)\n-    except Exception:\n-        pass\n \n \n atexit.register(_redirect_stdout_to_stderr_at_exit)"
+    },
+    {
+      "sha": "99aff0cfd240f882d2ad76fa4f478cf74f23f61a",
+      "filename": "tests/test_stdout_logger_silence.py",
+      "status": "added",
+      "additions": 133,
+      "deletions": 0,
+      "changes": 133,
+      "blob_url": "https://github.com/NatLabRockies/openstudio-mcp/blob/3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76/tests%2Ftest_stdout_logger_silence.py",
+      "raw_url": "https://github.com/NatLabRockies/openstudio-mcp/raw/3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76/tests%2Ftest_stdout_logger_silence.py",
+      "contents_url": "https://api.github.com/repos/NatLabRockies/openstudio-mcp/contents/tests%2Ftest_stdout_logger_silence.py?ref=3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76",
+      "patch": "@@ -0,0 +1,133 @@\n+\"\"\"Verify silence_openstudio_stdout_logger keeps Polyhedron/Space warnings off fd 1.\"\"\"\n+\n+import os\n+import sys\n+import tempfile\n+\n+import pytest\n+\n+\n+@pytest.mark.integration\n+def test_silence_openstudio_stdout_logger_sets_fatal_level():\n+    # Validates: silence_openstudio_stdout_logger raises standardOutLogger level to Fatal\n+    import openstudio\n+\n+    from mcp_server.stdout_suppression import silence_openstudio_stdout_logger\n+\n+    silence_openstudio_stdout_logger()\n+    level = openstudio.Logger.instance().standardOutLogger().logLevel()\n+    assert level.is_initialized(), \"standardOutLogger level must be set\"\n+    assert level.get() == openstudio.Fatal, (\n+        f\"expected Fatal (2), got {level.get()} — Polyhedron warnings will still leak\"\n+    )\n+\n+\n+@pytest.mark.integration\n+def test_polyhedron_warnings_do_not_reach_stdout_after_silence():\n+    # Regression: [utilities.Polyhedron] / [openstudio.model.Space] warnings were\n+    # reaching C stdout during Space::volume() on non-enclosed geometry, corrupting\n+    # MCP JSON-RPC. silence_openstudio_stdout_logger() is the primary fix.\n+    import openstudio\n+\n+    from mcp_server.stdout_suppression import silence_openstudio_stdout_logger\n+\n+    silence_openstudio_stdout_logger()\n+\n+    # Build a Space with non-enclosed geometry (5 of 6 cube faces — roof missing)\n+    m = openstudio.model.Model()\n+    space = openstudio.model.Space(m)\n+    P = openstudio.Point3d\n+\n+    def poly(*pts):\n+        v = openstudio.Point3dVector()\n+        for p in pts:\n+            v.append(p)\n+        return v\n+\n+    floor = openstudio.model.Surface(\n+        poly(P(0, 0, 0), P(1, 0, 0), P(1, 1, 0), P(0, 1, 0)), m,\n+    )\n+    floor.setSpace(space)\n+    for verts in [\n+        poly(P(0, 0, 0), P(1, 0, 0), P(1, 0, 1), P(0, 0, 1)),\n+        poly(P(1, 0, 0), P(1, 1, 0), P(1, 1, 1), P(1, 0, 1)),\n+        poly(P(1, 1, 0), P(0, 1, 0), P(0, 1, 1), P(1, 1, 1)),\n+        poly(P(0, 1, 0), P(0, 0, 0), P(0, 0, 1), P(0, 1, 1)),\n+    ]:\n+        openstudio.model.Surface(verts, m).setSpace(space)\n+\n+    # Capture fd 1 at OS level around the Polyhedron trigger\n+    cap = tempfile.NamedTemporaryFile(mode=\"r+\", delete=False)\n+    saved_fd1 = os.dup(1)\n+    os.dup2(cap.fileno(), 1)\n+    try:\n+        _ = space.volume()\n+        _ = space.floorArea()\n+    finally:\n+        sys.stdout.flush()\n+        os.dup2(saved_fd1, 1)\n+        os.close(saved_fd1)\n+\n+    cap.seek(0)\n+    captured = cap.read()\n+\n+    assert captured == \"\", (\n+        f\"expected clean stdout after silence_openstudio_stdout_logger, \"\n+        f\"but captured {len(captured)} bytes: {captured[:300]!r}\"\n+    )\n+\n+\n+@pytest.mark.integration\n+def test_without_silence_polyhedron_still_prints_to_stdout():\n+    # Validates: the bug exists — without our fix, Polyhedron Logger goes to fd 1.\n+    # This test resets the level to Warn and confirms the pollution returns,\n+    # so the previous test can't pass trivially by silencing something else.\n+    import openstudio\n+\n+    # Reset to default Warn level\n+    openstudio.Logger.instance().standardOutLogger().setLogLevel(openstudio.Warn)\n+    level = openstudio.Logger.instance().standardOutLogger().logLevel()\n+    assert level.get() == openstudio.Warn\n+\n+    m = openstudio.model.Model()\n+    space = openstudio.model.Space(m)\n+    P = openstudio.Point3d\n+\n+    def poly(*pts):\n+        v = openstudio.Point3dVector()\n+        for p in pts:\n+            v.append(p)\n+        return v\n+\n+    openstudio.model.Surface(\n+        poly(P(0, 0, 0), P(1, 0, 0), P(1, 1, 0), P(0, 1, 0)), m,\n+    ).setSpace(space)\n+    for verts in [\n+        poly(P(0, 0, 0), P(1, 0, 0), P(1, 0, 1), P(0, 0, 1)),\n+        poly(P(1, 0, 0), P(1, 1, 0), P(1, 1, 1), P(1, 0, 1)),\n+        poly(P(1, 1, 0), P(0, 1, 0), P(0, 1, 1), P(1, 1, 1)),\n+        poly(P(0, 1, 0), P(0, 0, 0), P(0, 0, 1), P(0, 1, 1)),\n+    ]:\n+        openstudio.model.Surface(verts, m).setSpace(space)\n+\n+    cap = tempfile.NamedTemporaryFile(mode=\"r+\", delete=False)\n+    saved_fd1 = os.dup(1)\n+    os.dup2(cap.fileno(), 1)\n+    try:\n+        _ = space.volume()\n+    finally:\n+        sys.stdout.flush()\n+        os.dup2(saved_fd1, 1)\n+        os.close(saved_fd1)\n+\n+    cap.seek(0)\n+    captured = cap.read()\n+\n+    # Restore silence so remaining tests in the file see Fatal\n+    openstudio.Logger.instance().standardOutLogger().setLogLevel(openstudio.Fatal)\n+\n+    assert \"Polyhedron\" in captured or \"Space\" in captured, (\n+        f\"expected Polyhedron/Space Logger output on stdout at Warn level, \"\n+        f\"got {captured!r} — if this fails, openstudio upstream may have \"\n+        f\"changed the default sink and our fix can be simplified\"\n+    )"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "86e568af2995d0b6fff8d6f7b80b7b7db3bfb3cd",
+      "message": "fix: silence openstudio stdout Logger to prevent Polyhedron/Space stdout pollution\n\nTwo-layer defense at server startup:\n1. silence_openstudio_stdout_logger() — new, sets standardOutLogger to\n   Fatal via the intended Logger API. Primary fix for Polyhedron/Space\n   warnings on stdout during Space::volume() (the bulk of pollution in\n   practice).\n2. redirect_c_stdout_to_stderr() — unchanged, remains as backstop for\n   SWIG memleak warnings in edge cases and future unknown C stdout writes.\n\nAdds 3 regression tests in tests/test_stdout_logger_silence.py including\na falsification test that resets to Warn to prove the pollution is real.\n\nUpstream SWIG memleak root cause filed as NatLabRockies/OpenStudio#5608\n(PyPI wheel missed #5422 SWIG_PYTHON_SILENT_MEMLEAK define).\n\nFixes #48\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "33f99be5e49476729ee0bab2b8b5f11591574121"
+      ]
+    },
+    {
+      "sha": "3642b5f0b6f063f1547d18114d7b3f3ac0bc0d76",
+      "message": "style: clear pre-existing ruff warnings in stdout_suppression.py\n\n- UP020: io.open → builtin open\n- SIM115: add noqa (intentional — file outlives function, becomes sys.stdout)\n- PTH123: add noqa (fd, not a path — Path.open() inapplicable)\n- SIM105: try/except/pass → contextlib.suppress in atexit handler\n\nNo behavior change.\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "86e568af2995d0b6fff8d6f7b80b7b7db3bfb3cd"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "adds_new_tests",
+      "binding_wrapper_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__NatLabRockies__openstudio-mcp__pr49.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\NatLabRockies__openstudio-mcp__pr49__cpp_python__NatLabRockies__openstudio-mcp__pr49\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\NatLabRockies__openstudio-mcp__pr49__cpp_python__NatLabRockies__openstudio-mcp__pr49\\rn"
+  }
+}

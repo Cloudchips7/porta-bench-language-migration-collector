@@ -1,0 +1,322 @@
+{
+  "instance_id": "python_cpp__flexera-public__policy_templates__pr4296",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "flexera-public/policy_templates",
+  "pr_number": 4296,
+  "pr_url": "https://github.com/flexera-public/policy_templates/pull/4296",
+  "repo": {
+    "full_name": "flexera-public/policy_templates",
+    "clone_url": "https://github.com/flexera-public/policy_templates.git",
+    "default_branch": "master",
+    "created_at": "2018-04-20T23:09:08Z",
+    "stars": 46,
+    "license": "MIT",
+    "size_kb": 294066
+  },
+  "pull_request": {
+    "id": 3514549378,
+    "title": "POL-1750 Python Updates",
+    "body": "### Description\r\n\r\n- Updates Python to `3.14.3` in GitHub Workflows.\r\n- Adds ‎`.python-version` file to help users align their local environment to the repo\r\n- Configures GitHub Workflows to reference above file instead of manually specifying Python version in each one.\r\n- Adds Python-related stuff to `.gitignore` to ensure local files aren't added to a PR mistakenly\r\n- Updates `Important Files Modified` Dangerfile test to not report files being added by the PR that don't yet exist.\r\n",
+    "created_at": "2026-04-10T14:53:53Z",
+    "merged_at": "2026-04-13T12:04:53Z",
+    "base_sha": "0abbddc9c04eae77367829a7b2424ab619323e34",
+    "head_sha": "8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+    "merge_commit_sha": "f89fadab7855fa6681cc3960571c94fd57d88de7",
+    "labels": [
+      "READY-FOR-REVIEW"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "0abbddc9c04eae77367829a7b2424ab619323e34",
+  "final_sha": "8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+  "changed_files": [
+    {
+      "sha": "66678d52fbef513b1899d181a1333b882d5f035d",
+      "filename": ".github/workflows/cfn-test.yaml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fcfn-test.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fcfn-test.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fcfn-test.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -37,7 +37,7 @@ jobs:\n       - name: Set up Python\n         uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n \n       - name: Install cfn-lint\n         run: pip install cfn-lint"
+    },
+    {
+      "sha": "0183155f1a21c0a709feb6992c2dc15bcc8edeaf",
+      "filename": ".github/workflows/generate-aws-ec2-instance-types-json.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-aws-ec2-instance-types-json.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-aws-ec2-instance-types-json.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fgenerate-aws-ec2-instance-types-json.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -30,10 +30,9 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n           cache: 'pip' # caching pip dependencies\n-\n-      - run: pip install -r requirements.txt\n+          cache-dependency-path: 'requirements.txt'\n \n       - name: Generate AWS EC2 Instance Types List\n         shell: bash -l {0} # https://github.com/actions/virtual-environments/issues/4"
+    },
+    {
+      "sha": "a42553b7e533e25b692ea5902fcbe036697defab",
+      "filename": ".github/workflows/generate-aws-ec2-pricing-json.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-aws-ec2-pricing-json.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-aws-ec2-pricing-json.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fgenerate-aws-ec2-pricing-json.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -30,10 +30,9 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n           cache: 'pip' # caching pip dependencies\n-\n-      - run: pip install -r requirements.txt\n+          cache-dependency-path: 'requirements.txt'\n \n       - run: python3 tools/cloud_data/aws/aws_ec2_pricing.py\n "
+    },
+    {
+      "sha": "6ed991acecdfafabb51838411dfa671baa60b43b",
+      "filename": ".github/workflows/generate-aws-rds-pricing-json.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-aws-rds-pricing-json.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-aws-rds-pricing-json.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fgenerate-aws-rds-pricing-json.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -30,10 +30,9 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n           cache: 'pip' # caching pip dependencies\n-\n-      - run: pip install -r requirements.txt\n+          cache-dependency-path: 'requirements.txt'\n \n       - run: python3 tools/cloud_data/aws/aws_rds_pricing.py\n "
+    },
+    {
+      "sha": "8347defe73c524adc8f7c99f4078859edb8ca038",
+      "filename": ".github/workflows/generate-azure-compute-instance-types-json.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-azure-compute-instance-types-json.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-azure-compute-instance-types-json.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fgenerate-azure-compute-instance-types-json.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -30,10 +30,9 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n           cache: 'pip' # caching pip dependencies\n-\n-      - run: pip install -r requirements.txt\n+          cache-dependency-path: 'requirements.txt'\n \n       - name: Generate Azure Compute Instance Types List\n         shell: bash -l {0} # https://github.com/actions/virtual-environments/issues/4"
+    },
+    {
+      "sha": "671cf1456b6c78cedb6c58b3a30cb04c03a90b67",
+      "filename": ".github/workflows/generate-azure-db-storage-pricing-json.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-azure-db-storage-pricing-json.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-azure-db-storage-pricing-json.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fgenerate-azure-db-storage-pricing-json.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -30,10 +30,9 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n           cache: 'pip' # caching pip dependencies\n-\n-      - run: pip install -r requirements.txt\n+          cache-dependency-path: 'requirements.txt'\n \n       - run: python3 tools/cloud_data/azure/azure_db_storage_pricing.py\n "
+    },
+    {
+      "sha": "69f694411745bdc34e64994a724c4644da870740",
+      "filename": ".github/workflows/generate-azure-md-pricing-json.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-azure-md-pricing-json.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-azure-md-pricing-json.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fgenerate-azure-md-pricing-json.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -30,10 +30,9 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n           cache: 'pip' # caching pip dependencies\n-\n-      - run: pip install -r requirements.txt\n+          cache-dependency-path: 'requirements.txt'\n \n       - run: |\n           python3 tools/cloud_data/azure/azure_md_pricing.py"
+    },
+    {
+      "sha": "f06a169aca683316a3c5255c8cb1f6c86584731f",
+      "filename": ".github/workflows/generate-azure-sqlmi-storage-pricing-json.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-azure-sqlmi-storage-pricing-json.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-azure-sqlmi-storage-pricing-json.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fgenerate-azure-sqlmi-storage-pricing-json.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -30,10 +30,9 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n           cache: 'pip' # caching pip dependencies\n-\n-      - run: pip install -r requirements.txt\n+          cache-dependency-path: 'requirements.txt'\n \n       - run: python3 tools/cloud_data/azure/azure_sqlmi_storage_pricing.py\n "
+    },
+    {
+      "sha": "840b080f13fef985334fdd2836420d8efc6d8c32",
+      "filename": ".github/workflows/generate-azure-vm-families-json.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-azure-vm-families-json.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-azure-vm-families-json.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fgenerate-azure-vm-families-json.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -30,10 +30,9 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n           cache: 'pip' # caching pip dependencies\n-\n-      - run: pip install -r requirements.txt\n+          cache-dependency-path: 'requirements.txt'\n \n       - run: python3 tools/cloud_data/azure/azure_vm_families.py\n "
+    },
+    {
+      "sha": "7937011c6d69dd5322511fab821fec2eebea16b9",
+      "filename": ".github/workflows/generate-azure-vm-pricing-json.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-azure-vm-pricing-json.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-azure-vm-pricing-json.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fgenerate-azure-vm-pricing-json.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -30,10 +30,9 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n           cache: 'pip' # caching pip dependencies\n-\n-      - run: pip install -r requirements.txt\n+          cache-dependency-path: 'requirements.txt'\n \n       - run: python3 tools/cloud_data/azure/azure_vm_pricing.py\n "
+    },
+    {
+      "sha": "474b9705f8b65f2c963a991a45142e4f975dc601",
+      "filename": ".github/workflows/generate-gcp-compute-instance-types-json.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-gcp-compute-instance-types-json.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-gcp-compute-instance-types-json.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fgenerate-gcp-compute-instance-types-json.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -30,10 +30,9 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n           cache: 'pip' # caching pip dependencies\n-\n-      - run: pip install -r requirements.txt\n+          cache-dependency-path: 'requirements.txt'\n \n       - name: Make local JSON file containing Google auth information\n         shell: bash -l {0} # https://github.com/actions/virtual-environments/issues/4"
+    },
+    {
+      "sha": "5925b072a5258a33810ebe1120f9b70fc06c0990",
+      "filename": ".github/workflows/generate-gcp-vm-pricing-json.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-gcp-vm-pricing-json.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-gcp-vm-pricing-json.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fgenerate-gcp-vm-pricing-json.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -30,10 +30,9 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n           cache: 'pip' # caching pip dependencies\n-\n-      - run: pip install -r requirements.txt\n+          cache-dependency-path: 'requirements.txt'\n \n       - name: Make local JSON file containing Google auth information\n         shell: bash -l {0} # https://github.com/actions/virtual-environments/issues/4"
+    },
+    {
+      "sha": "dfea6633e9afeb4d54f3c6014fc35ec51d87ec86",
+      "filename": ".github/workflows/generate-policy-api-list.yaml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-policy-api-list.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fgenerate-policy-api-list.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fgenerate-policy-api-list.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -29,7 +29,7 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n \n       - name: Generate Policy API List\n         working-directory: tools/policy_api_list_generation"
+    },
+    {
+      "sha": "00b6ec18bcbd3dc813ba6e3fe5fd8c575e649f9c",
+      "filename": ".github/workflows/test-policies.yaml",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 4,
+      "changes": 16,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Ftest-policies.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Ftest-policies.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Ftest-policies.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -25,51 +25,59 @@ jobs:\n         uses: actions/checkout@v4\n         with:\n           fetch-depth: 100 # https://github.com/danger/danger/issues/913\n+\n       - name: Download fpt from GitHub releases\n         uses: robinraju/release-downloader@v1\n         with:\n           repository: 'flexera-public/policy_sdk'\n           fileName: 'fpt-linux-amd64-*.tgz'\n           latest: true\n+\n       - name: Install fpt into PATH\n         run: |\n           tar -zxf fpt-linux-amd64-*.tgz\n           sudo mv ./fpt/fpt /usr/local/bin/fpt\n           sudo chmod +x /usr/local/bin/fpt\n+\n       - name: Cache node modules\n         uses: actions/cache@v4\n         with:\n           path: node_modules\n           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}\n           restore-keys: |\n             ${{ runner.os }}-node-\n+\n       - name: Install node.js libraries\n         shell: bash -l {0} # https://github.com/actions/virtual-environments/issues/4\n         run: |\n           nvm install\n           nvm use\n           npm install\n+\n       - name: Install Python\n         uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n-          cache: 'pip' # caching pip dependencies\n-      - name: Install Python libraries\n-        run: pip install -r requirements.txt\n+          python-version-file: '.python-version'\n+          cache: 'pip'\n+          cache-dependency-path: 'requirements.txt'\n+\n       - name: Install Ruby\n         uses: ruby/setup-ruby@v1\n         with:\n           # ruby-version: 2.4.1 # Not needed with a .ruby-version file\n           bundler-cache: true # runs 'bundle install' and caches installed gems automatically\n+\n       - name: Install Ruby libraries\n         shell: bash -l {0} # https://github.com/actions/virtual-environments/issues/4\n         run: bundle install --without documentation --path bundle\n       - name: Install Aspell\n         run: |\n           sudo apt-get update\n           sudo apt-get install -y aspell\n+\n       - name: Generate policy API list\n         run: python3 tools/policy_api_list_generation/policy_api_list_generator.py --output-dir /tmp\n+\n       - name: Run Tests\n         shell: bash -l {0} # https://github.com/actions/virtual-environments/issues/4\n         run: |"
+    },
+    {
+      "sha": "f7ca1c5d8ae45f0d014d8c8aa06e05c8e729fc2d",
+      "filename": ".github/workflows/update-aws-cheaper-regions.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fupdate-aws-cheaper-regions.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fupdate-aws-cheaper-regions.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fupdate-aws-cheaper-regions.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -25,10 +25,9 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n           cache: 'pip' # caching pip dependencies\n-\n-      - run: pip install -r requirements.txt\n+          cache-dependency-path: 'requirements.txt'\n \n       - run: python3 tools/cloud_data/aws/aws_cheaper_regions.py\n "
+    },
+    {
+      "sha": "4ce20d8aefa50e69d40e8b67ccc5fa35f4ae866f",
+      "filename": ".github/workflows/update-azure-cheaper-regions.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fupdate-azure-cheaper-regions.yaml",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.github%2Fworkflows%2Fupdate-azure-cheaper-regions.yaml",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.github%2Fworkflows%2Fupdate-azure-cheaper-regions.yaml?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -25,10 +25,9 @@ jobs:\n \n       - uses: actions/setup-python@v5\n         with:\n-          python-version: 3.13.2\n+          python-version-file: '.python-version'\n           cache: 'pip' # caching pip dependencies\n-\n-      - run: pip install -r requirements.txt\n+          cache-dependency-path: 'requirements.txt'\n \n       - run: python3 tools/cloud_data/azure/azure_cheaper_regions.py\n "
+    },
+    {
+      "sha": "62c7ec482035e6b604fb4b8c1b6e982ebd80f65d",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 0,
+      "changes": 9,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.gitignore",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.gitignore",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.gitignore?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -31,3 +31,12 @@ temp/\n .bundle/\n bundle/\n vendor/\n+\n+# Ignore Python artifacts\n+.venv/\n+venv/\n+env/\n+__pycache__/\n+*.pyc\n+*.pyo\n+.Python"
+    },
+    {
+      "sha": "da717732b711146be775fb653ac31bf801868df5",
+      "filename": ".python-version",
+      "status": "added",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.python-version",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/.python-version",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/.python-version?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -0,0 +1 @@\n+3.14.3"
+    },
+    {
+      "sha": "41b846d466c91e3a9f0275d6154d3b6f69659bd4",
+      "filename": "Dangerfile",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/flexera-public/policy_templates/blob/8ea1dfd2965c3d292df3f745e24b795c31ead46f/Dangerfile",
+      "raw_url": "https://github.com/flexera-public/policy_templates/raw/8ea1dfd2965c3d292df3f745e24b795c31ead46f/Dangerfile",
+      "contents_url": "https://api.github.com/repos/flexera-public/policy_templates/contents/Dangerfile?ref=8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "patch": "@@ -102,7 +102,7 @@ test = github_pr_missing_ready_label?(github); message test if test\n \n puts Time.now.strftime(\"%H:%M:%S.%L\") + \" * Testing if important files were modified...\"\n \n-modified_important_files = changed_dangerfiles + changed_dot_files + changed_config_files\n+modified_important_files = (changed_dangerfiles + changed_dot_files + changed_config_files).select{ |file| git.modified_files.include?(file) }\n modified_important_files = modified_important_files.join(\"\\n\")\n \n # Consolidate changed files into a single warning to save space"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "2255f5533248c4daf13b583876f838bf380da212",
+      "message": "update",
+      "parent_shas": [
+        "0abbddc9c04eae77367829a7b2424ab619323e34"
+      ]
+    },
+    {
+      "sha": "7ae47d2f9f2685b367afe6113784766416515435",
+      "message": "update",
+      "parent_shas": [
+        "2255f5533248c4daf13b583876f838bf380da212"
+      ]
+    },
+    {
+      "sha": "260b5ea4130dfe3ab8c40e8d911f5d2540117d4e",
+      "message": "update",
+      "parent_shas": [
+        "7ae47d2f9f2685b367afe6113784766416515435"
+      ]
+    },
+    {
+      "sha": "169cafdaf8f7624060a9047198f4fdaa35af4cee",
+      "message": "update",
+      "parent_shas": [
+        "260b5ea4130dfe3ab8c40e8d911f5d2540117d4e"
+      ]
+    },
+    {
+      "sha": "8ea1dfd2965c3d292df3f745e24b795c31ead46f",
+      "message": "update",
+      "parent_shas": [
+        "169cafdaf8f7624060a9047198f4fdaa35af4cee"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__flexera-public__policy_templates__pr4296.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\flexera-public__policy_templates__pr4296__python_cpp__flexera-public__policy_templates__pr4296\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\flexera-public__policy_templates__pr4296__python_cpp__flexera-public__policy_templates__pr4296\\rn"
+  }
+}

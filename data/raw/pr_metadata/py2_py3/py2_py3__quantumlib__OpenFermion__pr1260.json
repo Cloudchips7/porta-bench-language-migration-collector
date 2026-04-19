@@ -1,0 +1,91 @@
+{
+  "instance_id": "py2_py3__quantumlib__OpenFermion__pr1260",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "quantumlib/OpenFermion",
+  "pr_number": 1260,
+  "pr_url": "https://github.com/quantumlib/OpenFermion/pull/1260",
+  "repo": {
+    "full_name": "quantumlib/OpenFermion",
+    "clone_url": "https://github.com/quantumlib/OpenFermion.git",
+    "default_branch": "main",
+    "created_at": "2017-09-21T22:10:28Z",
+    "stars": 1677,
+    "license": "Apache-2.0",
+    "size_kb": 49995
+  },
+  "pull_request": {
+    "id": 3496115937,
+    "title": "Remove Python 2 shims",
+    "body": "Remove legacy Python 2 compatibility code. Since Python 3 is the only supported version now, these shims are no longer necessary.",
+    "created_at": "2026-04-07T04:53:31Z",
+    "merged_at": "2026-04-07T18:27:43Z",
+    "base_sha": "dfa64ca33355a951eeb77434e6410081478beaa0",
+    "head_sha": "93301cc2febb7adccac95438273e4c477ae0d4f4",
+    "merge_commit_sha": "022ced8f9541e3ab25eb0b85e6a51a1a2c8af16f",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "dfa64ca33355a951eeb77434e6410081478beaa0",
+  "final_sha": "93301cc2febb7adccac95438273e4c477ae0d4f4",
+  "changed_files": [
+    {
+      "sha": "d0867592fb8e67860a37c2f6bbbf37f08ba58a19",
+      "filename": "src/openfermion/chem/molecular_data.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 10,
+      "changes": 14,
+      "blob_url": "https://github.com/quantumlib/OpenFermion/blob/93301cc2febb7adccac95438273e4c477ae0d4f4/src%2Fopenfermion%2Fchem%2Fmolecular_data.py",
+      "raw_url": "https://github.com/quantumlib/OpenFermion/raw/93301cc2febb7adccac95438273e4c477ae0d4f4/src%2Fopenfermion%2Fchem%2Fmolecular_data.py",
+      "contents_url": "https://api.github.com/repos/quantumlib/OpenFermion/contents/src%2Fopenfermion%2Fchem%2Fmolecular_data.py?ref=93301cc2febb7adccac95438273e4c477ae0d4f4",
+      "patch": "@@ -31,12 +31,6 @@\n     + 0.5 * \\sum_{p,q,r,s} h[p,q,r,s] a_p^\\dagger a_q^\\dagger a_r a_s\n \"\"\"\n \n-# Define a compatible basestring for checking between Python 2 and 3\n-try:\n-    basestring\n-except NameError:  # pragma: no cover\n-    basestring = str\n-\n \n # Define error objects which inherit from Exception.\n class MoleculeNameError(Exception):\n@@ -248,7 +242,7 @@ def name_molecule(geometry, basis, multiplicity, charge, description):\n     Raises:\n         MoleculeNameError: If spin multiplicity is not valid.\n     \"\"\"\n-    if not isinstance(geometry, basestring):\n+    if not isinstance(geometry, str):\n         # Get sorted atom vector.\n         atoms = [item[0] for item in geometry]\n         atom_charge_info = [(atom, atoms.count(atom)) for atom in set(atoms)]\n@@ -501,7 +495,7 @@ def __init__(\n \n         # Metadata fields with default values.\n         self.charge = charge\n-        if not isinstance(description, basestring):\n+        if not isinstance(description, str):\n             raise TypeError(\"description must be a string.\")\n         self.description = description\n \n@@ -518,7 +512,7 @@ def __init__(\n                 self.filename = data_directory + '/' + self.name\n \n         # Attributes generated automatically by class.\n-        if not isinstance(geometry, basestring):\n+        if not isinstance(geometry, str):\n             self.n_atoms = len(geometry)\n             self.atoms = sorted(\n                 [row[0] for row in geometry], key=lambda atom: periodic_hash_table[atom]\n@@ -707,7 +701,7 @@ def save(self):\n         with h5py.File(\"{}.hdf5\".format(tmp_name), \"w\") as f:\n             # Save geometry (atoms and positions need to be separate):\n             d_geom = f.create_group(\"geometry\")\n-            if not isinstance(self.geometry, basestring):\n+            if not isinstance(self.geometry, str):\n                 atoms = [numpy.bytes_(item[0]) for item in self.geometry]\n                 positions = numpy.array([list(item[1]) for item in self.geometry])\n             else:"
+    },
+    {
+      "sha": "f98c1588ebb84b9d29d643f63061c4f521771264",
+      "filename": "src/openfermion/testing/testing_utils.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 10,
+      "changes": 12,
+      "blob_url": "https://github.com/quantumlib/OpenFermion/blob/93301cc2febb7adccac95438273e4c477ae0d4f4/src%2Fopenfermion%2Ftesting%2Ftesting_utils.py",
+      "raw_url": "https://github.com/quantumlib/OpenFermion/raw/93301cc2febb7adccac95438273e4c477ae0d4f4/src%2Fopenfermion%2Ftesting%2Ftesting_utils.py",
+      "contents_url": "https://api.github.com/repos/quantumlib/OpenFermion/contents/src%2Fopenfermion%2Ftesting%2Ftesting_utils.py?ref=93301cc2febb7adccac95438273e4c477ae0d4f4",
+      "patch": "@@ -338,17 +338,9 @@ def module_importable(module):\n         bool\n \n     \"\"\"\n-    import sys\n+    from importlib import util\n \n-    if sys.version_info >= (3, 4):\n-        from importlib import util\n-\n-        plug_spec = util.find_spec(module)\n-    else:\n-        # Won't enter unless Python<3.4, so ignore for testing\n-        import pkgutil  # pragma: ignore\n-\n-        plug_spec = pkgutil.find_loader(module)  # pragma: no cover\n+    plug_spec = util.find_spec(module)\n     if plug_spec is None:\n         return False\n     else:"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "93301cc2febb7adccac95438273e4c477ae0d4f4",
+      "message": "Remove Python 2 shims\n\nRemove legacy Python 2 compatibility code. Since Python 3 is the only\nsupported version now, these shims are no longer necessary.",
+      "parent_shas": [
+        "dfa64ca33355a951eeb77434e6410081478beaa0"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__quantumlib__OpenFermion__pr1260.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\quantumlib__OpenFermion__pr1260__py2_py3__quantumlib__OpenFermion__pr1260\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\quantumlib__OpenFermion__pr1260__py2_py3__quantumlib__OpenFermion__pr1260\\rn"
+  }
+}

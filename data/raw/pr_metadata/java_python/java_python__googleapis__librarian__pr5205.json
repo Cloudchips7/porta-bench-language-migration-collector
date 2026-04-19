@@ -1,0 +1,105 @@
+{
+  "instance_id": "java_python__googleapis__librarian__pr5205",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "googleapis/librarian",
+  "pr_number": 5205,
+  "pr_url": "https://github.com/googleapis/librarian/pull/5205",
+  "repo": {
+    "full_name": "googleapis/librarian",
+    "clone_url": "https://github.com/googleapis/librarian.git",
+    "default_branch": "main",
+    "created_at": "2024-11-22T08:36:43Z",
+    "stars": 34,
+    "license": "Apache-2.0",
+    "size_kb": 38224
+  },
+  "pull_request": {
+    "id": 3500859583,
+    "title": "feat(internal/librarian/java): clean keeps version.java files",
+    "body": "Adds regex for keeping Version.java files while cleaning. This regex is original from [owlbot.yaml template](https://github.com/googleapis/sdk-platform-java/blob/febe86f1ea4f0b5e6d8454024ed499adb7dc9328/hermetic_build/library_generation/templates/owlbot.yaml.monorepo.j2#L24) in google-cloud-java/sdk-platform-java.\r\n\r\nFix #4774",
+    "created_at": "2026-04-08T01:53:15Z",
+    "merged_at": "2026-04-08T18:39:34Z",
+    "base_sha": "64697c94055e0a892f5899e7412280b496a8e9ce",
+    "head_sha": "f0eaaa6a4c8241a82ab2f608ee9a41fe9f7e5c50",
+    "merge_commit_sha": "e1a79b846cd9417a13bba8b0c9249faeb36f5b28",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "64697c94055e0a892f5899e7412280b496a8e9ce",
+  "final_sha": "f0eaaa6a4c8241a82ab2f608ee9a41fe9f7e5c50",
+  "changed_files": [
+    {
+      "sha": "36807e662d780b3440622eff9bf16aa02969b1c1",
+      "filename": "internal/librarian/java/clean.go",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1,
+      "changes": 4,
+      "blob_url": "https://github.com/googleapis/librarian/blob/f0eaaa6a4c8241a82ab2f608ee9a41fe9f7e5c50/internal%2Flibrarian%2Fjava%2Fclean.go",
+      "raw_url": "https://github.com/googleapis/librarian/raw/f0eaaa6a4c8241a82ab2f608ee9a41fe9f7e5c50/internal%2Flibrarian%2Fjava%2Fclean.go",
+      "contents_url": "https://api.github.com/repos/googleapis/librarian/contents/internal%2Flibrarian%2Fjava%2Fclean.go?ref=f0eaaa6a4c8241a82ab2f608ee9a41fe9f7e5c50",
+      "patch": "@@ -26,6 +26,7 @@ import (\n )\n \n var itTestRegexp = regexp.MustCompile(`src/test/java/com/google/cloud/.*/v.*/it/IT.*Test\\.java$`)\n+var versionRegexp = regexp.MustCompile(`src/main/java/com/google/cloud/.*/v.*/stub/Version\\.java$`)\n \n // Clean removes files in the library's output directory that are not in the keep list.\n // It targets patterns like proto-*, grpc-*, and the main GAPIC module.\n@@ -77,7 +78,8 @@ func cleanPath(targetPath, root string, keepSet map[string]bool) error {\n \t\tif err != nil {\n \t\t\treturn err\n \t\t}\n-\t\tif keepSet[rel] || itTestRegexp.MatchString(filepath.ToSlash(rel)) {\n+\t\trelSlash := filepath.ToSlash(rel)\n+\t\tif keepSet[rel] || itTestRegexp.MatchString(relSlash) || versionRegexp.MatchString(relSlash) {\n \t\t\treturn nil\n \t\t}\n \t\t// Bypass clirr-ignored-differences.xml and pom.xml files as they are generated once and manually maintained."
+    },
+    {
+      "sha": "67c4a3e83102d8d7024a275ca466bcac4addf60f",
+      "filename": "internal/librarian/java/clean_test.go",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/googleapis/librarian/blob/f0eaaa6a4c8241a82ab2f608ee9a41fe9f7e5c50/internal%2Flibrarian%2Fjava%2Fclean_test.go",
+      "raw_url": "https://github.com/googleapis/librarian/raw/f0eaaa6a4c8241a82ab2f608ee9a41fe9f7e5c50/internal%2Flibrarian%2Fjava%2Fclean_test.go",
+      "contents_url": "https://api.github.com/repos/googleapis/librarian/contents/internal%2Flibrarian%2Fjava%2Fclean_test.go?ref=f0eaaa6a4c8241a82ab2f608ee9a41fe9f7e5c50",
+      "patch": "@@ -47,6 +47,8 @@ func TestClean(t *testing.T) {\n \t// Create files\n \tfiles := []string{\n \t\tfilepath.Join(tmpDir, libraryName, \"src\", \"Main.java\"),\n+\t\tfilepath.Join(tmpDir, libraryName, \"src\", \"main\", \"java\", \"com\", \"google\", \"cloud\", \"secretmanager\", \"v1\", \"stub\", \"Version.java\"),\n+\t\tfilepath.Join(tmpDir, libraryName, \"src\", \"main\", \"java\", \"com\", \"google\", \"cloud\", \"secretmanager\", \"v1\", \"Version.java\"),\n \t\tfilepath.Join(tmpDir, libraryName, \"src\", \"test\", \"java\", \"com\", \"google\", \"cloud\", \"secretmanager\", \"v1\", \"it\", \"ITSecretManagerTest.java\"),\n \t\tfilepath.Join(tmpDir, libraryName, \"pom.xml\"),\n \t\tfilepath.Join(tmpDir, \"kept-file.txt\"),\n@@ -76,6 +78,7 @@ func TestClean(t *testing.T) {\n \t\tfilepath.Join(tmpDir, fmt.Sprintf(\"proto-%s-%s\", libraryName, version)),\n \t\tfilepath.Join(tmpDir, fmt.Sprintf(\"grpc-%s-%s\", libraryName, version)),\n \t\tfilepath.Join(tmpDir, \"samples\", \"snippets\", \"generated\"),\n+\t\tfilepath.Join(tmpDir, libraryName, \"src\", \"main\", \"java\", \"com\", \"google\", \"cloud\", \"secretmanager\", \"v1\", \"Version.java\"),\n \t}\n \tfor _, p := range cleanedPaths {\n \t\tif _, err := os.Stat(p); !os.IsNotExist(err) {\n@@ -87,6 +90,7 @@ func TestClean(t *testing.T) {\n \t\tfilepath.Join(tmpDir, \"kept-file.txt\"),\n \t\tfilepath.Join(tmpDir, \"kept-dir\", \"file.txt\"),\n \t\tfilepath.Join(tmpDir, libraryName, \"pom.xml\"),\n+\t\tfilepath.Join(tmpDir, libraryName, \"src\", \"main\", \"java\", \"com\", \"google\", \"cloud\", \"secretmanager\", \"v1\", \"stub\", \"Version.java\"),\n \t\tfilepath.Join(tmpDir, libraryName, \"src\", \"test\", \"java\", \"com\", \"google\", \"cloud\", \"secretmanager\", \"v1\", \"it\", \"ITSecretManagerTest.java\"),\n \t}\n \tfor _, p := range keptPaths {"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "1fa3cebad2e61bf6545278e978148bde5c43bb05",
+      "message": "feat(internal/librarian/java): clean keeps version.java files",
+      "parent_shas": [
+        "64697c94055e0a892f5899e7412280b496a8e9ce"
+      ]
+    },
+    {
+      "sha": "8aef40b061e16879d3c00b53212fc861f64f17dc",
+      "message": "minor fix",
+      "parent_shas": [
+        "1fa3cebad2e61bf6545278e978148bde5c43bb05"
+      ]
+    },
+    {
+      "sha": "f0eaaa6a4c8241a82ab2f608ee9a41fe9f7e5c50",
+      "message": "add to test to verify a non-matching file is not preserved.",
+      "parent_shas": [
+        "8aef40b061e16879d3c00b53212fc861f64f17dc"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "java_python_bridge_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "java_python_bridge_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__googleapis__librarian__pr5205.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\googleapis__librarian__pr5205__java_python__googleapis__librarian__pr5205\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\googleapis__librarian__pr5205__java_python__googleapis__librarian__pr5205\\rn"
+  }
+}

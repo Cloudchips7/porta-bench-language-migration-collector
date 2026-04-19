@@ -1,0 +1,257 @@
+{
+  "instance_id": "cpp_python__mapequation__infomap__pr415",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "mapequation/infomap",
+  "pr_number": 415,
+  "pr_url": "https://github.com/mapequation/infomap/pull/415",
+  "repo": {
+    "full_name": "mapequation/infomap",
+    "clone_url": "https://github.com/mapequation/infomap.git",
+    "default_branch": "master",
+    "created_at": "2016-06-25T12:57:32Z",
+    "stars": 483,
+    "license": "GPL-3.0",
+    "size_kb": 19464
+  },
+  "pull_request": {
+    "id": 3497856521,
+    "title": "refactor: harden io/config parsing and add output regressions",
+    "body": "## Summary\n- harden convert, FileURI, ProgramInterface and Config parsing without changing SWIG-sensitive public types\n- remove permanent node mutation from output link aggregation and add repeat-call output regressions\n- add focused C++ and Python tests for parser/config/output behavior plus a CLI JSON-parameters regression\n\n## Verification\n- PATH=\"/opt/homebrew/bin:$PATH\" cmake --build build/cmake-noccache --target infomap_cpp_tests --parallel\n- PATH=\"/opt/homebrew/bin:$PATH\" ctest --test-dir build/cmake-noccache --output-on-failure -R 'infomap_cpp_(utils_io|program_interface|config|lifecycle)_tests|print_json_parameters'\\n- make test-python-swig-freshness\\n- PATH=\"/opt/homebrew/bin:/Users/anton/Library/Python/3.14/bin:$PATH\" /opt/homebrew/Frameworks/Python.framework/Versions/3.14/bin/python3.14 -m pytest test/python/test_wrapper_args.py test/python/test_output.py -q\\n\\n## Notes\\n- `make build-python` is still blocked in this environment because `python -m build` is unavailable (`No module named build.__main__`).",
+    "created_at": "2026-04-07T12:37:50Z",
+    "merged_at": "2026-04-07T12:46:22Z",
+    "base_sha": "0db66b70e200c80ffeab00c5f1b06126e8dfe9af",
+    "head_sha": "d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+    "merge_commit_sha": "cc0bfc264a39c1bc801de01d50343b1cd52f7b42",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "0db66b70e200c80ffeab00c5f1b06126e8dfe9af",
+  "final_sha": "d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+  "changed_files": [
+    {
+      "sha": "ebd1c48ffee19046279e33f16a535ef5c68b114f",
+      "filename": "CMakeLists.txt",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 0,
+      "changes": 16,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/CMakeLists.txt",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/CMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/CMakeLists.txt?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -138,6 +138,18 @@ if(BUILD_TESTING)\n     add_infomap_cpp_test(infomap_cpp_lifecycle_tests test/cpp/test_infomap_wrapper.cpp \"fast;core;lifecycle;crash\")\n     add_infomap_cpp_test(infomap_cpp_partition_tests test/cpp/test_partition.cpp \"fast;core;partition;parser\")\n     add_infomap_cpp_test(infomap_cpp_flow_tests test/cpp/test_flow.cpp \"fast;core;flow\")\n+    add_infomap_cpp_test(infomap_cpp_utils_io_tests test/cpp/test_utils_io.cpp \"fast;core;utils;io\")\n+    add_infomap_cpp_test(infomap_cpp_program_interface_tests test/cpp/test_program_interface.cpp \"fast;core;parser;cli\")\n+    add_infomap_cpp_test(infomap_cpp_config_tests test/cpp/test_config.cpp \"fast;core;config;cli\")\n+\n+    add_test(\n+        NAME print_json_parameters\n+        COMMAND\n+            \"${Python3_EXECUTABLE}\"\n+            \"${CMAKE_CURRENT_SOURCE_DIR}/test/scripts/check_print_json_parameters.py\"\n+            \"$<TARGET_FILE:infomap_cli>\"\n+    )\n+    set_tests_properties(print_json_parameters PROPERTIES LABELS \"fast;core;parser;cli\")\n \n     if(CMAKE_CXX_COMPILER_ID MATCHES \"Clang|GNU\")\n         target_compile_options(infomap_cpp_lifecycle_tests PRIVATE -fno-access-control)\n@@ -151,5 +163,9 @@ if(BUILD_TESTING)\n             infomap_cpp_lifecycle_tests\n             infomap_cpp_partition_tests\n             infomap_cpp_flow_tests\n+            infomap_cpp_utils_io_tests\n+            infomap_cpp_program_interface_tests\n+            infomap_cpp_config_tests\n+            infomap_cli\n     )\n endif()"
+    },
+    {
+      "sha": "10f182317e35e61d3ac4f7053778ab6e4728e92c",
+      "filename": "setup.py",
+      "status": "modified",
+      "additions": 32,
+      "deletions": 2,
+      "changes": 34,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/setup.py",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/setup.py",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/setup.py?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -4,9 +4,11 @@\n from pathlib import Path\n \n from setuptools import Extension, setup\n+from setuptools.command.build_ext import build_ext\n \n \n REPO_ROOT = Path(__file__).resolve().parent\n+SWIG_CPP_SOURCE = REPO_ROOT / \"interfaces\" / \"python\" / \"generated\" / \"infomap_wrap.cpp\"\n \n \n def repo_rel(path: Path) -> str:\n@@ -22,13 +24,40 @@ def load_build_config():\n \n \n def collect_cpp_sources():\n-    generated = REPO_ROOT / \"interfaces\" / \"python\" / \"generated\" / \"infomap_wrap.cpp\"\n-    sources = [repo_rel(generated)]\n+    sources = [repo_rel(SWIG_CPP_SOURCE)]\n     for path in sorted((REPO_ROOT / \"src\").rglob(\"*.cpp\")):\n         sources.append(repo_rel(path))\n     return sources\n \n \n+def swig_warning_suppression(compiler_family):\n+    if compiler_family == \"msvc\":\n+        return [\"/w\"]\n+    if compiler_family in {\"clang\", \"gnu\", \"unknown\"}:\n+        return [\"-w\"]\n+    return []\n+\n+\n+class BuildExt(build_ext):\n+    def build_extensions(self):\n+        original_compile = self.compiler._compile\n+        quiet_swig_flags = swig_warning_suppression(shared_build[\"compiler_family\"])\n+        swig_source = str(SWIG_CPP_SOURCE)\n+\n+        def compile_with_source_overrides(obj, src, ext, cc_args, extra_postargs, pp_opts):\n+            source = os.path.abspath(src)\n+            compile_args = list(extra_postargs or [])\n+            if source == swig_source and quiet_swig_flags:\n+                compile_args.extend(quiet_swig_flags)\n+            return original_compile(obj, src, ext, cc_args, compile_args, pp_opts)\n+\n+        self.compiler._compile = compile_with_source_overrides\n+        try:\n+            super().build_extensions()\n+        finally:\n+            self.compiler._compile = original_compile\n+\n+\n build_config = load_build_config()\n resolve_build_config = build_config.resolve_build_config\n norm_openmp = build_config._norm_openmp\n@@ -57,6 +86,7 @@ def collect_cpp_sources():\n \n \n setup(\n+    cmdclass={\"build_ext\": BuildExt},\n     ext_modules=[\n         Extension(\n             \"infomap._infomap\","
+    },
+    {
+      "sha": "7dbc4dd8899936e9b7560055db55ec65b7db1e3a",
+      "filename": "src/io/Config.cpp",
+      "status": "modified",
+      "additions": 41,
+      "deletions": 20,
+      "changes": 61,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/src%2Fio%2FConfig.cpp",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/src%2Fio%2FConfig.cpp",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/src%2Fio%2FConfig.cpp?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -24,6 +24,44 @@ constexpr int FlowModel::outdirdir;\n constexpr int FlowModel::rawdir;\n constexpr int FlowModel::precomputed;\n \n+namespace {\n+\n+void applyFlowModelSelection(Config& config, const std::string& flowModelArg)\n+{\n+  if (flowModelArg == \"directed\" || config.directed) {\n+    config.setFlowModel(FlowModel::directed);\n+  } else if (flowModelArg == \"undirected\") {\n+    config.setFlowModel(FlowModel::undirected);\n+  } else if (flowModelArg == \"undirdir\") {\n+    config.setFlowModel(FlowModel::undirdir);\n+  } else if (flowModelArg == \"outdirdir\") {\n+    config.setFlowModel(FlowModel::outdirdir);\n+  } else if (flowModelArg == \"rawdir\") {\n+    config.setFlowModel(FlowModel::rawdir);\n+  } else if (flowModelArg == \"precomputed\") {\n+    config.setFlowModel(FlowModel::precomputed);\n+  } else if (!flowModelArg.empty()) {\n+    throw std::runtime_error(io::Str() << \"Unrecognized flow model: '\" << flowModelArg << \"'\");\n+  }\n+}\n+\n+void normalizeOutputDirectory(Config& config)\n+{\n+  if (!config.haveOutput() || config.outDirectory.empty())\n+    return;\n+\n+  if (config.outDirectory.back() != '/')\n+    config.outDirectory.push_back('/');\n+}\n+\n+void validateOutputDirectory(const Config& config)\n+{\n+  if (config.haveOutput() && !isDirectoryWritable(config.outDirectory))\n+    throw std::runtime_error(io::Str() << \"Can't write to directory '\" << config.outDirectory << \"'. Check that the directory exists and that you have write permissions.\");\n+}\n+\n+} // namespace\n+\n Config::Config(const std::string& flags, bool isCLI) : isCLI(isCLI)\n {\n   ProgramInterface api(\"Infomap\",\n@@ -177,31 +215,14 @@ Config::Config(const std::string& flags, bool isCLI) : isCLI(isCLI)\n     throw std::runtime_error(\"Missing out_directory\");\n   }\n \n-  if (flowModelArg == \"directed\" || directed) {\n-    setFlowModel(FlowModel::directed);\n-  } else if (flowModelArg == \"undirected\") {\n-    setFlowModel(FlowModel::undirected);\n-  } else if (flowModelArg == \"undirdir\") {\n-    setFlowModel(FlowModel::undirdir);\n-  } else if (flowModelArg == \"outdirdir\") {\n-    setFlowModel(FlowModel::outdirdir);\n-  } else if (flowModelArg == \"rawdir\") {\n-    setFlowModel(FlowModel::rawdir);\n-  } else if (flowModelArg == \"precomputed\") {\n-    setFlowModel(FlowModel::precomputed);\n-  } else if (!flowModelArg.empty()) {\n-    throw std::runtime_error(io::Str() << \"Unrecognized flow model: '\" << flowModelArg << \"'\");\n-  }\n+  applyFlowModelSelection(*this, flowModelArg);\n \n   if (regularized) {\n     recordedTeleportation = true;\n   }\n \n-  if (*--outDirectory.end() != '/')\n-    outDirectory.append(\"/\");\n-\n-  if (haveOutput() && !isDirectoryWritable(outDirectory))\n-    throw std::runtime_error(io::Str() << \"Can't write to directory '\" << outDirectory << \"'. Check that the directory exists and that you have write permissions.\");\n+  normalizeOutputDirectory(*this);\n+  validateOutputDirectory(*this);\n \n   if (outName.empty()) {\n     outName = !networkFile.empty() ? FileURI(networkFile).getName() : \"no-name\";"
+    },
+    {
+      "sha": "3b2528054292aba3b598dbbe057636bdd88ae4ee",
+      "filename": "src/io/Output.cpp",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 11,
+      "changes": 13,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/src%2Fio%2FOutput.cpp",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/src%2Fio%2FOutput.cpp",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/src%2Fio%2FOutput.cpp?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -190,21 +190,13 @@ std::map<std::string, LinkMap> aggregateModuleLinks(InfomapBase& im, bool states\n           stateIdToParent[stateId] = it->parent;\n           stateIdToChildIndex[stateId] = it.childIndex();\n         }\n-      } else {\n-        // Use stateId to store depth on modules to simplify link aggregation\n-        it->stateId = it.depth();\n-        it->index = it.childIndex();\n       }\n     }\n   } else {\n     for (auto it(im.iterTree()); !it.isEnd(); ++it) {\n       if (it->isLeaf()) {\n         stateIdToParent[it->stateId] = it->parent;\n         stateIdToChildIndex[it->stateId] = it.childIndex();\n-      } else {\n-        // Use stateId to store depth on modules to simplify link aggregation\n-        it->stateId = it.depth();\n-        it->index = it.childIndex();\n       }\n     }\n   }\n@@ -252,8 +244,8 @@ std::map<std::string, LinkMap> aggregateModuleLinks(InfomapBase& im, bool states\n           }\n         }\n \n-        sourceChildIndex = sourceParentIt->index;\n-        targetChildIndex = targetParentIt->index;\n+        sourceChildIndex = sourceParentIt->childIndex();\n+        targetChildIndex = targetParentIt->childIndex();\n \n         ++sourceParentIt;\n         ++targetParentIt;\n@@ -276,7 +268,6 @@ void writeTreeLinks(InfomapBase& im, std::ostream& outStream, bool states)\n   outStream << \"*Links \" << (im.isUndirectedFlow() ? \"undirected\" : \"directed\") << \"\\n\";\n   outStream << \"#*Links path enterFlow exitFlow numEdges numChildren\\n\";\n \n-  // Use stateId to store depth on modules to optimize link aggregation\n   for (auto it(im.iterModules()); !it.isEnd(); ++it) {\n     auto parentId = io::stringify(it.path(), \":\");\n     auto& module = *it;"
+    },
+    {
+      "sha": "d0dfc7cefc8538139cca5ac24dfabd87963d29b8",
+      "filename": "src/io/ProgramInterface.cpp",
+      "status": "modified",
+      "additions": 138,
+      "deletions": 94,
+      "changes": 232,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/src%2Fio%2FProgramInterface.cpp",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/src%2Fio%2FProgramInterface.cpp",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/src%2Fio%2FProgramInterface.cpp?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -35,6 +35,136 @@ const std::unordered_map<std::string, char> ArgType::toShort = {\n   { \"list\", 'l' },\n };\n \n+namespace {\n+\n+using ShortOptionMap = std::map<char, Option*>;\n+using LongOptionMap = std::map<std::string, Option*>;\n+using NonOptionArguments = std::deque<std::unique_ptr<TargetBase>>;\n+\n+struct OptionLookup {\n+  ShortOptionMap shortOptions;\n+  LongOptionMap longOptions;\n+};\n+\n+OptionLookup buildOptionLookup(std::deque<std::unique_ptr<Option>>& options)\n+{\n+  OptionLookup lookup;\n+  for (auto& optionArgument : options) {\n+    auto& opt = *optionArgument;\n+    if (opt.shortName != '\\0') {\n+      auto inserted = lookup.shortOptions.insert(std::make_pair(opt.shortName, &opt));\n+      if (!inserted.second)\n+        throw std::runtime_error(io::Str() << \"Duplication of option '\" << opt.shortName << \"'\");\n+    }\n+\n+    auto inserted = lookup.longOptions.insert(std::make_pair(opt.longName, &opt));\n+    if (!inserted.second)\n+      throw std::runtime_error(io::Str() << \"Duplication of option \\\"\" << opt.longName << \"\\\"\");\n+  }\n+  return lookup;\n+}\n+\n+std::vector<std::string> tokenizeArgs(const std::string& args)\n+{\n+  std::vector<std::string> flags;\n+  std::istringstream argStream(args);\n+  std::string arg;\n+  while (!(argStream >> arg).fail())\n+    flags.push_back(arg);\n+  return flags;\n+}\n+\n+void parseOptionValue(Option& opt, const std::string& value)\n+{\n+  if (!opt.parse(value))\n+    throw std::runtime_error(io::Str() << \"Cannot parse '\" << value << \"' as argument to option '\" << opt.longName << \"'. \");\n+}\n+\n+void parseLongOption(const std::string& arg, const LongOptionMap& longOptions, const std::vector<std::string>& flags, unsigned int& i)\n+{\n+  if (arg.length() < 3)\n+    throw std::runtime_error(\"Illegal argument '--'\");\n+\n+  std::string longOpt = arg.substr(2);\n+  bool flagValue = true;\n+  auto it = longOptions.find(longOpt);\n+  if (it == longOptions.end()) {\n+    // Unrecognized option, check if it negates a recognised option with the '--no-' prefix\n+    if (longOpt.compare(0, 3, \"no-\") == 0 && longOptions.find(std::string(longOpt, 3)) != longOptions.end()) {\n+      longOpt = std::string(longOpt, 3);\n+      it = longOptions.find(longOpt);\n+      flagValue = false;\n+    } else {\n+      throw std::runtime_error(io::Str() << \"Unrecognized option: '--\" << longOpt << \"'\");\n+    }\n+  }\n+\n+  auto& opt = *it->second;\n+  if (!opt.requireArgument || opt.incrementalArgument) {\n+    opt.set(flagValue);\n+    return;\n+  }\n+\n+  const auto numArgsLeft = flags.size() - i - 1;\n+  if (numArgsLeft == 0)\n+    throw std::runtime_error(io::Str() << \"Option '\" << opt.longName << \"' requires argument\");\n+\n+  ++i;\n+  parseOptionValue(opt, flags[i]);\n+}\n+\n+void parseShortOptions(const std::string& arg, const ShortOptionMap& shortOptions, const std::vector<std::string>& flags, unsigned int& i)\n+{\n+  for (unsigned int j = 1; j < arg.length(); ++j) {\n+    const auto optionName = arg[j];\n+    const auto numCharsLeft = arg.length() - j - 1;\n+    auto it = shortOptions.find(optionName);\n+    if (it == shortOptions.end())\n+      throw std::runtime_error(io::Str() << \"Unrecognized option: '-\" << optionName << \"'\");\n+\n+    auto& opt = *it->second;\n+    if (!opt.requireArgument || opt.incrementalArgument) {\n+      opt.set(true);\n+      continue;\n+    }\n+\n+    std::string optArg;\n+    const auto numArgsLeft = flags.size() - i - 1;\n+    if (numCharsLeft > 0) {\n+      optArg = arg.substr(j + 1);\n+      j = arg.length() - 1;\n+    } else if (numArgsLeft > 0) {\n+      ++i;\n+      optArg = flags[i];\n+    } else {\n+      throw std::runtime_error(io::Str() << \"Option '\" << opt.longName << \"' requires argument\");\n+    }\n+\n+    parseOptionValue(opt, optArg);\n+  }\n+}\n+\n+void parseNonOptionArguments(std::deque<std::string>& nonOpts, NonOptionArguments& nonOptionArguments, unsigned int numRequiredArguments)\n+{\n+  if (nonOpts.size() < numRequiredArguments)\n+    throw std::runtime_error(\"Missing required arguments.\");\n+\n+  unsigned int i = 0;\n+  unsigned int numVectorArguments = nonOpts.size() - (nonOptionArguments.size() - 1);\n+  while (!nonOpts.empty()) {\n+    std::string arg = nonOpts.front();\n+    nonOpts.pop_front();\n+    if (nonOptionArguments[i]->isOptionalVector && numVectorArguments == 0)\n+      ++i;\n+    if (!nonOptionArguments[i]->parse(arg))\n+      throw std::runtime_error(\"Argument error.\");\n+    if (!nonOptionArguments[i]->isOptionalVector || --numVectorArguments == 0)\n+      ++i;\n+  }\n+}\n+\n+} // namespace\n+\n ProgramInterface::ProgramInterface(std::string name, std::string shortDescription, std::string version)\n     : m_programName(std::move(name)),\n       m_shortProgramDescription(std::move(shortDescription)),\n@@ -200,40 +330,12 @@ void ProgramInterface::exitWithJsonParameters() const\n \n void ProgramInterface::parseArgs(const std::string& args)\n {\n-  // Map the options on short and long name, and check for duplication\n-  std::map<char, Option*> shortOptionMap;\n-  std::map<std::string, Option*> longOptionMap;\n-  for (auto& optionArgument : m_optionArguments) {\n-    auto& opt = *optionArgument;\n-    if (opt.shortName != '\\0') {\n-      auto it = shortOptionMap.find(opt.shortName);\n-      if (it != shortOptionMap.end())\n-        throw std::runtime_error(io::Str() << \"Duplication of option '\" << opt.shortName << \"'\");\n-      shortOptionMap.insert(std::make_pair(opt.shortName, &opt));\n-    }\n-\n-    auto it = longOptionMap.find(opt.longName);\n-    if (it != longOptionMap.end())\n-      throw std::runtime_error(io::Str() << \"Duplication of option \\\"\" << opt.longName << \"\\\"\");\n-    longOptionMap.insert(std::make_pair(opt.longName, &opt));\n-  }\n-\n-  // Split the flags on whitespace\n-  std::vector<std::string> flags;\n-  std::istringstream argStream(args);\n-\n-  {\n-    std::string arg;\n-    while (!(argStream >> arg).fail())\n-      flags.push_back(arg);\n-  }\n+  const auto optionLookup = buildOptionLookup(m_optionArguments);\n+  const auto flags = tokenizeArgs(args);\n \n   std::deque<std::string> nonOpts;\n   try {\n     for (unsigned int i = 0; i < flags.size(); ++i) {\n-      bool flagValue = true;\n-      unsigned int numArgsLeft = flags.size() - i - 1;\n-\n       const std::string& arg = flags[i];\n       if (arg.length() == 0)\n         throw std::runtime_error(\"Illegal argument ''\");\n@@ -245,57 +347,9 @@ void ProgramInterface::parseArgs(const std::string& args)\n           throw std::runtime_error(\"Illegal argument '-'\");\n \n         if (arg[1] == '-') {\n-          // Long option\n-          if (arg.length() < 3)\n-            throw std::runtime_error(\"Illegal argument '--'\");\n-          std::string longOpt = arg.substr(2);\n-          auto it = longOptionMap.find(longOpt);\n-          if (it == longOptionMap.end()) {\n-            // Unrecognized option, check if it negates a recognised option with the '--no-' prefix\n-            if (longOpt.compare(0, 3, \"no-\") == 0 && longOptionMap.find(std::string(longOpt, 3)) != longOptionMap.end()) {\n-              longOpt = std::string(longOpt, 3);\n-              it = longOptionMap.find(longOpt);\n-              flagValue = false;\n-            } else {\n-              throw std::runtime_error(io::Str() << \"Unrecognized option: '--\" << longOpt << \"'\");\n-            }\n-          }\n-          auto& opt = *it->second;\n-          if (!opt.requireArgument || opt.incrementalArgument)\n-            opt.set(flagValue);\n-          else {\n-            if (numArgsLeft == 0)\n-              throw std::runtime_error(io::Str() << \"Option '\" << opt.longName << \"' requires argument\");\n-            ++i;\n-            if (!opt.parse(flags[i]))\n-              throw std::runtime_error(io::Str() << \"Cannot parse '\" << flags[i] << \"' as argument to option '\" << opt.longName << \"'. \");\n-          }\n+          parseLongOption(arg, optionLookup.longOptions, flags, i);\n         } else {\n-          // Short option(s)\n-          for (unsigned int j = 1; j < arg.length(); ++j) {\n-            char o = arg[j];\n-            unsigned int numCharsLeft = arg.length() - j - 1;\n-            auto it = shortOptionMap.find(o);\n-            if (it == shortOptionMap.end())\n-              throw std::runtime_error(io::Str() << \"Unrecognized option: '-\" << o << \"'\");\n-            auto& opt = *it->second;\n-            if (!opt.requireArgument || opt.incrementalArgument)\n-              opt.set(flagValue);\n-            else {\n-              std::string optArg;\n-              if (numCharsLeft > 0) {\n-                optArg = arg.substr(j + 1);\n-                j = arg.length() - 1;\n-              } else if (numArgsLeft) {\n-                ++i;\n-                optArg = flags[i];\n-              } else\n-                throw std::runtime_error(io::Str() << \"Option '\" << opt.longName << \"' requires argument\");\n-\n-              if (!opt.parse(optArg))\n-                throw std::runtime_error(io::Str() << \"Cannot parse '\" << optArg << \"' as argument to option '\" << opt.longName << \"'. \");\n-            }\n-          }\n+          parseShortOptions(arg, optionLookup.shortOptions, flags, i);\n         }\n       }\n       if (m_displayHelp > 0)\n@@ -309,20 +363,10 @@ void ProgramInterface::parseArgs(const std::string& args)\n     exitWithError(e.what());\n   }\n \n-  if (nonOpts.size() < numRequiredArguments())\n-    exitWithError(\"Missing required arguments.\");\n-\n-  unsigned int i = 0;\n-  unsigned int numVectorArguments = nonOpts.size() - (m_nonOptionArguments.size() - 1);\n-  while (!nonOpts.empty()) {\n-    std::string arg = nonOpts.front();\n-    nonOpts.pop_front();\n-    if (m_nonOptionArguments[i]->isOptionalVector && numVectorArguments == 0)\n-      ++i;\n-    if (!m_nonOptionArguments[i]->parse(arg))\n-      exitWithError(\"Argument error.\");\n-    if (!m_nonOptionArguments[i]->isOptionalVector || --numVectorArguments == 0)\n-      ++i;\n+  try {\n+    parseNonOptionArguments(nonOpts, m_nonOptionArguments, numRequiredArguments());\n+  } catch (std::exception& e) {\n+    exitWithError(e.what());\n   }\n }\n "
+    },
+    {
+      "sha": "07ddfd6f6021f5987bf1bda415f84f33b870ef20",
+      "filename": "src/utils/FileURI.cpp",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 1,
+      "changes": 5,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/src%2Futils%2FFileURI.cpp",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/src%2Futils%2FFileURI.cpp",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/src%2Futils%2FFileURI.cpp?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -24,10 +24,13 @@ FileURI::FileURI(string filename, bool requireExtension)\n     return s;\n   };\n \n+  if (m_filename.empty())\n+    throw std::invalid_argument(getErrorMessage(m_filename, m_requireExtension));\n+\n   auto name = m_filename;\n   auto pos = m_filename.find_last_of('/');\n   if (pos != string::npos) {\n-    if (pos == m_filename.length()) // File could not end with slash\n+    if (pos == m_filename.length() - 1) // File could not end with slash\n       throw std::invalid_argument(getErrorMessage(m_filename, m_requireExtension));\n     m_directory = m_filename.substr(0, pos + 1); // Include the last slash in the directory\n     name = m_filename.substr(pos + 1); // No slash in the name"
+    },
+    {
+      "sha": "61e66d80518f63147f71681149c34eb6befece9b",
+      "filename": "src/utils/convert.h",
+      "status": "modified",
+      "additions": 25,
+      "deletions": 14,
+      "changes": 39,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/src%2Futils%2Fconvert.h",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/src%2Futils%2Fconvert.h",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/src%2Futils%2Fconvert.h?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -16,6 +16,7 @@\n #include <string>\n #include <locale> // std::locale, std::tolower\n #include <iostream>\n+#include <limits>\n #include <vector>\n \n namespace infomap {\n@@ -52,7 +53,7 @@ namespace io {\n   }\n \n   template <typename T>\n-  inline std::string stringify(T& x)\n+  inline std::string stringify(const T& x)\n   {\n     std::ostringstream o;\n     if (!(o << x))\n@@ -61,7 +62,7 @@ namespace io {\n   }\n \n   template <>\n-  inline std::string stringify(bool& x)\n+  inline std::string stringify(const bool& x)\n   {\n     return x ? \"true\" : \"false\";\n   }\n@@ -151,26 +152,36 @@ namespace io {\n     return !!(istream >> value);\n   }\n \n-  template <>\n-  inline bool stringToValue(std::string const& str, unsigned int& value)\n+  template <typename T>\n+  inline bool stringToUnsignedValue(std::string const& str, T& value)\n   {\n     std::istringstream istream(str);\n-    int target = 0;\n-    istream >> target;\n-    if (target < 0) return false;\n-    value = target;\n+    istream >> std::ws;\n+    if (!istream.good() || istream.peek() == '-' || istream.peek() == std::char_traits<char>::eof())\n+      return false;\n+\n+    unsigned long long target = 0;\n+    if (!(istream >> target))\n+      return false;\n+\n+    istream >> std::ws;\n+    if (!istream.eof() || target > std::numeric_limits<T>::max())\n+      return false;\n+\n+    value = static_cast<T>(target);\n     return true;\n   }\n \n+  template <>\n+  inline bool stringToValue(std::string const& str, unsigned int& value)\n+  {\n+    return stringToUnsignedValue(str, value);\n+  }\n+\n   template <>\n   inline bool stringToValue(std::string const& str, unsigned long& value)\n   {\n-    std::istringstream istream(str);\n-    int target = 0;\n-    istream >> target;\n-    if (target < 0) return false;\n-    value = target;\n-    return true;\n+    return stringToUnsignedValue(str, value);\n   }\n \n   inline std::string firstWord(const std::string& line)"
+    },
+    {
+      "sha": "2e00ca48ae696448ce4a90ab2ca6534c70e12f28",
+      "filename": "test/cpp/TestUtils.h",
+      "status": "modified",
+      "additions": 23,
+      "deletions": 0,
+      "changes": 23,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fcpp%2FTestUtils.h",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fcpp%2FTestUtils.h",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/test%2Fcpp%2FTestUtils.h?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -5,9 +5,11 @@\n #include \"Infomap.h\"\n \n #include <algorithm>\n+#include <cstdio>\n #include <cmath>\n #include <fstream>\n #include <map>\n+#include <memory>\n #include <sstream>\n #include <set>\n #include <stdexcept>\n@@ -106,6 +108,27 @@ inline void addEdgeFixtureLinks(InfomapWrapper& im, const std::string& relativeP\n   }\n }\n \n+template <typename SetupFn>\n+inline std::unique_ptr<InfomapWrapper> makeRunningInfomap(SetupFn&& setup, const std::string& extraFlags = \"\")\n+{\n+  std::unique_ptr<InfomapWrapper> im(new InfomapWrapper(defaultFlags(extraFlags)));\n+  setup(*im);\n+  im->run();\n+  return im;\n+}\n+\n+inline std::string readTextFile(const std::string& path)\n+{\n+  std::ifstream input(path.c_str());\n+  if (!input) {\n+    throw std::runtime_error(\"Could not open text file: \" + path);\n+  }\n+\n+  std::ostringstream output;\n+  output << input.rdbuf();\n+  return output.str();\n+}\n+\n inline void readNetworkFixture(InfomapWrapper& im, const std::string& filename, bool accumulate = true)\n {\n   im.readInputData(networkFixturePath(filename), accumulate);"
+    },
+    {
+      "sha": "f3aa4b4222f13a5c35ee0d2f87c235bb389adf53",
+      "filename": "test/cpp/test_config.cpp",
+      "status": "added",
+      "additions": 38,
+      "deletions": 0,
+      "changes": 38,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fcpp%2Ftest_config.cpp",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fcpp%2Ftest_config.cpp",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/test%2Fcpp%2Ftest_config.cpp?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -0,0 +1,38 @@\n+#include \"vendor/doctest.h\"\n+\n+#include \"io/Config.h\"\n+\n+namespace {\n+\n+using infomap::Config;\n+TEST_CASE(\"Config accepts no-file-output without an output directory [fast][core][config][cli]\")\n+{\n+  CHECK_NOTHROW(Config(\"input.net --silent --no-file-output\", true));\n+\n+  const Config config(\"input.net --silent --no-file-output\", true);\n+  CHECK(config.noFileOutput);\n+  CHECK(config.outDirectory.empty());\n+  CHECK(config.networkFile == \"input.net\");\n+}\n+\n+TEST_CASE(\"Config parses flow model selection and output formats [fast][core][config][cli]\")\n+{\n+  const Config config(\"input.net --silent --no-file-output --flow-model precomputed --output json,tree\", true);\n+  CHECK(infomap::flowModelToString(config.flowModel) == std::string(\"precomputed\"));\n+  CHECK(config.printJson);\n+  CHECK(config.printTree);\n+}\n+\n+TEST_CASE(\"Config treats directed shorthand as directed flow model [fast][core][config][cli]\")\n+{\n+  const Config config(\"input.net --silent --no-file-output --directed\", true);\n+  CHECK(infomap::flowModelToString(config.flowModel) == std::string(\"directed\"));\n+}\n+\n+TEST_CASE(\"Config rejects unknown flow models and output formats [fast][core][config][cli]\")\n+{\n+  CHECK_THROWS_AS(Config(\"input.net --silent --no-file-output --flow-model unknown\", true), std::runtime_error);\n+  CHECK_THROWS_AS(Config(\"input.net --silent --no-file-output --output tree,unknown\", true), std::runtime_error);\n+}\n+\n+} // namespace"
+    },
+    {
+      "sha": "4193baa3e28f67d2445ee66c8607cee5e0e90c15",
+      "filename": "test/cpp/test_infomap_wrapper.cpp",
+      "status": "modified",
+      "additions": 58,
+      "deletions": 0,
+      "changes": 58,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fcpp%2Ftest_infomap_wrapper.cpp",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fcpp%2Ftest_infomap_wrapper.cpp",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/test%2Fcpp%2Ftest_infomap_wrapper.cpp?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -4,6 +4,8 @@\n \n #include \"TestUtils.h\"\n \n+#include <cstdio>\n+#include <unistd.h>\n #include <set>\n #include <tuple>\n #include <vector>\n@@ -55,6 +57,19 @@ std::vector<std::vector<unsigned int>> canonicalSubInfomapPartition(infomap::Inf\n   return infomap::test::canonicalPartition(modules);\n }\n \n+std::string temporaryOutputPath(const std::string& prefix, const std::string& suffix)\n+{\n+  char buffer[] = \"/tmp/infomap-output-XXXXXX\";\n+  const int fd = ::mkstemp(buffer);\n+  if (fd == -1) {\n+    throw std::runtime_error(\"Could not generate a temporary output path\");\n+  }\n+\n+  ::close(fd);\n+  std::remove(buffer);\n+  return std::string(buffer) + \"_\" + prefix + suffix;\n+}\n+\n TEST_CASE(\"Infomap partitions the unweighted two-triangle fixture into two modules [fast][core][lifecycle]\")\n {\n   InfomapWrapper im(infomap::test::defaultFlags());\n@@ -444,4 +459,47 @@ TEST_CASE(\"Higher-order metadata-bearing subnetwork rebuild stays stable [fast][\n   CHECK(std::get<2>(secondRun) == doctest::Approx(std::get<2>(firstRun)));\n }\n \n+TEST_CASE(\"writeTree and writeClu render higher-order state output [fast][core][output]\")\n+{\n+  auto im = infomap::test::makeRunningInfomap(\n+      [&](InfomapWrapper& infomap) { infomap::test::readNetworkFixture(infomap, \"states.net\"); });\n+\n+  const auto treePath = temporaryOutputPath(\"states_tree\", \".tree\");\n+  const auto cluPath = temporaryOutputPath(\"states_clu\", \".clu\");\n+\n+  im->writeTree(treePath, true);\n+  im->writeClu(cluPath, true, 1);\n+\n+  const auto treeText = infomap::test::readTextFile(treePath);\n+  const auto cluText = infomap::test::readTextFile(cluPath);\n+\n+  CHECK(treeText.find(\"# path flow name state_id node_id\") != std::string::npos);\n+  CHECK(treeText.find(\"state_id\") != std::string::npos);\n+  CHECK(cluText.find(\"# state_id module flow node_id\") != std::string::npos);\n+  CHECK(cluText.find(\"# module level 1\") != std::string::npos);\n+\n+  std::remove(treePath.c_str());\n+  std::remove(cluPath.c_str());\n+}\n+\n+TEST_CASE(\"writeFlowTree is stable across repeated calls on the same instance [fast][core][output][regression]\")\n+{\n+  auto im = infomap::test::makeRunningInfomap(\n+      [&](InfomapWrapper& infomap) { infomap::test::addEdgeFixtureLinks(infomap, \"graphs/twotriangles_unweighted.edges\"); });\n+\n+  const auto firstPath = temporaryOutputPath(\"first_flow_tree\", \".ftree\");\n+  const auto secondPath = temporaryOutputPath(\"second_flow_tree\", \".ftree\");\n+\n+  im->writeFlowTree(firstPath);\n+  im->writeFlowTree(secondPath);\n+\n+  const auto firstText = infomap::test::readTextFile(firstPath);\n+  const auto secondText = infomap::test::readTextFile(secondPath);\n+  CHECK(firstText == secondText);\n+  CHECK(firstText.find(\"#*Links path enterFlow exitFlow numEdges numChildren\") != std::string::npos);\n+\n+  std::remove(firstPath.c_str());\n+  std::remove(secondPath.c_str());\n+}\n+\n } // namespace"
+    },
+    {
+      "sha": "ea21e27261c3fc7179d27c1d7fc306b563e11a73",
+      "filename": "test/cpp/test_program_interface.cpp",
+      "status": "added",
+      "additions": 60,
+      "deletions": 0,
+      "changes": 60,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fcpp%2Ftest_program_interface.cpp",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fcpp%2Ftest_program_interface.cpp",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/test%2Fcpp%2Ftest_program_interface.cpp?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -0,0 +1,60 @@\n+#include \"vendor/doctest.h\"\n+\n+#include \"io/ProgramInterface.h\"\n+\n+#include <string>\n+#include <vector>\n+\n+namespace {\n+\n+TEST_CASE(\"ProgramInterface parses bool, incremental and positional arguments [fast][core][parser][cli]\")\n+{\n+  bool toggle = false;\n+  bool feature = true;\n+  unsigned int verbosity = 0;\n+  unsigned int count = 0;\n+  std::string input;\n+  std::vector<std::string> extras;\n+\n+  infomap::ProgramInterface api(\"Test\", \"Test parser\", \"1.0\");\n+  api.addOptionArgument(toggle, 't', \"toggle\", \"Toggle on\", \"Core\");\n+  api.addOptionArgument(feature, \"feature\", \"Feature flag\", \"Core\");\n+  api.addIncrementalOptionArgument(verbosity, 'v', \"verbose\", \"Verbose\", \"Core\");\n+  api.addOptionArgument(count, 'c', \"count\", \"Count\", infomap::ArgType::integer, \"Core\");\n+  api.addNonOptionArgument(input, \"input\", \"Input file\", \"Core\");\n+  api.addOptionalNonOptionArguments(extras, \"extras\", \"Extra files\", \"Core\");\n+\n+  api.parseArgs(\"-tvv -c7 --no-feature primary.net extra-a extra-b\");\n+\n+  CHECK(toggle);\n+  CHECK_FALSE(feature);\n+  CHECK(verbosity == 2u);\n+  CHECK(count == 7u);\n+  CHECK(input == \"primary.net\");\n+  CHECK(extras == std::vector<std::string> { \"extra-a\", \"extra-b\" });\n+\n+  const auto used = api.getUsedOptionArguments();\n+  REQUIRE(used.size() == 4);\n+  CHECK(used[0].longName == \"toggle\");\n+  CHECK(used[1].longName == \"feature\");\n+  CHECK(used[1].negated);\n+  CHECK(used[2].longName == \"verbose\");\n+  CHECK(used[3].longName == \"count\");\n+}\n+\n+TEST_CASE(\"ProgramInterface parses long options with separate values [fast][core][parser][cli]\")\n+{\n+  unsigned long seed = 0;\n+  double rate = 0.0;\n+\n+  infomap::ProgramInterface api(\"Test\", \"Test parser\", \"1.0\");\n+  api.addOptionArgument(seed, 's', \"seed\", \"Seed\", infomap::ArgType::integer, \"Core\");\n+  api.addOptionArgument(rate, '\\0', \"rate\", \"Rate\", infomap::ArgType::number, \"Core\");\n+\n+  api.parseArgs(\"--seed 123 --rate 0.25\");\n+\n+  CHECK(seed == 123ul);\n+  CHECK(rate == doctest::Approx(0.25));\n+}\n+\n+} // namespace"
+    },
+    {
+      "sha": "398d2fed8be19e4df8e3b4b0dad8901f4e8b1428",
+      "filename": "test/cpp/test_utils_io.cpp",
+      "status": "added",
+      "additions": 102,
+      "deletions": 0,
+      "changes": 102,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fcpp%2Ftest_utils_io.cpp",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fcpp%2Ftest_utils_io.cpp",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/test%2Fcpp%2Ftest_utils_io.cpp?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -0,0 +1,102 @@\n+#include \"vendor/doctest.h\"\n+\n+#include \"io/SafeFile.h\"\n+#include \"utils/FileURI.h\"\n+#include \"utils/convert.h\"\n+\n+#include <array>\n+#include <cerrno>\n+#include <cstring>\n+#include <limits>\n+#include <string>\n+#include <sys/stat.h>\n+#include <unistd.h>\n+#include <vector>\n+\n+namespace {\n+\n+using infomap::FileURI;\n+\n+class TempDir {\n+public:\n+  TempDir()\n+  {\n+    std::array<char, 64> pathTemplate {};\n+    const auto prefix = std::string(\"/tmp/infomap-tests-XXXXXX\");\n+    std::copy(prefix.begin(), prefix.end(), pathTemplate.begin());\n+    pathTemplate[prefix.size()] = '\\0';\n+    auto* dir = mkdtemp(pathTemplate.data());\n+    REQUIRE_MESSAGE(dir != nullptr, std::strerror(errno));\n+    m_path = dir;\n+  }\n+\n+  ~TempDir()\n+  {\n+    rmdir(m_path.c_str());\n+  }\n+\n+  const std::string& path() const { return m_path; }\n+\n+private:\n+  std::string m_path;\n+};\n+\n+TEST_CASE(\"convert parses unsigned integer values strictly [fast][core][utils][io]\")\n+{\n+  unsigned int value = 0;\n+  CHECK(infomap::io::stringToValue(\"42\", value));\n+  CHECK(value == 42u);\n+\n+  CHECK_FALSE(infomap::io::stringToValue(\"\", value));\n+  CHECK_FALSE(infomap::io::stringToValue(\"-1\", value));\n+  CHECK_FALSE(infomap::io::stringToValue(\"12abc\", value));\n+  CHECK_FALSE(infomap::io::stringToValue(\"4294967296\", value));\n+}\n+\n+TEST_CASE(\"convert parses unsigned long values strictly [fast][core][utils][io]\")\n+{\n+  unsigned long value = 0;\n+  CHECK(infomap::io::stringToValue(\"42\", value));\n+  CHECK(value == 42ul);\n+\n+  CHECK_FALSE(infomap::io::stringToValue(\"\", value));\n+  CHECK_FALSE(infomap::io::stringToValue(\"-1\", value));\n+  CHECK_FALSE(infomap::io::stringToValue(\"12abc\", value));\n+\n+  const auto overflow = infomap::io::stringify(std::numeric_limits<unsigned long long>::max()) + \"0\";\n+  CHECK_FALSE(infomap::io::stringToValue(overflow, value));\n+}\n+\n+TEST_CASE(\"convert helpers preserve current tokenization behavior [fast][core][utils][io]\")\n+{\n+  const auto parts = infomap::io::split(\"alpha,,beta,gamma\", ',');\n+  CHECK(parts == std::vector<std::string> { \"alpha\", \"beta\", \"gamma\" });\n+  CHECK(infomap::io::firstWord(\"  one two three\") == \"one\");\n+  CHECK(infomap::io::stringify(parts, \"|\") == \"alpha|beta|gamma\");\n+  CHECK(infomap::io::tolower(\"MiXeD\") == \"mixed\");\n+  CHECK(infomap::io::InsensitiveCompare {}(\"abc\", \"ABD\"));\n+}\n+\n+TEST_CASE(\"FileURI splits valid paths and rejects invalid ones [fast][core][utils][io]\")\n+{\n+  const FileURI nested(\"dir/subdir/file.net\");\n+  CHECK(nested.getFilename() == \"dir/subdir/file.net\");\n+  CHECK(nested.getName() == \"file\");\n+  CHECK(nested.getExtension() == \"net\");\n+\n+  const FileURI noExt(\"plain-file\");\n+  CHECK(noExt.getName() == \"plain-file\");\n+  CHECK(noExt.getExtension().empty());\n+\n+  CHECK_THROWS_AS(FileURI(\"dir/\"), std::invalid_argument);\n+  CHECK_THROWS_AS(FileURI(\"file.\", true), std::invalid_argument);\n+}\n+\n+TEST_CASE(\"SafeFile detects writable and missing directories [fast][core][utils][io]\")\n+{\n+  const TempDir tempDir;\n+  CHECK(infomap::isDirectoryWritable(tempDir.path() + \"/\"));\n+  CHECK_FALSE(infomap::isDirectoryWritable(tempDir.path() + \"/missing/\"));\n+}\n+\n+} // namespace"
+    },
+    {
+      "sha": "977601d27baa40f697b8ffcd7b003e04666e98b4",
+      "filename": "test/python/test_output.py",
+      "status": "added",
+      "additions": 69,
+      "deletions": 0,
+      "changes": 69,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fpython%2Ftest_output.py",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fpython%2Ftest_output.py",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/test%2Fpython%2Ftest_output.py?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -0,0 +1,69 @@\n+from __future__ import annotations\n+\n+import json\n+\n+import pytest\n+\n+\n+pytestmark = pytest.mark.fast\n+\n+\n+def _run_small_network(make_infomap, load_graph_fixture):\n+    im = make_infomap()\n+    load_graph_fixture(im, \"twotriangles_unweighted.edges\", method=\"add_link\")\n+    im.run()\n+    return im\n+\n+\n+def test_output_writers_are_stable_across_repeat_calls(make_infomap, load_graph_fixture, output_dir):\n+    im = _run_small_network(make_infomap, load_graph_fixture)\n+\n+    tree_a = output_dir / \"first.tree\"\n+    tree_b = output_dir / \"second.tree\"\n+    json_a = output_dir / \"first.json\"\n+    json_b = output_dir / \"second.json\"\n+    clu_a = output_dir / \"first.clu\"\n+    clu_b = output_dir / \"second.clu\"\n+\n+    im.write_tree(str(tree_a))\n+    im.write_tree(str(tree_b))\n+    im.write_json(str(json_a))\n+    im.write_json(str(json_b))\n+    im.write_clu(str(clu_a))\n+    im.write_clu(str(clu_b))\n+\n+    assert tree_a.read_text() == tree_b.read_text()\n+    assert json_a.read_text() == json_b.read_text()\n+    assert clu_a.read_text() == clu_b.read_text()\n+\n+    parsed = json.loads(json_a.read_text())\n+    assert parsed[\"version\"].startswith(\"v\")\n+    assert \"nodes\" in parsed\n+    assert \"modules\" in parsed\n+    assert \"# path flow name node_id\" in tree_a.read_text()\n+    assert \"# module level 1\" in clu_a.read_text()\n+\n+\n+def test_state_output_writers_include_state_columns(make_infomap, network_fixture_path, output_dir):\n+    im = make_infomap()\n+    im.read_file(str(network_fixture_path(\"states.net\")))\n+    im.run()\n+\n+    tree_path = output_dir / \"states.tree\"\n+    json_path = output_dir / \"states.json\"\n+    clu_path = output_dir / \"states.clu\"\n+\n+    im.write_tree(str(tree_path), states=True)\n+    im.write_json(str(json_path), states=True)\n+    im.write_clu(str(clu_path), states=True)\n+\n+    tree_text = tree_path.read_text()\n+    json_text = json_path.read_text()\n+    clu_text = clu_path.read_text()\n+\n+    assert \"# path flow name state_id node_id\" in tree_text\n+    assert \"# state_id module flow node_id\" in clu_text\n+\n+    parsed = json.loads(json_text)\n+    assert parsed[\"stateLevel\"] is True\n+    assert parsed[\"higherOrder\"] is True"
+    },
+    {
+      "sha": "a1efb431f8a96d1a0744ee5bb3a53f9096ae5a36",
+      "filename": "test/python/test_wrapper_args.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 0,
+      "changes": 9,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fpython%2Ftest_wrapper_args.py",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fpython%2Ftest_wrapper_args.py",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/test%2Fpython%2Ftest_wrapper_args.py?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -69,3 +69,12 @@ def fake_run(self, args):\n     assert captured[\"rendered_args\"] == \"--synthetic\"\n     assert captured[\"kwargs\"][\"variable_markov_time\"] is True\n     assert captured[\"kwargs\"][\"variable_markov_damping\"] == 0.25\n+\n+\n+def test_no_file_output_runs_without_output_directory(make_infomap, load_graph_fixture):\n+    im = make_infomap(no_file_output=True)\n+    load_graph_fixture(im, \"twotriangles_unweighted.edges\")\n+\n+    im.run()\n+\n+    assert im.num_top_modules == 2"
+    },
+    {
+      "sha": "335c818ea7c85226b3a579a56c36a836cae74692",
+      "filename": "test/scripts/check_print_json_parameters.py",
+      "status": "added",
+      "additions": 26,
+      "deletions": 0,
+      "changes": 26,
+      "blob_url": "https://github.com/mapequation/infomap/blob/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fscripts%2Fcheck_print_json_parameters.py",
+      "raw_url": "https://github.com/mapequation/infomap/raw/d011a894d6dc4b0da7bf3871f5a3601c6df02a70/test%2Fscripts%2Fcheck_print_json_parameters.py",
+      "contents_url": "https://api.github.com/repos/mapequation/infomap/contents/test%2Fscripts%2Fcheck_print_json_parameters.py?ref=d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "patch": "@@ -0,0 +1,26 @@\n+#!/usr/bin/env python3\n+\n+import json\n+import subprocess\n+import sys\n+\n+\n+def main() -> int:\n+    cli = sys.argv[1]\n+    result = subprocess.run(\n+        [cli, \"--print-json-parameters\"],\n+        check=True,\n+        capture_output=True,\n+        text=True,\n+    )\n+    payload = json.loads(result.stdout)\n+    parameters = payload[\"parameters\"]\n+    assert parameters[0][\"long\"] == \"--help\"\n+    assert parameters[1][\"long\"] == \"--version\"\n+    assert any(param[\"long\"] == \"--flow-model\" for param in parameters)\n+    assert any(param[\"long\"] == \"--output\" for param in parameters)\n+    return 0\n+\n+\n+if __name__ == \"__main__\":\n+    raise SystemExit(main())"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "cacec35e8e003a515c9458b8825be8bb290e4a61",
+      "message": "refactor: harden io/config parsing and output regressions",
+      "parent_shas": [
+        "0db66b70e200c80ffeab00c5f1b06126e8dfe9af"
+      ]
+    },
+    {
+      "sha": "d011a894d6dc4b0da7bf3871f5a3601c6df02a70",
+      "message": "build(python): quiet generated swig warnings",
+      "parent_shas": [
+        "cacec35e8e003a515c9458b8825be8bb290e4a61"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "adds_new_tests",
+      "binding_wrapper_noise",
+      "cross_language_mapping_visible",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__mapequation__infomap__pr415.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\mapequation__infomap__pr415__cpp_python__mapequation__infomap__pr415\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\mapequation__infomap__pr415__cpp_python__mapequation__infomap__pr415\\rn"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "instance_id": "python_java__kdeldycke__repomatic__pr2520",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "kdeldycke/repomatic",
+  "pr_number": 2520,
+  "pr_url": "https://github.com/kdeldycke/repomatic/pull/2520",
+  "repo": {
+    "full_name": "kdeldycke/repomatic",
+    "clone_url": "https://github.com/kdeldycke/repomatic.git",
+    "default_branch": "main",
+    "created_at": "2021-12-09T15:04:12Z",
+    "stars": 45,
+    "license": "GPL-2.0",
+    "size_kb": 9763
+  },
+  "pull_request": {
+    "id": 3501818268,
+    "title": "Format Python",
+    "body": "### Description\n\nAuto-formats Python files with [autopep8](https://github.com/hhatto/autopep8) (comment wrapping) and [Ruff](https://docs.astral.sh/ruff/) (linting and formatting). When no `[tool.ruff]` section or `ruff.toml` is present, [repomatic's bundled defaults](https://github.com/kdeldycke/repomatic/blob/main/repomatic/data/ruff.toml) are applied at runtime. See the [`format-python` job documentation](https://github.com/kdeldycke/repomatic?tab=readme-ov-file#githubworkflowsautofixyaml-jobs) for details.\n\n> [!TIP]\n> Customize formatting and linting rules via [`[tool.ruff]`](https://docs.astral.sh/ruff/configuration/) and [`[tool.autopep8]`](https://github.com/hhatto/autopep8#configuration) in your `pyproject.toml`.\n\n\n> [!IMPORTANT]\n> If you suspect the PR content is outdated, **[click `Run workflow`](https://github.com/kdeldycke/repomatic/actions/workflows/autofix.yaml)** to refresh it manually before merging.\n\n\n<details><summary><code>Workflow metadata</code></summary>\n\n| Field | Value |\n| :-- | :-- |\n| **Trigger** | `push` |\n| **Actor** | @kdeldycke |\n| **Ref** | `main` |\n| **Commit** | [`8dd9e882`](https://github.com/kdeldycke/repomatic/commit/8dd9e8822842d1a40dd544e9eca3f3dd6f28d4a2) |\n| **Job** | [`format-python`](https://github.com/kdeldycke/repomatic/blob/8dd9e8822842d1a40dd544e9eca3f3dd6f28d4a2/.github/workflows/autofix.yaml) |\n| **Workflow** | [`autofix.yaml`](https://github.com/kdeldycke/repomatic/blob/8dd9e8822842d1a40dd544e9eca3f3dd6f28d4a2/.github/workflows/autofix.yaml) |\n| **Run** | [#4267.1](https://github.com/kdeldycke/repomatic/actions/runs/24125884626) |\n\n</details>\n\n---\n\n🏭 Generated with [repomatic](https://github.com/kdeldycke/repomatic) `6.11.1.dev0`",
+    "created_at": "2026-04-08T07:20:54Z",
+    "merged_at": "2026-04-08T08:36:13Z",
+    "base_sha": "b78181d09e3c75c604c5621c02cb7522ba9cfe87",
+    "head_sha": "0177a14d8d23313f9989f359411e0c1836cc8fe7",
+    "merge_commit_sha": "e7d4fb0008e08780c1e14b9ad16b8eb401fda689",
+    "labels": [
+      "🤖 ci"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "8dd9e8822842d1a40dd544e9eca3f3dd6f28d4a2",
+  "final_sha": "0177a14d8d23313f9989f359411e0c1836cc8fe7",
+  "changed_files": [
+    {
+      "sha": "12aee5749315fb43c4f591d3eb8600d0ad708a4f",
+      "filename": "repomatic/init_project.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/0177a14d8d23313f9989f359411e0c1836cc8fe7/repomatic%2Finit_project.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/0177a14d8d23313f9989f359411e0c1836cc8fe7/repomatic%2Finit_project.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/repomatic%2Finit_project.py?ref=0177a14d8d23313f9989f359411e0c1836cc8fe7",
+      "patch": "@@ -632,9 +632,7 @@ def run_init(\n                     repo_label,\n                 )\n                 if not components and not is_source:\n-                    excluded_files.setdefault(reg_comp.name, set()).add(\n-                        entry.file_id\n-                    )\n+                    excluded_files.setdefault(reg_comp.name, set()).add(entry.file_id)\n             if not is_source and not entry.is_enabled(config):\n                 logging.debug(\n                     \"Config exclusion: %s/%s (%s disabled).\","
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "0177a14d8d23313f9989f359411e0c1836cc8fe7",
+      "message": "Format Python",
+      "parent_shas": [
+        "8dd9e8822842d1a40dd544e9eca3f3dd6f28d4a2"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__kdeldycke__repomatic__pr2520.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__repomatic__pr2520__python_java__kdeldycke__repomatic__pr2520\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__repomatic__pr2520__python_java__kdeldycke__repomatic__pr2520\\rn"
+  }
+}

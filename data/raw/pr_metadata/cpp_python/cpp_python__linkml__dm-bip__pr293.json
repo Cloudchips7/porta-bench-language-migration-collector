@@ -1,0 +1,176 @@
+{
+  "instance_id": "cpp_python__linkml__dm-bip__pr293",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "linkml/dm-bip",
+  "pr_number": 293,
+  "pr_url": "https://github.com/linkml/dm-bip/pull/293",
+  "repo": {
+    "full_name": "linkml/dm-bip",
+    "clone_url": "https://github.com/linkml/dm-bip.git",
+    "default_branch": "main",
+    "created_at": "2025-01-08T22:45:57Z",
+    "stars": 14,
+    "license": "MIT",
+    "size_kb": 11095
+  },
+  "pull_request": {
+    "id": 3472543371,
+    "title": "Add Seven Bridges API scripts (Python rewrite of #288)",
+    "body": "## Summary\n- Python rewrite of the PowerShell scripts from #288\n- Four scripts using typer for CLI and urllib for HTTP (no new dependencies)\n  - `sbg_api.py` — shared config, token resolution, API client\n  - `generate_manifest.py` — crawl SBG folders, produce `batch_tasks.csv`\n  - `submit_tasks.py` — read manifest, resolve folders, launch tasks\n  - `check_status.py` — dashboard of running tasks with zombie detection\n\nCloses #287\n\n## Test plan\n- [x] Generate manifest from live SBG project\n- [x] Submit a single test task and verify it launches\n- [x] Check status dashboard shows running tasks",
+    "created_at": "2026-03-31T14:57:14Z",
+    "merged_at": "2026-04-01T18:03:54Z",
+    "base_sha": "9dd6efc26ce6c19cad782c6296360ab7979133f9",
+    "head_sha": "49b81e6945eda6928a73fc9a90e14a544d388a20",
+    "merge_commit_sha": "cbb7c9d34f62f247663404de638753da22711ddb",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "9dd6efc26ce6c19cad782c6296360ab7979133f9",
+  "final_sha": "49b81e6945eda6928a73fc9a90e14a544d388a20",
+  "changed_files": [
+    {
+      "sha": "f805d28d4326dc54b31e11a52bae79e409cc80e1",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/linkml/dm-bip/blob/49b81e6945eda6928a73fc9a90e14a544d388a20/.gitignore",
+      "raw_url": "https://github.com/linkml/dm-bip/raw/49b81e6945eda6928a73fc9a90e14a544d388a20/.gitignore",
+      "contents_url": "https://api.github.com/repos/linkml/dm-bip/contents/.gitignore?ref=49b81e6945eda6928a73fc9a90e14a544d388a20",
+      "patch": "@@ -147,3 +147,6 @@ CLAUDE.local.md\n \n # Generated pipeline outputs\n output/\n+\n+# Generated SevenBridges task manifest\n+scripts/sevenbridges/batch_tasks.csv"
+    },
+    {
+      "sha": "7dab73a054aeae00ccf52490f15ff9a37c293946",
+      "filename": "scripts/sevenbridges/README.md",
+      "status": "added",
+      "additions": 88,
+      "deletions": 0,
+      "changes": 88,
+      "blob_url": "https://github.com/linkml/dm-bip/blob/49b81e6945eda6928a73fc9a90e14a544d388a20/scripts%2Fsevenbridges%2FREADME.md",
+      "raw_url": "https://github.com/linkml/dm-bip/raw/49b81e6945eda6928a73fc9a90e14a544d388a20/scripts%2Fsevenbridges%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/linkml/dm-bip/contents/scripts%2Fsevenbridges%2FREADME.md?ref=49b81e6945eda6928a73fc9a90e14a544d388a20",
+      "patch": "@@ -0,0 +1,88 @@\n+# Seven Bridges API Scripts\n+\n+Python scripts for launching and monitoring harmonization tasks on\n+[BioData Catalyst](https://biodatacatalyst.nhlbi.nih.gov/) (Seven Bridges).\n+\n+## Setup\n+\n+### 1. Get a Developer Token\n+\n+Follow the [Seven Bridges token guide](https://sb-biodatacatalyst.readme.io/docs/get-your-authentication-token).\n+\n+### 2. Store the Token\n+\n+**Option A — Environment variable** (CI/automation):\n+\n+```bash\n+export SBG_AUTH_TOKEN=\"your-token-here\"\n+```\n+\n+**Option B — Token file** (local development):\n+\n+```bash\n+mkdir -p ~/.sevenbridges\n+echo \"your-token-here\" > ~/.sevenbridges/token\n+```\n+\n+The token file lives outside the repo — no risk of committing it.\n+\n+## Usage\n+\n+All scripts use `uv run` from the repo root. Each has `--help` for options.\n+\n+### Step 1: Generate the task manifest\n+\n+```bash\n+uv run python scripts/sevenbridges/generate_manifest.py\n+```\n+\n+Crawls `PilotParentStudies` in the SBG project and produces `batch_tasks.csv` —\n+a two-column CSV mapping each consent-group folder to its parent cohort:\n+\n+```\n+Filename,Schema\n+phs000007-HMB-IRB-MDS,FHS\n+phs000007-HMB-IRB-NPU,FHS\n+```\n+\n+### Step 2: Submit batch tasks\n+\n+```bash\n+uv run python scripts/sevenbridges/submit_tasks.py\n+```\n+\n+Reads `batch_tasks.csv`, resolves each folder to its SBG file ID, and launches\n+a harmonization task for every row with a 60-second throttle between submissions.\n+\n+Options:\n+\n+```bash\n+# Use a different app revision\n+uv run python scripts/sevenbridges/submit_tasks.py --app \"rmathur2/dmc-task-4-controlled/dm-bip-test-siege/32\"\n+\n+# Change throttle between submissions\n+uv run python scripts/sevenbridges/submit_tasks.py --throttle 30\n+```\n+\n+### Step 3: Monitor running tasks\n+\n+```bash\n+uv run python scripts/sevenbridges/check_status.py\n+```\n+\n+Shows a table of running tasks with health status, duration, and instance type.\n+Tasks with no active compute jobs are flagged as `!! ZOMBIE !!`.\n+\n+## Configuration\n+\n+Default project and app IDs are set in `sbg_api.py`. Override per-run via CLI options:\n+\n+```bash\n+uv run python scripts/sevenbridges/submit_tasks.py --project \"other/project\" --app \"other/app/id/1\"\n+```\n+\n+| Default | Value |\n+|---|---|\n+| Project | `rmathur2/dmc-task-4-controlled` |\n+| App | `rmathur2/dmc-task-4-controlled/dm-bip-test-siege/31` |\n+| API URL | `https://api.sb.biodatacatalyst.nhlbi.nih.gov/v2` |"
+    },
+    {
+      "sha": "a19b490ca644c28972daac30975e395b2a9b2268",
+      "filename": "scripts/sevenbridges/check_status.py",
+      "status": "added",
+      "additions": 75,
+      "deletions": 0,
+      "changes": 75,
+      "blob_url": "https://github.com/linkml/dm-bip/blob/49b81e6945eda6928a73fc9a90e14a544d388a20/scripts%2Fsevenbridges%2Fcheck_status.py",
+      "raw_url": "https://github.com/linkml/dm-bip/raw/49b81e6945eda6928a73fc9a90e14a544d388a20/scripts%2Fsevenbridges%2Fcheck_status.py",
+      "contents_url": "https://api.github.com/repos/linkml/dm-bip/contents/scripts%2Fsevenbridges%2Fcheck_status.py?ref=49b81e6945eda6928a73fc9a90e14a544d388a20",
+      "patch": "@@ -0,0 +1,75 @@\n+#!/usr/bin/env python3\n+\"\"\"Display a status dashboard for running Seven Bridges tasks.\"\"\"\n+\n+import math\n+from datetime import datetime, timezone\n+\n+import typer\n+from sbg_api import SBG_DEFAULT_PROJECT, sbg_request\n+\n+app = typer.Typer(help=\"Check status of running Seven Bridges tasks.\")\n+\n+\n+@app.command()\n+def main(\n+    project: str = typer.Option(SBG_DEFAULT_PROJECT, help=\"SBG project ID\"),\n+):\n+    \"\"\"Show a dashboard of running tasks with health status and duration.\"\"\"\n+    resp = sbg_request(f\"tasks?project={project}&status=RUNNING&limit=100\")\n+    tasks = resp.get(\"items\", [])\n+    now = datetime.now(timezone.utc)\n+\n+    if not tasks:\n+        typer.echo(\"No active tasks.\")\n+        return\n+\n+    rows = []\n+    for t in tasks:\n+        full = sbg_request(f\"tasks/{t['id']}\")\n+\n+        duration = \"00h 00m\"\n+        submitted = \"N/A\"\n+        if full.get(\"created_time\"):\n+            created = datetime.fromisoformat(full[\"created_time\"].replace(\"Z\", \"+00:00\"))\n+            elapsed = now - created\n+            hours = math.floor(elapsed.total_seconds() / 3600)\n+            mins = math.floor((elapsed.total_seconds() % 3600) / 60)\n+            duration = f\"{hours:02d}h {mins:02d}m\"\n+            submitted = created.astimezone().strftime(\"%m/%d %H:%M\")\n+\n+        health = \"Healthy\"\n+        instance = \"Pending...\"\n+        try:\n+            details = sbg_request(f\"tasks/{t['id']}/execution_details\")\n+            jobs = details.get(\"jobs\", [])\n+            if not jobs:\n+                health = \"!! ZOMBIE !!\"\n+            else:\n+                instance = jobs[0].get(\"instance_type\", \"Running...\")\n+        except Exception:\n+            health = \"API Delay\"\n+\n+        rows.append(\n+            {\n+                \"name\": full.get(\"name\", \"\")[:30],\n+                \"health\": health,\n+                \"submitted\": submitted,\n+                \"duration\": duration,\n+                \"sort_key\": elapsed.total_seconds() if full.get(\"created_time\") else 0,\n+                \"instance\": instance,\n+                \"id\": full[\"id\"],\n+            }\n+        )\n+\n+    rows.sort(key=lambda r: r[\"sort_key\"], reverse=True)\n+\n+    # Render table\n+    fmt = \"{:<32} {:<14} {:<14} {:<10} {:<20} {}\"\n+    typer.echo(\"\\n\" + fmt.format(\"Task\", \"Status\", \"Submitted\", \"Duration\", \"Instance\", \"ID\"))\n+    typer.echo(\"-\" * 110)\n+    for r in rows:\n+        typer.echo(fmt.format(r[\"name\"], r[\"health\"], r[\"submitted\"], r[\"duration\"], r[\"instance\"], r[\"id\"]))\n+\n+\n+if __name__ == \"__main__\":\n+    app()"
+    },
+    {
+      "sha": "4415111f5e84006ceb0dd7d5de57561bc0cf72fa",
+      "filename": "scripts/sevenbridges/generate_manifest.py",
+      "status": "added",
+      "additions": 46,
+      "deletions": 0,
+      "changes": 46,
+      "blob_url": "https://github.com/linkml/dm-bip/blob/49b81e6945eda6928a73fc9a90e14a544d388a20/scripts%2Fsevenbridges%2Fgenerate_manifest.py",
+      "raw_url": "https://github.com/linkml/dm-bip/raw/49b81e6945eda6928a73fc9a90e14a544d388a20/scripts%2Fsevenbridges%2Fgenerate_manifest.py",
+      "contents_url": "https://api.github.com/repos/linkml/dm-bip/contents/scripts%2Fsevenbridges%2Fgenerate_manifest.py?ref=49b81e6945eda6928a73fc9a90e14a544d388a20",
+      "patch": "@@ -0,0 +1,46 @@\n+#!/usr/bin/env python3\n+\"\"\"Generate a batch task manifest from the Seven Bridges project folder structure.\"\"\"\n+\n+# ruff: noqa: B008\n+\n+import csv\n+from pathlib import Path\n+\n+import typer\n+from sbg_api import SBG_DEFAULT_PROJECT, get_folders\n+\n+app = typer.Typer(help=\"Generate a batch task manifest from SBG project folders.\")\n+\n+_DEFAULT_OUTPUT = Path(__file__).parent / \"batch_tasks.csv\"\n+\n+\n+@app.command()\n+def main(\n+    project: str = typer.Option(SBG_DEFAULT_PROJECT, help=\"SBG project ID\"),\n+    root_folder: str = typer.Option(\"PilotParentStudies_NoDRS\", \"--study-root\", help=\"Root folder containing cohorts\"),\n+    output: Path = typer.Option(_DEFAULT_OUTPUT, help=\"Output CSV path\"),\n+):\n+    \"\"\"Crawl the root folder for cohorts and generate batch_tasks.csv.\"\"\"\n+    root_folders = get_folders(project=project)\n+    pilot_root = next((f for f in root_folders if f[\"name\"] == root_folder), None)\n+    if not pilot_root:\n+        typer.echo(f\"Could not find '{root_folder}' folder.\", err=True)\n+        raise typer.Exit(1)\n+\n+    rows = []\n+    for cohort in get_folders(parent=pilot_root[\"id\"]):\n+        schema = cohort[\"name\"]\n+        typer.echo(f\"  {schema}\")\n+        for group in get_folders(parent=cohort[\"id\"]):\n+            rows.append({\"Filename\": group[\"name\"], \"Schema\": schema})\n+\n+    with open(output, \"w\", newline=\"\") as f:\n+        writer = csv.DictWriter(f, fieldnames=[\"Filename\", \"Schema\"])\n+        writer.writeheader()\n+        writer.writerows(rows)\n+\n+    typer.echo(f\"\\nGenerated {len(rows)} tasks → {output}\")\n+\n+\n+if __name__ == \"__main__\":\n+    app()"
+    },
+    {
+      "sha": "25d8c1a14af55db91e70305b6238dd52bd9ea2c0",
+      "filename": "scripts/sevenbridges/get_logs.py",
+      "status": "added",
+      "additions": 112,
+      "deletions": 0,
+      "changes": 112,
+      "blob_url": "https://github.com/linkml/dm-bip/blob/49b81e6945eda6928a73fc9a90e14a544d388a20/scripts%2Fsevenbridges%2Fget_logs.py",
+      "raw_url": "https://github.com/linkml/dm-bip/raw/49b81e6945eda6928a73fc9a90e14a544d388a20/scripts%2Fsevenbridges%2Fget_logs.py",
+      "contents_url": "https://api.github.com/repos/linkml/dm-bip/contents/scripts%2Fsevenbridges%2Fget_logs.py?ref=49b81e6945eda6928a73fc9a90e14a544d388a20",
+      "patch": "@@ -0,0 +1,112 @@\n+#!/usr/bin/env python3\n+\"\"\"Fetch execution logs from completed or failed Seven Bridges tasks.\"\"\"\n+\n+# ruff: noqa: B008 S310\n+\n+import json\n+import urllib.request\n+from pathlib import Path\n+\n+import typer\n+from sbg_api import SBG_DEFAULT_PROJECT, get_token, sbg_request\n+\n+app = typer.Typer(help=\"Fetch logs from completed/failed Seven Bridges tasks.\")\n+\n+PIPELINE_LOGS = {\"stdout_dm_bip.log\", \"stderr_dm_bip.log\"}\n+\n+\n+@app.command()\n+def main(\n+    task_id: str = typer.Argument(None, help=\"Specific task ID (omit to list recent tasks)\"),\n+    project: str = typer.Option(SBG_DEFAULT_PROJECT, help=\"SBG project ID\"),\n+    output_dir: Path = typer.Option(Path(\"task_logs\"), help=\"Directory to save log files\"),\n+    status: str = typer.Option(\"COMPLETED,FAILED\", help=\"Task statuses to query (comma-separated)\"),\n+    limit: int = typer.Option(10, help=\"Max tasks to list when no task_id given\"),\n+    stdout: bool = typer.Option(False, help=\"Download stdout log\"),\n+    stderr: bool = typer.Option(False, help=\"Download stderr log\"),\n+    all_logs: bool = typer.Option(False, \"--all\", help=\"Download all log files\"),\n+):\n+    \"\"\"\n+    Fetch pipeline logs from a task.\n+\n+    Without a task ID, lists recent completed/failed tasks.\n+    Use --stdout, --stderr, or --all to select which logs to download.\n+    If none specified, defaults to --stderr.\n+    \"\"\"\n+    if not task_id:\n+        _list_tasks(project, status, limit)\n+        return\n+\n+    task = sbg_request(f\"tasks/{task_id}\")\n+    task_name = task.get(\"name\", task_id)\n+    typer.echo(f\"Task: {task_name} ({task.get('status', 'unknown')})\")\n+\n+    details = sbg_request(f\"tasks/{task_id}/execution_details\")\n+    jobs = details.get(\"jobs\", [])\n+    if not jobs:\n+        typer.echo(f\"No jobs found (status: {details.get('status')})\")\n+        return\n+\n+    task_dir = output_dir / task_name\n+    task_dir.mkdir(parents=True, exist_ok=True)\n+\n+    for job in jobs:\n+        job_name = job.get(\"name\", \"unknown\")\n+        typer.echo(f\"\\n  Job: {job_name} ({job.get('status', 'unknown')})\")\n+\n+        # Default to stderr if no flags specified\n+        if not (stdout or stderr or all_logs):\n+            stderr = True\n+\n+        wanted = set()\n+        if all_logs:\n+            wanted = None  # download everything\n+        else:\n+            if stdout:\n+                wanted.add(\"stdout_dm_bip.log\")\n+            if stderr:\n+                wanted.add(\"stderr_dm_bip.log\")\n+\n+        logs = job.get(\"logs\", {})\n+        for log_name, download_info_url in logs.items():\n+            if not download_info_url:\n+                continue\n+            if wanted is not None and log_name not in wanted:\n+                continue\n+            try:\n+                content = _download_log(download_info_url)\n+                log_path = task_dir / f\"{job_name}.{log_name}\"\n+                log_path.write_text(content)\n+                typer.echo(f\"    {log_name} ({len(content):,} bytes) → {log_path}\")\n+            except Exception as e:\n+                typer.echo(f\"    {log_name}: failed ({e})\")\n+\n+    typer.echo(f\"\\nLogs saved to {task_dir}\")\n+\n+\n+def _list_tasks(project: str, status: str, limit: int):\n+    \"\"\"List recent tasks matching the given statuses.\"\"\"\n+    for s in status.split(\",\"):\n+        resp = sbg_request(f\"tasks?project={project}&status={s.strip()}&limit={limit}\")\n+        tasks = resp.get(\"items\", [])\n+        if tasks:\n+            typer.echo(f\"\\n{s.strip()} tasks:\")\n+            for t in tasks:\n+                typer.echo(f\"  {t['id']}  {t['name']}\")\n+\n+\n+def _download_log(download_info_url: str) -> str:\n+    \"\"\"Fetch a log file via its SBG download_info endpoint (two-step: signed URL then content).\"\"\"\n+    headers = {\"X-SBG-Auth-Token\": get_token(), \"Content-Type\": \"application/json\"}\n+\n+    req = urllib.request.Request(download_info_url, headers=headers)\n+    with urllib.request.urlopen(req, timeout=30) as resp:\n+        info = json.loads(resp.read())\n+\n+    req2 = urllib.request.Request(info[\"url\"])\n+    with urllib.request.urlopen(req2, timeout=60) as resp:\n+        return resp.read().decode()\n+\n+\n+if __name__ == \"__main__\":\n+    app()"
+    },
+    {
+      "sha": "cd5ddf573fc22231a951f7cae4736042d3ef31ad",
+      "filename": "scripts/sevenbridges/sbg_api.py",
+      "status": "added",
+      "additions": 62,
+      "deletions": 0,
+      "changes": 62,
+      "blob_url": "https://github.com/linkml/dm-bip/blob/49b81e6945eda6928a73fc9a90e14a544d388a20/scripts%2Fsevenbridges%2Fsbg_api.py",
+      "raw_url": "https://github.com/linkml/dm-bip/raw/49b81e6945eda6928a73fc9a90e14a544d388a20/scripts%2Fsevenbridges%2Fsbg_api.py",
+      "contents_url": "https://api.github.com/repos/linkml/dm-bip/contents/scripts%2Fsevenbridges%2Fsbg_api.py?ref=49b81e6945eda6928a73fc9a90e14a544d388a20",
+      "patch": "@@ -0,0 +1,62 @@\n+\"\"\"Seven Bridges API client — shared configuration and HTTP helpers.\"\"\"\n+\n+# ruff: noqa: S310\n+\n+import json\n+import os\n+import sys\n+import urllib.error\n+import urllib.request\n+from pathlib import Path\n+\n+SBG_BASE_URL = \"https://api.sb.biodatacatalyst.nhlbi.nih.gov/v2\"\n+SBG_DEFAULT_PROJECT = os.environ.get(\"SBG_DEFAULT_PROJECT\", \"rmathur2/dmc-task-4-controlled\")\n+SBG_DEFAULT_APP = os.environ.get(\"SBG_DEFAULT_APP\", \"rmathur2/dmc-task-4-controlled/dm-bip-test-siege/31\")\n+SBG_TOKEN_PATH = Path.home() / \".sevenbridges\" / \"token\"\n+\n+\n+def get_token() -> str:\n+    \"\"\"Resolve SBG auth token from environment or token file.\"\"\"\n+    token = os.environ.get(\"SBG_AUTH_TOKEN\", \"\").strip()\n+    if token:\n+        return token\n+    if SBG_TOKEN_PATH.exists():\n+        return SBG_TOKEN_PATH.read_text().strip()\n+    print(\n+        \"Seven Bridges auth token not found.\\n\\n\"\n+        \"Provide it via ONE of:\\n\"\n+        f\"  1. Environment variable: SBG_AUTH_TOKEN\\n\"\n+        f\"  2. Token file: {SBG_TOKEN_PATH}\\n\\n\"\n+        \"Get a token at: https://sb-biodatacatalyst.readme.io/docs/get-your-authentication-token\",\n+        file=sys.stderr,\n+    )\n+    sys.exit(1)\n+\n+\n+def sbg_request(path: str, *, method: str = \"GET\", body: dict | None = None) -> dict:\n+    \"\"\"Make an authenticated request to the SBG API.\"\"\"\n+    url = f\"{SBG_BASE_URL}/{path.lstrip('/')}\"\n+    headers = {\n+        \"X-SBG-Auth-Token\": get_token(),\n+        \"Content-Type\": \"application/json\",\n+    }\n+    data = json.dumps(body).encode() if body else None\n+    req = urllib.request.Request(url, data=data, headers=headers, method=method)\n+    try:\n+        with urllib.request.urlopen(req, timeout=30) as resp:\n+            return json.loads(resp.read())\n+    except urllib.error.HTTPError as e:\n+        error_body = e.read().decode() if e.fp else \"\"\n+        print(f\"SBG API error {e.code}: {error_body}\", file=sys.stderr)\n+        raise\n+\n+\n+def get_folders(*, project: str | None = None, parent: str | None = None) -> list[dict]:\n+    \"\"\"List folder-type items in a project root or under a parent folder.\"\"\"\n+    if project:\n+        resp = sbg_request(f\"files?project={project}\")\n+    elif parent:\n+        resp = sbg_request(f\"files?parent={parent}\")\n+    else:\n+        raise ValueError(\"Must provide project or parent\")\n+    return [item for item in resp.get(\"items\", []) if item.get(\"type\") == \"folder\"]"
+    },
+    {
+      "sha": "20fd0dcbf40c9ebdf1d920957b5c976100a0e4cf",
+      "filename": "scripts/sevenbridges/submit_tasks.py",
+      "status": "added",
+      "additions": 89,
+      "deletions": 0,
+      "changes": 89,
+      "blob_url": "https://github.com/linkml/dm-bip/blob/49b81e6945eda6928a73fc9a90e14a544d388a20/scripts%2Fsevenbridges%2Fsubmit_tasks.py",
+      "raw_url": "https://github.com/linkml/dm-bip/raw/49b81e6945eda6928a73fc9a90e14a544d388a20/scripts%2Fsevenbridges%2Fsubmit_tasks.py",
+      "contents_url": "https://api.github.com/repos/linkml/dm-bip/contents/scripts%2Fsevenbridges%2Fsubmit_tasks.py?ref=49b81e6945eda6928a73fc9a90e14a544d388a20",
+      "patch": "@@ -0,0 +1,89 @@\n+#!/usr/bin/env python3\n+\"\"\"Submit batch harmonization tasks to Seven Bridges from a CSV manifest.\"\"\"\n+\n+# ruff: noqa: B008\n+\n+import csv\n+import time\n+import urllib.parse\n+from pathlib import Path\n+\n+import typer\n+from sbg_api import SBG_DEFAULT_APP, SBG_DEFAULT_PROJECT, get_folders, sbg_request\n+\n+app = typer.Typer(help=\"Submit batch harmonization tasks to Seven Bridges.\")\n+\n+_DEFAULT_MANIFEST = Path(__file__).parent / \"batch_tasks.csv\"\n+\n+\n+@app.command()\n+def main(\n+    project: str = typer.Option(SBG_DEFAULT_PROJECT, help=\"SBG project ID\"),\n+    app_id: str = typer.Option(SBG_DEFAULT_APP, \"--app\", help=\"SBG app (CWL workflow) ID\"),\n+    root_folder: str = typer.Option(\"PilotParentStudies_NoDRS\", \"--study-root\", help=\"Root folder containing cohorts\"),\n+    manifest: Path = typer.Option(_DEFAULT_MANIFEST, help=\"Task manifest CSV\"),\n+    throttle: int = typer.Option(60, help=\"Seconds between task submissions\"),\n+):\n+    \"\"\"Read batch_tasks.csv and launch harmonization tasks.\"\"\"\n+    if not manifest.exists():\n+        typer.echo(f\"Manifest not found: {manifest}. Run generate_manifest.py first.\", err=True)\n+        raise typer.Exit(1)\n+\n+    # Pre-fetch cohort folder IDs\n+    root_folders = get_folders(project=project)\n+    pilot_root = next((f for f in root_folders if f[\"name\"] == root_folder), None)\n+    if not pilot_root:\n+        typer.echo(f\"Could not find '{root_folder}' folder.\", err=True)\n+        raise typer.Exit(1)\n+\n+    cohort_lookup = {f[\"name\"]: f[\"id\"] for f in get_folders(parent=pilot_root[\"id\"])}\n+    typer.echo(f\"Found {len(cohort_lookup)} cohorts\")\n+\n+    with open(manifest) as f:\n+        tasks = list(csv.DictReader(f))\n+    typer.echo(f\"Loaded {len(tasks)} tasks from {manifest}\\n\")\n+\n+    for i, row in enumerate(tasks):\n+        name, schema = row[\"Filename\"], row[\"Schema\"]\n+        typer.echo(f\"  {name} ({schema})...\", nl=False)\n+\n+        parent_id = cohort_lookup.get(schema)\n+        if not parent_id:\n+            typer.echo(f\" [ERROR: schema '{schema}' not found]\")\n+            continue\n+\n+        # Resolve consent-group folder inside its cohort\n+        encoded = urllib.parse.quote(name, safe=\"\")\n+        resp = sbg_request(f\"files?parent={parent_id}&name={encoded}\")\n+        folder = next((f for f in resp.get(\"items\", []) if f[\"type\"] == \"folder\" and f[\"name\"] == name), None)\n+        if not folder:\n+            typer.echo(f\" [ERROR: folder not found in {schema}]\")\n+            continue\n+\n+        # Create and run the task\n+        consent_suffix = name.rsplit(\"-\", 1)[-1]\n+        task_body = {\n+            \"project\": project,\n+            \"app\": app_id,\n+            \"name\": f\"Harmonization_{schema}_{consent_suffix}\",\n+            \"inputs\": {\n+                \"Schema\": schema,\n+                \"RawSource\": {\"class\": \"Directory\", \"path\": folder[\"id\"]},\n+            },\n+        }\n+        try:\n+            created = sbg_request(\"tasks\", method=\"POST\", body=task_body)\n+            sbg_request(f\"tasks/{created['id']}/actions/run\", method=\"POST\")\n+            typer.echo(f\" [RUNNING: {created['id']}]\")\n+        except Exception as e:\n+            typer.echo(f\" [FAILED: {e}]\")\n+\n+        if i < len(tasks) - 1:\n+            typer.echo(f\"  Waiting {throttle}s...\")\n+            time.sleep(throttle)\n+\n+    typer.echo(\"\\nBatch complete.\")\n+\n+\n+if __name__ == \"__main__\":\n+    app()"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "c7bf5b971d21a1c0e33447e17f7f27a5cbdaa4d0",
+      "message": "Add Seven Bridges API scripts for task execution and monitoring\n\nPython rewrite of the PowerShell scripts from #288. Four scripts\nusing typer for CLI and urllib for HTTP (no new dependencies):\n\n- sbg_api.py: shared config, token resolution, API client\n- generate_manifest.py: crawl SBG folders, produce batch_tasks.csv\n- submit_tasks.py: read manifest, resolve folders, launch tasks\n- check_status.py: dashboard of running tasks with zombie detection\n\nCloses #287",
+      "parent_shas": [
+        "9dd6efc26ce6c19cad782c6296360ab7979133f9"
+      ]
+    },
+    {
+      "sha": "68ddc3a1426b481cf3e9a6c5d821b844cf9c0c53",
+      "message": "Add README for Seven Bridges scripts",
+      "parent_shas": [
+        "c7bf5b971d21a1c0e33447e17f7f27a5cbdaa4d0"
+      ]
+    },
+    {
+      "sha": "e0d343c2508b47a89a75ae53a08adf4f7eba8f96",
+      "message": "Add env var overrides for project/app and request timeout",
+      "parent_shas": [
+        "68ddc3a1426b481cf3e9a6c5d821b844cf9c0c53"
+      ]
+    },
+    {
+      "sha": "174471d97aa4ac1fbfb57781af2eeebbeafad88c",
+      "message": "Rename --root to --study-root, default to PilotParentStudies_NoDRS",
+      "parent_shas": [
+        "e0d343c2508b47a89a75ae53a08adf4f7eba8f96"
+      ]
+    },
+    {
+      "sha": "49b81e6945eda6928a73fc9a90e14a544d388a20",
+      "message": "Add get_logs.py for fetching task stdout/stderr from SBG API",
+      "parent_shas": [
+        "174471d97aa4ac1fbfb57781af2eeebbeafad88c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__linkml__dm-bip__pr293.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\linkml__dm-bip__pr293__cpp_python__linkml__dm-bip__pr293\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\linkml__dm-bip__pr293__cpp_python__linkml__dm-bip__pr293\\rn"
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "instance_id": "cpp_python__Project-N-E-K-O__N.E.K.O__pr656",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "Project-N-E-K-O/N.E.K.O",
+  "pr_number": 656,
+  "pr_url": "https://github.com/Project-N-E-K-O/N.E.K.O/pull/656",
+  "repo": {
+    "full_name": "Project-N-E-K-O/N.E.K.O",
+    "clone_url": "https://github.com/Project-N-E-K-O/N.E.K.O.git",
+    "default_branch": "main",
+    "created_at": "2025-06-29T19:00:49Z",
+    "stars": 970,
+    "license": "MIT",
+    "size_kb": 138110
+  },
+  "pull_request": {
+    "id": 3490495732,
+    "title": "fix: disable hover-fade on mobile, clamp audio schedule time, and loa…",
+    "body": "…d rnnoise via direct ctypes\r\n\r\n- Skip locked-hover-fade (stationary + Ctrl) on mobile for both Live2D and VRM, since mobile has no mouse hover or Ctrl key\r\n- Clamp nextChunkTime to prevent stale values from causing overlapping audio chunks\r\n- Replace pyrnnoise Python import with direct ctypes DLL loading to avoid audiolab/av dependency issues in Nuitka builds\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n## Summary by CodeRabbit\n\n## 版本说明\n\n* **Bug 修复**\n  * 修复音频预调度中因过期时间导致的重叠播放问题，避免过去时间点的音频被错误触发。\n\n* **功能优化**\n  * 在移动设备上禁用基于悬停与 Ctrl 的淡入/淡出交互，改善触控体验与响应。\n  * 改进本地降噪库的加载与失败处理，提升不同运行环境下的兼容性与稳定性。\n\n* **重构**\n  * 重构了降噪加载与生命周期管理以使用原生库绑定并加强错误检查。\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "created_at": "2026-04-05T14:25:22Z",
+    "merged_at": "2026-04-05T17:00:59Z",
+    "base_sha": "467cbac9390321153eb92ae9ce33effca4854701",
+    "head_sha": "f864115fd38ab24d59405df1aa0ff13a3398a571",
+    "merge_commit_sha": "ae340ea8d01451c8f7e42b27a552f08b90057786",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "467cbac9390321153eb92ae9ce33effca4854701",
+  "final_sha": "f864115fd38ab24d59405df1aa0ff13a3398a571",
+  "changed_files": [
+    {
+      "sha": "ea1bfa40e94e6a6d51e63097e9221fc5d8e715dd",
+      "filename": "static/app-audio-playback.js",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/Project-N-E-K-O/N.E.K.O/blob/f864115fd38ab24d59405df1aa0ff13a3398a571/static%2Fapp-audio-playback.js",
+      "raw_url": "https://github.com/Project-N-E-K-O/N.E.K.O/raw/f864115fd38ab24d59405df1aa0ff13a3398a571/static%2Fapp-audio-playback.js",
+      "contents_url": "https://api.github.com/repos/Project-N-E-K-O/N.E.K.O/contents/static%2Fapp-audio-playback.js?ref=f864115fd38ab24d59405df1aa0ff13a3398a571",
+      "patch": "@@ -526,6 +526,13 @@\n             // If init still failed, fall back to connecting sources directly to destination\n             var hasAnalyser = !!S.globalAnalyser;\n \n+            // Clamp nextChunkTime to now so stale values never cause past-scheduled\n+            // (and therefore simultaneously playing) audio chunks.\n+            var now = S.audioPlayerContext.currentTime;\n+            if (S.nextChunkTime < now) {\n+                S.nextChunkTime = now;\n+            }\n+\n             // Pre-schedule all chunks within the lookahead window\n             while (S.nextChunkTime < S.audioPlayerContext.currentTime + scheduleAheadTime) {\n                 if (S.audioBufferQueue.length > 0) {"
+    },
+    {
+      "sha": "d393d3b3a6159ac6573fd9b9f42ca19d79a094ac",
+      "filename": "static/live2d-interaction.js",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 4,
+      "changes": 9,
+      "blob_url": "https://github.com/Project-N-E-K-O/N.E.K.O/blob/f864115fd38ab24d59405df1aa0ff13a3398a571/static%2Flive2d-interaction.js",
+      "raw_url": "https://github.com/Project-N-E-K-O/N.E.K.O/raw/f864115fd38ab24d59405df1aa0ff13a3398a571/static%2Flive2d-interaction.js",
+      "contents_url": "https://api.github.com/repos/Project-N-E-K-O/N.E.K.O/contents/static%2Flive2d-interaction.js?ref=f864115fd38ab24d59405df1aa0ff13a3398a571",
+      "patch": "@@ -881,8 +881,9 @@ Live2DManager.prototype.enableMouseTracking = function (model, options = {}) {\n \n             const isNearModel = distance < HoverFadethreshold;\n \n-            // 静止时启动定时器，移出范围时清除\n-            if (this.isLocked && isNearModel) {\n+            // 静止时启动定时器，移出范围时清除（移动端无鼠标悬停，跳过）\n+            const isMobileDevice = (window.appUtils && typeof window.appUtils.isMobile === 'function' && window.appUtils.isMobile()) || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);\n+            if (!isMobileDevice && this.isLocked && isNearModel) {\n                 // 首次进入范围：设置标志并启动定时器\n                 if (!this._hasEnteredHoverRange) {\n                     this._hasEnteredHoverRange = true;\n@@ -904,8 +905,8 @@ Live2DManager.prototype.enableMouseTracking = function (model, options = {}) {\n                 this._hasEnteredHoverRange = false;\n             }\n \n-            // Ctrl 淡化：锁定 + Ctrl + 在模型范围内（独立于静止淡化）\n-            ctrlFadeActive = this.isLocked && ctrlKeyPressed && isNearModel;\n+            // Ctrl 淡化：锁定 + Ctrl + 在模型范围内（独立于静止淡化，移动端跳过）\n+            ctrlFadeActive = !isMobileDevice && this.isLocked && ctrlKeyPressed && isNearModel;\n             applyFade();\n \n             const canvasEl = document.getElementById('live2d-canvas');"
+    },
+    {
+      "sha": "79ea30cf88709ea60cc13456296c044435430bb4",
+      "filename": "static/vrm-interaction.js",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 4,
+      "changes": 9,
+      "blob_url": "https://github.com/Project-N-E-K-O/N.E.K.O/blob/f864115fd38ab24d59405df1aa0ff13a3398a571/static%2Fvrm-interaction.js",
+      "raw_url": "https://github.com/Project-N-E-K-O/N.E.K.O/raw/f864115fd38ab24d59405df1aa0ff13a3398a571/static%2Fvrm-interaction.js",
+      "contents_url": "https://api.github.com/repos/Project-N-E-K-O/N.E.K.O/contents/static%2Fvrm-interaction.js?ref=f864115fd38ab24d59405df1aa0ff13a3398a571",
+      "patch": "@@ -1207,8 +1207,9 @@ class VRMInteraction {\n             const ctrlKeyPressed = isCtrlPressed;\n             const isNearModel = distance < hoverFadeThreshold;\n \n-            // 静止时启动定时器，移出范围时清除\n-            if (this.checkLocked() && isNearModel) {\n+            // 静止时启动定时器，移出范围时清除（移动端无鼠标悬停，跳过）\n+            const isMobileDevice = (window.appUtils && typeof window.appUtils.isMobile === 'function' && window.appUtils.isMobile()) || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);\n+            if (!isMobileDevice && this.checkLocked() && isNearModel) {\n                 // 首次进入范围：设置标志并启动定时器\n                 if (!this._vrmHasEnteredHoverRange) {\n                     this._vrmHasEnteredHoverRange = true;\n@@ -1230,8 +1231,8 @@ class VRMInteraction {\n                 this._vrmHasEnteredHoverRange = false;\n             }\n \n-            // Ctrl 淡化：锁定 + Ctrl + 在模型范围内（独立于静止淡化）\n-            ctrlFadeActive = this.checkLocked() && ctrlKeyPressed && isNearModel;\n+            // Ctrl 淡化：锁定 + Ctrl + 在模型范围内（独立于静止淡化，移动端跳过）\n+            ctrlFadeActive = !isMobileDevice && this.checkLocked() && ctrlKeyPressed && isNearModel;\n             applyFade();\n \n             // 锁定状态下不处理按钮显示/隐藏"
+    },
+    {
+      "sha": "32d9069def3509b9069cd219ac36d275f569087a",
+      "filename": "utils/audio_processor.py",
+      "status": "modified",
+      "additions": 117,
+      "deletions": 29,
+      "changes": 146,
+      "blob_url": "https://github.com/Project-N-E-K-O/N.E.K.O/blob/f864115fd38ab24d59405df1aa0ff13a3398a571/utils%2Faudio_processor.py",
+      "raw_url": "https://github.com/Project-N-E-K-O/N.E.K.O/raw/f864115fd38ab24d59405df1aa0ff13a3398a571/utils%2Faudio_processor.py",
+      "contents_url": "https://api.github.com/repos/Project-N-E-K-O/N.E.K.O/contents/utils%2Faudio_processor.py?ref=f864115fd38ab24d59405df1aa0ff13a3398a571",
+      "patch": "@@ -32,62 +32,150 @@\n DEBUG_AUDIO_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), \"debug_audio\")\n # ===============================================\n \n-# Lazy import pyrnnoise.rnnoise (low-level ctypes wrapper only).\n-# We deliberately skip the high-level pyrnnoise.RNNoise class because it\n-# pulls in audiolab → av (pyav C-extension), which Nuitka fails to bundle.\n-# AudioProcessor already handles framing (480 samples) and resampling (soxr),\n-# so the audiolab Graph layer is redundant for our use-case.\n-_rnnoise_mod = None\n+# Direct ctypes loading of rnnoise native library.\n+# We bypass ALL pyrnnoise Python code because pyrnnoise/__init__.py\n+# unconditionally imports pyrnnoise.pyrnnoise which imports audiolab,\n+# and audiolab is excluded from Nuitka via --nofollow-import-to.\n+# Python's import system executes __init__.py even for submodule imports,\n+# so there is no way to import pyrnnoise.rnnoise without triggering audiolab.\n+import sys\n+import ctypes\n+import platform\n+import importlib.util\n+\n+_rnnoise_lib = None\n _rnnoise_available = None\n \n \n+def _find_rnnoise_dll() -> str:\n+    \"\"\"Locate rnnoise native library inside pyrnnoise package-data.\"\"\"\n+    names = {\n+        \"Windows\": \"rnnoise.dll\",\n+        \"Darwin\": \"librnnoise.dylib\",\n+        \"Linux\": \"librnnoise.so\",\n+    }\n+    lib_name = names.get(platform.system())\n+    if lib_name is None:\n+        raise OSError(f\"Unsupported platform: {platform.system()}\")\n+\n+    tried: list[str] = []\n+\n+    # 1. find_spec — normal Python / venv / uv (does NOT execute __init__.py)\n+    spec = importlib.util.find_spec(\"pyrnnoise\")\n+    if spec is not None and spec.submodule_search_locations:\n+        for search_dir in spec.submodule_search_locations:\n+            candidate = os.path.join(search_dir, lib_name)\n+            tried.append(candidate)\n+            if os.path.isfile(candidate):\n+                return candidate\n+\n+    # 2. Nuitka standalone — --include-data-files places it at <exe_dir>/pyrnnoise/\n+    exe_dir = os.path.dirname(os.path.abspath(sys.executable))\n+    for sub in (\"pyrnnoise\", \".\"):\n+        candidate = os.path.join(exe_dir, sub, lib_name)\n+        tried.append(candidate)\n+        if os.path.isfile(candidate):\n+            return candidate\n+\n+    raise OSError(f\"{lib_name} not found. Searched: {tried}\")\n+\n+\n+def _load_rnnoise_native():\n+    \"\"\"Load rnnoise native library and return a lightweight API object.\"\"\"\n+    lib_path = _find_rnnoise_dll()\n+    lib = ctypes.CDLL(lib_path)\n+\n+    lib.rnnoise_create.argtypes = [ctypes.c_void_p]\n+    lib.rnnoise_create.restype = ctypes.c_void_p\n+    lib.rnnoise_destroy.argtypes = [ctypes.c_void_p]\n+    lib.rnnoise_destroy.restype = None\n+    lib.rnnoise_get_frame_size.argtypes = []\n+    lib.rnnoise_get_frame_size.restype = ctypes.c_int\n+    lib.rnnoise_process_frame.argtypes = [\n+        ctypes.c_void_p,\n+        ctypes.POINTER(ctypes.c_float),\n+        ctypes.POINTER(ctypes.c_float),\n+    ]\n+    lib.rnnoise_process_frame.restype = ctypes.c_float\n+\n+    frame_size = lib.rnnoise_get_frame_size()\n+\n+    class _Lib:\n+        FRAME_SIZE = frame_size\n+        SAMPLE_RATE = 48000\n+\n+        @staticmethod\n+        def create():\n+            return lib.rnnoise_create(None)\n+\n+        @staticmethod\n+        def destroy(state):\n+            lib.rnnoise_destroy(state)\n+\n+        @staticmethod\n+        def process_mono_frame(state, frame):\n+            if frame.dtype == np.int16:\n+                frame = frame.astype(np.float32)\n+            else:\n+                frame = (frame * 32767).astype(np.float32)\n+            n = len(frame)\n+            if n < frame_size:\n+                frame = np.pad(frame, (0, frame_size - n))\n+            ptr = frame.ctypes.data_as(ctypes.POINTER(ctypes.c_float))\n+            prob = lib.rnnoise_process_frame(state, ptr, ptr)\n+            return np.clip(np.round(frame), -32768, 32767).astype(np.int16)[:n], float(prob)\n+\n+    return _Lib()\n+\n+\n def _get_rnnoise():\n-    \"\"\"Lazy load the low-level pyrnnoise.rnnoise module.\"\"\"\n-    global _rnnoise_mod, _rnnoise_available\n+    \"\"\"Lazy load rnnoise native library.\"\"\"\n+    global _rnnoise_lib, _rnnoise_available\n     if _rnnoise_available is None:\n         try:\n-            from pyrnnoise import rnnoise as mod\n-            _rnnoise_mod = mod\n+            _rnnoise_lib = _load_rnnoise_native()\n             _rnnoise_available = True\n-            logger.info(\"✅ pyrnnoise rnnoise library loaded successfully\")\n-        except ImportError as e:\n-            logger.warning(f\"⚠️ pyrnnoise not available: {e}\")\n-            _rnnoise_available = False\n+            logger.info(f\"✅ rnnoise loaded (frame_size={_rnnoise_lib.FRAME_SIZE})\")\n         except Exception as e:\n-            logger.warning(f\"⚠️ pyrnnoise import failed: {e}\")\n+            logger.warning(f\"⚠️ rnnoise not available: {e}\")\n             _rnnoise_available = False\n-    return _rnnoise_mod if _rnnoise_available else None\n+    return _rnnoise_lib if _rnnoise_available else None\n \n \n class _LiteDenoiser:\n-    \"\"\"Lightweight RNNoise wrapper using only pyrnnoise.rnnoise (ctypes).\n+    \"\"\"Lightweight RNNoise wrapper using direct ctypes calls.\n     \n-    No audiolab / av dependency — framing and resampling are handled by the\n-    caller (AudioProcessor) via numpy + soxr.\n+    No pyrnnoise / audiolab / av Python imports — only the native DLL.\n     \"\"\"\n \n-    def __init__(self, rnnoise_mod):\n-        self._mod = rnnoise_mod\n-        self._state = rnnoise_mod.create()\n+    def __init__(self, rnnoise_lib):\n+        self._lib = rnnoise_lib\n+        self._state = rnnoise_lib.create()\n+        if not self._state:\n+            raise RuntimeError(\"rnnoise_create() returned NULL — native library failed to initialise\")\n \n     def process_frame(self, frame_int16: np.ndarray):\n         \"\"\"Process one mono 480-sample int16 frame.\n         \n         Returns (denoised_int16, speech_prob_float).\n         \"\"\"\n-        denoised, prob = self._mod.process_mono_frame(self._state, frame_int16)\n-        return denoised, float(prob)\n+        return self._lib.process_mono_frame(self._state, frame_int16)\n \n     def reset(self):\n-        self._mod.destroy(self._state)\n-        self._state = self._mod.create()\n+        new_state = self._lib.create()\n+        if not new_state:\n+            raise RuntimeError(\"rnnoise_create() returned NULL during reset\")\n+        old_state = self._state\n+        self._state = new_state\n+        if old_state:\n+            self._lib.destroy(old_state)\n \n     def __del__(self):\n-        mod = getattr(self, \"_mod\", None)\n+        lib = getattr(self, \"_lib\", None)\n         state = getattr(self, \"_state\", None)\n-        if mod is not None and state is not None:\n+        if lib is not None and state:\n             try:\n-                mod.destroy(state)\n+                lib.destroy(state)\n             except Exception:\n                 pass\n             self._state = None"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "909be1edb7eb19fe98d12824a03966c9fb9f8e61",
+      "message": "fix: disable hover-fade on mobile, clamp audio schedule time, and load rnnoise via direct ctypes\n\n- Skip locked-hover-fade (stationary + Ctrl) on mobile for both Live2D and VRM,\n  since mobile has no mouse hover or Ctrl key\n- Clamp nextChunkTime to prevent stale values from causing overlapping audio chunks\n- Replace pyrnnoise Python import with direct ctypes DLL loading to avoid\n  audiolab/av dependency issues in Nuitka builds\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "467cbac9390321153eb92ae9ce33effca4854701"
+      ]
+    },
+    {
+      "sha": "dccf10450a44836ea3983350f7d1faf285f93643",
+      "message": "fix: harden mobile detection with UA fallback and rnnoise defensive checks\n\n- Mobile detection: add UA regex fallback so hover-fade is correctly\n  skipped even if window.appUtils is not yet initialised\n- process_mono_frame: skip redundant int16 intermediate cast for\n  non-int16 input, go directly to float32\n- reset(): guard destroy on truthy state, validate new create() result\n- __del__(): use truthy check to also reject ctypes NULL (0)\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "909be1edb7eb19fe98d12824a03966c9fb9f8e61"
+      ]
+    },
+    {
+      "sha": "e4fd18ce5e4cf091f6e3263849cd791c701240e4",
+      "message": "fix: make _LiteDenoiser.reset() atomic — create before destroy\n\nSwap order so self._state is never transiently None/invalid:\ncreate new state first, assign it, then destroy old state.\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "dccf10450a44836ea3983350f7d1faf285f93643"
+      ]
+    },
+    {
+      "sha": "f864115fd38ab24d59405df1aa0ff13a3398a571",
+      "message": "fix: complete ctypes declarations and clip float32→int16 conversion\n\n- Add explicit restype/argtypes for rnnoise_destroy and\n  rnnoise_get_frame_size to match C ABI\n- Round and clip float32 samples to [-32768, 32767] before int16 cast\n  to prevent silent wrap-around on out-of-range values\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "e4fd18ce5e4cf091f6e3263849cd791c701240e4"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__Project-N-E-K-O__N.E.K.O__pr656.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\Project-N-E-K-O__N.E.K.O__pr656__cpp_python__Project-N-E-K-O__N.E.K.O__pr656\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\Project-N-E-K-O__N.E.K.O__pr656__cpp_python__Project-N-E-K-O__N.E.K.O__pr656\\rn"
+  }
+}

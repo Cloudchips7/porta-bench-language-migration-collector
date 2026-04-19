@@ -1,0 +1,79 @@
+{
+  "instance_id": "cpp_python__ffalcinelli__pydivert__pr78",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "ffalcinelli/pydivert",
+  "pr_number": 78,
+  "pr_url": "https://github.com/ffalcinelli/pydivert/pull/78",
+  "repo": {
+    "full_name": "ffalcinelli/pydivert",
+    "clone_url": "https://github.com/ffalcinelli/pydivert.git",
+    "default_branch": "main",
+    "created_at": "2013-04-30T15:23:20Z",
+    "stars": 238,
+    "license": "NOASSERTION",
+    "size_kb": 1426
+  },
+  "pull_request": {
+    "id": 3462316502,
+    "title": "⚡ Optimize ctypes array creation in Packet.__to_buffers",
+    "body": "💡 **What:** Caches the `ctypes` buffer array in `Packet` instances during `__to_buffers` execution using the buffer's length and `id()`.\n🎯 **Why:** To eliminate the Python-level overhead of repeatedly calling `(ctypes.c_char * len).from_buffer(buff)` when a packet's payload and underlying buffer haven't changed.\n📊 **Measured Improvement:** In a microbenchmark of 1,000,000 calls to `__to_buffers` with a 1500-byte packet, the cached version took ~0.43 seconds, compared to the unoptimized baseline of ~1.51 seconds, resulting in a ~3.5x speedup.\n\n---\n*PR created automatically by Jules for task [1063107337851778534](https://jules.google.com/task/1063107337851778534) started by @ffalcinelli*",
+    "created_at": "2026-03-29T11:18:44Z",
+    "merged_at": "2026-03-29T11:22:09Z",
+    "base_sha": "cdbbe0128df633d46bbc521a62987030b53be96b",
+    "head_sha": "ffd67182b85cb8abe811f911875f1bafdabdb8ed",
+    "merge_commit_sha": "f08d017274781a4246f6c44fe3970351dff9915a",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "cdbbe0128df633d46bbc521a62987030b53be96b",
+  "final_sha": "ffd67182b85cb8abe811f911875f1bafdabdb8ed",
+  "changed_files": [
+    {
+      "sha": "e52341b0f5475235383b6c2e13420dcb86e5c481",
+      "filename": "pydivert/packet/__init__.py",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 1,
+      "changes": 13,
+      "blob_url": "https://github.com/ffalcinelli/pydivert/blob/ffd67182b85cb8abe811f911875f1bafdabdb8ed/pydivert%2Fpacket%2F__init__.py",
+      "raw_url": "https://github.com/ffalcinelli/pydivert/raw/ffd67182b85cb8abe811f911875f1bafdabdb8ed/pydivert%2Fpacket%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/ffalcinelli/pydivert/contents/pydivert%2Fpacket%2F__init__.py?ref=ffd67182b85cb8abe811f911875f1bafdabdb8ed",
+      "patch": "@@ -361,7 +361,18 @@ def recalculate_checksums(self, flags=0):\n \n     def __to_buffers(self):\n         buff = self.raw.obj\n-        return buff, (ctypes.c_char * len(self.raw)).from_buffer(buff)\n+        raw_len = len(self.raw)\n+\n+        try:\n+            if self._cached_buff_len == raw_len and self._cached_buff_id == id(buff):\n+                return buff, self._cached_buff\n+        except AttributeError:\n+            pass\n+\n+        self._cached_buff_len = raw_len\n+        self._cached_buff_id = id(buff)\n+        self._cached_buff = (ctypes.c_char * raw_len).from_buffer(buff)\n+        return buff, self._cached_buff\n \n     @property\n     def wd_addr(self):"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "ffd67182b85cb8abe811f911875f1bafdabdb8ed",
+      "message": "perf: Optimize ctypes array creation in Packet.__to_buffers\n\nCo-authored-by: ffalcinelli <1167082+ffalcinelli@users.noreply.github.com>",
+      "parent_shas": [
+        "cdbbe0128df633d46bbc521a62987030b53be96b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__ffalcinelli__pydivert__pr78.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\ffalcinelli__pydivert__pr78__cpp_python__ffalcinelli__pydivert__pr78\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\ffalcinelli__pydivert__pr78__cpp_python__ffalcinelli__pydivert__pr78\\rn"
+  }
+}

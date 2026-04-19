@@ -1,0 +1,79 @@
+{
+  "instance_id": "py2_py3__borgbackup__borg__pr9516",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "borgbackup/borg",
+  "pr_number": 9516,
+  "pr_url": "https://github.com/borgbackup/borg/pull/9516",
+  "repo": {
+    "full_name": "borgbackup/borg",
+    "clone_url": "https://github.com/borgbackup/borg.git",
+    "default_branch": "master",
+    "created_at": "2015-05-12T23:10:47Z",
+    "stars": 13222,
+    "license": "NOASSERTION",
+    "size_kb": 38026
+  },
+  "pull_request": {
+    "id": 3419014660,
+    "title": "hashindex: fixed iteritems segfaulting with non-existent marker, fixes #9368",
+    "body": "Never happened in borg, because borg always gives existing markers to iteritems.\r\n",
+    "created_at": "2026-03-19T09:02:58Z",
+    "merged_at": "2026-03-19T09:11:34Z",
+    "base_sha": "fe721d6a3c7d45601016fe573c8bd1226eced210",
+    "head_sha": "5c322640e0894bea0a17127527bcd966516b3870",
+    "merge_commit_sha": "6bc07f5a1bd37df3ba921688a7cc14fa6fccb292",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "fe721d6a3c7d45601016fe573c8bd1226eced210",
+  "final_sha": "5c322640e0894bea0a17127527bcd966516b3870",
+  "changed_files": [
+    {
+      "sha": "34c935c1a6c6f9db9906f85886250a8d03c7da81",
+      "filename": "src/borg/hashindex.pyx",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/borgbackup/borg/blob/5c322640e0894bea0a17127527bcd966516b3870/src%2Fborg%2Fhashindex.pyx",
+      "raw_url": "https://github.com/borgbackup/borg/raw/5c322640e0894bea0a17127527bcd966516b3870/src%2Fborg%2Fhashindex.pyx",
+      "contents_url": "https://api.github.com/repos/borgbackup/borg/contents/src%2Fborg%2Fhashindex.pyx?ref=5c322640e0894bea0a17127527bcd966516b3870",
+      "patch": "@@ -237,7 +237,7 @@ cdef class NSIndex(IndexBase):\n         iter.index = self.index\n         if marker:\n             key = hashindex_get(self.index, <char *>marker)\n-            if marker is None:\n+            if not key:\n                 raise IndexError\n             iter.key = key - self.key_size\n         return iter\n@@ -354,7 +354,7 @@ cdef class ChunkIndex(IndexBase):\n         iter.index = self.index\n         if marker:\n             key = hashindex_get(self.index, <char *>marker)\n-            if marker is None:\n+            if not key:\n                 raise IndexError\n             iter.key = key - self.key_size\n         return iter"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "5c322640e0894bea0a17127527bcd966516b3870",
+      "message": "hashindex: fixed iteritems segfaulting with non-existent marker, fixes #9368\n\nNever happened in borg, because borg always gives existing markers to iteritems.",
+      "parent_shas": [
+        "fe721d6a3c7d45601016fe573c8bd1226eced210"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__borgbackup__borg__pr9516.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\borgbackup__borg__pr9516__py2_py3__borgbackup__borg__pr9516\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\borgbackup__borg__pr9516__py2_py3__borgbackup__borg__pr9516\\rn"
+  }
+}

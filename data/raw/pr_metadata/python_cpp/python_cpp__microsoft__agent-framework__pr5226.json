@@ -1,0 +1,99 @@
+{
+  "instance_id": "python_cpp__microsoft__agent-framework__pr5226",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "microsoft/agent-framework",
+  "pr_number": 5226,
+  "pr_url": "https://github.com/microsoft/agent-framework/pull/5226",
+  "repo": {
+    "full_name": "microsoft/agent-framework",
+    "clone_url": "https://github.com/microsoft/agent-framework.git",
+    "default_branch": "main",
+    "created_at": "2025-04-28T19:40:42Z",
+    "stars": 9556,
+    "license": "MIT",
+    "size_kb": 86688
+  },
+  "pull_request": {
+    "id": 3522623126,
+    "title": "Python: Fix python-feature-lifecycle skill YAML frontmatter",
+    "body": "### Motivation and Context\n\nThe python-feature-lifecycle skill fails to load with: missing or malformed YAML frontmatter.\n\n### Description\n\nA copyright comment preceded the YAML frontmatter --- delimiter in SKILL.md, preventing the skill from being parsed. The --- block must be on the very first line of the file.\n\nThis PR removes the copyright comment so the frontmatter is valid, matching all other skill files in the repo.\n\n### Contribution Checklist\n\n- [x] The code builds clean without any errors or warnings\n- [x] The PR follows the [Contribution Guidelines](https://github.com/microsoft/agent-framework/blob/main/CONTRIBUTING.md)\n- [x] All unit tests pass, and I have added new tests where possible\n- [ ] **Is this a breaking change?** If yes, add [BREAKING] prefix to the title of the PR.",
+    "created_at": "2026-04-13T11:45:27Z",
+    "merged_at": "2026-04-13T22:42:40Z",
+    "base_sha": "39b560f83cf6effcdbff0b69e96f830f06ab1432",
+    "head_sha": "5fa25cdbafb235e985fdcd33a9352dabdb65dbe0",
+    "merge_commit_sha": "952e685e176d9499aff484224e7133885f16d4cf",
+    "labels": [
+      "documentation",
+      "python"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "39b560f83cf6effcdbff0b69e96f830f06ab1432",
+  "final_sha": "5fa25cdbafb235e985fdcd33a9352dabdb65dbe0",
+  "changed_files": [
+    {
+      "sha": "80e8af17c2487677a82bfab6741bd7d8654653fe",
+      "filename": "python/.github/skills/python-feature-lifecycle/SKILL.md",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/5fa25cdbafb235e985fdcd33a9352dabdb65dbe0/python%2F.github%2Fskills%2Fpython-feature-lifecycle%2FSKILL.md",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/5fa25cdbafb235e985fdcd33a9352dabdb65dbe0/python%2F.github%2Fskills%2Fpython-feature-lifecycle%2FSKILL.md",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2F.github%2Fskills%2Fpython-feature-lifecycle%2FSKILL.md?ref=5fa25cdbafb235e985fdcd33a9352dabdb65dbe0",
+      "patch": "@@ -1,5 +1,3 @@\n-# Copyright (c) Microsoft. All rights reserved.\n-\n ---\n name: python-feature-lifecycle\n description: >"
+    },
+    {
+      "sha": "8c6c4a00096e8b0e683840127d4b1926b158c707",
+      "filename": "python/packages/devui/frontend/README.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/microsoft/agent-framework/blob/5fa25cdbafb235e985fdcd33a9352dabdb65dbe0/python%2Fpackages%2Fdevui%2Ffrontend%2FREADME.md",
+      "raw_url": "https://github.com/microsoft/agent-framework/raw/5fa25cdbafb235e985fdcd33a9352dabdb65dbe0/python%2Fpackages%2Fdevui%2Ffrontend%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/microsoft/agent-framework/contents/python%2Fpackages%2Fdevui%2Ffrontend%2FREADME.md?ref=5fa25cdbafb235e985fdcd33a9352dabdb65dbe0",
+      "patch": "@@ -51,7 +51,7 @@ export default tseslint.config([\n ])\n ```\n \n-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:\n+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/plugins/eslint-plugin-react-dom) for React-specific lint rules:\n \n ```js\n // eslint.config.js"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "5d856b5a52a0ae5983f8aa19d645888ae7654535",
+      "message": "Fix python-feature-lifecycle skill YAML frontmatter\n\nRemove copyright comment that preceded the YAML frontmatter delimiter,\nwhich prevented the skill from loading. The --- block must be the very\nfirst line of SKILL.md.\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>",
+      "parent_shas": [
+        "39b560f83cf6effcdbff0b69e96f830f06ab1432"
+      ]
+    },
+    {
+      "sha": "5fa25cdbafb235e985fdcd33a9352dabdb65dbe0",
+      "message": "fix: update broken eslint-react plugin links in devui README\n\nThe upstream eslint-react repo moved plugins from packages/plugins/\nto the top-level plugins/ directory, causing 404 errors detected by\nlinkspector CI.\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>",
+      "parent_shas": [
+        "5d856b5a52a0ae5983f8aa19d645888ae7654535"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__microsoft__agent-framework__pr5226.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\microsoft__agent-framework__pr5226__python_cpp__microsoft__agent-framework__pr5226\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\microsoft__agent-framework__pr5226__python_cpp__microsoft__agent-framework__pr5226\\rn"
+  }
+}

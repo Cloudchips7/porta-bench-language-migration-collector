@@ -1,0 +1,838 @@
+{
+  "instance_id": "py2_py3__metno__pyaerocom__pr1679",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "metno/pyaerocom",
+  "pr_number": 1679,
+  "pr_url": "https://github.com/metno/pyaerocom/pull/1679",
+  "repo": {
+    "full_name": "metno/pyaerocom",
+    "clone_url": "https://github.com/metno/pyaerocom.git",
+    "default_branch": "main-dev",
+    "created_at": "2018-04-05T13:24:06Z",
+    "stars": 31,
+    "license": "GPL-3.0",
+    "size_kb": 122167
+  },
+  "pull_request": {
+    "id": 2646088606,
+    "title": "Support for MultiGriddedData",
+    "body": "## Change Summary\r\nAdds possibility to read multiple model files, e.g. uEMEP gridded city simulation. This is done through the new MultiGriddedData, which holds a list of GriddedData files. As of now, only functions that are needed for colocation using colocate_gridded_ungridded are supported.\r\n\r\nWhile trying to have as small a footprint as possible, some changes to the ungridded container was needed, to make sure the regridding works correctly for both gridded and ungridded data.\r\n\r\nAssumes model file have the same projection (or lack of projection), vars, units, ts_type and ndim. The data must also be disjoint (no overlapping).\r\n\r\nIs tested with uEMEP and EMEP data\r\n\r\n- Full run started:\r\n  - Output will (eventually) be available here: https://aeroval-test.met.no/thlun/pages/evaluation/?project=uemep&experiment=uemep-2025-08-29\r\n  - Output dir: `/lustre/storeB/users/thlun8736/python/aeroval/data/uemep/uemep-2025-08-29`\r\n\r\n## Checklist\r\n\r\n* [x] Start with a draft-PR\r\n* [x] The PR title is a good summary of the changes\r\n* [x] PR is set to AeroTools and a tentative milestone\r\n* [x] Documentation reflects the changes where applicable\r\n* [x] Tests for the changes exist where applicable\r\n* [x] Tests pass locally\r\n* [x] Tests pass on CI\r\n* [x] At least 1 reviewer is selected\r\n* [x] Make PR ready to review\r\n",
+    "created_at": "2025-07-07T09:32:27Z",
+    "merged_at": "2025-10-07T14:16:43Z",
+    "base_sha": "fc7605993e4c452edcd7c4b9affd1449466bf9f2",
+    "head_sha": "3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+    "merge_commit_sha": "a525cfdce054bc5152a6ce2faaa86bb66b11025c",
+    "labels": [
+      "enhancement ✨"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "b9dba5df6d4d11b694c64e814cebf09f3c2c205c",
+  "final_sha": "3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+  "changed_files": [
+    {
+      "sha": "dac31bffeae88d1d28c5846d7b68b3516e551f7e",
+      "filename": "pyaerocom/__init__.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2F__init__.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2F__init__.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -91,6 +91,7 @@ def __getattr__(key: str):\n from .vertical_profile import VerticalProfile\n from .stationdata import StationData\n from .griddeddata import GriddedData\n+from .griddeddata_container import GriddedDataContainer\n from .ungriddeddata import UngriddedData\n from .ungriddeddata_structured import UngriddedDataStructured\n from .colocation.colocated_data import ColocatedData"
+    },
+    {
+      "sha": "696d6cfaf80014698fe9f01e57b6489675232c0c",
+      "filename": "pyaerocom/aeroval/coldatatojson_helpers.py",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 1,
+      "changes": 12,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Faeroval%2Fcoldatatojson_helpers.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Faeroval%2Fcoldatatojson_helpers.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Faeroval%2Fcoldatatojson_helpers.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -30,7 +30,7 @@\n     find_closest_region_coord,\n     get_all_default_region_ids,\n )\n-from pyaerocom.region_defs import HTAP_REGIONS_DEFAULT, OLD_AEROCOM_REGIONS\n+from pyaerocom.region_defs import HTAP_REGIONS_DEFAULT, OLD_AEROCOM_REGIONS, EU_CITIES_REGIONS\n from pyaerocom.stats.stats import _init_stats_dummy, calculate_statistics\n from pyaerocom.trends_engine import TrendsEngine\n from pyaerocom.trends_helpers import (\n@@ -78,6 +78,10 @@ def _prepare_htap_regions_json():\n     return _prepare_regions_json_helper(HTAP_REGIONS_DEFAULT)\n \n \n+def _prepare_cities_regions_json():\n+    return _prepare_regions_json_helper(EU_CITIES_REGIONS)\n+\n+\n def _prepare_country_regions(region_ids):\n     regs = {}\n     for regid in region_ids:\n@@ -107,6 +111,12 @@ def init_regions_web(coldata, regions_how):\n         regborders.update(coldata.get_country_codes())\n         add_regs = _prepare_country_regions(coldata.get_country_codes().keys())\n         regs.update(add_regs)\n+    elif regions_how == \"cities\":\n+        regborders[ALL_REGION_NAME] = regborders_default[ALL_REGION_NAME]\n+        regs[ALL_REGION_NAME] = regs_default[ALL_REGION_NAME]\n+        add_borders, add_regs = _prepare_cities_regions_json()\n+        regborders.update(add_borders)\n+        regs.update(add_regs)\n     else:\n         raise ValueError(\"Invalid input for regions_how\", regions_how)\n "
+    },
+    {
+      "sha": "fe2ee4b627f23dfd15b7405c29c9ab72f09dbd75",
+      "filename": "pyaerocom/aeroval/modelentry.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Faeroval%2Fmodelentry.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Faeroval%2Fmodelentry.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Faeroval%2Fmodelentry.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -56,7 +56,7 @@ class ModelEntry(BaseModel):\n     model_read_aux: dict = {}\n     model_rename_vars: dict = {}\n     flex_ts_type: bool = True\n-    model_data_dir: str | None = None\n+    model_data_dir: str | list[str] | None = None\n     # attributes previously given as kwargs used in CAMS2_83\n     gridded_reader_id: dict[str, str] = {\"model\": \"ReadGridded\", \"obs\": \"ReadGridded\"}\n     model_kwargs: dict = {}"
+    },
+    {
+      "sha": "8f0b0f3942a21268ec0ad6a67721723cef5b38ea",
+      "filename": "pyaerocom/aeroval/setup/web_display_setup.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Faeroval%2Fsetup%2Fweb_display_setup.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Faeroval%2Fsetup%2Fweb_display_setup.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Faeroval%2Fsetup%2Fweb_display_setup.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -11,7 +11,7 @@ class WebDisplaySetup(BaseModel):\n     model_config = ConfigDict(protected_namespaces=())\n     # WebDisplaySetup attributes\n     map_zoom: Literal[\"World\", \"Europe\", \"xEMEP\"] = \"World\"\n-    regions_how: Literal[\"default\", \"aerocom\", \"htap\", \"country\"] = \"default\"\n+    regions_how: Literal[\"default\", \"aerocom\", \"htap\", \"country\", \"cities\"] = \"default\"\n     map_zoom: str = \"World\"\n     add_model_maps: bool = False\n     modelorder_from_config: bool = True"
+    },
+    {
+      "sha": "b3074a15e14a6417cb35d1e392c84875b039032a",
+      "filename": "pyaerocom/aeroval/utils.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Faeroval%2Futils.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Faeroval%2Futils.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Faeroval%2Futils.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -165,7 +165,7 @@ def compute_model_average_and_diversity(\n             if not data.units == unit_out:\n                 data.convert_unit(unit_out)\n \n-            elif not data.longitude.circular:\n+            elif not data.longitude_circular:\n                 if not data.check_lon_circular():\n                     raise Exception(f\"Longitude of {mname} is not circular...\")\n             data.reorder_dimensions_tseries()\n@@ -182,7 +182,7 @@ def compute_model_average_and_diversity(\n             logger.info(f\"Failed! Reason: {e}\")\n             continue\n \n-        loaded.append(data.cube.data)\n+        loaded.append(data.get_cube_data())\n         from_files.extend(data.from_files)\n         from_models.append(data.data_id)\n         from_vars.append(data.var_name)"
+    },
+    {
+      "sha": "f3b6dc43290ae28104d639e36ba10228aae02971",
+      "filename": "pyaerocom/colocation/colocation_setup.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fcolocation%2Fcolocation_setup.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fcolocation%2Fcolocation_setup.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Fcolocation%2Fcolocation_setup.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -409,7 +409,7 @@ def validate_obs_use_climatology(cls, v):\n \n     # Attributes related to model data\n     model_name: str | None = None\n-    model_data_dir: Path | str | None = None\n+    model_data_dir: Path | str | list[str] | list[Path] | None = None\n \n     model_read_opts: dict = {}\n "
+    },
+    {
+      "sha": "00bc73324603d38f20d495c3aeb40ddcc57356f4",
+      "filename": "pyaerocom/colocation/colocation_utils.py",
+      "status": "modified",
+      "additions": 85,
+      "deletions": 47,
+      "changes": 132,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fcolocation%2Fcolocation_utils.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fcolocation%2Fcolocation_utils.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Fcolocation%2Fcolocation_utils.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -12,6 +12,7 @@\n \n from pyaerocom import __version__ as pya_ver\n from pyaerocom import const\n+from pyaerocom.stationdata import StationData\n from pyaerocom._lowlevel_helpers import RegridResDeg\n from pyaerocom.climatology_config import ClimatologyConfig\n from pyaerocom.exceptions import (\n@@ -24,6 +25,8 @@\n )\n from pyaerocom.filter import Filter\n from pyaerocom.griddeddata import GriddedData\n+from pyaerocom.griddeddata_container import GriddedDataContainer\n+\n from pyaerocom.ungridded_data_container import UngriddedDataContainer\n from pyaerocom.units.datetime import get_lowest_resolution, to_pandas_timestamp\n from pyaerocom.helpers import (\n@@ -306,8 +309,8 @@ class can handle different methods with different inputs)\n         data_ref_np = data_ref_np.filled(np.nan)\n     arr = np.asarray((data_ref_np, data_np))\n     time = data.time_stamps().astype(\"datetime64[ns]\")\n-    lats = data.latitude.points\n-    lons = data.longitude.points\n+    lats = data.latitude_points\n+    lons = data.longitude_points\n \n     # create coordinates of DataArray\n     coords = {\n@@ -321,13 +324,6 @@ class can handle different methods with different inputs)\n \n     coldata = ColocatedData(data=arr, coords=coords, dims=dims, name=data.var_name, attrs=meta)\n \n-    # add correct units for lat / lon dimensions\n-    coldata.latitude.attrs[\"standard_name\"] = data.latitude.standard_name\n-    coldata.latitude.attrs[\"units\"] = str(data.latitude.units)\n-\n-    coldata.longitude.attrs[\"standard_name\"] = data.longitude.standard_name\n-    coldata.longitude.attrs[\"units\"] = str(data.longitude.units)\n-\n     if data_ts_type != ts_type:\n         coldata = coldata.resample_time(\n             to_ts_type=ts_type,\n@@ -593,7 +589,7 @@ def _colocate_site_data_helper_timecol(\n \n \n def colocate_gridded_ungridded(\n-    data: GriddedData,\n+    data: GriddedDataContainer,\n     data_ref: UngriddedDataContainer,\n     ts_type=None,\n     start=None,\n@@ -736,6 +732,7 @@ def colocate_gridded_ungridded(\n \n     # check time overlap and crop model data if needed\n     start, stop = check_time_ival(data, start, stop)\n+\n     data = data.crop(time_range=(start, stop))\n \n     if regrid_res_deg is not None:\n@@ -762,35 +759,23 @@ def colocate_gridded_ungridded(\n     # colocation frequency\n     col_tst = TsType(col_freq)\n \n-    # use only sites that are within model domain\n-    # find projection and axes-ranges\n+    # Gets tiles and ranges from GriddedDataContainer\n+    tiles, xranges, yranges = data.get_tiles()\n+\n+    # Defines a projection and filters ref by above ranges with proj\n     if data.proj_info is None:\n         # lat-lon data, define unity-projection\n         def latlon_proj(lat, lon):\n             \"\"\"unity projection for lat-lon, mapping lat to y and lon to x\"\"\"\n             return (lon, lat)\n \n         proj = latlon_proj\n-        latitude = data.latitude.points\n-        longitude = data.longitude.points\n-        xrange = [np.min(longitude), np.max(longitude)]\n-        yrange = [np.min(latitude), np.max(latitude)]\n     else:\n-        # gridded data with projection,\n         proj = data.proj_info.to_proj\n-        # add x/y information to ungridded\n-        for coord in data.cube.dim_coords:\n-            if coord.var_name == data.proj_info.x_axis:\n-                vals = coord.points\n-                xrange = (np.min(vals), np.max(vals))\n-            if coord.var_name == data.proj_info.y_axis:\n-                vals = coord.points\n-                yrange = (np.min(vals), np.max(vals))\n-        if xrange is None or yrange is None:\n-            raise VariableDefinitionError(\n-                f\"x/y axis not found in cube: {data.proj_info.x_axis}, {data.proj_info.y_axis}\"\n-            )\n-    data_ref = data_ref.filter_by_projection(proj, xrange, yrange)\n+\n+    grid_stat_data = []\n+\n+    data_ref = data_ref.filter_by_projection(proj, xranges, yranges)\n \n     # get timeseries from all stations in provided time resolution\n     # (time resampling is done below in main loop)\n@@ -803,17 +788,22 @@ def latlon_proj(lat, lon):\n         **kwargs,\n     )\n \n-    obs_stat_data = all_stats[\"stats\"]\n-    ungridded_lons = all_stats[\"longitude\"]\n-    ungridded_lats = all_stats[\"latitude\"]\n-\n-    if len(obs_stat_data) == 0:\n-        raise VarNotAvailableError(\n-            f\"Variable {var_ref} is not available in specified time interval ({start}-{stop})\"\n-        )\n-\n-    # to read\n-    grid_stat_data = data.to_time_series(longitude=ungridded_lons, latitude=ungridded_lats)\n+    unsorted_obs_stat_data = all_stats[\"stats\"]\n+    # ungridded_lons = all_stats[\"longitude\"]\n+    # ungridded_lats = all_stats[\"latitude\"]\n+\n+    # Goes through each tile, gets lats/lons for stations in that tile, then finds obs and mod stat data for the tile\n+\n+    grid_stat_data, obs_stat_data = _get_stat_data_vec(\n+        start,\n+        stop,\n+        var_ref,\n+        tiles,\n+        xranges,\n+        yranges,\n+        proj,\n+        unsorted_obs_stat_data,\n+    )\n \n     pd_freq = col_tst.to_pandas_freq()\n     time_idx = make_datetime_index(start, stop, pd_freq)\n@@ -835,6 +825,7 @@ def latlon_proj(lat, lon):\n     data_unit = str(data.units)\n \n     # loop over all stations and append to colocated data object\n+\n     for i, obs_stat in enumerate(obs_stat_data):\n         # Add coordinates to arrays required for xarray.DataArray below\n         lons[i] = obs_stat.longitude\n@@ -971,14 +962,61 @@ def latlon_proj(lat, lon):\n     dims = [\"data_source\", \"time\", \"station_name\"]\n     coldata = ColocatedData(data=arr, coords=coords, dims=dims, name=var, attrs=meta)\n \n-    # add correct units for lat / lon dimensions\n-    coldata.latitude.attrs[\"standard_name\"] = data.latitude.standard_name\n-    coldata.latitude.attrs[\"units\"] = str(data.latitude.units)\n+    return coldata\n \n-    coldata.longitude.attrs[\"standard_name\"] = data.longitude.standard_name\n-    coldata.longitude.attrs[\"units\"] = str(data.longitude.units)\n \n-    return coldata\n+def _get_stat_data_vec(\n+    start,\n+    stop,\n+    var_ref,\n+    tiles,\n+    xranges,\n+    yranges,\n+    proj,\n+    unsorted_obs_stat_data,\n+) -> tuple[list[StationData], list[StationData]]:\n+    obs_stat_pos = np.array(\n+        [\n+            (*proj(station.latitude, station.longitude), station.latitude, station.longitude)\n+            for station in unsorted_obs_stat_data\n+        ],\n+        np.dtype([(\"x\", \"f8\"), (\"y\", \"f8\"), (\"lat\", \"f8\"), (\"lon\", \"f8\")]),\n+    )\n+\n+    obs_stat_data = []\n+    grid_stat_data = []\n+\n+    for i, tile in enumerate(tiles):\n+        xrange = xranges[i]\n+        yrange = yranges[i]\n+\n+        found_id = np.where(\n+            np.logical_and(\n+                np.logical_and(obs_stat_pos[\"x\"] >= xrange[0], obs_stat_pos[\"x\"] <= xrange[1]),\n+                np.logical_and(obs_stat_pos[\"y\"] >= yrange[0], obs_stat_pos[\"y\"] <= yrange[1]),\n+            )\n+        )[0]\n+\n+        found_stations = [unsorted_obs_stat_data[i] for i in found_id]\n+\n+        if len(found_stations) == 0:\n+            print(f\"Could not find any stations for tile {tile.from_files}\")\n+            logger.info(f\"Could not find any stations for tile {tile.from_files}\")\n+            continue\n+\n+        ungridded_lats = obs_stat_pos[\"lat\"][found_id]\n+        ungridded_lons = obs_stat_pos[\"lon\"][found_id]\n+\n+        grid_stat_data += tile.to_time_series(longitude=ungridded_lons, latitude=ungridded_lats)\n+\n+        obs_stat_data += found_stations\n+\n+    if len(obs_stat_data) == 0:\n+        raise VarNotAvailableError(\n+            f\"Variable {var_ref} is not available in specified time interval ({start}-{stop})\"\n+        )\n+\n+    return grid_stat_data, obs_stat_data\n \n \n def correct_model_stp_coldata(coldata, p0=None, t0=273.15, inplace=False):"
+    },
+    {
+      "sha": "f0506f47af5fa9e644c51be21c53c9f767115281",
+      "filename": "pyaerocom/colocation/colocator.py",
+      "status": "modified",
+      "additions": 57,
+      "deletions": 11,
+      "changes": 68,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fcolocation%2Fcolocator.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fcolocation%2Fcolocator.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Fcolocation%2Fcolocator.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -24,6 +24,7 @@\n     DataCoverageError,\n )\n from pyaerocom.griddeddata import GriddedData\n+from pyaerocom import GriddedDataContainer\n from pyaerocom.helpers import start_stop, to_datestring_YYYYMMDD\n from pyaerocom.io import ReadCAMS2_83, ReadGridded, ReadUngridded\n from pyaerocom.io.helpers import get_all_supported_ids_ungridded\n@@ -88,6 +89,9 @@ def __init__(self, colocation_setup: ColocationSetup | dict, **kwargs):\n         self.files_written: list[str] = []\n \n         self._model_reader: ReadGridded | ReadMscwCtm | ReadCAMS2_83 | None = None\n+        self._model_readers: list[ReadGridded] | list[ReadMscwCtm] | list[ReadCAMS2_83] | None = (\n+            None\n+        )\n         self._obs_reader: Any | None = None\n         self._obs_is_vertical_profile: bool = False\n         self.obs_filters: dict = colocation_setup.obs_filters.copy()\n@@ -163,6 +167,38 @@ def model_reader(self):\n         self._loaded_model_data = {}\n         return self._model_reader\n \n+    @property\n+    def model_readers(self):\n+        \"\"\"\n+        Model data readers\n+        \"\"\"\n+\n+        if self._model_readers is not None:\n+            if self._model_readers[0].data_id == self.colocation_setup.model_id:\n+                return self._model_readers\n+            logger.info(\n+                f\"Reloading outdated model readers. ID of current reader: \"\n+                f\"{self._model_readers[0].data_id}. New ID: {self.colocation_setup.model_id} ♻️\"\n+            )\n+        self._loaded_model_data = {}\n+        if isinstance(self.colocation_setup.model_data_dir, list):\n+            self._model_readers = [\n+                self._reload_model_reader_with_new_dir(folder)\n+                for folder in self.colocation_setup.model_data_dir\n+            ]\n+        else:\n+            self._model_readers = [self.model_reader]\n+        return self._model_readers\n+\n+    def _reload_model_reader_with_new_dir(self, model_dir=None) -> ReadGridded:\n+        if self._model_reader is not None:\n+            logger.info(\n+                f\"Reloading outdated model reader with new DIR: {self.colocation_setup.model_data_dir}\"\n+            )\n+        self._model_reader = self._instantiate_gridded_reader(what=\"model\", data_dir_in=model_dir)\n+        self._loaded_model_data = {}\n+        return self._model_reader\n+\n     def _check_data_id_obs_reader(self):\n         \"\"\"\n         Check if obs_reader is instantiated with correct obs ID.\n@@ -597,7 +633,7 @@ def _check_model_add_vars(self):\n             elif not all([isinstance(x, str) for x in mvars]):\n                 raise ValueError(\"Values of model_add_vars need to be list of strings\")\n \n-    def _instantiate_gridded_reader(self, what):\n+    def _instantiate_gridded_reader(self, what, data_dir_in=None):\n         \"\"\"\n         Create reader for model or observational gridded data.\n \n@@ -612,10 +648,15 @@ def _instantiate_gridded_reader(self, what):\n         \"\"\"\n         if what == \"model\":\n             data_id = self.colocation_setup.model_id\n-            data_dir = self.colocation_setup.model_data_dir\n+            if isinstance(self.colocation_setup.model_data_dir, list):\n+                data_dir = self.colocation_setup.model_data_dir[0]\n+            else:\n+                data_dir = self.colocation_setup.model_data_dir\n         else:\n             data_id = self.colocation_setup.obs_id\n             data_dir = self.colocation_setup.obs_data_dir\n+        if data_dir_in is not None:\n+            data_dir = data_dir_in\n         reader_class = self._get_gridded_reader_class(what=what)\n         if what == \"model\" and reader_class in self.MODELS_WITH_KWARGS:\n             reader = reader_class(\n@@ -781,8 +822,9 @@ def _read_gridded(self, var_name, is_model):\n         ts_type_read = self._get_ts_type_read(var_name, is_model)\n         kwargs = {}\n         if is_model:\n-            reader = self.model_reader\n+            readers = self.model_readers\n             vert_which = self.colocation_setup.obs_vert_type\n+            data_id = self.colocation_setup.model_id\n \n             kwargs.update(**self.colocation_setup.model_kwargs)\n             if self.colocation_setup.model_use_climatology:\n@@ -791,24 +833,27 @@ def _read_gridded(self, var_name, is_model):\n             if var_name in self.colocation_setup.model_read_opts:\n                 kwargs.update(self.colocation_setup.model_read_opts[var_name])\n         else:\n-            reader = self.obs_reader\n+            readers = [self.obs_reader]\n+            data_id = self.colocation_setup.obs_id\n             vert_which = None\n             ts_type_read = self.colocation_setup.obs_ts_type_read\n             kwargs.update(self._eval_obs_filters(var_name))\n \n+        data = GriddedDataContainer(data_id)\n         try:\n-            data = reader.read_var(\n+            data.read_data(\n+                readers,\n                 var_name,\n-                start=start,\n-                stop=stop,\n-                ts_type=ts_type_read,\n-                vert_which=vert_which,\n-                flex_ts_type=self.colocation_setup.flex_ts_type,\n+                start,\n+                stop,\n+                ts_type_read,\n+                vert_which,\n+                self.colocation_setup.flex_ts_type,\n                 **kwargs,\n             )\n         except DataCoverageError:\n             vert_which_alt = self._try_get_vert_which_alt(is_model, var_name)\n-            data = reader.read_var(\n+            data.read_data(\n                 var_name,\n                 start=start,\n                 stop=stop,\n@@ -818,6 +863,7 @@ def _read_gridded(self, var_name, is_model):\n             )\n \n         data = self._check_remove_outliers_gridded(data, var_name, is_model)\n+\n         return data\n \n     def _try_get_vert_which_alt(self, is_model, var_name):"
+    },
+    {
+      "sha": "2f6a4a7e82d2a3810a32313728ff0b9a9f4b276b",
+      "filename": "pyaerocom/griddeddata.py",
+      "status": "modified",
+      "additions": 83,
+      "deletions": 21,
+      "changes": 104,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fgriddeddata.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fgriddeddata.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Fgriddeddata.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -531,7 +531,7 @@ def lon_res(self):\n             raise AttributeError(\"Data does not contain longitude information\")\n         vals = np.diff(self.longitude.points)\n         val = vals.mean()\n-        if vals.std() / val > 0.0001:\n+        if vals.std() / val > 0.0001:  # NOTE: Increased from 0.0001\n             raise ValueError(\"Check longitudes\")\n         return val\n \n@@ -541,7 +541,7 @@ def lat_res(self):\n             raise AttributeError(\"Data does not contain longitude information\")\n         vals = np.diff(self.latitude.points)\n         val = vals.mean()\n-        if vals.std() / val > 0.0001:\n+        if vals.std() / val > 0.0001:  # NOTE: Increased from 0.0001\n             raise ValueError(\"Check latitudes\")\n         return val\n \n@@ -993,6 +993,77 @@ def transpose(self, new_order):\n         \"\"\"\n         self.grid.transpose(new_order)\n \n+    def get_xyranges(self) -> tuple[list[tuple[float, float]]]:\n+        \"\"\"\n+        Finds the max/min ranges for x and y. Done by taking first and last point in each dimension.\n+        This might be the middle point of the bounding cells\n+\n+\n+        Returns\n+        -------\n+        tuple[list[tuple[float, float]]]\n+            Two list, one for xs and one for ys\n+\n+        Raises\n+        --------\n+        ValueError\n+            If self  has no proj_info\n+        VariableDefinitionError\n+            If there is a child where x or y is not found\n+\n+        \"\"\"\n+        if self.proj_info is None:\n+            raise ValueError(\"X and Y cannot be found, since proj_info is None\")\n+\n+        xranges = []\n+        yranges = []\n+\n+        xrange = None\n+        yrange = None\n+        for coord in self.cube.dim_coords:\n+            if coord.var_name == self.proj_info.x_axis:\n+                vals = coord.points\n+                xrange = (vals[0], vals[-1])\n+\n+            if coord.var_name == self.proj_info.y_axis:\n+                vals = coord.points\n+                yrange = (vals[0], vals[-1])\n+\n+        if xrange[0] > xrange[1] or yrange[0] > yrange[1]:\n+            raise ValueError(f\"X or Y range had start bigger than end: {xrange=}, {yrange=}\")\n+        if xrange is None or yrange is None:\n+            raise VariableDefinitionError(\n+                f\"x/y axis not found in cube: {self.proj_info.x_axis}, {self.proj_info.y_axis}\"\n+            )\n+        xranges.append(xrange)\n+        yranges.append(yrange)\n+        return xranges, yranges\n+\n+    def get_latlon_ranges(self) -> tuple[tuple[float, float]]:\n+        \"\"\"\n+        Finds the max/min ranges for lat and lon\n+\n+\n+        Returns\n+        -------\n+        tuple[list[tuple[float, float]]]\n+            Two list, one for lats and one for lons\n+\n+        \"\"\"\n+\n+        latitude = self.latitude.points\n+        longitude = self.longitude.points\n+        lat_range = (latitude[0], latitude[-1])\n+        lon_range = (longitude[0], longitude[-1])\n+\n+        if lat_range[0] > lat_range[1] or lon_range[0] > lon_range[1]:\n+            raise ValueError(f\"X or Y range had start bigger than end: {lat_range=}, {lon_range=}\")\n+\n+        if len(lon_range) == 0 or len(lat_range) == 0:\n+            raise ValueError(\"Failed to find lat or lon ranges\")\n+\n+        return lat_range, lon_range\n+\n     def mean_at_coords(self, latitude=None, longitude=None, time_resample_kwargs=None, **kwargs):\n         \"\"\"Compute mean value at all input locations\n \n@@ -1901,24 +1972,11 @@ def crop(self, lon_range=None, lat_range=None, time_range=None, region=None):\n                     time_range[0] <= self.time_stamps(), self.time_stamps() < time_range[1]\n                 )\n                 dates = self.time_stamps()[mask]\n+                old_cube = data\n                 data = data.extract(time_constraint)\n                 if len(dates) == 1:\n-                    # Working around iris 'squeezing' the cube when extract is length 1 along the date\n-                    # dimension by readding the dimension with the appropriate value.\n-                    time_coord = data.coord(\"time\")\n-                    data.remove_coord(\"time\")\n-                    new_shape = (1,) + data.shape\n-                    nd_data = np.reshape(data.data, new_shape)\n-                    data = iris.cube.Cube(\n-                        nd_data,\n-                        dim_coords_and_dims=[(time_coord, 0)]\n-                        + [(coord, i + 1) for i, coord in enumerate(data.dim_coords)],\n-                        aux_coords_and_dims=[\n-                            (coord, i) for i, coord in enumerate(data.aux_coords)\n-                        ],\n-                        var_name=data.var_name,\n-                        long_name=data.long_name,\n-                        units=data.units,\n+                    data = iris.common.resolve.Resolve(old_cube, data).cube(\n+                        np.reshape(data.core_data(), (1,) + data.shape)\n                     )\n \n             elif all(isinstance(x, int) for x in time_range):\n@@ -2689,9 +2747,13 @@ def __getitem__(self, indices_or_attr):\n                 return self.__dict__[indices_or_attr]\n             try:\n                 which = self._check_coordinate_access(indices_or_attr)\n-                return self.grid.coord(**which)\n-            except Exception:\n-                raise AttributeError(f\"GriddedData object has no attribute {indices_or_attr}\")\n+                # dim_coords=None is to look at both aux_coords and dim_coords — time won't be an aux_coord if the number of values is 1,\n+                # therefore we allow for both.\n+                return self.grid.coord(**which, dim_coords=None)\n+            except Exception as e:\n+                raise AttributeError(\n+                    f\"GriddedData object has no attribute {indices_or_attr}\"\n+                ) from e\n \n         sub = self.grid.__getitem__(indices_or_attr)\n         return GriddedData(sub, **self.metadata)"
+    },
+    {
+      "sha": "c0535706f5733e0f5f629c5d1f0b1c1c0c236464",
+      "filename": "pyaerocom/griddeddata_container.py",
+      "status": "added",
+      "additions": 511,
+      "deletions": 0,
+      "changes": 511,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fgriddeddata_container.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fgriddeddata_container.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Fgriddeddata_container.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -0,0 +1,511 @@\n+import numpy as np\n+import logging\n+from copy import deepcopy\n+import iris\n+\n+from .griddeddata import GriddedData\n+from pyaerocom.stationdata import StationData\n+\n+from pyaerocom.io.gridded_reader import GriddedReader\n+\n+\n+logger = logging.getLogger(__name__)\n+\n+\n+class GriddedDataContainerException(Exception):\n+    pass\n+\n+\n+class GriddedDataContainer:\n+    def __init__(self, data_id: str, data: GriddedData | None = None):\n+        \"\"\"\n+        Class for holding and working with multiple GriddedData objects.\n+\n+        \"\"\"\n+        self.data_id = data_id\n+\n+        self.children: list[GriddedData] = []\n+\n+        self.ndim = None\n+\n+        self.from_files = []\n+\n+        self.start = None\n+        self.stop = None\n+\n+        self.proj_info = None\n+\n+        self.units = None\n+        self.var_name = None\n+        self.ts_type = None\n+\n+        self._lon_res = None\n+        self._lat_res = None\n+\n+        self._lat_points = None\n+        self._lon_points = None\n+\n+        if data is not None:\n+            self.add_griddeddata(data)\n+\n+    def _initiate(self, data: GriddedData):\n+        \"\"\"\n+        Starts the list of children, and defines all the important attributes for objects\n+\n+        Parameters\n+        ----------\n+\n+        data: GriddedData\n+        \"\"\"\n+        self.proj_info = deepcopy(data.proj_info)\n+        self.start = data.start\n+        self.stop = data.stop\n+\n+        self.var_name = data.var_name\n+        self.ts_type = data.ts_type\n+        self.units = data.units\n+\n+        self.ndim = data.ndim\n+\n+        try:\n+            self._lat_points = data.latitude.points\n+        except Exception:\n+            self._lat_points = None\n+            assert self.proj_info is not None\n+\n+        try:\n+            self._lon_points = data.longitude.points\n+        except Exception:\n+            self._lon_points = None\n+            assert self.proj_info is not None\n+\n+    def only_one_child(func):\n+        def check_child(self, *args, **kwargs):\n+            if len(self.children) > 1:\n+                raise NotImplementedError(\n+                    f\"{func.__name__} is not implemented for cases with more than one child GriddedData\"\n+                )\n+            else:\n+                return func(self, *args, **kwargs)\n+\n+        return check_child\n+\n+    def add_griddeddata(self, data: GriddedData):\n+        \"\"\"\n+        Adds a new GriddedData to children after checking if this new GriddedData object is\n+        compatible with existing children\n+\n+        Parameters\n+        ----------\n+        data: GriddedData\n+\n+        Raises\n+        -------\n+        GriddedDataContainerException\n+            If proj_info, var_name, ts_type, units or ndims are different from the existing ones\n+\n+        \"\"\"\n+        if len(self.children) == 0:\n+            self._initiate(data)\n+\n+        if type(data.proj_info) is not type(self.proj_info):\n+            raise GriddedDataContainerException(\n+                f\"Proj info from added griddeddata and existing proj info do not have the same type: {type(data.proj_info), {type(self.proj_info)}}\"\n+            )\n+        if data.proj_info is not None and self.proj_info is not None:\n+            if data.proj_info != self.proj_info:\n+                raise GriddedDataContainerException(\n+                    \"Proj data of added griddeddata is different from the existing proj info\"\n+                )\n+\n+        if data.var_name != self.var_name:\n+            raise GriddedDataContainerException(\n+                f\"var_name of added griddeddata {data.var_name} is different from the existing var name {self.var_name}\"\n+            )\n+\n+        if data.ts_type != self.ts_type:\n+            raise GriddedDataContainerException(\n+                f\"ts_type of added griddeddata {data.ts_type} is different from the existing ts_type {self.ts_type}\"\n+            )\n+\n+        if data.units != self.units:\n+            raise GriddedDataContainerException(\n+                f\"units of added griddeddata {data.units} is different from the existing units {self.units}\"\n+            )\n+\n+        if data.ndim != self.ndim:\n+            raise GriddedDataContainerException(\n+                f\"ndim of added griddeddata {data.ndim} is different from the existing ndim {self.ndim}\"\n+            )\n+\n+        self.start = min(self.start, data.start)\n+        self.stop = max(self.stop, data.stop)\n+\n+        self.from_files += data.from_files\n+\n+        self.children.append(data)\n+\n+    def read_data(\n+        self,\n+        readers: list[GriddedReader],\n+        var_name: str,\n+        start: str,\n+        stop: str,\n+        ts_type: str,\n+        vert_which: str,\n+        flex_ts_type: str,\n+        **kwargs,\n+    ) -> None:\n+        for reader in readers:\n+            data = reader.read_var(\n+                var_name,\n+                start=start,\n+                stop=stop,\n+                ts_type=ts_type,\n+                vert_which=vert_which,\n+                flex_ts_type=flex_ts_type,\n+                **kwargs,\n+            )\n+\n+            self.add_griddeddata(data)\n+\n+    def get_xyranges(self) -> tuple[list[tuple[float, float]]]:\n+        \"\"\"\n+        Finds the max/min ranges for x and y of all children\n+\n+\n+        Returns\n+        -------\n+        tuple[list[tuple[float, float]]]\n+            Two list, one for xs and one for ys\n+\n+        Raises\n+        --------\n+        GriddedDataContainerException\n+            If self has no proj_info\n+        ValueError\n+            If there is a child where x or y is not found\n+\n+        \"\"\"\n+        if self.proj_info is None:\n+            raise GriddedDataContainerException(\"X and Y cannot be found, since proj_info is None\")\n+\n+        xranges = []\n+        yranges = []\n+        for data in self.children:\n+            xrange, yrange = self._get_xyrange(data)\n+            if xrange is None or yrange is None:\n+                raise ValueError(\n+                    f\"x/y axis not found in cube: {data.proj_info.x_axis}, {data.proj_info.y_axis}\"\n+                )\n+            xranges.append(xrange)\n+            yranges.append(yrange)\n+        return xranges, yranges\n+\n+    @staticmethod\n+    def _get_xyrange(child: GriddedData) -> tuple[tuple[float, float]] | tuple[None]:\n+        \"\"\"\n+        Finds the range of the axis. Done by taking first and last point in each dimension.\n+        This might be the middle point of the bounding cells\n+\n+        Parameters:\n+        child : GriddedData\n+            The GriddedData to find the ranges\n+\n+        Returns:\n+        tuple[tuple[float, float]]\n+            Tuple of the ranges\n+\n+        \"\"\"\n+        xrange = None\n+        yrange = None\n+        for coord in child.cube.dim_coords:\n+            if coord.var_name == child.proj_info.x_axis:\n+                vals = coord.points\n+                xrange = (vals[0], vals[-1])\n+\n+            if coord.var_name == child.proj_info.y_axis:\n+                vals = coord.points\n+                yrange = (vals[0], vals[-1])\n+\n+        return xrange, yrange\n+\n+    def get_tiles(\n+        self,\n+    ) -> tuple[list[GriddedData], list[tuple[float, float]], list[tuple[float, float]]]:\n+        \"\"\"\n+        Makes a list of available tiles, and lists of x- and yranges for said tiles\n+\n+\n+        Returns:\n+        list[GriddedData]\n+            list of tiles\n+\n+        tuple[tuple[float, float]]\n+            list of the xranges\n+\n+        tuple[tuple[float, float]]\n+            list of the yranges\n+\n+        \"\"\"\n+        tiles = []\n+        xranges = []\n+        yranges = []\n+        for data in self.children:\n+            if self.proj_info is None:\n+                latitude = data.latitude.points\n+                longitude = data.longitude.points\n+                xrange = [np.min(longitude), np.max(longitude)]\n+                yrange = [np.min(latitude), np.max(latitude)]\n+            else:\n+                xrange, yrange = self._get_xyrange(data)\n+\n+            if len(xrange) == 0 or len(yrange) == 0:\n+                logger.warning(f\"Tile {data.from_files} with no x and y range found\")\n+                continue\n+\n+            tiles.append(data)\n+            xranges.append(xrange)\n+            yranges.append(yrange)\n+\n+        if not (len(tiles) == len(xranges) and len(tiles) == len(yranges)):\n+            raise GriddedDataContainerException(\n+                \"Something went wrong then getting tiles. Length of ranges were different\"\n+            )\n+        return tiles, xranges, yranges\n+\n+    @property\n+    @only_one_child\n+    def lat_res(self):\n+        return self.children[0].lat_res\n+\n+    @property\n+    @only_one_child\n+    def lon_res(self):\n+        return self.children[0].lon_res\n+\n+    @property\n+    @only_one_child\n+    def latitude_points(self):\n+        return self._lat_points\n+\n+    @property\n+    @only_one_child\n+    def longitude_points(self):\n+        return self._lon_points\n+\n+    @property\n+    def longitude_circular(self):\n+        return all([data.longitude.circular for data in self.children])\n+\n+    @property\n+    def latitude_circular(self):\n+        return all([data.latitude.circular for data in self.children])\n+\n+    @only_one_child\n+    def get_cube_data(self):\n+        return self.children[0].cube.data\n+\n+    def get_cube_data_all(self) -> list:\n+        return [data.cube.data for data in self.children]\n+\n+    # Methods which are simply applied to each of the children\n+\n+    # TODO: Make sure that in the children loop, obj.children[i] is updated in the loops below (eventhough the inplace should be working)\n+\n+    @property\n+    def time(self):\n+        if len(self.children) > 1:\n+            logger.warning(\"Be careful with using this function with more than one child\")\n+            points = []\n+            metadata = self.children[0].time.metadata\n+            units = self.children[0].time.units\n+            for data in self.children:\n+                if metadata != data.time.metadata:\n+                    raise GriddedDataContainerException(\n+                        \"Time from different children has different metadata\"\n+                    )\n+                if units != data.time.units:\n+                    raise GriddedDataContainerException(\n+                        \"Time from different children has different units\"\n+                    )\n+                points += list(data.time.points)\n+\n+            return iris.coords.DimCoord(np.array(points), var_name=\"time\", **units, **metadata)\n+\n+        return self.children[0].time\n+\n+    @property\n+    def has_latlon_dims(self):\n+        return all([data.has_latlon_dims for data in self.children])\n+\n+    @property\n+    @only_one_child\n+    def grid(self):\n+        return self.children[0].grid\n+\n+    @property\n+    def data_revision(self):\n+        revision = \"\"\n+        for i, data in enumerate(self.children):\n+            revision += f\"nr {i}: {data.data_revision}; \"\n+        return revision\n+\n+    def time_stamps(self):\n+        time_stamps = []\n+        for data in self.children:\n+            time_stamps += list(data.time_stamps())\n+\n+        return np.sort(np.unique(np.array(time_stamps)))\n+\n+    def _check_lonlat_bounds(self):\n+        for data in self.children:\n+            data._check_lonlat_bounds()\n+\n+    def check_lon_circular(self):\n+        return all([data.check_lon_circular() for data in self.children])\n+\n+    def extract_surface_level(self):\n+        \"\"\"Extract surface level from 4D field\"\"\"\n+        return self.children[0].extract_surface_level()\n+\n+    def to_time_series(\n+        self,\n+        sample_points=None,\n+        scheme=\"nearest\",\n+        vert_scheme=None,\n+        add_meta=None,\n+        use_iris=False,\n+        **coords,\n+    ) -> list[StationData]:\n+        raise NotImplementedError(\n+            \"to_time_series is not implemented for this container, due to problems with sorting returned stationdata (compared with the stations datas of the obs)\"\n+        )\n+\n+    def register_var_glob(self, delete_existing=True):  # pragma: no cover\n+        \"\"\"\n+        Applies register_var_glob function to first child, and returns result.\n+\n+        See GriddedData for more info on this function\n+        \"\"\"\n+        return self.children[0].register_var_glob(delete_existing)\n+\n+    def regrid(\n+        self, other=None, lat_res_deg=None, lon_res_deg=None, scheme=\"areaweighted\", **kwargs\n+    ):\n+        \"\"\"\n+        Applies regrid function to all children.\n+\n+        See GriddedData for more info on this function\n+        \"\"\"\n+        if self.proj_info is not None:\n+            raise GriddedDataContainerException(\n+                \"Could not regrid, since the data is projected. Please use data with latlon instead\"\n+            )\n+        for i, data in enumerate(self.children):\n+            self.children[i] = data.regrid(other, lat_res_deg, lon_res_deg, scheme, **kwargs)\n+\n+        return self\n+\n+    def filter_region(self, region_id, inplace=False, **kwargs):  # pragma: no cover\n+        \"\"\"\n+        Applies filter_region function to all children.\n+\n+        See GriddedData for more info on this function\n+        \"\"\"\n+        obj = self if inplace else self.copy()\n+        for i, data in enumerate(obj.children):\n+            obj.children[i] = data.filter_region(region_id, inplace, **kwargs)\n+\n+        return obj\n+\n+    def check_dimcoords_tseries(self):  # pragma: no cover\n+        \"\"\"\n+        Applies check_dimcoords_tseries function to all children.\n+\n+        See GriddedData for more info on this function\n+        \"\"\"\n+        for data in self.children:\n+            data.check_dimcoords_tseries()\n+\n+    def check_unit(self):  # pragma: no cover\n+        \"\"\"\n+        Applies check_unit function to all children.\n+\n+        See GriddedData for more info on this function\n+        \"\"\"\n+\n+        return all([data.check_unit() for data in self.children])\n+\n+    def convert_unit(self, new_unit: str, inplace: bool = True):  # pragma: no cover\n+        \"\"\"\n+        Applies convert_unit function to all children.\n+\n+        See GriddedData for more info on this function\n+        \"\"\"\n+\n+        obj = self if inplace else self.copy()\n+        for i, data in enumerate(obj.children):\n+            obj.children[i] = data.convert_unit(\n+                new_unit,\n+            )\n+\n+        return obj\n+\n+    def remove_outliers(self, low, high, inplace=True):  # pragma: no cover\n+        \"\"\"\n+        Applies remove_outliers function to all children.\n+\n+        See GriddedData for more info on this function\n+        \"\"\"\n+        obj = self if inplace else self.copy()\n+        for i, data in enumerate(obj.children):\n+            obj.children[i] = data.remove_outliers(low, high, inplace=True)\n+        return obj\n+\n+    def reorder_dimensions_tseries(self):  # pragma: no cover\n+        \"\"\"\n+        Applies reorder_dimensions_tseries function to all children.\n+\n+        See GriddedData for more info on this function\n+        \"\"\"\n+        for data in self.children:\n+            data.reorder_dimensions_tseries()\n+\n+    def crop(\n+        self, lon_range=None, lat_range=None, time_range=None, region=None\n+    ):  # pragma: no cover\n+        \"\"\"\n+        Applies crop function to all children, and return self.\n+\n+        See GriddedData for more info on this function\n+        \"\"\"\n+        for i, data in enumerate(self.children):\n+            self.children[i] = data.crop(lon_range, lat_range, time_range, region)\n+\n+        return self\n+\n+    def resample_time(\n+        self, to_ts_type, how=None, min_num_obs=None, use_iris=False\n+    ):  # pragma: no cover\n+        \"\"\"\n+        Applies resample_time function to all children, and return self.\n+\n+        See GriddedData for more info on this function\n+        \"\"\"\n+        for i, data in enumerate(self.children):\n+            self.children[i] = data.resample_time(to_ts_type, how, min_num_obs, use_iris)\n+\n+        return self\n+\n+    def filter_altitude(self, alt_range=None):  # pragma: no cover\n+        \"\"\"\n+        Applies filter_altitude function to all children, and return self.\n+\n+        See GriddedData for more info on this function\n+        \"\"\"\n+        logger.warning(\n+            \"Altitude filtering is not applied in GriddedDataContainer and will be skipped\"\n+        )\n+\n+        return self"
+    },
+    {
+      "sha": "bf5c126dce62c70b27592e3d61d5200998c1b54a",
+      "filename": "pyaerocom/io/mscw_ctm/reader.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 1,
+      "changes": 7,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fio%2Fmscw_ctm%2Freader.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fio%2Fmscw_ctm%2Freader.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Fio%2Fmscw_ctm%2Freader.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -234,9 +234,14 @@ def __init__(\n \n         self.var_map = emep_variables()\n         if \"emep_vars\" in kwargs:\n+            # Allows replacing the var map instead of updating the default map.\n+            replace_map = kwargs.get(\"replace_map\", False)\n             new_map = kwargs[\"emep_vars\"]\n             if isinstance(new_map, dict):\n-                self.var_map.update(new_map)\n+                if replace_map:\n+                    self.var_map = new_map\n+                else:\n+                    self.var_map.update(new_map)\n             else:\n                 logger.warning(f\"New map {new_map} is not a dict. Skipping\")\n "
+    },
+    {
+      "sha": "705b44e41477c54334969243ebc43a11a17519ff",
+      "filename": "pyaerocom/projection_information.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fprojection_information.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fprojection_information.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Fprojection_information.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -110,3 +110,8 @@ def from_xarray(ds: xarray.Dataset, var: str):\n             raise ProjectionInformationException(f\"no x or y axis found for variable '{var}'\")\n         pi._units = da.coords[pi._y_axis].units\n         return pi\n+\n+    def __eq__(self, other):\n+        if not isinstance(other, type(self)):\n+            return False\n+        return self.__dict__ == other.__dict__"
+    },
+    {
+      "sha": "5543f4e7902a3ec6c700e811bd4289c1c566b03a",
+      "filename": "pyaerocom/region_defs.py",
+      "status": "modified",
+      "additions": 163,
+      "deletions": 1,
+      "changes": 164,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fregion_defs.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fregion_defs.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Fregion_defs.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -107,7 +107,167 @@\n }\n \n \n-REGION_DEFS = {**_AEROCOM_DEFS, **_HTAP_DEFS, **_OTHER_REG_DEFS}\n+_EU_CITIES = {\n+    \"Aachen\": {\n+        \"lat_range\": [50.636802673339844, 50.867191314697266],\n+        \"lon_range\": [5.966033458709717, 6.228730201721191],\n+    },\n+    \"Amsterdam\": {\n+        \"lat_range\": [52.235111236572266, 52.450042724609375],\n+        \"lon_range\": [4.7180094718933105, 5.103306293487549],\n+    },\n+    \"Antwerp\": {\n+        \"lat_range\": [51.13616180419922, 51.387718200683594],\n+        \"lon_range\": [4.235825061798096, 4.511722087860107],\n+    },\n+    \"Athens\": {\n+        \"lat_range\": [37.73632049560547, 38.2413444519043],\n+        \"lon_range\": [23.51335334777832, 23.998926162719727],\n+    },\n+    \"Berlin\": {\n+        \"lat_range\": [52.33273696899414, 52.69112777709961],\n+        \"lon_range\": [13.077515602111816, 13.78443717956543],\n+    },\n+    \"Bordeaux\": {\n+        \"lat_range\": [44.70786666870117, 44.96601486206055],\n+        \"lon_range\": [-0.8970025181770325, -0.4452879726886749],\n+    },\n+    \"Bratislava\": {\n+        \"lat_range\": [47.99800491333008, 48.26951217651367],\n+        \"lon_range\": [16.913551330566406, 17.30634880065918],\n+    },\n+    \"Bremen\": {\n+        \"lat_range\": [53.002567291259766, 53.60324478149414],\n+        \"lon_range\": [8.461311340332031, 9.000018119812012],\n+    },\n+    \"Brussels\": {\n+        \"lat_range\": [50.75230407714844, 50.918785095214844],\n+        \"lon_range\": [4.230016231536865, 4.493005752563477],\n+    },\n+    \"Cologne\": {\n+        \"lat_range\": [50.81940841674805, 51.09670639038086],\n+        \"lon_range\": [6.767996311187744, 7.172985553741455],\n+    },\n+    \"Copenhagen\": {\n+        \"lat_range\": [55.53798294067383, 55.82252883911133],\n+        \"lon_range\": [12.132223129272461, 12.812111854553223],\n+    },\n+    \"Frankfurt\": {\n+        \"lat_range\": [50.008689880371094, 50.230812072753906],\n+        \"lon_range\": [8.46023178100586, 8.812448501586914],\n+    },\n+    \"Gothenburg\": {\n+        \"lat_range\": [57.50046157836914, 57.87602996826172],\n+        \"lon_range\": [11.585185050964355, 12.252819061279297],\n+    },\n+    \"Hamburg\": {\n+        \"lat_range\": [53.38390350341797, 53.975887298583984],\n+        \"lon_range\": [8.409785270690918, 10.33332633972168],\n+    },\n+    \"Hanover\": {\n+        \"lat_range\": [52.30150604248047, 52.457183837890625],\n+        \"lon_range\": [9.597295761108398, 9.924869537353516],\n+    },\n+    \"Katowice\": {\n+        \"lat_range\": [50.12342071533203, 50.31399917602539],\n+        \"lon_range\": [18.866928100585938, 19.139799118041992],\n+    },\n+    \"Lille\": {\n+        \"lat_range\": [50.544219970703125, 50.803993225097656],\n+        \"lon_range\": [2.906511068344116, 3.283663511276245],\n+    },\n+    \"Lisbon\": {\n+        \"lat_range\": [38.46509552001953, 38.957637786865234],\n+        \"lon_range\": [-9.536591529846191, -8.962636947631836],\n+    },\n+    \"Luxembourg\": {\n+        \"lat_range\": [49.5549430847168, 49.66079330444336],\n+        \"lon_range\": [6.060097694396973, 6.209787368774414],\n+    },\n+    \"Lyon\": {\n+        \"lat_range\": [45.63044357299805, 45.86970138549805],\n+        \"lon_range\": [4.692460060119629, 5.062458038330078],\n+    },\n+    \"Madrid\": {\n+        \"lat_range\": [40.17313766479492, 40.675025939941406],\n+        \"lon_range\": [-4.016128063201904, -3.370154857635498],\n+    },\n+    \"Malmö\": {\n+        \"lat_range\": [55.49353790283203, 55.646114349365234],\n+        \"lon_range\": [12.873371124267578, 13.16543960571289],\n+    },\n+    \"Mannheim\": {\n+        \"lat_range\": [49.405303955078125, 49.594383239746094],\n+        \"lon_range\": [8.404372215270996, 8.599868774414062],\n+    },\n+    \"Munich\": {\n+        \"lat_range\": [48.05363082885742, 48.25450134277344],\n+        \"lon_range\": [11.35603141784668, 11.734712600708008],\n+    },\n+    \"Nantes\": {\n+        \"lat_range\": [47.09950256347656, 47.33213424682617],\n+        \"lon_range\": [-1.702157974243164, -1.4110151529312134],\n+    },\n+    \"Naples\": {\n+        \"lat_range\": [40.63092041015625, 41.05332946777344],\n+        \"lon_range\": [13.993684768676758, 14.742915153503418],\n+    },\n+    \"Nuremberg\": {\n+        \"lat_range\": [49.3282470703125, 49.54488754272461],\n+        \"lon_range\": [10.978351593017578, 11.289997100830078],\n+    },\n+    \"Oslo\": {\n+        \"lat_range\": [59.804927825927734, 60.13806915283203],\n+        \"lon_range\": [10.482114791870117, 10.966914176940918],\n+    },\n+    \"Paris\": {\n+        \"lat_range\": [48.502445220947266, 49.151649475097656],\n+        \"lon_range\": [1.8323332071304321, 2.881556987762451],\n+    },\n+    \"Rotterdam\": {\n+        \"lat_range\": [51.68125915527344, 52.04006576538086],\n+        \"lon_range\": [3.951533079147339, 4.899263858795166],\n+    },\n+    \"Ruhr\": {\n+        \"lat_range\": [51.34428024291992, 51.54142761230469],\n+        \"lon_range\": [6.887744426727295, 7.1481242179870605],\n+    },\n+    \"Stockholm\": {\n+        \"lat_range\": [58.81275939941406, 59.5318717956543],\n+        \"lon_range\": [17.604873657226562, 18.71013069152832],\n+    },\n+    \"Thessaloniki\": {\n+        \"lat_range\": [40.5311164855957, 40.73189163208008],\n+        \"lon_range\": [22.831668853759766, 23.0572452545166],\n+    },\n+    \"Toulouse\": {\n+        \"lat_range\": [43.49565124511719, 43.72552490234375],\n+        \"lon_range\": [1.2111377716064453, 1.551960825920105],\n+    },\n+    \"Utrecht\": {\n+        \"lat_range\": [51.984107971191406, 52.153053283691406],\n+        \"lon_range\": [4.957651615142822, 5.211655139923096],\n+    },\n+    \"Vienna\": {\n+        \"lat_range\": [48.10041809082031, 48.33709716796875],\n+        \"lon_range\": [16.165645599365234, 16.60494041442871],\n+    },\n+    \"Warsaw\": {\n+        \"lat_range\": [52.073333740234375, 52.38652420043945],\n+        \"lon_range\": [20.82090187072754, 21.320478439331055],\n+    },\n+    \"Wrocław\": {\n+        \"lat_range\": [51.029300689697266, 51.21991729736328],\n+        \"lon_range\": [16.787124633789062, 17.19321632385254],\n+    },\n+    \"Łódź\": {\n+        \"lat_range\": [51.66504669189453, 51.87682342529297],\n+        \"lon_range\": [19.29356575012207, 19.666975021362305],\n+    },\n+}\n+\n+\n+REGION_DEFS = {**_AEROCOM_DEFS, **_HTAP_DEFS, **_OTHER_REG_DEFS, **_EU_CITIES}\n \n # optional: alternative names for regions (e.g. used for plotting)\n # if undefined the corresponding ID is used as name. Names are adapetd from\n@@ -137,3 +297,5 @@\n HTAP_REGIONS_DEFAULT = list(_HTAP_NAMES)\n HTAP_REGIONS = list(_HTAP_DEFS)\n OTHER_REGIONS = list(_OTHER_REG_DEFS)\n+\n+EU_CITIES_REGIONS = list(_EU_CITIES)"
+    },
+    {
+      "sha": "ee9a4ad76f4b14318bfee15adf1875ff03bf2143",
+      "filename": "pyaerocom/sample_data_access/minimal_dataset.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 1,
+      "changes": 5,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fsample_data_access%2Fminimal_dataset.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fsample_data_access%2Fminimal_dataset.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Fsample_data_access%2Fminimal_dataset.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -11,7 +11,7 @@\n __all__ = [\"download_minimal_dataset\"]\n \n #: tarfile to download\n-DEFAULT_TESTDATA_FILE = \"testdata-minimal.tar.gz.20250521\"\n+DEFAULT_TESTDATA_FILE = \"testdata-minimal.tar.gz.20250916\"\n \n minimal_dataset = pooch.create(\n     path=const.OUTPUTDIR,  # ~/MyPyaerocom/\n@@ -31,6 +31,9 @@\n         \"testdata-minimal.tar.gz.20250512\": \"md5:00d2f7cf41e6303bad33e822d25fe960\",\n         \"testdata-minimal.tar.gz.20250513\": \"md5:ea4be3361cb89eab35b5b00cc5101c60\",\n         \"testdata-minimal.tar.gz.20250521\": \"md5:42b2f476145e763a010587881576e38c\",\n+        \"testdata-minimal.tar.gz.20250708\": \"md5:928682b802dc56ba189c939cc009ab40\",\n+        \"testdata-minimal.tar.gz.20250911\": \"md5:5607d7b300ce0680b7bbce78cf8abe64\",\n+        \"testdata-minimal.tar.gz.20250916\": \"md5:e0477c787c359455b50404abe960e5fc\",\n     },\n )\n "
+    },
+    {
+      "sha": "6fce58ab48ae858891949226202ca9d2c2477166",
+      "filename": "pyaerocom/scripts/testdata-minimal/README.md",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 0,
+      "changes": 9,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fscripts%2Ftestdata-minimal%2FREADME.md",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fscripts%2Ftestdata-minimal%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Fscripts%2Ftestdata-minimal%2FREADME.md?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -25,6 +25,15 @@ See: [https://ebas.nilu.no/](https://ebas.nilu.no/)\n \n Under \"Data policy\".\n \n+### LCS data\n+\n+Small subset of [LCS data](https://www.sciencedirect.com/science/article/pii/S030147972501076X?via%3Dihub#sec9) with some changes\n+- None/NaNs removed\n+- Changes to formatting of time and quality\n+\n+See [Figshare entry for data](https://figshare.com/articles/dataset/_i_Harmonized_Standardized_and_Corrected_Crowd-Sourced_Low-Cost_Sensor_i_PM_sub_2_5_sub_i_Data_f_i_i_rom_i_i_Sensor_community_and_PurpleAir_Networks_i_i_Across_Europe_i_/27195720/1), and license https://creativecommons.org/licenses/by/4.0/\n+\n+\n ### Model data\n \n - TM5 :Courtesy of Twan van Noije (KNMI)"
+    },
+    {
+      "sha": "a40e26ac704f740d3861c16034e6e786df81a7ce",
+      "filename": "pyaerocom/ungridded_data_container.py",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 1,
+      "changes": 17,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fungridded_data_container.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fungridded_data_container.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Fungridded_data_container.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -599,7 +599,10 @@ def apply_region_mask(self, region_id=None):\n         pass\n \n     def filter_by_projection(\n-        self, projection, xrange: tuple[float, float], yrange: tuple[float, float]\n+        self,\n+        projection,\n+        xrange: tuple[float, float] | list[tuple[float, float]],\n+        yrange: tuple[float, float] | list[tuple[float, float]],\n     ):\n         \"\"\"Filter the ungridded data to a horizontal bounding box given by a projection\n \n@@ -609,6 +612,18 @@ def filter_by_projection(\n         \"\"\"\n         pass\n \n+    def filter_by_latlon(\n+        self,\n+        lat_range: tuple[float, float] | list[tuple[float, float]],\n+        lon_range: tuple[float, float] | list[tuple[float, float]],\n+    ):\n+        \"\"\"Filter the ungridded data to a horizontal bounding box\n+\n+        :param lat_range: lat range (min/max included) in the projection plane, or list of multiple lat ranges\n+        :param lon_range: lon range (min/max included) in the projection plane, or list of multiple lat ranges\n+        \"\"\"\n+        pass\n+\n     @abc.abstractmethod\n     def filter_by_meta(self, negate=None, **filter_attributes):\n         \"\"\"Flexible method to filter these data based on input meta specs"
+    },
+    {
+      "sha": "7b4f30d21744e1ac2c9d9973bda2f8d78ebb1675",
+      "filename": "pyaerocom/ungridded_data_metadata.py",
+      "status": "modified",
+      "additions": 69,
+      "deletions": 8,
+      "changes": 77,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fungridded_data_metadata.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fungridded_data_metadata.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Fungridded_data_metadata.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -677,26 +677,88 @@ def filter_by_meta(self, negate=None, **filter_attributes):\n         new.filter_hist[int(time_str)] = filter_attributes\n         return new\n \n+    @override\n+    def filter_by_latlon(\n+        self,\n+        lat_range: tuple[float, float] | list[tuple[float, float]],\n+        lon_range: tuple[float, float] | list[tuple[float, float]],\n+    ):\n+        \"\"\"Filter the ungridded data to a horizontal bounding box\n+\n+        :param lat_range: lat range (min/max included) in the projection plane, or list of multiple lat ranges\n+        :param lon_range: lon range (min/max included) in the projection plane, or list of multiple lat ranges\n+        \"\"\"\n+\n+        meta_matches = []\n+        totnum = 0\n+        for meta_idx, meta in self.metadata.items():\n+            lon = meta[\"longitude\"]\n+            lat = meta[\"latitude\"]\n+\n+            if isinstance(lat_range, list):\n+                if not isinstance(lon_range, list):\n+                    raise ValueError()\n+                for latr, lonr in zip(lat_range, lon_range):\n+                    match_lat = in_range(lat, latr[0], latr[1])\n+                    match_lon = in_range(lon, lonr[0], lonr[1])\n+\n+                    if match_lat and match_lon:\n+                        break\n+            else:\n+                match_lat = in_range(lat, lat_range[0], lat_range[1])\n+                match_lon = in_range(lon, lon_range[0], lon_range[1])\n+\n+            if match_lat and match_lon:\n+                meta_matches.append(meta_idx)\n+                for var in meta[\"var_info\"]:\n+                    if var in self.ALLOWED_COORD_TYPES:\n+                        continue  # altitude is not actually a variable but is stored in var_info like one\n+                    try:\n+                        totnum += len(self.metadata[meta_idx][var])\n+                    except KeyError:\n+                        logger.debug(\n+                            f\"Ignoring variable {var} in meta block {meta_idx} \"\n+                            f\"since no data could be found\"\n+                        )\n+\n+        if len(meta_matches) == len(self.metadata):\n+            logger.info(\"filter_by_latlon result in unchanged data object\")\n+            return self\n+        new = self._new_from_meta_blocks(meta_matches, None)\n+        return new\n+\n     @override\n     def filter_by_projection(\n-        self, projection, xrange: tuple[float, float], yrange: tuple[float, float]\n+        self,\n+        projection,\n+        xrange: tuple[float, float] | list[tuple[float, float]],\n+        yrange: tuple[float, float] | list[tuple[float, float]],\n     ):\n         \"\"\"Filter the ungridded data to a horizontal bounding box given by a projection\n \n         :param projection: a function turning projection(lat, lon) -> (x, y)\n-        :param xrange: x range (min/max included) in the projection plane\n-        :param yrange: y range (min/max included) in the projection plane\n+        :param xrange: x range (min/max included) in the projection plane, or list of multiple x ranges\n+        :param yrange: y range (min/max included) in the projection plane, or list of multiple y ranges\n         \"\"\"\n         meta_matches = []\n         var_matches = []\n-        totnum = 0\n         for meta_idx, meta in self.metadata.items():\n             lon = meta[\"longitude\"]\n             lat = meta[\"latitude\"]\n             x, y = projection(lat, lon)\n \n-            match_x = in_range(x, xrange[0], xrange[1])\n-            match_y = in_range(y, yrange[0], yrange[1])\n+            if isinstance(xrange, list):\n+                if not isinstance(yrange, list):\n+                    raise ValueError()\n+                for xr, yr in zip(xrange, yrange):\n+                    match_x = in_range(x, xr[0], xr[1])\n+                    match_y = in_range(y, yr[0], yr[1])\n+\n+                    if match_x and match_y:\n+                        break\n+            else:\n+                match_x = in_range(x, xrange[0], xrange[1])\n+                match_y = in_range(y, yrange[0], yrange[1])\n \n             if match_x and match_y:\n                 meta_matches.append(meta_idx)\n@@ -707,8 +769,7 @@ def filter_by_projection(\n         if len(meta_matches) == len(self.metadata):\n             logger.info(\"filter_by_projection result in unchanged data object\")\n             return self\n-        totnum = self._len_datapoints(meta_idx, var_matches)\n-        new = self._new_from_meta_blocks(meta_matches, totnum)\n+        new = self._new_from_meta_blocks(meta_matches, None)\n         return new\n \n     @override"
+    },
+    {
+      "sha": "e29ef451e528906f19960a8240b6ef828588d933",
+      "filename": "pyaerocom/ungriddeddata_structured.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fungriddeddata_structured.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Fungriddeddata_structured.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Fungriddeddata_structured.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -392,9 +392,9 @@ def _metablock_to_stationdata(\n \n             series = pd.Series(vals, dtime)\n             if not series.index.is_monotonic_increasing:\n-                idx = data.index.argsort()\n-                data = data.iloc[idx]\n-                vals_err = vals_err.iloc[idx]\n+                idx = series.index.argsort()\n+                series = series.iloc[idx]\n+                vals_err = vals_err[idx]\n             if any(~np.isnan(vals_err)):\n                 sd.data_err[var] = vals_err\n             if any(~np.isnan(flagged)):"
+    },
+    {
+      "sha": "72baed263fba7afdeb03b784761bd1dfcfed78df",
+      "filename": "pyaerocom/units/datetime/tstype.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Funits%2Fdatetime%2Ftstype.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom%2Funits%2Fdatetime%2Ftstype.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom%2Funits%2Fdatetime%2Ftstype.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -437,7 +437,7 @@ def sort_ts_types(ts_types: list[str | TsType]) -> list[str]:\n     TemporalResolutionError\n         if one of the input ts_types is not supported\n     \"\"\"\n-    ls = [TsType(x) for x in ts_types]\n+    ls = [TsType(x) for x in ts_types if x is not None]\n     return [str(tstype) for tstype in sorted(ls, reverse=True)]\n \n "
+    },
+    {
+      "sha": "024b3847a5f58310250ae6a70cc24f9db6afb7c3",
+      "filename": "pyaerocom_env.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom_env.yml",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyaerocom_env.yml",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyaerocom_env.yml?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -34,7 +34,7 @@ dependencies:\n     - geocoder_reverse_natural_earth >= 0.0.2\n     - aerovaldb >= 0.5.0, < 0.6.0\n     - pyaro >= 0.2.0, < 0.3\n-    - pyaro-readers >=0.1.4, < 0.2.0\n+    - pyaro-readers >=0.1.5, < 0.2.0\n ## testing\n   - pytest >=7.4\n   - pytest-dependency"
+    },
+    {
+      "sha": "64c81bd51f09c609cc874e6c937cb0cb6f30bb43",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyproject.toml",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/pyproject.toml?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -82,7 +82,8 @@ test = [\n     \"pytest-cov\",\n     \"packaging\",\n     \"pytest-xdist\",\n-    \"pytest-mock\"\n+    \"pytest-mock\",\n+    \"pyaro-readers ==0.1.5\",\n ]\n lint = [\"mypy>=1.5.1\", \"types-requests\", \"types-setuptools\", \"types-simplejson\"]\n dev = [\"pytest-sugar\", \"pytest-xdist\", \"pre-commit\", \"pytest-mock\"]\n@@ -251,7 +252,7 @@ deps =\n     xarray ==2022.12.0; python_version < \"3.11\"\n     pandas ==1.5.3; python_version < \"3.11\"\n     contourpy ==1.3.0; python_version < \"3.11\"\n-    pyaro-readers ==0.1.4; python_version < \"3.11\"\n+    pyaro-readers ==0.1.5; python_version < \"3.11\"\n \n [testenv:lint]\n skip_install = True"
+    },
+    {
+      "sha": "163176dd8ea49cd97cda7b695873ad3a992f2242",
+      "filename": "tests/aeroval/test__processing_base.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Faeroval%2Ftest__processing_base.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Faeroval%2Ftest__processing_base.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/tests%2Faeroval%2Ftest__processing_base.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -2,7 +2,7 @@\n \n import pytest\n \n-from pyaerocom import Colocator, GriddedData, UngriddedData\n+from pyaerocom import Colocator, UngriddedData, GriddedDataContainer\n from pyaerocom.aeroval import EvalSetup\n from pyaerocom.aeroval._processing_base import DataImporter, HasColocator, HasConfig\n from pyaerocom.aeroval.experiment_output import ExperimentOutput\n@@ -71,7 +71,7 @@ def importer(eval_config: dict) -> DataImporter:\n @pytest.mark.parametrize(\"cfg\", [\"cfgexp1\"])\n def test_DataImporter_read_model_data(importer: DataImporter):\n     data = importer.read_model_data(\"TM5-AP3-CTRL\", \"od550aer\")\n-    assert isinstance(data, GriddedData)\n+    assert isinstance(data, GriddedDataContainer)\n \n \n @pytest.mark.parametrize(\"cfg\", [\"cfgexp1\"])"
+    },
+    {
+      "sha": "0ebb5d08451637a9eeb476cb30a2f6de695af494",
+      "filename": "tests/aeroval/test_coldatatojson_helpers.py",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 0,
+      "changes": 12,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Faeroval%2Ftest_coldatatojson_helpers.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Faeroval%2Ftest_coldatatojson_helpers.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/tests%2Faeroval%2Ftest_coldatatojson_helpers.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -9,13 +9,15 @@\n     _prepare_country_regions,\n     _prepare_default_regions_json,\n     _prepare_htap_regions_json,\n+    _prepare_cities_regions_json,\n     _prepare_regions_json_helper,\n )\n from pyaerocom.region import get_all_default_region_ids\n from pyaerocom.region_defs import (\n     HTAP_REGIONS,\n     HTAP_REGIONS_DEFAULT,\n     OLD_AEROCOM_REGIONS,\n+    EU_CITIES_REGIONS,\n     OTHER_REGIONS,\n )\n \n@@ -30,6 +32,7 @@ def test__init_stats_dummy():\n     \"region_ids\",\n     [\n         param(OLD_AEROCOM_REGIONS, id=\"old AeroCom\"),\n+        param(EU_CITIES_REGIONS, id=\"EU cities\"),\n         param(HTAP_REGIONS_DEFAULT, id=\"HTAP default\"),\n         param(HTAP_REGIONS, id=\"HTAP\"),\n         param(OTHER_REGIONS, id=\"other\"),\n@@ -71,6 +74,14 @@ def test__prepare_aerocom_regions_json():\n     assert [reg.region_id for reg in regions.values()] == region_ids\n \n \n+def test__prepare_eu_cities_regions_json():\n+    borders, regions = _prepare_cities_regions_json()\n+    region_ids = EU_CITIES_REGIONS\n+    assert bool(borders) and bool(regions) and bool(region_ids)\n+    assert list(borders) == list(regions)\n+    assert [reg.region_id for reg in regions.values()] == region_ids\n+\n+\n def test__prepare_htap_regions_json():\n     borders, regions = _prepare_htap_regions_json()\n     region_ids = HTAP_REGIONS_DEFAULT\n@@ -84,6 +95,7 @@ def test__prepare_htap_regions_json():\n     [\n         param(OLD_AEROCOM_REGIONS, id=\"old AeroCom\"),\n         param(HTAP_REGIONS_DEFAULT, id=\"HTAP default\"),\n+        param(EU_CITIES_REGIONS, id=\"EU cities\"),\n         param(HTAP_REGIONS, id=\"HTAP\"),\n         param(OTHER_REGIONS, id=\"other\"),\n     ],"
+    },
+    {
+      "sha": "ff2526a2a9ac385207b6632c19b26da979c3c1b0",
+      "filename": "tests/colocation/test_colocated_projection.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 2,
+      "changes": 8,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Fcolocation%2Ftest_colocated_projection.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Fcolocation%2Ftest_colocated_projection.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/tests%2Fcolocation%2Ftest_colocated_projection.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -2,6 +2,7 @@\n \n from pyaerocom.colocation.colocation_utils import colocate_gridded_ungridded\n from pyaerocom.griddeddata import GriddedData\n+from pyaerocom.griddeddata_container import GriddedDataContainer\n from pyaerocom.io.mscw_ctm.reader import ReadMscwCtm\n from pyaerocom.ungriddeddata import UngriddedData\n from tests.fixtures.data_access import TEST_DATA\n@@ -12,8 +13,11 @@\n \n def test_read_emep_colocate_projection():\n     reader = ReadMscwCtm(data_dir=str(ROOT / \"emep4no20240630\"))\n-    data_emep = reader.read_var(\"concpm10\", ts_type=\"hourly\")\n-    assert isinstance(data_emep, GriddedData)\n+    data = reader.read_var(\"concpm10\", ts_type=\"hourly\")\n+    assert isinstance(data, GriddedData)\n+\n+    data_emep = GriddedDataContainer(\"test_id\")\n+    data_emep.add_griddeddata(data)\n \n     S1 = create_fake_station_data(\n         \"concpm10\","
+    },
+    {
+      "sha": "5bfaac9c957535d54ca199f5dc57f32c70913832",
+      "filename": "tests/colocation/test_colocation_utils.py",
+      "status": "modified",
+      "additions": 104,
+      "deletions": 7,
+      "changes": 111,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Fcolocation%2Ftest_colocation_utils.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Fcolocation%2Ftest_colocation_utils.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/tests%2Fcolocation%2Ftest_colocation_utils.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -4,14 +4,15 @@\n import pytest\n from cf_units import Unit\n \n-from pyaerocom import GriddedData, const, helpers\n+from pyaerocom import GriddedData, const, helpers, GriddedDataContainer\n from pyaerocom.colocation.colocated_data import ColocatedData\n from pyaerocom.colocation.colocation_utils import (\n     _colocate_site_data_helper,\n     _colocate_site_data_helper_timecol,\n     _regrid_gridded,\n     colocate_gridded_gridded,\n     colocate_gridded_ungridded,\n+    _get_stat_data_vec,\n )\n from pyaerocom.config_reader import ALL_REGION_NAME\n from pyaerocom.exceptions import UnresolvableTimeDefinitionError\n@@ -145,7 +146,9 @@ def test__colocate_site_data_helper(aeronetsunv3lev2_subset):\n def test_colocate_gridded_ungridded_new_var(data_tm5, aeronetsunv3lev2_subset):\n     data = data_tm5.copy()\n     data.var_name = \"od550bc\"\n-    coldata = colocate_gridded_ungridded(data, aeronetsunv3lev2_subset, var_ref=\"od550aer\")\n+    mdata = GriddedDataContainer(\"test_id\")\n+    mdata.add_griddeddata(data)\n+    coldata = colocate_gridded_ungridded(mdata, aeronetsunv3lev2_subset, var_ref=\"od550aer\")\n \n     assert coldata.metadata[\"var_name\"] == [\"od550aer\", \"od550bc\"]\n \n@@ -205,7 +208,9 @@ def test_colocate_gridded_ungridded_new_var(data_tm5, aeronetsunv3lev2_subset):\n def test_colocate_gridded_ungridded(\n     data_tm5, aeronetsunv3lev2_subset, addargs, ts_type, shape, obsmean, modmean\n ):\n-    coldata = colocate_gridded_ungridded(data_tm5, aeronetsunv3lev2_subset, **addargs)\n+    mdata = GriddedDataContainer(\"test_id\")\n+    mdata.add_griddeddata(data_tm5)\n+    coldata = colocate_gridded_ungridded(mdata, aeronetsunv3lev2_subset, **addargs)\n \n     assert isinstance(coldata, ColocatedData)\n     assert coldata.ts_type == ts_type\n@@ -215,12 +220,98 @@ def test_colocate_gridded_ungridded(\n     assert np.nanmean(coldata.data.data[1]) == pytest.approx(modmean, rel=TEST_RTOL)\n \n \n+def test_colocate_gridded_ungridded_split(cities_data, lcs_data):\n+    mdata_split = GriddedDataContainer(\"split\")\n+    mdata_berlin = GriddedDataContainer(\"whole\")\n+\n+    for tile in cities_data[\"EMEP_split\"]:\n+        mdata_split.add_griddeddata(tile)\n+\n+    mdata_berlin.add_griddeddata(cities_data[\"EMEP\"][1])\n+\n+    coldata_split = colocate_gridded_ungridded(mdata_split, lcs_data)\n+    coldata_berlin = colocate_gridded_ungridded(mdata_berlin, lcs_data)\n+\n+    assert len(coldata_split.data.station_name) == len(coldata_berlin.data.station_name)\n+\n+    assert np.nanmean(coldata_split.data.data[0]) == np.nanmean(coldata_berlin.data.data[0])\n+    assert np.nanmean(coldata_split.data.data[1]) == np.nanmean(coldata_berlin.data.data[1])\n+\n+\n+def test__get_stat_data(cities_data, lcs_data):\n+    from pyaerocom.units.datetime import to_pandas_timestamp\n+\n+    def proj(lat, lon):\n+        return (lon, lat)\n+\n+    def coord_index(stationdata, points):\n+        lat = float(stationdata[\"latitude\"])\n+        lon = float(stationdata[\"longitude\"])\n+\n+        dists2 = [(point[0] - lat) ** 2 + (point[1] - lon) ** 2 for point in points]\n+        return np.argmin(dists2)\n+\n+    data_id = \"test_id\"\n+    var_ref = \"concpm25\"\n+    ts_type = \"monthly\"\n+    obs_start = to_pandas_timestamp(\"01-2019\")\n+    obs_stop = to_pandas_timestamp(\"12-2019\")\n+    mg = GriddedDataContainer(data_id)\n+\n+    for gd in cities_data[\"EMEP\"]:\n+        mg.add_griddeddata(gd)\n+\n+    data_ref = lcs_data\n+\n+    tiles, xranges, yranges = mg.get_tiles()\n+\n+    data_ref = data_ref.filter_by_projection(proj, xranges, yranges)\n+\n+    all_stats = data_ref.to_station_data_all(\n+        vars_to_convert=var_ref,\n+        start=obs_start,\n+        stop=obs_stop,\n+        by_station_name=True,\n+        ts_type_preferred=ts_type,\n+    )\n+\n+    unsorted_obs_stat_data = all_stats[\"stats\"]\n+\n+    grid_stat_data, obs_stat_data = _get_stat_data_vec(\n+        obs_start,\n+        obs_stop,\n+        var_ref,\n+        tiles,\n+        xranges,\n+        yranges,\n+        proj,\n+        unsorted_obs_stat_data,\n+    )\n+\n+    points_obs = [(stat[\"latitude\"], stat[\"longitude\"]) for stat in obs_stat_data]\n+    points_mod = [(stat[\"latitude\"], stat[\"longitude\"]) for stat in grid_stat_data]\n+\n+    sorted_grid_stats = sorted(grid_stat_data, key=lambda x: coord_index(x, points_obs))\n+    sorted_obs_stats = sorted(unsorted_obs_stat_data, key=lambda x: coord_index(x, points_mod))\n+\n+    assert sorted_grid_stats == grid_stat_data\n+    assert sorted_obs_stats == obs_stat_data\n+    assert sum(\n+        [i[\"latitude\"] != j[\"latitude\"] for i, j in zip(unsorted_obs_stat_data, obs_stat_data)]\n+    )\n+    assert sum(\n+        [i[\"longitude\"] != j[\"longitude\"] for i, j in zip(unsorted_obs_stat_data, obs_stat_data)]\n+    )\n+\n+\n def test_colocate_gridded_ungridded_wstationtype(data_tm5, aeronetsunv3lev2_subset):\n     fake_type = [\"faketype\"] * len(aeronetsunv3lev2_subset.station_name)\n+    mdata = GriddedDataContainer(\"test_id\")\n+    mdata.add_griddeddata(data_tm5)\n     for i, n in enumerate(fake_type):\n         aeronetsunv3lev2_subset.metadata[i].update({\"station_type\": n})\n     coldata = colocate_gridded_ungridded(\n-        data_tm5, aeronetsunv3lev2_subset, add_meta_keys=[\"station_type\"]\n+        mdata, aeronetsunv3lev2_subset, add_meta_keys=[\"station_type\"]\n     )\n     assert all(typ == \"faketype\" for typ in coldata.coords[\"station_type\"].values.tolist())\n \n@@ -245,21 +336,27 @@ def test_colocate_gridded_ungridded_nonglobal(aeronetsunv3lev2_subset):\n     gridded.var_name = \"od550aer\"\n     gridded.units = Unit(\"1\")\n \n-    coldata = colocate_gridded_ungridded(gridded, aeronetsunv3lev2_subset, colocate_time=False)\n+    mdata = GriddedDataContainer(\"test_id\")\n+    mdata.add_griddeddata(gridded)\n+    coldata = colocate_gridded_ungridded(mdata, aeronetsunv3lev2_subset, colocate_time=False)\n     assert isinstance(coldata, ColocatedData)\n     assert coldata.shape == (2, 2, 2)\n \n \n def test_colocate_gridded_gridded_same_new_var(data_tm5):\n     data = data_tm5.copy()\n+\n     data.var_name = \"Blaaa\"\n-    coldata = colocate_gridded_gridded(data, data_tm5)\n+    mdata = GriddedDataContainer(\"test\", data)\n+    coldata = colocate_gridded_gridded(mdata, GriddedDataContainer(\"tast\", data_tm5))\n \n     assert coldata.metadata[\"var_name\"] == [\"od550aer\", \"Blaaa\"]\n \n \n def test_colocate_gridded_gridded_same(data_tm5):\n-    coldata = colocate_gridded_gridded(data_tm5, data_tm5)\n+    coldata = colocate_gridded_gridded(\n+        GriddedDataContainer(\"test1\", data_tm5), GriddedDataContainer(\"test1\", data_tm5)\n+    )\n \n     assert isinstance(coldata, ColocatedData)\n     stats = coldata.calc_statistics()"
+    },
+    {
+      "sha": "ecc560ee0486a0df0e590140ebb50f3fdaa119c5",
+      "filename": "tests/colocation/test_colocator.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Fcolocation%2Ftest_colocator.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Fcolocation%2Ftest_colocator.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/tests%2Fcolocation%2Ftest_colocator.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -5,7 +5,7 @@\n import pytest\n from pydantic import ValidationError\n \n-from pyaerocom import ColocatedData, GriddedData, UngriddedData, const\n+from pyaerocom import ColocatedData, GriddedData, UngriddedData, const, GriddedDataContainer\n from pyaerocom.climatology_config import ClimatologyConfig\n from pyaerocom.colocation.colocation_setup import ColocationSetup\n from pyaerocom.colocation.colocator import Colocator\n@@ -387,7 +387,7 @@ def test_colocator_get_model_data(setup):\n \n     col = Colocator(col_stp)\n     data = col.get_model_data(\"od550aer\")\n-    assert isinstance(data, GriddedData)\n+    assert isinstance(data, GriddedDataContainer)\n \n \n def test_colocator__find_var_matches(setup):"
+    },
+    {
+      "sha": "9660e8c36e12ff6d8b05e170a85bca5247301813",
+      "filename": "tests/conftest.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Fconftest.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Fconftest.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/tests%2Fconftest.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -16,6 +16,8 @@\n     \"tests.fixtures.aeroval.config\",\n     \"tests.fixtures.cams2_83.config\",\n     \"tests.fixtures.pyaro\",\n+    \"tests.fixtures.griddeddata_container\",\n+    \"tests.fixtures.lcs\",\n ]\n \n TEST_RTOL = 1e-4"
+    },
+    {
+      "sha": "c801b949c1c4d99e5ce06c34592839c6b1088b31",
+      "filename": "tests/fixtures/griddeddata_container.py",
+      "status": "added",
+      "additions": 47,
+      "deletions": 0,
+      "changes": 47,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Ffixtures%2Fgriddeddata_container.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Ffixtures%2Fgriddeddata_container.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/tests%2Ffixtures%2Fgriddeddata_container.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -0,0 +1,47 @@\n+from __future__ import annotations\n+\n+\n+from tests.fixtures.data_access import TEST_DATA\n+from pyaerocom.io.mscw_ctm.reader import ReadMscwCtm\n+from pyaerocom import GriddedData\n+\n+import pytest\n+\n+EMEP_DATA_PATH = TEST_DATA[\"MODELS\"].path / \"EMEP_cities\"\n+UEMEP_DATA_PATH = TEST_DATA[\"MODELS\"].path / \"uEMEP_cities\"\n+\n+EMEP_FILE_PATHS = [\n+    EMEP_DATA_PATH / \"Amsterdam\",\n+    EMEP_DATA_PATH / \"Berlin\",\n+]\n+\n+EMEP_FILE_PATHS_SPLIT = [\n+    EMEP_DATA_PATH / \"Berlin_split_1\",\n+    EMEP_DATA_PATH / \"Berlin_split_2\",\n+]\n+\n+UEMEP_FILE_PATHS = [\n+    UEMEP_DATA_PATH / \"Bordeaux\",\n+    UEMEP_DATA_PATH / \"Lyon\",\n+]\n+\n+\n+@pytest.fixture\n+def cities_data() -> dict[str, list[GriddedData]]:\n+    data_dict = {}\n+\n+    data_dict[\"uEMEP\"] = [\n+        ReadMscwCtm(\"uemep\", str(ddir)).read_var(\"concpm25\", ts_type=\"hourly\")\n+        for ddir in UEMEP_FILE_PATHS\n+    ]\n+    data_dict[\"EMEP\"] = [\n+        ReadMscwCtm(\"emep\", str(ddir)).read_var(\"concpm25\", ts_type=\"monthly\")\n+        for ddir in EMEP_FILE_PATHS\n+    ]\n+\n+    data_dict[\"EMEP_split\"] = [\n+        ReadMscwCtm(\"emep\", str(ddir)).read_var(\"concpm25\", ts_type=\"monthly\")\n+        for ddir in EMEP_FILE_PATHS_SPLIT\n+    ]\n+\n+    return data_dict"
+    },
+    {
+      "sha": "085b9b95d7931adce81432c3056615efb29f57d9",
+      "filename": "tests/fixtures/lcs.py",
+      "status": "added",
+      "additions": 25,
+      "deletions": 0,
+      "changes": 25,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Ffixtures%2Flcs.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Ffixtures%2Flcs.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/tests%2Ffixtures%2Flcs.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -0,0 +1,25 @@\n+from .data_access import DataForTests\n+from pyaerocom.io import PyaroConfig, ReadPyaro\n+import pytest\n+\n+OBS_PATH = DataForTests(\"obsdata/LCS/2019\").path\n+\n+\n+@pytest.fixture\n+def lcs_data():\n+    reader_id = \"lcsreader\"\n+    config = PyaroConfig(\n+        name=\"test-lcs\",\n+        reader_id=reader_id,\n+        filename_or_obj_or_url=str(OBS_PATH),\n+        filters={},\n+        network=\"SC\",\n+        min_quality=2,\n+        name_map={\n+            \"PM25\": \"concpm25\",\n+        },\n+    )\n+\n+    reader = ReadPyaro(config)\n+\n+    return reader.read(vars_to_retrieve=[\"concpm25\"])"
+    },
+    {
+      "sha": "1faa9456b66905ab9eb2262d8ee582b762ca1d8e",
+      "filename": "tests/test_griddeddata_container.py",
+      "status": "added",
+      "additions": 190,
+      "deletions": 0,
+      "changes": 190,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Ftest_griddeddata_container.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Ftest_griddeddata_container.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/tests%2Ftest_griddeddata_container.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -0,0 +1,190 @@\n+import pytest\n+from copy import deepcopy\n+\n+from pyaerocom.griddeddata_container import GriddedDataContainer, GriddedDataContainerException\n+from pyaerocom import GriddedData\n+\n+\n+def test___init__():\n+    data_id = \"test_id\"\n+    data = GriddedDataContainer(data_id)\n+    assert data.data_id == data_id\n+\n+\n+def test_fixture(cities_data):\n+    for model in [\"uEMEP\", \"EMEP\"]:\n+        data = cities_data[model]\n+        for city in data:\n+            assert isinstance(city, GriddedData)\n+\n+\n+@pytest.mark.parametrize(\n+    \"model\",\n+    [\n+        \"uEMEP\",\n+        \"EMEP\",\n+        \"EMEP_split\",\n+    ],\n+)\n+def test__initiate(cities_data, model):\n+    data_id = \"test_id\"\n+    mg = GriddedDataContainer(data_id)\n+\n+    gd = cities_data[model][0]\n+    mg._initiate(gd)\n+\n+    assert mg.proj_info == gd.proj_info\n+    assert mg.start == gd.start\n+\n+\n+@pytest.mark.parametrize(\n+    \"model\",\n+    [\n+        \"uEMEP\",\n+        \"EMEP\",\n+    ],\n+)\n+def test_add_griddeddata(cities_data, model):\n+    data_id = \"test_id\"\n+    mg = GriddedDataContainer(data_id)\n+\n+    for gd in cities_data[model]:\n+        mg.add_griddeddata(gd)\n+\n+    assert len(mg.children) == len(cities_data[model])\n+\n+\n+def test_get_xyranges(cities_data):\n+    correct_xs = [[3462625, 3495375], [3908625, 3935875]]\n+    correct_ys = [[2462125, 2486375], [2516625, 2541375]]\n+    data_id = \"test_id\"\n+    mg = GriddedDataContainer(data_id)\n+\n+    for gd in cities_data[\"uEMEP\"]:\n+        mg.add_griddeddata(gd)\n+\n+    xs, ys = mg.get_xyranges()\n+\n+    for ls, c_ls in zip(sorted(xs), sorted(correct_xs)):\n+        for _l, c_l in zip(ls, c_ls):\n+            assert abs(_l - c_l) < 1e-5\n+\n+    for ls, c_ls in zip(sorted(ys), sorted(correct_ys)):\n+        for _l, c_l in zip(ls, c_ls):\n+            assert abs(_l - c_l) < 1e-5\n+\n+\n+def test_regrid(cities_data):\n+    data_id = \"test_id\"\n+    mg = GriddedDataContainer(data_id)\n+\n+    for gd in cities_data[\"EMEP\"]:\n+        mg.add_griddeddata(gd)\n+\n+    lat_res = 0.001\n+    lon_res = 0.001\n+\n+    for child in mg.children:\n+        assert child.lat_res != lat_res\n+        assert child.lon_res != lon_res\n+\n+    mg.regrid(lat_res_deg=lat_res, lon_res_deg=lon_res)\n+\n+    for child in mg.children:\n+        assert child.lat_res == pytest.approx(lat_res, rel=1e-6)\n+        assert child.lon_res == pytest.approx(lon_res, rel=1e-6)\n+\n+\n+def test_get_tiles(cities_data):\n+    data_id = \"test_id\"\n+    mg = GriddedDataContainer(data_id)\n+\n+    for gd in cities_data[\"uEMEP\"]:\n+        mg.add_griddeddata(gd)\n+\n+    tiles, xranges, yranges = mg.get_tiles()\n+\n+    assert len(tiles) == 2\n+    assert len(tiles) == len(xranges)\n+    assert len(xranges) == len(yranges)\n+\n+\n+# Tests for error handling\n+\n+\n+def test_regrid_fail_due_to_projection(cities_data):\n+    data_id = \"test_id\"\n+    mg = GriddedDataContainer(data_id)\n+\n+    for gd in cities_data[\"uEMEP\"]:\n+        mg.add_griddeddata(gd)\n+\n+    lat_res = 0.001\n+    lon_res = 0.001\n+\n+    with pytest.raises(\n+        GriddedDataContainerException,\n+        match=\"Could not regrid, since the data is projected. Please use data with latlon instead\",\n+    ):\n+        mg.regrid(lat_res_deg=lat_res, lon_res_deg=lon_res)\n+\n+\n+def test_add_griddeddata_different_model(cities_data):\n+    data_id = \"test_id\"\n+    mg = GriddedDataContainer(data_id)\n+\n+    emep = cities_data[\"EMEP\"][0]\n+    uemep = cities_data[\"uEMEP\"][0]\n+\n+    mg.add_griddeddata(emep)\n+\n+    with pytest.raises(\n+        GriddedDataContainerException,\n+        match=\"Proj info from added griddeddata and existing proj info do not have the same type*\",\n+    ):\n+        mg.add_griddeddata(uemep)\n+\n+\n+@pytest.mark.parametrize(\n+    \"attribute,attr_value\",\n+    [\n+        [\"var_name\", \"concpm10\"],\n+        [\"ts_type\", \"daily\"],\n+        [\"units\", \"1\"],\n+    ],\n+)\n+def test_add_griddeddata_errors(cities_data, attribute, attr_value):\n+    data_id = \"test_id\"\n+    mg = GriddedDataContainer(data_id)\n+\n+    emep = cities_data[\"EMEP\"][0]\n+    emep2 = deepcopy(cities_data[\"EMEP\"][1])\n+\n+    setattr(emep2, attribute, attr_value)\n+\n+    mg.add_griddeddata(emep)\n+\n+    with pytest.raises(\n+        GriddedDataContainerException,\n+        match=f\"{attribute} of added griddeddata*\",\n+    ):\n+        mg.add_griddeddata(emep2)\n+\n+\n+@pytest.mark.skip(reason=\"lat_res currently not working for fine resolution test data\")\n+def test_only_one_child(cities_data):\n+    data_id = \"test_id\"\n+    mg = GriddedDataContainer(data_id)\n+\n+    mg.add_griddeddata(cities_data[\"uEMEP\"][0])\n+\n+    lat_res = mg.lat_res\n+\n+    assert float(lat_res) == pytest.approx(0.00032, rel=0.01)\n+\n+    mg.add_griddeddata(cities_data[\"uEMEP\"][1])\n+    with pytest.raises(\n+        NotImplementedError,\n+        match=\"lat_res is not implemented for cases*\",\n+    ):\n+        lat_res = mg.lat_res"
+    },
+    {
+      "sha": "7324949bf746c122e7a5e4d84c9383294593bbef",
+      "filename": "tests/test_projection_info.py",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 0,
+      "changes": 15,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Ftest_projection_info.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Ftest_projection_info.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/tests%2Ftest_projection_info.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -1,6 +1,7 @@\n import xarray\n from pytest import approx\n import numpy as np\n+from copy import deepcopy\n \n from pyaerocom.projection_information import ProjectionInformation\n from tests.fixtures.data_access import TEST_DATA\n@@ -58,3 +59,17 @@ def test_projection_snap():\n     (lat, lon) = pi.to_latlon(x0, y0)\n     assert x0 == approx(lon, abs=1e-3)\n     assert y0 == approx(lat, abs=1e-3)\n+\n+\n+def test___eq__():\n+    proj_info1 = ProjectionInformation()\n+    proj_info1._x_axis == \"x\"\n+    proj_info1._y_axis == \"y\"\n+\n+    proj_info2 = deepcopy(proj_info1)\n+\n+    proj_info3 = deepcopy(proj_info1)\n+    proj_info3._y_axis = \"j\"\n+\n+    assert proj_info1 == proj_info2\n+    assert proj_info1 != proj_info3"
+    },
+    {
+      "sha": "4ed69c874663147ea27f49a69f091b8111d2c254",
+      "filename": "tests/test_ungriddeddata_structured.py",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 0,
+      "changes": 15,
+      "blob_url": "https://github.com/metno/pyaerocom/blob/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Ftest_ungriddeddata_structured.py",
+      "raw_url": "https://github.com/metno/pyaerocom/raw/3da5d7e97ec08bb911ffece19f24a05d3ad06592/tests%2Ftest_ungriddeddata_structured.py",
+      "contents_url": "https://api.github.com/repos/metno/pyaerocom/contents/tests%2Ftest_ungriddeddata_structured.py?ref=3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "patch": "@@ -122,6 +122,21 @@ def test_filter_by_meta(aeronetsunv3lev2_subset_uds, args, sitenames):\n     assert sorted(sitenames) == stats\n \n \n+def test_filter_by_latlon(aeronetsunv3lev2_subset_uds):\n+    correct_lats = [[20.0, 60.0], [20.0, 60.0]]\n+    correct_lons = [[1.0, 9.0], [10.0, 20.0]]\n+\n+    nb_stations = 2\n+\n+    data = aeronetsunv3lev2_subset_uds\n+    data_filtered = data.filter_by_latlon(correct_lats, correct_lons)\n+\n+    assert len(data.to_station_data_all()[\"station_name\"]) > len(\n+        data_filtered.to_station_data_all()[\"station_name\"]\n+    )\n+    assert len(data_filtered.to_station_data_all()[\"station_name\"]) == nb_stations\n+\n+\n def test_filter_by_projection(aeronetsunv3lev2_subset_uds):\n     data = aeronetsunv3lev2_subset_uds\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "849ec035c0706787dfdaab9394dfff4db19ada85",
+      "message": "First try at multigrid",
+      "parent_shas": [
+        "b9dba5df6d4d11b694c64e814cebf09f3c2c205c"
+      ]
+    },
+    {
+      "sha": "d1d1015d6370f3b061f02f802ebaa27a319c94ed",
+      "message": "Fixes x/yrange for selection stations",
+      "parent_shas": [
+        "849ec035c0706787dfdaab9394dfff4db19ada85"
+      ]
+    },
+    {
+      "sha": "8f66d856464b8f208b40c110007846fe50e4b0c9",
+      "message": "adds city regions",
+      "parent_shas": [
+        "d1d1015d6370f3b061f02f802ebaa27a319c94ed"
+      ]
+    },
+    {
+      "sha": "5fedc54d00017cbddaf40727df1b3dcdfb74b241",
+      "message": "Adds latlon filter with more than one range to ungridded",
+      "parent_shas": [
+        "8f66d856464b8f208b40c110007846fe50e4b0c9"
+      ]
+    },
+    {
+      "sha": "6c60ca84b6d391bd5d83b554955a96ff2b974b3a",
+      "message": "Starts tests for multigrid",
+      "parent_shas": [
+        "5fedc54d00017cbddaf40727df1b3dcdfb74b241"
+      ]
+    },
+    {
+      "sha": "e57130c1d7519a587484d9297d164d44a65ca374",
+      "message": "Adds more tests for multigriddeddata, as well as other changes made to pyaerocom",
+      "parent_shas": [
+        "6c60ca84b6d391bd5d83b554955a96ff2b974b3a"
+      ]
+    },
+    {
+      "sha": "3ff6f8f451582d015188f39bd0a2f24739ec110a",
+      "message": "Fixes multigriddeddata fixture",
+      "parent_shas": [
+        "e57130c1d7519a587484d9297d164d44a65ca374"
+      ]
+    },
+    {
+      "sha": "226c042c844a80149dbe84278120adc8de88d0b0",
+      "message": "removes some fixtures that caused problems",
+      "parent_shas": [
+        "3ff6f8f451582d015188f39bd0a2f24739ec110a"
+      ]
+    },
+    {
+      "sha": "089c7d7b175867d8a23823b8cbc51b00212c1b48",
+      "message": "Reverts change that broke some tests",
+      "parent_shas": [
+        "226c042c844a80149dbe84278120adc8de88d0b0"
+      ]
+    },
+    {
+      "sha": "56411f3bae705f84a3f1033353149611c649d80e",
+      "message": "adds newest testdata",
+      "parent_shas": [
+        "089c7d7b175867d8a23823b8cbc51b00212c1b48"
+      ]
+    },
+    {
+      "sha": "91905d27a83ebeff8870a3469147eb3d2b39281e",
+      "message": "Changes used testdata",
+      "parent_shas": [
+        "56411f3bae705f84a3f1033353149611c649d80e"
+      ]
+    },
+    {
+      "sha": "841eb4faed0c916bd4dbc4647f795dca49a2df2d",
+      "message": "Adds extra test for multigridded",
+      "parent_shas": [
+        "91905d27a83ebeff8870a3469147eb3d2b39281e"
+      ]
+    },
+    {
+      "sha": "8f472a71a4884b7a42a9afb0e9c26a085f18221c",
+      "message": "Adds docstrings, and removes dead code",
+      "parent_shas": [
+        "841eb4faed0c916bd4dbc4647f795dca49a2df2d"
+      ]
+    },
+    {
+      "sha": "ceed6f29b496e77034803b6606b047501b36de4c",
+      "message": "Fixes test",
+      "parent_shas": [
+        "8f472a71a4884b7a42a9afb0e9c26a085f18221c"
+      ]
+    },
+    {
+      "sha": "15cbad92a83d94e22b17852b017f6baacb9c69e2",
+      "message": "Merge branch 'main-dev' into multigrid",
+      "parent_shas": [
+        "ceed6f29b496e77034803b6606b047501b36de4c",
+        "332424f5afdb5a3c9b0a92e8d609c4ac72cdc5fe"
+      ]
+    },
+    {
+      "sha": "74d68c2f7f158f362077fd52704595b1c8d3a90b",
+      "message": "Changes ALLOWED_VERT_COORD_TYPES to ALLOWED_COORD_TYPES in filter_by_latlon",
+      "parent_shas": [
+        "15cbad92a83d94e22b17852b017f6baacb9c69e2"
+      ]
+    },
+    {
+      "sha": "949a5d9bed514fa7705e969185d0aff4ed9b9c61",
+      "message": "Changes from MultiGriddedData to GriddedDataContainer",
+      "parent_shas": [
+        "74d68c2f7f158f362077fd52704595b1c8d3a90b"
+      ]
+    },
+    {
+      "sha": "559a58a7be998c4158b62433a9f20144a17d844c",
+      "message": "Removes some unused code, and linting",
+      "parent_shas": [
+        "949a5d9bed514fa7705e969185d0aff4ed9b9c61"
+      ]
+    },
+    {
+      "sha": "1e3d1e24fe5f487ac9b3a2f136ff60132eba00e2",
+      "message": "Fixes some of the broken test. Tests having to do with gridded obs are still not working",
+      "parent_shas": [
+        "559a58a7be998c4158b62433a9f20144a17d844c"
+      ]
+    },
+    {
+      "sha": "a9fbd483851fee2316a004d1ba6a67ff48b9eb48",
+      "message": "Fixed some tests, broken others...",
+      "parent_shas": [
+        "1e3d1e24fe5f487ac9b3a2f136ff60132eba00e2"
+      ]
+    },
+    {
+      "sha": "a7847f8744216798de8b653590649755bb3a40ca",
+      "message": "Fixes some tests. Add a decorator to griddeddata_container for checking if only one child is present",
+      "parent_shas": [
+        "a9fbd483851fee2316a004d1ba6a67ff48b9eb48"
+      ]
+    },
+    {
+      "sha": "24cd7f86e8be566d5d0d5af36d4678e2d10756bd",
+      "message": "removes dead code",
+      "parent_shas": [
+        "a7847f8744216798de8b653590649755bb3a40ca"
+      ]
+    },
+    {
+      "sha": "7e9c6792ad8e8a0be74041533024f2d524b9786c",
+      "message": "Try to fix",
+      "parent_shas": [
+        "24cd7f86e8be566d5d0d5af36d4678e2d10756bd"
+      ]
+    },
+    {
+      "sha": "e0be434f568b02eb8b1873bd7aa25a2968394ed6",
+      "message": "Merge branch 'main-dev' into multigrid-merge",
+      "parent_shas": [
+        "7e9c6792ad8e8a0be74041533024f2d524b9786c",
+        "063f65aa824aa6a428df8257a0505587045c0e40"
+      ]
+    },
+    {
+      "sha": "5f33d88629887528f1a0e060f83e7b96b56bdb27",
+      "message": "Small fixes",
+      "parent_shas": [
+        "e0be434f568b02eb8b1873bd7aa25a2968394ed6"
+      ]
+    },
+    {
+      "sha": "fcfd4346ecb9664b474b5831b1ddf297df058b7b",
+      "message": "Allow overwriting emep var_map instead of just updating.",
+      "parent_shas": [
+        "5f33d88629887528f1a0e060f83e7b96b56bdb27"
+      ]
+    },
+    {
+      "sha": "65a16c5cafdd618e15f0aa499c7068dd1370412c",
+      "message": ".",
+      "parent_shas": [
+        "fcfd4346ecb9664b474b5831b1ddf297df058b7b"
+      ]
+    },
+    {
+      "sha": "9907a56d87bdfff9140d5f8e25ed4402ca96fa6a",
+      "message": "Don't use lat/lon - use projection",
+      "parent_shas": [
+        "65a16c5cafdd618e15f0aa499c7068dd1370412c"
+      ]
+    },
+    {
+      "sha": "f0a50ca62f14e1ca76c7625ee24b129bbad79111",
+      "message": "fix GriddedDataContainer + no proj_info case",
+      "parent_shas": [
+        "9907a56d87bdfff9140d5f8e25ed4402ca96fa6a"
+      ]
+    },
+    {
+      "sha": "608c28536243b139a27d20eac6a697f22bca0f99",
+      "message": "wip",
+      "parent_shas": [
+        "f0a50ca62f14e1ca76c7625ee24b129bbad79111"
+      ]
+    },
+    {
+      "sha": "076fe3e296b26005655fa9825269e00c1e2a9d33",
+      "message": "Fix cams283 test failure",
+      "parent_shas": [
+        "608c28536243b139a27d20eac6a697f22bca0f99"
+      ]
+    },
+    {
+      "sha": "b2f88e1d441b582bec8364b35a0f7a4ef2e7fb49",
+      "message": ".",
+      "parent_shas": [
+        "076fe3e296b26005655fa9825269e00c1e2a9d33"
+      ]
+    },
+    {
+      "sha": "d30f4b56ca07834fda1f2b54658c365827919fa3",
+      "message": "Remove code comments",
+      "parent_shas": [
+        "b2f88e1d441b582bec8364b35a0f7a4ef2e7fb49"
+      ]
+    },
+    {
+      "sha": "922f229d6121b7b4edd5038fee01e8fc80e8f0c8",
+      "message": "Remove more code comments",
+      "parent_shas": [
+        "d30f4b56ca07834fda1f2b54658c365827919fa3"
+      ]
+    },
+    {
+      "sha": "818072a5decb9280a9a0844065be0cb52933c0ee",
+      "message": "ditto",
+      "parent_shas": [
+        "922f229d6121b7b4edd5038fee01e8fc80e8f0c8"
+      ]
+    },
+    {
+      "sha": "674a04a244d78bbec2ce002766191842af2685c5",
+      "message": "Remove MultiGriddedData",
+      "parent_shas": [
+        "818072a5decb9280a9a0844065be0cb52933c0ee"
+      ]
+    },
+    {
+      "sha": "eaff8d7ba18226b8eb4ce1e9537b89b87e73ae4a",
+      "message": "Adds coord sorting to to_time_series in griddeddata_container",
+      "parent_shas": [
+        "674a04a244d78bbec2ce002766191842af2685c5"
+      ]
+    },
+    {
+      "sha": "a97df22b9acd538bbdc211fe6e67ddb96199d8c5",
+      "message": "Adds different behaviour for griddeddata container with one child and one with more children",
+      "parent_shas": [
+        "eaff8d7ba18226b8eb4ce1e9537b89b87e73ae4a"
+      ]
+    },
+    {
+      "sha": "ead2cd673b40a4b5a4ed5bce7310b2bd7cf7feaa",
+      "message": "Removes interpolation on each coord, and adds sorting of stationdata on coords instead",
+      "parent_shas": [
+        "a97df22b9acd538bbdc211fe6e67ddb96199d8c5"
+      ]
+    },
+    {
+      "sha": "4a7ac4af2ce56a72317ea833da1106f1d22e2ffa",
+      "message": "Adds sorting of station based on which tile they belong, instead of sorting model stations to colocation",
+      "parent_shas": [
+        "ead2cd673b40a4b5a4ed5bce7310b2bd7cf7feaa"
+      ]
+    },
+    {
+      "sha": "fd337974276ece65cf53b6c98be5a9ec6a5f9743",
+      "message": "Adds new tests, with new testdata-minimal containing lcs",
+      "parent_shas": [
+        "4a7ac4af2ce56a72317ea833da1106f1d22e2ffa"
+      ]
+    },
+    {
+      "sha": "e6f28ac64d6714b83bcad2851db0755fdf82e41b",
+      "message": "Corrects default testdata",
+      "parent_shas": [
+        "fd337974276ece65cf53b6c98be5a9ec6a5f9743"
+      ]
+    },
+    {
+      "sha": "c829e05831340cbc0900f0e14064406e9b8e35db",
+      "message": "Merge branch 'main-dev' into multigrid",
+      "parent_shas": [
+        "e6f28ac64d6714b83bcad2851db0755fdf82e41b",
+        "ae39f18348f605762a9f6291366f5781b7771f96"
+      ]
+    },
+    {
+      "sha": "0f3a03d6bcb8d700842d9dc205f4a3544b869c80",
+      "message": "Adds pyaro-readers to pyproject",
+      "parent_shas": [
+        "c829e05831340cbc0900f0e14064406e9b8e35db"
+      ]
+    },
+    {
+      "sha": "3145bf7ba237c2d84d1cbd1879dab1c39c5317a2",
+      "message": "Removes pyaro-readers from dep",
+      "parent_shas": [
+        "0f3a03d6bcb8d700842d9dc205f4a3544b869c80"
+      ]
+    },
+    {
+      "sha": "0a7e164f32414e5adc747dea11c3d1af24c4ab6f",
+      "message": "Adds extra test for split model file and griddeddata_container",
+      "parent_shas": [
+        "3145bf7ba237c2d84d1cbd1879dab1c39c5317a2"
+      ]
+    },
+    {
+      "sha": "5fcccbc9027f274e6d81166cce1eeb6615687d35",
+      "message": "adds pyaro-readers to test deps",
+      "parent_shas": [
+        "0a7e164f32414e5adc747dea11c3d1af24c4ab6f"
+      ]
+    },
+    {
+      "sha": "e4d4290dfc017b1a61071517353ed63cc0edd992",
+      "message": "Updates version of pyaro-readers used",
+      "parent_shas": [
+        "5fcccbc9027f274e6d81166cce1eeb6615687d35"
+      ]
+    },
+    {
+      "sha": "3fc472be39c641b07ae943e686704b5a3aa19369",
+      "message": "Changes how the sorted is done for tiles",
+      "parent_shas": [
+        "e4d4290dfc017b1a61071517353ed63cc0edd992"
+      ]
+    },
+    {
+      "sha": "309f4b784acad5de37d5aac8b825cbd2a578a4f8",
+      "message": "Addresses first part of review",
+      "parent_shas": [
+        "3fc472be39c641b07ae943e686704b5a3aa19369"
+      ]
+    },
+    {
+      "sha": "639cac324081f42b60f68edc16484c5aec2385a0",
+      "message": "Continues addressing the review",
+      "parent_shas": [
+        "309f4b784acad5de37d5aac8b825cbd2a578a4f8"
+      ]
+    },
+    {
+      "sha": "36904fe56994e54978157afcc913ac403cce5007",
+      "message": "Addesses more of the review",
+      "parent_shas": [
+        "639cac324081f42b60f68edc16484c5aec2385a0"
+      ]
+    },
+    {
+      "sha": "946fd13a45b5ed32e555f389061503cd7e120a11",
+      "message": "Merge branch 'main-dev' into multigrid",
+      "parent_shas": [
+        "36904fe56994e54978157afcc913ac403cce5007",
+        "fc7605993e4c452edcd7c4b9affd1449466bf9f2"
+      ]
+    },
+    {
+      "sha": "3f1e52091803255fcc4169d017b95c0f687b5501",
+      "message": "Removes to_time_series from griddeddata_container",
+      "parent_shas": [
+        "946fd13a45b5ed32e555f389061503cd7e120a11"
+      ]
+    },
+    {
+      "sha": "3da5d7e97ec08bb911ffece19f24a05d3ad06592",
+      "message": "Skips lat_res test due to poor test data",
+      "parent_shas": [
+        "3f1e52091803255fcc4169d017b95c0f687b5501"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "too_many_commits"
+    ],
+    "auto_signals": [
+      "adds_new_tests",
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__metno__pyaerocom__pr1679.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\metno__pyaerocom__pr1679__py2_py3__metno__pyaerocom__pr1679\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\metno__pyaerocom__pr1679__py2_py3__metno__pyaerocom__pr1679\\rn"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "instance_id": "java_python__liftwizard__liftwizard__pr3429",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "liftwizard/liftwizard",
+  "pr_number": 3429,
+  "pr_url": "https://github.com/liftwizard/liftwizard/pull/3429",
+  "repo": {
+    "full_name": "liftwizard/liftwizard",
+    "clone_url": "https://github.com/liftwizard/liftwizard.git",
+    "default_branch": "main",
+    "created_at": "2020-01-08T00:21:57Z",
+    "stars": 17,
+    "license": "Apache-2.0",
+    "size_kb": 12432
+  },
+  "pull_request": {
+    "id": 3245531889,
+    "title": "Bump org.openrewrite:rewrite-java-17 from 8.72.4 to 8.72.6",
+    "body": "Bumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.72.4 to 8.72.6.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/openrewrite/rewrite/releases\">org.openrewrite:rewrite-java-17's releases</a>.</em></p>\n<blockquote>\n<h2>8.72.6</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>Python: Add MethodMatcher for matching method invocations by type signature by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6671\">openrewrite/rewrite#6671</a></li>\n<li>JavaScript - use <code>@latest</code> for upgrades of recipe packages by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6672\">openrewrite/rewrite#6672</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.72.5...v8.72.6\">https://github.com/openrewrite/rewrite/compare/v8.72.5...v8.72.6</a></p>\n<h2>8.72.5</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>Speed up ModuleHasDependency by removing DependencyInsight from their implementation. by <a href=\"https://github.com/sambsnyd\"><code>@​sambsnyd</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6664\">openrewrite/rewrite#6664</a></li>\n<li>Python: Support recipe execution via RPC by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6665\">openrewrite/rewrite#6665</a></li>\n<li>Break cycles when parsing Gradle projects. by <a href=\"https://github.com/sambsnyd\"><code>@​sambsnyd</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6666\">openrewrite/rewrite#6666</a></li>\n<li>RPC recipes - the recipe descriptor to be used for all purposes by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6660\">openrewrite/rewrite#6660</a></li>\n<li>Python recipe marketplace installer by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6667\">openrewrite/rewrite#6667</a></li>\n<li>Preserve parentheses around unary operators in method invocation select by <a href=\"https://github.com/dsgrieve\"><code>@​dsgrieve</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6663\">openrewrite/rewrite#6663</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.72.4...v8.72.5\">https://github.com/openrewrite/rewrite/compare/v8.72.4...v8.72.5</a></p>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/e8276ab764fac4548d2b68b941b5f6a7ab716782\"><code>e8276ab</code></a> Add tests for InstallRecipes and use <a href=\"https://github.com/latest\"><code>@​latest</code></a> when no version specified (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6672\">#6672</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/cd0a6ac0c4f4b15bdd67181a0c71d5138039c039\"><code>cd0a6ac</code></a> Python: Add MethodMatcher for matching method invocations by type signature (...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/a3d37def633477ecfeb797b90076e38473047d67\"><code>a3d37de</code></a> Preserve parentheses around unary operators in method invocation select (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6663\">#6663</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/7b6d68be9c7c4ffd1a5d8672c725c51b9ef1d8e7\"><code>7b6d68b</code></a> Python recipe marketplace installer (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6667\">#6667</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/d3dee72b5db97b59da0a92978a8e17170aa24f24\"><code>d3dee72</code></a> RPC recipes - the recipe descriptor to be used for all purposes (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6660\">#6660</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/3d5a39269a2c54afd025098a9e09b1bbb177a907\"><code>3d5a392</code></a> Break cycles when parsing Gradle projects. (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6666\">#6666</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/86ba5ca11931ca4c87415acb3aff6685d5e1ab75\"><code>86ba5ca</code></a> Python: Support recipe execution via RPC (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6665\">#6665</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/919c9f527735ff6ad8d7a3dfc158a1233568f1b3\"><code>919c9f5</code></a> Speed up ModuleHasDependency by removing DependencyInsight from their impleme...</li>\n<li>See full diff in <a href=\"https://github.com/openrewrite/rewrite/compare/v8.72.4...v8.72.6\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=org.openrewrite:rewrite-java-17&package-manager=maven&previous-version=8.72.4&new-version=8.72.6)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)\n\n\n</details>",
+    "created_at": "2026-02-04T12:02:35Z",
+    "merged_at": "2026-02-04T12:17:10Z",
+    "base_sha": "7f799de07ab1c2c8102fe5238b2942215cb0d043",
+    "head_sha": "2a0751d6db106f1bbd07297eeeedc91f3db87cc1",
+    "merge_commit_sha": "b42e3b3e233729759decc6899363f0c656f96d4c",
+    "labels": [
+      "dependencies",
+      "java"
+    ]
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "7f799de07ab1c2c8102fe5238b2942215cb0d043",
+  "final_sha": "2a0751d6db106f1bbd07297eeeedc91f3db87cc1",
+  "changed_files": [
+    {
+      "sha": "a049482fecc19fd22d60e00b7045b4bc51ab2648",
+      "filename": "liftwizard-utility/liftwizard-rewrite/pom.xml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/liftwizard/liftwizard/blob/2a0751d6db106f1bbd07297eeeedc91f3db87cc1/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "raw_url": "https://github.com/liftwizard/liftwizard/raw/2a0751d6db106f1bbd07297eeeedc91f3db87cc1/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "contents_url": "https://api.github.com/repos/liftwizard/liftwizard/contents/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml?ref=2a0751d6db106f1bbd07297eeeedc91f3db87cc1",
+      "patch": "@@ -307,7 +307,7 @@\n                     <dependency>\n                         <groupId>org.openrewrite</groupId>\n                         <artifactId>rewrite-java-17</artifactId>\n-                        <version>8.72.4</version>\n+                        <version>8.72.6</version>\n                     </dependency>\n                 </dependencies>\n             </plugin>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "2a0751d6db106f1bbd07297eeeedc91f3db87cc1",
+      "message": "Bump org.openrewrite:rewrite-java-17 from 8.72.4 to 8.72.6\n\nBumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.72.4 to 8.72.6.\n- [Release notes](https://github.com/openrewrite/rewrite/releases)\n- [Commits](https://github.com/openrewrite/rewrite/compare/v8.72.4...v8.72.6)\n\n---\nupdated-dependencies:\n- dependency-name: org.openrewrite:rewrite-java-17\n  dependency-version: 8.72.6\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "7f799de07ab1c2c8102fe5238b2942215cb0d043"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__liftwizard__liftwizard__pr3429.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3429__java_python__liftwizard__liftwizard__pr3429\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3429__java_python__liftwizard__liftwizard__pr3429\\rn"
+  }
+}

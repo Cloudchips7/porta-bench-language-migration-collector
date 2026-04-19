@@ -1,0 +1,415 @@
+{
+  "instance_id": "java_python__logicalclocks__hopsworks-api__pr770",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "logicalclocks/hopsworks-api",
+  "pr_number": 770,
+  "pr_url": "https://github.com/logicalclocks/hopsworks-api/pull/770",
+  "repo": {
+    "full_name": "logicalclocks/hopsworks-api",
+    "clone_url": "https://github.com/logicalclocks/hopsworks-api.git",
+    "default_branch": "main",
+    "created_at": "2021-11-13T07:21:45Z",
+    "stars": 14,
+    "license": "Apache-2.0",
+    "size_kb": 233396
+  },
+  "pull_request": {
+    "id": 3096439064,
+    "title": "[BREWER-145] Move Brewer execute into Hopsworks MCP server",
+    "body": "This PR adds/fixes/changes...\r\n\r\n- please summarize your changes to the code\r\n- and make sure to include all changes to user-facing APIs\r\n\r\nJIRA Issue: -\r\n\r\nPriority for Review: -\r\n\r\nRelated PRs: -\r\n\r\n**How Has This Been Tested?**\r\n\r\n- [ ] Unit Tests\r\n- [ ] Integration Tests\r\n- [ ] Manual Tests on VM\r\n\r\n**Checklist For The Assigned Reviewer:**\r\n\r\n```markdown\r\n- [ ] Checked if merge conflicts with master exist\r\n- [ ] Checked if stylechecks for Java and Python pass\r\n- [ ] Checked if all docstrings were added and/or updated appropriately\r\n- [ ] Ran spellcheck on docstring\r\n- [ ] Checked if guides & concepts need to be updated\r\n- [ ] Checked if naming conventions for parameters and variables were followed\r\n- [ ] Checked if private methods are properly declared and used\r\n- [ ] Checked if hard-to-understand areas of code are commented\r\n- [ ] Checked if tests are effective\r\n- [ ] Built and deployed changes on dev VM and tested manually\r\n- [x] (Checked if all type annotations were added and/or updated appropriately)\r\n```\r\n",
+    "created_at": "2025-12-12T12:52:05Z",
+    "merged_at": "2026-01-19T13:45:20Z",
+    "base_sha": "26ad7cecf72d5661e6f55b50757ec20c9eb97186",
+    "head_sha": "658f3f334f665c068529a9c77084df40842574a5",
+    "merge_commit_sha": "5a257e498c1a38b12cb5c88adfff4ef6db5c3a04",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "c69ca725a3b0790adb4ddd964a48f09e79221f5d",
+  "final_sha": "658f3f334f665c068529a9c77084df40842574a5",
+  "changed_files": [
+    {
+      "sha": "f7736f8f9d2af23ba897969909ce8fc073f3f109",
+      "filename": "python/hopsworks/mcp/__init__.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2F__init__.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2F__init__.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -0,0 +1,3 @@\n+from .run_server import run_server as run_server\n+from .run_server import run_server_command as run_server_command\n+from .server import mcp as mcp"
+    },
+    {
+      "sha": "0779c74083fdb4246bdd815419cc54f6dbf2c917",
+      "filename": "python/hopsworks/mcp/models/__init__.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 3,
+      "changes": 3,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Fmodels%2F__init__.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Fmodels%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Fmodels%2F__init__.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -14,6 +14,3 @@\n #   limitations under the License.\n #\n \"\"\"Models for the Hopsworks MCP server.\"\"\"\n-\n-from .feature_store import FeatureStore  # noqa: F401\n-from .project import Project, Projects  # noqa: F401"
+    },
+    {
+      "sha": "16ee5ff12f56b393126861f78e705ada634f9ed0",
+      "filename": "python/hopsworks/mcp/models/feature_group.py",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 24,
+      "changes": 39,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Fmodels%2Ffeature_group.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Fmodels%2Ffeature_group.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Fmodels%2Ffeature_group.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -15,35 +15,26 @@\n #\n from __future__ import annotations\n \n-from typing import TYPE_CHECKING\n+from datetime import date, datetime  # noqa: TC003\n \n from pydantic import BaseModel\n \n \n-if TYPE_CHECKING:\n-    from datetime import date, datetime\n-\n-\n class FeatureGroup(BaseModel):\n-    \"\"\"Model representing a feature group in Hopsworks MCP.\"\"\"\n-\n-    id: int | None = None\n-    name: str | None\n-    version: int | None\n-    featurestore_id: int | None\n-    location: str | None\n+    id: int\n+    name: str\n+    version: int\n+    description: str | None = None\n+    location: str | None = None\n     event_time: str | int | date | datetime | None = None\n-    online_enabled: bool = False\n-    online_topic_name: str | None = None\n+    online_enabled: bool | None = None\n     topic_name: str | None = None\n     notification_topic_name: str | None = None\n-    deprecated: bool = False\n-\n-\n-class FeatureGroups(BaseModel):\n-    \"\"\"Model representing a collection of feature groups in Hopsworks MCP.\"\"\"\n-\n-    feature_groups: list[FeatureGroup]\n-    total: int\n-    offset: int\n-    limit: int\n+    deprecated: bool | None = None\n+\n+class Feature(BaseModel):\n+    name: str\n+    type: str | None = None\n+    description: str | None = None\n+    primary: bool | None = None\n+    event_time: bool | None = None"
+    },
+    {
+      "sha": "f68d0e30cfc2e499d69d06a7a3a3cc33e11296f2",
+      "filename": "python/hopsworks/mcp/models/feature_store.py",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 30,
+      "changes": 30,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/26ad7cecf72d5661e6f55b50757ec20c9eb97186/python%2Fhopsworks%2Fmcp%2Fmodels%2Ffeature_store.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/26ad7cecf72d5661e6f55b50757ec20c9eb97186/python%2Fhopsworks%2Fmcp%2Fmodels%2Ffeature_store.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Fmodels%2Ffeature_store.py?ref=26ad7cecf72d5661e6f55b50757ec20c9eb97186",
+      "patch": "@@ -1,30 +0,0 @@\n-#\n-#   Copyright 2025 Hopsworks AB\n-#\n-#   Licensed under the Apache License, Version 2.0 (the \"License\");\n-#   you may not use this file except in compliance with the License.\n-#   You may obtain a copy of the License at\n-#\n-#       http://www.apache.org/licenses/LICENSE-2.0\n-#\n-#   Unless required by applicable law or agreed to in writing, software\n-#   distributed under the License is distributed on an \"AS IS\" BASIS,\n-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n-#   See the License for the specific language governing permissions and\n-#   limitations under the License.\n-#\n-from __future__ import annotations\n-\n-from pydantic import BaseModel\n-\n-\n-class FeatureStore(BaseModel):\n-    \"\"\"Model representing a feature store in Hopsworks MCP.\"\"\"\n-\n-    name: str\n-    id: int\n-    project_id: int\n-    project_name: str\n-    online_featurestore_name: str | None = None\n-    online_enabled: bool\n-    offline_featurestore_name: str | None = None"
+    },
+    {
+      "sha": "eb55cb3d0215dc0076daef37900fe335bede5775",
+      "filename": "python/hopsworks/mcp/resources/__init__.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 3,
+      "changes": 3,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Fresources%2F__init__.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Fresources%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Fresources%2F__init__.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -14,6 +14,3 @@\n #   limitations under the License.\n #\n \"\"\"Resources for the Hopsworks MCP server.\"\"\"\n-\n-from .feature_store import FeatureStoreResources  # noqa: F401\n-from .project import ProjectResources  # noqa: F401"
+    },
+    {
+      "sha": "0c491f07d9343c94866d2e6db8d3411c4b692862",
+      "filename": "python/hopsworks/mcp/resources/feature_store.py",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 88,
+      "changes": 88,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/26ad7cecf72d5661e6f55b50757ec20c9eb97186/python%2Fhopsworks%2Fmcp%2Fresources%2Ffeature_store.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/26ad7cecf72d5661e6f55b50757ec20c9eb97186/python%2Fhopsworks%2Fmcp%2Fresources%2Ffeature_store.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Fresources%2Ffeature_store.py?ref=26ad7cecf72d5661e6f55b50757ec20c9eb97186",
+      "patch": "@@ -1,88 +0,0 @@\n-#\n-#   Copyright 2025 Hopsworks AB\n-#\n-#   Licensed under the Apache License, Version 2.0 (the \"License\");\n-#   you may not use this file except in compliance with the License.\n-#   You may obtain a copy of the License at\n-#\n-#       http://www.apache.org/licenses/LICENSE-2.0\n-#\n-#   Unless required by applicable law or agreed to in writing, software\n-#   distributed under the License is distributed on an \"AS IS\" BASIS,\n-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n-#   See the License for the specific language governing permissions and\n-#   limitations under the License.\n-#\n-\n-import hopsworks\n-from fastmcp import Context\n-from hopsworks.mcp.models.feature_store import FeatureStore\n-from hopsworks.mcp.utils.tags import TAGS\n-\n-\n-class FeatureStoreResources:\n-    \"\"\"Resources for Hopsworks feature store.\"\"\"\n-\n-    def __init__(self, mcp):\n-        \"\"\"Initialize feature store resources.\n-\n-        Args:\n-            mcp: The MCP server instance\n-        \"\"\"\n-        self.mcp = mcp\n-        self.mcp.resource(\n-            uri=\"featurestore://feature-store\",\n-            mime_type=\"application/json\",\n-            tags=[TAGS.FEATURE_STORE, TAGS.STATEFUL],\n-        )(self.get_feature_store)\n-        self.mcp.resource(\n-            uri=\"featurestore://feature-store/{name}\",\n-            mime_type=\"application/json\",\n-            tags=[TAGS.FEATURE_STORE, TAGS.STATELESS],\n-        )(self.get_feature_store_by_name)\n-\n-    async def get_feature_store(self, ctx: Context = None) -> FeatureStore:\n-        \"\"\"Get the feature store for the current project.\n-\n-        Returns:\n-            FeatureStore: The feature store information for the current project or an error message.\n-        \"\"\"\n-        if ctx:\n-            await ctx.info(\"Retrieving feature store for the current project...\")\n-        # Get the current project and its feature store\n-        project = hopsworks.get_current_project()\n-        feature_store = project.get_feature_store()\n-\n-        # Return the feature store details\n-        return FeatureStore(\n-            name=feature_store.name,\n-            id=feature_store.id,\n-            project_name=feature_store.project_name,\n-            project_id=feature_store.project_id,\n-            online_enabled=feature_store.online_enabled,\n-        )\n-\n-    async def get_feature_store_by_name(\n-        self, name: str, ctx: Context = None\n-    ) -> FeatureStore:\n-        \"\"\"Get the feature store by its name.\n-\n-        Args:\n-            name (str): The name of the feature store.\n-            ctx: The MCP context, provided automatically.\n-\n-        Returns:\n-            FeatureStore: The feature store information or an error message.\n-        \"\"\"\n-        if ctx:\n-            await ctx.info(f\"Retrieving feature store with name {name}...\")\n-        project = hopsworks.get_current_project()\n-        feature_store = project.get_feature_store(name=name)\n-        # Return the feature store details\n-        return FeatureStore(\n-            name=feature_store.name,\n-            id=feature_store.id,\n-            project_name=feature_store.project_name,\n-            project_id=feature_store.project_id,\n-            online_enabled=feature_store.online_enabled,\n-        )"
+    },
+    {
+      "sha": "ccd306a8c0b4c95fddb5baa530429cb1f67b37a6",
+      "filename": "python/hopsworks/mcp/run_server.py",
+      "status": "renamed",
+      "additions": 40,
+      "deletions": 20,
+      "changes": 60,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Frun_server.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Frun_server.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Frun_server.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -16,12 +16,14 @@\n from __future__ import annotations\n \n import logging\n+import os\n import signal\n import sys\n from typing import Literal\n \n import click\n import hopsworks\n+import uvicorn\n \n from .server import mcp\n from .utils.auth import login\n@@ -47,21 +49,14 @@ def handle_shutdown(signum, frame):\n     sys.exit(0)\n \n \n-@click.command(\n-    \"hopsworks-mcp\",\n-    short_help=\"Run the Hopsworks MCP server.\",\n-    help=\"In addition to setting arguments directly, you can set environment variables: \\\n-        HOPSWORKS_HOST, HOPSWORKS_PORT, HOPSWORKS_PROJECT, HOPSWORKS_API_KEY, \\\n-            HOPSWORKS_HOSTNAME_VERIFICATION, HOPSWORKS_TRUST_STORE_PATH and HOPSWORKS_ENGINE.\",\n-)\n @click.option(\n     \"--host\", default=\"0.0.0.0\", help=\"Host to run the server on. (default: 0.0.0.0)\"\n )\n-@click.option(\"--port\", default=8001, help=\"Port to run the server on. (default: 8001)\")\n+@click.option(\"--port\", default=8000, help=\"Port to run the server on. (default: 8000)\")\n @click.option(\n     \"--transport\",\n-    default=\"sse\",\n-    help=\"Transport method to use. (default: sse). Options: 'stdio', 'http', 'sse', 'streamable-http'\",\n+    default=\"http\",\n+    help=\"Transport method to use. (default: http). Options: 'stdio', 'http', 'sse', 'streamable-http'\",\n )\n @click.option(\n     \"--create_session\",\n@@ -96,10 +91,10 @@ def handle_shutdown(signum, frame):\n     default=\"python\",\n     help=\"Engine to use (python, spark, training, spark-no-metastore, spark-delta) (default: python)\",\n )\n-def main(\n-    host: str | None = None,\n-    port: int = 8001,\n-    transport: str | None = None,\n+def run_server(\n+    host: str = \"0.0.0.0\",\n+    port: int | None = None,\n+    transport: Literal[\"stdio\", \"http\", \"sse\", \"streamable-http\"] = \"http\",\n     create_session: bool = True,\n     hopsworks_host: str | None = None,\n     hopsworks_port: int = 443,\n@@ -108,18 +103,22 @@ def main(\n     api_key_file: str | None = None,\n     hostname_verification: bool = False,\n     trust_store_path: str | None = None,\n-    engine: Literal[\"spark\", \"python\", \"training\", \"spark-no-metastore\", \"spark-delta\"]\n-    | None = \"python\",\n+    engine: Literal[\n+        \"spark\", \"python\", \"training\", \"spark-no-metastore\", \"spark-delta\"\n+    ] = \"python\",\n ):\n     \"\"\"Run the Hopsworks MCP server.\"\"\"\n-    if transport not in [\"stdio\", \"http\", \"sse\", \"streamable-http\"]:\n+    if transport not in {\"stdio\", \"http\", \"sse\", \"streamable-http\"}:\n         raise ValueError(\n             \"Invalid transport type. Choose from 'stdio', 'http', 'sse', or 'streamable-http'.\"\n         )\n \n+    if port is None:\n+        port = int(os.getenv(\"UVICORN_PORT\", \"8000\"))\n+\n     if create_session:\n         # Set the API key for the Hopsworks client\n-        project = login(\n+        login(\n             host=hopsworks_host,\n             port=hopsworks_port,\n             project=project,\n@@ -139,7 +138,28 @@ def main(\n         logging.getLogger().handlers.clear()\n         logging.getLogger().addHandler(SafeStreamHandler(sys.stdout))\n \n-        log.info(f\"Starting Hopsworks MCP server using {transport} transport.\")\n         mcp.run(transport=transport, show_banner=False)\n     else:\n-        mcp.run(transport=transport, host=host, port=port, show_banner=False)\n+        app = mcp.http_app(transport=transport)\n+        try:\n+            import uvloop as uvloop\n+\n+            has_uvloop = True\n+        except ImportError:\n+            has_uvloop = False\n+        uvicorn.run(\n+            app,\n+            host=host,\n+            port=port,\n+            loop=\"uvloop\" if has_uvloop else \"auto\",\n+            http=\"httptools\",\n+        )\n+\n+\n+run_server_command = click.command(\n+    \"hopsworks-mcp\",\n+    short_help=\"Run the Hopsworks MCP server.\",\n+    help=\"In addition to setting arguments directly, you can set environment variables: \\\n+        HOPSWORKS_HOST, HOPSWORKS_PORT, HOPSWORKS_PROJECT, HOPSWORKS_API_KEY, \\\n+            HOPSWORKS_HOSTNAME_VERIFICATION, HOPSWORKS_TRUST_STORE_PATH and HOPSWORKS_ENGINE.\",\n+)(run_server)",
+      "previous_filename": "python/hopsworks/mcp/main.py"
+    },
+    {
+      "sha": "8be4a990e337f91dad3cda4a6e0dfefae7c1fd49",
+      "filename": "python/hopsworks/mcp/server.py",
+      "status": "modified",
+      "additions": 23,
+      "deletions": 12,
+      "changes": 35,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Fserver.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Fserver.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Fserver.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -17,30 +17,41 @@\n \"\"\"MCP server for Hopsworks.\"\"\"\n \n from fastmcp import FastMCP\n+from starlette import status\n+from starlette.responses import Response\n \n from .prompts import ProjectPrompts, SystemPrompts\n-from .resources import FeatureStoreResources, ProjectResources\n+from .resources.project import ProjectResources\n from .tools import (\n     AuthTools,\n+    BrewerTools,\n     DatasetTools,\n     FeatureGroupTools,\n-    FeatureStoreTools,\n     JobTools,\n     ProjectTools,\n+    TerminalTools,\n )\n \n \n # Create a FastMCP server instance\n mcp = FastMCP(name=\"Hopsworks MCP\")\n \n # Initialize tools and resources\n-_auth_tools = AuthTools(mcp)\n-_project_tools = ProjectTools(mcp)\n-_feature_store_tools = FeatureStoreTools(mcp)\n-_feature_store_resources = FeatureStoreResources(mcp)\n-_project_resource = ProjectResources(mcp)\n-_project_prompts = ProjectPrompts(mcp)\n-_system_prompts = SystemPrompts(mcp)\n-_job_tools = JobTools(mcp)\n-_dataset_tools = DatasetTools(mcp)\n-_feature_group_tools = FeatureGroupTools(mcp)\n+AuthTools(mcp)\n+ProjectTools(mcp)\n+ProjectResources(mcp)\n+ProjectPrompts(mcp)\n+SystemPrompts(mcp)\n+JobTools(mcp)\n+DatasetTools(mcp)\n+FeatureGroupTools(mcp)\n+TerminalTools(mcp)\n+BrewerTools(mcp)\n+\n+\n+@mcp.custom_route(\"/health\", methods=[\"GET\"])\n+async def health(_):\n+    return Response(status_code=status.HTTP_204_NO_CONTENT)\n+\n+\n+app = mcp.http_app()"
+    },
+    {
+      "sha": "63c2a556d7380efabaec537917dafcfab6f7eb0b",
+      "filename": "python/hopsworks/mcp/tools/__init__.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 6,
+      "changes": 13,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2F__init__.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Ftools%2F__init__.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -15,9 +15,10 @@\n #\n \"\"\"Tools for the Hopsworks MCP server.\"\"\"\n \n-from .auth import AuthTools  # noqa: F401\n-from .dataset import DatasetTools  # noqa: F401\n-from .feature_group import FeatureGroupTools  # noqa: F401\n-from .feature_store import FeatureStoreTools  # noqa: F401\n-from .jobs import JobTools  # noqa: F401\n-from .project import ProjectTools  # noqa: F401\n+from .auth import AuthTools as AuthTools\n+from .brewer import BrewerTools as BrewerTools\n+from .dataset import DatasetTools as DatasetTools\n+from .feature_group import FeatureGroupTools as FeatureGroupTools\n+from .jobs import JobTools as JobTools\n+from .project import ProjectTools as ProjectTools\n+from .terminal import TerminalTools as TerminalTools"
+    },
+    {
+      "sha": "cfd5e9d59e6da7affd15ff55145c87cc0acf8792",
+      "filename": "python/hopsworks/mcp/tools/auth.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Fauth.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Fauth.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Ftools%2Fauth.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -14,8 +14,9 @@\n #   limitations under the License.\n #\n \"\"\"Authentication tools for Hopsworks.\"\"\"\n+from __future__ import annotations\n \n-from fastmcp import Context\n+from fastmcp import Context  # noqa: TC002\n from hopsworks.mcp.models.project import Project\n from hopsworks.mcp.utils.auth import login as hw_login\n from hopsworks.mcp.utils.tags import TAGS\n@@ -45,7 +46,7 @@ async def login(\n         hostname_verification: bool = False,\n         trust_store_path: str = None,\n         engine: str = \"python\",\n-        ctx: Context = None,\n+        ctx: Context | None = None,\n     ) -> Project:\n         \"\"\"Connect to a Hopsworks instance.\n "
+    },
+    {
+      "sha": "f23feab103f3c8b1384a0be4633379fba5836569",
+      "filename": "python/hopsworks/mcp/tools/brewer.py",
+      "status": "added",
+      "additions": 162,
+      "deletions": 0,
+      "changes": 162,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Fbrewer.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Fbrewer.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Ftools%2Fbrewer.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -0,0 +1,162 @@\n+#\n+#   Copyright 2025 Hopsworks AB\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+#\n+\n+from __future__ import annotations\n+\n+import asyncio\n+import os\n+from pathlib import Path\n+\n+from fastmcp import Context  # noqa: TC002\n+from fastmcp.server.dependencies import get_context\n+from fastmcp.server.http import _current_http_request\n+from filelock import AsyncFileLock\n+from hopsworks.mcp.utils.tags import TAGS\n+from pydantic import BaseModel\n+\n+\n+class ExecutionResult(BaseModel):\n+    output: str = \"\"\n+    returncode: int | None = None\n+\n+\n+class BrewerTools:\n+    def __init__(self, mcp):\n+        \"\"\"Initialize the BrewerTools with the MCP server instance.\n+\n+        Parameters:\n+            mcp: The MCP server instance\n+        \"\"\"\n+        self.mcp = mcp\n+        self.mcp.tool(tags=[TAGS.BREWER])(self.execute)\n+\n+    # TODO: Use on_notification Middleware to handle cancellation requests, add process manager\n+\n+    async def execute(\n+        self,\n+        chat_id: int,\n+        script_path: Path,\n+        ctx: Context,\n+    ) -> ExecutionResult:\n+        \"\"\"Execute a Python script in a conda environment for a specific chat.\"\"\"\n+        await ctx.info(\"Locking the chat environment for execution...\\n\")\n+        chatdir = Path(f\"/hopsfs/Brewer/{chat_id}\")\n+        async with AsyncFileLock(f\"{chatdir}/.lock\"):\n+            await extract_hopsworks_credentials(chatdir)\n+\n+            envname = await get_chat_env(chat_id, chatdir)\n+\n+            await ctx.info(\"Executing the script...\\n\")\n+            if not script_path.is_absolute():\n+                script_path = (chatdir / script_path).resolve()\n+\n+            envcopy = os.environ.copy()\n+            envcopy[\"SECRETS_DIR\"] = str(chatdir)\n+\n+            proc = await asyncio.create_subprocess_exec(\n+                \"conda\",\n+                \"run\",\n+                \"-n\",\n+                envname,\n+                \"python\",\n+                script_path.name,\n+                cwd=script_path.parent,\n+                env=envcopy,\n+                stdout=asyncio.subprocess.PIPE,\n+                stderr=asyncio.subprocess.STDOUT,\n+            )\n+            if proc.stdout is None:\n+                raise Exception(\"Unable to create env: stdout is None\")\n+            output = \"\"\n+            while proc.returncode is None:\n+                buf = await proc.stdout.readline()\n+                if not buf:\n+                    break\n+                b = buf.decode()\n+                output += b\n+                await ctx.info(b)\n+\n+            return ExecutionResult(\n+                output=output,\n+                returncode=proc.returncode,\n+            )\n+\n+\n+async def extract_hopsworks_credentials(chatdir: Path):\n+    ctx = get_context()\n+    await ctx.info(\"Setting up authentication credentials...\\n\")\n+    request = _current_http_request.get()\n+    if not request:\n+        raise Exception(\"No HTTP request found\")\n+    auth = next(\n+        (\n+            request.headers.get(key)\n+            for key in request.headers\n+            if key.lower() == \"authorization\"\n+        ),\n+        None,\n+    )\n+    if not auth:\n+        raise Exception(\"No authentication header found\")\n+    if auth.startswith(\"Bearer\"):\n+        with open(chatdir / \"token.jwt\", \"w\") as f:\n+            f.write(auth.removeprefix(\"Bearer\").strip())\n+    elif auth.startswith(\"ApiKey\"):\n+        with open(chatdir / \"api.key\", \"w\") as f:\n+            f.write(auth.removeprefix(\"ApiKey\").strip())\n+    else:\n+        raise Exception(\"Unknown auth type\")\n+\n+\n+async def get_chat_env(chat_id: int, chatdir: Path) -> str:\n+    ctx = get_context()\n+    await ctx.info(\"Checking if the chat environment is ready to be used...\\n\")\n+    proc = await asyncio.create_subprocess_exec(\n+        \"conda\",\n+        \"env\",\n+        \"list\",\n+        cwd=chatdir,\n+        stdout=asyncio.subprocess.PIPE,\n+        stderr=asyncio.subprocess.DEVNULL,\n+    )\n+    envlist, _ = await proc.communicate()\n+    envname = f\"chat{chat_id}\"\n+    if envname not in envlist.decode():\n+        await ctx.info(\"Creating a new chat environment...\\n\")\n+        proc = await asyncio.create_subprocess_exec(\n+            \"conda\",\n+            \"create\",\n+            \"--clone\",\n+            \"hopsworks_environment\",\n+            \"-n\",\n+            envname,\n+            cwd=chatdir,\n+            stdout=asyncio.subprocess.PIPE,\n+            stderr=asyncio.subprocess.STDOUT,\n+        )\n+        if proc.stdout is None:\n+            raise Exception(\"Unable to create env: stdout is None\")\n+        output = \"\"\n+        while proc.returncode is None:\n+            buf = await proc.stdout.readline()\n+            if not buf:\n+                break\n+            b = buf.decode()\n+            output += b\n+            await ctx.info(b)\n+        if proc.returncode:\n+            raise Exception(f\"Unable to create env ({proc.returncode}):\\n{output}\")\n+    return envname"
+    },
+    {
+      "sha": "efcee23760497d0104b822ccdf7d5666859f8a11",
+      "filename": "python/hopsworks/mcp/tools/dataset.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 6,
+      "changes": 7,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Fdataset.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Fdataset.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Ftools%2Fdataset.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -15,19 +15,14 @@\n #\n from __future__ import annotations\n \n-from typing import TYPE_CHECKING\n-\n import hopsworks\n+from fastmcp import Context  # noqa: TC002\n from hopsworks.mcp.models.dataset import Dataset, Datasets, File, Files\n from hopsworks.mcp.utils.tags import TAGS\n from hopsworks_common import client\n from hopsworks_common.core import dataset, inode\n \n \n-if TYPE_CHECKING:\n-    from fastmcp import Context\n-\n-\n class DatasetTools:\n     \"\"\"Tools for managing datasets in Hopsworks.\"\"\"\n "
+    },
+    {
+      "sha": "82863ca161cb34b2957448f93e93de2ea0b98f95",
+      "filename": "python/hopsworks/mcp/tools/feature_group.py",
+      "status": "modified",
+      "additions": 149,
+      "deletions": 104,
+      "changes": 253,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Ffeature_group.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Ffeature_group.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Ftools%2Ffeature_group.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -15,16 +15,10 @@\n #\n from __future__ import annotations\n \n-from typing import TYPE_CHECKING\n-\n import hopsworks\n-from hopsworks.mcp.models.feature_group import FeatureGroup, FeatureGroups\n+from fastmcp import Context  # noqa: TC002\n+from hopsworks.mcp.models.feature_group import Feature, FeatureGroup\n from hopsworks.mcp.utils.tags import TAGS\n-from hopsworks_common import client\n-\n-\n-if TYPE_CHECKING:\n-    from fastmcp import Context\n \n \n class FeatureGroupTools:\n@@ -33,116 +27,167 @@ class FeatureGroupTools:\n     def __init__(self, mcp):\n         self.mcp = mcp\n         self.mcp.tool(tags=[TAGS.FEATURE_GROUP, TAGS.READ, TAGS.STATEFUL])(\n-            self.get_feature_groups_in_current_project\n-        )\n-        self.mcp.tool(tags=[TAGS.FEATURE_GROUP, TAGS.READ, TAGS.STATELESS])(\n             self.get_feature_groups\n         )\n+        self.mcp.tool(tags=[TAGS.FEATURE_GROUP, TAGS.READ, TAGS.STATEFUL])(\n+            self.get_feature_group_versions\n+        )\n+        self.mcp.tool(tags=[TAGS.FEATURE_GROUP, TAGS.READ, TAGS.STATEFUL])(\n+            self.get_feature_group_details\n+        )\n+        self.mcp.tool(tags=[TAGS.FEATURE_GROUP, TAGS.READ, TAGS.STATEFUL])(\n+            self.get_feature_group_details\n+        )\n+        self.mcp.tool(tags=[TAGS.FEATURE_GROUP, TAGS.READ, TAGS.STATEFUL])(\n+            self.preview_feature_group\n+        )\n+        self.mcp.tool(tags=[TAGS.FEATURE_GROUP, TAGS.READ, TAGS.STATEFUL])(\n+            self.get_features\n+        )\n \n-    def _get_feature_groups(self, feature_store, name: str = None) -> FeatureGroups:\n-        \"\"\"Helper method to retrieve feature groups from a feature store.\n+    def _get_feature_group_versions(self, name: str | None = None):\n+        # Get the current project and its feature groups\n+        try:\n+            project = hopsworks.get_current_project()\n+        except hopsworks.ProjectException:\n+            raise RuntimeError(\n+                \"No active Hopsworks project found, use login tool.\"\n+            ) from None\n \n-        Args:\n-            feature_store: The feature store instance.\n-            name: The name of the feature group to retrieve. If None, retrieves all feature groups.\n+        return project.get_feature_store().get_feature_groups(name=name)\n \n-        Returns:\n-            str: A string representation of the feature groups.\n-        \"\"\"\n+    def _get_feature_group_version(\n+        self, name: str | None = None, version: int | None = None\n+    ):\n+        fgs = self._get_feature_group_versions(name)\n+        if version is not None:\n+            for fg in fgs:\n+                if fg.version == version:\n+                    return fg\n+            raise RuntimeError(f\"Feature group {name} v{version} not found.\")\n         try:\n-            feature_groups = feature_store.get_feature_groups(name=name)\n-        except TypeError:\n-            # Handle case where feature_store.get_feature_groups fails due to missing parameters\n-            # Type error FeatureGroup.__init__() missing 3 required positional arguments: 'name', 'version', and 'featurestore_id'\n-            # When from_response_json is called without a response\n-            feature_groups = []\n-\n-        # If no feature groups are found, return an empty FeatureGroups object\n-        if not feature_groups:\n-            return FeatureGroups(feature_groups=[], total=0, offset=0, limit=0)\n-\n-        if \"items\" not in feature_groups:\n-            return FeatureGroup(\n-                id=feature_groups.id,\n-                name=feature_groups.name,\n-                version=feature_groups.version,\n-                featurestore_id=feature_groups.featurestore_id,\n-                location=feature_groups.location,\n-                event_time=feature_groups.event_time,\n-                online_enabled=feature_groups.online_enabled,\n-                topic_name=feature_groups.topic_name,\n-                notification_topic_name=feature_groups.notification_topic_name,\n-                deprecated=feature_groups.deprecated,\n-            )\n-\n-        return FeatureGroups(\n-            feature_groups=[\n-                FeatureGroup(\n-                    id=fg.id,\n-                    name=fg.name,\n-                    version=fg.version,\n-                    featurestore_id=fg.featurestore_id,\n-                    location=fg.location,\n-                    event_time=fg.event_time,\n-                    online_enabled=fg.online_enabled,\n-                    topic_name=fg.topic_name,\n-                    notification_topic_name=fg.notification_topic_name,\n-                    deprecated=fg.deprecated,\n-                )\n-                for fg in feature_groups[\"items\"]\n+            return sorted(fgs, key=lambda fg: fg.version, reverse=True)[0]\n+        except IndexError:\n+            raise RuntimeError(f\"Feature group {name} not found.\") from None\n+\n+    async def get_feature_groups(self, ctx: Context) -> list[FeatureGroup]:\n+        \"\"\"Get the latest versions of all feature groups in the project.\"\"\"\n+        await ctx.info(\"Retrieving feature groups...\")\n+\n+        fgs = self._get_feature_group_versions()\n+        fg_names = {fg.name for fg in fgs}\n+        fg_latest_version = {\n+            name: sorted([fg.version for fg in fgs if fg.name == name], reverse=True)[0]\n+            for name in fg_names\n+        }\n+        return sorted(\n+            [\n+                FeatureGroup(id=fg.id, name=fg.name, version=fg.version)\n+                for fg in fgs\n+                if fg.version == fg_latest_version[fg.name]\n             ],\n-            total=feature_groups[\"count\"],\n-            offset=0,\n-            limit=len(feature_groups[\"items\"]),\n+            key=lambda fg: (fg.name, fg.version),\n         )\n \n-    async def get_feature_groups_in_current_project(\n+    async def get_feature_group_versions(self, ctx: Context, name: str) -> list[int]:\n+        \"\"\"Get all versions of a feature group with the specified name.\"\"\"\n+        await ctx.info(\"Retrieving feature groups...\")\n+\n+        fgs = self._get_feature_group_versions(name)\n+        return sorted([fg.version for fg in fgs])\n+\n+    async def get_feature_group_details(\n         self,\n-        feature_store_project_name: str | None = None,\n-        name: str | None = None,\n-        ctx: Context | None = None,\n-    ):\n-        \"\"\"Get the feature groups for the current project.\n+        ctx: Context,\n+        name: str,\n+        version: int | None = None,\n+    ) -> FeatureGroup:\n+        \"\"\"Get the detailed description of a feature group with the specified name and version (latest by default).\"\"\"\n+        await ctx.info(\n+            f\"Retrieving details of {name}{f' v{version}' if version else ''} feature group...\"\n+        )\n \n-        Parameters:\n-            feature_store_project_name: Project name of the feature store. If None, uses the default project feature store.\n-            name: The name of the feature group to retrieve. If None, retrieves all feature groups\n-            ctx: The MCP context, provided automatically.\n+        fg = self._get_feature_group_version(name, version)\n+        return FeatureGroup(\n+            id=fg.id,\n+            name=fg.name,\n+            version=fg.version,\n+            description=fg.description,\n+            location=fg.location,\n+            event_time=fg.event_time,\n+            online_enabled=fg.online_enabled,\n+            topic_name=fg.topic_name,\n+            notification_topic_name=fg.notification_topic_name,\n+            deprecated=fg.deprecated,\n+        )\n \n-        Returns:\n-            FeatureGroups: List of feature groups in the current project.\n+    async def preview_feature_group(\n+        self,\n+        ctx: Context,\n+        name: str,\n+        version: int | None = None,\n+        n: int = 10,\n+    ) -> dict[str, list[str | int | float | None]]:\n+        \"\"\"Preview the first n (10 by default) rows of a feature group with the specified name and version (latest by default).\n+\n+        The tool can be useful to figure out the actual schema of the feature group in case the feature metadata is incomplete or confusing.\n         \"\"\"\n-        if ctx:\n-            await ctx.info(\"Retrieving feature groups for the current project...\")\n+        # TODO: the function is partially complete, we should add a method to list data in columnar format to the API and use it here instead.\n+        await ctx.info(\n+            f\"Retrieving preview of {name}{f' v{version}' if version else ''} feature group...\"\n+        )\n \n-        # Get the current project and its feature groups\n-        project = hopsworks.get_current_project()\n-        feature_store = project.get_feature_store(name=feature_store_project_name)\n-        return self._get_feature_groups(feature_store, name=name)\n+        fg = self._get_feature_group_version(name, version)\n+        preview = fg.show(n, fg.online_enabled)\n \n-    async def get_feature_groups(\n-        self,\n-        project_name: str,\n-        feature_store_project_name: str | None = None,\n-        name: str | None = None,\n-        ctx: Context | None = None,\n-    ):\n-        \"\"\"Get the feature groups for a specific project.\n+        try:\n+            import pandas as pd\n+\n+            if isinstance(preview, pd.DataFrame):\n+                return {\n+                    str(k): [\n+                        x if isinstance(x, (int, float, type(None))) else str(x)\n+                        for x in vs\n+                    ]\n+                    for k, vs in preview.to_dict(orient=\"list\").items()\n+                }\n+        except ImportError:\n+            pass\n+\n+        try:\n+            import polars as pl\n \n-        Parameters:\n-            project_name: The name of the project.\n-            feature_store_project_name: Project name of the feature store. If None, uses the default project feature store.\n-            name: The name of the feature group to retrieve. If None, retrieves all feature groups.\n-            ctx: The MCP context, provided automatically.\n+            if isinstance(preview, pl.DataFrame):\n+                return {k: vs.to_list() for k, vs in preview.to_dict().items()}\n+        except ImportError:\n+            pass\n \n-        Returns:\n-            FeatureGroups: List of feature groups in the specified project.\n-        \"\"\"\n-        if ctx:\n-            await ctx.info(f\"Retrieving feature groups for project {project_name}...\")\n-\n-        # Get the specified project and its feature groups\n-        conn = client.get_connection()\n-        project = conn.get_project(project_name)\n-        feature_store = project.get_feature_store(name=feature_store_project_name)\n-        return self._get_feature_groups(feature_store, name=name)\n+        raise RuntimeError(\n+            f\"Unable to convert preview to dictionary. Here's the raw preview:\\n{preview}\"\n+        )\n+\n+    async def get_features(\n+        self,\n+        ctx: Context,\n+        name: str,\n+        version: int | None = None,\n+    ) -> list[Feature]:\n+        \"\"\"Get the features of a feature group with the specified name and version (latest by default).\"\"\"\n+        await ctx.info(\n+            f\"Retrieving features of {name}{f' v{version}' if version else ''} feature group...\"\n+        )\n+\n+        fg = self._get_feature_group_version(name, version)\n+        return sorted(\n+            [\n+                Feature(\n+                    name=f.name,\n+                    type=f.type,\n+                    description=f.description,\n+                    primary=f.primary,\n+                    event_time=fg.event_time == f.name,\n+                )\n+                for f in fg.features\n+            ],\n+            key=lambda feature: feature.name,\n+        )"
+    },
+    {
+      "sha": "55d6d1acd207b6bc96fec03660fabfa4db4334fe",
+      "filename": "python/hopsworks/mcp/tools/feature_store.py",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 103,
+      "changes": 103,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/26ad7cecf72d5661e6f55b50757ec20c9eb97186/python%2Fhopsworks%2Fmcp%2Ftools%2Ffeature_store.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/26ad7cecf72d5661e6f55b50757ec20c9eb97186/python%2Fhopsworks%2Fmcp%2Ftools%2Ffeature_store.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Ftools%2Ffeature_store.py?ref=26ad7cecf72d5661e6f55b50757ec20c9eb97186",
+      "patch": "@@ -1,103 +0,0 @@\n-#\n-#   Copyright 2025 Hopsworks AB\n-#\n-#   Licensed under the Apache License, Version 2.0 (the \"License\");\n-#   you may not use this file except in compliance with the License.\n-#   You may obtain a copy of the License at\n-#\n-#       http://www.apache.org/licenses/LICENSE-2.0\n-#\n-#   Unless required by applicable law or agreed to in writing, software\n-#   distributed under the License is distributed on an \"AS IS\" BASIS,\n-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n-#   See the License for the specific language governing permissions and\n-#   limitations under the License.\n-#\n-from __future__ import annotations\n-\n-from typing import TYPE_CHECKING\n-\n-import hopsworks\n-from hopsworks.mcp.models.feature_store import FeatureStore\n-from hopsworks.mcp.utils.tags import TAGS\n-from hopsworks_common import client\n-\n-\n-if TYPE_CHECKING:\n-    from fastmcp import Context\n-\n-\n-class FeatureStoreTools:\n-    \"\"\"Tools for Hopsworks feature store.\"\"\"\n-\n-    def __init__(self, mcp):\n-        \"\"\"Initialize feature store tools.\n-\n-        Args:\n-            mcp: The MCP server instance\n-        \"\"\"\n-        self.mcp = mcp\n-        self.mcp.tool(tags=[TAGS.FEATURE_STORE, TAGS.READ, TAGS.STATEFUL])(\n-            self.get_feature_store_in_current_project\n-        )\n-        self.mcp.tool(tags=[TAGS.FEATURE_STORE, TAGS.READ, TAGS.STATELESS])(\n-            self.get_feature_store\n-        )\n-\n-    async def get_feature_store_in_current_project(\n-        self, name: str | None = None, ctx: Context | None = None\n-    ) -> FeatureStore:\n-        \"\"\"Get the feature store for the current project.\n-\n-        Parameters:\n-            name: The name of the feature store to retrieve. If None, retrieves the default feature store.\n-            ctx: The MCP context, provided automatically.\n-\n-        Returns:\n-            FeatureStore: The feature store information for the current project or an error message.\n-        \"\"\"\n-        if ctx:\n-            await ctx.info(\"Retrieving feature store for the current project...\")\n-\n-        # Get the current project and its feature store\n-        project = hopsworks.get_current_project()\n-        feature_store = project.get_feature_store(name=name)\n-\n-        # Return the feature store details\n-        return FeatureStore(\n-            name=feature_store.name,\n-            id=feature_store.id,\n-            project_name=feature_store.project_name,\n-            project_id=feature_store.project_id,\n-            online_enabled=feature_store.online_enabled,\n-        )\n-\n-    async def get_feature_store(\n-        self, project_name: str, name: str | None = None, ctx: Context | None = None\n-    ) -> FeatureStore:\n-        \"\"\"Get the feature store for a specific project.\n-\n-        Parameters:\n-            project_name: The name of the project to get the feature store for.\n-            name: The name of the feature store to retrieve. If None, retrieves the default feature store.\n-            ctx: The MCP context, provided automatically.\n-\n-        Returns:\n-            FeatureStore: The feature store information for the specified project or an error message.\n-        \"\"\"\n-        if ctx:\n-            await ctx.info(f\"Retrieving feature store for project {project_name}...\")\n-\n-        # Get the project and its feature store\n-        conn = client.get_connection()\n-        project = conn.get_project(project_name)\n-        feature_store = project.get_feature_store(name=name)\n-\n-        # Return the feature store details\n-        return FeatureStore(\n-            name=feature_store.name,\n-            id=feature_store.id,\n-            project_name=feature_store.project_name,\n-            project_id=feature_store.project_id,\n-            online_enabled=feature_store.online_enabled,\n-        )"
+    },
+    {
+      "sha": "a258eb2340651def3f5ef57ca3b01ecea72e8f88",
+      "filename": "python/hopsworks/mcp/tools/jobs.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 6,
+      "changes": 7,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Fjobs.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Fjobs.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Ftools%2Fjobs.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -15,18 +15,13 @@\n #\n from __future__ import annotations\n \n-from typing import TYPE_CHECKING\n-\n import hopsworks\n+from fastmcp import Context  # noqa: TC002\n from hopsworks.mcp.models.job import Jobs, to_base_model_job\n from hopsworks.mcp.utils.tags import TAGS\n from hopsworks_common import client\n \n \n-if TYPE_CHECKING:\n-    from fastmcp import Context\n-\n-\n class JobTools:\n     \"\"\"Tools for managing jobs in Hopsworks.\"\"\"\n "
+    },
+    {
+      "sha": "9a5b27153aae990058f41618d9bbb5ba3effc20d",
+      "filename": "python/hopsworks/mcp/tools/project.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 5,
+      "changes": 6,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Fproject.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Fproject.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Ftools%2Fproject.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -16,18 +16,14 @@\n from __future__ import annotations\n \n import asyncio\n-from typing import TYPE_CHECKING\n \n import hopsworks\n+from fastmcp import Context  # noqa: TC002\n from hopsworks.mcp.models.project import Project, Projects\n from hopsworks.mcp.utils.tags import TAGS\n from hopsworks_common import client\n \n \n-if TYPE_CHECKING:\n-    from fastmcp import Context\n-\n-\n class ProjectTools:\n     \"\"\"Tools for Hopsworks projects.\"\"\"\n "
+    },
+    {
+      "sha": "9d3da13d0600799388898693cc6a59a5b5ba9b75",
+      "filename": "python/hopsworks/mcp/tools/terminal.py",
+      "status": "added",
+      "additions": 133,
+      "deletions": 0,
+      "changes": 133,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Fterminal.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Ftools%2Fterminal.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Ftools%2Fterminal.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -0,0 +1,133 @@\n+#\n+#   Copyright 2025 Hopsworks AB\n+#\n+#   Licensed under the Apache License, Version 2.0 (the \"License\");\n+#   you may not use this file except in compliance with the License.\n+#   You may obtain a copy of the License at\n+#\n+#       http://www.apache.org/licenses/LICENSE-2.0\n+#\n+#   Unless required by applicable law or agreed to in writing, software\n+#   distributed under the License is distributed on an \"AS IS\" BASIS,\n+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+#   See the License for the specific language governing permissions and\n+#   limitations under the License.\n+#\n+from __future__ import annotations\n+\n+import json\n+import subprocess\n+import tempfile\n+from pathlib import Path\n+from queue import Empty, Queue\n+from threading import Thread\n+\n+from hopsworks.mcp.utils.tags import TAGS\n+\n+\n+def enqueue_output(out, queue):\n+    # TODO: obtain output byte-by-byte\n+    for line in iter(out.readline, b\"\"):\n+        queue.put(line)\n+    out.close()\n+\n+\n+class TerminalTools:\n+    \"\"\"Tools implementing shell and terminal access to Hopsworks.\"\"\"\n+\n+    def __init__(self, mcp):\n+        \"\"\"Initialize the TerminalTools with the MCP server instance.\n+\n+        Parameters:\n+            mcp: The MCP server instance\n+        \"\"\"\n+        self.mcp = mcp\n+        self.mcp.tool(tags=[TAGS.TERMINAL])(self.start_session)\n+        self.mcp.tool(tags=[TAGS.TERMINAL])(self.add_input)\n+        self.mcp.tool(tags=[TAGS.TERMINAL])(self.get_output)\n+\n+        self.sessions: dict[int, tuple[subprocess.Popen, Queue, str, str]] = {}\n+\n+    def start_session(self, cwd: str) -> int:\n+        \"\"\"Start a terminal session in the specified directory.\n+\n+        Parameters:\n+            cwd: The directory path to start the session in.\n+\n+        Returns:\n+            The session process identifier (pid).\n+        \"\"\"\n+        # TODO: delete processes which were used longer than 5 min ago\n+\n+        envdir = tempfile.mkdtemp()\n+\n+        proc = subprocess.Popen(\n+            [\"bash\"],\n+            stdin=subprocess.PIPE,\n+            stdout=subprocess.PIPE,\n+            stderr=subprocess.STDOUT,\n+            cwd=cwd,\n+            text=True,\n+            bufsize=1,\n+            env={\"PROMPT_COMMAND\": f'python -c \"import json, os; print(json.dumps(dict(os.environ)))\" > {envdir}/env.json'},\n+        )\n+\n+        output_queue = Queue()\n+        t = Thread(target=enqueue_output, args=(proc.stdout, output_queue))\n+        t.daemon = True  # thread dies with the program\n+        t.start()\n+\n+        self.sessions[proc.pid] = (proc, output_queue, \"\", envdir)\n+        # TODO: check for errors\n+\n+        return proc.pid\n+\n+    def add_input(self, pid: int, addon: str):\n+        r\"\"\"Add input to the terminal session.\n+\n+        Note that if you want to simulate pressing Enter, you need to include a newline character.\n+        So, to run a command, you should set addon to something like \"ls -la\\n\".\n+\n+        Parameters:\n+            pid: The process identifier of the terminal session.\n+            addon: The input string to add to the session.\n+        \"\"\"\n+        proc, _, _, _ = self.sessions[pid]\n+        if not proc.stdin:\n+            raise Exception(\"Process stdin is not available\")\n+        proc.stdin.write(addon)\n+        proc.stdin.flush()\n+\n+    def get_output(self, pid: int, offset: int = 0) -> str:\n+        r\"\"\"Get output from the terminal session.\n+\n+        Set offset to the number of characters you have already retrieved, so that only new output is returned.\n+\n+        Parameters:\n+            pid: The process identifier of the terminal session.\n+            offset: The offset from which to retrieve new output.\n+\n+        Returns:\n+            The output string from the session starting from the specified offset.\n+        \"\"\"\n+        proc, output_queue, output, envdir = self.sessions[pid]\n+        while True:\n+            try:\n+                output += output_queue.get_nowait()\n+            except Empty:\n+                self.sessions[pid] = (proc, output_queue, output, envdir)\n+                return output[offset:]\n+\n+    def get_environ(self, pid: int) -> dict[str, str]:\n+        r\"\"\"Get the current values of the environment variables of the terminal session.\n+\n+        For example, this way you can figure out what the current working directory is by checking the \"PWD\" variable.\n+\n+        Parameters:\n+            pid: The process identifier of the terminal session.\n+\n+        Returns:\n+            A dictionary of environment variables.\n+        \"\"\"\n+        _, _, _, envdir = self.sessions[pid]\n+        return json.loads((Path(envdir) / \"env.json\").read_text())"
+    },
+    {
+      "sha": "97a54af0b20ff758130a771b97c995a04c5ece51",
+      "filename": "python/hopsworks/mcp/utils/tags.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Futils%2Ftags.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhopsworks%2Fmcp%2Futils%2Ftags.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhopsworks%2Fmcp%2Futils%2Ftags.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -10,6 +10,8 @@ class TAGS:\n     ENVIRONMENT = \"environment\"\n     JOB = \"job\"\n     SYSTEM = \"system\"\n+    TERMINAL = \"terminal\"\n+    BREWER = \"brewer\"\n \n     STATEFUL = \"stateful\"\n     STATELESS = \"stateless\""
+    },
+    {
+      "sha": "e43b239e6205b48b199670688cf21a449c84d471",
+      "filename": "python/hsfs/core/feature_group_api.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 3,
+      "changes": 12,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fhsfs%2Fcore%2Ffeature_group_api.py",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fhsfs%2Fcore%2Ffeature_group_api.py",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fhsfs%2Fcore%2Ffeature_group_api.py?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -242,9 +242,15 @@ def get_all(\n         if with_features:\n             query_params[\"expand\"] = [\"features\"]\n \n-        return fg_mod.FeatureGroup.from_response_json(\n-            _client._send_request(\"GET\", path_params, query_params)\n-        )\n+        res = _client._send_request(\"GET\", path_params, query_params)\n+\n+        if \"items\" not in res:\n+            try:\n+                return [fg_mod.FeatureGroup.from_response_json(res)]\n+            except TypeError:\n+                return []\n+\n+        return [fg_mod.FeatureGroup.from_response_json(r) for r in res[\"items\"]]\n \n     def delete_content(\n         self,"
+    },
+    {
+      "sha": "a4fc20684e036b8fc6c1b08cedfed10d76ddacdf",
+      "filename": "python/pyproject.toml",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 3,
+      "changes": 10,
+      "blob_url": "https://github.com/logicalclocks/hopsworks-api/blob/658f3f334f665c068529a9c77084df40842574a5/python%2Fpyproject.toml",
+      "raw_url": "https://github.com/logicalclocks/hopsworks-api/raw/658f3f334f665c068529a9c77084df40842574a5/python%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/logicalclocks/hopsworks-api/contents/python%2Fpyproject.toml?ref=658f3f334f665c068529a9c77084df40842574a5",
+      "patch": "@@ -59,7 +59,7 @@ dependencies = [\n ]\n \n [project.scripts]\n-hopsworks-mcp = \"hopsworks.mcp.main:main\"\n+hopsworks-mcp = \"hopsworks.mcp:run_server_command\"\n \n [project.optional-dependencies]\n python = [\n@@ -97,14 +97,18 @@ dev-pandas1 = [\n     \"sqlalchemy<=1.4.48\",\n     \"delta-spark==3.3.1\"\n ]\n-dev = [\"hopsworks[dev-no-opt,great-expectations,polars,python]\"]\n+dev = [\"hopsworks[dev-no-opt,great-expectations,polars,python,mcp]\"]\n polars=[\n     \"polars>=0.20.18,<=0.21.0\",\n     \"pyarrow>=17.0\",\n ]\n mcp=[\n-    \"fastmcp>=2.10.5; python_version >= '3.10'\",\n+    \"fastmcp>=2.10.5,<=2.13.3; python_version >= '3.10'\",\n+    \"filelock\",\n     \"httpx\",\n+    \"httptools\",\n+    \"uvicorn\",\n+    \"uvloop; sys_platform != 'win32'\",\n     \"pydantic>=2.11.7\",\n ]\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8ca82cc876a4d9fff1bcc3941b8134047508924f",
+      "message": "Add unix commands tool",
+      "parent_shas": [
+        "c69ca725a3b0790adb4ddd964a48f09e79221f5d"
+      ]
+    },
+    {
+      "sha": "8c894db251288cef45894fd4535e7115e4fbf03c",
+      "message": "Merge branch 'main' into new_mcp",
+      "parent_shas": [
+        "8ca82cc876a4d9fff1bcc3941b8134047508924f",
+        "d53eeed88ada5079639e298729941e80bd08e870"
+      ]
+    },
+    {
+      "sha": "b841b9356540ea44328e5dea2de3d7614321b4f2",
+      "message": "Ruff",
+      "parent_shas": [
+        "8c894db251288cef45894fd4535e7115e4fbf03c"
+      ]
+    },
+    {
+      "sha": "45e232c2cafdad5622b2d2e6edb34986235bd609",
+      "message": "Some changes",
+      "parent_shas": [
+        "b841b9356540ea44328e5dea2de3d7614321b4f2"
+      ]
+    },
+    {
+      "sha": "5d7efe594dd8e0e8ae975d7ba2f28adf99bb4cec",
+      "message": "Improve hopsworks-mcp command",
+      "parent_shas": [
+        "45e232c2cafdad5622b2d2e6edb34986235bd609"
+      ]
+    },
+    {
+      "sha": "a7639b494acce6ea26d8260e818282379fe23080",
+      "message": "Fixes",
+      "parent_shas": [
+        "5d7efe594dd8e0e8ae975d7ba2f28adf99bb4cec"
+      ]
+    },
+    {
+      "sha": "bdf2236f0d2d5ba901ecac5f2d689d2039214652",
+      "message": "Better descriptions of terminal tools",
+      "parent_shas": [
+        "a7639b494acce6ea26d8260e818282379fe23080"
+      ]
+    },
+    {
+      "sha": "442e9764fab507f3b95d32c7952527279cfce538",
+      "message": "Add tools for individual features in feature groups",
+      "parent_shas": [
+        "bdf2236f0d2d5ba901ecac5f2d689d2039214652"
+      ]
+    },
+    {
+      "sha": "f1ad6cbe939f349a6b3602ec10a9975d894dfecd",
+      "message": "Delete test.py",
+      "parent_shas": [
+        "442e9764fab507f3b95d32c7952527279cfce538"
+      ]
+    },
+    {
+      "sha": "864dae95aa6299e2e8b24f7ef655422d6c91d214",
+      "message": "Merge branch 'main' into new_mcp",
+      "parent_shas": [
+        "f1ad6cbe939f349a6b3602ec10a9975d894dfecd",
+        "26ad7cecf72d5661e6f55b50757ec20c9eb97186"
+      ]
+    },
+    {
+      "sha": "927fa184304735fc6e6b01a941d2816e4195cf26",
+      "message": "Ruff",
+      "parent_shas": [
+        "864dae95aa6299e2e8b24f7ef655422d6c91d214"
+      ]
+    },
+    {
+      "sha": "0807983eaf00101a03ffb50d2db90d1c1388626a",
+      "message": "Fix Windows",
+      "parent_shas": [
+        "927fa184304735fc6e6b01a941d2816e4195cf26"
+      ]
+    },
+    {
+      "sha": "5f2224a4bfc7a84c3cee1775e7391d82781e3758",
+      "message": "Add data preview tool for feature groups",
+      "parent_shas": [
+        "0807983eaf00101a03ffb50d2db90d1c1388626a"
+      ]
+    },
+    {
+      "sha": "e32d73eb2c96b81adf66f9d17f5380c98dac52e9",
+      "message": "Fixes",
+      "parent_shas": [
+        "5f2224a4bfc7a84c3cee1775e7391d82781e3758"
+      ]
+    },
+    {
+      "sha": "cd98242087194b27881872ce16358dc416f10f55",
+      "message": "Add a todo note",
+      "parent_shas": [
+        "e32d73eb2c96b81adf66f9d17f5380c98dac52e9"
+      ]
+    },
+    {
+      "sha": "658f3f334f665c068529a9c77084df40842574a5",
+      "message": "Better error handling for FG preview",
+      "parent_shas": [
+        "cd98242087194b27881872ce16358dc416f10f55"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "java_python_bridge_noise"
+    ],
+    "auto_signals": [
+      "java_python_bridge_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__logicalclocks__hopsworks-api__pr770.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\logicalclocks__hopsworks-api__pr770__java_python__logicalclocks__hopsworks-api__pr770\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\logicalclocks__hopsworks-api__pr770__java_python__logicalclocks__hopsworks-api__pr770\\rn"
+  }
+}

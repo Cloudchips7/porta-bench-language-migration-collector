@@ -1,0 +1,76 @@
+{
+  "instance_id": "cpp_python__paradigmxyz__revmc__pr177",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "paradigmxyz/revmc",
+  "pr_number": 177,
+  "pr_url": "https://github.com/paradigmxyz/revmc/pull/177",
+  "repo": {
+    "full_name": "paradigmxyz/revmc",
+    "clone_url": "https://github.com/paradigmxyz/revmc.git",
+    "default_branch": "main",
+    "created_at": "2024-03-10T16:27:36Z",
+    "stars": 269,
+    "license": "Apache-2.0",
+    "size_kb": 9745
+  },
+  "pull_request": {
+    "id": 3454755974,
+    "title": "chore: remove unused C++ includes in revmc-llvm",
+    "body": "Remove `llvm-c/Core.h` and `llvm/IR/ConstantRangeList.h` — both unused per `clang-tidy`'s `misc-include-cleaner` check. They're transitively included by the remaining headers so this doesn't affect compile time, just keeps the include list honest.",
+    "created_at": "2026-03-27T02:44:06Z",
+    "merged_at": "2026-03-27T02:49:14Z",
+    "base_sha": "3d0d6205b4b911c52848c8c29e3ac2747938e656",
+    "head_sha": "dc1a1ab734d141d273bcea9b4bce71f8b510b3b2",
+    "merge_commit_sha": "6ad1f4022703e3ecf7374b1323c87a78e0b278d1",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "3d0d6205b4b911c52848c8c29e3ac2747938e656",
+  "final_sha": "dc1a1ab734d141d273bcea9b4bce71f8b510b3b2",
+  "changed_files": [
+    {
+      "sha": "319c3f352208496731ca38205479db31b1039572",
+      "filename": "crates/revmc-llvm/cpp/lib.cpp",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/paradigmxyz/revmc/blob/dc1a1ab734d141d273bcea9b4bce71f8b510b3b2/crates%2Frevmc-llvm%2Fcpp%2Flib.cpp",
+      "raw_url": "https://github.com/paradigmxyz/revmc/raw/dc1a1ab734d141d273bcea9b4bce71f8b510b3b2/crates%2Frevmc-llvm%2Fcpp%2Flib.cpp",
+      "contents_url": "https://api.github.com/repos/paradigmxyz/revmc/contents/crates%2Frevmc-llvm%2Fcpp%2Flib.cpp?ref=dc1a1ab734d141d273bcea9b4bce71f8b510b3b2",
+      "patch": "@@ -1,12 +1,10 @@\n-#include <llvm-c/Core.h>\n #include <llvm-c/LLJIT.h>\n #include <llvm-c/Orc.h>\n #include <llvm/ExecutionEngine/Orc/CompileUtils.h>\n #include <llvm/ExecutionEngine/Orc/Debugging/PerfSupportPlugin.h>\n #include <llvm/ExecutionEngine/Orc/LLJIT.h>\n #include <llvm/ExecutionEngine/Orc/ObjectLinkingLayer.h>\n #include <llvm/IR/Attributes.h>\n-#include <llvm/IR/ConstantRangeList.h>\n \n using namespace llvm;\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "dc1a1ab734d141d273bcea9b4bce71f8b510b3b2",
+      "message": "chore: remove unused C++ includes in revmc-llvm",
+      "parent_shas": [
+        "3d0d6205b4b911c52848c8c29e3ac2747938e656"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__paradigmxyz__revmc__pr177.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\paradigmxyz__revmc__pr177__cpp_python__paradigmxyz__revmc__pr177\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\paradigmxyz__revmc__pr177__cpp_python__paradigmxyz__revmc__pr177\\rn"
+  }
+}

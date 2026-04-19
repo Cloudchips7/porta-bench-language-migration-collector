@@ -1,0 +1,76 @@
+{
+  "instance_id": "python_java__gastongouron__ironpress__pr113",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "gastongouron/ironpress",
+  "pr_number": 113,
+  "pr_url": "https://github.com/gastongouron/ironpress/pull/113",
+  "repo": {
+    "full_name": "gastongouron/ironpress",
+    "clone_url": "https://github.com/gastongouron/ironpress.git",
+    "default_branch": "main",
+    "created_at": "2026-03-14T13:00:00Z",
+    "stars": 12,
+    "license": "MIT",
+    "size_kb": 136177
+  },
+  "pull_request": {
+    "id": 3531055499,
+    "title": "ci: fix python wheel build — Python 3.14 / PyO3 compat",
+    "body": "Pin Python 3.12, set PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1, use explicit -i python3.12.",
+    "created_at": "2026-04-14T23:22:02Z",
+    "merged_at": "2026-04-14T23:32:48Z",
+    "base_sha": "7d8f3dcf103fea91c53f2941b095c96d91d228a7",
+    "head_sha": "33f17431dbd0db4b060342ecf7d880a32cf8602b",
+    "merge_commit_sha": "322f45ce0307ee8fcdb71129051d06bc9ef040fb",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "7d8f3dcf103fea91c53f2941b095c96d91d228a7",
+  "final_sha": "33f17431dbd0db4b060342ecf7d880a32cf8602b",
+  "changed_files": [
+    {
+      "sha": "5c0b549116e9dc30526364f4215f22e0af6398cf",
+      "filename": ".github/workflows/python.yml",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 3,
+      "changes": 12,
+      "blob_url": "https://github.com/gastongouron/ironpress/blob/33f17431dbd0db4b060342ecf7d880a32cf8602b/.github%2Fworkflows%2Fpython.yml",
+      "raw_url": "https://github.com/gastongouron/ironpress/raw/33f17431dbd0db4b060342ecf7d880a32cf8602b/.github%2Fworkflows%2Fpython.yml",
+      "contents_url": "https://api.github.com/repos/gastongouron/ironpress/contents/.github%2Fworkflows%2Fpython.yml?ref=33f17431dbd0db4b060342ecf7d880a32cf8602b",
+      "patch": "@@ -9,6 +9,9 @@ on:\n permissions:\n   contents: read\n \n+env:\n+  PYO3_USE_ABI3_FORWARD_COMPATIBILITY: \"1\"\n+\n jobs:\n   build-linux:\n     name: Build wheels - Linux ${{ matrix.target }}\n@@ -18,11 +21,14 @@ jobs:\n         target: [x86_64, aarch64]\n     steps:\n       - uses: actions/checkout@v4\n+      - uses: actions/setup-python@v5\n+        with:\n+          python-version: \"3.12\"\n       - name: Build wheel\n         uses: PyO3/maturin-action@v1\n         with:\n           target: ${{ matrix.target }}\n-          args: --release --out dist --find-interpreter\n+          args: --release --out dist -i python3.12\n           manylinux: auto\n           working-directory: bindings/python\n       - uses: actions/upload-artifact@v4\n@@ -45,7 +51,7 @@ jobs:\n         uses: PyO3/maturin-action@v1\n         with:\n           target: ${{ matrix.target }}\n-          args: --release --out dist --find-interpreter\n+          args: --release --out dist -i python3.12\n           working-directory: bindings/python\n       - uses: actions/upload-artifact@v4\n         with:\n@@ -63,7 +69,7 @@ jobs:\n       - name: Build wheel\n         uses: PyO3/maturin-action@v1\n         with:\n-          args: --release --out dist --find-interpreter\n+          args: --release --out dist -i python3.12\n           working-directory: bindings/python\n       - uses: actions/upload-artifact@v4\n         with:"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "33f17431dbd0db4b060342ecf7d880a32cf8602b",
+      "message": "ci: fix python build — pin Python 3.12 and set ABI3 forward compat",
+      "parent_shas": [
+        "7d8f3dcf103fea91c53f2941b095c96d91d228a7"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__gastongouron__ironpress__pr113.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\gastongouron__ironpress__pr113__python_java__gastongouron__ironpress__pr113\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\gastongouron__ironpress__pr113__python_java__gastongouron__ironpress__pr113\\rn"
+  }
+}

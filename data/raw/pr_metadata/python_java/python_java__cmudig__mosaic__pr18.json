@@ -1,0 +1,128 @@
+{
+  "instance_id": "python_java__cmudig__mosaic__pr18",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "cmudig/mosaic",
+  "pr_number": 18,
+  "pr_url": "https://github.com/cmudig/mosaic/pull/18",
+  "repo": {
+    "full_name": "cmudig/mosaic",
+    "clone_url": "https://github.com/cmudig/mosaic.git",
+    "default_branch": "main",
+    "created_at": "2024-09-04T21:17:59Z",
+    "stars": 5,
+    "license": "NOASSERTION",
+    "size_kb": 26546
+  },
+  "pull_request": {
+    "id": 3473982765,
+    "title": "Python website",
+    "body": "# Extend Mosaic Documentation with Python Support\r\n\r\nThis PR extends the Mosaic documentation so Python users can follow the same examples and references as the YAML/JSON/JS tabs, and adds a short guide for using vgplot-style specs from Python.\r\n\r\n## What Changed\r\n\r\n### Examples\r\nMost example pages now include a **Python tab** that inlines `docs/public/specs/python/<name>.py`, alongside JavaScript, YAML, and JSON. A few examples keep the Python (or JSON) tab commented out where the generated snippet is missing or invalid (e.g. `region-tests` JSON, `density-groups` / `facet-interval` / `protein-design` / `window-frame` Python).\r\n\r\n### Mosaic vgplot (Python)\r\nNew guide at `docs/vgplot-python/` describing:\r\n- `mosaic.vgplot`\r\n- `snake_case` helpers\r\n- `MosaicWidget` + declarative specs\r\n- Pointers to the shared spec format and vgplot API reference (including `camelCase` vs `snake_case`)\r\n\r\n### Navigation\r\nGuide dropdown and sidebar include **Mosaic vgplot Python** linking to `/vgplot-python/`.\r\n\r\n### API: Plot\r\n`docs/api/vgplot/plot.md` uses a code group with **JavaScript and Python examples** (mirrored structure and inline comments for attribute / mark / interactor / legend).\r\n\r\n### Python Spec Snippets\r\nAdds `docs/public/specs/python/*.py` files in the `Plot` / `DataSource` / `PlotMark` style used for the example tabs (aligned with the declarative spec where applicable).",
+    "created_at": "2026-03-31T20:58:19Z",
+    "merged_at": "2026-04-03T15:49:02Z",
+    "base_sha": "a5dbb9a643c45409561b0969ee742eb320f60b08",
+    "head_sha": "65e3222fb4faf892e18716f0f33745a170abdcda",
+    "merge_commit_sha": "b68ea7a08e45709e27cf033ccd86381432e842d6",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "1964118c34fbf5a46779c7487f4d162ef9559445",
+  "final_sha": "65e3222fb4faf892e18716f0f33745a170abdcda",
+  "changed_files": [
+    {
+      "sha": "55f2e43fa9fdefe22971e1046e4f5ae9fef2cb04",
+      "filename": "docs/api/vgplot/plot.md",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 1,
+      "changes": 15,
+      "blob_url": "https://github.com/cmudig/mosaic/blob/65e3222fb4faf892e18716f0f33745a170abdcda/docs%2Fapi%2Fvgplot%2Fplot.md",
+      "raw_url": "https://github.com/cmudig/mosaic/raw/65e3222fb4faf892e18716f0f33745a170abdcda/docs%2Fapi%2Fvgplot%2Fplot.md",
+      "contents_url": "https://api.github.com/repos/cmudig/mosaic/contents/docs%2Fapi%2Fvgplot%2Fplot.md?ref=65e3222fb4faf892e18716f0f33745a170abdcda",
+      "patch": "@@ -2,14 +2,27 @@\n \n A `Plot` is defined using a set of directives that specify [_attributes_](./attributes), graphical [_marks_](./marks), [_interactors_](./interactors), and [_legends_](./legends).\n \n-``` js\n+::: code-group\n+``` js [Javascript]\n plot(\n   width(500), // attribute\n   rectY(from(\"table\"), { x1: \"u\", x2: \"v\", y: \"w\", fill: \"c\" }), // mark\n   intervalX({ as: selection }), // interactor\n   colorLegend() // legend\n )\n ```\n+``` python [Python]\n+import mosaic.vgplot as vg\n+\n+vg.plot(\n+    vg.width(500),  # attribute\n+    vg.rect_y(data=vg.from_(\"table\"), x1=\"u\", x2=\"v\", y=\"w\", fill=\"c\"),  # mark\n+    vg.interval_x(as_=selection),  # interactor\n+    vg.color_legend(),  # legend\n+)\n+```\n+:::\n+\n \n ## plot\n "
+    },
+    {
+      "sha": "c1351a9e1dee95c665cedfe9d5e6f3fb20fbbb35",
+      "filename": "docs/vgplot/index.md",
+      "status": "modified",
+      "additions": 169,
+      "deletions": 3,
+      "changes": 172,
+      "blob_url": "https://github.com/cmudig/mosaic/blob/65e3222fb4faf892e18716f0f33745a170abdcda/docs%2Fvgplot%2Findex.md",
+      "raw_url": "https://github.com/cmudig/mosaic/raw/65e3222fb4faf892e18716f0f33745a170abdcda/docs%2Fvgplot%2Findex.md",
+      "contents_url": "https://api.github.com/repos/cmudig/mosaic/contents/docs%2Fvgplot%2Findex.md?ref=65e3222fb4faf892e18716f0f33745a170abdcda",
+      "patch": "@@ -2,12 +2,38 @@\n title: Mosaic vgplot\n ---\n <script setup>\n+  import { ref } from 'vue';\n   import { coordinator } from '@uwdata/vgplot';\n+\n   coordinator().clear();\n-</script>\n \n-# vgplot: An Interactive Grammar of Graphics\n+  const language = ref('js');\n+</script>\n \n+<div class=\"vgplot-toggle\" role=\"tablist\" aria-label=\"Mosaic vgplot language\">\n+  <button\n+    role=\"tab\"\n+    type=\"button\"\n+    :aria-selected=\"language === 'js'\"\n+    :class=\"{ active: language === 'js' }\"\n+    @click=\"language = 'js'\"\n+  >\n+    JS\n+  </button>\n+  <button\n+    role=\"tab\"\n+    type=\"button\"\n+    :aria-selected=\"language === 'python'\"\n+    :class=\"{ active: language === 'python' }\"\n+    @click=\"language = 'python'\"\n+  >\n+    Python\n+  </button>\n+</div>\n+\n+<h1>{{ language === 'js' ? 'Mosaic vgplot' : 'Mosaic vgplot (Python)' }}</h1>\n+\n+<template v-if=\"language === 'js'\">\n A grammar of interactive graphics in which graphical marks are Mosaic clients.\n \n <Example spec=\"/specs/yaml/mark-types.yaml\" />\n@@ -38,7 +64,7 @@ Plots are rendered to SVG output by marshalling a specification and passing it t\n \n ::: code-group\n ``` js [JavaScript]\n-import { plot, line, from, width, height } from \"@uwdata/vgplot\";\n+import { plot, lineY, from, width, height } from \"@uwdata/vgplot\";\n plot(\n   lineY(from(\"aapl\"), { x: \"Date\", y: \"Close\" }),\n   width(680),\n@@ -171,3 +197,143 @@ Layout helpers can be used with plots, inputs, and arbitrary Web content such as\n To ensure spacing, the `vspace` and `hspace` helpers add padding between elements in a layout.\n \n [Layout API Reference](/api/vgplot/layout)\n+</template>\n+\n+<template v-else>\n+Mosaic vgplot is a grammar of interactive graphics: each mark is a Mosaic client that queries data through the coordinator. In Python, `import mosaic.vgplot as vg` gives you composable helpers for plots, attributes, marks, interactors, legends, and layout. Names use **snake_case**; Python keywords are escaped with a trailing underscore (`from_`, `as_`, `for_`).\n+\n+The interactive figure below is driven by the same [declarative specification](/spec/) used across Mosaic (YAML in the docs site). In notebooks you usually pass an equivalent structure as a dict—built with `vg.*` helpers, loaded from YAML/JSON, or produced by your own tooling—to [`MosaicWidget`](/jupyter/) as `spec`.\n+\n+More copy-paste examples live under [Examples](/examples/) (open the **Python** tab on each page).\n+\n+::: tip\n+The fastest path in Jupyter is often YAML or JSON plus `MosaicWidget(spec=..., data=...)`. Use `mosaic.vgplot` when you want to assemble or adjust specs in code. Option names match the [specification format](/api/spec/format); builder helpers line up with those names in snake_case.\n+:::\n+\n+## Plots\n+\n+`vg.plot` takes a sequence of directives: [attributes](#attributes), [marks](#marks), [interactors](#interactors), and [legends](#legends).\n+\n+Each plot uses [Observable Plot](https://observablehq.com/plot/)–style _channels_ (`x`, `y`, `fill`, `opacity`, …) and optional faceting scales `fx` and `fy`. The widget renders charts in the browser as SVG.\n+\n+<Example spec=\"/specs/yaml/line.yaml\" />\n+\n+\n+``` python\n+import mosaic.vgplot as vg\n+\n+vg.plot(\n+    vg.line_y(data=vg.from_(\"aapl\"), x=\"Date\", y=\"Close\"),\n+    vg.width(680),\n+    vg.height(200)\n+)\n+```\n+\n+\n+This chart uses three directives:\n+\n+1. A `line_y` mark with `data=vg.from_(\"aapl\")`.\n+2. `vg.width(680)`.\n+3. `vg.height(200)`.\n+\n+[Plot reference](/api/vgplot/plot)\n+\n+## Attributes\n+\n+_Attributes_ set plot-level options: size, margins, and scales (`x_domain`, `color_range`, `y_tick_format`, …) via helpers such as `vg.x_domain(...)`, `vg.color_range(...)`, `vg.y_tick_format(...)`. Param references like `\"$point\"` tie encodings to widget state.\n+\n+**`Fixed`** domains (e.g. `vg.x_domain(vg.Fixed)`) compute an initial domain from data, then freeze it so filtered views do not rescale in a distracting way.\n+\n+[Attributes reference](/api/vgplot/attributes)\n+\n+## Marks\n+\n+_Marks_ are layers backed by Mosaic queries. They usually take `data=vg.from_(\"table\")` plus channel options. Fields may be columns, SQL fragments, or param strings.\n+\n+You can pass static rows instead of `from_` for annotations; that path skips the database and does not participate in linked filtering.\n+\n+[Marks reference](/api/vgplot/marks)\n+\n+::: warning\n+Interactive filtering requires data that flows through the coordinator (typically `from_` / registered tables), not ad hoc Python lists alone.\n+:::\n+\n+### Basic marks\n+\n+Primitives include `dot`, `bar`, `rect`, `cell`, `text`, `tick`, and `rule`, consistent with Observable Plot. Oriented variants appear as `bar_x`, `bar_y`, `rect_x`, `rect_y`, and so on—the YAML `mark` string (e.g. `barY`) corresponds to `vg.bar_y(...)`.\n+\n+Query planning walks channels to build `SELECT`, adds `GROUP BY` when aggregates appear, and applies `WHERE` for active selections.\n+\n+### Connected marks\n+\n+`area` and `line` marks connect ordered samples (`vg.area_y`, `vg.line_y`, …). Large series can use M4-style pixel-aware downsampling so draw cost stays bounded.\n+\n+`regression_y` computes fits and optional intervals in the database, then draws the line and band.\n+\n+### Geography and geometry\n+\n+`geo` draws GeoJSON geometry, either inlined or loaded through DuckDB (including the `spatial` extension).\n+\n+### Density marks\n+\n+`density_y` is 1D KDE. `density`, `contour`, `heatmap`, and `raster` cover 2D surfaces; `hexbin` aggregates hex cells in SQL; `dense_line` estimates density along polylines. Bandwidth and smoothing options follow the declarative spec.\n+\n+## Interactors\n+\n+_Interactors_ connect pointer input to [_selections_](/core/#selections). Helpers include `toggle`, `toggle_color`, `toggle_x`, `toggle_y`, `nearest_x`, `nearest_y`, `interval_x`, `interval_y`, `interval_xy` (with `pixel_size` where applicable), `pan_zoom`, and `highlight`.\n+\n+Wiring `pan_zoom` selections into `x_domain` / `y_domain` (or equivalent scale bindings) implements pan and zoom.\n+\n+[Interactors reference](/api/vgplot/interactors)\n+\n+## Legends\n+\n+Legends attach inside `vg.plot` or as separate elements. Naming a plot lets another legend reuse its scales, e.g. `vg.color_legend(for_=\"my_plot\")` (the underscore avoids the Python keyword `for`).\n+\n+Discrete color legends can drive the same toggle-style selection behavior as point interactors.\n+\n+[Legends reference](/api/vgplot/legends)\n+\n+## Layout\n+\n+`vg.vconcat`, `vg.hconcat`, `vg.vspace`, and `vg.hspace` compose plots, [inputs](/inputs/), and spacing. The runtime lays out children with flexbox.\n+\n+Full apps often call `vg.spec(meta=..., data=..., params=..., view=...)` so the result is a single top-level spec object (the same shape as JSON/YAML on disk).\n+\n+[Layout reference](/api/vgplot/layout)\n+\n+## Related documentation\n+\n+- [Mosaic spec](/spec/) — portable JSON/YAML format shared by Python and the docs examples.\n+- [Specification format reference](/api/spec/format) — schema-oriented description of top-level keys and marks.\n+- [vgplot under **API Reference**](/api/) — detailed plot, mark, interactor, and layout pages. Option names there appear in **camelCase** (e.g. `lineY`, `xDomain`); in Python, use **snake_case** (`line_y`, `x_domain`).\n+</template>\n+\n+<style scoped>\n+.vgplot-toggle {\n+  display: inline-flex;\n+  gap: 0.25rem;\n+  margin-bottom: 1rem;\n+  padding: 0.25rem;\n+  border: 1px solid var(--vp-c-divider);\n+  border-radius: 999px;\n+  background: var(--vp-c-bg-soft);\n+}\n+\n+.vgplot-toggle button {\n+  border: 0;\n+  border-radius: 999px;\n+  padding: 0.35rem 0.8rem;\n+  font-size: 0.875rem;\n+  font-weight: 600;\n+  color: var(--vp-c-text-2);\n+  background: transparent;\n+  cursor: pointer;\n+}\n+\n+.vgplot-toggle button.active {\n+  color: var(--vp-c-text-1);\n+  background: var(--vp-c-bg);\n+  box-shadow: inset 0 0 0 1px var(--vp-c-divider);\n+}\n+</style>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "45144d7b8f761fb16302b1e5a05e21a8fc13409e",
+      "message": "New python",
+      "parent_shas": [
+        "1964118c34fbf5a46779c7487f4d162ef9559445"
+      ]
+    },
+    {
+      "sha": "8fc80e35220c31da2134c7d859d8bb0658a68343",
+      "message": "Fix Athlete Birth Waffle",
+      "parent_shas": [
+        "45144d7b8f761fb16302b1e5a05e21a8fc13409e"
+      ]
+    },
+    {
+      "sha": "3ec1c9278eebd1fc962f4192e9cfff6fa52b4a32",
+      "message": "Updated vgplot Python Docs",
+      "parent_shas": [
+        "8fc80e35220c31da2134c7d859d8bb0658a68343"
+      ]
+    },
+    {
+      "sha": "24904969070c0be0c0674bf48111d3dac741067f",
+      "message": "added toggle to mosiac vgplot",
+      "parent_shas": [
+        "3ec1c9278eebd1fc962f4192e9cfff6fa52b4a32"
+      ]
+    },
+    {
+      "sha": "ac43c21d5b97b59e45ad450c245a49660fc5c4d7",
+      "message": "fixed header",
+      "parent_shas": [
+        "24904969070c0be0c0674bf48111d3dac741067f"
+      ]
+    },
+    {
+      "sha": "65e3222fb4faf892e18716f0f33745a170abdcda",
+      "message": "Merge branch 'pythonAPI_improvements' into python-website",
+      "parent_shas": [
+        "ac43c21d5b97b59e45ad450c245a49660fc5c4d7",
+        "a5dbb9a643c45409561b0969ee742eb320f60b08"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "doc_only",
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "python_java_bridge_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__cmudig__mosaic__pr18.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\cmudig__mosaic__pr18__python_java__cmudig__mosaic__pr18\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\cmudig__mosaic__pr18__python_java__cmudig__mosaic__pr18\\rn"
+  }
+}

@@ -1,0 +1,196 @@
+{
+  "instance_id": "py2_py3__oils-for-unix__oils__pr2328",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "oils-for-unix/oils",
+  "pr_number": 2328,
+  "pr_url": "https://github.com/oils-for-unix/oils/pull/2328",
+  "repo": {
+    "full_name": "oils-for-unix/oils",
+    "clone_url": "https://github.com/oils-for-unix/oils.git",
+    "default_branch": "master",
+    "created_at": "2016-11-15T19:19:09Z",
+    "stars": 3317,
+    "license": "NOASSERTION",
+    "size_kb": 52141
+  },
+  "pull_request": {
+    "id": 2622845908,
+    "title": "[builtin/fc] Initial implementation of `fc -l`",
+    "body": "#### Summary\r\n\r\nThis is the first pull request for `fc`. This just implements most of the display features. On thing that's missing is with `[first]` and `[last]`, you can index with a string that does a \"starts with\" type of match to find the index. Seems like it would be pretty complex, so I thought of tabling that for now.\r\n\r\nI wasn't sure if I needed to update documentation or anything. Just let me know, and I'll get it done 🙂 👍 ",
+    "created_at": "2025-06-27T01:41:04Z",
+    "merged_at": "2025-06-30T19:57:31Z",
+    "base_sha": "bb247ade1e03bbb5628b82aebaf73fae0d27d143",
+    "head_sha": "dc1dd27299d036eba8983dc092da585521717ebe",
+    "merge_commit_sha": "da33eae24db1d36bcff51283aed450126a8226a5",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "c7227ed8ea2774b8278928a584ce3ce72267a40e",
+  "final_sha": "dc1dd27299d036eba8983dc092da585521717ebe",
+  "changed_files": [
+    {
+      "sha": "41114d08dc199731099d8899e24b439bdcc7b1db",
+      "filename": "builtin/readline_osh.py",
+      "status": "modified",
+      "additions": 95,
+      "deletions": 0,
+      "changes": 95,
+      "blob_url": "https://github.com/oils-for-unix/oils/blob/dc1dd27299d036eba8983dc092da585521717ebe/builtin%2Freadline_osh.py",
+      "raw_url": "https://github.com/oils-for-unix/oils/raw/dc1dd27299d036eba8983dc092da585521717ebe/builtin%2Freadline_osh.py",
+      "contents_url": "https://api.github.com/repos/oils-for-unix/oils/contents/builtin%2Freadline_osh.py?ref=dc1dd27299d036eba8983dc092da585521717ebe",
+      "patch": "@@ -376,3 +376,98 @@ def Run(self, cmd_val):\n             item = readline.get_history_item(i)\n             self.f.write('%5d  %s\\n' % (i, item))\n         return 0\n+\n+\n+class Fc(vm._Builtin):\n+    \"\"\"Show or execute commands from interactive command history.\"\"\"\n+\n+    def __init__(\n+            self,\n+            readline,  # type: Optional[Readline]\n+            f,  # type: mylib.Writer\n+    ):\n+        # type: (...) -> None\n+        self.readline = readline\n+        self.f = f  # this hook is for unit testing only\n+\n+    def Run(self, cmd_val):\n+        # type: (cmd_value.Argv) -> int\n+        readline = self.readline\n+        if not readline:\n+            e_usage(\"is disabled because Oils wasn't compiled with 'readline'\",\n+                    loc.Missing)\n+\n+        attrs, arg_r = flag_util.ParseCmdVal('fc', cmd_val)\n+        arg = arg_types.fc(attrs.attrs)\n+\n+        # Returns 0 items in non-interactive mode?\n+        num_items = readline.get_current_history_length()\n+\n+        first_arg, first_arg_loc = arg_r.Peek2()\n+        if first_arg is None:\n+            # Default page size in Bash\n+            if num_items > 16:\n+                first_index = -16\n+            else:\n+                first_index = 1\n+        else:\n+            try:\n+                # TODO: Support string arg\n+                first_index = int(first_arg)\n+            except ValueError:\n+                e_usage('got invalid argument %r' % first_arg, first_arg_loc)\n+        if first_index < 0:\n+            first_index += num_items\n+        arg_r.Next()\n+\n+        last_arg, last_arg_loc = arg_r.Peek2()\n+        if last_arg is None:\n+            last_index = num_items - 1\n+        else:\n+            try:\n+                # TODO: Support string arg\n+                last_index = int(last_arg)\n+            except ValueError:\n+                e_usage('got invalid argument %r' % last_arg, last_arg_loc)\n+        if last_index < 0:\n+            last_index += num_items\n+        arg_r.Next()\n+\n+        if not arg_r.AtEnd():\n+            e_usage('got too many arguments', loc.Missing)\n+\n+        if arg.l:\n+            is_reversed = first_index > last_index\n+\n+            if arg.r and not is_reversed:\n+                is_reversed = True\n+\n+                # mycpp requires this swap idiom\n+                tmp = first_index\n+                first_index = last_index\n+                last_index = tmp\n+\n+            if is_reversed:\n+                limit = last_index - 1\n+                step = -1\n+            else:\n+                limit = last_index + 1\n+                step = 1\n+\n+            i = first_index\n+            while i != limit:\n+                item = readline.get_history_item(i)\n+                if arg.n:\n+                    self.f.write('\\t %s\\n' % (item))\n+                else:\n+                    self.f.write('%d\\t %s\\n' % (i, item))\n+                i += step\n+\n+            return 0\n+\n+        # TODO: -e\n+        if arg.e is not None:\n+            pass\n+\n+        # We currently require -l\n+        e_usage(\"command editing isn't yet implemented\", loc.Missing)"
+    },
+    {
+      "sha": "87e940b37a91dd67e7dffd2f5f1b9ddd3788d14c",
+      "filename": "core/shell.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/oils-for-unix/oils/blob/dc1dd27299d036eba8983dc092da585521717ebe/core%2Fshell.py",
+      "raw_url": "https://github.com/oils-for-unix/oils/raw/dc1dd27299d036eba8983dc092da585521717ebe/core%2Fshell.py",
+      "contents_url": "https://api.github.com/repos/oils-for-unix/oils/contents/core%2Fshell.py?ref=dc1dd27299d036eba8983dc092da585521717ebe",
+      "patch": "@@ -776,6 +776,7 @@ def Main(\n     b[builtin_i.bind] = readline_osh.Bind(readline, errfmt, bindx_cb)\n     b[builtin_i.history] = readline_osh.History(readline, sh_files, errfmt,\n                                                 mylib.Stdout())\n+    b[builtin_i.fc] = readline_osh.Fc(readline, mylib.Stdout())\n \n     # Completion\n     spec_builder = completion_osh.SpecBuilder(cmd_ev, parse_ctx, word_ev,"
+    },
+    {
+      "sha": "2243473356edace011feef17490a40993c6412c4",
+      "filename": "doc/ref/chap-builtin-cmd.md",
+      "status": "modified",
+      "additions": 26,
+      "deletions": 0,
+      "changes": 26,
+      "blob_url": "https://github.com/oils-for-unix/oils/blob/dc1dd27299d036eba8983dc092da585521717ebe/doc%2Fref%2Fchap-builtin-cmd.md",
+      "raw_url": "https://github.com/oils-for-unix/oils/raw/dc1dd27299d036eba8983dc092da585521717ebe/doc%2Fref%2Fchap-builtin-cmd.md",
+      "contents_url": "https://api.github.com/repos/oils-for-unix/oils/contents/doc%2Fref%2Fchap-builtin-cmd.md?ref=dc1dd27299d036eba8983dc092da585521717ebe",
+      "patch": "@@ -1630,6 +1630,32 @@ Flags:\n     -p\n     -s -->\n \n+### fc\n+\n+    fc FLAG* FIRST? LAST?\n+\n+\"Fix a command\" from the shell's history.\n+\n+`fc -l` displays commands.  FIRST and LAST specify a range of command numbers,\n+where:\n+\n+- A positive number is an index into the history list.\n+- A negative number is an offset from the current command.\n+- If FIRST is omitted, the value `-16` is used.\n+- If LAST is omitted, the current command is used.\n+\n+Flags:\n+\n+    -l  List commands (rather than editing)\n+    -n  Omit line numbers\n+    -r  Use reverse order (newest first)\n+\n+<!-- \n+Not implemented\n+\n+-e EDITOR\n+-s\n+-->\n \n ## Unsupported\n "
+    },
+    {
+      "sha": "6b97368e9bea6e78492123ad1e9aa24c86537141",
+      "filename": "doc/ref/toc-osh.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/oils-for-unix/oils/blob/dc1dd27299d036eba8983dc092da585521717ebe/doc%2Fref%2Ftoc-osh.md",
+      "raw_url": "https://github.com/oils-for-unix/oils/raw/dc1dd27299d036eba8983dc092da585521717ebe/doc%2Fref%2Ftoc-osh.md",
+      "contents_url": "https://api.github.com/repos/oils-for-unix/oils/contents/doc%2Fref%2Ftoc-osh.md?ref=dc1dd27299d036eba8983dc092da585521717ebe",
+      "patch": "@@ -66,10 +66,10 @@ preserve_anchor_case: yes\n   [Child Process] jobs        wait\n                   fg        X bg       X kill        X disown \n   [External]      test [      getopts\n-  [Conditional]   cmd/true    cmd/false               colon :\n+  [Conditional]   cmd/true    cmd/false                colon :\n   [Introspection] help        hash       cmd/type    X caller\n   [Word Lookup]   command     builtin\n-  [Interactive]   alias       unalias    history     X fc     X bind\n+  [Interactive]   alias       unalias    history       fc     X bind\n X [Unsupported]   enable\n ```\n "
+    },
+    {
+      "sha": "a8c8930af144eb1bfd18404c14fc3d7c29487b2f",
+      "filename": "frontend/builtin_def.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/oils-for-unix/oils/blob/dc1dd27299d036eba8983dc092da585521717ebe/frontend%2Fbuiltin_def.py",
+      "raw_url": "https://github.com/oils-for-unix/oils/raw/dc1dd27299d036eba8983dc092da585521717ebe/frontend%2Fbuiltin_def.py",
+      "contents_url": "https://api.github.com/repos/oils-for-unix/oils/contents/frontend%2Fbuiltin_def.py?ref=dc1dd27299d036eba8983dc092da585521717ebe",
+      "patch": "@@ -38,7 +38,7 @@\n     'getopts',\n \n     # introspection / meta\n-    'builtin', 'command', 'type', 'hash', 'help', 'history',\n+    'builtin', 'command', 'type', 'hash', 'help', 'history', 'fc',\n \n     'alias', 'unalias',\n     'bind',"
+    },
+    {
+      "sha": "474d9aef7df862c84e49919bf259ce8ecb9b92c4",
+      "filename": "frontend/flag_def.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 0,
+      "changes": 6,
+      "blob_url": "https://github.com/oils-for-unix/oils/blob/dc1dd27299d036eba8983dc092da585521717ebe/frontend%2Fflag_def.py",
+      "raw_url": "https://github.com/oils-for-unix/oils/raw/dc1dd27299d036eba8983dc092da585521717ebe/frontend%2Fflag_def.py",
+      "contents_url": "https://api.github.com/repos/oils-for-unix/oils/contents/frontend%2Fflag_def.py?ref=dc1dd27299d036eba8983dc092da585521717ebe",
+      "patch": "@@ -181,6 +181,12 @@\n HISTORY_SPEC.ShortFlag('-c')\n HISTORY_SPEC.ShortFlag('-d', args.Int)\n \n+FC_SPEC = FlagSpec('fc')\n+FC_SPEC.ShortFlag('-e', args.String)\n+FC_SPEC.ShortFlag('-l')\n+FC_SPEC.ShortFlag('-n')\n+FC_SPEC.ShortFlag('-r')\n+\n #\n # osh/builtin_process.py\n #"
+    },
+    {
+      "sha": "53af6b3bfda8de0918603f2c501b7c20af88e4f8",
+      "filename": "spec/builtin-fc.test.sh",
+      "status": "added",
+      "additions": 247,
+      "deletions": 0,
+      "changes": 247,
+      "blob_url": "https://github.com/oils-for-unix/oils/blob/dc1dd27299d036eba8983dc092da585521717ebe/spec%2Fbuiltin-fc.test.sh",
+      "raw_url": "https://github.com/oils-for-unix/oils/raw/dc1dd27299d036eba8983dc092da585521717ebe/spec%2Fbuiltin-fc.test.sh",
+      "contents_url": "https://api.github.com/repos/oils-for-unix/oils/contents/spec%2Fbuiltin-fc.test.sh?ref=dc1dd27299d036eba8983dc092da585521717ebe",
+      "patch": "@@ -0,0 +1,247 @@\n+## tags: interactive\n+## compare_shells: bash\n+## oils_failures_allowed: 2\n+\n+#### fc -l lists history commands\n+printf \"echo %s\\n\" {1..3} > tmp\n+\n+echo '\n+HISTFILE=tmp\n+history -c\n+history -r\n+\n+fc -l\n+' | $SH --norc -i\n+\n+# match osh's behaviour of echoing ^D for EOF\n+case $SH in bash) echo '^D' ;; esac\n+\n+## STDOUT:\n+1\t history -r\n+2\t echo 1\n+3\t echo 2\n+4\t echo 3\n+^D\n+## END\n+\n+#### fc -ln lists history commands without numbers\n+printf \"echo %s\\n\" {1..3} > tmp\n+\n+echo '\n+HISTFILE=tmp\n+history -c\n+history -r\n+\n+fc -ln\n+' | $SH --norc -i\n+\n+# match osh's behaviour of echoing ^D for EOF\n+case $SH in bash) echo '^D' ;; esac\n+\n+## STDOUT:\n+\t history -r\n+\t echo 1\n+\t echo 2\n+\t echo 3\n+^D\n+## END\n+\n+#### fc -lr lists history commands in reverse order\n+printf \"echo %s\\n\" {1..3} > tmp\n+\n+echo '\n+HISTFILE=tmp\n+history -c\n+history -r\n+\n+fc -lr\n+' | $SH --norc -i\n+\n+# match osh's behaviour of echoing ^D for EOF\n+case $SH in bash) echo '^D' ;; esac\n+\n+## STDOUT:\n+4\t echo 3\n+3\t echo 2\n+2\t echo 1\n+1\t history -r\n+^D\n+## END\n+\n+#### fc -lnr lists history commands without numbers in reverse order\n+printf \"echo %s\\n\" {1..3} > tmp\n+\n+echo '\n+HISTFILE=tmp\n+history -c\n+history -r\n+\n+fc -lnr\n+' | $SH --norc -i\n+\n+# match osh's behaviour of echoing ^D for EOF\n+case $SH in bash) echo '^D' ;; esac\n+\n+## STDOUT:\n+\t echo 3\n+\t echo 2\n+\t echo 1\n+\t history -r\n+^D\n+## END\n+\n+#### fc -l lists history commands with default page size\n+printf \"echo %s\\n\" {1..16} > tmp\n+\n+echo '\n+HISTFILE=tmp\n+history -c\n+history -r\n+\n+fc -l\n+' | $SH --norc -i\n+\n+# match osh's behaviour of echoing ^D for EOF\n+case $SH in bash) echo '^D' ;; esac\n+\n+## STDOUT:\n+2\t echo 1\n+3\t echo 2\n+4\t echo 3\n+5\t echo 4\n+6\t echo 5\n+7\t echo 6\n+8\t echo 7\n+9\t echo 8\n+10\t echo 9\n+11\t echo 10\n+12\t echo 11\n+13\t echo 12\n+14\t echo 13\n+15\t echo 14\n+16\t echo 15\n+17\t echo 16\n+^D\n+## END\n+\n+#### fc -l [first] where first is an index\n+printf \"echo %s\\n\" {1..3} > tmp\n+\n+echo '\n+HISTFILE=tmp\n+history -c\n+history -r\n+\n+fc -l 2\n+' | $SH --norc -i\n+\n+# match osh's behaviour of echoing ^D for EOF\n+case $SH in bash) echo '^D' ;; esac\n+\n+## STDOUT:\n+2\t echo 1\n+3\t echo 2\n+4\t echo 3\n+^D\n+## END\n+\n+#### fc -l [first] where first is an offset from current command\n+printf \"echo %s\\n\" {1..3} > tmp\n+\n+echo '\n+HISTFILE=tmp\n+history -c\n+history -r\n+\n+fc -l -3\n+' | $SH --norc -i\n+\n+# match osh's behaviour of echoing ^D for EOF\n+case $SH in bash) echo '^D' ;; esac\n+\n+## STDOUT:\n+2\t echo 1\n+3\t echo 2\n+4\t echo 3\n+^D\n+## END\n+\n+#### fc -l [first] [last] where first and last are indexes\n+printf \"echo %s\\n\" {1..3} > tmp\n+\n+echo '\n+HISTFILE=tmp\n+history -c\n+history -r\n+\n+fc -l 2 3\n+' | $SH --norc -i\n+\n+# match osh's behaviour of echoing ^D for EOF\n+case $SH in bash) echo '^D' ;; esac\n+\n+## STDOUT:\n+2\t echo 1\n+3\t echo 2\n+^D\n+## END\n+\n+#### fc -l [first] [last] where first and last are offsets from current command\n+printf \"echo %s\\n\" {1..3} > tmp\n+\n+echo '\n+HISTFILE=tmp\n+history -c\n+history -r\n+\n+fc -l -3 -2\n+' | $SH --norc -i\n+\n+# match osh's behaviour of echoing ^D for EOF\n+case $SH in bash) echo '^D' ;; esac\n+\n+## STDOUT:\n+2\t echo 1\n+3\t echo 2\n+^D\n+## END\n+\n+#### fc -l [first] [last] where first and last are reversed indexes\n+printf \"echo %s\\n\" {1..3} > tmp\n+\n+echo '\n+HISTFILE=tmp\n+history -c\n+history -r\n+\n+fc -l 3 2\n+' | $SH --norc -i\n+\n+# match osh's behaviour of echoing ^D for EOF\n+case $SH in bash) echo '^D' ;; esac\n+\n+## STDOUT:\n+3\t echo 2\n+2\t echo 1\n+^D\n+## END\n+\n+#### fc -lr [first] [last] where first and last are reversed indexes does not undo reverse\n+printf \"echo %s\\n\" {1..3} > tmp\n+\n+echo '\n+HISTFILE=tmp\n+history -c\n+history -r\n+\n+fc -lr 3 2\n+' | $SH --norc -i\n+\n+# match osh's behaviour of echoing ^D for EOF\n+case $SH in bash) echo '^D' ;; esac\n+\n+## STDOUT:\n+3\t echo 2\n+2\t echo 1\n+^D\n+## END"
+    },
+    {
+      "sha": "2d54eee62550137bacdcbd3d40fcb454b1f4ef5a",
+      "filename": "test/spec.sh",
+      "status": "modified",
+      "additions": 42,
+      "deletions": 38,
+      "changes": 80,
+      "blob_url": "https://github.com/oils-for-unix/oils/blob/dc1dd27299d036eba8983dc092da585521717ebe/test%2Fspec.sh",
+      "raw_url": "https://github.com/oils-for-unix/oils/raw/dc1dd27299d036eba8983dc092da585521717ebe/test%2Fspec.sh",
+      "contents_url": "https://api.github.com/repos/oils-for-unix/oils/contents/test%2Fspec.sh?ref=dc1dd27299d036eba8983dc092da585521717ebe",
+      "patch": "@@ -94,6 +94,10 @@ ble-unset() {\n   test/spec-py.sh run-file ble-unset \"$@\"\n }\n \n+blog-other1() {\n+  test/spec-py.sh run-file blog-other1 \"$@\"\n+}\n+\n blog1() {\n   test/spec-py.sh run-file blog1 \"$@\"\n }\n@@ -102,10 +106,6 @@ blog2() {\n   test/spec-py.sh run-file blog2 \"$@\"\n }\n \n-blog-other1() {\n-  test/spec-py.sh run-file blog-other1 \"$@\"\n-}\n-\n brace-expansion() {\n   test/spec-py.sh run-file brace-expansion \"$@\"\n }\n@@ -146,6 +146,10 @@ builtin-eval-source() {\n   test/spec-py.sh run-file builtin-eval-source \"$@\"\n }\n \n+builtin-fc() {\n+  test/spec-py.sh run-file builtin-fc \"$@\"\n+}\n+\n builtin-getopts() {\n   test/spec-py.sh run-file builtin-getopts \"$@\"\n }\n@@ -294,6 +298,10 @@ glob-bash() {\n   test/spec-py.sh run-file glob-bash \"$@\"\n }\n \n+glob() {\n+  test/spec-py.sh run-file glob \"$@\"\n+}\n+\n globignore() {\n   test/spec-py.sh run-file globignore \"$@\"\n }\n@@ -302,10 +310,6 @@ globstar() {\n   test/spec-py.sh run-file globstar \"$@\"\n }\n \n-glob() {\n-  test/spec-py.sh run-file glob \"$@\"\n-}\n-\n hay-isolation() {\n   test/spec-py.sh run-file hay-isolation \"$@\"\n }\n@@ -394,6 +398,10 @@ quote() {\n   test/spec-py.sh run-file quote \"$@\"\n }\n \n+redir-order() {\n+  test/spec-py.sh run-file redir-order \"$@\"\n+}\n+\n redirect-command() {\n   test/spec-py.sh run-file redirect-command \"$@\"\n }\n@@ -406,10 +414,6 @@ redirect() {\n   test/spec-py.sh run-file redirect \"$@\"\n }\n \n-redir-order() {\n-  test/spec-py.sh run-file redir-order \"$@\"\n-}\n-\n regex() {\n   test/spec-py.sh run-file regex \"$@\"\n }\n@@ -418,14 +422,6 @@ serialize() {\n   test/spec-py.sh run-file serialize \"$@\"\n }\n \n-shell-bugs() {\n-  test/spec-py.sh run-file shell-bugs \"$@\"\n-}\n-\n-shell-grammar() {\n-  test/spec-py.sh run-file shell-grammar \"$@\"\n-}\n-\n sh-func() {\n   test/spec-py.sh run-file sh-func \"$@\"\n }\n@@ -442,6 +438,14 @@ sh-usage() {\n   test/spec-py.sh run-file sh-usage \"$@\"\n }\n \n+shell-bugs() {\n+  test/spec-py.sh run-file shell-bugs \"$@\"\n+}\n+\n+shell-grammar() {\n+  test/spec-py.sh run-file shell-grammar \"$@\"\n+}\n+\n smoke() {\n   test/spec-py.sh run-file smoke \"$@\"\n }\n@@ -514,14 +518,6 @@ var-ref() {\n   test/spec-py.sh run-file var-ref \"$@\"\n }\n \n-vars-bash() {\n-  test/spec-py.sh run-file vars-bash \"$@\"\n-}\n-\n-vars-special() {\n-  test/spec-py.sh run-file vars-special \"$@\"\n-}\n-\n var-sub-quote() {\n   test/spec-py.sh run-file var-sub-quote \"$@\"\n }\n@@ -530,6 +526,14 @@ var-sub() {\n   test/spec-py.sh run-file var-sub \"$@\"\n }\n \n+vars-bash() {\n+  test/spec-py.sh run-file vars-bash \"$@\"\n+}\n+\n+vars-special() {\n+  test/spec-py.sh run-file vars-special \"$@\"\n+}\n+\n whitespace() {\n   test/spec-py.sh run-file whitespace \"$@\"\n }\n@@ -546,6 +550,10 @@ xtrace() {\n   test/spec-py.sh run-file xtrace \"$@\"\n }\n \n+ysh-TODO-deprecate() {\n+  test/spec-py.sh run-file ysh-TODO-deprecate \"$@\"\n+}\n+\n ysh-assign() {\n   test/spec-py.sh run-file ysh-assign \"$@\"\n }\n@@ -682,22 +690,22 @@ ysh-func-builtin() {\n   test/spec-py.sh run-file ysh-func-builtin \"$@\"\n }\n \n-ysh-funcs-external() {\n-  test/spec-py.sh run-file ysh-funcs-external \"$@\"\n-}\n-\n ysh-func() {\n   test/spec-py.sh run-file ysh-func \"$@\"\n }\n \n-ysh-interactive() {\n-  test/spec-py.sh run-file ysh-interactive \"$@\"\n+ysh-funcs-external() {\n+  test/spec-py.sh run-file ysh-funcs-external \"$@\"\n }\n \n ysh-int-float() {\n   test/spec-py.sh run-file ysh-int-float \"$@\"\n }\n \n+ysh-interactive() {\n+  test/spec-py.sh run-file ysh-interactive \"$@\"\n+}\n+\n ysh-introspect() {\n   test/spec-py.sh run-file ysh-introspect \"$@\"\n }\n@@ -814,10 +822,6 @@ ysh-string() {\n   test/spec-py.sh run-file ysh-string \"$@\"\n }\n \n-ysh-TODO-deprecate() {\n-  test/spec-py.sh run-file ysh-TODO-deprecate \"$@\"\n-}\n-\n ysh-tuple() {\n   test/spec-py.sh run-file ysh-tuple \"$@\"\n }"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "186ab2ebf41b6627439a7a34ca6d0ba37f736d26",
+      "message": "[builtin/fc] Initial implementation of fc -l",
+      "parent_shas": [
+        "c7227ed8ea2774b8278928a584ce3ce72267a40e"
+      ]
+    },
+    {
+      "sha": "c6f41e20b61ecba945dd5d0876195c6a15c58870",
+      "message": "Work around mycpp limitations - swap idiom\n\nIt still doesn't like reversed(xrange(...\n\nbecause we don't have iterators",
+      "parent_shas": [
+        "186ab2ebf41b6627439a7a34ca6d0ba37f736d26"
+      ]
+    },
+    {
+      "sha": "fad80232bc9b38ffac87eaabe2abe1ec739614d6",
+      "message": "[builtin/fc] Replace xrange usage with while loop",
+      "parent_shas": [
+        "c6f41e20b61ecba945dd5d0876195c6a15c58870"
+      ]
+    },
+    {
+      "sha": "7b5d5d4b8d3652081aa271f9774e565805c531ec",
+      "message": "[builtin/fc] Address feedback on pull request",
+      "parent_shas": [
+        "fad80232bc9b38ffac87eaabe2abe1ec739614d6"
+      ]
+    },
+    {
+      "sha": "34374bc9f2c3b30255654f6e704a67a407ea214a",
+      "message": "[builtin/fc] Address additional feedback on pull request",
+      "parent_shas": [
+        "7b5d5d4b8d3652081aa271f9774e565805c531ec"
+      ]
+    },
+    {
+      "sha": "dc1dd27299d036eba8983dc092da585521717ebe",
+      "message": "[doc/ref] Minor updates\n\nBased on 'man bash' to some extent",
+      "parent_shas": [
+        "34374bc9f2c3b30255654f6e704a67a407ea214a"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__oils-for-unix__oils__pr2328.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\oils-for-unix__oils__pr2328__py2_py3__oils-for-unix__oils__pr2328\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\oils-for-unix__oils__pr2328__py2_py3__oils-for-unix__oils__pr2328\\rn"
+  }
+}

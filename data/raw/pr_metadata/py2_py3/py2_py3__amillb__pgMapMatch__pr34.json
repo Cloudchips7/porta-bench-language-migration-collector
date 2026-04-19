@@ -1,0 +1,92 @@
+{
+  "instance_id": "py2_py3__amillb__pgMapMatch__pr34",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "amillb/pgMapMatch",
+  "pr_number": 34,
+  "pr_url": "https://github.com/amillb/pgMapMatch/pull/34",
+  "repo": {
+    "full_name": "amillb/pgMapMatch",
+    "clone_url": "https://github.com/amillb/pgMapMatch.git",
+    "default_branch": "master",
+    "created_at": "2017-08-01T04:07:41Z",
+    "stars": 85,
+    "license": "MIT",
+    "size_kb": 2309
+  },
+  "pull_request": {
+    "id": 2797062832,
+    "title": "Replace deprecated iteritems() with items()",
+    "body": "Small change: `iteritems` was deprecated in pandas > 1.5 as a duplicate of `items`. `items` can be used instead and remains compatible with older versions of pandas. (https://github.com/pandas-dev/pandas/pull/45321)\r\n\r\nhttps://pandas.pydata.org/pandas-docs/version/1.5/reference/api/pandas.DataFrame.iteritems.html",
+    "created_at": "2025-09-03T19:58:01Z",
+    "merged_at": "2025-09-08T19:22:19Z",
+    "base_sha": "89a6bfaca653de6f21a52e1b5194925863eebd80",
+    "head_sha": "a0d1a306087d036d9c6b71f230cebf9c94558329",
+    "merge_commit_sha": "5180a79aeaa802b79e6758830f1b2c44dfc6fd53",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "89a6bfaca653de6f21a52e1b5194925863eebd80",
+  "final_sha": "a0d1a306087d036d9c6b71f230cebf9c94558329",
+  "changed_files": [
+    {
+      "sha": "1b20599218d064054da1cb187e43d251e07de20e",
+      "filename": "mapmatcher.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 9,
+      "changes": 18,
+      "blob_url": "https://github.com/amillb/pgMapMatch/blob/a0d1a306087d036d9c6b71f230cebf9c94558329/mapmatcher.py",
+      "raw_url": "https://github.com/amillb/pgMapMatch/raw/a0d1a306087d036d9c6b71f230cebf9c94558329/mapmatcher.py",
+      "contents_url": "https://api.github.com/repos/amillb/pgMapMatch/contents/mapmatcher.py?ref=a0d1a306087d036d9c6b71f230cebf9c94558329",
+      "patch": "@@ -107,12 +107,12 @@ def fetchPtsToDrop(self, traceId=None, numLags=5):\n                 df.loc[mask, oldCols] = df.loc[mask, newCols].values\n                 df.loc[mask, ['speed'+str(s) for s in range(max(lag+1, 6-gSize), 6)]] = np.nan\n \n-            ptsToDrop += list(df[df.dropPt].set_index('traceid').ptid.iteritems())\n+            ptsToDrop += list(df[df.dropPt].set_index('traceid').ptid.items())\n             df = df[df.dropPt == False]\n \n         # Finally, select any 'singletons' where there is one errant point\n         # that's not picked up by the lagged values\n-        ptsToDrop += list(df[df.speed1 > self.maxSpeed].set_index('traceid').ptid.iteritems())\n+        ptsToDrop += list(df[df.dropPt].set_index('traceid').ptid.items())\n \n         self.ptsToDrop = ptsToDrop\n \n@@ -258,7 +258,7 @@ def __init__(self, streetsTable, traceTable=None, idName=None, geomName=None, ne\n         try:\n             self.costMatrix.update({})\n             self.distMatrix.update({})\n-        except NotImplementedError:  \n+        except NotImplementedError:\n             try:\n                 self.costMatrix.update = self.costMatrix._update\n                 self.distMatrix.update = self.distMatrix._update\n@@ -466,7 +466,7 @@ def writeMatchToPostgres(self, edgeIdCol='edge_ids', writeEdgeIds=True, writeGeo\n             cmd = '''UPDATE %(traceTable)s SET ''' % cDict\n             if writeEdgeIds:    cmd += '''%(edgeIdCol)s = ARRAY%(edges)s,''' % cDict\n             if writeMatchScore:\n-                if np.isnan(match_score): \n+                if np.isnan(match_score):\n                     cmd += 'match_score=Null,'\n                 else:\n                     cmd += 'match_score=%s,' % np.float32(match_score)   # float32 needed to avoid underflow with very low scores\n@@ -611,7 +611,7 @@ def getMatchScore(self, verbose=False):\n         xb = self.qualityModelCoeffs['intercept']\n         if 'frechet_dist' in self.qualityModelCoeffs :\n             if self.projectionRatio is None:        # get ratio of projected units to meters (to be able to use Frechet distance)\n-                cmd = '''SELECT AVG(ST_Length(%(streetGeomCol)s) / st_length(ST_Transform(%(streetGeomCol)s, 4326)::geography)) \n+                cmd = '''SELECT AVG(ST_Length(%(streetGeomCol)s) / st_length(ST_Transform(%(streetGeomCol)s, 4326)::geography))\n                             FROM %(streetsTable)s WHERE ST_Length(%(streetGeomCol)s)>0 LIMIT 1000;''' % self.cmdDict\n                 self.projectionRatio = self.db.execfetch(cmd)[0][0]\n                 if self.verbose: print('Using projection ratio (map units to meters) of {:.3f}'.format(self.projectionRatio ))\n@@ -786,7 +786,7 @@ def fillRouteGaps(self, route, uturns):\n             frcsAlong = self.ptsDf[self.ptsDf.edge==route[-1][0]].loc[nid:,'frcalong']\n             threshold = 0.1 # how many km the furthest GPS ping has to be along, in order to add a uturn\n             if ((route[-1][1] == 0 and frcsAlong.max()*self.edgesDf.loc[route[-1][0],'km'] > threshold) or\n-                (route[-1][1] == 1 and (1-frcsAlong.min())*self.edgesDf.loc[route[-1][0],'km'] > threshold)):  \n+                (route[-1][1] == 1 and (1-frcsAlong.min())*self.edgesDf.loc[route[-1][0],'km'] > threshold)):\n                 fullroute.append(fullroute[-1])\n                 uturnFrcs[-1] = (frcsAlong.min(), frcsAlong.max())\n                 uturnFrcs.append(-1)\n@@ -802,7 +802,7 @@ def cleanupRoute(self, d):\n         lastEdgeLength = self.edgesDf.loc[self.bestRoute[-1], 'km']\n         frc = self.ptsDf.frcalong[self.ptsDf.rownum == int(d[-1]/2)].values[0]\n         if d[-1] % 2 == 1: frc = 1-frc  # reverse\n-        while (len(self.bestRoute) > 1 and \n+        while (len(self.bestRoute) > 1 and\n               (lastEdgeLength*frc < 0.005 or (self.allowFinalUturn is False and self.bestRoute[-1] == self.bestRoute[-2]))):\n             self.bestRoute = self.bestRoute[:-1]\n             self.uturnFrcs = self.uturnFrcs[:-1]\n@@ -1064,7 +1064,7 @@ def frechet(self, resolution=20):\n         else: # use new PostGIS function\n             if self.traceId:\n                 frechetGeomName = self.cleanedGeomName if self.cleanedGeomName else self.geomName\n-                frechet_dist = self.db.execfetch('''SELECT ST_FrechetDistance(%(newGeomName)s, %(frechetGeomName)s, 0.05) \n+                frechet_dist = self.db.execfetch('''SELECT ST_FrechetDistance(%(newGeomName)s, %(frechetGeomName)s, 0.05)\n                                                         FROM %(traceTable)s WHERE %(idName)s=%(traceId)s;''' % dict(self.cmdDict, **{'traceId': self.traceId, 'frechetGeomName': frechetGeomName}))[0][0]\n             else:\n                 if self.matchedLineString is None: self.getMatchedLineString()\n@@ -1262,7 +1262,7 @@ def predictQuality(self, table=None):\n         engine = mmt.getPgEngine(pgLogin=pgInfo)\n \n         df.pr_good.to_sql('tmpimport', engine, if_exists='replace')\n-        self.db.fix_permissions_of_new_table('tmpimport') \n+        self.db.fix_permissions_of_new_table('tmpimport')\n         print('Merging and cleaning up')\n         self.db.execute('ALTER TABLE %s DROP COLUMN IF EXISTS pr_good;' % table)\n         self.db.execute('ALTER TABLE %s ADD COLUMN pr_good real;' % table)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "cbd18e3caa6619cd15f212b293209d5e49768aa1",
+      "message": "Update mapmatcher.py",
+      "parent_shas": [
+        "89a6bfaca653de6f21a52e1b5194925863eebd80"
+      ]
+    },
+    {
+      "sha": "bc92e20d680fa0782cea79d3c931e080d37af9f7",
+      "message": "Update mapmatcher.py",
+      "parent_shas": [
+        "cbd18e3caa6619cd15f212b293209d5e49768aa1"
+      ]
+    },
+    {
+      "sha": "a0d1a306087d036d9c6b71f230cebf9c94558329",
+      "message": "Update mapmatcher.py",
+      "parent_shas": [
+        "bc92e20d680fa0782cea79d3c931e080d37af9f7"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__amillb__pgMapMatch__pr34.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\amillb__pgMapMatch__pr34__py2_py3__amillb__pgMapMatch__pr34\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\amillb__pgMapMatch__pr34__py2_py3__amillb__pgMapMatch__pr34\\rn"
+  }
+}

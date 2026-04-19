@@ -1,0 +1,194 @@
+{
+  "instance_id": "cpp_python__numtide__go2nix__pr61",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "numtide/go2nix",
+  "pr_number": 61,
+  "pr_url": "https://github.com/numtide/go2nix/pull/61",
+  "repo": {
+    "full_name": "numtide/go2nix",
+    "clone_url": "https://github.com/numtide/go2nix.git",
+    "default_branch": "main",
+    "created_at": "2026-03-20T15:21:24Z",
+    "stars": 15,
+    "license": "MIT",
+    "size_kb": 2037
+  },
+  "pull_request": {
+    "id": 3512874108,
+    "title": "compile: godebug default ordering, cgo constraint OR, surface ObjC/SWIG",
+    "body": "## Summary\n- `DefaultGODEBUG` resolves `godebug default=goX.Y` first so explicit `godebug k=v` directives survive regardless of position.\n- `matchesCgoConstraint` rewritten to match `go/build`: comma=AND, space=OR within a group; `unix`/`cgo`/`gc` and custom build tags now consulted.\n- `MFiles`/`SwigFiles`/`SwigCXXFiles` are plumbed through `gofiles`/`compile`/`golist` and the Rust plugin, with a clear \"not yet supported\" error at compile time instead of being silently dropped.\n\n## Test plan\n- [x] `(cd go/go2nix && go test ./... && go vet ./...)`\n- [x] `cargo test` (in `packages/go2nix-nix-plugin/rust`)\n- [x] `nix flake check` — formatting + check-godebug-table pass\n",
+    "created_at": "2026-04-10T08:10:25Z",
+    "merged_at": "2026-04-10T11:39:05Z",
+    "base_sha": "c832bf1db802a8e18ec44f2be6ed74b11bfa39a5",
+    "head_sha": "eeba8ae2698676f08d41e1526088bf1c96ccaeb5",
+    "merge_commit_sha": "d973c71c69cfd04eae0878e30f170939228bb8c7",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "c832bf1db802a8e18ec44f2be6ed74b11bfa39a5",
+  "final_sha": "eeba8ae2698676f08d41e1526088bf1c96ccaeb5",
+  "changed_files": [
+    {
+      "sha": "620b6d7009abfc60dcf7bed87fdf5ebb5ec9de3e",
+      "filename": "go/go2nix/pkg/buildinfo/godebug.go",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 12,
+      "changes": 28,
+      "blob_url": "https://github.com/numtide/go2nix/blob/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fbuildinfo%2Fgodebug.go",
+      "raw_url": "https://github.com/numtide/go2nix/raw/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fbuildinfo%2Fgodebug.go",
+      "contents_url": "https://api.github.com/repos/numtide/go2nix/contents/go%2Fgo2nix%2Fpkg%2Fbuildinfo%2Fgodebug.go?ref=eeba8ae2698676f08d41e1526088bf1c96ccaeb5",
+      "patch": "@@ -86,7 +86,22 @@ func DefaultGODEBUG(moduleRoot string) string {\n \t\treturn \"\"\n \t}\n \n-\t// Build defaults map: for each godebug entry where the module's\n+\t// cmd/go resolves the base version first (go directive, optionally\n+\t// overridden by any `godebug default=goX.Y` directive), then layers\n+\t// every explicit `godebug key=value` directive on top regardless of\n+\t// its position relative to `default=`. Do the same: first scan for\n+\t// `default=` to fix the base minor, then apply non-default directives.\n+\tfor _, gd := range mf.Godebug {\n+\t\tif gd.Key != \"default\" {\n+\t\t\tcontinue\n+\t\t}\n+\t\tv := strings.TrimPrefix(gd.Value, \"go\")\n+\t\tif newMinor := parseGoMinor(v); newMinor >= 0 {\n+\t\t\tminor = newMinor\n+\t\t}\n+\t}\n+\n+\t// Build defaults map: for each godebug entry where the effective\n \t// go version < Changed, use the old value.\n \tm := make(map[string]string)\n \tfor _, entry := range godebugTable {\n@@ -98,17 +113,6 @@ func DefaultGODEBUG(moduleRoot string) string {\n \t// Apply explicit godebug directives from go.mod on top.\n \tfor _, gd := range mf.Godebug {\n \t\tif gd.Key == \"default\" {\n-\t\t\t// \"default goX.Y\" overrides the go version used for defaults.\n-\t\t\tv := strings.TrimPrefix(gd.Value, \"go\")\n-\t\t\tif newMinor := parseGoMinor(v); newMinor >= 0 {\n-\t\t\t\t// Recompute with the new version.\n-\t\t\t\tm = make(map[string]string)\n-\t\t\t\tfor _, entry := range godebugTable {\n-\t\t\t\t\tif newMinor < entry.Changed {\n-\t\t\t\t\t\tm[entry.Name] = entry.Old\n-\t\t\t\t\t}\n-\t\t\t\t}\n-\t\t\t}\n \t\t\tcontinue\n \t\t}\n \t\tm[gd.Key] = gd.Value"
+    },
+    {
+      "sha": "f89c9dc974ce14bb8d025ac4c4cc27be260f5a3a",
+      "filename": "go/go2nix/pkg/buildinfo/godebug_test.go",
+      "status": "modified",
+      "additions": 57,
+      "deletions": 0,
+      "changes": 57,
+      "blob_url": "https://github.com/numtide/go2nix/blob/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fbuildinfo%2Fgodebug_test.go",
+      "raw_url": "https://github.com/numtide/go2nix/raw/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fbuildinfo%2Fgodebug_test.go",
+      "contents_url": "https://api.github.com/repos/numtide/go2nix/contents/go%2Fgo2nix%2Fpkg%2Fbuildinfo%2Fgodebug_test.go?ref=eeba8ae2698676f08d41e1526088bf1c96ccaeb5",
+      "patch": "@@ -119,6 +119,63 @@ func TestDefaultGODEBUG_DefaultDirective(t *testing.T) {\n \t}\n }\n \n+func TestDefaultGODEBUG_ExplicitSurvivesLaterDefault(t *testing.T) {\n+\t// Regression for finding #9: explicit `godebug k=v` directives must\n+\t// persist even when a `godebug default=goX.Y` directive appears later\n+\t// in go.mod, matching cmd/go's defaultGODEBUG.\n+\ttests := []struct {\n+\t\tname  string\n+\t\tgomod string\n+\t\twant  map[string]string // substrings that must appear as \"k=v\"\n+\t\tnot   []string          // substrings that must NOT appear\n+\t}{\n+\t\t{\n+\t\t\tname: \"explicit before default\",\n+\t\t\tgomod: \"module example.com/test\\n\\ngo 1.21\\n\\n\" +\n+\t\t\t\t\"godebug panicnil=1\\n\" +\n+\t\t\t\t\"godebug default=go1.24\\n\",\n+\t\t\twant: map[string]string{\"panicnil\": \"1\", \"containermaxprocs\": \"0\"},\n+\t\t\tnot:  []string{\"asynctimerchan=\"},\n+\t\t},\n+\t\t{\n+\t\t\tname: \"explicit after default\",\n+\t\t\tgomod: \"module example.com/test\\n\\ngo 1.21\\n\\n\" +\n+\t\t\t\t\"godebug default=go1.24\\n\" +\n+\t\t\t\t\"godebug panicnil=1\\n\",\n+\t\t\twant: map[string]string{\"panicnil\": \"1\", \"containermaxprocs\": \"0\"},\n+\t\t\tnot:  []string{\"asynctimerchan=\"},\n+\t\t},\n+\t\t{\n+\t\t\tname: \"explicit overrides table default regardless of position\",\n+\t\t\tgomod: \"module example.com/test\\n\\ngo 1.24\\n\\n\" +\n+\t\t\t\t\"godebug asynctimerchan=0\\n\" +\n+\t\t\t\t\"godebug default=go1.21\\n\",\n+\t\t\t// default=go1.21 would set asynctimerchan=1 from the table,\n+\t\t\t// but the explicit directive must win.\n+\t\t\twant: map[string]string{\"asynctimerchan\": \"0\"},\n+\t\t},\n+\t}\n+\tfor _, tt := range tests {\n+\t\tt.Run(tt.name, func(t *testing.T) {\n+\t\t\tdir := t.TempDir()\n+\t\t\tif err := os.WriteFile(filepath.Join(dir, \"go.mod\"), []byte(tt.gomod), 0o644); err != nil {\n+\t\t\t\tt.Fatal(err)\n+\t\t\t}\n+\t\t\tresult := DefaultGODEBUG(dir)\n+\t\t\tfor k, v := range tt.want {\n+\t\t\t\tif !contains(result, k+\"=\"+v) {\n+\t\t\t\t\tt.Errorf(\"expected %s=%s in %q\", k, v, result)\n+\t\t\t\t}\n+\t\t\t}\n+\t\t\tfor _, s := range tt.not {\n+\t\t\t\tif contains(result, s) {\n+\t\t\t\t\tt.Errorf(\"did not expect %q in %q\", s, result)\n+\t\t\t\t}\n+\t\t\t}\n+\t\t})\n+\t}\n+}\n+\n func TestParseGoMinor(t *testing.T) {\n \ttests := []struct {\n \t\tv    string"
+    },
+    {
+      "sha": "430f89857c5389fd7250fdaaf24415a02e0d3088",
+      "filename": "go/go2nix/pkg/compile/cgo.go",
+      "status": "modified",
+      "additions": 61,
+      "deletions": 15,
+      "changes": 76,
+      "blob_url": "https://github.com/numtide/go2nix/blob/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fcompile%2Fcgo.go",
+      "raw_url": "https://github.com/numtide/go2nix/raw/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fcompile%2Fcgo.go",
+      "contents_url": "https://api.github.com/repos/numtide/go2nix/contents/go%2Fgo2nix%2Fpkg%2Fcompile%2Fcgo.go?ref=eeba8ae2698676f08d41e1526088bf1c96ccaeb5",
+      "patch": "@@ -9,6 +9,7 @@ import (\n \t\"os\"\n \t\"os/exec\"\n \t\"path/filepath\"\n+\t\"slices\"\n \t\"strings\"\n \n \t\"github.com/numtide/go2nix/pkg/gofiles\"\n@@ -48,7 +49,7 @@ func compileCgo(opts Options, files gofiles.PkgFiles, embedFlag string) error {\n \t// Resolve #cgo pkg-config: directives from source files.\n \t// go tool cgo does not process pkg-config directives; that's done by cmd/go.\n \t// We handle it here so packages with #cgo pkg-config: work correctly.\n-\tpkgCflags, pkgLdflags, err := resolvePkgConfig(opts.SrcDir, files.CgoFiles, opts.goos, opts.goarch)\n+\tpkgCflags, pkgLdflags, err := resolvePkgConfig(opts.SrcDir, files.CgoFiles, opts.goos, opts.goarch, nil)\n \tif err != nil {\n \t\treturn fmt.Errorf(\"pkg-config: %w\", err)\n \t}\n@@ -402,7 +403,7 @@ func filterCppFlags(flags []string) []string {\n // runs pkg-config to resolve them, and returns the resulting CFLAGS and LDFLAGS.\n // This is necessary because go tool cgo does not process pkg-config directives;\n // that processing is normally done by cmd/go (go build).\n-func resolvePkgConfig(srcDir string, cgoFiles []string, goos, goarch string) (cflags, ldflags []string, err error) {\n+func resolvePkgConfig(srcDir string, cgoFiles []string, goos, goarch string, tags []string) (cflags, ldflags []string, err error) {\n \tvar pkgNames []string\n \n \tfor _, f := range cgoFiles {\n@@ -418,7 +419,7 @@ func resolvePkgConfig(srcDir string, cgoFiles []string, goos, goarch string) (cf\n \t\t\t// Check for platform constraint before \"pkg-config:\".\n \t\t\tif idx := strings.Index(line, \"pkg-config:\"); idx >= 0 {\n \t\t\t\tconstraint := strings.TrimSpace(line[:idx])\n-\t\t\t\tif constraint != \"\" && !matchesCgoConstraint(constraint, goos, goarch) {\n+\t\t\t\tif constraint != \"\" && !matchesCgoConstraint(constraint, goos, goarch, tags) {\n \t\t\t\t\tcontinue\n \t\t\t\t}\n \t\t\t\tpkgs := strings.TrimSpace(line[idx+len(\"pkg-config:\"):])\n@@ -490,22 +491,53 @@ func trimFileExt(name string) string {\n \treturn name\n }\n \n-// matchesCgoConstraint checks if a #cgo constraint (e.g., \"linux\", \"!windows\",\n-// \"linux,amd64\") matches the current build target.\n-func matchesCgoConstraint(constraint, goos, goarch string) bool {\n-\t// Handle comma-separated AND constraints: \"linux,amd64\"\n-\tparts := strings.Split(constraint, \",\")\n-\tfor _, part := range parts {\n-\t\tpart = strings.TrimSpace(part)\n-\t\tif part == \"\" {\n-\t\t\tcontinue\n+// unixOS is the set of GOOS values for which the build tag \"unix\" is\n+// satisfied, mirroring go/build's unixOS map.\n+var unixOS = map[string]bool{\n+\t\"aix\": true, \"android\": true, \"darwin\": true, \"dragonfly\": true,\n+\t\"freebsd\": true, \"hurd\": true, \"illumos\": true, \"ios\": true,\n+\t\"linux\": true, \"netbsd\": true, \"openbsd\": true, \"solaris\": true,\n+}\n+\n+// matchesCgoConstraint checks if a #cgo constraint matches the current build\n+// target. The syntax (per cmd/cgo and go/build.matchAuto) is a\n+// space-separated OR of comma-separated AND terms; each term may be a GOOS,\n+// GOARCH, \"unix\", \"cgo\", \"gc\"/\"gccgo\", or any active build tag, optionally\n+// negated with a leading '!'. Examples:\n+//\n+//\t\"linux,amd64 darwin\"  → (linux AND amd64) OR darwin\n+//\t\"!windows\"            → NOT windows\n+//\t\"mytag\"               → satisfied iff -tags=mytag is set\n+func matchesCgoConstraint(constraint, goos, goarch string, tags []string) bool {\n+\tgroups := strings.Fields(constraint)\n+\tif len(groups) == 0 {\n+\t\treturn true\n+\t}\n+\tfor _, group := range groups {\n+\t\tif matchCgoGroup(group, goos, goarch, tags) {\n+\t\t\treturn true\n+\t\t}\n+\t}\n+\treturn false\n+}\n+\n+// matchCgoGroup evaluates one comma-separated AND group.\n+func matchCgoGroup(group, goos, goarch string, tags []string) bool {\n+\tfor _, term := range strings.Split(group, \",\") {\n+\t\tif term == \"\" {\n+\t\t\t// Empty term (e.g., trailing comma) makes the group fail,\n+\t\t\t// matching go/build.matchTag(\"\").\n+\t\t\treturn false\n \t\t}\n \t\tnegate := false\n-\t\tif strings.HasPrefix(part, \"!\") {\n+\t\tif strings.HasPrefix(term, \"!\") {\n \t\t\tnegate = true\n-\t\t\tpart = part[1:]\n+\t\t\tterm = term[1:]\n+\t\t\tif term == \"\" {\n+\t\t\t\treturn false // \"!\" alone is a syntax error → no match\n+\t\t\t}\n \t\t}\n-\t\tmatch := part == goos || part == goarch\n+\t\tmatch := matchCgoTerm(term, goos, goarch, tags)\n \t\tif negate {\n \t\t\tmatch = !match\n \t\t}\n@@ -515,3 +547,17 @@ func matchesCgoConstraint(constraint, goos, goarch string) bool {\n \t}\n \treturn true\n }\n+\n+// matchCgoTerm reports whether a single constraint term is satisfied.\n+func matchCgoTerm(term, goos, goarch string, tags []string) bool {\n+\tswitch term {\n+\tcase goos, goarch:\n+\t\treturn true\n+\tcase \"unix\":\n+\t\treturn unixOS[goos]\n+\tcase \"cgo\", \"gc\":\n+\t\t// We are the gc toolchain compiling a cgo package.\n+\t\treturn true\n+\t}\n+\treturn slices.Contains(tags, term)\n+}"
+    },
+    {
+      "sha": "76760bd1dccc1ad0170f84eb1913a39d692ba103",
+      "filename": "go/go2nix/pkg/compile/cgo_test.go",
+      "status": "modified",
+      "additions": 35,
+      "deletions": 14,
+      "changes": 49,
+      "blob_url": "https://github.com/numtide/go2nix/blob/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fcompile%2Fcgo_test.go",
+      "raw_url": "https://github.com/numtide/go2nix/raw/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fcompile%2Fcgo_test.go",
+      "contents_url": "https://api.github.com/repos/numtide/go2nix/contents/go%2Fgo2nix%2Fpkg%2Fcompile%2Fcgo_test.go?ref=eeba8ae2698676f08d41e1526088bf1c96ccaeb5",
+      "patch": "@@ -41,26 +41,47 @@ func TestMatchesCgoConstraint(t *testing.T) {\n \t\tconstraint string\n \t\tgoos       string\n \t\tgoarch     string\n+\t\ttags       []string\n \t\twant       bool\n \t}{\n-\t\t{\"os match\", \"linux\", \"linux\", \"amd64\", true},\n-\t\t{\"os mismatch\", \"darwin\", \"linux\", \"amd64\", false},\n-\t\t{\"arch match\", \"amd64\", \"linux\", \"amd64\", true},\n-\t\t{\"arch mismatch\", \"arm64\", \"linux\", \"amd64\", false},\n-\t\t{\"os,arch match\", \"linux,amd64\", \"linux\", \"amd64\", true},\n-\t\t{\"os,arch partial\", \"linux,arm64\", \"linux\", \"amd64\", false},\n-\t\t{\"negated os match\", \"!windows\", \"linux\", \"amd64\", true},\n-\t\t{\"negated os mismatch\", \"!linux\", \"linux\", \"amd64\", false},\n-\t\t{\"negated arch\", \"!arm64\", \"linux\", \"amd64\", true},\n-\t\t{\"combined negated\", \"!windows,amd64\", \"linux\", \"amd64\", true},\n-\t\t{\"empty constraint\", \"\", \"linux\", \"amd64\", true},\n+\t\t{\"os match\", \"linux\", \"linux\", \"amd64\", nil, true},\n+\t\t{\"os mismatch\", \"darwin\", \"linux\", \"amd64\", nil, false},\n+\t\t{\"arch match\", \"amd64\", \"linux\", \"amd64\", nil, true},\n+\t\t{\"arch mismatch\", \"arm64\", \"linux\", \"amd64\", nil, false},\n+\t\t{\"os,arch match\", \"linux,amd64\", \"linux\", \"amd64\", nil, true},\n+\t\t{\"os,arch partial\", \"linux,arm64\", \"linux\", \"amd64\", nil, false},\n+\t\t{\"negated os match\", \"!windows\", \"linux\", \"amd64\", nil, true},\n+\t\t{\"negated os mismatch\", \"!linux\", \"linux\", \"amd64\", nil, false},\n+\t\t{\"negated arch\", \"!arm64\", \"linux\", \"amd64\", nil, true},\n+\t\t{\"combined negated\", \"!windows,amd64\", \"linux\", \"amd64\", nil, true},\n+\t\t{\"empty constraint\", \"\", \"linux\", \"amd64\", nil, true},\n+\t\t// Space = OR of comma-AND groups (regression for finding #20).\n+\t\t{\"space OR first matches\", \"linux darwin\", \"linux\", \"amd64\", nil, true},\n+\t\t{\"space OR second matches\", \"linux darwin\", \"darwin\", \"arm64\", nil, true},\n+\t\t{\"space OR none match\", \"linux darwin\", \"windows\", \"amd64\", nil, false},\n+\t\t{\"AND-OR mix linux\", \"linux,amd64 darwin\", \"linux\", \"amd64\", nil, true},\n+\t\t{\"AND-OR mix darwin\", \"linux,amd64 darwin\", \"darwin\", \"arm64\", nil, true},\n+\t\t{\"AND-OR mix linux/arm fails AND\", \"linux,amd64 darwin\", \"linux\", \"arm64\", nil, false},\n+\t\t// Well-known tags.\n+\t\t{\"unix on linux\", \"unix\", \"linux\", \"amd64\", nil, true},\n+\t\t{\"unix on windows\", \"unix\", \"windows\", \"amd64\", nil, false},\n+\t\t{\"cgo always true\", \"cgo\", \"linux\", \"amd64\", nil, true},\n+\t\t{\"gc always true\", \"gc\", \"linux\", \"amd64\", nil, true},\n+\t\t// Custom build tags.\n+\t\t{\"custom tag set\", \"mytag\", \"linux\", \"amd64\", []string{\"mytag\"}, true},\n+\t\t{\"custom tag unset\", \"mytag\", \"linux\", \"amd64\", nil, false},\n+\t\t{\"custom tag in AND\", \"linux,mytag\", \"linux\", \"amd64\", []string{\"mytag\"}, true},\n+\t\t{\"custom tag negated\", \"!mytag\", \"linux\", \"amd64\", []string{\"mytag\"}, false},\n+\t\t// Edge cases.\n+\t\t{\"bare bang fails\", \"!\", \"linux\", \"amd64\", nil, false},\n+\t\t{\"trailing comma fails group\", \"linux,\", \"linux\", \"amd64\", nil, false},\n \t}\n \tfor _, tt := range tests {\n \t\tt.Run(tt.name, func(t *testing.T) {\n-\t\t\tgot := matchesCgoConstraint(tt.constraint, tt.goos, tt.goarch)\n+\t\t\tgot := matchesCgoConstraint(tt.constraint, tt.goos, tt.goarch, tt.tags)\n \t\t\tif got != tt.want {\n-\t\t\t\tt.Errorf(\"matchesCgoConstraint(%q, %q, %q) = %v, want %v\",\n-\t\t\t\t\ttt.constraint, tt.goos, tt.goarch, got, tt.want)\n+\t\t\t\tt.Errorf(\"matchesCgoConstraint(%q, %q, %q, %v) = %v, want %v\",\n+\t\t\t\t\ttt.constraint, tt.goos, tt.goarch, tt.tags, got, tt.want)\n \t\t\t}\n \t\t})\n \t}"
+    },
+    {
+      "sha": "a3d928bf73ddb04ac1475a6e7b5587b7b8d7cb34",
+      "filename": "go/go2nix/pkg/compile/compile.go",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 0,
+      "changes": 11,
+      "blob_url": "https://github.com/numtide/go2nix/blob/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fcompile%2Fcompile.go",
+      "raw_url": "https://github.com/numtide/go2nix/raw/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fcompile%2Fcompile.go",
+      "contents_url": "https://api.github.com/repos/numtide/go2nix/contents/go%2Fgo2nix%2Fpkg%2Fcompile%2Fcompile.go?ref=eeba8ae2698676f08d41e1526088bf1c96ccaeb5",
+      "patch": "@@ -94,6 +94,17 @@ func CompileGoPackage(opts Options) error {\n \t\treturn fmt.Errorf(\"no Go files found in %s (package %s)\", opts.SrcDir, opts.ImportPath)\n \t}\n \n+\t// Objective-C and SWIG sources are surfaced so we can fail fast with a\n+\t// clear message rather than producing an archive that is missing object\n+\t// code (which would only blow up at final link with cryptic\n+\t// undefined-symbol errors). Full support is tracked separately.\n+\tif len(files.MFiles) > 0 {\n+\t\treturn fmt.Errorf(\"package %s contains Objective-C sources (%v): not yet supported by go2nix\", opts.ImportPath, files.MFiles)\n+\t}\n+\tif len(files.SwigFiles) > 0 || len(files.SwigCXXFiles) > 0 {\n+\t\treturn fmt.Errorf(\"package %s contains SWIG sources (%v %v): not yet supported by go2nix\", opts.ImportPath, files.SwigFiles, files.SwigCXXFiles)\n+\t}\n+\n \t// Create output directories.\n \tif err := os.MkdirAll(filepath.Dir(opts.Output), 0o755); err != nil {\n \t\treturn err"
+    },
+    {
+      "sha": "ada8427fa96dbc6b22372268e331914767b0ab8b",
+      "filename": "go/go2nix/pkg/compile/compile_test.go",
+      "status": "modified",
+      "additions": 48,
+      "deletions": 0,
+      "changes": 48,
+      "blob_url": "https://github.com/numtide/go2nix/blob/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fcompile%2Fcompile_test.go",
+      "raw_url": "https://github.com/numtide/go2nix/raw/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fcompile%2Fcompile_test.go",
+      "contents_url": "https://api.github.com/repos/numtide/go2nix/contents/go%2Fgo2nix%2Fpkg%2Fcompile%2Fcompile_test.go?ref=eeba8ae2698676f08d41e1526088bf1c96ccaeb5",
+      "patch": "@@ -2,7 +2,10 @@ package compile\n \n import (\n \t\"reflect\"\n+\t\"strings\"\n \t\"testing\"\n+\n+\t\"github.com/numtide/go2nix/pkg/gofiles\"\n )\n \n func TestOptions_outputFlags(t *testing.T) {\n@@ -36,3 +39,48 @@ func TestOptions_outputFlags(t *testing.T) {\n \t\t})\n \t}\n }\n+\n+// Regression for finding #22: Objective-C and SWIG sources must not be\n+// silently dropped. Until full support lands, CompileGoPackage must fail\n+// fast with a clear error rather than producing an archive missing the\n+// corresponding object code.\n+func TestCompileGoPackage_RejectsUnsupportedSources(t *testing.T) {\n+\ttests := []struct {\n+\t\tname  string\n+\t\tfiles gofiles.PkgFiles\n+\t\twant  string\n+\t}{\n+\t\t{\n+\t\t\tname:  \"objective-c\",\n+\t\t\tfiles: gofiles.PkgFiles{GoFiles: []string{\"a.go\"}, MFiles: []string{\"foo.m\"}},\n+\t\t\twant:  \"Objective-C\",\n+\t\t},\n+\t\t{\n+\t\t\tname:  \"swig\",\n+\t\t\tfiles: gofiles.PkgFiles{GoFiles: []string{\"a.go\"}, SwigFiles: []string{\"foo.swig\"}},\n+\t\t\twant:  \"SWIG\",\n+\t\t},\n+\t\t{\n+\t\t\tname:  \"swigcxx\",\n+\t\t\tfiles: gofiles.PkgFiles{GoFiles: []string{\"a.go\"}, SwigCXXFiles: []string{\"foo.swigcxx\"}},\n+\t\t\twant:  \"SWIG\",\n+\t\t},\n+\t}\n+\tfor _, tt := range tests {\n+\t\tt.Run(tt.name, func(t *testing.T) {\n+\t\t\tf := tt.files\n+\t\t\terr := CompileGoPackage(Options{\n+\t\t\t\tImportPath: \"example.com/p\",\n+\t\t\t\tSrcDir:     t.TempDir(),\n+\t\t\t\tOutput:     t.TempDir() + \"/out.a\",\n+\t\t\t\tFiles:      &f,\n+\t\t\t})\n+\t\t\tif err == nil {\n+\t\t\t\tt.Fatalf(\"expected error mentioning %q, got nil\", tt.want)\n+\t\t\t}\n+\t\t\tif !strings.Contains(err.Error(), tt.want) {\n+\t\t\t\tt.Fatalf(\"error %q does not mention %q\", err, tt.want)\n+\t\t\t}\n+\t\t})\n+\t}\n+}"
+    },
+    {
+      "sha": "b5c78ac8c556cedaeddde96eb9f6ef69ebafae23",
+      "filename": "go/go2nix/pkg/compile/manifest.go",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 8,
+      "changes": 22,
+      "blob_url": "https://github.com/numtide/go2nix/blob/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fcompile%2Fmanifest.go",
+      "raw_url": "https://github.com/numtide/go2nix/raw/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fcompile%2Fmanifest.go",
+      "contents_url": "https://api.github.com/repos/numtide/go2nix/contents/go%2Fgo2nix%2Fpkg%2Fcompile%2Fmanifest.go?ref=eeba8ae2698676f08d41e1526088bf1c96ccaeb5",
+      "patch": "@@ -46,9 +46,12 @@ type ManifestFiles struct {\n \tSFiles        []string `json:\"sFiles,omitempty\"`\n \tCFiles        []string `json:\"cFiles,omitempty\"`\n \tCXXFiles      []string `json:\"cxxFiles,omitempty\"`\n+\tMFiles        []string `json:\"mFiles,omitempty\"`\n \tFFiles        []string `json:\"fFiles,omitempty\"`\n \tHFiles        []string `json:\"hFiles,omitempty\"`\n \tSysoFiles     []string `json:\"sysoFiles,omitempty\"`\n+\tSwigFiles     []string `json:\"swigFiles,omitempty\"`\n+\tSwigCXXFiles  []string `json:\"swigCxxFiles,omitempty\"`\n \tEmbedPatterns []string `json:\"embedPatterns,omitempty\"`\n }\n \n@@ -58,14 +61,17 @@ type ManifestFiles struct {\n // paths.\n func (mf *ManifestFiles) ToPkgFiles(srcDir string) (*gofiles.PkgFiles, error) {\n \tpf := &gofiles.PkgFiles{\n-\t\tGoFiles:   mf.GoFiles,\n-\t\tCgoFiles:  mf.CgoFiles,\n-\t\tSFiles:    mf.SFiles,\n-\t\tCFiles:    mf.CFiles,\n-\t\tCXXFiles:  mf.CXXFiles,\n-\t\tFFiles:    mf.FFiles,\n-\t\tHFiles:    mf.HFiles,\n-\t\tSysoFiles: mf.SysoFiles,\n+\t\tGoFiles:      mf.GoFiles,\n+\t\tCgoFiles:     mf.CgoFiles,\n+\t\tSFiles:       mf.SFiles,\n+\t\tCFiles:       mf.CFiles,\n+\t\tCXXFiles:     mf.CXXFiles,\n+\t\tMFiles:       mf.MFiles,\n+\t\tFFiles:       mf.FFiles,\n+\t\tHFiles:       mf.HFiles,\n+\t\tSysoFiles:    mf.SysoFiles,\n+\t\tSwigFiles:    mf.SwigFiles,\n+\t\tSwigCXXFiles: mf.SwigCXXFiles,\n \t}\n \tif len(mf.EmbedPatterns) > 0 {\n \t\tcfg, err := gofiles.ResolveEmbedCfg(srcDir, mf.EmbedPatterns)"
+    },
+    {
+      "sha": "4573c99f2b7c86df9dce0ad2adc62c9d58a6536c",
+      "filename": "go/go2nix/pkg/gofiles/gofiles.go",
+      "status": "modified",
+      "additions": 26,
+      "deletions": 20,
+      "changes": 46,
+      "blob_url": "https://github.com/numtide/go2nix/blob/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fgofiles%2Fgofiles.go",
+      "raw_url": "https://github.com/numtide/go2nix/raw/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fgofiles%2Fgofiles.go",
+      "contents_url": "https://api.github.com/repos/numtide/go2nix/contents/go%2Fgo2nix%2Fpkg%2Fgofiles%2Fgofiles.go?ref=eeba8ae2698676f08d41e1526088bf1c96ccaeb5",
+      "patch": "@@ -20,17 +20,20 @@ import (\n // PkgFiles describes the files in a Go package, resolved for the current\n // platform's build constraints.\n type PkgFiles struct {\n-\tGoFiles    []string  `json:\"go_files\"`\n-\tCgoFiles   []string  `json:\"cgo_files\"`\n-\tSFiles     []string  `json:\"s_files\"`\n-\tCFiles     []string  `json:\"c_files\"`\n-\tCXXFiles   []string  `json:\"cxx_files\"`\n-\tFFiles     []string  `json:\"f_files\"` // .f, .F, .for, .f90 Fortran source files\n-\tHFiles     []string  `json:\"h_files\"`\n-\tSysoFiles  []string  `json:\"syso_files\"` // .syso system object files to pack into archive\n-\tEmbedFiles []string  `json:\"embed_files\"`\n-\tEmbedCfg   *EmbedCfg `json:\"embed_cfg,omitempty\"`\n-\tIsCommand  bool      `json:\"is_command\"`\n+\tGoFiles      []string  `json:\"go_files\"`\n+\tCgoFiles     []string  `json:\"cgo_files\"`\n+\tSFiles       []string  `json:\"s_files\"`\n+\tCFiles       []string  `json:\"c_files\"`\n+\tCXXFiles     []string  `json:\"cxx_files\"`\n+\tMFiles       []string  `json:\"m_files\"` // .m Objective-C source files\n+\tFFiles       []string  `json:\"f_files\"` // .f, .F, .for, .f90 Fortran source files\n+\tHFiles       []string  `json:\"h_files\"`\n+\tSysoFiles    []string  `json:\"syso_files\"`     // .syso system object files to pack into archive\n+\tSwigFiles    []string  `json:\"swig_files\"`     // .swig files\n+\tSwigCXXFiles []string  `json:\"swig_cxx_files\"` // .swigcxx files\n+\tEmbedFiles   []string  `json:\"embed_files\"`\n+\tEmbedCfg     *EmbedCfg `json:\"embed_cfg,omitempty\"`\n+\tIsCommand    bool      `json:\"is_command\"`\n }\n \n // EmbedCfg is the format expected by go tool compile -embedcfg.\n@@ -98,15 +101,18 @@ func ReleaseTagsForVersion(goVersion string) []string {\n // embed patterns if present.\n func BuildPkgFiles(pkg *build.Package, dir string) (PkgFiles, error) {\n \tresult := PkgFiles{\n-\t\tGoFiles:   nonNil(pkg.GoFiles),\n-\t\tCgoFiles:  nonNil(pkg.CgoFiles),\n-\t\tSFiles:    nonNil(pkg.SFiles),\n-\t\tCFiles:    nonNil(pkg.CFiles),\n-\t\tCXXFiles:  nonNil(pkg.CXXFiles),\n-\t\tFFiles:    nonNil(pkg.FFiles),\n-\t\tHFiles:    nonNil(pkg.HFiles),\n-\t\tSysoFiles: nonNil(pkg.SysoFiles),\n-\t\tIsCommand: pkg.IsCommand(),\n+\t\tGoFiles:      nonNil(pkg.GoFiles),\n+\t\tCgoFiles:     nonNil(pkg.CgoFiles),\n+\t\tSFiles:       nonNil(pkg.SFiles),\n+\t\tCFiles:       nonNil(pkg.CFiles),\n+\t\tCXXFiles:     nonNil(pkg.CXXFiles),\n+\t\tMFiles:       nonNil(pkg.MFiles),\n+\t\tFFiles:       nonNil(pkg.FFiles),\n+\t\tHFiles:       nonNil(pkg.HFiles),\n+\t\tSysoFiles:    nonNil(pkg.SysoFiles),\n+\t\tSwigFiles:    nonNil(pkg.SwigFiles),\n+\t\tSwigCXXFiles: nonNil(pkg.SwigCXXFiles),\n+\t\tIsCommand:    pkg.IsCommand(),\n \t}\n \n \tif len(pkg.EmbedPatterns) > 0 {"
+    },
+    {
+      "sha": "5638da2309bb79260d371bdd7583edad9f81e981",
+      "filename": "go/go2nix/pkg/golist/golist.go",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/numtide/go2nix/blob/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fgolist%2Fgolist.go",
+      "raw_url": "https://github.com/numtide/go2nix/raw/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/go%2Fgo2nix%2Fpkg%2Fgolist%2Fgolist.go",
+      "contents_url": "https://api.github.com/repos/numtide/go2nix/contents/go%2Fgo2nix%2Fpkg%2Fgolist%2Fgolist.go?ref=eeba8ae2698676f08d41e1526088bf1c96ccaeb5",
+      "patch": "@@ -24,6 +24,7 @@ type Pkg struct {\n \tCgoFiles       []string `json:\"CgoFiles\"`\n \tCFiles         []string `json:\"CFiles\"`\n \tCXXFiles       []string `json:\"CXXFiles\"`\n+\tMFiles         []string `json:\"MFiles\"` // .m Objective-C source files\n \tFFiles         []string `json:\"FFiles\"` // .f, .F, .for, .f90 Fortran source files\n \tSFiles         []string `json:\"SFiles\"`\n \tHFiles         []string `json:\"HFiles\"`"
+    },
+    {
+      "sha": "9a2f255032291ccb2ce7004b41c972db5c9bc894",
+      "filename": "packages/go2nix-nix-plugin/rust/src/resolve.rs",
+      "status": "modified",
+      "additions": 25,
+      "deletions": 1,
+      "changes": 26,
+      "blob_url": "https://github.com/numtide/go2nix/blob/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/packages%2Fgo2nix-nix-plugin%2Frust%2Fsrc%2Fresolve.rs",
+      "raw_url": "https://github.com/numtide/go2nix/raw/eeba8ae2698676f08d41e1526088bf1c96ccaeb5/packages%2Fgo2nix-nix-plugin%2Frust%2Fsrc%2Fresolve.rs",
+      "contents_url": "https://api.github.com/repos/numtide/go2nix/contents/packages%2Fgo2nix-nix-plugin%2Frust%2Fsrc%2Fresolve.rs?ref=eeba8ae2698676f08d41e1526088bf1c96ccaeb5",
+      "patch": "@@ -53,12 +53,18 @@ struct GoPackage {\n     c_files: Vec<String>,\n     #[serde(rename = \"CXXFiles\")]\n     cxx_files: Vec<String>,\n+    #[serde(rename = \"MFiles\")]\n+    m_files: Vec<String>,\n     #[serde(rename = \"FFiles\")]\n     f_files: Vec<String>,\n     #[serde(rename = \"HFiles\")]\n     h_files: Vec<String>,\n     #[serde(rename = \"SysoFiles\")]\n     syso_files: Vec<String>,\n+    #[serde(rename = \"SwigFiles\")]\n+    swig_files: Vec<String>,\n+    #[serde(rename = \"SwigCXXFiles\")]\n+    swig_cxx_files: Vec<String>,\n     #[serde(rename = \"EmbedPatterns\")]\n     embed_patterns: Vec<String>,\n     #[serde(rename = \"CgoPkgConfig\")]\n@@ -123,12 +129,18 @@ pub(crate) struct PkgFiles {\n     #[serde(skip_serializing_if = \"Vec::is_empty\")]\n     cxx_files: Vec<String>,\n     #[serde(skip_serializing_if = \"Vec::is_empty\")]\n+    m_files: Vec<String>,\n+    #[serde(skip_serializing_if = \"Vec::is_empty\")]\n     f_files: Vec<String>,\n     #[serde(skip_serializing_if = \"Vec::is_empty\")]\n     h_files: Vec<String>,\n     #[serde(skip_serializing_if = \"Vec::is_empty\")]\n     syso_files: Vec<String>,\n     #[serde(skip_serializing_if = \"Vec::is_empty\")]\n+    swig_files: Vec<String>,\n+    #[serde(skip_serializing_if = \"Vec::is_empty\")]\n+    swig_cxx_files: Vec<String>,\n+    #[serde(skip_serializing_if = \"Vec::is_empty\")]\n     embed_patterns: Vec<String>,\n }\n \n@@ -139,9 +151,12 @@ impl PkgFiles {\n             && self.s_files.is_empty()\n             && self.c_files.is_empty()\n             && self.cxx_files.is_empty()\n+            && self.m_files.is_empty()\n             && self.f_files.is_empty()\n             && self.h_files.is_empty()\n             && self.syso_files.is_empty()\n+            && self.swig_files.is_empty()\n+            && self.swig_cxx_files.is_empty()\n             && self.embed_patterns.is_empty()\n     }\n }\n@@ -153,9 +168,12 @@ fn pkg_files_from(p: &GoPackage) -> PkgFiles {\n         s_files: p.s_files.clone(),\n         c_files: p.c_files.clone(),\n         cxx_files: p.cxx_files.clone(),\n+        m_files: p.m_files.clone(),\n         f_files: p.f_files.clone(),\n         h_files: p.h_files.clone(),\n         syso_files: p.syso_files.clone(),\n+        swig_files: p.swig_files.clone(),\n+        swig_cxx_files: p.swig_cxx_files.clone(),\n         embed_patterns: p.embed_patterns.clone(),\n     }\n }\n@@ -1173,17 +1191,20 @@ mod tests {\n \n     #[test]\n     fn parse_file_lists_round_trip_to_json() {\n-        let input = r#\"{\"ImportPath\":\"github.com/f/p\",\"Module\":{\"Path\":\"github.com/f/p\",\"Version\":\"v1.0.0\"},\"Imports\":[],\"GoFiles\":[\"a.go\",\"b.go\"],\"CgoFiles\":[\"c.go\"],\"SFiles\":[\"asm.s\"],\"CFiles\":[\"x.c\"],\"CXXFiles\":[\"x.cc\"],\"FFiles\":[\"x.f90\"],\"HFiles\":[\"x.h\"],\"SysoFiles\":[\"x.syso\"],\"EmbedPatterns\":[\"data/*\"]}\"#;\n+        let input = r#\"{\"ImportPath\":\"github.com/f/p\",\"Module\":{\"Path\":\"github.com/f/p\",\"Version\":\"v1.0.0\"},\"Imports\":[],\"GoFiles\":[\"a.go\",\"b.go\"],\"CgoFiles\":[\"c.go\"],\"SFiles\":[\"asm.s\"],\"CFiles\":[\"x.c\"],\"CXXFiles\":[\"x.cc\"],\"MFiles\":[\"x.m\"],\"FFiles\":[\"x.f90\"],\"HFiles\":[\"x.h\"],\"SysoFiles\":[\"x.syso\"],\"SwigFiles\":[\"x.swig\"],\"SwigCXXFiles\":[\"x.swigcxx\"],\"EmbedPatterns\":[\"data/*\"]}\"#;\n         let graph = parse_go_packages(input.as_bytes()).unwrap();\n         let f = &graph.packages[0].files;\n         assert_eq!(f.go_files, vec![\"a.go\", \"b.go\"]);\n         assert_eq!(f.cgo_files, vec![\"c.go\"]);\n         assert_eq!(f.s_files, vec![\"asm.s\"]);\n         assert_eq!(f.c_files, vec![\"x.c\"]);\n         assert_eq!(f.cxx_files, vec![\"x.cc\"]);\n+        assert_eq!(f.m_files, vec![\"x.m\"]);\n         assert_eq!(f.f_files, vec![\"x.f90\"]);\n         assert_eq!(f.h_files, vec![\"x.h\"]);\n         assert_eq!(f.syso_files, vec![\"x.syso\"]);\n+        assert_eq!(f.swig_files, vec![\"x.swig\"]);\n+        assert_eq!(f.swig_cxx_files, vec![\"x.swigcxx\"]);\n         assert_eq!(f.embed_patterns, vec![\"data/*\"]);\n \n         let jp = pkg_data_to_json_pkg(&graph.packages[0], &|_| true);\n@@ -1194,9 +1215,12 @@ mod tests {\n         assert_eq!(files[\"sFiles\"], serde_json::json!([\"asm.s\"]));\n         assert_eq!(files[\"cFiles\"], serde_json::json!([\"x.c\"]));\n         assert_eq!(files[\"cxxFiles\"], serde_json::json!([\"x.cc\"]));\n+        assert_eq!(files[\"mFiles\"], serde_json::json!([\"x.m\"]));\n         assert_eq!(files[\"fFiles\"], serde_json::json!([\"x.f90\"]));\n         assert_eq!(files[\"hFiles\"], serde_json::json!([\"x.h\"]));\n         assert_eq!(files[\"sysoFiles\"], serde_json::json!([\"x.syso\"]));\n+        assert_eq!(files[\"swigFiles\"], serde_json::json!([\"x.swig\"]));\n+        assert_eq!(files[\"swigCxxFiles\"], serde_json::json!([\"x.swigcxx\"]));\n         assert_eq!(files[\"embedPatterns\"], serde_json::json!([\"data/*\"]));\n     }\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "7a96358f48ac775082f2187631c270c69a15ae68",
+      "message": "compile: fix godebug default ordering, #cgo constraint OR, and surface ObjC/SWIG sources\n\nFinding #9 (pkg/buildinfo/godebug.go): a 'godebug default=goX.Y' directive\nappearing after explicit 'godebug k=v' lines wiped the explicit overrides\nwhen recomputing the table-derived defaults. cmd/go resolves the base\nversion first and layers all explicit directives on top regardless of\nposition. Switch to a two-pass scan and add a table test covering both\norderings.\n\nFinding #20 (pkg/compile/cgo.go): the #cgo constraint matcher treated the\nwhole prefix as a single comma-AND group, so '#cgo linux darwin pkg-config:\nfoo' never matched on either OS. Per cmd/cgo / go/build.matchAuto the\nsyntax is space-separated OR of comma-separated AND terms, and terms may\nbe GOOS, GOARCH, 'unix', 'cgo', 'gc', or any active build tag. Rewrite the\nmatcher accordingly, thread a tags slice through resolvePkgConfig, and add\ntests for OR groups, the unix/cgo/gc tags, and custom build tags.\n\nFinding #22 (pkg/gofiles, pkg/compile, rust/resolve.rs): .m, .swig and\n.swigcxx sources were dropped on the floor — go/build classified them but\nPkgFiles, ManifestFiles and the plugin's PkgFiles never carried them, so\nthe resulting archive silently lacked their object code and only failed at\nfinal link. Plumb MFiles/SwigFiles/SwigCXXFiles through PkgFiles,\nManifestFiles, golist.Pkg and the Rust plugin, and have CompileGoPackage\nfail fast with a clear 'not yet supported' error when any are present.\n\n:house: Remote-Dev: homespace",
+      "parent_shas": [
+        "c832bf1db802a8e18ec44f2be6ed74b11bfa39a5"
+      ]
+    },
+    {
+      "sha": "eeba8ae2698676f08d41e1526088bf1c96ccaeb5",
+      "message": "compile: use tagged switch in matchCgoTerm (staticcheck QF1002)\n\n:house: Remote-Dev: homespace",
+      "parent_shas": [
+        "7a96358f48ac775082f2187631c270c69a15ae68"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__numtide__go2nix__pr61.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\numtide__go2nix__pr61__cpp_python__numtide__go2nix__pr61\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\numtide__go2nix__pr61__cpp_python__numtide__go2nix__pr61\\rn"
+  }
+}

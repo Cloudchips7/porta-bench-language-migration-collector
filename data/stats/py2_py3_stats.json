@@ -1,18 +1,18 @@
 {
   "scenario": "language_migration",
   "subtype": "py2_py3",
-  "raw_pr_count": 200,
-  "unique_pr_count": 475,
-  "collect_candidate_count": 28,
-  "auto_filtered_candidate_count": 11,
-  "auto_excluded_count": 17,
-  "enrich_error_count": 0,
+  "raw_pr_count": 700,
+  "unique_pr_count": 844,
+  "collect_candidate_count": 150,
+  "auto_filtered_candidate_count": 89,
+  "auto_excluded_count": 57,
+  "enrich_error_count": 4,
   "manual_positive_count": 0,
   "manual_negative_count": 0,
   "manual_uncertain_count": 0,
   "processed_candidate_count": 0,
   "has_tests_before_ratio": 1.0,
-  "adds_new_tests_ratio": 0.3636,
+  "adds_new_tests_ratio": 0.1798,
   "query_hit_rate": {
     "adhoc_064e39b0e1": 3,
     "adhoc_a2fa18e804": 4,
@@ -20,31 +20,32 @@
     "adhoc_c9a6d5611b": 5,
     "adhoc_cb3f695144": 4,
     "query_a": 5,
-    "query_b": 3
+    "query_b": 3,
+    "query_c": 125
   },
   "auto_exclude_reason_breakdown": {
-    "bot_generated_pr": 7,
-    "ci_only": 5,
-    "dependency_only": 3,
-    "doc_only": 2,
-    "no_code_changes": 3,
-    "no_tests_detected": 5,
-    "py3_only_support_noise": 3,
-    "too_many_commits": 2
+    "bot_generated_pr": 25,
+    "ci_only": 10,
+    "dependency_only": 7,
+    "doc_only": 7,
+    "no_code_changes": 8,
+    "no_tests_detected": 13,
+    "py3_only_support_noise": 4,
+    "too_many_commits": 10
   },
   "migration_type_breakdown": {
-    "version_migration": 11
+    "version_migration": 89
   },
   "implementation_scope_breakdown": {
-    "not_applicable": 11
+    "not_applicable": 89
   },
   "logic_equivalence_scope_breakdown": {
-    "same_logic_translation": 11
+    "same_logic_translation": 89
   },
   "reproducible_breakdown": {
-    "unknown": 11
+    "unknown": 89
   },
   "issue_rewrite_ready_breakdown": {
-    "needs_check": 11
+    "needs_check": 89
   }
 }

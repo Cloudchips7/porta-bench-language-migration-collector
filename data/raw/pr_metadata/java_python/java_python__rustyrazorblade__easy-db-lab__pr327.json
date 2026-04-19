@@ -1,0 +1,100 @@
+{
+  "instance_id": "java_python__rustyrazorblade__easy-db-lab__pr327",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "rustyrazorblade/easy-db-lab",
+  "pr_number": 327,
+  "pr_url": "https://github.com/rustyrazorblade/easy-db-lab/pull/327",
+  "repo": {
+    "full_name": "rustyrazorblade/easy-db-lab",
+    "clone_url": "https://github.com/rustyrazorblade/easy-db-lab.git",
+    "default_branch": "main",
+    "created_at": "2020-04-07T16:32:31Z",
+    "stars": 33,
+    "license": "NOASSERTION",
+    "size_kb": 6096
+  },
+  "pull_request": {
+    "id": 3023638385,
+    "title": "Switch from pyenv to deadsnakes PPA for Python management",
+    "body": "Resolves #326\n\n## Summary\nReplace pyenv-based Python installation with system-level packages from deadsnakes PPA, using update-alternatives for version switching.\n\n## Changes\n\n### packer/base/install/install_python.sh\n- Complete rewrite to use deadsnakes PPA instead of pyenv\n- Installs Python 2.7 and 3.10 via apt packages\n- Configures update-alternatives with proper priorities (2.7=1, 3.10=2)\n- Includes Python 2.7 pip support for Cassandra 3.x compatibility\n- Removes .bash_profile modifications (no longer needed)\n\n### packer/cassandra/bin/use-cassandra  \n- Replace pyenv global command with update-alternatives --set\n- Adds validation to ensure requested version is installed\n- Extracts major.minor version from full version string\n- Consistent with existing Java version management pattern\n\n### packer/base/base.pkr.hcl\n- Update comment to reflect new approach\n\n## Benefits\n- Faster installation (no compilation required)\n- System-integrated packages with automatic security updates\n- Consistent with existing Java version management using update-alternatives\n- Reduced dependencies (no build tools needed just for Python)\n- Better caching through apt package mirrors\n\n## Testing\n- All packer Docker tests pass (testPackerBase, testPackerCassandra)\n- Python 2.7 and 3.10 installation verified\n- Version switching logic validated\n- iostat-tool installation working correctly\n\n## Notes\n- This changes the Python installation method in AMIs\n- Existing pyenv-based AMIs will not be compatible\n- New AMIs will use deadsnakes PPA packages\n- Python 2.7 pip included for Cassandra 3.x compatibility",
+    "created_at": "2025-11-18T22:31:35Z",
+    "merged_at": "2025-11-18T23:04:55Z",
+    "base_sha": "df1b94cd5d19af80a37ed780ff41463e37790dbf",
+    "head_sha": "80d3d3d3e99c3adeb69694e4fa4b97c6ff7ccf87",
+    "merge_commit_sha": "0351dc5e32b4d463ce82b8fb35c1f868a58a144d",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "df1b94cd5d19af80a37ed780ff41463e37790dbf",
+  "final_sha": "80d3d3d3e99c3adeb69694e4fa4b97c6ff7ccf87",
+  "changed_files": [
+    {
+      "sha": "03cc90050abd6060e04d526700e39b2f4fce093d",
+      "filename": "packer/base/base.pkr.hcl",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/rustyrazorblade/easy-db-lab/blob/80d3d3d3e99c3adeb69694e4fa4b97c6ff7ccf87/packer%2Fbase%2Fbase.pkr.hcl",
+      "raw_url": "https://github.com/rustyrazorblade/easy-db-lab/raw/80d3d3d3e99c3adeb69694e4fa4b97c6ff7ccf87/packer%2Fbase%2Fbase.pkr.hcl",
+      "contents_url": "https://api.github.com/repos/rustyrazorblade/easy-db-lab/contents/packer%2Fbase%2Fbase.pkr.hcl?ref=80d3d3d3e99c3adeb69694e4fa4b97c6ff7ccf87",
+      "patch": "@@ -69,7 +69,7 @@ build {\n     ]\n   }\n \n-  # install pyenv and python\n+  # install python via deadsnakes PPA\n   provisioner \"shell\" {\n     script = \"install/install_python.sh\"\n   }"
+    },
+    {
+      "sha": "a5d2763357ac4f95816278d3084db32dd210ffc7",
+      "filename": "packer/base/install/install_python.sh",
+      "status": "modified",
+      "additions": 28,
+      "deletions": 30,
+      "changes": 58,
+      "blob_url": "https://github.com/rustyrazorblade/easy-db-lab/blob/80d3d3d3e99c3adeb69694e4fa4b97c6ff7ccf87/packer%2Fbase%2Finstall%2Finstall_python.sh",
+      "raw_url": "https://github.com/rustyrazorblade/easy-db-lab/raw/80d3d3d3e99c3adeb69694e4fa4b97c6ff7ccf87/packer%2Fbase%2Finstall%2Finstall_python.sh",
+      "contents_url": "https://api.github.com/repos/rustyrazorblade/easy-db-lab/contents/packer%2Fbase%2Finstall%2Finstall_python.sh?ref=80d3d3d3e99c3adeb69694e4fa4b97c6ff7ccf87",
+      "patch": "@@ -4,34 +4,32 @@ set -e\n # Ensure non-interactive mode for apt\n export DEBIAN_FRONTEND=noninteractive\n \n+# Add deadsnakes PPA for additional Python versions\n+sudo DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:deadsnakes/ppa -y\n sudo DEBIAN_FRONTEND=noninteractive apt update -y\n-sudo DEBIAN_FRONTEND=noninteractive apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev\n-curl https://pyenv.run | bash\n-# add to ~/.bash_profile for use on instance\n-echo 'export PATH=\"$HOME/.pyenv/bin:$PATH\"' >> ~/.bash_profile\n-echo 'eval \"$(pyenv init --path)\"' >> ~/.bash_profile\n-echo 'eval \"$(pyenv virtualenv-init -)\"' >> ~/.bash_profile\n-\n-{\n-# shellcheck disable=SC2016\n-echo 'export PATH=\"$HOME/.pyenv/bin:$PATH\"'\n-# shellcheck disable=SC2016\n-echo 'eval \"$(pyenv init --path)\"'\n-# shellcheck disable=SC2016\n-echo 'eval \"$(pyenv virtualenv-init -)\"'\n-} >> ~/.bash_profile\n-\n-\n-# now load it in for Packer build\n-export PATH=\"$HOME/.pyenv/bin:$PATH\"\n-eval \"$(pyenv init --path)\"\n-eval \"$(pyenv virtualenv-init -)\"\n-# now install python\n-pyenv install 2.7.18\n-pyenv install 3.10.6\n-\n-# yeah.. this next part a little gross.\n-# I assume we can keep the pip3 shim around\n-/home/ubuntu/.pyenv/versions/3.10.6/bin/pip3 install iostat-tool\n-# shellcheck disable=SC2046\n-sudo ln -s $(find /home/ubuntu/.pyenv/ -name 'iostat-cli') /usr/local/bin/iostat-cli\n\\ No newline at end of file\n+\n+# Install Python 2.7 and 3.10 with development packages\n+sudo DEBIAN_FRONTEND=noninteractive apt install -y python2.7 python2.7-dev\n+sudo DEBIAN_FRONTEND=noninteractive apt install -y python3.10 python3.10-dev python3.10-venv python3-pip\n+\n+# Setup update-alternatives for python version management\n+# Priority 1 for Python 2.7 (lower priority)\n+sudo update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1\n+# Priority 2 for Python 3.10 (higher priority, becomes default)\n+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.10 2\n+\n+# Set Python 3.10 as the default\n+sudo update-alternatives --set python /usr/bin/python3.10\n+\n+# Install pip for Python 2.7 (needed for Cassandra 3.x compatibility)\n+# Python 2.7 pip is deprecated but still needed for legacy Cassandra versions\n+curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o /tmp/get-pip.py\n+sudo python2.7 /tmp/get-pip.py\n+rm /tmp/get-pip.py\n+\n+# Install iostat-tool using pip3\n+pip3 install iostat-tool\n+\n+# Create symlink for iostat-cli\n+# Find the installed location and create symlink\n+sudo ln -sf $(which iostat-cli) /usr/local/bin/iostat-cli"
+    },
+    {
+      "sha": "6f10f07ab441446bf644713b281f5ce2ebe111b2",
+      "filename": "packer/cassandra/bin/use-cassandra",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 7,
+      "changes": 21,
+      "blob_url": "https://github.com/rustyrazorblade/easy-db-lab/blob/80d3d3d3e99c3adeb69694e4fa4b97c6ff7ccf87/packer%2Fcassandra%2Fbin%2Fuse-cassandra",
+      "raw_url": "https://github.com/rustyrazorblade/easy-db-lab/raw/80d3d3d3e99c3adeb69694e4fa4b97c6ff7ccf87/packer%2Fcassandra%2Fbin%2Fuse-cassandra",
+      "contents_url": "https://api.github.com/repos/rustyrazorblade/easy-db-lab/contents/packer%2Fcassandra%2Fbin%2Fuse-cassandra?ref=80d3d3d3e99c3adeb69694e4fa4b97c6ff7ccf87",
+      "patch": "@@ -53,10 +53,17 @@ else\n   exit 1\n fi\n \n-# set python version\n-# NOTE: a bit hacky but we have to switch back to ubuntu user for this\n-#       since its expected that this script run as root by pyenv doesn't\n-sudo -u ubuntu bash << EOF\n-source ~/.bash_profile\n-pyenv global $PY_VERSION\n-EOF\n+# set python version using update-alternatives\n+# Extract major.minor version from full version (e.g., \"3.10.6\" -> \"3.10\", \"2.7.18\" -> \"2.7\")\n+PY_MAJOR_MINOR=$(echo \"$PY_VERSION\" | cut -d. -f1,2)\n+PY_ALTERNATIVE=\"/usr/bin/python${PY_MAJOR_MINOR}\"\n+\n+# Validate that the requested Python version is installed\n+if [ ! -f \"$PY_ALTERNATIVE\" ]; then\n+  echo \"Error: Python version $PY_VERSION (${PY_ALTERNATIVE}) is not installed\"\n+  exit 1\n+fi\n+\n+# Switch Python version using update-alternatives\n+sudo update-alternatives --set python \"$PY_ALTERNATIVE\"\n+echo \"Switched to Python $PY_VERSION (${PY_ALTERNATIVE})\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "80d3d3d3e99c3adeb69694e4fa4b97c6ff7ccf87",
+      "message": "Switch from pyenv to deadsnakes PPA for Python management\n\nReplace pyenv-based Python installation with system-level packages\nfrom deadsnakes PPA, using update-alternatives for version switching.\n\nChanges:\n- packer/base/install/install_python.sh: Complete rewrite to use\n  deadsnakes PPA instead of pyenv. Installs Python 2.7 and 3.10 via\n  apt, configures update-alternatives with proper priorities, and\n  includes Python 2.7 pip support for Cassandra 3.x compatibility.\n\n- packer/cassandra/bin/use-cassandra: Replace pyenv global command\n  with update-alternatives --set for Python version switching. Adds\n  validation to ensure requested version is installed before switching.\n\n- packer/base/base.pkr.hcl: Update comment to reflect new approach.\n\nBenefits:\n- Faster installation (no compilation required)\n- System-integrated packages with automatic security updates\n- Consistent with existing Java version management pattern\n- Reduced dependencies (no build tools needed for Python)\n\nTested:\n- All packer Docker tests pass (testPackerBase, testPackerCassandra)\n- Python 2.7 and 3.10 installation verified\n- Version switching logic validated\n\nResolves #326",
+      "parent_shas": [
+        "df1b94cd5d19af80a37ed780ff41463e37790dbf"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__rustyrazorblade__easy-db-lab__pr327.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\rustyrazorblade__easy-db-lab__pr327__java_python__rustyrazorblade__easy-db-lab__pr327\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\rustyrazorblade__easy-db-lab__pr327__java_python__rustyrazorblade__easy-db-lab__pr327\\rn"
+  }
+}

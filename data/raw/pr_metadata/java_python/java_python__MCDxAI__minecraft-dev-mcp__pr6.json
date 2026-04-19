@@ -1,0 +1,85 @@
+{
+  "instance_id": "java_python__MCDxAI__minecraft-dev-mcp__pr6",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "MCDxAI/minecraft-dev-mcp",
+  "pr_number": 6,
+  "pr_url": "https://github.com/MCDxAI/minecraft-dev-mcp/pull/6",
+  "repo": {
+    "full_name": "MCDxAI/minecraft-dev-mcp",
+    "clone_url": "https://github.com/MCDxAI/minecraft-dev-mcp.git",
+    "default_branch": "main",
+    "created_at": "2025-12-06T03:47:51Z",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 9366
+  },
+  "pull_request": {
+    "id": 3454173399,
+    "title": "fix(java): resolve Java executable path using JAVA_HOME or fallback to 'java'",
+    "body": "Since Minecraft often requires installing multiple Java versions, it would be nice to be able to select the one set as JAVA_HOME.",
+    "created_at": "2026-03-26T23:10:09Z",
+    "merged_at": "2026-03-28T17:20:05Z",
+    "base_sha": "cf44fb79421ccd15a7cabd32187e0877e3275e03",
+    "head_sha": "1298910dcd126ee7d944cd8808fc2922276c673b",
+    "merge_commit_sha": "8735d86275b6825880b504b5d98ad273d1467fa3",
+    "labels": [
+      "enhancement"
+    ]
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "cf44fb79421ccd15a7cabd32187e0877e3275e03",
+  "final_sha": "1298910dcd126ee7d944cd8808fc2922276c673b",
+  "changed_files": [
+    {
+      "sha": "e4fe2f6bbe9a83c28b89fa3b55a54953ce9d134f",
+      "filename": "src/java/java-process.ts",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 3,
+      "changes": 21,
+      "blob_url": "https://github.com/MCDxAI/minecraft-dev-mcp/blob/1298910dcd126ee7d944cd8808fc2922276c673b/src%2Fjava%2Fjava-process.ts",
+      "raw_url": "https://github.com/MCDxAI/minecraft-dev-mcp/raw/1298910dcd126ee7d944cd8808fc2922276c673b/src%2Fjava%2Fjava-process.ts",
+      "contents_url": "https://api.github.com/repos/MCDxAI/minecraft-dev-mcp/contents/src%2Fjava%2Fjava-process.ts?ref=1298910dcd126ee7d944cd8808fc2922276c673b",
+      "patch": "@@ -1,8 +1,21 @@\n import { spawn } from 'node:child_process';\n+import path from 'node:path';\n import { JavaProcessError } from '../utils/errors.js';\n import { logger } from '../utils/logger.js';\n import { normalizeOptionalPath, normalizePath } from '../utils/path-converter.js';\n \n+/**\n+ * Resolve the Java executable path.\n+ * Prefers JAVA_HOME/bin/java if JAVA_HOME is set, otherwise falls back to 'java' on PATH.\n+ */\n+function getJavaExecutable(): string {\n+  const javaHome = process.env.JAVA_HOME;\n+  if (javaHome) {\n+    return path.join(normalizePath(javaHome), 'bin', 'java');\n+  }\n+  return 'java';\n+}\n+\n export interface JavaProcessOptions {\n   maxMemory?: string; // e.g., \"2G\"\n   minMemory?: string; // e.g., \"512M\"\n@@ -70,7 +83,8 @@ export async function executeJavaProcess(\n     javaArgs = [...baseJvmArgs, '-jar', normalizedJarPath, ...normalizedArgs];\n   }\n \n-  logger.info(`Executing Java: java ${javaArgs.join(' ')}`);\n+  const javaExe = getJavaExecutable();\n+  logger.info(`Executing Java: ${javaExe} ${javaArgs.join(' ')}`);\n \n   return new Promise((resolve, reject) => {\n     const spawnOptions: { stdio: ['ignore', 'pipe', 'pipe']; cwd?: string } = {\n@@ -82,7 +96,7 @@ export async function executeJavaProcess(\n       spawnOptions.cwd = normalizedCwd;\n     }\n \n-    const process = spawn('java', javaArgs, spawnOptions);\n+    const process = spawn(javaExe, javaArgs, spawnOptions);\n \n     let stdout = '';\n     let stderr = '';\n@@ -144,7 +158,8 @@ export async function executeJavaProcess(\n  */\n export async function getJavaVersion(): Promise<string> {\n   return new Promise((resolve, reject) => {\n-    const process = spawn('java', ['-version'], { stdio: ['ignore', 'pipe', 'pipe'] });\n+    const javaExe = getJavaExecutable();\n+    const process = spawn(javaExe, ['-version'], { stdio: ['ignore', 'pipe', 'pipe'] });\n \n     let output = '';\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "df20100cb211e946aecdc62ac33611a2bfa5fb71",
+      "message": "fix(java): resolve Java executable path using JAVA_HOME or fallback to 'java'",
+      "parent_shas": [
+        "cf44fb79421ccd15a7cabd32187e0877e3275e03"
+      ]
+    },
+    {
+      "sha": "1298910dcd126ee7d944cd8808fc2922276c673b",
+      "message": "Update src/java/java-process.ts\n\nCo-authored-by: gemini-code-assist[bot] <176961590+gemini-code-assist[bot]@users.noreply.github.com>",
+      "parent_shas": [
+        "df20100cb211e946aecdc62ac33611a2bfa5fb71"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__MCDxAI__minecraft-dev-mcp__pr6.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\MCDxAI__minecraft-dev-mcp__pr6__java_python__MCDxAI__minecraft-dev-mcp__pr6\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\MCDxAI__minecraft-dev-mcp__pr6__java_python__MCDxAI__minecraft-dev-mcp__pr6\\rn"
+  }
+}

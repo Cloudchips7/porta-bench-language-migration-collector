@@ -1,0 +1,166 @@
+{
+  "instance_id": "cpp_python__NanoComp__meep__pr3190",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "NanoComp/meep",
+  "pr_number": 3190,
+  "pr_url": "https://github.com/NanoComp/meep/pull/3190",
+  "repo": {
+    "full_name": "NanoComp/meep",
+    "clone_url": "https://github.com/NanoComp/meep.git",
+    "default_branch": "master",
+    "created_at": "2014-03-28T18:59:52Z",
+    "stars": 1617,
+    "license": "GPL-2.0",
+    "size_kb": 108846
+  },
+  "pull_request": {
+    "id": 3485283771,
+    "title": "Improvements to SWIG typemaps for Python interface",
+    "body": "Various improvements to the SWIG typemaps for the Python interface, organized by priority.\r\n\r\n### Critical — Crash/Segfault Bugs\r\n\r\n**1. Missing NULL checks in callback wrappers (`meep.i`)**\r\n\r\n`py_callback_wrap` (line 142), `py_amp_func_wrap` (line 152), and `custom_py_src_time::dipole` (`meep-python.hpp:32`) do not check the return value of `PyObject_CallFunctionObjArgs`. If the Python callback raises an exception, these dereference NULL →segfault. Same issue in `mpb.i` callback wrappers.\r\n\r\n**2. Use-after-free in `_get_dft_array` (`meep.i:456`)**\r\n\r\nThe `rank == 0` zero-data path passes a stack-allocated `d[1]` to `PyArray_SimpleNewFromData`, which creates a NumPy array pointing to stack memory that goes out of scope. The singleton path also leaks `dft_arr`.\r\n\r\n### High Priority — Correctness\r\n\r\n**3. `meep::abort()` instead of Python exceptions (`typemap_utils.cpp`)**\r\n\r\nMany conversion functions (e.g., `pyabsorber_to_absorber`, `pymaterial_grid_to_material_grid`, `py_list_to_gobj_list`) call `abort_with_stack_trace()` on invalid input. This kills the process instead of raising a catchable Python exception. These should set `PyErr_SetString` and return an error code.\r\n\r\n**4. `PyFunction_Check` vs `PyCallable_Check` (`meep.i:1408`)**\r\n\r\nThe `kpoint_func` typemap rejects lambdas, bound methods, `functools.portal`, and any callable that isn't a plain function. Should use `PyCallable_Check`.\r\n\r\n### Medium Priority — Maintenance & Compatibility\r\n\r\n**5. Dupilcate typemaps**\r\n- `xtics/ytics/ztics` typemaps appear twice (lines 1001-1018 and 1083-1105), first block is dead code.\r\n- `freearg` for amplitude function appears twice (lines 748 and 1069).\r\n- `double*` array input typemaps repeat the same `is_array` + `array_data` pattern ~8 times - could use `%apply`.\r\n\r\n### Low Priority — Cleanup\r\n\r\n**6. Duplicate `%ignore` directives (`meep.i:1525-1529`)**\r\n\r\n`is_variable`, `is_file`, `is_medium` each ignored twice.",
+    "created_at": "2026-04-03T06:45:16Z",
+    "merged_at": "2026-04-04T20:25:44Z",
+    "base_sha": "d4b3822e862e8cfbd4dcaba01681e148c13fc54b",
+    "head_sha": "e84f356009b88696d007104629faa78cf9ad598d",
+    "merge_commit_sha": "c06e6c9bf91ec947793189c7bf48519aad728696",
+    "labels": [
+      "enhancement"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "d4b3822e862e8cfbd4dcaba01681e148c13fc54b",
+  "final_sha": "e84f356009b88696d007104629faa78cf9ad598d",
+  "changed_files": [
+    {
+      "sha": "8d030e3ef70ef7261d9a6d69377aba2e2236c9a5",
+      "filename": "python/meep-python.hpp",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 1,
+      "changes": 6,
+      "blob_url": "https://github.com/NanoComp/meep/blob/e84f356009b88696d007104629faa78cf9ad598d/python%2Fmeep-python.hpp",
+      "raw_url": "https://github.com/NanoComp/meep/raw/e84f356009b88696d007104629faa78cf9ad598d/python%2Fmeep-python.hpp",
+      "contents_url": "https://api.github.com/repos/NanoComp/meep/contents/python%2Fmeep-python.hpp?ref=e84f356009b88696d007104629faa78cf9ad598d",
+      "patch": "@@ -30,10 +30,14 @@ class custom_py_src_time : public src_time {\n     if (rtime >= start_time && rtime <= end_time) {\n       PyObject *py_t = PyFloat_FromDouble(time);\n       PyObject *pyres = PyObject_CallFunctionObjArgs(func, py_t, NULL);\n+      Py_DECREF(py_t);\n+      if (!pyres) {\n+        PyErr_PrintEx(0);\n+        meep::abort(\"Error in typemaps\");\n+      }\n       double real = PyComplex_RealAsDouble(pyres);\n       double imag = PyComplex_ImagAsDouble(pyres);\n       std::complex<double> ret(real, imag);\n-      Py_DECREF(py_t);\n       Py_DECREF(pyres);\n       return ret;\n     }"
+    },
+    {
+      "sha": "8ee0821151aea2eb85472b97384cd9f0ece4261b",
+      "filename": "python/meep.i",
+      "status": "modified",
+      "additions": 35,
+      "deletions": 117,
+      "changes": 152,
+      "blob_url": "https://github.com/NanoComp/meep/blob/e84f356009b88696d007104629faa78cf9ad598d/python%2Fmeep.i",
+      "raw_url": "https://github.com/NanoComp/meep/raw/e84f356009b88696d007104629faa78cf9ad598d/python%2Fmeep.i",
+      "contents_url": "https://api.github.com/repos/NanoComp/meep/contents/python%2Fmeep.i?ref=e84f356009b88696d007104629faa78cf9ad598d",
+      "patch": "@@ -140,20 +140,22 @@ static double py_callback_wrap(const meep::vec &v) {\n     SWIG_PYTHON_THREAD_SCOPED_BLOCK;\n     PyObject *pyv = vec2py(v);\n     PyObject *pyret = PyObject_CallFunctionObjArgs(py_callback, pyv, NULL);\n-    double ret = PyFloat_AsDouble(pyret);\n     Py_DECREF(pyv);\n-    Py_XDECREF(pyret);\n+    if (!pyret) { abort_with_stack_trace(); }\n+    double ret = PyFloat_AsDouble(pyret);\n+    Py_DECREF(pyret);\n     return ret;\n }\n \n static std::complex<double> py_amp_func_wrap(const meep::vec &v) {\n     SWIG_PYTHON_THREAD_SCOPED_BLOCK;\n     PyObject *pyv = vec2py(v);\n     PyObject *pyret = PyObject_CallFunctionObjArgs(py_amp_func, pyv, NULL);\n+    Py_DECREF(pyv);\n+    if (!pyret) { abort_with_stack_trace(); }\n     double real = PyComplex_RealAsDouble(pyret);\n     double imag = PyComplex_ImagAsDouble(pyret);\n     std::complex<double> ret(real, imag);\n-    Py_DECREF(pyv);\n     Py_DECREF(pyret);\n     return ret;\n }\n@@ -264,7 +266,8 @@ static int pyabsorber_to_absorber(PyObject *py_absorber, meep_geom::absorber *a)\n     PyObject *py_pml_profile_func = PyObject_GetAttrString(py_absorber, \"pml_profile\");\n \n     if (!py_pml_profile_func) {\n-      meep::abort(\"Class attribute 'pml_profile' is None\\n\");\n+         PyErr_SetString(PyExc_AttributeError, \"Class attribute 'pml_profile' is None\");\n+         return 0;\n     }\n \n     a->pml_profile_data = py_pml_profile_func;\n@@ -451,13 +454,21 @@ PyObject *_get_dft_array(meep::fields *f, dft_type dft, meep::component c, int n\n     size_t dims[3];\n     std::complex<meep::realnum> *dft_arr = f->get_dft_array(dft, c, num_freq, &rank, dims);\n \n+    int npy_type = sizeof(meep::realnum) == sizeof(float) ? NPY_CFLOAT : NPY_CDOUBLE;\n+\n     if (dft_arr == NULL) { // this can happen e.g. if component c vanishes by symmetry\n-      std::complex<double> d[1] = {std::complex<double>(0,0)};\n-      return PyArray_SimpleNewFromData(0, 0, sizeof(meep::realnum) == sizeof(float) ? NPY_CFLOAT : NPY_CDOUBLE, d);\n+         PyObject *py_arr = PyArray_SimpleNew(0, 0, npy_type);\n+         std::complex<meep::realnum> zero(0, 0);\n+         memcpy(PyArray_DATA((PyArrayObject*)py_arr), &zero, sizeof(std::complex<meep::realnum>));\n+         return py_arr;\n     }\n \n-    if (rank == 0) // singleton results\n-      return PyArray_SimpleNewFromData(0, 0, sizeof(meep::realnum) == sizeof(float) ? NPY_CFLOAT : NPY_CDOUBLE, dft_arr);\n+    if (rank == 0) { // singleton results\n+         PyObject *py_arr = PyArray_SimpleNew(0, 0, npy_type);\n+         memcpy(PyArray_DATA((PyArrayObject*)py_arr), dft_arr, sizeof(std::complex<meep::realnum>));\n+         delete[] dft_arr;\n+         return py_arr;\n+    }\n \n     size_t length = 1;\n     npy_intp *arr_dims = new npy_intp[rank];\n@@ -996,32 +1007,19 @@ void _get_gradient(PyObject *grad, double scalegrad,\n // For some reason SWIG needs the namespaced version too\n %apply material_type { meep_geom::material_type };\n \n-// Typemap suite for get_array_metadata\n+// Typemap for numpy array passed as double* (used by get_array_metadata,\n+// get_epsilon_grid, get_eigenmode_coefficients, near2far, etc.)\n \n %typecheck(SWIG_TYPECHECK_POINTER, fragment=\"NumPy_Fragments\") double* xtics {\n     $1 = is_array($input);\n }\n %typemap(in, fragment=\"NumPy_Macros\") double* xtics {\n     $1 = (double *)array_data($input);\n }\n-%typecheck(SWIG_TYPECHECK_POINTER, fragment=\"NumPy_Fragments\") double* ytics {\n-    $1 = is_array($input);\n-}\n-%typemap(in, fragment=\"NumPy_Macros\") double* ytics {\n-    $1 = (double *)array_data($input);\n-}\n-%typecheck(SWIG_TYPECHECK_POINTER, fragment=\"NumPy_Fragments\") double* ztics {\n-    $1 = is_array($input);\n-}\n-%typemap(in, fragment=\"NumPy_Macros\") double* ztics {\n-    $1 = (double *)array_data($input);\n-}\n-%typecheck(SWIG_TYPECHECK_POINTER, fragment=\"NumPy_Fragments\") double* weights {\n-    $1 = is_array($input);\n-}\n-%typemap(in, fragment=\"NumPy_Macros\") double* weights {\n-    $1 = (double *)array_data($input);\n-}\n+%apply double* xtics {\n+     double* ytics, double* ztics, double* weights,\n+     double* vgrp, double* cscale, double* farpt_list\n+};\n \n // Typemap suite for array_slice\n \n@@ -1065,62 +1063,26 @@ void _get_gradient(PyObject *grad, double scalegrad,\n     $1 = static_cast<meep::derived_component>(PyInteger_AsLong($input));\n }\n \n-\n-%typemap(freearg) std::complex<double> (*)(const meep::vec &) {\n-    Py_XDECREF(py_amp_func);\n-    py_amp_func = NULL;\n-}\n-\n %typecheck(SWIG_TYPECHECK_POINTER) PyObject *min_max_loc {\n     $1 = PyList_Check($input);\n }\n \n %apply int INPLACE_ARRAY1[ANY] { int [3] };\n %apply double INPLACE_ARRAY1[ANY] { double [3] };\n \n-// typemaps for meep_geom::get_epsilon_grid\n-\n-%typecheck(SWIG_TYPECHECK_POINTER, fragment=\"NumPy_Fragments\") double* xtics {\n-    $1 = is_array($input);\n-}\n-\n-%typemap(in, fragment=\"NumPy_Macros\") double* xtics {\n-    $1 = (double *)array_data($input);\n-}\n-\n-%typecheck(SWIG_TYPECHECK_POINTER, fragment=\"NumPy_Fragments\") double* ytics {\n-    $1 = is_array($input);\n-}\n-\n-%typemap(in, fragment=\"NumPy_Macros\") double* ytics {\n-    $1 = (double *)array_data($input);\n-}\n-\n-%typecheck(SWIG_TYPECHECK_POINTER, fragment=\"NumPy_Fragments\") double* ztics {\n-    $1 = is_array($input);\n-}\n-\n-%typemap(in, fragment=\"NumPy_Macros\") double* ztics {\n-    $1 = (double *)array_data($input);\n-}\n+// Typemap for numpy array passed as std::complex<double>* (used by\n+// get_epsilon_grid, solve_cw, get_eigenmode_coefficients, adjoint, etc.)\n \n %typecheck(SWIG_TYPECHECK_POINTER, fragment=\"NumPy_Fragments\") std::complex<double>* grid_vals {\n     $1 = is_array($input);\n }\n-\n %typemap(in, fragment=\"NumPy_Macros\") std::complex<double>* grid_vals {\n     $1 = (std::complex<double> *)array_data($input);\n }\n-\n-// typemap for solve_cw:\n-\n-%typecheck(SWIG_TYPECHECK_POINTER, fragment=\"NumPy_Fragments\") std::complex<double>* eigfreq {\n-    $1 = is_array($input);\n-}\n-\n-%typemap(in) std::complex<double>* eigfreq {\n-    $1 = (std::complex<double> *)array_data($input);\n-}\n+%apply std::complex<double>* grid_vals {\n+     std::complex<double>* eigfreq, std::complex<double>* coeffs,\n+     std::complex<double>* dJ, std::complex<double>* amp_arr\n+};\n \n // typemaps for diffractedplanewave\n \n@@ -1142,42 +1104,11 @@ void _get_gradient(PyObject *grad, double scalegrad,\n      $1 = (std::complex<double> *)array_data($input);\n }\n \n-//--------------------------------------------------\n-// typemaps needed for get_eigenmode_coefficients\n-//--------------------------------------------------\n+// typemap for get_eigenmode_coefficients bands array\n %apply (int *IN_ARRAY1, int DIM1) {(int *bands, int num_bands)};\n \n-%typecheck(SWIG_TYPECHECK_POINTER, fragment=\"NumPy_Fragments\") std::complex<double>* coeffs {\n-    $1 = is_array($input);\n-}\n-\n-%typemap(in, fragment=\"NumPy_Macros\") std::complex<double>* coeffs {\n-    $1 = (std::complex<double> *)array_data($input);\n-}\n-\n-%typecheck(SWIG_TYPECHECK_POINTER, fragment=\"NumPy_Fragments\") double* vgrp {\n-    $1 = is_array($input);\n-}\n-\n-%typemap(in, fragment=\"NumPy_Macros\") double* vgrp {\n-    $1 = (double *)array_data($input);\n-}\n-\n-%typecheck(SWIG_TYPECHECK_POINTER, fragment=\"NumPy_Fragments\") double* cscale {\n-    $1 = is_array($input);\n-}\n-\n-%typemap(in, fragment=\"NumPy_Macros\") double* cscale {\n-    $1 = (double *)array_data($input);\n-}\n-\n-//--------------------------------------------------\n-// end typemaps for get_eigenmode_coefficients\n-//--------------------------------------------------\n \n-//--------------------------------------------------\n-// typemaps needed for add_dft_fields\n-//--------------------------------------------------\n+// typemaps for add_dft_fields\n \n %apply (const double* IN_ARRAY1, size_t DIM1) {(const double* freq, size_t Nfreq)}\n \n@@ -1405,7 +1336,7 @@ void _get_gradient(PyObject *grad, double scalegrad,\n // Typemap suite for kpoint_func\n \n %typecheck(SWIG_TYPECHECK_POINTER) (meep::kpoint_func user_kpoint_func, void *user_kpoint_data) {\n-    $1 = PyFunction_Check($input) || $input == Py_None;\n+    $1 = PyCallable_Check($input) || $input == Py_None;\n }\n \n %typemap(in) (meep::kpoint_func user_kpoint_func, void *user_kpoint_data) {\n@@ -1425,17 +1356,7 @@ void _get_gradient(PyObject *grad, double scalegrad,\n     double *total\n };\n \n-%typemap(in) std::complex<double>* dJ {\n-    $1 = (std::complex<double> *)array_data($input);\n-}\n-\n-%typemap(in) std::complex<double>* amp_arr {\n-    $1 = (std::complex<double> *)array_data($input);\n-}\n-\n-%typemap(in) double* farpt_list {\n-    $1 = (double *)array_data($input);\n-}\n+// dJ, amp_arr, fpart_list typemaps are covered by %apply directives above\n \n %exception {\n #ifdef MEEP_SWIG_PYTHON_DEBUG\n@@ -1522,10 +1443,7 @@ void _get_gradient(PyObject *grad, double scalegrad,\n %ignore material_gc;\n %ignore material_type_equal;\n %ignore is_variable;\n-%ignore is_variable;\n %ignore is_file;\n-%ignore is_file;\n-%ignore is_medium;\n %ignore is_medium;\n %ignore is_metal;\n %ignore meep::all_in_or_out;"
+    },
+    {
+      "sha": "f5825429ad4f4e25a1bfeb5c719aa3b0aade9e2f",
+      "filename": "python/mpb.i",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 5,
+      "changes": 15,
+      "blob_url": "https://github.com/NanoComp/meep/blob/e84f356009b88696d007104629faa78cf9ad598d/python%2Fmpb.i",
+      "raw_url": "https://github.com/NanoComp/meep/raw/e84f356009b88696d007104629faa78cf9ad598d/python%2Fmpb.i",
+      "contents_url": "https://api.github.com/repos/NanoComp/meep/contents/python%2Fmpb.i?ref=e84f356009b88696d007104629faa78cf9ad598d",
+      "patch": "@@ -164,11 +164,14 @@ static mpb_real field_integral_energy_callback(mpb_real energy, mpb_real epsilon\n     PyObject *py_p = v3_to_pyv3(&p);\n \n     PyObject *result = PyObject_CallFunctionObjArgs(py_func, py_energy, py_epsilon, py_p, NULL);\n-    mpb_real res = PyFloat_AsDouble(result);\n \n     Py_DECREF(py_energy);\n     Py_DECREF(py_epsilon);\n     Py_DECREF(py_p);\n+\n+    if (!result) { abort_with_stack_trace(); }\n+\n+    mpb_real res = PyFloat_AsDouble(result);\n     Py_DECREF(result);\n \n     return res;\n@@ -183,13 +186,15 @@ static mpb_real field_integral_energy_callback(mpb_real energy, mpb_real epsilon\n \n      PyObject *result = PyObject_CallFunctionObjArgs(py_func, py_F, py_epsilon, py_p, NULL);\n \n-     cnumber res;\n-     res.re = PyComplex_RealAsDouble(result);\n-     res.im = PyComplex_ImagAsDouble(result);\n-\n      Py_DECREF(py_F);\n      Py_DECREF(py_epsilon);\n      Py_DECREF(py_p);\n+\n+     if (!result) { abort_with_stack_trace(); }\n+\n+     cnumber res;\n+     res.re = PyComplex_RealAsDouble(result);\n+     res.im = PyComplex_ImagAsDouble(result);\n      Py_DECREF(result);\n \n      return res;"
+    },
+    {
+      "sha": "5352bf1eb2ed233004153a0da5e05bd0910eaf4a",
+      "filename": "python/typemap_utils.cpp",
+      "status": "modified",
+      "additions": 64,
+      "deletions": 22,
+      "changes": 86,
+      "blob_url": "https://github.com/NanoComp/meep/blob/e84f356009b88696d007104629faa78cf9ad598d/python%2Ftypemap_utils.cpp",
+      "raw_url": "https://github.com/NanoComp/meep/raw/e84f356009b88696d007104629faa78cf9ad598d/python%2Ftypemap_utils.cpp",
+      "contents_url": "https://api.github.com/repos/NanoComp/meep/contents/python%2Ftypemap_utils.cpp?ref=e84f356009b88696d007104629faa78cf9ad598d",
+      "patch": "@@ -238,7 +238,12 @@ static int pyv3_to_v3(PyObject *po, vector3 *v) {\n   PyObject *py_y = PyObject_GetAttrString(po, \"y\");\n   PyObject *py_z = PyObject_GetAttrString(po, \"z\");\n \n-  if (!py_x || !py_y || !py_z) { abort_with_stack_trace(); }\n+  if (!py_x || !py_y || !py_z) {\n+    Py_XDECREF(py_x);\n+    Py_XDECREF(py_y);\n+    Py_XDECREF(py_z);\n+    return 0;\n+  }\n \n   double x = PyFloat_AsDouble(py_x);\n   double y = PyFloat_AsDouble(py_y);\n@@ -261,7 +266,12 @@ static int pyv3_to_cv3(PyObject *po, cvector3 *v) {\n   PyObject *py_y = PyObject_GetAttrString(po, \"y\");\n   PyObject *py_z = PyObject_GetAttrString(po, \"z\");\n \n-  if (!py_x || !py_y || !py_z) { abort_with_stack_trace(); }\n+  if (!py_x || !py_y || !py_z) {\n+    Py_XDECREF(py_x);\n+    Py_XDECREF(py_y);\n+    Py_XDECREF(py_z);\n+    return 0;\n+  }\n \n   std::complex<double> x =\n       std::complex<double>(PyComplex_RealAsDouble(py_x), PyComplex_ImagAsDouble(py_x));\n@@ -302,7 +312,7 @@ static int get_attr_v3(PyObject *py_obj, vector3 *v, const char *name) {\n   int rval = 1;\n   PyObject *py_attr = PyObject_GetAttrString(py_obj, name);\n \n-  if (!py_attr) { abort_with_stack_trace(); }\n+  if (!py_attr) { return 0; }\n \n   if (!pyv3_to_v3(py_attr, v)) { rval = 0; }\n \n@@ -316,7 +326,7 @@ static int get_attr_v3_cmplx(PyObject *py_obj, cvector3 *v, const char *name) {\n   int rval = 1;\n   PyObject *py_attr = PyObject_GetAttrString(py_obj, name);\n \n-  if (!py_attr) { abort_with_stack_trace(); }\n+  if (!py_attr) { return 0; }\n \n   if (!pyv3_to_cv3(py_attr, v)) { rval = 0; }\n \n@@ -329,7 +339,7 @@ static int get_attr_dbl(PyObject *py_obj, double *result, const char *name) {\n   SWIG_PYTHON_THREAD_SCOPED_BLOCK;\n   PyObject *py_attr = PyObject_GetAttrString(py_obj, name);\n \n-  if (!py_attr) { abort_with_stack_trace(); }\n+  if (!py_attr) { return 0; }\n \n   *result = PyFloat_AsDouble(py_attr);\n   Py_XDECREF(py_attr);\n@@ -341,7 +351,7 @@ static int get_attr_int(PyObject *py_obj, int *result, const char *name) {\n   SWIG_PYTHON_THREAD_SCOPED_BLOCK;\n   PyObject *py_attr = PyObject_GetAttrString(py_obj, name);\n \n-  if (!py_attr) { abort_with_stack_trace(); }\n+  if (!py_attr) { return 0; }\n \n   *result = PyInteger_AsLong(py_attr);\n   Py_XDECREF(py_attr);\n@@ -354,7 +364,7 @@ static int get_attr_material(PyObject *po, material_type *m) {\n   int rval = 1;\n   PyObject *py_material = PyObject_GetAttrString(po, \"material\");\n \n-  if (!py_material) { abort_with_stack_trace(); }\n+  if (!py_material) { return 0; }\n \n   if (!pymaterial_to_material(py_material, m)) { rval = 0; }\n \n@@ -470,7 +480,10 @@ static int py_susceptibility_to_susceptibility(PyObject *po, susceptibility_stru\n \n static int py_list_to_susceptibility_list(PyObject *po, susceptibility_list *sl) {\n   SWIG_PYTHON_THREAD_SCOPED_BLOCK;\n-  if (!PyList_Check(po)) { abort_with_stack_trace(); }\n+  if (!PyList_Check(po)) {\n+    PyErr_SetString(PyExc_TypeError, \"Expected a list of susceptibilities\");\n+    return 0;\n+  }\n \n   int length = PyList_Size(po);\n   sl->resize(length);\n@@ -499,29 +512,44 @@ static int pymaterial_grid_to_material_grid(PyObject *po, material_data *md) {\n     case 1: md->material_grid_kinds = material_data::U_PROD; break;\n     case 2: md->material_grid_kinds = material_data::U_MEAN; break;\n     case 3: md->material_grid_kinds = material_data::U_DEFAULT; break;\n-    default: meep::abort(\"Invalid material grid enumeration code: %d.\\n\", (int)gt_enum);\n+    default:\n+      PyErr_Format(PyExc_ValueError, \"Invalid material grid enumeration code: %d\", (int)gt_enum);\n+      return 0;\n   }\n \n   // initialize grid size\n-  if (!get_attr_v3(po, &md->grid_size, \"grid_size\")) {\n-    meep::abort(\"MaterialGrid grid_size failed to init.\");\n-  }\n+  if (!get_attr_v3(po, &md->grid_size, \"grid_size\")) { return 0; }\n \n   // initialize user specified materials\n   PyObject *po_medium1 = PyObject_GetAttrString(po, \"medium1\");\n   if (!pymedium_to_medium(po_medium1, &md->medium_1)) {\n-    meep::abort(\"MaterialGrid medium1 failed to init.\");\n+    Py_XDECREF(po_medium1);\n+    return 0;\n   }\n   PyObject *po_medium2 = PyObject_GetAttrString(po, \"medium2\");\n   if (!pymedium_to_medium(po_medium2, &md->medium_2)) {\n-    meep::abort(\"MaterialGrid medium2 failed to init.\");\n+    Py_XDECREF(po_medium2);\n+    Py_DECREF(po_medium1);\n+    return 0;\n   }\n \n   // Initialize weights\n   PyObject *po_dp = PyObject_GetAttrString(po, \"weights\");\n   PyArrayObject *pao = (PyArrayObject *)po_dp;\n-  if (!PyArray_Check(pao)) { meep::abort(\"MaterialGrid weights failed to init.\"); }\n-  if (!PyArray_ISCARRAY(pao)) { meep::abort(\"Numpy array weights must be C-style contiguous.\"); }\n+  if (!PyArray_Check(pao)) {\n+    PyErr_SetString(PyExc_TypeError, \"MaterialGrid weights must be a numpy array\");\n+    Py_XDECREF(po_dp);\n+    Py_DECREF(po_medium1);\n+    Py_DECREF(po_medium2);\n+    return 0;\n+  }\n+  if (!PyArray_ISCARRAY(pao)) {\n+    PyErr_SetString(PyExc_ValueError, \"Numpy array weights must be C-style contiguous\");\n+    Py_DECREF(po_dp);\n+    Py_DECREF(po_medium1);\n+    Py_DECREF(po_medium2);\n+    return 0;\n+  }\n   md->weights = new double[PyArray_SIZE(pao)];\n   memcpy(md->weights, (double *)PyArray_DATA(pao), PyArray_SIZE(pao) * sizeof(double));\n \n@@ -604,7 +632,10 @@ static int pymaterial_to_material(PyObject *po, material_type *mt) {\n   else if (PyArray_Check(po)) {\n     PyArrayObject *pao = (PyArrayObject *)po;\n \n-    if (!PyArray_ISCARRAY(pao)) { meep::abort(\"Numpy array must be C-style contiguous.\"); }\n+    if (!PyArray_ISCARRAY(pao)) {\n+      PyErr_SetString(PyExc_ValueError, \"Numpy array must be C-style contiguous\");\n+      return 0;\n+    }\n     md = new material_data();\n     md->which_subclass = material_data::MATERIAL_FILE;\n     md->epsilon_dims[0] = md->epsilon_dims[1] = md->epsilon_dims[2] = 1;\n@@ -618,7 +649,11 @@ static int pymaterial_to_material(PyObject *po, material_type *mt) {\n     master_printf(\"read in %zdx%zdx%zd numpy array for epsilon\\n\", md->epsilon_dims[0],\n                   md->epsilon_dims[1], md->epsilon_dims[2]);\n   }\n-  else { meep::abort(\"Expected a Medium, a Material Grid, a function, or a filename\"); }\n+  else {\n+    PyErr_SetString(PyExc_TypeError,\n+                    \"Expected a Medium, a Material Grid, a function, or a filename\");\n+    return 0;\n+  }\n \n   *mt = md;\n \n@@ -967,9 +1002,13 @@ static int pyprism_to_prism(PyObject *py_prism, geometric_object *p) {\n \n   PyObject *py_vert_list = PyObject_GetAttrString(py_prism, \"vertices\");\n \n-  if (!py_vert_list) { abort_with_stack_trace(); }\n+  if (!py_vert_list) { return 0; }\n \n-  if (!PyList_Check(py_vert_list)) { meep::abort(\"Expected Prism.vertices to be a list\\n\"); }\n+  if (!PyList_Check(py_vert_list)) {\n+    PyErr_SetString(PyExc_TypeError, \"Expected Prism.vertices to be a list\");\n+    Py_DECREF(py_vert_list);\n+    return 0;\n+  }\n \n   int num_vertices = PyList_Size(py_vert_list);\n   vector3 *vertices = new vector3[num_vertices];\n@@ -1012,7 +1051,7 @@ static int py_gobj_to_gobj(PyObject *po, geometric_object *o) {\n   else if (go_type == \"Ellipsoid\") { success = pyellipsoid_to_ellipsoid(po, o); }\n   else if (go_type == \"Prism\") { success = pyprism_to_prism(po, o); }\n   else {\n-    meep::abort(\"Error: %s is not a valid GeometricObject type\\n\", go_type.c_str());\n+    PyErr_Format(PyExc_TypeError, \"Error: %s is not a valid GeometricObject type\", go_type.c_str());\n     return 0;\n   }\n \n@@ -1022,7 +1061,10 @@ static int py_gobj_to_gobj(PyObject *po, geometric_object *o) {\n \n static int py_list_to_gobj_list(PyObject *po, geometric_object_list *l) {\n   SWIG_PYTHON_THREAD_SCOPED_BLOCK;\n-  if (!PyList_Check(po)) { meep::abort(\"Expected a list\"); }\n+  if (!PyList_Check(po)) {\n+    PyErr_SetString(PyExc_TypeError, \"Expected a list of geometric objects\");\n+    return 0;\n+  }\n \n   int length = PyList_Size(po);\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "1366b6c2a0b33dc45aedf4f6f2c22df06ad83896",
+      "message": "improvements to SWIG typemaps for Python interface",
+      "parent_shas": [
+        "d4b3822e862e8cfbd4dcaba01681e148c13fc54b"
+      ]
+    },
+    {
+      "sha": "025431130303b831c7bff2e7fa851d108a50532a",
+      "message": "fix typo in comment",
+      "parent_shas": [
+        "1366b6c2a0b33dc45aedf4f6f2c22df06ad83896"
+      ]
+    },
+    {
+      "sha": "9d7a1ea8ad68cd72ce53baf46766107636ab187e",
+      "message": "insert missing semicolon at the end of the %apply statement",
+      "parent_shas": [
+        "025431130303b831c7bff2e7fa851d108a50532a"
+      ]
+    },
+    {
+      "sha": "b04d400cc7156d6239c3b37c7bf7bc3cb7b55953",
+      "message": "remove line break between typemap and apply",
+      "parent_shas": [
+        "9d7a1ea8ad68cd72ce53baf46766107636ab187e"
+      ]
+    },
+    {
+      "sha": "f2821a2b78f7a19a89d6f81cccca30dbc2ac01a0",
+      "message": "fix bug in std::complex<double> dJ of meep.i",
+      "parent_shas": [
+        "b04d400cc7156d6239c3b37c7bf7bc3cb7b55953"
+      ]
+    },
+    {
+      "sha": "2f9fe3f1157911144e8f6010ec35e5fdfae1f471",
+      "message": "Apply suggestion from @stevengj",
+      "parent_shas": [
+        "f2821a2b78f7a19a89d6f81cccca30dbc2ac01a0"
+      ]
+    },
+    {
+      "sha": "88b60ca57562f55e26d9360898f299e99d283ff1",
+      "message": "Apply suggestion from @stevengj",
+      "parent_shas": [
+        "2f9fe3f1157911144e8f6010ec35e5fdfae1f471"
+      ]
+    },
+    {
+      "sha": "e84f356009b88696d007104629faa78cf9ad598d",
+      "message": "fixes to meep-python.hpp",
+      "parent_shas": [
+        "88b60ca57562f55e26d9360898f299e99d283ff1"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__NanoComp__meep__pr3190.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\NanoComp__meep__pr3190__cpp_python__NanoComp__meep__pr3190\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\NanoComp__meep__pr3190__cpp_python__NanoComp__meep__pr3190\\rn"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "instance_id": "java_python__Graylog2__graylog2-server__pr25611",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "Graylog2/graylog2-server",
+  "pr_number": 25611,
+  "pr_url": "https://github.com/Graylog2/graylog2-server/pull/25611",
+  "repo": {
+    "full_name": "Graylog2/graylog2-server",
+    "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+    "default_branch": "master",
+    "created_at": "2010-05-17T21:27:02Z",
+    "stars": 8009,
+    "license": "NOASSERTION",
+    "size_kb": 209725
+  },
+  "pull_request": {
+    "id": 3520402078,
+    "title": "Bump org.openrewrite:rewrite-java from 8.78.3 to 8.78.4 in the openrewrite group",
+    "body": "Bumps the openrewrite group with 1 update: [org.openrewrite:rewrite-java](https://github.com/openrewrite/rewrite).\n\nUpdates `org.openrewrite:rewrite-java` from 8.78.3 to 8.78.4\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/openrewrite/rewrite/releases\">org.openrewrite:rewrite-java's releases</a>.</em></p>\n<blockquote>\n<h2>8.78.4</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>Fix Javadoc <a href=\"https://github.com/see\"><code>@​see</code></a> field reference resolution by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7257\">openrewrite/rewrite#7257</a></li>\n<li>Go: load recipe modules as plugins for real execution by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7263\">openrewrite/rewrite#7263</a></li>\n<li>Go: automatically visit tree nodes in RPC queues with no onChange callback by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7264\">openrewrite/rewrite#7264</a></li>\n<li>Go: <code>StatementExpression</code> registered as a type by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7265\">openrewrite/rewrite#7265</a></li>\n<li>Go: Fix parsing of comments in empty argument list by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7267\">openrewrite/rewrite#7267</a></li>\n<li>Exclude the version txt file from the build cache by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7266\">openrewrite/rewrite#7266</a></li>\n<li>Go: Fix type cast in RPC, literals are not always primitive in Go by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7268\">openrewrite/rewrite#7268</a></li>\n<li>Go: Run go native tests as part of the build by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7270\">openrewrite/rewrite#7270</a></li>\n<li>Go: fix more cases of comments parsing in empty enumerations by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7269\">openrewrite/rewrite#7269</a></li>\n<li>Declare Gradle inputs to tasks for rewrite-csharp and rewrite-python by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7272\">openrewrite/rewrite#7272</a></li>\n<li>Go: Fix RPC serialization for varargs by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7271\">openrewrite/rewrite#7271</a></li>\n<li>Go: Fix parsing of a trailing comma in argument list by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7273\">openrewrite/rewrite#7273</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.78.3...v8.78.4\">https://github.com/openrewrite/rewrite/compare/v8.78.3...v8.78.4</a></p>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/d934b7bc48f0b6e9d404a7ef9551eab23b992299\"><code>d934b7b</code></a> Fix parsing of a trailing comma in argument list (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7273\">#7273</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/f6682ed7f07abdc16b0ea7a885eb11128fdf0d74\"><code>f6682ed</code></a> Scala parser: map This, InterpolatedString, ForEachLoop, and TypeAscription t...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/d51d23f9b29633d7892871237aa825b6856a075a\"><code>d51d23f</code></a> Go: Fix RPC serialization for varargs (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7271\">#7271</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/fbaf8747a4117fd3db296dfb3ee5ab466172b033\"><code>fbaf874</code></a> Declare Gradle inputs to tasks (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7272\">#7272</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/ab2af5d8a4f31fdb7f9da7c0cca00cfebc2b6693\"><code>ab2af5d</code></a> Fix more cases of comments in empty enumerations (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7269\">#7269</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/341d1aa06657d902b1fe2544c27af6a735c87b89\"><code>341d1aa</code></a> Run go native tests too (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7270\">#7270</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/2a229dda14a5af09e44c85586f36ca160a259a40\"><code>2a229dd</code></a> Fix type cast, literals are not always primitive in Go (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7268\">#7268</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/7265ee06e6f4e0ba6248d3d4b6ae89bf631e0c56\"><code>7265ee0</code></a> Exclude the version txt file from the build cache (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7266\">#7266</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/2edcb6f1fe1ebafbb70f1742aa5c1545428a3664\"><code>2edcb6f</code></a> Fix parsing of comments in empty arg list (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7267\">#7267</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/942105a016570bb8971c70de7b27e5678355fa4a\"><code>942105a</code></a> StatementExpression registered (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7265\">#7265</a>)</li>\n<li>Additional commits viewable in <a href=\"https://github.com/openrewrite/rewrite/compare/v8.78.3...v8.78.4\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=org.openrewrite:rewrite-java&package-manager=maven&previous-version=8.78.3&new-version=8.78.4)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nYou can trigger a rebase of this PR by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore <dependency name> major version` will close this group update PR and stop Dependabot creating any more for the specific dependency's major version (unless you unignore this specific dependency's major version or upgrade to it yourself)\n- `@dependabot ignore <dependency name> minor version` will close this group update PR and stop Dependabot creating any more for the specific dependency's minor version (unless you unignore this specific dependency's minor version or upgrade to it yourself)\n- `@dependabot ignore <dependency name>` will close this group update PR and stop Dependabot creating any more for the specific dependency (unless you unignore this specific dependency or upgrade to it yourself)\n- `@dependabot unignore <dependency name>` will remove all of the ignore conditions of the specified dependency\n- `@dependabot unignore <dependency name> <ignore condition>` will remove the ignore condition of the specified dependency and ignore conditions\n\n\n</details>",
+    "created_at": "2026-04-13T00:02:49Z",
+    "merged_at": "2026-04-13T10:20:23Z",
+    "base_sha": "c8054d2315cdeeb67a76ec614735942e690c596c",
+    "head_sha": "1246f56a55b5b956b5df18953efae9424f23e4f7",
+    "merge_commit_sha": "c6e5cb72991b677a62ad76c8492dceba4c17578d",
+    "labels": [
+      "dependencies",
+      "maven"
+    ]
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "924d742117b5ec17c4d13946cdf1b02eb99ad544",
+  "final_sha": "1246f56a55b5b956b5df18953efae9424f23e4f7",
+  "changed_files": [
+    {
+      "sha": "86254a1e888e0e7fe8f27e6a8b1724d564751ce0",
+      "filename": "pom.xml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Graylog2/graylog2-server/blob/1246f56a55b5b956b5df18953efae9424f23e4f7/pom.xml",
+      "raw_url": "https://github.com/Graylog2/graylog2-server/raw/1246f56a55b5b956b5df18953efae9424f23e4f7/pom.xml",
+      "contents_url": "https://api.github.com/repos/Graylog2/graylog2-server/contents/pom.xml?ref=1246f56a55b5b956b5df18953efae9424f23e4f7",
+      "patch": "@@ -782,7 +782,7 @@\n                         <dependency>\n                             <groupId>org.openrewrite</groupId>\n                             <artifactId>rewrite-java</artifactId>\n-                            <version>8.78.3</version>\n+                            <version>8.78.4</version>\n                         </dependency>\n                         <dependency>\n                             <groupId>org.openrewrite.recipe</groupId>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "9720c226707abe6de56f75ca4d3bb55f29e9f4b4",
+      "message": "Bump org.openrewrite:rewrite-java in the openrewrite group\n\nBumps the openrewrite group with 1 update: [org.openrewrite:rewrite-java](https://github.com/openrewrite/rewrite).\n\n\nUpdates `org.openrewrite:rewrite-java` from 8.78.3 to 8.78.4\n- [Release notes](https://github.com/openrewrite/rewrite/releases)\n- [Commits](https://github.com/openrewrite/rewrite/compare/v8.78.3...v8.78.4)\n\n---\nupdated-dependencies:\n- dependency-name: org.openrewrite:rewrite-java\n  dependency-version: 8.78.4\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: openrewrite\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "924d742117b5ec17c4d13946cdf1b02eb99ad544"
+      ]
+    },
+    {
+      "sha": "1246f56a55b5b956b5df18953efae9424f23e4f7",
+      "message": "Merge branch 'master' into dependabot/maven/openrewrite-0249c17a03",
+      "parent_shas": [
+        "9720c226707abe6de56f75ca4d3bb55f29e9f4b4",
+        "c8054d2315cdeeb67a76ec614735942e690c596c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__Graylog2__graylog2-server__pr25611.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\Graylog2__graylog2-server__pr25611__java_python__Graylog2__graylog2-server__pr25611\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\Graylog2__graylog2-server__pr25611__java_python__Graylog2__graylog2-server__pr25611\\rn"
+  }
+}

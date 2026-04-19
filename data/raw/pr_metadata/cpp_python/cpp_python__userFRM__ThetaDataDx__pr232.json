@@ -1,0 +1,103 @@
+{
+  "instance_id": "cpp_python__userFRM__ThetaDataDx__pr232",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "userFRM/ThetaDataDx",
+  "pr_number": 232,
+  "pr_url": "https://github.com/userFRM/ThetaDataDx/pull/232",
+  "repo": {
+    "full_name": "userFRM/ThetaDataDx",
+    "clone_url": "https://github.com/userFRM/ThetaDataDx.git",
+    "default_branch": "main",
+    "created_at": "2026-03-26T07:18:36Z",
+    "stars": 7,
+    "license": "GPL-3.0",
+    "size_kb": 6633
+  },
+  "pull_request": {
+    "id": 3512870617,
+    "title": "chore(cpp): remove dead TdxSnapshotTradeTick struct",
+    "body": "## Summary\n\nRemove `TdxSnapshotTradeTick` from the C++ SDK — no typed array, no free function, already cleaned from Go.\n\nFixes #227\n\n## Test plan\n\n- [x] C++ header compiles (removed struct had no consumers)\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "created_at": "2026-04-10T08:09:26Z",
+    "merged_at": "2026-04-10T08:24:20Z",
+    "base_sha": "441ce3a646306fd4cc4980c237c03687864d855a",
+    "head_sha": "14054416a9331b52dc4fd0e57714c7d0df886a0d",
+    "merge_commit_sha": "ae90d85c8d4d4afc4634d59b4b282b3f607bc33b",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "441ce3a646306fd4cc4980c237c03687864d855a",
+  "final_sha": "14054416a9331b52dc4fd0e57714c7d0df886a0d",
+  "changed_files": [
+    {
+      "sha": "eecded4ca9150687154adeb9a3b9e4a872b026a5",
+      "filename": "sdks/cpp/README.md",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/userFRM/ThetaDataDx/blob/14054416a9331b52dc4fd0e57714c7d0df886a0d/sdks%2Fcpp%2FREADME.md",
+      "raw_url": "https://github.com/userFRM/ThetaDataDx/raw/14054416a9331b52dc4fd0e57714c7d0df886a0d/sdks%2Fcpp%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/userFRM/ThetaDataDx/contents/sdks%2Fcpp%2FREADME.md?ref=14054416a9331b52dc4fd0e57714c7d0df886a0d",
+      "patch": "@@ -254,7 +254,6 @@ All endpoints return fully typed C++ structs. No raw JSON.\n | `IvTick` | ms_of_day, implied_volatility, iv_error, date, **expiration, strike, right** | IV-only endpoints |\n | `PriceTick` | ms_of_day, price, date | Index price endpoints |\n | `MarketValueTick` | ms_of_day, market_cap, shares_outstanding, enterprise_value, book_value, free_float, date, **expiration, strike, right** | Market value endpoints |\n-| `SnapshotTradeTick` | ms_of_day, sequence, size, condition, price, date, **expiration, strike, right** | Snapshot trade endpoints |\n | `OptionContract` | root, expiration, strike, right | option_list_contracts |\n | `CalendarDay` | date, is_open, open_time, close_time, status | Calendar endpoints |\n | `InterestRateTick` | ms_of_day, rate, date | Interest rate endpoints |"
+    },
+    {
+      "sha": "9ae6631c6038a73e88db27fcf88dd1aa97aa6e13",
+      "filename": "sdks/cpp/include/thetadx.h",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 12,
+      "changes": 12,
+      "blob_url": "https://github.com/userFRM/ThetaDataDx/blob/14054416a9331b52dc4fd0e57714c7d0df886a0d/sdks%2Fcpp%2Finclude%2Fthetadx.h",
+      "raw_url": "https://github.com/userFRM/ThetaDataDx/raw/14054416a9331b52dc4fd0e57714c7d0df886a0d/sdks%2Fcpp%2Finclude%2Fthetadx.h",
+      "contents_url": "https://api.github.com/repos/userFRM/ThetaDataDx/contents/sdks%2Fcpp%2Finclude%2Fthetadx.h?ref=14054416a9331b52dc4fd0e57714c7d0df886a0d",
+      "patch": "@@ -193,18 +193,6 @@ TDX_ALIGN64_BEGIN typedef struct {\n     double midpoint;\n } TdxQuoteTick TDX_ALIGN64_END;\n \n-TDX_ALIGN64_BEGIN typedef struct {\n-    int32_t ms_of_day;\n-    int32_t sequence;\n-    int32_t size;\n-    int32_t condition;\n-    double price;\n-    int32_t date;\n-    int32_t expiration;\n-    double strike;\n-    int32_t right;\n-} TdxSnapshotTradeTick TDX_ALIGN64_END;\n-\n TDX_ALIGN64_BEGIN typedef struct {\n     int32_t ms_of_day;\n     int32_t sequence;"
+    },
+    {
+      "sha": "c65b0db8a6546e97d5c08687de346694261a77c5",
+      "filename": "sdks/cpp/include/thetadx.hpp",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/userFRM/ThetaDataDx/blob/14054416a9331b52dc4fd0e57714c7d0df886a0d/sdks%2Fcpp%2Finclude%2Fthetadx.hpp",
+      "raw_url": "https://github.com/userFRM/ThetaDataDx/raw/14054416a9331b52dc4fd0e57714c7d0df886a0d/sdks%2Fcpp%2Finclude%2Fthetadx.hpp",
+      "contents_url": "https://api.github.com/repos/userFRM/ThetaDataDx/contents/sdks%2Fcpp%2Finclude%2Fthetadx.hpp?ref=14054416a9331b52dc4fd0e57714c7d0df886a0d",
+      "patch": "@@ -38,7 +38,6 @@ using OpenInterestTick = TdxOpenInterestTick;\n using MarketValueTick = TdxMarketValueTick;\n using CalendarDay = TdxCalendarDay;\n using InterestRateTick = TdxInterestRateTick;\n-using SnapshotTradeTick = TdxSnapshotTradeTick;\n using TradeQuoteTick = TdxTradeQuoteTick;\n // OptionContract uses std::string for root to avoid use-after-free.\n // The C FFI TdxOptionContract uses a raw char* that is freed with the array,"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "14054416a9331b52dc4fd0e57714c7d0df886a0d",
+      "message": "chore(cpp): remove dead TdxSnapshotTradeTick struct (#227)\n\nNo typed array type, no free function, already removed from the Go SDK.\nRemoves the struct from thetadx.h, the C++ alias from thetadx.hpp,\nand the README table row.\n\nFixes #227\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "441ce3a646306fd4cc4980c237c03687864d855a"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__userFRM__ThetaDataDx__pr232.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\userFRM__ThetaDataDx__pr232__cpp_python__userFRM__ThetaDataDx__pr232\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\userFRM__ThetaDataDx__pr232__cpp_python__userFRM__ThetaDataDx__pr232\\rn"
+  }
+}

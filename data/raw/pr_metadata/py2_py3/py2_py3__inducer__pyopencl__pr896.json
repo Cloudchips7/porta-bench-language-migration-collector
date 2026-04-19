@@ -1,0 +1,476 @@
+{
+  "instance_id": "py2_py3__inducer__pyopencl__pr896",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "inducer/pyopencl",
+  "pr_number": 896,
+  "pr_url": "https://github.com/inducer/pyopencl/pull/896",
+  "repo": {
+    "full_name": "inducer/pyopencl",
+    "clone_url": "https://github.com/inducer/pyopencl.git",
+    "default_branch": "main",
+    "created_at": "2011-04-06T02:51:33Z",
+    "stars": 1135,
+    "license": "NOASSERTION",
+    "size_kb": 6256
+  },
+  "pull_request": {
+    "id": 3310920205,
+    "title": "Ruff152",
+    "body": "",
+    "created_at": "2026-02-21T14:53:53Z",
+    "merged_at": "2026-02-21T19:44:43Z",
+    "base_sha": "2d8ed7a378bd29e563c5d05cddb32d3dc626dc19",
+    "head_sha": "cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+    "merge_commit_sha": "38909adaf264b4c914f6d22845c9120c83a51fa4",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "2d8ed7a378bd29e563c5d05cddb32d3dc626dc19",
+  "final_sha": "cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+  "changed_files": [
+    {
+      "sha": "afaf69ef94c28d5aeabc1c534519c5c1048d28eb",
+      "filename": ".basedpyright/baseline.json",
+      "status": "modified",
+      "additions": 54,
+      "deletions": 158,
+      "changes": 212,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/.basedpyright%2Fbaseline.json",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/.basedpyright%2Fbaseline.json",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/.basedpyright%2Fbaseline.json?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -905,6 +905,38 @@\n                     \"lineCount\": 1\n                 }\n             },\n+            {\n+                \"code\": \"reportUnknownVariableType\",\n+                \"range\": {\n+                    \"startColumn\": 8,\n+                    \"endColumn\": 11,\n+                    \"lineCount\": 1\n+                }\n+            },\n+            {\n+                \"code\": \"reportUnknownMemberType\",\n+                \"range\": {\n+                    \"startColumn\": 14,\n+                    \"endColumn\": 37,\n+                    \"lineCount\": 1\n+                }\n+            },\n+            {\n+                \"code\": \"reportAttributeAccessIssue\",\n+                \"range\": {\n+                    \"startColumn\": 23,\n+                    \"endColumn\": 37,\n+                    \"lineCount\": 1\n+                }\n+            },\n+            {\n+                \"code\": \"reportUnknownVariableType\",\n+                \"range\": {\n+                    \"startColumn\": 15,\n+                    \"endColumn\": 18,\n+                    \"lineCount\": 1\n+                }\n+            },\n             {\n                 \"code\": \"reportArgumentType\",\n                 \"range\": {\n@@ -1973,14 +2005,6 @@\n                     \"lineCount\": 1\n                 }\n             },\n-            {\n-                \"code\": \"reportUnknownVariableType\",\n-                \"range\": {\n-                    \"startColumn\": 38,\n-                    \"endColumn\": 62,\n-                    \"lineCount\": 1\n-                }\n-            },\n             {\n                 \"code\": \"reportUnknownVariableType\",\n                 \"range\": {\n@@ -2213,14 +2237,6 @@\n                     \"lineCount\": 1\n                 }\n             },\n-            {\n-                \"code\": \"reportArgumentType\",\n-                \"range\": {\n-                    \"startColumn\": 12,\n-                    \"endColumn\": 16,\n-                    \"lineCount\": 1\n-                }\n-            },\n             {\n                 \"code\": \"reportUnknownMemberType\",\n                 \"range\": {\n@@ -7870,24 +7886,24 @@\n             {\n                 \"code\": \"reportUnknownArgumentType\",\n                 \"range\": {\n-                    \"startColumn\": 29,\n-                    \"endColumn\": 32,\n+                    \"startColumn\": 39,\n+                    \"endColumn\": 42,\n                     \"lineCount\": 1\n                 }\n             },\n             {\n                 \"code\": \"reportUnknownArgumentType\",\n                 \"range\": {\n-                    \"startColumn\": 42,\n-                    \"endColumn\": 51,\n+                    \"startColumn\": 52,\n+                    \"endColumn\": 61,\n                     \"lineCount\": 1\n                 }\n             },\n             {\n                 \"code\": \"reportUnknownVariableType\",\n                 \"range\": {\n-                    \"startColumn\": 28,\n-                    \"endColumn\": 31,\n+                    \"startColumn\": 24,\n+                    \"endColumn\": 27,\n                     \"lineCount\": 1\n                 }\n             },\n@@ -8358,24 +8374,24 @@\n             {\n                 \"code\": \"reportUnknownArgumentType\",\n                 \"range\": {\n-                    \"startColumn\": 29,\n-                    \"endColumn\": 32,\n+                    \"startColumn\": 39,\n+                    \"endColumn\": 42,\n                     \"lineCount\": 1\n                 }\n             },\n             {\n                 \"code\": \"reportUnknownArgumentType\",\n                 \"range\": {\n-                    \"startColumn\": 42,\n-                    \"endColumn\": 51,\n+                    \"startColumn\": 52,\n+                    \"endColumn\": 61,\n                     \"lineCount\": 1\n                 }\n             },\n             {\n                 \"code\": \"reportUnknownVariableType\",\n                 \"range\": {\n-                    \"startColumn\": 28,\n-                    \"endColumn\": 31,\n+                    \"startColumn\": 24,\n+                    \"endColumn\": 27,\n                     \"lineCount\": 1\n                 }\n             },\n@@ -8662,24 +8678,24 @@\n             {\n                 \"code\": \"reportUnknownArgumentType\",\n                 \"range\": {\n-                    \"startColumn\": 29,\n-                    \"endColumn\": 32,\n+                    \"startColumn\": 39,\n+                    \"endColumn\": 42,\n                     \"lineCount\": 1\n                 }\n             },\n             {\n                 \"code\": \"reportUnknownArgumentType\",\n                 \"range\": {\n-                    \"startColumn\": 42,\n-                    \"endColumn\": 51,\n+                    \"startColumn\": 52,\n+                    \"endColumn\": 61,\n                     \"lineCount\": 1\n                 }\n             },\n             {\n                 \"code\": \"reportUnknownVariableType\",\n                 \"range\": {\n-                    \"startColumn\": 28,\n-                    \"endColumn\": 31,\n+                    \"startColumn\": 24,\n+                    \"endColumn\": 27,\n                     \"lineCount\": 1\n                 }\n             },\n@@ -12208,16 +12224,16 @@\n             {\n                 \"code\": \"reportUnknownArgumentType\",\n                 \"range\": {\n-                    \"startColumn\": 25,\n-                    \"endColumn\": 37,\n+                    \"startColumn\": 26,\n+                    \"endColumn\": 38,\n                     \"lineCount\": 1\n                 }\n             },\n             {\n                 \"code\": \"reportUnknownArgumentType\",\n                 \"range\": {\n-                    \"startColumn\": 39,\n-                    \"endColumn\": 49,\n+                    \"startColumn\": 40,\n+                    \"endColumn\": 50,\n                     \"lineCount\": 1\n                 }\n             },\n@@ -13051,126 +13067,6 @@\n                     \"lineCount\": 1\n                 }\n             },\n-            {\n-                \"code\": \"reportUnknownParameterType\",\n-                \"range\": {\n-                    \"startColumn\": 29,\n-                    \"endColumn\": 32,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportMissingParameterType\",\n-                \"range\": {\n-                    \"startColumn\": 29,\n-                    \"endColumn\": 32,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportUnknownParameterType\",\n-                \"range\": {\n-                    \"startColumn\": 34,\n-                    \"endColumn\": 37,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportMissingParameterType\",\n-                \"range\": {\n-                    \"startColumn\": 34,\n-                    \"endColumn\": 37,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportUnknownMemberType\",\n-                \"range\": {\n-                    \"startColumn\": 7,\n-                    \"endColumn\": 19,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportUnknownMemberType\",\n-                \"range\": {\n-                    \"startColumn\": 7,\n-                    \"endColumn\": 24,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportUnknownMemberType\",\n-                \"range\": {\n-                    \"startColumn\": 40,\n-                    \"endColumn\": 48,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportUnknownMemberType\",\n-                \"range\": {\n-                    \"startColumn\": 7,\n-                    \"endColumn\": 19,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportUnknownMemberType\",\n-                \"range\": {\n-                    \"startColumn\": 7,\n-                    \"endColumn\": 24,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportUnknownMemberType\",\n-                \"range\": {\n-                    \"startColumn\": 40,\n-                    \"endColumn\": 52,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportUnknownArgumentType\",\n-                \"range\": {\n-                    \"startColumn\": 40,\n-                    \"endColumn\": 52,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportOptionalOperand\",\n-                \"range\": {\n-                    \"startColumn\": 11,\n-                    \"endColumn\": 23,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportOptionalOperand\",\n-                \"range\": {\n-                    \"startColumn\": 13,\n-                    \"endColumn\": 25,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportUnknownArgumentType\",\n-                \"range\": {\n-                    \"startColumn\": 71,\n-                    \"endColumn\": 74,\n-                    \"lineCount\": 1\n-                }\n-            },\n-            {\n-                \"code\": \"reportUnknownArgumentType\",\n-                \"range\": {\n-                    \"startColumn\": 76,\n-                    \"endColumn\": 79,\n-                    \"lineCount\": 1\n-                }\n-            },\n             {\n                 \"code\": \"reportUnknownParameterType\",\n                 \"range\": {"
+    },
+    {
+      "sha": "a42ac5d9b56a0fe0e0c03dc0aa5ca75ddd2b19cf",
+      "filename": "contrib/fortran-to-opencl/translate.py",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 18,
+      "changes": 36,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/contrib%2Ffortran-to-opencl%2Ftranslate.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/contrib%2Ffortran-to-opencl%2Ftranslate.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/contrib%2Ffortran-to-opencl%2Ftranslate.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -135,16 +135,16 @@ class FortranExpressionParser(ExpressionParserBase):\n     # FIXME double/single prec literals\n \n     lex_table: ClassVar[list[tuple[str, str]]] = [\n-        (_less_than, pytools.lex.RE(r\"\\.lt\\.\", re.I)),\n-        (_greater_than, pytools.lex.RE(r\"\\.gt\\.\", re.I)),\n-        (_less_equal, pytools.lex.RE(r\"\\.le\\.\", re.I)),\n-        (_greater_equal, pytools.lex.RE(r\"\\.ge\\.\", re.I)),\n-        (_equal, pytools.lex.RE(r\"\\.eq\\.\", re.I)),\n-        (_not_equal, pytools.lex.RE(r\"\\.ne\\.\", re.I)),\n-\n-        (_not, pytools.lex.RE(r\"\\.not\\.\", re.I)),\n-        (_and, pytools.lex.RE(r\"\\.and\\.\", re.I)),\n-        (_or, pytools.lex.RE(r\"\\.or\\.\", re.I)),\n+        (_less_than, pytools.lex.RE(r\"\\.lt\\.\", re.IGNORECASE)),\n+        (_greater_than, pytools.lex.RE(r\"\\.gt\\.\", re.IGNORECASE)),\n+        (_less_equal, pytools.lex.RE(r\"\\.le\\.\", re.IGNORECASE)),\n+        (_greater_equal, pytools.lex.RE(r\"\\.ge\\.\", re.IGNORECASE)),\n+        (_equal, pytools.lex.RE(r\"\\.eq\\.\", re.IGNORECASE)),\n+        (_not_equal, pytools.lex.RE(r\"\\.ne\\.\", re.IGNORECASE)),\n+\n+        (_not, pytools.lex.RE(r\"\\.not\\.\", re.IGNORECASE)),\n+        (_and, pytools.lex.RE(r\"\\.and\\.\", re.IGNORECASE)),\n+        (_or, pytools.lex.RE(r\"\\.or\\.\", re.IGNORECASE)),\n         *ExpressionParserBase.lex_table]\n \n     def __init__(self, tree_walker):\n@@ -221,7 +221,7 @@ def parse_terminal(self, pstate):\n             }\n \n     def parse_prefix(self, pstate, min_precedence=0):\n-        import pymbolic.primitives as primitives\n+        from pymbolic import primitives\n         from pymbolic.parser import _PREC_UNARY\n \n         pstate.expect_not_end()\n@@ -483,7 +483,7 @@ def __init__(self, translator, scope):\n \n     def map_subscript(self, expr, enclosing_prec):\n         idx_dtype = self.infer_type(expr.index)\n-        if not \"i\" == idx_dtype.kind or \"u\" == idx_dtype.kind:\n+        if \"i\" != idx_dtype.kind or \"u\" == idx_dtype.kind:\n             ind_prefix = \"(int) \"\n         else:\n             ind_prefix = \"\"\n@@ -1383,10 +1383,8 @@ def f2cl(source, free_form=False, strict=True,\n     source = F2CLTranslator(addr_space_hints, force_casts,\n             arg_info, use_restrict_pointers=use_restrict_pointers)(tree)\n \n-    func_decls = []\n-    for entry in source:\n-        if isinstance(entry, cgen.FunctionBody):\n-            func_decls.append(entry.fdecl)\n+    func_decls = [entry.fdecl\n+        for entry in source if isinstance(entry, cgen.FunctionBody)]\n \n     mod = cgen.Module([*func_decls, cgen.Line(), *source])\n \n@@ -1408,8 +1406,10 @@ def f2cl(source, free_form=False, strict=True,\n \n \n def f2cl_files(source_file, target_file, **kwargs):\n-    mod = f2cl(open(source_file).read(), **kwargs)\n-    open(target_file, \"w\").write(mod)\n+    with open(source_file) as inf:\n+        mod = f2cl(inf.read(), **kwargs)\n+    with open(target_file, \"w\") as outf:\n+        outf.write(mod)\n \n \n if __name__ == \"__main__\":"
+    },
+    {
+      "sha": "022ec8be904e76bf61b23e024f396d823a3e8936",
+      "filename": "examples/black-hole-accretion.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 12,
+      "changes": 19,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fblack-hole-accretion.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fblack-hole-accretion.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/examples%2Fblack-hole-accretion.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -1,5 +1,3 @@\n-#!/usr/bin/env python3\n-#\n # TrouNoir model using PyOpenCL or PyCUDA\n #\n # CC BY-NC-SA 2019 : <emmanuel.quemener@ens-lyon.fr>\n@@ -43,8 +41,7 @@\n \n \n def DictionariesAPI():\n-    PhysicsList = {\"Einstein\": 0, \"Newton\": 1}\n-    return PhysicsList\n+    return {\"Einstein\": 0, \"Newton\": 1}\n \n \n #\n@@ -779,7 +776,7 @@ def DictionariesAPI():\n \n \n def KernelCodeCuda():\n-    BlobCUDA = \"\"\"\n+    return \"\"\"\n \n #define PI (float)3.14159265359\n #define nbr 256\n@@ -1493,7 +1490,6 @@ def KernelCodeCuda():\n \n }\n \"\"\"\n-    return BlobCUDA\n \n \n # def ImageOutput(sigma,prefix,Colors):\n@@ -1588,7 +1584,7 @@ def BlackHoleCL(zImage, fImage, InputCL):\n     # Je recupere les flag possibles pour les buffers\n     mf = cl.mem_flags\n \n-    if Method == \"TrajectoPixel\" or Method == \"TrajectoCircle\":\n+    if Method in {\"TrajectoPixel\", \"TrajectoCircle\"}:\n         TrajectoriesCL = cl.Buffer(\n             ctx, mf.WRITE_ONLY | mf.COPY_HOST_PTR, hostbuf=Trajectories\n         )\n@@ -1706,7 +1702,7 @@ def BlackHoleCL(zImage, fImage, InputCL):\n \n     cl.enqueue_copy(queue, zImage, zImageCL).wait()\n     cl.enqueue_copy(queue, fImage, fImageCL).wait()\n-    if Method == \"TrajectoPixel\" or Method == \"TrajectoCircle\":\n+    if Method in {\"TrajectoPixel\", \"TrajectoCircle\"}:\n         cl.enqueue_copy(queue, Trajectories, TrajectoriesCL).wait()\n         cl.enqueue_copy(queue, IdLast, IdLastCL).wait()\n     elapsed = time.time() - start_time\n@@ -1738,7 +1734,7 @@ def BlackHoleCL(zImage, fImage, InputCL):\n     zImageCL.release()\n     fImageCL.release()\n \n-    if Method == \"TrajectoPixel\" or Method == \"TrajectoCircle\":\n+    if Method in {\"TrajectoPixel\", \"TrajectoCircle\"}:\n         if not NoImage:\n             AngleStep = 4 * numpy.pi / TrackPoints\n             Angles = numpy.arange(0.0, 4 * numpy.pi, AngleStep)\n@@ -1936,7 +1932,7 @@ def BlackHoleCUDA(zImage, fImage, InputCL):\n \n     cuda.memcpy_dtoh(zImage, zImageCU)\n     cuda.memcpy_dtoh(fImage, fImageCU)\n-    if Method == \"TrajectoPixel\" or Method == \"TrajectoCircle\":\n+    if Method in {\"TrajectoPixel\", \"TrajectoCircle\"}:\n         cuda.memcpy_dtoh(Trajectories, TrajectoriesCU)\n     elapsed = time.time() - start_time\n     print(\"\\nCompute Time : %f\" % compute)\n@@ -1969,7 +1965,7 @@ def BlackHoleCUDA(zImage, fImage, InputCL):\n \n     Context.detach()\n \n-    if Method == \"TrajectoPixel\" or Method == \"TrajectoCircle\":\n+    if Method in {\"TrajectoPixel\", \"TrajectoCircle\"}:\n         if not NoImage:\n             AngleStep = 4 * numpy.pi / TrackPoints\n             Angles = numpy.arange(0.0, 4 * numpy.pi, AngleStep)\n@@ -1997,7 +1993,6 @@ def BlackHoleCUDA(zImage, fImage, InputCL):\n     Mass = 1.0\n     # Internal Radius 3 times de Schwarzschild Radius\n     InternalRadius = 6.0 * Mass\n-    #\n     ExternalRadius = 12.0\n     #\n     # Angle with normal to disc 10 degrees"
+    },
+    {
+      "sha": "2d534920c7494b9e2d5ca663df982a1bf60c28d7",
+      "filename": "examples/demo.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fdemo.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fdemo.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/examples%2Fdemo.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -1,5 +1,3 @@\n-#!/usr/bin/env python\n-\n import numpy as np\n \n import pyopencl as cl"
+    },
+    {
+      "sha": "8a391122e38fb32750f4d843e55dc3298a1b3c9f",
+      "filename": "examples/dump-properties.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fdump-properties.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fdump-properties.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/examples%2Fdump-properties.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -69,8 +69,7 @@ def str_chd_type(chdtype):\n                             result = result.replace(\"UNSIGNED\", \"U\")\n                             result = result.replace(\"SIGNED\", \"S\")\n                             result = result.replace(\"NORM\", \"N\")\n-                            result = result.replace(\"FLOAT\", \"F\")\n-                            return result\n+                            return result.replace(\"FLOAT\", \"F\")\n \n                         formats = \", \".join(\n                                 \"{}-{}\".format("
+    },
+    {
+      "sha": "19ec72b164c28794008d10acdb267a7361aacee9",
+      "filename": "examples/image_filters_using_image2d_t.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fimage_filters_using_image2d_t.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fimage_filters_using_image2d_t.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/examples%2Fimage_filters_using_image2d_t.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -1,4 +1,3 @@\n-#!/usr/bin/env python3\n # this example shows how to blur, gray scale or brightness adjust the picture\n # using pyopencl and  image2d_t buffer objects\n # this python script will ask you for:"
+    },
+    {
+      "sha": "555b898d3f97761f22fbd61ade9d68c0142c41b7",
+      "filename": "examples/n-body.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 4,
+      "changes": 5,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fn-body.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fn-body.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/examples%2Fn-body.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -1,5 +1,3 @@\n-#!/usr/bin/env python3\n-\n \"\"\"\n NBody Demonstrator implemented in OpenCL, rendering OpenGL\n \n@@ -525,8 +523,7 @@ def MainOpenCL(clDataX, clDataV, Step, Method):\n             queue, (Number, 1), None, clDataX, clDataV, Step\n         )\n     CLLaunch.wait()\n-    Elapsed = time.time() - time_start\n-    return Elapsed\n+    return time.time() - time_start\n \n \n def display(*args):"
+    },
+    {
+      "sha": "44f32b63b4baf003488b573990c17407b29b8c66",
+      "filename": "examples/pi-monte-carlo.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 8,
+      "changes": 11,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fpi-monte-carlo.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fpi-monte-carlo.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/examples%2Fpi-monte-carlo.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -1,5 +1,3 @@\n-#!/usr/bin/env python3\n-\n #\n # Pi-by-MonteCarlo using PyCUDA/PyOpenCL\n #\n@@ -138,7 +136,7 @@ def Mylq2(N, T1, s, c1, c2, p):\n \n \n def KernelCodeCuda():\n-    KERNEL_CODE_CUDA = \"\"\"\n+    return \"\"\"\n #define TCONG 0\n #define TSHR3 1\n #define TMWC 2\n@@ -285,11 +283,10 @@ def KernelCodeCuda():\n }\n \n \"\"\"\n-    return KERNEL_CODE_CUDA\n \n \n def KernelCodeOpenCL():\n-    KERNEL_CODE_OPENCL = \"\"\"\n+    return \"\"\"\n #define TCONG 0\n #define TSHR3 1\n #define TMWC 2\n@@ -438,7 +435,6 @@ def KernelCodeOpenCL():\n }\n \n \"\"\"\n-    return KERNEL_CODE_OPENCL\n \n \n def MetropolisCuda(InputCU):\n@@ -643,13 +639,12 @@ def MetropolisOpenCL(InputCL):\n \n     circleCL.release()\n \n-    OutputCL = {\n+    return {\n         \"Inside\": sum(circle),\n         \"NewIterations\": numpy.uint64(iterationsCL * jobs),\n         \"Duration\": MyDuration,\n     }\n     # print(OutputCL)\n-    return OutputCL\n \n \n def FitAndPrint(N, D, Curves):"
+    },
+    {
+      "sha": "876f03eaa3ea430136549c680dd7191f2c67d627",
+      "filename": "examples/svm.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fsvm.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Fsvm.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/examples%2Fsvm.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -1,5 +1,3 @@\n-#!/usr/bin/env python\n-\n import numpy as np\n \n import pyopencl as cl"
+    },
+    {
+      "sha": "8a64fd1b21350244f99cce7663a1f2a6b3fa71d0",
+      "filename": "examples/transpose.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Ftranspose.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/examples%2Ftranspose.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/examples%2Ftranspose.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -189,9 +189,9 @@ def benchmark_transpose():\n                 method(queue, a_t_buf, a_buf, source.shape)\n \n             count = 12\n-            events = []\n-            for _i in range(count):\n-                events.append(method(queue, a_t_buf, a_buf, source.shape))\n+            events = [\n+                method(queue, a_t_buf, a_buf, source.shape)\n+                for _i in range(count)]\n \n             events[-1].wait()\n             time = sum(evt.profile.end - evt.profile.start for evt in events)"
+    },
+    {
+      "sha": "8b7f5a8f2a5ceabdc2d581dc6416cfb7a01b1925",
+      "filename": "pyopencl/__init__.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 12,
+      "changes": 21,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2F__init__.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2F__init__.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -50,7 +50,7 @@\n os.environ[\"PYOPENCL_HOME\"] = os.path.dirname(os.path.abspath(__file__))\n \n try:\n-    import pyopencl._cl as _cl\n+    from pyopencl import _cl\n except ImportError:\n     from os.path import dirname, join, realpath\n     if realpath(join(os.getcwd(), \"pyopencl\")) == realpath(dirname(__file__)):\n@@ -316,7 +316,7 @@ def unquote(path: str):\n     option_idx = 0\n     while option_idx < len(options):\n         option = options[option_idx].strip()\n-        if option.startswith(\"-I\") or option.startswith(\"/I\"):\n+        if option.startswith((\"-I\", \"/I\")):\n             if len(option) == 2:\n                 if option_idx+1 < len(options):\n                     include_path.append(unquote(options[option_idx+1]))\n@@ -607,11 +607,9 @@ def _build_and_catch_errors(self,\n \n             if source is not None:\n                 from tempfile import NamedTemporaryFile\n-                srcfile = NamedTemporaryFile(mode=\"wt\", delete=False, suffix=\".cl\")\n-                try:\n+                with NamedTemporaryFile(mode=\"wt\", delete=False, suffix=\".cl\") \\\n+                        as srcfile:\n                     srcfile.write(source)\n-                finally:\n-                    srcfile.close()\n \n                 msg = msg + \"\\n(source saved as %s)\" % srcfile.name\n \n@@ -881,7 +879,6 @@ def parse_device(choice):\n         raise Error(\"no devices found\")\n     elif len(devices) == 1 and not answers:\n         cc_print(f\"Choosing only available device: {devices[0]}\")\n-        pass\n     else:\n         if not answers:\n             cc_print(\"Choose device(s):\")\n@@ -1494,7 +1491,7 @@ def enqueue_fill(queue: CommandQueue,\n     }\n try:\n     np.float16  # noqa: B018\n-except Exception:\n+except Exception:  # noqa: S110\n     pass\n else:\n     DTYPE_TO_CHANNEL_TYPE[np.dtype(np.float16)] = channel_type.HALF_FLOAT\n@@ -1511,7 +1508,7 @@ def image_from_array(\n             ctx: Context,\n             ary: NDArray[Any],\n             num_channels: int | None = None,\n-            mode: Literal[\"r\"] | Literal[\"w\"] = \"r\",\n+            mode: Literal[\"r\", \"w\"] = \"r\",\n             norm_int: bool = False\n         ) -> Image:\n     if not ary.flags.c_contiguous:\n@@ -1668,7 +1665,7 @@ def svm_empty(\n             flags: svm_mem_flags,\n             shape: int | tuple[int, ...],\n             dtype: DTypeT,\n-            order: Literal[\"F\"] | Literal[\"C\"] = \"C\",\n+            order: Literal[\"F\", \"C\"] = \"C\",\n             alignment: int | None = None,\n             queue: CommandQueue | None = None,\n         ) -> np.ndarray[tuple[int, ...], DTypeT]:\n@@ -1782,7 +1779,7 @@ def csvm_empty(\n             ctx: Context,\n             shape: int | tuple[int, ...],\n             dtype: DTypeT,\n-            order: Literal[\"F\"] | Literal[\"C\"] = \"C\",\n+            order: Literal[\"F\", \"C\"] = \"C\",\n             alignment: int | None = None,\n             queue: CommandQueue | None = None,\n         ) -> np.ndarray[tuple[int, ...], DTypeT]:\n@@ -1814,7 +1811,7 @@ def fsvm_empty(\n             ctx: Context,\n             shape: int | tuple[int, ...],\n             dtype: DTypeT,\n-            order: Literal[\"F\"] | Literal[\"C\"] = \"C\",\n+            order: Literal[\"F\", \"C\"] = \"C\",\n             alignment: int | None = None,\n             queue: CommandQueue | None = None,\n         ) -> np.ndarray[tuple[int, ...], DTypeT]:"
+    },
+    {
+      "sha": "3497426ccc7c8c57e3ccd4ff1bddc3727d41f08a",
+      "filename": "pyopencl/_cl.pyi",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 6,
+      "changes": 12,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2F_cl.pyi",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2F_cl.pyi",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2F_cl.pyi?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -49,13 +49,13 @@ class Error(Exception):\n     __str__ = pyopencl._monkeypatch.error_str\n \n class MemoryError(Error):\n-    pass\n+    ...\n \n class LogicError(Error):\n-    pass\n+    ...\n \n class RuntimeError(Error):\n-    pass\n+    ...\n \n class status_code(IntEnum):  # noqa: N801\n     SUCCESS = auto()\n@@ -1136,7 +1136,7 @@ class MemoryObjectHolder:\n     def get_host_array(self,\n             shape: tuple[int, ...],\n             dtype: DTypeT,\n-            order: Literal[\"C\"] | Literal[\"F\"] = \"C\"\n+            order: Literal[\"C\", \"F\"] = \"C\"\n         ) -> np.ndarray[tuple[int, ...], DTypeT]: ...\n \n     @overload\n@@ -1510,7 +1510,7 @@ def enqueue_map_buffer(\n         offset: int,\n         shape: tuple[int, ...],\n         dtype: DTypeT,\n-        order: Literal[\"C\"] | Literal[\"F\"] = \"C\",\n+        order: Literal[\"C\", \"F\"] = \"C\",\n         strides: tuple[int, ...] | None = None,\n         wait_for: WaitList = None,\n         is_blocking: bool = True\n@@ -1524,7 +1524,7 @@ def enqueue_map_image(\n         region: tuple[int, ...],\n         shape: tuple[int, ...],\n         dtype: DTypeT,\n-        order: Literal[\"C\"] | Literal[\"F\"] = \"C\",\n+        order: Literal[\"C\", \"F\"] = \"C\",\n         strides: tuple[int, ...] | None = None,\n         wait_for: WaitList = None,\n         is_blocking: bool = True"
+    },
+    {
+      "sha": "03f36f89e982c956715efd56317e648bd272059c",
+      "filename": "pyopencl/_monkeypatch.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2F_monkeypatch.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2F_monkeypatch.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2F_monkeypatch.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -37,7 +37,7 @@\n \n import numpy as np\n \n-import pyopencl._cl as _cl\n+from pyopencl import _cl\n \n \n if TYPE_CHECKING:\n@@ -1063,7 +1063,7 @@ def add_get_info(\n             info_class: type[InfoT],\n             cacheable_attrs: Collection[str] = (),\n         ) -> None:\n-    for info_name, _info_value in info_class.__dict__.items():\n+    for info_name in info_class.__dict__:\n         if info_name == \"to_string\" or info_name.startswith(\"_\"):\n             continue\n "
+    },
+    {
+      "sha": "448372d4ec8d13472345e0e039c3a0f570ab5572",
+      "filename": "pyopencl/algorithm.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Falgorithm.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Falgorithm.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2Falgorithm.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -348,9 +348,8 @@ def _make_sort_scan_type(\n     ) -> tuple[str, np.dtype[Any], str]:\n     name = f\"pyopencl_sort_scan_{index_dtype.type.__name__}_{bits}bits_t\"\n \n-    fields: list[tuple[str, np.dtype[np.integer[Any]]]] = []\n-    for mnr in range(2**bits):\n-        fields.append((f\"c{_padded_bin(mnr, bits)}\", index_dtype))\n+    fields: list[tuple[str, np.dtype[np.integer[Any]]]] = [\n+        (f\"c{_padded_bin(mnr, bits)}\", index_dtype) for mnr in range(2**bits)]\n     dtype = np.dtype(fields)\n \n     from pyopencl.tools import get_or_register_dtype, match_dtype_to_c_struct"
+    },
+    {
+      "sha": "1c48ad276d6c43b00f01e226b3ecb3b0865659aa",
+      "filename": "pyopencl/array.py",
+      "status": "modified",
+      "additions": 34,
+      "deletions": 40,
+      "changes": 74,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Farray.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Farray.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2Farray.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -50,8 +50,7 @@\n from typing_extensions import Self, TypeIs, override\n \n import pyopencl as cl\n-import pyopencl.elementwise as elementwise\n-from pyopencl import cltypes\n+from pyopencl import cltypes, elementwise\n from pyopencl.characterize import has_double_support\n from pyopencl.compyte.array import (\n     ArrayFlags as _ArrayFlags,\n@@ -655,15 +654,14 @@ def __init__(\n \n         self._flags: _ArrayFlags | None = _flags\n \n-        if __debug__:\n-            if queue is not None and isinstance(\n-                    self.base_data, _SVMPointer_or_nothing):\n-                mem_queue = getattr(self.base_data, \"_queue\", _NOT_PRESENT)\n-                if mem_queue is not _NOT_PRESENT and mem_queue != queue:\n-                    warn(\"Array has different queue from backing SVM memory. \"\n-                         \"This may lead to the array getting deallocated sooner \"\n-                         \"than expected, potentially leading to crashes.\",\n-                         InconsistentOpenCLQueueWarning, stacklevel=2)\n+        if __debug__ and queue is not None and isinstance(\n+                self.base_data, _SVMPointer_or_nothing):\n+            mem_queue = getattr(self.base_data, \"_queue\", _NOT_PRESENT)\n+            if mem_queue is not _NOT_PRESENT and mem_queue != queue:\n+                warn(\"Array has different queue from backing SVM memory. \"\n+                     \"This may lead to the array getting deallocated sooner \"\n+                     \"than expected, potentially leading to crashes.\",\n+                     InconsistentOpenCLQueueWarning, stacklevel=2)\n \n     @property\n     def ndim(self) -> int:\n@@ -1281,7 +1279,7 @@ def __rsub__(self, other) -> Self:\n \n     def __iadd__(self, other) -> Self:\n         if isinstance(other, Array):\n-            if other.shape != self.shape and other.shape != ():\n+            if other.shape not in (self.shape, ()):\n                 raise NotImplementedError(\"Broadcasting binary op with shapes:\"\n                                           f\" {self.shape}, {other.shape}.\")\n             self.add_event(\n@@ -1299,7 +1297,7 @@ def __iadd__(self, other) -> Self:\n \n     def __isub__(self, other) -> Self:\n         if isinstance(other, Array):\n-            if other.shape != self.shape and other.shape != ():\n+            if other.shape not in (self.shape, ()):\n                 raise NotImplementedError(\"Broadcasting binary op with shapes:\"\n                                           f\" {self.shape}, {other.shape}.\")\n             self.add_event(\n@@ -1349,7 +1347,7 @@ def __rmul__(self, other) -> Self:\n \n     def __imul__(self, other) -> Self:\n         if isinstance(other, Array):\n-            if other.shape != self.shape and other.shape != ():\n+            if other.shape not in (self.shape, ()):\n                 raise NotImplementedError(\"Broadcasting binary op with shapes:\"\n                                           f\" {self.shape}, {other.shape}.\")\n             self.add_event(\n@@ -1415,7 +1413,7 @@ def __itruediv__(self, other) -> Self:\n                 \"Cannot cast {!r} to {!r}\".format(self.dtype, common_dtype))\n \n         if isinstance(other, Array):\n-            if other.shape != self.shape and other.shape != ():\n+            if other.shape not in (self.shape, ()):\n                 raise NotImplementedError(\"Broadcasting binary op with shapes:\"\n                                           f\" {self.shape}, {other.shape}.\")\n             self.add_event(\n@@ -1500,7 +1498,7 @@ def __iand__(self, other) -> Self:\n             raise TypeError(f\"Integral types only: {common_dtype}\")\n \n         if isinstance(other, Array):\n-            if other.shape != self.shape and other.shape != ():\n+            if other.shape not in (self.shape, ()):\n                 raise NotImplementedError(\"Broadcasting binary op with shapes:\"\n                                           f\" {self.shape}, {other.shape}.\")\n             self.add_event(self._array_binop(self, self, other, op=\"&\"))\n@@ -1519,7 +1517,7 @@ def __ior__(self, other) -> Self:\n             raise TypeError(f\"Integral types only: {common_dtype}\")\n \n         if isinstance(other, Array):\n-            if other.shape != self.shape and other.shape != ():\n+            if other.shape not in (self.shape, ()):\n                 raise NotImplementedError(\"Broadcasting binary op with shapes:\"\n                                           f\" {self.shape}, {other.shape}.\")\n             self.add_event(self._array_binop(self, self, other, op=\"|\"))\n@@ -1538,7 +1536,7 @@ def __ixor__(self, other) -> Self:\n             raise TypeError(f\"Integral types only: {common_dtype}\")\n \n         if isinstance(other, Array):\n-            if other.shape != self.shape and other.shape != ():\n+            if other.shape not in (self.shape, ()):\n                 raise NotImplementedError(\"Broadcasting binary op with shapes:\"\n                                           f\" {self.shape}, {other.shape}.\")\n             self.add_event(self._array_binop(self, self, other, op=\"^\"))\n@@ -1900,7 +1898,7 @@ def reshape(self, *shape, **kwargs):\n         #     raise RuntimeError(\"only contiguous arrays may \"\n         #             \"be used as arguments to this operation\")\n \n-        if isinstance(shape[0], tuple) or isinstance(shape[0], list):\n+        if isinstance(shape[0], (tuple, list)):\n             shape = tuple(shape[0])\n \n         if -1 in shape:\n@@ -2399,7 +2397,7 @@ def zeros(\n             queue: cl.CommandQueue,\n             shape: int | tuple[int, ...],\n             dtype: DTypeLike,\n-            order: Literal[\"C\"] | Literal[\"F\"] = \"C\",\n+            order: Literal[\"C\", \"F\"] = \"C\",\n             allocator: Allocator | None = None,\n         ) -> Array:\n     \"\"\"Same as :func:`empty`, but the :class:`Array` is zero-initialized before\n@@ -2765,10 +2763,9 @@ def multi_put(\n     array_lengths = np.ndarray((chunk_size,), dtype=np.int64)\n \n     def make_func_for_chunk_size(chunk_size):\n-        knl = elementwise.get_put_kernel(\n+        return elementwise.get_put_kernel(\n                 context, a_dtype, dest_indices.dtype,\n                 vec_count=chunk_size)\n-        return knl\n \n     knl = make_func_for_chunk_size(chunk_size)\n \n@@ -2849,12 +2846,11 @@ def concatenate(arrays, axis=0, queue: cl.CommandQueue | None = None, allocator=\n     shape = tuple(shape)\n     dtype = np.result_type(*[ary.dtype for ary in arrays])\n \n-    if __debug__:\n-        if builtins.any(type(ary) != type(arrays[0])  # noqa: E721\n-                        for ary in arrays[1:]):\n-            warn(\"Elements of 'arrays' not of the same type, returning \"\n-                 \"an instance of the type of arrays[0]\",\n-                 stacklevel=2)\n+    if __debug__ and builtins.any(type(ary) != type(arrays[0])  # noqa: E721\n+                    for ary in arrays[1:]):\n+        warn(\"Elements of 'arrays' not of the same type, returning \"\n+             \"an instance of the type of arrays[0]\",\n+             stacklevel=2)\n \n     result = arrays[0].__class__(queue, shape, dtype, allocator=allocator)\n \n@@ -2916,12 +2912,11 @@ def hstack(arrays, queue: cl.CommandQueue | None = None):\n \n     w = builtins.sum(ary.shape[-1] for ary in arrays)\n \n-    if __debug__:\n-        if builtins.any(type(ary) != type(arrays[0])  # noqa: E721\n-                        for ary in arrays[1:]):\n-            warn(\"Elements of 'arrays' not of the same type, returning \"\n-                 \"an instance of the type of arrays[0]\",\n-                 stacklevel=2)\n+    if __debug__ and builtins.any(type(ary) != type(arrays[0])  # noqa: E721\n+                    for ary in arrays[1:]):\n+        warn(\"Elements of 'arrays' not of the same type, returning \"\n+             \"an instance of the type of arrays[0]\",\n+             stacklevel=2)\n \n     result = arrays[0].__class__(queue, (*lead_shape, w), arrays[0].dtype,\n                                  allocator=arrays[0].allocator)\n@@ -2974,12 +2969,11 @@ def stack(arrays, axis=0, queue: cl.CommandQueue | None = None):\n \n     result_shape = (*input_shape[:axis], len(arrays), *input_shape[axis:])\n \n-    if __debug__:\n-        if builtins.any(type(ary) != type(arrays[0])  # noqa: E721\n-                        for ary in arrays[1:]):\n-            warn(\"Elements of 'arrays' not of the same type, returning \"\n-                 \"an instance of the type of arrays[0]\",\n-                 stacklevel=2)\n+    if __debug__ and builtins.any(type(ary) != type(arrays[0])  # noqa: E721\n+                    for ary in arrays[1:]):\n+        warn(\"Elements of 'arrays' not of the same type, returning \"\n+             \"an instance of the type of arrays[0]\",\n+             stacklevel=2)\n \n     result = arrays[0].__class__(queue, result_shape,\n                                  np.result_type(*(ary.dtype"
+    },
+    {
+      "sha": "7eb599506ab8b4460c095411ff4897936294b0a4",
+      "filename": "pyopencl/bitonic_sort.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Fbitonic_sort.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Fbitonic_sort.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2Fbitonic_sort.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -162,8 +162,7 @@ def get_program(self, letter, argsort, params):\n \n         kid = mako.template.Template(self.kernels_srcs[letter]).render(argsort=argsort)\n \n-        prg = cl.Program(self.context, defs + kid).build()\n-        return prg\n+        return cl.Program(self.context, defs + kid).build()\n \n     @memoize_method\n     def sort_b_prepare_wl(self, argsort, key_dtype, idx_dtype, shape, axis):"
+    },
+    {
+      "sha": "f343347a1b3259ed3cd71f8efd4f276490a7415d",
+      "filename": "pyopencl/cache.py",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 18,
+      "changes": 28,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Fcache.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Fcache.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2Fcache.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -35,7 +35,7 @@\n \n from typing_extensions import Buffer, override\n \n-import pyopencl._cl as _cl\n+from pyopencl import _cl\n \n \n logger = logging.getLogger(__name__)\n@@ -210,7 +210,7 @@ def _inner(src: bytes):\n \n                 if included_file_name not in result:\n                     try:\n-                        src_file = open(included_file_name, \"rb\")\n+                        src_file = open(included_file_name, \"rb\")  # noqa: SIM115\n                     except OSError:\n                         continue\n \n@@ -251,12 +251,8 @@ def _inner(src: bytes):\n \n def get_file_md5sum(fname: str) -> str:\n     checksum = new_hash()\n-    inf = open(fname)\n-    try:\n-        contents = inf.read()\n-    finally:\n-        inf.close()\n-    update_checksum(checksum, contents)\n+    with open(fname) as inf:\n+        update_checksum(checksum, inf.read())\n     return checksum.hexdigest()\n \n \n@@ -318,7 +314,7 @@ class _InvalidInfoFileError(RuntimeError):\n                 from pickle import load\n \n                 try:\n-                    info_file = open(info_path, \"rb\")\n+                    info_file = open(info_path, \"rb\")  # noqa: SIM115\n                 except OSError as err:\n                     raise _InvalidInfoFileError() from err\n \n@@ -342,11 +338,8 @@ class _InvalidInfoFileError(RuntimeError):\n \n             # {{{ load binary\n \n-            binary_file = open(binary_path, \"rb\")\n-            try:\n+            with open(binary_path, \"rb\") as binary_file:\n                 binary = binary_file.read()\n-            finally:\n-                binary_file.close()\n \n             # }}}\n \n@@ -506,11 +499,10 @@ def _create_built_program_from_source_cached(\n                         outf.write(binary)\n \n                     from pickle import dump\n-                    info_file = open(info_path, \"wb\")\n-                    dump(_SourceInfo(\n-                        dependencies=get_dependencies(src, include_path or []),\n-                        log=logs[i]), info_file)\n-                    info_file.close()\n+                    with open(info_path, \"wb\") as info_file:\n+                        dump(_SourceInfo(\n+                            dependencies=get_dependencies(src, include_path or []),\n+                            log=logs[i]), info_file)\n \n             except Exception:\n                 cleanup_m.error_clean_up()"
+    },
+    {
+      "sha": "f4940b543af4effdb641448eb9c97bde07c5a90f",
+      "filename": "pyopencl/characterize/__init__.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 6,
+      "changes": 15,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Fcharacterize%2F__init__.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Fcharacterize%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2Fcharacterize%2F__init__.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -56,7 +56,7 @@ def reasonable_work_group_size_multiple(\n         ):\n     try:\n         return dev.warp_size_nv\n-    except Exception:\n+    except Exception:  # noqa: S110\n         pass\n \n     if ctx is None:\n@@ -285,7 +285,7 @@ def get_simd_group_size(dev: cl.Device, type_size: int):\n     \"\"\"\n     try:\n         return dev.warp_size_nv\n-    except Exception:\n+    except Exception:  # noqa: S110\n         pass\n \n     lc_plat_vendor = dev.platform.vendor.lower()\n@@ -381,7 +381,10 @@ def _check_for_pocl_arg_count_bug(\n     return result\n \n \n-def has_struct_arg_count_bug(dev, ctx=None):\n+def has_struct_arg_count_bug(\n+            dev: cl.Device,\n+            ctx: cl.Context | None = None\n+        ):\n     \"\"\"Checks whether the device is expected to have the\n     `argument counting bug <https://github.com/pocl/pocl/issues/197>`__.\n     \"\"\"\n@@ -390,9 +393,9 @@ def has_struct_arg_count_bug(dev, ctx=None):\n         return \"apple\"\n     if dev.platform.name == \"Portable Computing Language\":\n         pocl_version = get_pocl_version(dev.platform, fallback_value=(0, 14))\n-        if pocl_version <= (0, 13):\n-            return \"pocl\"\n-        elif pocl_version <= (0, 14) and _check_for_pocl_arg_count_bug(dev, ctx):\n+        assert pocl_version is not None\n+        if (pocl_version <= (0, 13)\n+            or (pocl_version <= (0, 14) and _check_for_pocl_arg_count_bug(dev, ctx))):\n             return \"pocl\"\n \n     return False"
+    },
+    {
+      "sha": "2c92a5ef30e05fd4d61fbcaade477830782010ec",
+      "filename": "pyopencl/clmath.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Fclmath.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Fclmath.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2Fclmath.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -26,7 +26,7 @@\n import numpy as np\n \n import pyopencl.array as cl_array\n-import pyopencl.elementwise as elementwise\n+from pyopencl import elementwise\n from pyopencl.array import _get_common_dtype\n \n "
+    },
+    {
+      "sha": "98cf8f515fa6f845e67090ca1a3c23755642088a",
+      "filename": "pyopencl/clrandom.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Fclrandom.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Fclrandom.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2Fclrandom.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -58,7 +58,7 @@\n \n import pyopencl as cl\n import pyopencl.array as cl_array\n-import pyopencl.cltypes as cltypes\n+from pyopencl import cltypes\n from pyopencl.tools import first_arg_dependent_memoize\n \n "
+    },
+    {
+      "sha": "80ed45de98b5432341763b9fa52a00fdac870b89",
+      "filename": "pyopencl/compyte",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": null,
+      "raw_url": null,
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2Fcompyte?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -1 +1 @@\n-Subproject commit 46d7320a34ac4782a13d8bb2add1a57207cd6038\n+Subproject commit 80ed45de98b5432341763b9fa52a00fdac870b89"
+    },
+    {
+      "sha": "e31e6d1c33aa43a857ca4cd8fd99900ff6b5a790",
+      "filename": "pyopencl/elementwise.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Felementwise.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Felementwise.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2Felementwise.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -158,10 +158,9 @@ def get_elwise_kernel_and_types(\n                         #define PYOPENCL_DEFINE_CDOUBLE\n                         \"\"\")\n                     have_double_pragma = True\n-            if arg.dtype.kind == \"c\":\n-                if not have_complex_include:\n-                    includes.append(\"#include <pyopencl-complex.h>\\n\")\n-                    have_complex_include = True\n+            if arg.dtype.kind == \"c\" and not have_complex_include:\n+                includes.append(\"#include <pyopencl-complex.h>\\n\")\n+                have_complex_include = True\n \n     if pragmas or includes:\n         preamble = \"\\n\".join(pragmas+includes) + \"\\n\" + preamble"
+    },
+    {
+      "sha": "9f26b3f14e515591a3c92939a2448e297e0e3aed",
+      "filename": "pyopencl/invoker.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 4,
+      "changes": 6,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Finvoker.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Finvoker.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2Finvoker.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -34,7 +34,7 @@\n from pytools.py_codegen import Indentation, PythonCodeGenerator\n \n import pyopencl as cl\n-import pyopencl._cl as _cl\n+from pyopencl import _cl\n from pyopencl.tools import VectorArg, _NumpyTypesKeyBuilder\n \n \n@@ -352,9 +352,7 @@ def _check_arg_size(function_name, num_cl_args, arg_types, devs):\n \n         if arg_types:\n             for arg_type in arg_types:\n-                if arg_type is None:\n-                    total_arg_size += dev_ptr_size\n-                elif isinstance(arg_type, VectorArg):\n+                if arg_type is None or isinstance(arg_type, VectorArg):\n                     total_arg_size += dev_ptr_size\n                 else:\n                     total_arg_size += np.dtype(arg_type).itemsize"
+    },
+    {
+      "sha": "df4a2ce8069f9a1b5698d2e9e94c6baf13e082d6",
+      "filename": "pyopencl/scan.py",
+      "status": "modified",
+      "additions": 57,
+      "deletions": 84,
+      "changes": 141,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Fscan.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Fscan.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2Fscan.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -770,89 +770,62 @@ def _round_down_to_power_of_2(val: int) -> int:\n     return result\n \n \n-_PREFIX_WORDS = set(\"\"\"\n-        ldata partial_scan_buffer global scan_offset\n-        segment_start_in_k_group carry\n-        g_first_segment_start_in_interval IS_SEG_START tmp Z\n-        val l_first_segment_start_in_subtree unit_size\n-        index_type interval_begin interval_size offset_end K\n-        SCAN_EXPR do_update WG_SIZE\n-        first_segment_start_in_k_group scan_type\n-        segment_start_in_subtree offset interval_results interval_end\n-        first_segment_start_in_subtree unit_base\n-        first_segment_start_in_interval k INPUT_EXPR\n-        prev_group_sum prev pv value partial_val pgs\n-        is_seg_start update_i scan_item_at_i seq_i read_i\n-        l_ o_mod_k o_div_k l_segment_start_flags scan_value sum\n-        first_seg_start_in_interval g_segment_start_flags\n-        group_base seg_end my_val DEBUG ARGS\n-        ints_to_store ints_per_wg scan_types_per_int linear_index\n-        linear_scan_data_idx dest src store_base wrapped_scan_type\n-        dummy scan_tmp tmp_aux\n-\n-        LID_2 LID_1 LID_0\n-        LDIM_0 LDIM_1 LDIM_2\n-        GDIM_0 GDIM_1 GDIM_2\n-        GID_0 GID_1 GID_2\n-        \"\"\".split())\n-\n-_IGNORED_WORDS = set(\"\"\"\n-        4 8 32\n-\n-        typedef for endfor if void while endwhile endfor endif else const printf\n-        None return bool n char true false ifdef pycl_printf str range assert\n-        np iinfo max itemsize __packed__ struct restrict ptrdiff_t\n-\n-        set iteritems len setdefault\n-\n-        GLOBAL_MEM LOCAL_MEM_ARG WITHIN_KERNEL LOCAL_MEM KERNEL REQD_WG_SIZE\n-        local_barrier\n-        CLK_LOCAL_MEM_FENCE OPENCL EXTENSION\n-        pragma __attribute__ __global __kernel __local\n-        get_local_size get_local_id cl_khr_fp64 reqd_work_group_size\n-        get_num_groups barrier get_group_id\n-        CL_VERSION_1_1 __OPENCL_C_VERSION__ 120\n-\n-        _final_update _debug_scan kernel_name\n-\n-        positions all padded integer its previous write based writes 0\n-        has local worth scan_expr to read cannot not X items False bank\n-        four beginning follows applicable item min each indices works side\n-        scanning right summed relative used id out index avoid current state\n-        boundary True across be This reads groups along Otherwise undetermined\n-        store of times prior s update first regardless Each number because\n-        array unit from segment conflicts two parallel 2 empty define direction\n-        CL padding work tree bounds values and adds\n-        scan is allowed thus it an as enable at in occur sequentially end no\n-        storage data 1 largest may representable uses entry Y meaningful\n-        computations interval At the left dimension know d\n-        A load B group perform shift tail see last OR\n-        this add fetched into are directly need\n-        gets them stenciled that undefined\n-        there up any ones or name only relevant populated\n-        even wide we Prepare int seg Note re below place take variable must\n-        intra Therefore find code assumption\n-        branch workgroup complicated granularity phase remainder than simpler\n-        We smaller look ifs lots self behind allow barriers whole loop\n-        after already Observe achieve contiguous stores hard go with by math\n-        size won t way divisible bit so Avoid declare adding single type\n-\n-        is_tail is_first_level input_expr argument_signature preamble\n-        double_support neutral output_statement\n-        k_group_size name_prefix is_segmented index_dtype scan_dtype\n-        wg_size is_segment_start_expr fetch_expr_offsets\n-        arg_ctypes ife_offsets input_fetch_exprs def\n-        ife_offset arg_name local_fetch_expr_args update_body\n-        update_loop_lookbehind update_loop_plain update_loop\n-        use_lookbehind_update store_segment_start_flags\n-        update_loop first_seg scan_dtype dtype_to_ctype\n-        is_gpu use_bank_conflict_avoidance\n-\n-        a b prev_item i last_item prev_value\n-        N NO_SEG_BOUNDARY across_seg_boundary\n-\n-        arg_offset_adjustment\n-        \"\"\".split())\n+_PREFIX_WORDS = {\"ldata\", \"partial_scan_buffer\", \"global\", \"scan_offset\",\n+\"segment_start_in_k_group\", \"carry\", \"g_first_segment_start_in_interval\",\n+\"IS_SEG_START\", \"tmp\", \"Z\", \"val\", \"l_first_segment_start_in_subtree\",\n+\"unit_size\", \"index_type\", \"interval_begin\", \"interval_size\", \"offset_end\", \"K\",\n+\"SCAN_EXPR\", \"do_update\", \"WG_SIZE\", \"first_segment_start_in_k_group\", \"scan_type\",\n+\"segment_start_in_subtree\", \"offset\", \"interval_results\", \"interval_end\",\n+\"first_segment_start_in_subtree\", \"unit_base\", \"first_segment_start_in_interval\",\n+\"k\", \"INPUT_EXPR\", \"prev_group_sum\", \"prev\", \"pv\", \"value\", \"partial_val\", \"pgs\",\n+\"is_seg_start\", \"update_i\", \"scan_item_at_i\", \"seq_i\", \"read_i\", \"l_\", \"o_mod_k\",\n+\"o_div_k\", \"l_segment_start_flags\", \"scan_value\", \"sum\", \"first_seg_start_in_interval\",\n+\"g_segment_start_flags\", \"group_base\", \"seg_end\", \"my_val\", \"DEBUG\", \"ARGS\",\n+\"ints_to_store\", \"ints_per_wg\", \"scan_types_per_int\", \"linear_index\",\n+\"linear_scan_data_idx\", \"dest\", \"src\", \"store_base\", \"wrapped_scan_type\", \"dummy\",\n+\"scan_tmp\", \"tmp_aux\", \"LID_2\", \"LID_1\", \"LID_0\", \"LDIM_0\", \"LDIM_1\", \"LDIM_2\",\n+\"GDIM_0\", \"GDIM_1\", \"GDIM_2\", \"GID_0\", \"GID_1\", \"GID_2\"}\n+\n+_IGNORED_WORDS = {\"4\", \"8\", \"32\", \"typedef\", \"for\", \"endfor\", \"if\", \"void\", \"while\",\n+\"endwhile\", \"endif\", \"else\", \"const\", \"printf\", \"None\", \"return\", \"bool\", \"n\", \"char\",\n+\"true\", \"false\", \"ifdef\", \"pycl_printf\", \"str\", \"range\", \"assert\", \"np\", \"iinfo\",\n+\"max\", \"itemsize\", \"__packed__\", \"struct\", \"restrict\", \"ptrdiff_t\", \"set\", \"iteritems\",\n+\"len\", \"setdefault\", \"GLOBAL_MEM\", \"LOCAL_MEM_ARG\", \"WITHIN_KERNEL\", \"LOCAL_MEM\",\n+\"KERNEL\", \"REQD_WG_SIZE\", \"local_barrier\", \"CLK_LOCAL_MEM_FENCE\", \"OPENCL\", \"EXTENSION\",\n+\"pragma\", \"__attribute__\", \"__global\", \"__kernel\", \"__local\", \"get_local_size\",\n+\"get_local_id\", \"cl_khr_fp64\", \"reqd_work_group_size\", \"get_num_groups\", \"barrier\",\n+\"get_group_id\", \"CL_VERSION_1_1\", \"__OPENCL_C_VERSION__\", \"120\", \"_final_update\",\n+\"_debug_scan\", \"kernel_name\", \"positions\", \"all\", \"padded\", \"integer\", \"its\",\n+\"previous\", \"write\", \"based\", \"writes\", \"0\", \"has\", \"local\", \"worth\", \"scan_expr\", \"to\",\n+\"read\", \"cannot\", \"not\", \"X\", \"items\", \"False\", \"bank\", \"four\", \"beginning\", \"follows\",\n+\"applicable\", \"item\", \"min\", \"each\", \"indices\", \"works\", \"side\", \"scanning\", \"right\",\n+\"summed\", \"relative\", \"used\", \"id\", \"out\", \"index\", \"avoid\", \"current\", \"state\",\n+\"boundary\", \"True\", \"across\", \"be\", \"This\", \"reads\", \"groups\", \"along\", \"Otherwise\",\n+\"undetermined\", \"store\", \"of\", \"times\", \"prior\", \"s\", \"update\", \"first\", \"regardless\",\n+\"Each\", \"number\", \"because\", \"array\", \"unit\", \"from\", \"segment\", \"conflicts\", \"two\",\n+\"parallel\", \"2\", \"empty\", \"define\", \"direction\", \"CL\", \"padding\", \"work\", \"tree\",\n+\"bounds\", \"values\", \"and\", \"adds\", \"scan\", \"is\", \"allowed\", \"thus\", \"it\", \"an\", \"as\",\n+\"enable\", \"at\", \"in\", \"occur\", \"sequentially\", \"end\", \"no\", \"storage\", \"data\", \"1\",\n+\"largest\", \"may\", \"representable\", \"uses\", \"entry\", \"Y\", \"meaningful\", \"computations\",\n+\"interval\", \"At\", \"the\", \"left\", \"dimension\", \"know\", \"d\", \"A\", \"load\", \"B\", \"group\",\n+\"perform\", \"shift\", \"tail\", \"see\", \"last\", \"OR\", \"this\", \"add\", \"fetched\", \"into\",\n+\"are\", \"directly\", \"need\", \"gets\", \"them\", \"stenciled\", \"that\", \"undefined\", \"there\",\n+\"up\", \"any\", \"ones\", \"or\", \"name\", \"only\", \"relevant\", \"populated\", \"even\", \"wide\",\n+\"we\", \"Prepare\", \"int\", \"seg\", \"Note\", \"re\", \"below\", \"place\", \"take\", \"variable\",\n+\"must\", \"intra\", \"Therefore\", \"find\", \"code\", \"assumption\", \"branch\", \"workgroup\",\n+\"complicated\", \"granularity\", \"phase\", \"remainder\", \"than\", \"simpler\", \"We\", \"smaller\",\n+\"look\", \"ifs\", \"lots\", \"self\", \"behind\", \"allow\", \"barriers\", \"whole\", \"loop\",\n+\"after\", \"already\", \"Observe\", \"achieve\", \"contiguous\", \"stores\", \"hard\", \"go\",\n+\"with\", \"by\", \"math\", \"size\", \"won\", \"t\", \"way\", \"divisible\", \"bit\", \"so\", \"Avoid\",\n+\"declare\", \"adding\", \"single\", \"type\", \"is_tail\", \"is_first_level\", \"input_expr\",\n+\"argument_signature\", \"preamble\", \"double_support\", \"neutral\", \"output_statement\",\n+\"k_group_size\", \"name_prefix\", \"is_segmented\", \"index_dtype\", \"scan_dtype\",\n+\"wg_size\", \"is_segment_start_expr\", \"fetch_expr_offsets\", \"arg_ctypes\", \"ife_offsets\",\n+\"input_fetch_exprs\", \"def\", \"ife_offset\", \"arg_name\", \"local_fetch_expr_args\",\n+\"update_body\", \"update_loop_lookbehind\", \"update_loop_plain\", \"update_loop\",\n+\"use_lookbehind_update\", \"store_segment_start_flags\", \"first_seg\", \"dtype_to_ctype\",\n+\"is_gpu\", \"use_bank_conflict_avoidance\", \"a\", \"b\", \"prev_item\", \"i\", \"last_item\",\n+\"prev_value\", \"N\", \"NO_SEG_BOUNDARY\", \"across_seg_boundary\", \"arg_offset_adjustment\"}\n \n \n def _make_template(s: str) -> mako.template.Template:\n@@ -1314,7 +1287,7 @@ def _finish_setup_impl(self) -> None:\n         # division by that number.\n \n         solutions: list[tuple[int, int, int]] = []\n-        for k_exp in range(0, 9):\n+        for k_exp in range(9):\n             for wg_size in range(wg_size_multiples, max_scan_wg_size+1,\n                     wg_size_multiples):\n "
+    },
+    {
+      "sha": "efe931502901775c4e4b21d481fb9bcb4a2dadc3",
+      "filename": "pyopencl/tools.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Ftools.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyopencl%2Ftools.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyopencl%2Ftools.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -655,7 +655,7 @@ def _find_cl_obj(\n         ) -> DeviceOrPlatformT:\n     try:\n         num = int(identifier)\n-    except Exception:\n+    except Exception:  # noqa: S110\n         pass\n     else:\n         return objs[num]"
+    },
+    {
+      "sha": "b48c434490ac70fb24d74861c4413475e88eb5ab",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 5,
+      "changes": 18,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyproject.toml",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/pyproject.toml?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -18,7 +18,7 @@ license = \"MIT\"\n authors = [\n     { name = \"Andreas Kloeckner\", email = \"inform@tiker.net\" },\n ]\n-requires-python = \"~=3.10\"\n+requires-python = \">=3.10,<4\"\n classifiers = [\n     \"Development Status :: 5 - Production/Stable\",\n     \"Environment :: Console\",\n@@ -100,9 +100,15 @@ extend-ignore = [\n     \"C90\",  # McCabe complexity\n     \"UP031\", # use f-strings instead of %\n     \"UP032\", # use f-strings instead of .format\n+    \"TRY004\",\n+    \"BLE001\",\n+    \"TRY300\",\n \n     # FIXME: This is a longer discussion...\n     \"RUF067\", # __init__ should only contain reexports\n+\n+    # FIXME\n+    \"SIM102\",\n ]\n exclude = [\n     \"examples/gl_interop_demo.py\",\n@@ -112,15 +118,17 @@ exclude = [\n \n [tool.ruff.lint.per-file-ignores]\n \"examples/pi-monte-carlo.py\" = [\"N\", \"B\", \"F841\"]\n-\"examples/black-hole-accretion.py\" = [\"N\", \"E501\", \"B\"]\n-\"examples/n-body.py\" = [\"N\", \"E501\"]\n+\"examples/black-hole-accretion.py\" = [\"N\", \"E501\", \"B\", \"SIM\"]\n+\"examples/n-body.py\" = [\"N\", \"E501\", \"PLW\"]\n \"pyopencl/__init__.py\" = [\"I001\"]\n \"contrib/fortran-to-opencl/translate.py\" = [\"N802\", \"N815\", \"B\"]\n-\"doc/*.py\" = [\"I002\"]\n+\"doc/*.py\" = [\"I002\", \"S102\"]\n \"examples/*.py\" = [\"I002\"]\n-\"test/*.py\" = [\"I002\"]\n+\"test/*.py\" = [\"I002\", \"BLE001\"]\n+\"test/test_*.py\" = [\"I002\", \"S102\"]\n \"contrib/**/*.py\" = [\"I002\"]\n \"*.ipynb\" = [\"I002\"]\n+\"pyopencl/_cl.pyi\" = [\"PYI052\", \"PYI002\"]\n \n [tool.ruff.lint.flake8-quotes]\n inline-quotes = \"double\""
+    },
+    {
+      "sha": "c68624e0576952b15e73ab0a26169b1a64a77fa6",
+      "filename": "test/test_algorithm.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_algorithm.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_algorithm.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/test%2Ftest_algorithm.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -1085,7 +1085,7 @@ def test_bitonic_sort(ctx_factory: cl.CtxFactory, size, dtype):\n     # Requires https://github.com/intel/llvm/releases/tag/2022-WW50 or newer to pass\n     # on Intel CL.\n \n-    import pyopencl.clrandom as clrandom\n+    from pyopencl import clrandom\n     from pyopencl.bitonic_sort import BitonicSort\n \n     s = clrandom.rand(queue, (2, size, 3,), dtype, luxury=None, a=0, b=239482333)\n@@ -1153,7 +1153,7 @@ def test_bitonic_argsort(ctx_factory: cl.CtxFactory, size, dtype):\n         from pytest import skip\n         skip(\"double precision not supported on %s\" % dev)\n \n-    import pyopencl.clrandom as clrandom\n+    from pyopencl import clrandom\n     from pyopencl.bitonic_sort import BitonicSort\n \n     index = cl_array.arange(queue, 0, size, 1, dtype=np.int32)"
+    },
+    {
+      "sha": "7c615d03201f9f6d60c33a747b386c19905f6213",
+      "filename": "test/test_array.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 4,
+      "changes": 6,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_array.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_array.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/test%2Ftest_array.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -1,5 +1,3 @@\n-#! /usr/bin/env python\n-\n __copyright__ = \"Copyright (C) 2009 Andreas Kloeckner\"\n \n __license__ = \"\"\"\n@@ -34,8 +32,8 @@\n import pyopencl as cl\n import pyopencl.array as cl_array\n import pyopencl.characterize as cl_characterize\n-import pyopencl.cltypes as cltypes\n import pyopencl.tools as cl_tools\n+from pyopencl import cltypes\n from pyopencl.characterize import has_double_support, has_struct_arg_count_bug\n from pyopencl.clrandom import PhiloxGenerator, ThreefryGenerator\n from pyopencl.tools import (\n@@ -934,7 +932,7 @@ def test_random_int_in_range(ctx_factory: cl.CtxFactory,\n def test_numpy_integer_shape(ctx_factory: cl.CtxFactory):\n     try:\n         list(np.int32(17))\n-    except Exception:\n+    except Exception:  # noqa: S110\n         pass\n     else:\n         from pytest import skip"
+    },
+    {
+      "sha": "3a3d3b100cd178bbacfcb534a4b676df28cdfc40",
+      "filename": "test/test_arrays_in_structs.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 5,
+      "changes": 7,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_arrays_in_structs.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_arrays_in_structs.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/test%2Ftest_arrays_in_structs.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -23,9 +23,8 @@\n import numpy as np\n \n import pyopencl as cl\n-import pyopencl.cltypes as cltypes\n import pyopencl.tools as cl_tools\n-from pyopencl import mem_flags\n+from pyopencl import cltypes, mem_flags\n from pyopencl.tools import (\n     pytest_generate_tests_for_pyopencl as pytest_generate_tests,  # noqa: F401\n )\n@@ -60,9 +59,7 @@ def test_struct_with_array_fields(ctx_factory):\n         ([57, 38], -54, [[74, 90, 38, 67], [77, 30, 99, 18], [91,  3, 63, 67]])\n     ], dtype=my_struct)\n \n-    expected_res = []\n-    for x in my_struct_arr:\n-        expected_res.append(int(np.sum(x[0]) + x[1] + np.sum(x[2])))\n+    expected_res = [int(np.sum(x[0]) + x[1] + np.sum(x[2])) for x in my_struct_arr]\n     expected_res = np.array(expected_res, dtype=cltypes.int)\n \n     kernel_src = \"\"\"%s"
+    },
+    {
+      "sha": "e2957ecf6b4949f90f4c7fe24f9666f3481acce1",
+      "filename": "test/test_clmath.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_clmath.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_clmath.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/test%2Ftest_clmath.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -27,7 +27,7 @@\n \n import pyopencl as cl\n import pyopencl.array as cl_array\n-import pyopencl.clmath as clmath\n+from pyopencl import clmath\n from pyopencl.characterize import has_double_support, has_struct_arg_count_bug\n from pyopencl.tools import (\n     pytest_generate_tests_for_pyopencl as pytest_generate_tests,  # noqa: F401\n@@ -282,7 +282,7 @@ def get_err(check, ref):\n \n         a_dev = cl_array.to_device(queue, a)\n \n-        for n in range(0, nterms):\n+        for n in range(nterms):\n             cl_bessel = cl_func(n, a_dev).get()\n             scipy_bessel = scipy_func(n, a)\n \n@@ -302,7 +302,7 @@ def get_err(check, ref):\n \n             assert not np.isnan(cl_bessel).any()\n \n-            if 0 and n == 15:\n+            if False:\n                 import matplotlib.pyplot as pt\n \n                 # pt.plot(scipy_bessel)"
+    },
+    {
+      "sha": "f1fc861f8658ca069ba68ca6e23a652737aca6f1",
+      "filename": "test/test_clrandom.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_clrandom.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_clrandom.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/test%2Ftest_clrandom.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -24,8 +24,7 @@\n import pytest\n \n import pyopencl as cl\n-import pyopencl.clrandom as clrandom\n-import pyopencl.cltypes as cltypes\n+from pyopencl import clrandom, cltypes\n from pyopencl.characterize import has_double_support\n from pyopencl.tools import (\n     pytest_generate_tests_for_pyopencl as pytest_generate_tests,  # noqa: F401"
+    },
+    {
+      "sha": "ca3129d3e5f333f68fe3195a84d656708608ea0c",
+      "filename": "test/test_enqueue_copy.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_enqueue_copy.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_enqueue_copy.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/test%2Ftest_enqueue_copy.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -1,5 +1,3 @@\n-#! /usr/bin/env python\n-\n __copyright__ = \"Copyright (C) 2016 Shane J. Latham\"\n \n __license__ = \"\"\""
+    },
+    {
+      "sha": "5bd31c0a4cba1de471b6c41838ae7e999b0a9ca5",
+      "filename": "test/test_wrapper.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/inducer/pyopencl/blob/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_wrapper.py",
+      "raw_url": "https://github.com/inducer/pyopencl/raw/cc6ed261619dec7362cd1d4ed322a35cd47b327f/test%2Ftest_wrapper.py",
+      "contents_url": "https://api.github.com/repos/inducer/pyopencl/contents/test%2Ftest_wrapper.py?ref=cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "patch": "@@ -26,8 +26,7 @@\n \n import pyopencl as cl\n import pyopencl.array as cl_array\n-import pyopencl.clrandom as clrandom\n-import pyopencl.cltypes as cltypes\n+from pyopencl import clrandom, cltypes\n from pyopencl.characterize import get_pocl_version\n from pyopencl.tools import (\n     DeferredAllocator,"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d1ef1be43421d09150d014ac2c90306606ad4f6f",
+      "message": "Update config, fix lint for ruff 0.15.2",
+      "parent_shas": [
+        "2d8ed7a378bd29e563c5d05cddb32d3dc626dc19"
+      ]
+    },
+    {
+      "sha": "b88a3221f1ab2662b20310c9e084f28b424dd223",
+      "message": "Fix Python version spec",
+      "parent_shas": [
+        "d1ef1be43421d09150d014ac2c90306606ad4f6f"
+      ]
+    },
+    {
+      "sha": "cc6ed261619dec7362cd1d4ed322a35cd47b327f",
+      "message": "Update baseline",
+      "parent_shas": [
+        "b88a3221f1ab2662b20310c9e084f28b424dd223"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__inducer__pyopencl__pr896.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\inducer__pyopencl__pr896__py2_py3__inducer__pyopencl__pr896\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\inducer__pyopencl__pr896__py2_py3__inducer__pyopencl__pr896\\rn"
+  }
+}

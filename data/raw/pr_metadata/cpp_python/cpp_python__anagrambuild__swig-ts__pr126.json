@@ -1,0 +1,321 @@
+{
+  "instance_id": "cpp_python__anagrambuild__swig-ts__pr126",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "anagrambuild/swig-ts",
+  "pr_number": 126,
+  "pr_url": "https://github.com/anagrambuild/swig-ts/pull/126",
+  "repo": {
+    "full_name": "anagrambuild/swig-ts",
+    "clone_url": "https://github.com/anagrambuild/swig-ts.git",
+    "default_branch": "main",
+    "created_at": "2025-04-04T10:41:04Z",
+    "stars": 8,
+    "license": "NOASSERTION",
+    "size_kb": 3880
+  },
+  "pull_request": {
+    "id": 3435968994,
+    "title": "Version Packages",
+    "body": "This PR was opened by the [Changesets release](https://github.com/changesets/action) GitHub action. When you're ready to do a release, you can merge this and the packages will be published to npm automatically. If you're not ready to do a release yet, that's fine, whenever you add more changesets to main, this PR will be updated.\n\n\n# Releases\n## @swig-wallet/api@1.2.1\n\n### Patch Changes\n\n-   f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n    license notices with Apache 2.0.\n\n## @swig-wallet/classic@1.8.1\n\n### Patch Changes\n\n-   f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n    license notices with Apache 2.0.\n-   Updated dependencies [f796830]\n    -   @swig-wallet/coder@1.8.1\n    -   @swig-wallet/lib@1.8.1\n\n## @swig-wallet/coder@1.8.1\n\n### Patch Changes\n\n-   f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n    license notices with Apache 2.0.\n\n## @swig-wallet/developer@1.2.3\n\n### Patch Changes\n\n-   f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n    license notices with Apache 2.0.\n-   Updated dependencies [f796830]\n    -   @swig-wallet/api@1.2.1\n    -   @swig-wallet/lib@1.8.1\n\n## @swig-wallet/kit@1.8.1\n\n### Patch Changes\n\n-   f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n    license notices with Apache 2.0.\n-   Updated dependencies [f796830]\n    -   @swig-wallet/coder@1.8.1\n    -   @swig-wallet/lib@1.8.1\n\n## @swig-wallet/lib@1.8.1\n\n### Patch Changes\n\n-   f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n    license notices with Apache 2.0.\n-   Updated dependencies [f796830]\n    -   @swig-wallet/coder@1.8.1\n\n## @swig-wallet/mcp-server@1.0.6\n\n### Patch Changes\n\n-   f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n    license notices with Apache 2.0.\n-   Updated dependencies [f796830]\n    -   @swig-wallet/paymaster-classic@1.0.4\n    -   @swig-wallet/classic@1.8.1\n\n## @swig-wallet/paymaster-classic@1.0.4\n\n### Patch Changes\n\n-   f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n    license notices with Apache 2.0.\n-   Updated dependencies [f796830]\n    -   @swig-wallet/paymaster-core@1.0.4\n\n## @swig-wallet/paymaster-core@1.0.4\n\n### Patch Changes\n\n-   f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n    license notices with Apache 2.0.\n-   Updated dependencies [f796830]\n    -   @swig-wallet/api@1.2.1\n\n## @swig-wallet/paymaster-kit@1.0.4\n\n### Patch Changes\n\n-   f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n    license notices with Apache 2.0.\n-   Updated dependencies [f796830]\n    -   @swig-wallet/paymaster-core@1.0.4\n",
+    "created_at": "2026-03-23T20:25:45Z",
+    "merged_at": "2026-03-23T20:30:00Z",
+    "base_sha": "fd72672c0ecc17ac315e51cde92e36521ff57567",
+    "head_sha": "4f1866c17e89c51f408a08f475beb5c328358f6c",
+    "merge_commit_sha": "874ddddd17e55018f48e9027b3834b4a5b009734",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "fd72672c0ecc17ac315e51cde92e36521ff57567",
+  "final_sha": "4f1866c17e89c51f408a08f475beb5c328358f6c",
+  "changed_files": [
+    {
+      "sha": "5bff84523e537fb198d213a5246b60a950906666",
+      "filename": ".changeset/easy-snails-occur.md",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 15,
+      "changes": 15,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/fd72672c0ecc17ac315e51cde92e36521ff57567/.changeset%2Feasy-snails-occur.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/fd72672c0ecc17ac315e51cde92e36521ff57567/.changeset%2Feasy-snails-occur.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/.changeset%2Feasy-snails-occur.md?ref=fd72672c0ecc17ac315e51cde92e36521ff57567",
+      "patch": "@@ -1,15 +0,0 @@\n----\n-'@swig-wallet/paymaster-classic': patch\n-'@swig-wallet/paymaster-core': patch\n-'@swig-wallet/paymaster-kit': patch\n-'@swig-wallet/mcp-server': patch\n-'@swig-wallet/developer': patch\n-'@swig-wallet/classic': patch\n-'@swig-wallet/coder': patch\n-'@swig-wallet/api': patch\n-'@swig-wallet/kit': patch\n-'@swig-wallet/lib': patch\n----\n-\n-Update all published packages to Apache-2.0 licensing metadata and align repository\n-license notices with Apache 2.0."
+    },
+    {
+      "sha": "d8f256a4e0f49c72f178997c552f93e90fd3a998",
+      "filename": "packages/api/CHANGELOG.md",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fapi%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fapi%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fapi%2FCHANGELOG.md?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,5 +1,12 @@\n # @swig-wallet/api\n \n+## 1.2.1\n+\n+### Patch Changes\n+\n+- f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n+  license notices with Apache 2.0.\n+\n ## 1.2.0\n \n ### Minor Changes"
+    },
+    {
+      "sha": "40af1f55230f9df957606904f6968e1ab4182add",
+      "filename": "packages/api/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fapi%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fapi%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fapi%2Fpackage.json?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/api\",\n-  \"version\": \"1.2.0\",\n+  \"version\": \"1.2.1\",\n   \"description\": \"API clients for the Swig ecosystem (Portal and Paymaster services)\",\n   \"license\": \"Apache-2.0\",\n   \"repository\": {"
+    },
+    {
+      "sha": "b90902ef5dd6e3276aa832e1c8a7a78eec75b02e",
+      "filename": "packages/classic/CHANGELOG.md",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 0,
+      "changes": 10,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fclassic%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fclassic%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fclassic%2FCHANGELOG.md?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,5 +1,15 @@\n # @swig-wallet/classic\n \n+## 1.8.1\n+\n+### Patch Changes\n+\n+- f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n+  license notices with Apache 2.0.\n+- Updated dependencies [f796830]\n+  - @swig-wallet/coder@1.8.1\n+  - @swig-wallet/lib@1.8.1\n+\n ## 1.8.0\n \n ### Patch Changes"
+    },
+    {
+      "sha": "f7c4c6fb106f03a23f3ef8f0b2d42a59ff0fbb19",
+      "filename": "packages/classic/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fclassic%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fclassic%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fclassic%2Fpackage.json?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/classic\",\n-  \"version\": \"1.8.0\",\n+  \"version\": \"1.8.1\",\n   \"license\": \"Apache-2.0\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "aab284a0a3fc96de0434762d54c52e1ff23e8051",
+      "filename": "packages/coder/CHANGELOG.md",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fcoder%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fcoder%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fcoder%2FCHANGELOG.md?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,5 +1,12 @@\n # @swig-wallet/coder\n \n+## 1.8.1\n+\n+### Patch Changes\n+\n+- f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n+  license notices with Apache 2.0.\n+\n ## 1.8.0\n \n ## 1.7.1"
+    },
+    {
+      "sha": "fd4002fdd7c57be90c1731954b52c3181f02a1f6",
+      "filename": "packages/coder/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fcoder%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fcoder%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fcoder%2Fpackage.json?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/coder\",\n-  \"version\": \"1.8.0\",\n+  \"version\": \"1.8.1\",\n   \"license\": \"Apache-2.0\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "cc59949a7e4b83c788532e92a2d50288d70d4cc7",
+      "filename": "packages/developer/CHANGELOG.md",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 0,
+      "changes": 10,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fdeveloper%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fdeveloper%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fdeveloper%2FCHANGELOG.md?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,5 +1,15 @@\n # @swig-wallet/developer\n \n+## 1.2.3\n+\n+### Patch Changes\n+\n+- f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n+  license notices with Apache 2.0.\n+- Updated dependencies [f796830]\n+  - @swig-wallet/api@1.2.1\n+  - @swig-wallet/lib@1.8.1\n+\n ## 1.2.2\n \n ### Patch Changes"
+    },
+    {
+      "sha": "dfd066e509447a84268b283fb3a093b2ebdf8517",
+      "filename": "packages/developer/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fdeveloper%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fdeveloper%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fdeveloper%2Fpackage.json?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/developer\",\n-  \"version\": \"1.2.2\",\n+  \"version\": \"1.2.3\",\n   \"license\": \"Apache-2.0\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "6bc951734d766a0a8aec5c241dd42021bc859994",
+      "filename": "packages/kit/CHANGELOG.md",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 0,
+      "changes": 10,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fkit%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fkit%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fkit%2FCHANGELOG.md?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,5 +1,15 @@\n # @swig-wallet/classic\n \n+## 1.8.1\n+\n+### Patch Changes\n+\n+- f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n+  license notices with Apache 2.0.\n+- Updated dependencies [f796830]\n+  - @swig-wallet/coder@1.8.1\n+  - @swig-wallet/lib@1.8.1\n+\n ## 1.8.0\n \n ### Patch Changes"
+    },
+    {
+      "sha": "06174c591adfd858735ea00de066c55ad0784409",
+      "filename": "packages/kit/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fkit%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fkit%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fkit%2Fpackage.json?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/kit\",\n-  \"version\": \"1.8.0\",\n+  \"version\": \"1.8.1\",\n   \"license\": \"Apache-2.0\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "cbd1b7aa64e36f286a70fb1710c8d724a83f4c00",
+      "filename": "packages/lib/CHANGELOG.md",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 0,
+      "changes": 9,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Flib%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Flib%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Flib%2FCHANGELOG.md?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,5 +1,14 @@\n # @swig-wallet/classic\n \n+## 1.8.1\n+\n+### Patch Changes\n+\n+- f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n+  license notices with Apache 2.0.\n+- Updated dependencies [f796830]\n+  - @swig-wallet/coder@1.8.1\n+\n ## 1.8.0\n \n ### Minor Changes"
+    },
+    {
+      "sha": "7a9eb555f92ef8947753b866b073478e1c5fd6ba",
+      "filename": "packages/lib/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Flib%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Flib%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Flib%2Fpackage.json?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/lib\",\n-  \"version\": \"1.8.0\",\n+  \"version\": \"1.8.1\",\n   \"license\": \"Apache-2.0\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "2793f76207bfdd78f5b17add5ff3e16b494b3a2d",
+      "filename": "packages/mcp-server/CHANGELOG.md",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 0,
+      "changes": 10,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fmcp-server%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fmcp-server%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fmcp-server%2FCHANGELOG.md?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,5 +1,15 @@\n # @swig-wallet/mcp-server\n \n+## 1.0.6\n+\n+### Patch Changes\n+\n+- f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n+  license notices with Apache 2.0.\n+- Updated dependencies [f796830]\n+  - @swig-wallet/paymaster-classic@1.0.4\n+  - @swig-wallet/classic@1.8.1\n+\n ## 1.0.5\n \n ### Patch Changes"
+    },
+    {
+      "sha": "24e6dd645f94c751b54a5d5191cd652bf3088899",
+      "filename": "packages/mcp-server/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fmcp-server%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fmcp-server%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fmcp-server%2Fpackage.json?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/mcp-server\",\n-  \"version\": \"1.0.5\",\n+  \"version\": \"1.0.6\",\n   \"license\": \"Apache-2.0\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "6cf3a7273ce66175415862e078b4b7e7953b63f6",
+      "filename": "packages/paymaster/classic/CHANGELOG.md",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 0,
+      "changes": 9,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fpaymaster%2Fclassic%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fpaymaster%2Fclassic%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fpaymaster%2Fclassic%2FCHANGELOG.md?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,5 +1,14 @@\n # @swig-wallet/paymaster-classic\n \n+## 1.0.4\n+\n+### Patch Changes\n+\n+- f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n+  license notices with Apache 2.0.\n+- Updated dependencies [f796830]\n+  - @swig-wallet/paymaster-core@1.0.4\n+\n ## 1.0.3\n \n ### Patch Changes"
+    },
+    {
+      "sha": "c90b179b1a0fa192b764d3b48b201b521200c3d3",
+      "filename": "packages/paymaster/classic/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fpaymaster%2Fclassic%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fpaymaster%2Fclassic%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fpaymaster%2Fclassic%2Fpackage.json?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/paymaster-classic\",\n-  \"version\": \"1.0.3\",\n+  \"version\": \"1.0.4\",\n   \"license\": \"Apache-2.0\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "8f9cd2bcbd02341e363d747f989dd7c682f0e3ef",
+      "filename": "packages/paymaster/core/CHANGELOG.md",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 0,
+      "changes": 9,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fpaymaster%2Fcore%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fpaymaster%2Fcore%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fpaymaster%2Fcore%2FCHANGELOG.md?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,5 +1,14 @@\n # @swig-wallet/paymaster-core\n \n+## 1.0.4\n+\n+### Patch Changes\n+\n+- f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n+  license notices with Apache 2.0.\n+- Updated dependencies [f796830]\n+  - @swig-wallet/api@1.2.1\n+\n ## 1.0.3\n \n ### Patch Changes"
+    },
+    {
+      "sha": "bc154d6f857054e7331e95ef4d3d78d35b3aa440",
+      "filename": "packages/paymaster/core/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fpaymaster%2Fcore%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fpaymaster%2Fcore%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fpaymaster%2Fcore%2Fpackage.json?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/paymaster-core\",\n-  \"version\": \"1.0.3\",\n+  \"version\": \"1.0.4\",\n   \"license\": \"Apache-2.0\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "04ab928bb7d870e9846a0351438cf3ee093e78e3",
+      "filename": "packages/paymaster/kit/CHANGELOG.md",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 0,
+      "changes": 9,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fpaymaster%2Fkit%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fpaymaster%2Fkit%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fpaymaster%2Fkit%2FCHANGELOG.md?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,5 +1,14 @@\n # @swig-wallet/paymaster-kit\n \n+## 1.0.4\n+\n+### Patch Changes\n+\n+- f796830: Update all published packages to Apache-2.0 licensing metadata and align repository\n+  license notices with Apache 2.0.\n+- Updated dependencies [f796830]\n+  - @swig-wallet/paymaster-core@1.0.4\n+\n ## 1.0.3\n \n ### Patch Changes"
+    },
+    {
+      "sha": "faa9d83ef4ce37fcca836f2a383fd59a2a49263e",
+      "filename": "packages/paymaster/kit/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fpaymaster%2Fkit%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/4f1866c17e89c51f408a08f475beb5c328358f6c/packages%2Fpaymaster%2Fkit%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fpaymaster%2Fkit%2Fpackage.json?ref=4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/paymaster-kit\",\n-  \"version\": \"1.0.3\",\n+  \"version\": \"1.0.4\",\n   \"license\": \"Apache-2.0\",\n   \"repository\": {\n     \"type\": \"git\","
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "4f1866c17e89c51f408a08f475beb5c328358f6c",
+      "message": "Version Packages",
+      "parent_shas": [
+        "fd72672c0ecc17ac315e51cde92e36521ff57567"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__anagrambuild__swig-ts__pr126.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\anagrambuild__swig-ts__pr126__cpp_python__anagrambuild__swig-ts__pr126\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\anagrambuild__swig-ts__pr126__cpp_python__anagrambuild__swig-ts__pr126\\rn"
+  }
+}

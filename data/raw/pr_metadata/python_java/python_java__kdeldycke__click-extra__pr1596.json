@@ -1,0 +1,82 @@
+{
+  "instance_id": "python_java__kdeldycke__click-extra__pr1596",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "kdeldycke/click-extra",
+  "pr_number": 1596,
+  "pr_url": "https://github.com/kdeldycke/click-extra/pull/1596",
+  "repo": {
+    "full_name": "kdeldycke/click-extra",
+    "clone_url": "https://github.com/kdeldycke/click-extra.git",
+    "default_branch": "main",
+    "created_at": "2021-10-18T08:02:27Z",
+    "stars": 114,
+    "license": "GPL-2.0",
+    "size_kb": 10592
+  },
+  "pull_request": {
+    "id": 3472450590,
+    "title": "Format Python",
+    "body": "### Description\n\nAuto-formats Python files with [autopep8](https://github.com/hhatto/autopep8) (comment wrapping) and [Ruff](https://docs.astral.sh/ruff/) (linting and formatting). When no `[tool.ruff]` section or `ruff.toml` is present, [repomatic's bundled defaults](https://github.com/kdeldycke/repomatic/blob/main/repomatic/data/ruff.toml) are applied at runtime. See the [`format-python` job documentation](https://github.com/kdeldycke/repomatic?tab=readme-ov-file#githubworkflowsautofixyaml-jobs) for details.\n\n> [!TIP]\n> Customize formatting and linting rules via [`[tool.ruff]`](https://docs.astral.sh/ruff/configuration/) and [`[tool.autopep8]`](https://github.com/hhatto/autopep8#configuration) in your `pyproject.toml`.\n\n\n> [!IMPORTANT]\n> If you suspect the PR content is outdated, **[click `Run workflow`](https://github.com/kdeldycke/click-extra/actions/workflows/autofix.yaml)** to refresh it manually before merging.\n\n\n<details><summary><code>Workflow metadata</code></summary>\n\n| Field | Value |\n| :-- | :-- |\n| **Trigger** | `push` |\n| **Actor** | @kdeldycke |\n| **Ref** | `main` |\n| **Commit** | [`0b546e2e`](https://github.com/kdeldycke/click-extra/commit/0b546e2e3231a29a1abf9a85179ba4bd2a32e57c) |\n| **Job** | [`format-python`](https://github.com/kdeldycke/click-extra/blob/0b546e2e3231a29a1abf9a85179ba4bd2a32e57c/.github/workflows/autofix.yaml) |\n| **Workflow** | [`autofix.yaml`](https://github.com/kdeldycke/click-extra/blob/0b546e2e3231a29a1abf9a85179ba4bd2a32e57c/.github/workflows/autofix.yaml) |\n| **Run** | [#2505.1](https://github.com/kdeldycke/click-extra/actions/runs/23833871206) |\n\n</details>\n\n---\n\n🏭 Generated with [repomatic](https://github.com/kdeldycke/repomatic) `6.9.0`",
+    "created_at": "2026-03-31T14:38:14Z",
+    "merged_at": "2026-04-01T12:36:07Z",
+    "base_sha": "0b546e2e3231a29a1abf9a85179ba4bd2a32e57c",
+    "head_sha": "a97cc3c79a2d342b2f78ae076b3d206bb4f65328",
+    "merge_commit_sha": "f1cdb312d1d2aba20e952edc5b3a742749e5f5f2",
+    "labels": [
+      "🤖 ci"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "0b546e2e3231a29a1abf9a85179ba4bd2a32e57c",
+  "final_sha": "a97cc3c79a2d342b2f78ae076b3d206bb4f65328",
+  "changed_files": [
+    {
+      "sha": "40f29ccdf50b0e4e95b900baed9318f4a0667afe",
+      "filename": "claude.md",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 2,
+      "changes": 8,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/a97cc3c79a2d342b2f78ae076b3d206bb4f65328/claude.md",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/a97cc3c79a2d342b2f78ae076b3d206bb4f65328/claude.md",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/claude.md?ref=a97cc3c79a2d342b2f78ae076b3d206bb4f65328",
+      "patch": "@@ -152,12 +152,16 @@ assert result.output == \"Hello, World!\\n\"\n \n # Partial match with dedent for multiline.\n from textwrap import dedent\n-assert result.stdout.startswith(dedent(\"\"\"\\\n+\n+assert result.stdout.startswith(\n+    dedent(\"\"\"\\\n     Usage: hello [OPTIONS]\n-    \"\"\"))\n+    \"\"\")\n+)\n \n # Regex for variable content (timestamps, versions, etc.).\n import re\n+\n assert re.fullmatch(\n     r\"Execution time: [0-9.]+ seconds\\.\\n\",\n     result.stdout,"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "a97cc3c79a2d342b2f78ae076b3d206bb4f65328",
+      "message": "Format Python",
+      "parent_shas": [
+        "0b546e2e3231a29a1abf9a85179ba4bd2a32e57c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__kdeldycke__click-extra__pr1596.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__click-extra__pr1596__python_java__kdeldycke__click-extra__pr1596\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__click-extra__pr1596__python_java__kdeldycke__click-extra__pr1596\\rn"
+  }
+}

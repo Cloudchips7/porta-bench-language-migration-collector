@@ -1,0 +1,78 @@
+{
+  "instance_id": "python_java__powsybl__pypowsybl__pr1188",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "powsybl/pypowsybl",
+  "pr_number": 1188,
+  "pr_url": "https://github.com/powsybl/pypowsybl/pull/1188",
+  "repo": {
+    "full_name": "powsybl/pypowsybl",
+    "clone_url": "https://github.com/powsybl/pypowsybl.git",
+    "default_branch": "main",
+    "created_at": "2020-11-09T10:30:33Z",
+    "stars": 90,
+    "license": "MPL-2.0",
+    "size_kb": 14119
+  },
+  "pull_request": {
+    "id": 3498548706,
+    "title": "Fix Linux \"python only\" python 3.14 build",
+    "body": "**Please check if the PR fulfills these requirements**\r\n<!-- please use `'[x]'` to check the checkboxes, or submit the PR and then click the checkboxes -->\r\n- [x] The commit message follows our guidelines\r\n- [ ] Tests for the changes have been added (for bug fixes / features)\r\n- [ ] Docs have been added / updated (for bug fixes / features)\r\n- [ ] A PR or issue has been opened in all impacted repositories (if any)\r\n\r\n\r\n**Does this PR already have an issue describing the problem?**\r\n<!-- If so, link to this issue using `'Fixes #XXX'` and skip the rest -->\r\nNo\r\n\r\n\r\n**What kind of change does this PR introduce?**\r\n<!-- Bug fix, feature, docs update, ... -->\r\nTechnical fix : the change of runner image in #1172 was not done for the \"python only\" build of the full CI.\r\n\r\n**Does this PR introduce a breaking change or deprecate an API?**\r\n- [ ] Yes\r\n- [x] No",
+    "created_at": "2026-04-07T14:52:19Z",
+    "merged_at": "2026-04-08T07:24:00Z",
+    "base_sha": "e7229671712876c5a0c7f5519a1889a8276607c7",
+    "head_sha": "43293e171e952f3a995f3768415b0364dc6e1d72",
+    "merge_commit_sha": "57f0d4ec15e36a4775bc1449fa2da0ced5aaf821",
+    "labels": [
+      "Release 03/2026"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "e7229671712876c5a0c7f5519a1889a8276607c7",
+  "final_sha": "43293e171e952f3a995f3768415b0364dc6e1d72",
+  "changed_files": [
+    {
+      "sha": "327684ba91fe91ca65164f92ea2a113dcae66126",
+      "filename": ".github/workflows/full-ci.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/powsybl/pypowsybl/blob/43293e171e952f3a995f3768415b0364dc6e1d72/.github%2Fworkflows%2Ffull-ci.yml",
+      "raw_url": "https://github.com/powsybl/pypowsybl/raw/43293e171e952f3a995f3768415b0364dc6e1d72/.github%2Fworkflows%2Ffull-ci.yml",
+      "contents_url": "https://api.github.com/repos/powsybl/pypowsybl/contents/.github%2Fworkflows%2Ffull-ci.yml?ref=43293e171e952f3a995f3768415b0364dc6e1d72",
+      "patch": "@@ -131,7 +131,7 @@ jobs:\n     name: Build linux ${{ matrix.python.name }} wheel (without rebuilding native libraries)\n     runs-on: ubuntu-latest\n     needs: manylinux_complete_build\n-    container: quay.io/pypa/manylinux_2_28_x86_64:2024-11-16-d70d8cd\n+    container: quay.io/pypa/manylinux_2_28_x86_64:2026.03.09-1\n     strategy:\n       matrix:\n         python:"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "43293e171e952f3a995f3768415b0364dc6e1d72",
+      "message": "Fix Linux \"python only\" python 3.14 build\n\nSigned-off-by: Hugo KULESZA <hugo.kulesza@rte-france.com>",
+      "parent_shas": [
+        "e7229671712876c5a0c7f5519a1889a8276607c7"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__powsybl__pypowsybl__pr1188.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\powsybl__pypowsybl__pr1188__python_java__powsybl__pypowsybl__pr1188\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\powsybl__pypowsybl__pr1188__python_java__powsybl__pypowsybl__pr1188\\rn"
+  }
+}

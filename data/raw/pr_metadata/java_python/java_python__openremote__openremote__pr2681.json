@@ -1,0 +1,88 @@
+{
+  "instance_id": "java_python__openremote__openremote__pr2681",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "openremote/openremote",
+  "pr_number": 2681,
+  "pr_url": "https://github.com/openremote/openremote/pull/2681",
+  "repo": {
+    "full_name": "openremote/openremote",
+    "clone_url": "https://github.com/openremote/openremote.git",
+    "default_branch": "master",
+    "created_at": "2016-02-03T11:14:02Z",
+    "stars": 1725,
+    "license": "NOASSERTION",
+    "size_kb": 303405
+  },
+  "pull_request": {
+    "id": 3514870593,
+    "title": "java dependencies update",
+    "body": "",
+    "created_at": "2026-04-10T16:06:09Z",
+    "merged_at": "2026-04-13T07:54:34Z",
+    "base_sha": "be18f016f106054072bc1739c6595d8a85d88afa",
+    "head_sha": "d1cf813d14ceab241c62aeee77cfb38a0ae8a179",
+    "merge_commit_sha": "15db35cb705d3e197716744996a69e829faf9290",
+    "labels": [
+      "Enhancement"
+    ]
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "be18f016f106054072bc1739c6595d8a85d88afa",
+  "final_sha": "d1cf813d14ceab241c62aeee77cfb38a0ae8a179",
+  "changed_files": [
+    {
+      "sha": "71ae2887c73586d0665e8a9e3cda0fc3c19cc38d",
+      "filename": "gradle.properties",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 12,
+      "changes": 24,
+      "blob_url": "https://github.com/openremote/openremote/blob/d1cf813d14ceab241c62aeee77cfb38a0ae8a179/gradle.properties",
+      "raw_url": "https://github.com/openremote/openremote/raw/d1cf813d14ceab241c62aeee77cfb38a0ae8a179/gradle.properties",
+      "contents_url": "https://api.github.com/repos/openremote/openremote/contents/gradle.properties?ref=d1cf813d14ceab241c62aeee77cfb38a0ae8a179",
+      "patch": "@@ -14,35 +14,35 @@ javaxELAPIVersion = 6.0.1\n javaxELVersion = 4.0.2\n slf4jVersion = 2.0.6\n guavaVersion = 33.5.0-jre\n-checkerframeworkVersion = 3.54.0\n+checkerframeworkVersion = 3.55.1\n undertowVersion = 2.3.22.Final\n resteasyVersion = 6.2.15.Final\n keycloakVersion = 25.0.3\n classgraphVersion=4.8.184\n-jacksonVersion = 2.21.1\n+jacksonVersion = 2.21.2\n groovyVersion = 4.0.24\n groovySandboxVersion = 4.2.2\n-sqliteVersion = 3.51.2.0\n-hibernateVersion = 7.2.6.Final\n+sqliteVersion = 3.51.3.0\n+hibernateVersion = 7.3.1.Final\n hibernateValidatorVersion = 9.1.0.Final\n hikaricpVersion = 6.2.1\n postgresJdbcVersion = 42.7.8\n spockVersion = 2.4-M5-groovy-4.0\n byteBuddyVersion = 1.16.1\n objenesisVersion = 3.4\n-camelVersion = 4.18.0\n+camelVersion = 4.18.1\n easyRulesVersion = 4.1.0\n quartzVersion= 2.5.2\n calimeroVersion = 2.6\n uuidGeneratorVersion = 5.2.0\n jSerialCommVersion = 2.11.4\n saxonHEVersion = 12.9\n exp4jVersion = 0.4.13\n-nettyVersion = 4.2.10.Final\n+nettyVersion = 4.2.12.Final\n flywaydbVersion = 11.13.1\n-ical4jVersion = 4.2.3\n+ical4jVersion = 4.2.5\n friendlyIdVersion = 1.0.4\n-geotoolsVersion = 34.2\n+geotoolsVersion = 34.3\n firebaseAdminVersion = 9.8.0\n jakartaMailVersion = 2.0.5\n jaywayJsonPathVersion = 2.10.0\n@@ -52,7 +52,7 @@ californiumScandiumVersion = 3.14.0\n zwaveVersion = 3.4.0\n niftyModbusVersion = 0.17.0\n reflectionsVersion=0.10.2\n-swaggerVersion=2.2.45\n+swaggerVersion=2.2.47\n swaggeruiVersion = 5.18.2\n hiveMQClientVersion=1.3.10\n bluetoothVersion = 0.64\n@@ -61,10 +61,10 @@ failsafeVersion=3.3.2\n suncalcVersion=3.11\n snapshotsRepoUrl=https://central.sonatype.com/repository/maven-snapshots/\n releasesRepoUrl=https://ossrh-staging-api.central.sonatype.com/service/local/\n-artemisVersion = 2.52.0\n+artemisVersion = 2.53.0\n jbossLoggingManagerVersion=2.1.19.Final\n greenmailVersion=2.1.2\n-prometheusVersion=1.5.0\n+prometheusVersion=1.5.1\n micrometerVersion=1.16.4\n jdomVersion = 2.0.6.1\n apacheMINAVersion = 2.16.0\n@@ -73,7 +73,7 @@ victoolsJsonSchemaGeneratorVersion = 4.38.0\n moquetteVersion = 0.18.0\n corsFilterVersion = 3.1\n junitVersion = 6.0.3\n-mockitoVersion = 5.22.0\n+mockitoVersion = 5.23.0\n grpcVersion = 1.69.0\n grpcAnnotationsVersion = 1.3.2\n protobufVersion = 3.25.5"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "9951ee594307aa0e4b02ea6b69b592d2382c38d3",
+      "message": "Patch versions udpates",
+      "parent_shas": [
+        "be18f016f106054072bc1739c6595d8a85d88afa"
+      ]
+    },
+    {
+      "sha": "d1cf813d14ceab241c62aeee77cfb38a0ae8a179",
+      "message": "Minor versions udpates",
+      "parent_shas": [
+        "9951ee594307aa0e4b02ea6b69b592d2382c38d3"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "java_python_bridge_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "java_python_bridge_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__openremote__openremote__pr2681.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\openremote__openremote__pr2681__java_python__openremote__openremote__pr2681\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\openremote__openremote__pr2681__java_python__openremote__openremote__pr2681\\rn"
+  }
+}

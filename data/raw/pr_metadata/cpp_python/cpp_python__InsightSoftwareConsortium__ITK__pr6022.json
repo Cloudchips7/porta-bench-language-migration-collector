@@ -1,0 +1,122 @@
+{
+  "instance_id": "cpp_python__InsightSoftwareConsortium__ITK__pr6022",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "InsightSoftwareConsortium/ITK",
+  "pr_number": 6022,
+  "pr_url": "https://github.com/InsightSoftwareConsortium/ITK/pull/6022",
+  "repo": {
+    "full_name": "InsightSoftwareConsortium/ITK",
+    "clone_url": "https://github.com/InsightSoftwareConsortium/ITK.git",
+    "default_branch": "main",
+    "created_at": "2010-07-27T15:48:04Z",
+    "stars": 1587,
+    "license": "Apache-2.0",
+    "size_kb": 235453
+  },
+  "pull_request": {
+    "id": 3499803738,
+    "title": "ENH: Add ITK_PYTHON_RELEASE_GIL option and SWIG -threads flag",
+    "body": "- Added cmake option ITK_PYTHON_RELEASE_GIL (default ON) in WrappingOptions.cmake\r\n- Modified Python CMakeLists.txt to add -threads flag to SWIG when option is enabled\r\n- Created test_gil_release.py to verify GIL is released during ITK operations\r\n- Added test to CMakeLists.txt\r\n\r\nBackport from `main` for ITK 5.4.",
+    "created_at": "2026-04-07T19:49:45Z",
+    "merged_at": "2026-04-13T21:50:10Z",
+    "base_sha": "a43fa8152cd3e2e150e2bf76b629b054082cbb8a",
+    "head_sha": "f876cbd77711300544b32119b6e2ed2c88dd54f1",
+    "merge_commit_sha": "2868e1c1ccb2ea9501432ae91ea512aba93f5edd",
+    "labels": [
+      "type:Infrastructure",
+      "type:Enhancement",
+      "area:Python wrapping",
+      "type:Testing"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "a43fa8152cd3e2e150e2bf76b629b054082cbb8a",
+  "final_sha": "f876cbd77711300544b32119b6e2ed2c88dd54f1",
+  "changed_files": [
+    {
+      "sha": "6d1341623afd7fd82434fecaf01363ab69ee9094",
+      "filename": "Wrapping/Generators/Python/CMakeLists.txt",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 1,
+      "changes": 10,
+      "blob_url": "https://github.com/InsightSoftwareConsortium/ITK/blob/f876cbd77711300544b32119b6e2ed2c88dd54f1/Wrapping%2FGenerators%2FPython%2FCMakeLists.txt",
+      "raw_url": "https://github.com/InsightSoftwareConsortium/ITK/raw/f876cbd77711300544b32119b6e2ed2c88dd54f1/Wrapping%2FGenerators%2FPython%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/InsightSoftwareConsortium/ITK/contents/Wrapping%2FGenerators%2FPython%2FCMakeLists.txt?ref=f876cbd77711300544b32119b6e2ed2c88dd54f1",
+      "patch": "@@ -275,10 +275,17 @@ macro(\n       \"${doc_file}\")\n   endif()\n \n+  # Conditionally add -threads flag to release the GIL during ITK operations\n+  set(_swig_threads_flag \"\")\n+  if(ITK_PYTHON_RELEASE_GIL)\n+    set(_swig_threads_flag \"-threads\")\n+  endif()\n+\n   add_custom_command(\n     OUTPUT ${cpp_file} ${python_file}\n     COMMAND\n-      ${swig_command} -c++ -python -fastdispatch -fvirtual -features autodoc=2 -doxygen -Werror\n+      ${swig_command} -c++ -python ${_swig_threads_flag} -fastdispatch -fvirtual\n+      -features autodoc=2 -doxygen -Werror\n       -w302 # Identifier 'name' redefined (ignored)\n       -w303 # %extend defined for an undeclared class 'name' (to avoid warning about customization in pyBase.i)\n       -w312 # Unnamed nested class not currently supported (ignored)\n@@ -306,6 +313,7 @@ macro(\n \n   unset(dependencies)\n   unset(swig_command)\n+  unset(_swig_threads_flag)\n endmacro()\n \n macro(itk_end_wrap_submodule_python group_name)"
+    },
+    {
+      "sha": "dd7fecb6aec80721e3db2d12292f9a752cda9dea",
+      "filename": "Wrapping/Generators/Python/Tests/CMakeLists.txt",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 7,
+      "changes": 24,
+      "blob_url": "https://github.com/InsightSoftwareConsortium/ITK/blob/f876cbd77711300544b32119b6e2ed2c88dd54f1/Wrapping%2FGenerators%2FPython%2FTests%2FCMakeLists.txt",
+      "raw_url": "https://github.com/InsightSoftwareConsortium/ITK/raw/f876cbd77711300544b32119b6e2ed2c88dd54f1/Wrapping%2FGenerators%2FPython%2FTests%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/InsightSoftwareConsortium/ITK/contents/Wrapping%2FGenerators%2FPython%2FTests%2FCMakeLists.txt?ref=f876cbd77711300544b32119b6e2ed2c88dd54f1",
+      "patch": "@@ -249,10 +249,20 @@ itk_python_add_test(\n   ${ITK_TEST_OUTPUT_DIR}/TestVLV.seg.nrrd\n   DATA{${WrapITK_SOURCE_DIR}/images/TestVLV.seg.nrrd}\n   COMMAND\n-  ${CMAKE_CURRENT_SOURCE_DIR}/readWriteVLV.py\n-  DATA{${WrapITK_SOURCE_DIR}/images/TestVLV.seg.nrrd}\n-  ${ITK_TEST_OUTPUT_DIR}/TestVLV.seg.nrrd\n-  59\n-  85\n-  58\n-  5)\n+    ${CMAKE_CURRENT_SOURCE_DIR}/readWriteVLV.py\n+    DATA{${WrapITK_SOURCE_DIR}/images/TestVLV.seg.nrrd}\n+    ${ITK_TEST_OUTPUT_DIR}/TestVLV.seg.nrrd\n+    59\n+    85\n+    58\n+    5\n+)\n+\n+if(ITK_PYTHON_RELEASE_GIL)\n+  # Test GIL release during ITK operations\n+  itk_python_add_test(\n+    NAME PythonGILReleaseTest\n+    COMMAND\n+      ${CMAKE_CURRENT_SOURCE_DIR}/test_gil_release.py\n+  )\n+endif()"
+    },
+    {
+      "sha": "3aab977e88f4c28dae4e358318cefe6a382eab7a",
+      "filename": "Wrapping/Generators/Python/Tests/test_gil_release.py",
+      "status": "added",
+      "additions": 119,
+      "deletions": 0,
+      "changes": 119,
+      "blob_url": "https://github.com/InsightSoftwareConsortium/ITK/blob/f876cbd77711300544b32119b6e2ed2c88dd54f1/Wrapping%2FGenerators%2FPython%2FTests%2Ftest_gil_release.py",
+      "raw_url": "https://github.com/InsightSoftwareConsortium/ITK/raw/f876cbd77711300544b32119b6e2ed2c88dd54f1/Wrapping%2FGenerators%2FPython%2FTests%2Ftest_gil_release.py",
+      "contents_url": "https://api.github.com/repos/InsightSoftwareConsortium/ITK/contents/Wrapping%2FGenerators%2FPython%2FTests%2Ftest_gil_release.py?ref=f876cbd77711300544b32119b6e2ed2c88dd54f1",
+      "patch": "@@ -0,0 +1,119 @@\n+\"\"\"\n+Test that the Python Global Interpreter Lock (GIL) is released during ITK operations.\n+\n+This test verifies that when ITK_PYTHON_RELEASE_GIL is enabled, multiple Python threads\n+can execute ITK operations concurrently.\n+\"\"\"\n+\n+import sys\n+import threading\n+import time\n+\n+# Threshold for determining if parallel execution is significantly faster than sequential\n+# With 4 outer threads and 1 ITK thread per filter, we expect at least 2x speedup\n+# A value of 0.5 means parallel execution should be at most 50% of sequential time\n+# This accounts for threading overhead and ensures GIL is being released\n+PARALLEL_SPEEDUP_THRESHOLD = 0.5\n+\n+\n+def test_gil_release():\n+    \"\"\"Test that GIL is released during ITK operations.\"\"\"\n+    try:\n+        import itk\n+    except ImportError:\n+        print(\"ITK not available, skipping GIL release test\")\n+        sys.exit(0)\n+\n+    # Create a simple test image\n+    image_type = itk.Image[itk.F, 2]\n+    size = [100, 100]\n+\n+    # Shared counter to track concurrent execution\n+    execution_times = []\n+    lock = threading.Lock()\n+\n+    def run_filter():\n+        \"\"\"Run an ITK filter operation that should release the GIL.\"\"\"\n+        # Create an image\n+        image = itk.Image[itk.F, 2].New()\n+        region = itk.ImageRegion[2]()\n+        region.SetSize(size)\n+        image.SetRegions(region)\n+        image.Allocate()\n+        image.FillBuffer(1.0)\n+\n+        start_time = time.time()\n+\n+        # Run a computationally intensive filter\n+        # MedianImageFilter is a good test as it performs actual computation\n+        median_filter = itk.MedianImageFilter[image_type, image_type].New()\n+        median_filter.SetInput(image)\n+        median_filter.SetRadius(5)\n+        # Limit ITK internal threads to 1 to make the test more reliable\n+        median_filter.SetNumberOfWorkUnits(1)\n+        median_filter.Update()\n+\n+        end_time = time.time()\n+\n+        with lock:\n+            execution_times.append((start_time, end_time))\n+\n+    # Run multiple threads\n+    num_threads = 4\n+    threads = []\n+\n+    overall_start = time.time()\n+\n+    for _ in range(num_threads):\n+        thread = threading.Thread(target=run_filter)\n+        thread.start()\n+        threads.append(thread)\n+\n+    for thread in threads:\n+        thread.join()\n+\n+    overall_end = time.time()\n+\n+    # If GIL is properly released, the threads should have overlapping execution times\n+    # and the total time should be less than the sum of individual execution times\n+\n+    total_sequential_time = sum(end - start for start, end in execution_times)\n+    total_parallel_time = overall_end - overall_start\n+\n+    print(f\"Total sequential time if run serially: {total_sequential_time:.3f}s\")\n+    print(f\"Total parallel time: {total_parallel_time:.3f}s\")\n+\n+    # Check for overlap in execution times\n+    has_overlap = False\n+    if len(execution_times) >= 2:\n+        for i in range(len(execution_times)):\n+            for j in range(i + 1, len(execution_times)):\n+                start1, end1 = execution_times[i]\n+                start2, end2 = execution_times[j]\n+                # Check if there's any overlap\n+                if (start1 <= start2 < end1) or (start2 <= start1 < end2):\n+                    has_overlap = True\n+                    break\n+            if has_overlap:\n+                break\n+\n+    if has_overlap:\n+        print(\"SUCCESS: Thread execution times overlap - GIL appears to be released\")\n+        return 0\n+    else:\n+        # Even without overlap, if parallel time is significantly less than sequential,\n+        # it suggests concurrent execution\n+        if total_parallel_time < total_sequential_time * PARALLEL_SPEEDUP_THRESHOLD:\n+            print(\"SUCCESS: Parallel execution is faster - GIL appears to be released\")\n+            return 0\n+        else:\n+            print(\"FAILURE: No clear evidence of concurrent execution\")\n+            print(\"This indicates that GIL is not being released properly\")\n+            print(\n+                f\"Expected parallel time < {total_sequential_time * PARALLEL_SPEEDUP_THRESHOLD:.3f}s, got {total_parallel_time:.3f}s\"\n+            )\n+            return 1\n+\n+\n+if __name__ == \"__main__\":\n+    sys.exit(test_gil_release())"
+    },
+    {
+      "sha": "c32f406efa63a07bf65783f9ece01c54d496a970",
+      "filename": "Wrapping/WrappingOptions.cmake",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/InsightSoftwareConsortium/ITK/blob/f876cbd77711300544b32119b6e2ed2c88dd54f1/Wrapping%2FWrappingOptions.cmake",
+      "raw_url": "https://github.com/InsightSoftwareConsortium/ITK/raw/f876cbd77711300544b32119b6e2ed2c88dd54f1/Wrapping%2FWrappingOptions.cmake",
+      "contents_url": "https://api.github.com/repos/InsightSoftwareConsortium/ITK/contents/Wrapping%2FWrappingOptions.cmake?ref=f876cbd77711300544b32119b6e2ed2c88dd54f1",
+      "patch": "@@ -17,6 +17,14 @@ else()\n       CACHE INTERNAL \"Build external languages support\" FORCE)\n endif()\n \n+cmake_dependent_option(\n+  ITK_PYTHON_RELEASE_GIL\n+  \"Release Python Global Interpreter Lock (GIL) during ITK operations\"\n+  ON\n+  \"ITK_WRAP_PYTHON\"\n+  OFF\n+)\n+\n cmake_dependent_option(\n   ITK_WRAP_unsigned_char\n   \"Wrap unsigned char type\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "f876cbd77711300544b32119b6e2ed2c88dd54f1",
+      "message": "ENH: Add ITK_PYTHON_RELEASE_GIL option and SWIG -threads flag\n\n- Added cmake option ITK_PYTHON_RELEASE_GIL (default ON) in WrappingOptions.cmake\n- Modified Python CMakeLists.txt to add -threads flag to SWIG when option is enabled\n- Created test_gil_release.py to verify GIL is released during ITK operations\n- Added test to CMakeLists.txt\n\nCo-authored-by: Matt McCormick <matt@fideus.io>\nCo-authored-by: dzenanz <1792121+dzenanz@users.noreply.github.com>",
+      "parent_shas": [
+        "a43fa8152cd3e2e150e2bf76b629b054082cbb8a"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "adds_new_tests",
+      "binding_wrapper_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__InsightSoftwareConsortium__ITK__pr6022.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\InsightSoftwareConsortium__ITK__pr6022__cpp_python__InsightSoftwareConsortium__ITK__pr6022\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\InsightSoftwareConsortium__ITK__pr6022__cpp_python__InsightSoftwareConsortium__ITK__pr6022\\rn"
+  }
+}

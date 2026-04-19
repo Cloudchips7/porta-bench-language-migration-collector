@@ -1,0 +1,341 @@
+{
+  "instance_id": "py2_py3__tomascupr__sandstorm__pr38",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "tomascupr/sandstorm",
+  "pr_number": 38,
+  "pr_url": "https://github.com/tomascupr/sandstorm/pull/38",
+  "repo": {
+    "full_name": "tomascupr/sandstorm",
+    "clone_url": "https://github.com/tomascupr/sandstorm.git",
+    "default_branch": "main",
+    "created_at": "2026-02-14T14:26:15Z",
+    "stars": 431,
+    "license": "MIT",
+    "size_kb": 681
+  },
+  "pull_request": {
+    "id": 3317983644,
+    "title": "feat: mount Slack on FastAPI, add file extraction and document tools",
+    "body": "## Summary\n\nMounts the Slack bot directly into the FastAPI app (previously standalone Socket Mode only), enabling deployment on Vercel and other FaaS platforms. Also adds file extraction from sandboxes and pre-installs document processing tools.\n\n### New capabilities\n- **FastAPI mount** (`slack_routes.py`) — Slack Bolt runs as a sub-app on `/slack/events` with `process_before_response=True` for FaaS compatibility\n- **File extraction** — Agent-generated files are diffed against the initial sandbox state, extracted, and uploaded back to the Slack thread (up to 10 files, 25 MB each, 50 MB total)\n- **File upload limit** bumped from 10 MB to 50 MB for incoming Slack files\n- **Document tools** — Sandbox template ships with `poppler-utils`, `qpdf`, `pypdf`, `pdfplumber`, `reportlab`, and `markitdown`\n\n### Config changes\n- `timeout` and `system_prompt_append` moved from env vars (`SANDSTORM_SLACK_MODEL`, `SANDSTORM_SLACK_TIMEOUT`) to `sandstorm.json` — single source of truth for all entry points\n- `system_prompt_append` supports both string and dict prompt formats\n- `LINEAR_API_KEY` forwarded to sandbox when present (for MCP integrations)\n\n### Fixes\n- Prevent double run on sandbox reuse failure (generate fresh `run_id` on retry)\n- Remove unauthenticated early returns in Slack event handling\n- Slack deps (`slack-bolt`, `slack-sdk`, `aiohttp`) moved to core — required for Vercel where optional extras aren't installed\n\n### Deployment\n- Vercel `maxDuration` bumped to 300s\n- Routes consolidated for the new `/slack/events` endpoint\n\n## Test plan\n- [x] `test_slack_routes.py` — event dispatch, file handling, error responses\n- [x] `test_sandbox_skills.py` — system prompt append for string/dict prompts\n- [x] `test_slack.py` — updated for config refactor\n- [x] All 154 tests pass, lint and format clean",
+    "created_at": "2026-02-23T22:45:00Z",
+    "merged_at": "2026-02-23T23:04:24Z",
+    "base_sha": "c1f5b5a1428382e19aa24ef5d22d60986140ed1c",
+    "head_sha": "1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+    "merge_commit_sha": "a67744903bd274bfc2640478b4d1a7250cad2e6a",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "8c8114c77c10ab76e2259b2f30a12c55c3f265f2",
+  "final_sha": "1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+  "changed_files": [
+    {
+      "sha": "23a4faeffcd16f1deb52ddf5537bf0267028c32e",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/.gitignore",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/.gitignore",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/.gitignore?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -16,3 +16,6 @@ gcp-*.json\n \n # Run history\n .sandstorm/\n+\n+# Private deployment configs (not open-sourced)\n+rohlik/"
+    },
+    {
+      "sha": "f31013b1f66212a2a3d8193569b0056b7ce7f44a",
+      "filename": "build_template.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1,
+      "changes": 4,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/build_template.py",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/build_template.py",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/build_template.py?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -23,7 +23,9 @@\n template = (\n     Template()\n     .from_node_image(\"24\")\n-    .apt_install([\"curl\", \"git\", \"ripgrep\", \"python3\", \"python3-pip\"])\n+    .apt_install([\"curl\", \"git\", \"ripgrep\", \"python3\", \"python3-pip\", \"poppler-utils\", \"qpdf\"])\n+    # Pre-install Python packages for document processing skills (pdf, docx, pptx)\n+    .run_cmd(\"pip3 install pypdf==6.7.2 pdfplumber==0.11.9 reportlab==4.4.10 markitdown==0.1.5\", user=\"root\")\n     # Install Agent SDK locally so ESM imports resolve correctly\n     .run_cmd(\n         \"mkdir -p /opt/agent-runner\""
+    },
+    {
+      "sha": "18108403629973f9621ed06742e496ed59093c97",
+      "filename": "docs/slack.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/docs%2Fslack.md",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/docs%2Fslack.md",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/docs%2Fslack.md?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -79,6 +79,7 @@ Sandstorm: [sees prior context, modifies the existing code]\n - **File uploads** — share text files (code, CSV, JSON, logs) and binary files (images, PDFs, audio, video, zip) in the thread; the agent gets them in its sandbox. 10 MB limit per file\n - **Sandbox reuse per thread** — follow-up @mentions in the same thread reuse the sandbox, so the agent has access to files and state from previous turns\n - **Thread context** — full conversation history (including bot responses and file attachment metadata) is passed to the agent for multi-turn conversations\n+- **File extraction** — files created by the agent in the sandbox are automatically extracted and uploaded to the Slack thread (up to 10 files, 25 MB per file, 50 MB total)\n - **Feedback buttons** — each response gets thumbs up/down buttons; feedback is recorded in the run store\n - **Metadata footer** — every response shows model, turns, cost, and duration\n \n@@ -91,8 +92,6 @@ Sandstorm: [sees prior context, modifies the existing code]\n | `SLACK_BOT_TOKEN` | Yes | -- | Bot user OAuth token (`xoxb-...`) |\n | `SLACK_APP_TOKEN` | Yes (Socket Mode) | -- | App-level token (`xapp-...`) for Socket Mode |\n | `SLACK_SIGNING_SECRET` | Yes (HTTP mode) | -- | Signing secret for request verification in HTTP mode |\n-| `SANDSTORM_SLACK_MODEL` | No | from config | Override the model for Slack responses |\n-| `SANDSTORM_SLACK_TIMEOUT` | No | `300` | Sandbox timeout in seconds |\n | `ANTHROPIC_API_KEY` | Yes* | -- | Anthropic API key (or use OpenRouter) |\n | `E2B_API_KEY` | Yes | -- | E2B sandbox API key |\n | `OPENROUTER_API_KEY` | No | -- | OpenRouter key (if using OpenRouter) |"
+    },
+    {
+      "sha": "fc7beaa93aee356bd9896964b0dfefa3a84d9f3d",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 5,
+      "changes": 8,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/pyproject.toml",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/pyproject.toml?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -13,6 +13,9 @@ dependencies = [\n     \"pydantic>=2.10.0\",\n     \"python-dotenv>=1.0.0\",\n     \"click>=8.0.0\",\n+    \"slack-bolt>=1.21.0\",\n+    \"slack-sdk>=3.34.0\",\n+    \"aiohttp>=3.9.0\",\n ]\n classifiers = [\n     \"Development Status :: 4 - Beta\",\n@@ -28,11 +31,6 @@ classifiers = [\n \n [project.optional-dependencies]\n dev = [\"pytest>=8.0\", \"httpx>=0.27\"]\n-slack = [\n-    \"slack-bolt>=1.21.0\",\n-    \"slack-sdk>=3.34.0\",\n-    \"aiohttp>=3.9.0\",\n-]\n telemetry = [\n     \"opentelemetry-api>=1.30.0\",\n     \"opentelemetry-sdk>=1.30.0\","
+    },
+    {
+      "sha": "276d479c571108e9b88a17e22efbe17290f8ec2d",
+      "filename": "src/sandstorm/main.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/src%2Fsandstorm%2Fmain.py",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/src%2Fsandstorm%2Fmain.py",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/src%2Fsandstorm%2Fmain.py?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -21,6 +21,7 @@\n from . import _LOG_DATEFMT, _LOG_FORMAT, __version__, telemetry\n from .models import QueryRequest\n from .sandbox import load_sandstorm_config, run_agent_in_sandbox\n+from .slack_routes import router as slack_router\n from .store import run_store\n from .telemetry import (\n     get_tracer,\n@@ -152,6 +153,9 @@ async def lifespan(app: FastAPI):\n     allow_headers=[\"*\"],\n )\n \n+# Mount Slack events endpoint\n+app.include_router(slack_router)\n+\n \n _DASHBOARD_HTML = (Path(__file__).parent / \"dashboard.html\").read_text()\n "
+    },
+    {
+      "sha": "3a768c421091b216baaddaa0dd296e8fa1cfd8d0",
+      "filename": "src/sandstorm/models.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 2,
+      "changes": 7,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/src%2Fsandstorm%2Fmodels.py",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/src%2Fsandstorm%2Fmodels.py",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/src%2Fsandstorm%2Fmodels.py?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -55,8 +55,11 @@ class QueryRequest(BaseModel):\n         description=\"Output format override. Overrides sandstorm.json. \"\n         'Example: {\"type\": \"json_schema\", \"schema\": {...}}.',\n     )\n-    timeout: int = Field(\n-        default=300, ge=5, le=3600, description=\"Sandbox timeout in seconds (5-3600).\"\n+    timeout: int | None = Field(\n+        default=None,\n+        ge=5,\n+        le=3600,\n+        description=\"Sandbox timeout in seconds (5-3600). None = use sandstorm.json or 300.\",\n     )\n     files: dict[str, str] | None = Field(\n         None,"
+    },
+    {
+      "sha": "788662d504d885693b440f6f6d4e532f402c8c38",
+      "filename": "src/sandstorm/sandbox.py",
+      "status": "modified",
+      "additions": 125,
+      "deletions": 4,
+      "changes": 129,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/src%2Fsandstorm%2Fsandbox.py",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/src%2Fsandstorm%2Fsandbox.py",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/src%2Fsandstorm%2Fsandbox.py?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -1,4 +1,5 @@\n import asyncio\n+import base64\n import contextlib\n import json\n import logging\n@@ -35,6 +36,11 @@\n _QUEUE_MAXSIZE = 10_000  # Buffer for sync→async bridge; drops if consumer is slow\n _SDK_INSTALL_TIMEOUT = 120  # Fallback npm install timeout (seconds)\n _RUNNER_TIMEOUT = 1800  # Max agent execution time (30 minutes)\n+_MAX_EXTRACT_FILES = 10  # Max files to extract from sandbox after agent run\n+_MAX_EXTRACT_FILE_SIZE = 25 * 1024 * 1024  # 25 MB per file (Slack upload limit)\n+# Note: Vercel serverless has a 4.5 MB response limit — base64-encoded files\n+# larger than ~3 MB will exceed this. Self-hosted and Slack deployments are unaffected.\n+_MAX_EXTRACT_TOTAL_SIZE = 50 * 1024 * 1024  # 50 MB total extraction budget\n _SKILL_NAME_PATTERN = NAME_PATTERN\n \n # Load the runner script that executes inside the sandbox\n@@ -72,6 +78,8 @@ def _get_config_path() -> Path:\n     \"ANTHROPIC_DEFAULT_SONNET_MODEL\",\n     \"ANTHROPIC_DEFAULT_OPUS_MODEL\",\n     \"ANTHROPIC_DEFAULT_HAIKU_MODEL\",\n+    # MCP server credentials\n+    \"LINEAR_API_KEY\",\n ]\n \n \n@@ -80,6 +88,7 @@ def _validate_sandstorm_config(raw: dict) -> dict:\n     # Expected field types: field_name -> (allowed types tuple, human description)\n     known_fields: dict[str, tuple[tuple[type, ...], str]] = {\n         \"system_prompt\": ((str, dict), \"str or dict\"),\n+        \"system_prompt_append\": ((str,), \"str\"),\n         \"model\": ((str,), \"str\"),\n         \"max_turns\": ((int,), \"int\"),\n         \"output_format\": ((dict,), \"dict\"),\n@@ -88,6 +97,7 @@ def _validate_sandstorm_config(raw: dict) -> dict:\n         \"skills_dir\": ((str,), \"str\"),\n         \"allowed_tools\": ((list,), \"list\"),\n         \"webhook_url\": ((str,), \"str\"),\n+        \"timeout\": ((int,), \"int\"),\n         \"template_skills\": ((bool,), \"bool\"),\n     }\n \n@@ -364,6 +374,85 @@ def _to_str(data) -> str:\n     return data if isinstance(data, str) else str(data)\n \n \n+async def _extract_generated_files(\n+    sbx: AsyncSandbox,\n+    input_file_names: set[str],\n+    request_id: str,\n+) -> list[str]:\n+    \"\"\"Extract new files created by the agent in /home/user/.\n+\n+    Lists the working directory, filters out input files / dotfiles / directories,\n+    reads each new file as bytes, and returns a list of JSON-encoded file events.\n+    \"\"\"\n+    entries = await sbx.files.list(\"/home/user/\")\n+\n+    candidates = []\n+    for entry in entries:\n+        # Skip directories (entry.type is Optional[FileType])\n+        if entry.type is None or entry.type.value != \"file\":\n+            continue\n+        # Skip dotfiles\n+        if entry.name.startswith(\".\"):\n+            continue\n+        # Skip files that were uploaded as input\n+        if entry.name in input_file_names:\n+            continue\n+        # Skip known large files early (before downloading)\n+        if entry.size > _MAX_EXTRACT_FILE_SIZE:\n+            logger.info(\n+                \"[%s] Skipping oversized file: %s (%d bytes)\",\n+                request_id,\n+                entry.name,\n+                entry.size,\n+            )\n+            continue\n+        candidates.append(entry)\n+\n+    if not candidates:\n+        logger.debug(\"[%s] No new files to extract\", request_id)\n+        return []\n+\n+    if len(candidates) > _MAX_EXTRACT_FILES:\n+        logger.info(\n+            \"[%s] Capping file extraction at %d (found %d)\",\n+            request_id,\n+            _MAX_EXTRACT_FILES,\n+            len(candidates),\n+        )\n+        candidates = candidates[:_MAX_EXTRACT_FILES]\n+\n+    events: list[str] = []\n+    total_size = 0\n+    for entry in candidates:\n+        try:\n+            data = await sbx.files.read(entry.path, format=\"bytes\")\n+            raw = data if isinstance(data, bytes) else bytes(data)\n+            size = len(raw)\n+\n+            if total_size + size > _MAX_EXTRACT_TOTAL_SIZE:\n+                logger.info(\"[%s] Total extraction size limit reached\", request_id)\n+                break\n+\n+            total_size += size\n+            encoded = base64.b64encode(raw).decode(\"ascii\")\n+            events.append(\n+                json.dumps(\n+                    {\n+                        \"type\": \"file\",\n+                        \"name\": entry.name,\n+                        \"path\": entry.path,\n+                        \"size\": size,\n+                        \"data\": encoded,\n+                    }\n+                )\n+            )\n+            logger.info(\"[%s] Extracted file: %s (%d bytes)\", request_id, entry.name, size)\n+        except Exception:\n+            logger.warning(\"[%s] Failed to read %s\", request_id, entry.name, exc_info=True)\n+\n+    return events\n+\n+\n def _build_agent_config(\n     request: QueryRequest,\n     sandstorm_config: dict,\n@@ -427,12 +516,27 @@ def _build_agent_config(\n     ):\n         allowed_tools = [*allowed_tools, \"Skill\"]\n \n+    # Build system prompt, then apply append from config if set\n+    sys_prompt = sandstorm_config.get(\"system_prompt\")\n+    env_append = sandstorm_config.get(\"system_prompt_append\")\n+    if env_append and sys_prompt:\n+        if isinstance(sys_prompt, dict) and \"append\" in sys_prompt:\n+            sys_prompt = {**sys_prompt, \"append\": sys_prompt[\"append\"] + \"\\n\\n\" + env_append}\n+        elif isinstance(sys_prompt, dict):\n+            sys_prompt = {**sys_prompt, \"append\": env_append}\n+        elif isinstance(sys_prompt, str):\n+            sys_prompt = sys_prompt + \"\\n\\n\" + env_append\n+    elif env_append and not sys_prompt:\n+        sys_prompt = env_append\n+\n+    timeout = request.timeout or sandstorm_config.get(\"timeout\") or 300\n+\n     agent_config = {\n         \"prompt\": request.prompt,\n         \"cwd\": \"/home/user\",\n         \"model\": request.model or sandstorm_config.get(\"model\"),\n         \"max_turns\": request.max_turns or sandstorm_config.get(\"max_turns\"),\n-        \"system_prompt\": sandstorm_config.get(\"system_prompt\"),\n+        \"system_prompt\": sys_prompt,\n         \"output_format\": (\n             request.output_format\n             if request.output_format is not None\n@@ -443,6 +547,7 @@ def _build_agent_config(\n         \"mcp_servers\": mcp_servers,\n         \"has_skills\": has_skills,\n         \"allowed_tools\": allowed_tools,\n+        \"timeout\": timeout,\n     }\n \n     return agent_config, merged_skills\n@@ -496,12 +601,20 @@ def _enqueue(data: str) -> None:\n \n     agent_config, merged_skills = _build_agent_config(request, sandstorm_config, disk_skills)\n     has_skills = agent_config[\"has_skills\"]\n+    timeout = agent_config[\"timeout\"]\n+\n+    # Track input file names to exclude from file extraction later\n+    input_file_names: set[str] = set()\n+    if request.files:\n+        input_file_names.update(request.files.keys())\n+    if binary_files:\n+        input_file_names.update(binary_files.keys())\n \n     if sandbox_id:\n         # --- Reconnect path: reuse an existing sandbox ---\n         logger.info(\"[%s] Reconnecting to sandbox %s\", request_id, sandbox_id)\n         sbx = await AsyncSandbox.connect(sandbox_id, api_key=request.e2b_api_key)\n-        await sbx.set_timeout(request.timeout)\n+        await sbx.set_timeout(timeout)\n         sandbox_started()\n \n         # Upload extra skills that aren't already in the sandbox\n@@ -556,7 +669,7 @@ def _enqueue(data: str) -> None:\n         if gcp_creds_content:\n             sandbox_envs[\"GOOGLE_APPLICATION_CREDENTIALS\"] = _GCP_CREDENTIALS_SANDBOX_PATH\n \n-        sbx = await _create_sandbox(request.e2b_api_key, request.timeout, sandbox_envs, request_id)\n+        sbx = await _create_sandbox(request.e2b_api_key, timeout, sandbox_envs, request_id)\n         if sandbox_id_out is not None:\n             sandbox_id_out.append(sbx.sandbox_id)\n \n@@ -674,6 +787,14 @@ async def run_command():\n                 model=agent_config.get(\"model\"),\n             )\n \n+        # Extract files created by the agent (sandbox still alive)\n+        try:\n+            generated = await _extract_generated_files(sbx, input_file_names, request_id)\n+            for file_event in generated:\n+                yield file_event\n+        except Exception:\n+            logger.warning(\"[%s] File extraction failed\", request_id, exc_info=True)\n+\n     finally:\n         sandbox_stopped()\n         if keep_alive:\n@@ -690,7 +811,7 @@ async def run_command():\n                 \"[%s] Keeping sandbox %s alive (timeout=%ds)\",\n                 request_id,\n                 sbx.sandbox_id,\n-                request.timeout,\n+                timeout,\n             )\n         else:\n             await _cleanup(task, sbx, request_id)"
+    },
+    {
+      "sha": "1e861de8f3fe185feb9c7881d38916af2b13a6e3",
+      "filename": "src/sandstorm/slack.py",
+      "status": "modified",
+      "additions": 48,
+      "deletions": 16,
+      "changes": 64,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/src%2Fsandstorm%2Fslack.py",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/src%2Fsandstorm%2Fslack.py",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/src%2Fsandstorm%2Fslack.py?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -3,6 +3,7 @@\n from __future__ import annotations\n \n import asyncio\n+import base64\n import contextlib\n import json\n import logging\n@@ -22,8 +23,8 @@\n \n logger = logging.getLogger(__name__)\n \n-# Max file size to download from Slack threads (10 MB)\n-_MAX_FILE_SIZE = 10 * 1024 * 1024\n+# Max file size to download from Slack threads (50 MB)\n+_MAX_FILE_SIZE = 50 * 1024 * 1024\n \n # Max sandbox pool entries (one per active thread)\n _MAX_SANDBOX_POOL = 1000\n@@ -101,22 +102,14 @@ def _build_metadata_blocks(\n \n \n def _build_query_request(prompt: str, files: dict[str, str] | None = None) -> QueryRequest:\n-    \"\"\"Build QueryRequest from prompt + env var defaults.\n+    \"\"\"Build QueryRequest from prompt, deferring model/timeout to sandstorm.json.\n \n-    Uses SANDSTORM_SLACK_MODEL, SANDSTORM_SLACK_TIMEOUT env vars.\n     API keys resolved by QueryRequest.resolve_api_keys() as usual.\n     \"\"\"\n-    model = os.environ.get(\"SANDSTORM_SLACK_MODEL\", \"claude-sonnet-4-6\")\n-    timeout_str = os.environ.get(\"SANDSTORM_SLACK_TIMEOUT\", \"300\")\n-    try:\n-        timeout = int(timeout_str)\n-    except ValueError:\n-        timeout = 300\n-\n     return QueryRequest(\n         prompt=prompt,\n-        model=model,\n-        timeout=timeout,\n+        model=None,\n+        timeout=None,\n         files=files,\n         output_format={},  # Slack is conversational — skip structured output\n         anthropic_api_key=None,\n@@ -245,7 +238,7 @@ async def _download_thread_files(\n     Returns (text_files, binary_files):\n       - text_files: {filename: str_content} for QueryRequest.files\n       - binary_files: {filename: bytes_content} for sandbox upload\n-    Skips files > 10MB.\n+    Skips files > 50MB.\n     \"\"\"\n     try:\n         import aiohttp\n@@ -441,6 +434,33 @@ async def _stream_to_slack(\n \n                 run_store.fail(run_id, error_msg, metadata[\"duration_secs\"])\n \n+            elif event_type == \"file\":\n+                file_name = event.get(\"name\", \"file\")\n+                file_data_b64 = event.get(\"data\")\n+                if file_data_b64:\n+                    try:\n+                        file_data = base64.b64decode(file_data_b64)\n+                        await client.files_upload_v2(\n+                            channel=channel,\n+                            thread_ts=thread_ts,\n+                            content=file_data,\n+                            filename=file_name,\n+                            title=file_name,\n+                        )\n+                        logger.info(\n+                            \"[%s] Uploaded file %s (%d bytes)\",\n+                            run_id,\n+                            file_name,\n+                            len(file_data),\n+                        )\n+                    except Exception:\n+                        logger.error(\n+                            \"[%s] Failed to upload %s to Slack\",\n+                            run_id,\n+                            file_name,\n+                            exc_info=True,\n+                        )\n+\n             # Skip user, stderr, warning events (log server-side only)\n             elif event_type in (\"user\", \"stderr\", \"warning\"):\n                 logger.debug(\"[%s] %s\", run_id, event_type)\n@@ -463,14 +483,21 @@ async def _stream_to_slack(\n \n \n def create_slack_app(\n-    *, bot_token: str | None = None, signing_secret: str | None = None\n+    *,\n+    bot_token: str | None = None,\n+    signing_secret: str | None = None,\n+    process_before_response: bool = False,\n ) -> AsyncApp:\n     \"\"\"Create and configure the Slack Bolt AsyncApp.\"\"\"\n     from slack_bolt.async_app import AsyncApp\n     from slack_bolt.middleware.assistant.async_assistant import AsyncAssistant\n \n     token = bot_token or os.environ.get(\"SLACK_BOT_TOKEN\")\n-    app = AsyncApp(token=token, signing_secret=signing_secret)\n+    app = AsyncApp(\n+        token=token,\n+        signing_secret=signing_secret,\n+        process_before_response=process_before_response,\n+    )\n \n     # Sandbox reuse pool: (channel, thread_ts) -> (sandbox_id, lock)\n     # Lock serializes concurrent @mentions in the same thread\n@@ -556,6 +583,11 @@ async def _run_in_sandbox_pool(\n                     )\n \n             if not reuse_succeeded:\n+                if existing_sandbox_id:\n+                    # Fresh run_id for the retry — the failed reuse attempt\n+                    # already recorded its own run entry and Slack message.\n+                    run_id = uuid.uuid4().hex[:8]\n+\n                 streamer = await client.chat_stream(\n                     channel=channel,\n                     thread_ts=thread_ts,"
+    },
+    {
+      "sha": "60498aaad8e21cedbac0fd1490383afddbe0f537",
+      "filename": "src/sandstorm/slack_routes.py",
+      "status": "added",
+      "additions": 53,
+      "deletions": 0,
+      "changes": 53,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/src%2Fsandstorm%2Fslack_routes.py",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/src%2Fsandstorm%2Fslack_routes.py",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/src%2Fsandstorm%2Fslack_routes.py?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -0,0 +1,53 @@\n+\"\"\"Slack events endpoint for FastAPI — mounts slack-bolt as an HTTP handler.\"\"\"\n+\n+from __future__ import annotations\n+\n+import asyncio\n+import logging\n+import os\n+\n+from fastapi import APIRouter, Request\n+from fastapi.responses import JSONResponse\n+\n+logger = logging.getLogger(__name__)\n+\n+router = APIRouter(tags=[\"Slack\"])\n+\n+# Lazy singleton with async lock to prevent duplicate initialization\n+_handler = None\n+_handler_lock = asyncio.Lock()\n+\n+\n+async def _get_handler():\n+    \"\"\"Lazily create the slack-bolt handler (imports slack deps on first call).\"\"\"\n+    global _handler\n+    if _handler is not None:\n+        return _handler\n+\n+    async with _handler_lock:\n+        if _handler is not None:\n+            return _handler\n+\n+        from slack_bolt.adapter.fastapi.async_handler import AsyncSlackRequestHandler\n+\n+        from .slack import create_slack_app\n+\n+        slack_app = create_slack_app(process_before_response=True)\n+        _handler = AsyncSlackRequestHandler(slack_app)\n+        return _handler\n+\n+\n+@router.post(\"/slack/events\")\n+async def slack_events(request: Request):\n+    \"\"\"Handle Slack event subscriptions (URL verification, events, interactions).\"\"\"\n+    if not os.environ.get(\"SLACK_BOT_TOKEN\"):\n+        return JSONResponse({\"error\": \"SLACK_BOT_TOKEN not configured\"}, status_code=503)\n+\n+    # Acknowledge retries immediately — Slack retries if we don't ack within 3s,\n+    # but agent runs take much longer. The primary event is already being processed.\n+    if request.headers.get(\"X-Slack-Retry-Num\"):\n+        return JSONResponse({\"ok\": True})\n+\n+    # Delegate to slack-bolt (handles signature verification, URL verification, events)\n+    handler = await _get_handler()\n+    return await handler.handle(request)"
+    },
+    {
+      "sha": "11096a6229b41a5f5bc8948bf92094cecb3a6bcf",
+      "filename": "tests/test_models.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/tests%2Ftest_models.py",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/tests%2Ftest_models.py",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/tests%2Ftest_models.py?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -150,7 +150,7 @@ def test_extra_agents_rejects_invalid_names(self):\n class TestTimeoutBounds:\n     def test_default_timeout(self):\n         req = QueryRequest(prompt=\"test\")\n-        assert req.timeout == 300\n+        assert req.timeout is None\n \n     def test_timeout_too_low(self):\n         with pytest.raises(ValidationError, match=\"timeout\"):"
+    },
+    {
+      "sha": "a3669956e344a8e2769938639f7066294808d9c6",
+      "filename": "tests/test_sandbox_skills.py",
+      "status": "modified",
+      "additions": 157,
+      "deletions": 1,
+      "changes": 158,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/tests%2Ftest_sandbox_skills.py",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/tests%2Ftest_sandbox_skills.py",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/tests%2Ftest_sandbox_skills.py?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -1,7 +1,20 @@\n+import asyncio\n+import base64\n+import json\n+from unittest.mock import AsyncMock, MagicMock, PropertyMock\n+\n import pytest\n \n from sandstorm.models import QueryRequest\n-from sandstorm.sandbox import _build_agent_config, _load_skills_dir, _validate_sandstorm_config\n+from sandstorm.sandbox import (\n+    _MAX_EXTRACT_FILE_SIZE,\n+    _MAX_EXTRACT_FILES,\n+    _MAX_EXTRACT_TOTAL_SIZE,\n+    _build_agent_config,\n+    _extract_generated_files,\n+    _load_skills_dir,\n+    _validate_sandstorm_config,\n+)\n \n \n class TestValidateSandstormConfigSkills:\n@@ -413,6 +426,21 @@ def test_skill_not_duplicated_in_config(self):\n         assert config[\"allowed_tools\"].count(\"Skill\") == 1\n \n \n+@pytest.mark.usefixtures(\"_api_keys\")\n+class TestTimeoutResolution:\n+    def test_request_timeout_overrides_config(self):\n+        config, _ = _build_agent_config(_req(timeout=600), {\"timeout\": 120}, {})\n+        assert config[\"timeout\"] == 600\n+\n+    def test_config_timeout_used_when_request_is_none(self):\n+        config, _ = _build_agent_config(_req(), {\"timeout\": 120}, {})\n+        assert config[\"timeout\"] == 120\n+\n+    def test_falls_back_to_300_when_neither_set(self):\n+        config, _ = _build_agent_config(_req(), {}, {})\n+        assert config[\"timeout\"] == 300\n+\n+\n @pytest.mark.usefixtures(\"_api_keys\")\n class TestBuildAgentConfigOutputFormat:\n     _FMT_A = {\"type\": \"json_schema\", \"schema\": {\"type\": \"object\"}}\n@@ -441,3 +469,131 @@ def test_empty_dict_disables_output_format(self):\n         cfg = {\"output_format\": self._FMT_A}\n         config, _ = _build_agent_config(_req(output_format={}), cfg, {})\n         assert config[\"output_format\"] is None\n+\n+\n+@pytest.mark.usefixtures(\"_api_keys\")\n+class TestBuildAgentConfigSystemPromptAppend:\n+    def test_append_with_string_system_prompt(self):\n+        cfg = {\"system_prompt\": \"You are helpful\", \"system_prompt_append\": \"extra instructions\"}\n+        config, _ = _build_agent_config(_req(), cfg, {})\n+        assert config[\"system_prompt\"] == \"You are helpful\\n\\nextra instructions\"\n+\n+    def test_append_with_dict_append_system_prompt(self):\n+        cfg = {\n+            \"system_prompt\": {\"prepend\": \"pre\", \"append\": \"existing\"},\n+            \"system_prompt_append\": \"extra\",\n+        }\n+        config, _ = _build_agent_config(_req(), cfg, {})\n+        assert config[\"system_prompt\"] == {\"prepend\": \"pre\", \"append\": \"existing\\n\\nextra\"}\n+\n+    def test_append_with_dict_prepend_only(self):\n+        cfg = {\"system_prompt\": {\"prepend\": \"You are X\"}, \"system_prompt_append\": \"added\"}\n+        config, _ = _build_agent_config(_req(), cfg, {})\n+        assert config[\"system_prompt\"] == {\"prepend\": \"You are X\", \"append\": \"added\"}\n+\n+    def test_append_without_system_prompt(self):\n+        cfg = {\"system_prompt_append\": \"standalone\"}\n+        config, _ = _build_agent_config(_req(), cfg, {})\n+        assert config[\"system_prompt\"] == \"standalone\"\n+\n+    def test_no_append(self):\n+        cfg = {\"system_prompt\": \"unchanged\"}\n+        config, _ = _build_agent_config(_req(), cfg, {})\n+        assert config[\"system_prompt\"] == \"unchanged\"\n+\n+\n+# ---------------------------------------------------------------------------\n+# _extract_generated_files tests\n+# ---------------------------------------------------------------------------\n+\n+\n+def _make_entry(name, *, type_val=\"file\", size=100, path=None):\n+    \"\"\"Create a mock sandbox file entry.\"\"\"\n+    entry = MagicMock()\n+    entry.name = name\n+    entry.path = path or f\"/home/user/{name}\"\n+    entry.size = size\n+    type_mock = MagicMock()\n+    type_mock.value = type_val\n+    type(entry).type = PropertyMock(return_value=type_mock if type_val else None)\n+    return entry\n+\n+\n+class TestExtractGeneratedFiles:\n+    def _sbx(self):\n+        sbx = AsyncMock()\n+        sbx.files.list = AsyncMock(return_value=[])\n+        sbx.files.read = AsyncMock(return_value=b\"data\")\n+        return sbx\n+\n+    def test_skips_directories(self):\n+        sbx = self._sbx()\n+        sbx.files.list.return_value = [_make_entry(\"mydir\", type_val=\"directory\")]\n+        result = asyncio.run(_extract_generated_files(sbx, set(), \"req1\"))\n+        assert result == []\n+\n+    def test_skips_dotfiles(self):\n+        sbx = self._sbx()\n+        sbx.files.list.return_value = [_make_entry(\".bashrc\")]\n+        result = asyncio.run(_extract_generated_files(sbx, set(), \"req1\"))\n+        assert result == []\n+\n+    def test_skips_input_files(self):\n+        sbx = self._sbx()\n+        sbx.files.list.return_value = [_make_entry(\"input.csv\")]\n+        result = asyncio.run(_extract_generated_files(sbx, {\"input.csv\"}, \"req1\"))\n+        assert result == []\n+\n+    def test_skips_oversized_files(self):\n+        sbx = self._sbx()\n+        sbx.files.list.return_value = [_make_entry(\"huge.bin\", size=_MAX_EXTRACT_FILE_SIZE + 1)]\n+        result = asyncio.run(_extract_generated_files(sbx, set(), \"req1\"))\n+        assert result == []\n+\n+    def test_caps_at_max_files(self):\n+        sbx = self._sbx()\n+        entries = [_make_entry(f\"file{i}.txt\", size=10) for i in range(15)]\n+        sbx.files.list.return_value = entries\n+        sbx.files.read.return_value = b\"x\"\n+\n+        result = asyncio.run(_extract_generated_files(sbx, set(), \"req1\"))\n+        assert len(result) == _MAX_EXTRACT_FILES\n+\n+    def test_total_size_budget(self):\n+        sbx = self._sbx()\n+        # Each file is half the total budget + 1 byte, so only 1 fits\n+        half_plus = _MAX_EXTRACT_TOTAL_SIZE // 2 + 1\n+        entries = [_make_entry(\"a.bin\", size=100), _make_entry(\"b.bin\", size=100)]\n+        sbx.files.list.return_value = entries\n+        sbx.files.read.return_value = b\"x\" * half_plus\n+\n+        result = asyncio.run(_extract_generated_files(sbx, set(), \"req1\"))\n+        assert len(result) == 1\n+\n+    def test_returns_json_encoded_file_events(self):\n+        sbx = self._sbx()\n+        raw = b\"hello world\"\n+        sbx.files.list.return_value = [_make_entry(\"output.txt\", size=len(raw))]\n+        sbx.files.read.return_value = raw\n+\n+        result = asyncio.run(_extract_generated_files(sbx, set(), \"req1\"))\n+        assert len(result) == 1\n+\n+        event = json.loads(result[0])\n+        assert event[\"type\"] == \"file\"\n+        assert event[\"name\"] == \"output.txt\"\n+        assert event[\"path\"] == \"/home/user/output.txt\"\n+        assert event[\"size\"] == len(raw)\n+        assert base64.b64decode(event[\"data\"]) == raw\n+\n+    def test_handles_read_failure(self):\n+        sbx = self._sbx()\n+        entries = [_make_entry(\"good.txt\", size=10), _make_entry(\"bad.txt\", size=10)]\n+        sbx.files.list.return_value = entries\n+        sbx.files.read.side_effect = [b\"ok\", Exception(\"read error\")]\n+\n+        result = asyncio.run(_extract_generated_files(sbx, set(), \"req1\"))\n+        # Only the successfully read file is returned\n+        assert len(result) == 1\n+        event = json.loads(result[0])\n+        assert event[\"name\"] == \"good.txt\""
+    },
+    {
+      "sha": "0f4718de6c656eed5a2d8a7123c538f87524c3cf",
+      "filename": "tests/test_slack.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 18,
+      "changes": 21,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/tests%2Ftest_slack.py",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/tests%2Ftest_slack.py",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/tests%2Ftest_slack.py?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -68,25 +68,10 @@ class TestBuildQueryRequest:\n     def test_uses_env_defaults(self):\n         request = _build_query_request(\"hello world\")\n         assert request.prompt == \"hello world\"\n-        assert request.timeout == 300\n-        assert request.model == \"claude-sonnet-4-6\"\n+        assert request.timeout is None\n+        assert request.model is None\n         assert request.output_format == {}\n \n-    def test_uses_sandstorm_slack_model_env(self, monkeypatch):\n-        monkeypatch.setenv(\"SANDSTORM_SLACK_MODEL\", \"opus\")\n-        request = _build_query_request(\"test\")\n-        assert request.model == \"opus\"\n-\n-    def test_uses_sandstorm_slack_timeout_env(self, monkeypatch):\n-        monkeypatch.setenv(\"SANDSTORM_SLACK_TIMEOUT\", \"600\")\n-        request = _build_query_request(\"test\")\n-        assert request.timeout == 600\n-\n-    def test_invalid_timeout_falls_back_to_300(self, monkeypatch):\n-        monkeypatch.setenv(\"SANDSTORM_SLACK_TIMEOUT\", \"not-a-number\")\n-        request = _build_query_request(\"test\")\n-        assert request.timeout == 300\n-\n     def test_attaches_files(self):\n         files = {\"data.csv\": \"a,b\\n1,2\"}\n         request = _build_query_request(\"analyze this\", files)\n@@ -229,7 +214,7 @@ def test_skips_large_files(self):\n                         \"id\": \"F001\",\n                         \"name\": \"huge.txt\",\n                         \"mimetype\": \"text/plain\",\n-                        \"size\": 20 * 1024 * 1024,  # 20MB\n+                        \"size\": 60 * 1024 * 1024,  # 60MB\n                         \"url_private\": \"https://example.com/huge.txt\",\n                     }\n                 ],"
+    },
+    {
+      "sha": "fb16eef3888218cb695f293f7dc28905e1a1e1b1",
+      "filename": "tests/test_slack_routes.py",
+      "status": "added",
+      "additions": 48,
+      "deletions": 0,
+      "changes": 48,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/tests%2Ftest_slack_routes.py",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/tests%2Ftest_slack_routes.py",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/tests%2Ftest_slack_routes.py?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -0,0 +1,48 @@\n+\"\"\"Tests for the Slack events route (slack_routes.py).\"\"\"\n+\n+from unittest.mock import AsyncMock, patch\n+\n+from fastapi.testclient import TestClient\n+\n+from sandstorm.main import app\n+\n+client = TestClient(app)\n+\n+ENDPOINT = \"/slack/events\"\n+\n+\n+class TestSlackEventsGate:\n+    def test_returns_503_without_bot_token(self, monkeypatch):\n+        monkeypatch.delenv(\"SLACK_BOT_TOKEN\", raising=False)\n+        resp = client.post(ENDPOINT, json={\"type\": \"event_callback\"})\n+        assert resp.status_code == 503\n+        assert \"SLACK_BOT_TOKEN\" in resp.json()[\"error\"]\n+\n+\n+class TestSlackEventsRetry:\n+    def test_rejects_retries(self, monkeypatch):\n+        monkeypatch.setenv(\"SLACK_BOT_TOKEN\", \"xoxb-test\")\n+        resp = client.post(\n+            ENDPOINT,\n+            json={\"type\": \"event_callback\"},\n+            headers={\"X-Slack-Retry-Num\": \"1\"},\n+        )\n+        assert resp.status_code == 200\n+        assert resp.json() == {\"ok\": True}\n+\n+\n+class TestSlackEventsDelegation:\n+    def test_delegates_to_handler(self, monkeypatch):\n+        monkeypatch.setenv(\"SLACK_BOT_TOKEN\", \"xoxb-test\")\n+        monkeypatch.setenv(\"SLACK_SIGNING_SECRET\", \"test-secret\")\n+\n+        mock_handler = AsyncMock()\n+        mock_handler.handle = AsyncMock(return_value={\"ok\": True})\n+\n+        body = {\"type\": \"event_callback\"}\n+\n+        with patch(\"sandstorm.slack_routes._get_handler\", return_value=mock_handler):\n+            resp = client.post(ENDPOINT, json=body)\n+\n+        assert resp.status_code == 200\n+        mock_handler.handle.assert_called_once()"
+    },
+    {
+      "sha": "8c059396ab01f1b32c6f37b49e043e1358437270",
+      "filename": "vercel.json",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 8,
+      "changes": 15,
+      "blob_url": "https://github.com/tomascupr/sandstorm/blob/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/vercel.json",
+      "raw_url": "https://github.com/tomascupr/sandstorm/raw/1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc/vercel.json",
+      "contents_url": "https://api.github.com/repos/tomascupr/sandstorm/contents/vercel.json?ref=1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "patch": "@@ -1,14 +1,13 @@\n {\n-  \"builds\": [\n-    {\n-      \"src\": \"api/index.py\",\n-      \"use\": \"@vercel/python\"\n+  \"functions\": {\n+    \"api/index.py\": {\n+      \"maxDuration\": 300\n     }\n-  ],\n-  \"routes\": [\n+  },\n+  \"rewrites\": [\n     {\n-      \"src\": \"/(.*)\",\n-      \"dest\": \"/api/index.py\"\n+      \"source\": \"/(.*)\",\n+      \"destination\": \"/api/index.py\"\n     }\n   ]\n }"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8e21bbbaa65269db605221e09be65ffaec70af43",
+      "message": "feat: add process_before_response param to create_slack_app\n\nAllow callers to enable slack-bolt's FaaS pattern where event\nprocessing happens before the HTTP response is sent. Defaults\nto False for backward compatibility with Socket Mode.",
+      "parent_shas": [
+        "8c8114c77c10ab76e2259b2f30a12c55c3f265f2"
+      ]
+    },
+    {
+      "sha": "021f22b0c4ec5f659eb36f16e945096279c159cc",
+      "message": "feat: add Slack events FastAPI router\n\nMinimal APIRouter at /slack/events that bridges slack-bolt into\nthe FastAPI app. Handles URL verification challenges, rejects\nSlack retries, deduplicates events by event_id, and lazily\ninitializes the handler so slack-bolt deps stay optional.",
+      "parent_shas": [
+        "8e21bbbaa65269db605221e09be65ffaec70af43"
+      ]
+    },
+    {
+      "sha": "60fc2f5742274115587ddd37654998e6bafdf97a",
+      "message": "feat: mount Slack events router in FastAPI app\n\nConditionally include the /slack/events router when slack-bolt\nis installed. The try/except guard ensures the server starts\nnormally even without Slack dependencies.",
+      "parent_shas": [
+        "021f22b0c4ec5f659eb36f16e945096279c159cc"
+      ]
+    },
+    {
+      "sha": "509971398a5325eacfe2b45d07ee03e3dbbe7cfa",
+      "message": "fix: address lint issue in slack mount (line too long)",
+      "parent_shas": [
+        "60fc2f5742274115587ddd37654998e6bafdf97a"
+      ]
+    },
+    {
+      "sha": "d7f066d0ea6d19ab98eb1988692dbf97fd59aa61",
+      "message": "fix: set Vercel function maxDuration to 300s for agent runs",
+      "parent_shas": [
+        "509971398a5325eacfe2b45d07ee03e3dbbe7cfa"
+      ]
+    },
+    {
+      "sha": "6e1ba7bb11b3d5704e54178370d0dd10d7890247",
+      "message": "fix: move slack deps from optional to core for Vercel deployment\n\nslack-bolt, slack-sdk, and aiohttp were optional extras but the slack\nrouter is always mounted in main.py. Vercel only installs core deps\nfrom uv.lock, causing ModuleNotFoundError at request time.",
+      "parent_shas": [
+        "d7f066d0ea6d19ab98eb1988692dbf97fd59aa61"
+      ]
+    },
+    {
+      "sha": "de657d458ac7125d298d8903c2591ae16fb22df4",
+      "message": "feat: extract agent-generated files from sandbox\n\nAfter the agent finishes, list /home/user/, download new files\n(excluding input uploads and dotfiles), base64-encode them, and\nyield as \"file\" events on the SSE stream. Respects per-file (25MB),\ntotal (50MB), and count (10) limits.",
+      "parent_shas": [
+        "6e1ba7bb11b3d5704e54178370d0dd10d7890247"
+      ]
+    },
+    {
+      "sha": "35018c897de91725a83955ea14478e1df58c9a6d",
+      "message": "feat: support system prompt append and LINEAR_API_KEY forwarding\n\nAdd SANDSTORM_SYSTEM_PROMPT_APPEND env var to append extra instructions\nto the system prompt from sandstorm.json (supports both str and dict\nformats). Forward LINEAR_API_KEY into the sandbox for MCP server auth.",
+      "parent_shas": [
+        "de657d458ac7125d298d8903c2591ae16fb22df4"
+      ]
+    },
+    {
+      "sha": "b6e5c2ba6deb66e47ac5da97def8ead76dc0bc2a",
+      "message": "feat: handle file events in Slack and bump defaults\n\nUpload agent-generated files to Slack threads via files_upload_v2.\nChange default model to claude-opus-4-6 and increase max file size\nfrom 10MB to 50MB.",
+      "parent_shas": [
+        "35018c897de91725a83955ea14478e1df58c9a6d"
+      ]
+    },
+    {
+      "sha": "2b2525f8184f31b0427d865c5139107cd532d3a9",
+      "message": "chore: gitignore private deployment configs",
+      "parent_shas": [
+        "b6e5c2ba6deb66e47ac5da97def8ead76dc0bc2a"
+      ]
+    },
+    {
+      "sha": "e1c08d2a9498d8167bb32872402784cc11d9416f",
+      "message": "feat: pre-install document processing tools in sandbox template\n\nAdd poppler-utils and qpdf to apt packages, and pip install pypdf,\npdfplumber, reportlab, and markitdown. These are used by the pdf,\ndocx, and pptx skills — pre-installing saves ~15-30s per agent run.",
+      "parent_shas": [
+        "2b2525f8184f31b0427d865c5139107cd532d3a9"
+      ]
+    },
+    {
+      "sha": "a7d8cdd24448838ccbf82e4dc6934cbe9927b5a7",
+      "message": "fix: address code review issues in Slack integration\n\n- Add asyncio.Lock with double-checked locking to prevent race condition\n  in lazy slack-bolt handler initialization\n- Remove try/except guard around slack_routes import — Slack deps are now\n  core, so ImportError should surface rather than be swallowed\n- Fix stale docstring (10MB → 50MB) in _download_thread_files\n- Document Vercel 4.5MB response limit on _MAX_EXTRACT_FILE_SIZE",
+      "parent_shas": [
+        "e1c08d2a9498d8167bb32872402784cc11d9416f"
+      ]
+    },
+    {
+      "sha": "0e4e137d504a6682eadf5afeb3fc90100a1a218d",
+      "message": "fix: handle system prompt append for dict without \"append\" key\n\nWhen system_prompt is a dict with only \"prepend\" (no \"append\"), the\nSANDSTORM_SYSTEM_PROMPT_APPEND env var was silently dropped. Now creates\nthe \"append\" key in that case.\n\nAlso clarifies the dedup cache comment in slack_routes.py and adds tests\nfor slack routes, system prompt append logic, and _extract_generated_files.",
+      "parent_shas": [
+        "a7d8cdd24448838ccbf82e4dc6934cbe9927b5a7"
+      ]
+    },
+    {
+      "sha": "a7eb09626d8160d4ef80e9e32ca7a066bad0f8af",
+      "message": "refactor: move timeout and system_prompt_append config to sandstorm.json\n\nMove configuration from env vars to sandstorm.json for consistency:\n- timeout: resolved via request > sandstorm.json > 300 default\n- system_prompt_append: read from sandstorm.json instead of env var\n- Remove SANDSTORM_SLACK_MODEL and SANDSTORM_SLACK_TIMEOUT env var reads\n- Make QueryRequest.timeout nullable (None = defer to config)",
+      "parent_shas": [
+        "0e4e137d504a6682eadf5afeb3fc90100a1a218d"
+      ]
+    },
+    {
+      "sha": "eff8ef229b4202a3907fb46c53caaed86e73f1f6",
+      "message": "fix: remove unauthenticated early returns and pin pip versions\n\nRemove URL verification and dedup cache that ran before Bolt's signature\nverification, allowing unauthenticated early returns. Pin Python package\nversions in sandbox template for reproducible builds.",
+      "parent_shas": [
+        "a7eb09626d8160d4ef80e9e32ca7a066bad0f8af"
+      ]
+    },
+    {
+      "sha": "1b2107d7a80bcb5f7534134a33ca73bde2b6ecdc",
+      "message": "fix: prevent double run on sandbox reuse failure and update slack docs\n\nGenerate a fresh run_id when retrying after a failed sandbox reuse so the\nfailed attempt keeps its own run store entry and Slack message instead of\ncreating duplicates. Remove phantom SANDSTORM_SLACK_MODEL and\nSANDSTORM_SLACK_TIMEOUT env vars from docs (config comes from\nsandstorm.json). Add file extraction feature to docs.",
+      "parent_shas": [
+        "eff8ef229b4202a3907fb46c53caaed86e73f1f6"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "adds_new_tests",
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__tomascupr__sandstorm__pr38.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\tomascupr__sandstorm__pr38__py2_py3__tomascupr__sandstorm__pr38\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\tomascupr__sandstorm__pr38__py2_py3__tomascupr__sandstorm__pr38\\rn"
+  }
+}

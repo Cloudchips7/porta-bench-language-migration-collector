@@ -1,0 +1,79 @@
+{
+  "instance_id": "python_java__Azure__azure-sdk__pr9818",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "Azure/azure-sdk",
+  "pr_number": 9818,
+  "pr_url": "https://github.com/Azure/azure-sdk/pull/9818",
+  "repo": {
+    "full_name": "Azure/azure-sdk",
+    "clone_url": "https://github.com/Azure/azure-sdk.git",
+    "default_branch": "main",
+    "created_at": "2018-10-08T17:49:19Z",
+    "stars": 586,
+    "license": "MIT",
+    "size_kb": 61060
+  },
+  "pull_request": {
+    "id": 3499525172,
+    "title": "Update python.yml",
+    "body": "",
+    "created_at": "2026-04-07T18:39:56Z",
+    "merged_at": "2026-04-07T18:49:28Z",
+    "base_sha": "9b0f9f1c86c2df81f9a8b74d3125d0d0196e2ee6",
+    "head_sha": "32a57a4058e003694f283459d0332c646e0f0142",
+    "merge_commit_sha": "2e3524cb523961db6dcdb97099a833b051a490ad",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "9b0f9f1c86c2df81f9a8b74d3125d0d0196e2ee6",
+  "final_sha": "32a57a4058e003694f283459d0332c646e0f0142",
+  "changed_files": [
+    {
+      "sha": "f717e73f5121a56f4d658aa8f7f96d6286766908",
+      "filename": "_data/releases/2025-11/python.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Azure/azure-sdk/blob/32a57a4058e003694f283459d0332c646e0f0142/_data%2Freleases%2F2025-11%2Fpython.yml",
+      "raw_url": "https://github.com/Azure/azure-sdk/raw/32a57a4058e003694f283459d0332c646e0f0142/_data%2Freleases%2F2025-11%2Fpython.yml",
+      "contents_url": "https://api.github.com/repos/Azure/azure-sdk/contents/_data%2Freleases%2F2025-11%2Fpython.yml?ref=32a57a4058e003694f283459d0332c646e0f0142",
+      "patch": "@@ -315,7 +315,7 @@ entries:\n   ServiceName: Cognitive Services\n   VersionType: GA\n   Hidden: false\n-  ChangelogUrl: https://github.com/Azure/azure-sdk-for-python/tree/azure-ai-voicelive_1.1.0/sdk/ai/azure-ai-voicelive/CHANGELOG.md\n+  ChangelogUrl: https://github.com/Azure/azure-sdk-for-python/tree/azure-ai-voicelive_1.1.0/sdk/voicelive/azure-ai-voicelive/CHANGELOG.md\n   ChangelogContent: |-\n     #### Features Added\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "32a57a4058e003694f283459d0332c646e0f0142",
+      "message": "Update python.yml",
+      "parent_shas": [
+        "9b0f9f1c86c2df81f9a8b74d3125d0d0196e2ee6"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes",
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "python_java_bridge_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__Azure__azure-sdk__pr9818.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\Azure__azure-sdk__pr9818__python_java__Azure__azure-sdk__pr9818\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\Azure__azure-sdk__pr9818__python_java__Azure__azure-sdk__pr9818\\rn"
+  }
+}

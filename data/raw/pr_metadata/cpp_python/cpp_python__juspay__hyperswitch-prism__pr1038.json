@@ -1,0 +1,80 @@
+{
+  "instance_id": "cpp_python__juspay__hyperswitch-prism__pr1038",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "juspay/hyperswitch-prism",
+  "pr_number": 1038,
+  "pr_url": "https://github.com/juspay/hyperswitch-prism/pull/1038",
+  "repo": {
+    "full_name": "juspay/hyperswitch-prism",
+    "clone_url": "https://github.com/juspay/hyperswitch-prism.git",
+    "default_branch": "main",
+    "created_at": "2025-04-30T12:39:15Z",
+    "stars": 50,
+    "license": "Apache-2.0",
+    "size_kb": 92821
+  },
+  "pull_request": {
+    "id": 3522733021,
+    "title": "docs(sdk): FFI performance findings — boundary-crossing overhead across SDKs",
+    "body": "## What\n\nAdds `sdk/FFI_PERFORMANCE.md` documenting measured FFI boundary-crossing overhead across Rust, Python, and JavaScript SDKs.\n\n## Key Findings\n\nThe pure cost of crossing from a host language into Rust and back:\n\n| | req_transformer | res_transformer | Total per call |\n|---|---:|---:|---:|\n| **JavaScript** (koffi) | +0.32ms | +0.69ms | **+1.01ms** |\n| **Python** (ctypes) | +0.31ms | +1.47ms | **+1.78ms** |\n\n- FFI overhead is **0.2–0.3%** of total round-trip time\n- Request side is identical across languages (~0.3ms) — payloads are small\n- Response side diverges — Python ctypes marshals large byte buffers ~2× slower than koffi\n- Measured against live Stripe sandbox with production-shaped payloads\n- Timers placed inside ConnectorClient, not the test harness\n",
+    "created_at": "2026-04-13T12:11:26Z",
+    "merged_at": "2026-04-13T13:11:58Z",
+    "base_sha": "f57ace53f216c97720d613399bea1490c64c093e",
+    "head_sha": "eeef13cd431469e0f8a7a561d344ddc0521aa8d8",
+    "merge_commit_sha": "801743b0918f5630132d8f2e2dea9f8c77d67968",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "069178cf4396ace9bb3e4b592991bdcad2c57fec",
+  "final_sha": "eeef13cd431469e0f8a7a561d344ddc0521aa8d8",
+  "changed_files": [
+    {
+      "sha": "26b877f309930b71fdfb3bfb5bc9bd6da349ac80",
+      "filename": "docs-generated/sdks/FFI_PERFORMANCE.md",
+      "status": "added",
+      "additions": 98,
+      "deletions": 0,
+      "changes": 98,
+      "blob_url": "https://github.com/juspay/hyperswitch-prism/blob/eeef13cd431469e0f8a7a561d344ddc0521aa8d8/docs-generated%2Fsdks%2FFFI_PERFORMANCE.md",
+      "raw_url": "https://github.com/juspay/hyperswitch-prism/raw/eeef13cd431469e0f8a7a561d344ddc0521aa8d8/docs-generated%2Fsdks%2FFFI_PERFORMANCE.md",
+      "contents_url": "https://api.github.com/repos/juspay/hyperswitch-prism/contents/docs-generated%2Fsdks%2FFFI_PERFORMANCE.md?ref=eeef13cd431469e0f8a7a561d344ddc0521aa8d8",
+      "patch": "@@ -0,0 +1,98 @@\n+# SDK FFI Performance Report\n+\n+## Summary\n+\n+The FFI boundary crossing adds **<4ms overhead per call** across all SDKs, accounting for **0.2–0.3% of total round-trip time**. The pure penalty of crossing from a host language into Rust and back is **~1ms for JavaScript and ~1.8ms for Python** on top of the native Rust baseline.\n+\n+## Cross-SDK Comparison\n+\n+| Metric | Rust (baseline) | JavaScript | Python |\n+|---|---:|---:|---:|\n+| Avg req\\_transformer | 0.47ms | 0.79ms | 0.78ms |\n+| Avg res\\_transformer | 1.57ms | 2.26ms | 3.04ms |\n+| **Avg total overhead** | **2.04ms** | **3.05ms** | **3.82ms** |\n+| **Overhead as % of round-trip** | **0.18%** | **0.25%** | **0.31%** |\n+\n+> Kotlin uses the same FFI mechanism (UniFFI → JNA) and is expected to fall in the same range. Data will be added once its Maven publish pipeline includes the perf instrumentation.\n+\n+## FFI Boundary Cost (Delta vs Rust)\n+\n+Since Rust calls its own handlers directly with zero FFI overhead, it serves as the baseline. The delta isolates the pure language-boundary cost:\n+\n+| | req\\_transformer | res\\_transformer | Total per call |\n+|---|---:|---:|---:|\n+| **JavaScript** (koffi) | +0.32ms | +0.69ms | **+1.01ms** |\n+| **Python** (ctypes) | +0.31ms | +1.47ms | **+1.78ms** |\n+\n+- **req side** is nearly identical (~0.3ms) — request payloads are small and serialization is fast in both languages.\n+- **res side** diverges — Python's ctypes marshals large byte buffers slower than koffi's direct memory access, which doubles the response-side penalty.\n+\n+## What Was Measured\n+\n+Each connector client flow does a three-phase round-trip through the Rust core:\n+\n+```\n+req_transformer:  serialize request proto → FFI call into Rust → decode HTTP request\n+       │\n+     HTTP:        network round-trip to connector API (Stripe sandbox)\n+       │\n+res_transformer:  encode HTTP response → FFI call into Rust → decode domain response\n+```\n+\n+Timers are placed **inside the ConnectorClient** (not the test harness), directly around each phase. Measurements were taken against live Stripe sandbox with production-shaped payloads.\n+\n+## Architecture\n+\n+| SDK | FFI binding | HTTP client |\n+|---|---|---|\n+| Rust | Direct call (no FFI) | reqwest |\n+| Python | UniFFI → ctypes | httpx (h2) |\n+| JavaScript | UniFFI → koffi | undici (fetch) |\n+| Kotlin | UniFFI → JNA | OkHttp |\n+\n+All SDKs share the same compiled `libconnector_service_ffi` (Rust, `release-fast` profile). The connector-specific transformation logic is identical — only the language binding layer and HTTP transport differ.\n+\n+## Raw Data\n+\n+<details>\n+<summary>Per-call breakdown (click to expand)</summary>\n+\n+### Rust (3 calls — single-step harness flows)\n+\n+| Flow | req\\_ffi | HTTP | res\\_ffi | Total |\n+|---|---:|---:|---:|---:|\n+| proxy\\_authorize | 0.27ms | 1265.38ms | 3.20ms | 1268.85ms |\n+| proxy\\_setup\\_recurring | 0.70ms | 1122.81ms | 0.84ms | 1124.35ms |\n+| setup\\_recurring | 0.45ms | 1068.30ms | 0.67ms | 1069.42ms |\n+\n+### Python (10 calls — composite example flows)\n+\n+| Flow | req\\_ffi | HTTP | res\\_ffi | Total |\n+|---|---:|---:|---:|---:|\n+| authorize | 3.02ms | 1526.44ms | 2.47ms | 1531.93ms |\n+| capture | 0.35ms | 1450.10ms | 3.27ms | 1453.71ms |\n+| authorize | 0.87ms | 1121.34ms | 3.84ms | 1126.06ms |\n+| capture | 0.58ms | 1436.68ms | 3.04ms | 1440.30ms |\n+| authorize | 0.76ms | 1188.71ms | 1.27ms | 1190.74ms |\n+| get | 0.31ms | 436.58ms | 4.76ms | 441.64ms |\n+| authorize | 0.76ms | 1385.68ms | 3.06ms | 1389.50ms |\n+| refund | 0.35ms | 1222.98ms | 1.39ms | 1224.72ms |\n+| authorize | 0.31ms | 1166.88ms | 3.07ms | 1170.26ms |\n+| void | 0.51ms | 1429.06ms | 4.23ms | 1433.81ms |\n+\n+### JavaScript (10 calls — composite example flows)\n+\n+| Flow | req\\_ffi | HTTP | res\\_ffi | Total |\n+|---|---:|---:|---:|---:|\n+| authorize | 3.42ms | 1219.74ms | 2.90ms | 1226.06ms |\n+| capture | 0.41ms | 1646.62ms | 3.58ms | 1650.61ms |\n+| authorize | 0.86ms | 1143.32ms | 1.76ms | 1145.94ms |\n+| capture | 0.28ms | 1230.85ms | 0.95ms | 1232.08ms |\n+| authorize | 0.32ms | 1095.93ms | 3.76ms | 1100.01ms |\n+| get | 0.85ms | 500.41ms | 3.39ms | 504.66ms |\n+| authorize | 0.84ms | 1472.74ms | 1.15ms | 1474.72ms |\n+| refund | 0.33ms | 1384.69ms | 1.08ms | 1386.11ms |\n+| authorize | 0.32ms | 1217.08ms | 2.90ms | 1220.30ms |\n+| void | 0.33ms | 1336.76ms | 1.07ms | 1338.17ms |\n+\n+</details>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "eeef13cd431469e0f8a7a561d344ddc0521aa8d8",
+      "message": "docs(sdk): add FFI performance findings report\n\nDocuments measured FFI boundary-crossing overhead across Rust, Python,\nand JavaScript SDKs. Key finding: the pure language-boundary penalty is\n~1ms for JavaScript (koffi) and ~1.8ms for Python (ctypes) per call,\nrepresenting 0.2-0.3% of total round-trip time.",
+      "parent_shas": [
+        "069178cf4396ace9bb3e4b592991bdcad2c57fec"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__juspay__hyperswitch-prism__pr1038.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\juspay__hyperswitch-prism__pr1038__cpp_python__juspay__hyperswitch-prism__pr1038\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\juspay__hyperswitch-prism__pr1038__cpp_python__juspay__hyperswitch-prism__pr1038\\rn"
+  }
+}

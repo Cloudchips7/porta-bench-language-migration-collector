@@ -1,0 +1,247 @@
+{
+  "instance_id": "py2_py3__vimeo__vimeo.py__pr147",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "vimeo/vimeo.py",
+  "pr_number": 147,
+  "pr_url": "https://github.com/vimeo/vimeo.py/pull/147",
+  "repo": {
+    "full_name": "vimeo/vimeo.py",
+    "clone_url": "https://github.com/vimeo/vimeo.py.git",
+    "default_branch": "master",
+    "created_at": "2013-12-13T20:22:20Z",
+    "stars": 218,
+    "license": "Apache-2.0",
+    "size_kb": 190
+  },
+  "pull_request": {
+    "id": 303279439,
+    "title": "Drop support for EOL Python 2.7",
+    "body": "Fixes https://github.com/vimeo/vimeo.py/issues/140. \r\n\r\nExample CI build: https://travis-ci.org/hugovk/vimeo.py/builds/566365592",
+    "created_at": "2019-08-01T08:41:24Z",
+    "merged_at": "2020-05-20T20:33:54Z",
+    "base_sha": "3b9733775d09db6517d52bd45929dccfdec83733",
+    "head_sha": "e6f0ae207044544b463dab238dce1c800d0bbbc1",
+    "merge_commit_sha": "3ab20674e2aa056214212292db7686d4e67b2642",
+    "labels": [
+      "enhancement"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "3b9733775d09db6517d52bd45929dccfdec83733",
+  "final_sha": "e6f0ae207044544b463dab238dce1c800d0bbbc1",
+  "changed_files": [
+    {
+      "sha": "d47c251b2acfe2fa148f216f898c326091088ce1",
+      "filename": ".travis.yml",
+      "status": "added",
+      "additions": 19,
+      "deletions": 0,
+      "changes": 19,
+      "blob_url": "https://github.com/vimeo/vimeo.py/blob/e6f0ae207044544b463dab238dce1c800d0bbbc1/.travis.yml",
+      "raw_url": "https://github.com/vimeo/vimeo.py/raw/e6f0ae207044544b463dab238dce1c800d0bbbc1/.travis.yml",
+      "contents_url": "https://api.github.com/repos/vimeo/vimeo.py/contents/.travis.yml?ref=e6f0ae207044544b463dab238dce1c800d0bbbc1",
+      "patch": "@@ -0,0 +1,19 @@\n+dist: xenial\n+language: python\n+cache: pip\n+\n+matrix:\n+  fast_finish: true\n+  include:\n+    - python: 3.5\n+    - python: 3.6\n+    - python: 3.7\n+    - python: 3.8-dev\n+\n+install:\n+  - pip install -U pip\n+  - pip install -U pytest pytest-cov\n+  - pip install -e .\n+\n+script:\n+  - pytest --cov vimeo"
+    },
+    {
+      "sha": "d16a4a2a2016c255910bf5fc3d0180435d24434b",
+      "filename": "example/upload.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/vimeo/vimeo.py/blob/e6f0ae207044544b463dab238dce1c800d0bbbc1/example%2Fupload.py",
+      "raw_url": "https://github.com/vimeo/vimeo.py/raw/e6f0ae207044544b463dab238dce1c800d0bbbc1/example%2Fupload.py",
+      "contents_url": "https://api.github.com/repos/vimeo/vimeo.py/contents/example%2Fupload.py?ref=e6f0ae207044544b463dab238dce1c800d0bbbc1",
+      "patch": "@@ -33,7 +33,7 @@\n \n     # Get the metadata response from the upload and log out the Vimeo.com url\n     video_data = client.get(uri + '?fields=link').json()\n-    print('\"%s\" has been uploaded to %s' % (file_name, video_data['link']))\n+    print('\"{}\" has been uploaded to {}'.format(file_name, video_data['link']))\n \n     # Make an API call to edit the title and description of the video.\n     client.patch(uri, data={\n@@ -46,7 +46,7 @@\n \n     # Make an API call to see if the video is finished transcoding.\n     video_data = client.get(uri + '?fields=transcode.status').json()\n-    print('The transcode status for %s is: %s' % (\n+    print('The transcode status for {} is: {}'.format(\n         uri,\n         video_data['transcode']['status']\n     ))"
+    },
+    {
+      "sha": "7b3fc18b49ea3da19409f7b5e1cc05be3f07f983",
+      "filename": "setup.cfg",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 3,
+      "changes": 3,
+      "blob_url": "https://github.com/vimeo/vimeo.py/blob/3b9733775d09db6517d52bd45929dccfdec83733/setup.cfg",
+      "raw_url": "https://github.com/vimeo/vimeo.py/raw/3b9733775d09db6517d52bd45929dccfdec83733/setup.cfg",
+      "contents_url": "https://api.github.com/repos/vimeo/vimeo.py/contents/setup.cfg?ref=3b9733775d09db6517d52bd45929dccfdec83733",
+      "patch": "@@ -1,3 +0,0 @@\n-[bdist_wheel]\n-# This flag says that the code is written to work on both Python 2 and Python 3. \n-universal=1"
+    },
+    {
+      "sha": "f6d10c7cf69a9368b735673581b05ac28c5b0fa9",
+      "filename": "setup.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 6,
+      "changes": 15,
+      "blob_url": "https://github.com/vimeo/vimeo.py/blob/e6f0ae207044544b463dab238dce1c800d0bbbc1/setup.py",
+      "raw_url": "https://github.com/vimeo/vimeo.py/raw/e6f0ae207044544b463dab238dce1c800d0bbbc1/setup.py",
+      "contents_url": "https://api.github.com/repos/vimeo/vimeo.py/contents/setup.py?ref=e6f0ae207044544b463dab238dce1c800d0bbbc1",
+      "patch": "@@ -1,10 +1,7 @@\n #! /usr/bin/env python\n # encoding: utf-8\n \n-try:\n-    from setuptools import setup\n-except ImportError:\n-    from distutils.core import setup\n+from setuptools import setup\n \n setup(name='PyVimeo',\n     version='1.0.11',\n@@ -13,8 +10,9 @@\n     author='Vimeo',\n     author_email='support@vimeo.com',\n     packages=['vimeo', 'vimeo/auth'],\n-    install_requires=['requests>=2.4.0', 'tuspy==0.2.1'],\n-    classifiers=[\n+    install_requires=['requests>=2.4.0', 'tuspy>=0.2.1'],\n+      python_requires='>=3.5',\n+      classifiers=[\n         'Development Status :: 5 - Production/Stable',\n         'Environment :: Console',\n         'Environment :: Web Environment',\n@@ -23,6 +21,11 @@\n         'License :: OSI Approved :: Apache Software License',\n         'Operating System :: OS Independent',\n         'Programming Language :: Python',\n+        'Programming Language :: Python :: 3',\n+        'Programming Language :: Python :: 3.5',\n+        'Programming Language :: Python :: 3.6',\n+        'Programming Language :: Python :: 3.7',\n+        'Programming Language :: Python :: 3 :: Only',\n         'Topic :: Internet',\n         'Topic :: Multimedia :: Video',\n         'Topic :: Software Development :: Libraries :: Python Modules',"
+    },
+    {
+      "sha": "63f8af2fc4ae17583f52dbb1f440b2bcaec76eeb",
+      "filename": "vimeo/__init__.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/vimeo/vimeo.py/blob/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2F__init__.py",
+      "raw_url": "https://github.com/vimeo/vimeo.py/raw/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/vimeo/vimeo.py/contents/vimeo%2F__init__.py?ref=e6f0ae207044544b463dab238dce1c800d0bbbc1",
+      "patch": "@@ -1,8 +1,6 @@\n #! /usr/bin/env python\n # encoding: utf-8\n \n-from __future__ import absolute_import\n-\n version = (0, 3, 10)\n \n from .client import VimeoClient"
+    },
+    {
+      "sha": "7eea1225e868479d192783dbc39c58ed5a54e9b3",
+      "filename": "vimeo/auth/__init__.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/vimeo/vimeo.py/blob/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fauth%2F__init__.py",
+      "raw_url": "https://github.com/vimeo/vimeo.py/raw/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fauth%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/vimeo/vimeo.py/contents/vimeo%2Fauth%2F__init__.py?ref=e6f0ae207044544b463dab238dce1c800d0bbbc1",
+      "patch": "@@ -1,8 +1,6 @@\n #! /usr/bin/env python\n # encoding: utf-8\n \n-from __future__ import absolute_import\n-\n \n class GrantFailed(Exception):\n     \"\"\"Grant permission failed.\"\"\""
+    },
+    {
+      "sha": "c4300506e4faea92c3ba48107ff2a96a522d75e2",
+      "filename": "vimeo/auth/authorization_code.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 14,
+      "changes": 16,
+      "blob_url": "https://github.com/vimeo/vimeo.py/blob/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fauth%2Fauthorization_code.py",
+      "raw_url": "https://github.com/vimeo/vimeo.py/raw/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fauth%2Fauthorization_code.py",
+      "contents_url": "https://api.github.com/repos/vimeo/vimeo.py/contents/vimeo%2Fauth%2Fauthorization_code.py?ref=e6f0ae207044544b463dab238dce1c800d0bbbc1",
+      "patch": "@@ -1,22 +1,10 @@\n #! /usr/bin/env python\n # encoding: utf-8\n \n-from __future__ import absolute_import\n-\n from .base import AuthenticationMixinBase\n from . import GrantFailed\n+from urllib.parse import urlencode\n \n-# We need to get urlencode from urllib.parse in Python 3, but fall back to\n-# urllib in Python 2\n-try:\n-    from urllib.parse import urlencode\n-except ImportError:\n-    from urllib import urlencode\n-\n-try:\n-    basestring\n-except NameError:\n-    basestring = str\n \n \n class AuthorizationCodeMixin(AuthenticationMixinBase):\n@@ -32,7 +20,7 @@ def auth_url(self, scope, redirect, state):\n         }\n \n         if scope:\n-            if not isinstance(scope, basestring):\n+            if not isinstance(scope, str):\n                 scope = ' '.join(scope)\n \n             query['scope'] = scope"
+    },
+    {
+      "sha": "0723d644ae443d870c2b3702f5213b139dcd5412",
+      "filename": "vimeo/auth/base.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 5,
+      "changes": 6,
+      "blob_url": "https://github.com/vimeo/vimeo.py/blob/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fauth%2Fbase.py",
+      "raw_url": "https://github.com/vimeo/vimeo.py/raw/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fauth%2Fbase.py",
+      "contents_url": "https://api.github.com/repos/vimeo/vimeo.py/contents/vimeo%2Fauth%2Fbase.py?ref=e6f0ae207044544b463dab238dce1c800d0bbbc1",
+      "patch": "@@ -1,12 +1,8 @@\n #! /usr/bin/env python\n # encoding: utf-8\n \n-from __future__ import absolute_import\n \n-import requests\n-\n-\n-class AuthenticationMixinBase(object):\n+class AuthenticationMixinBase:\n     \"\"\"Provide core logic to the authentication mixins.\"\"\"\n \n     def call_grant(self, path, data):"
+    },
+    {
+      "sha": "603e2d2c3e3193de3966e35a022620cfa4877708",
+      "filename": "vimeo/auth/client_credentials.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/vimeo/vimeo.py/blob/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fauth%2Fclient_credentials.py",
+      "raw_url": "https://github.com/vimeo/vimeo.py/raw/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fauth%2Fclient_credentials.py",
+      "contents_url": "https://api.github.com/repos/vimeo/vimeo.py/contents/vimeo%2Fauth%2Fclient_credentials.py?ref=e6f0ae207044544b463dab238dce1c800d0bbbc1",
+      "patch": "@@ -1,8 +1,6 @@\n #! /usr/bin/env python\n # encoding: utf-8\n \n-from __future__ import absolute_import\n-\n from .base import AuthenticationMixinBase\n from . import GrantFailed\n "
+    },
+    {
+      "sha": "249bc8b143e22c0e706c1e3feb15281e0a2e1355",
+      "filename": "vimeo/client.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 4,
+      "changes": 5,
+      "blob_url": "https://github.com/vimeo/vimeo.py/blob/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fclient.py",
+      "raw_url": "https://github.com/vimeo/vimeo.py/raw/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fclient.py",
+      "contents_url": "https://api.github.com/repos/vimeo/vimeo.py/contents/vimeo%2Fclient.py?ref=e6f0ae207044544b463dab238dce1c800d0bbbc1",
+      "patch": "@@ -1,8 +1,6 @@\n #! /usr/bin/env python\n # encoding: utf-8\n \n-from __future__ import absolute_import\n-\n from functools import wraps\n import json\n import requests\n@@ -16,8 +14,7 @@ class VimeoClient(ClientCredentialsMixin, AuthorizationCodeMixin, UploadMixin):\n     \"\"\"Client handle for the Vimeo API.\"\"\"\n \n     API_ROOT = \"https://api.vimeo.com\"\n-    HTTP_METHODS = set(('head', 'get', 'post', 'put', 'patch', 'options',\n-                        'delete'))\n+    HTTP_METHODS = {'head', 'get', 'post', 'put', 'patch', 'options', 'delete'}\n     ACCEPT_HEADER = \"application/vnd.vimeo.*;version=3.4\"\n     USER_AGENT = \"pyvimeo 1.0.11; (http://developer.vimeo.com/api/docs)\"\n "
+    },
+    {
+      "sha": "23d87430bd21c948751e42f1ca44c126c1e0f4b7",
+      "filename": "vimeo/exceptions.py",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 15,
+      "changes": 28,
+      "blob_url": "https://github.com/vimeo/vimeo.py/blob/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fexceptions.py",
+      "raw_url": "https://github.com/vimeo/vimeo.py/raw/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fexceptions.py",
+      "contents_url": "https://api.github.com/repos/vimeo/vimeo.py/contents/vimeo%2Fexceptions.py?ref=e6f0ae207044544b463dab238dce1c800d0bbbc1",
+      "patch": "@@ -37,15 +37,15 @@ def __init__(self, response, message):\n         else:\n             self.status_code = 500\n \n-        super(BaseVimeoException, self).__init__(self.message)\n+        super().__init__(self.message)\n \n \n class ObjectLoadFailure(Exception):\n     \"\"\"Object Load failure exception.\"\"\"\n \n     def __init__(self, message):\n         \"\"\"Object Load failure exception init.\"\"\"\n-        super(ObjectLoadFailure, self).__init__(message)\n+        super().__init__(message)\n \n \n class UploadQuotaExceeded(Exception):\n@@ -58,89 +58,87 @@ def __get_free_space(self, num):\n     def __init__(self, free_quota, message):\n         \"\"\"Init method for this subclass of BaseVimeoException.\"\"\"\n         message = message + self.__get_free_space(num=free_quota)\n-        super(UploadQuotaExceeded, self).__init__(message)\n+        super().__init__(message)\n \n \n class UploadAttemptCreationFailure(BaseVimeoException):\n     \"\"\"Exception for upload attempt creation failure.\"\"\"\n \n     def __init__(self, response, message):\n         \"\"\"Init method for this subclass of BaseVimeoException.\"\"\"\n-        super(UploadAttemptCreationFailure, self).__init__(response, message)\n+        super().__init__(response, message)\n \n \n class UploadTicketCreationFailure(BaseVimeoException):\n     \"\"\"Exception for upload ticket creation failure.\"\"\"\n \n     def __init__(self, response, message):\n         \"\"\"Init method for this subclass of BaseVimeoException.\"\"\"\n-        super(UploadTicketCreationFailure, self).__init__(response, message)\n+        super().__init__(response, message)\n \n \n class VideoCreationFailure(BaseVimeoException):\n     \"\"\"Exception for failure on the delete during the upload.\"\"\"\n \n     def __init__(self, response, message):\n         \"\"\"Init method for this subclass of BaseVimeoException.\"\"\"\n-        super(VideoCreationFailure, self).__init__(response, message)\n+        super().__init__(response, message)\n \n \n class VideoUploadFailure(BaseVimeoException):\n     \"\"\"Exception for failures during the actual upload od the file.\"\"\"\n \n     def __init__(self, response, message):\n         \"\"\"Init method for this subclass of BaseVimeoException.\"\"\"\n-        super(VideoUploadFailure, self).__init__(response, message)\n+        super().__init__(response, message)\n \n \n class PictureCreationFailure(BaseVimeoException):\n     \"\"\"Exception for failure on initial request to upload a picture.\"\"\"\n \n     def __init__(self, response, message):\n         \"\"\"Init method for this subclass of BaseVimeoException.\"\"\"\n-        super(PictureCreationFailure, self).__init__(response, message)\n+        super().__init__(response, message)\n \n \n class PictureUploadFailure(BaseVimeoException):\n     \"\"\"Exception for failure on the actual upload of the file.\"\"\"\n \n     def __init__(self, response, message):\n         \"\"\"Init method for this subclass of BaseVimeoException.\"\"\"\n-        super(PictureUploadFailure, self).__init__(response, message)\n+        super().__init__(response, message)\n \n \n class PictureActivationFailure(BaseVimeoException):\n     \"\"\"Exception for failure on activating the picture.\"\"\"\n \n     def __init__(self, response, message):\n         \"\"\"Init method for this subclass of BaseVimeoException.\"\"\"\n-        super(PictureActivationFailure, self).__init__(response, message)\n+        super().__init__(response, message)\n \n \n class TexttrackCreationFailure(BaseVimeoException):\n     \"\"\"Exception for failure on the initial request to upload a text track.\"\"\"\n \n     def __init__(self, response, message):\n         \"\"\"Init method for this subclass of BaseVimeoException.\"\"\"\n-        super(TexttrackCreationFailure, self).__init__(response, message)\n+        super().__init__(response, message)\n \n \n class TexttrackUploadFailure(BaseVimeoException):\n     \"\"\"Exception for failure on the actual upload of the file.\"\"\"\n \n     def __init__(self, response, message):\n         \"\"\"Init method for this subclass of BaseVimeoException.\"\"\"\n-        super(TexttrackUploadFailure, self).__init__(response, message)\n+        super().__init__(response, message)\n \n \n class APIRateLimitExceededFailure(BaseVimeoException):\n     \"\"\"Exception used when the user has exceeded the API rate limit.\"\"\"\n \n     def __get_message(self, response):\n         guidelines = 'https://developer.vimeo.com/guidelines/rate-limiting'\n-        message = super(APIRateLimitExceededFailure, self).__get_message(\n-            response\n-        )\n+        message = super().__get_message(response)\n         limit_reset_time = response.headers.get('x-ratelimit-reset')\n         if limit_reset_time:\n             text = '{} \\n limit will reset on: {}.\\n About this limit: {}'"
+    },
+    {
+      "sha": "ce9438cd15567e102be34cb587082b6e0f70d5dc",
+      "filename": "vimeo/upload.py",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 17,
+      "changes": 27,
+      "blob_url": "https://github.com/vimeo/vimeo.py/blob/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fupload.py",
+      "raw_url": "https://github.com/vimeo/vimeo.py/raw/e6f0ae207044544b463dab238dce1c800d0bbbc1/vimeo%2Fupload.py",
+      "contents_url": "https://api.github.com/repos/vimeo/vimeo.py/contents/vimeo%2Fupload.py?ref=e6f0ae207044544b463dab238dce1c800d0bbbc1",
+      "patch": "@@ -1,21 +1,14 @@\n #! /usr/bin/env python\n # encoding: utf-8\n \n-from __future__ import absolute_import\n-\n import io\n import os\n import requests.exceptions\n from . import exceptions\n from tusclient import client\n \n-try:\n-    basestring\n-except NameError:\n-    basestring = str\n-\n \n-class UploadVideoMixin(object):\n+class UploadVideoMixin:\n     \"\"\"Handle uploading a new video to the Vimeo API.\"\"\"\n \n     UPLOAD_ENDPOINT = '/me/videos'\n@@ -202,15 +195,15 @@ def __get_file_size(self, filename):\n             return len(filename.read())\n \n \n-class UploadPictureMixin(object):\n+class UploadPictureMixin:\n     \"\"\"\n     Class for uploading a picture to Vimeo.\n \n     Functionality for uploading a picture to Vimeo for another object\n     (video, user, etc).\n     \"\"\"\n \n-    BASE_FIELDS = set(('link', 'uri'))\n+    BASE_FIELDS = {'link', 'uri'}\n \n     def upload_picture(self, obj, filename, activate=False, fields=None):\n         \"\"\"\n@@ -219,7 +212,7 @@ def upload_picture(self, obj, filename, activate=False, fields=None):\n         The object (obj) can be the URI for the object or the response/parsed\n         json for it.\n         \"\"\"\n-        if isinstance(obj, basestring):\n+        if isinstance(obj, str):\n             obj = self.get(\n                 obj, params={'fields': 'metadata.connections.pictures.uri'})\n \n@@ -228,8 +221,8 @@ def upload_picture(self, obj, filename, activate=False, fields=None):\n                     \"Failed to load the target object\")\n             obj = obj.json()\n \n-        if isinstance(fields, basestring):\n-            fields = set((field.strip() for field in fields.split(',')))\n+        if isinstance(fields, str):\n+            fields = {field.strip() for field in fields.split(',')}\n \n         fields = self.BASE_FIELDS.union(fields) if fields else self.BASE_FIELDS\n \n@@ -267,20 +260,20 @@ def upload_picture(self, obj, filename, activate=False, fields=None):\n         return picture\n \n \n-class UploadTexttrackMixin(object):\n+class UploadTexttrackMixin:\n     \"\"\"Functionality for uploading a texttrack to Vimeo for a video.\"\"\"\n \n     TEXTTRACK_ENDPOINT = '{video_uri}/texttracks'\n-    BASE_FIELDS = set(('link',))\n+    BASE_FIELDS = {'link'}\n \n     def upload_texttrack(self, video_uri, track_type, language, filename,\n                          fields=None):\n         \"\"\"Upload the texttrack at the given uri with the named source file.\"\"\"\n         uri = self.TEXTTRACK_ENDPOINT.format(video_uri=video_uri)\n         name = filename.split('/')[-1]\n \n-        if isinstance(fields, basestring):\n-            fields = set((field.strip() for field in fields.split(',')))\n+        if isinstance(fields, str):\n+            fields = {field.strip() for field in fields.split(',')}\n \n         fields = self.BASE_FIELDS.union(fields) if fields else self.BASE_FIELDS\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "5a618bd8df6d4db7f1d1501eb4d74ffde8cef3fc",
+      "message": "Drop support for legacy Python 2.7",
+      "parent_shas": [
+        "3b9733775d09db6517d52bd45929dccfdec83733"
+      ]
+    },
+    {
+      "sha": "e534b09ebd3ec176001bdbcacde18bfa0eb31cee",
+      "message": "Upgrade Python syntax with pyupgrade --py3-plus",
+      "parent_shas": [
+        "5a618bd8df6d4db7f1d1501eb4d74ffde8cef3fc"
+      ]
+    },
+    {
+      "sha": "d06375806ece95a42739c3e6d6ad151b9ea27449",
+      "message": "Run pytest on Travis CI",
+      "parent_shas": [
+        "e534b09ebd3ec176001bdbcacde18bfa0eb31cee"
+      ]
+    },
+    {
+      "sha": "272009affdbd21e556ff97a1889ec7f6a83b32a7",
+      "message": "Allow newer tuspy",
+      "parent_shas": [
+        "d06375806ece95a42739c3e6d6ad151b9ea27449"
+      ]
+    },
+    {
+      "sha": "bf8eb96f222020485e621351da79e2ad872587fd",
+      "message": "The future is now",
+      "parent_shas": [
+        "272009affdbd21e556ff97a1889ec7f6a83b32a7"
+      ]
+    },
+    {
+      "sha": "e6f0ae207044544b463dab238dce1c800d0bbbc1",
+      "message": "Universal wheels are only for when supporting both Python 2 and 3",
+      "parent_shas": [
+        "bf8eb96f222020485e621351da79e2ad872587fd"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__vimeo__vimeo.py__pr147.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\vimeo__vimeo.py__pr147__py2_py3__vimeo__vimeo.py__pr147\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\vimeo__vimeo.py__pr147__py2_py3__vimeo__vimeo.py__pr147\\rn"
+  }
+}

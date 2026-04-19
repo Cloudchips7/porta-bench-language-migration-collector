@@ -1,0 +1,126 @@
+{
+  "instance_id": "python_java__openedx__event-tracking__pr401",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "openedx/event-tracking",
+  "pr_number": 401,
+  "pr_url": "https://github.com/openedx/event-tracking/pull/401",
+  "repo": {
+    "full_name": "openedx/event-tracking",
+    "clone_url": "https://github.com/openedx/event-tracking.git",
+    "default_branch": "master",
+    "created_at": "2013-09-16T17:57:22Z",
+    "stars": 64,
+    "license": "AGPL-3.0",
+    "size_kb": 571
+  },
+  "pull_request": {
+    "id": 3526440237,
+    "title": "chore: Upgrade Python requirements",
+    "body": "Python requirements update. Please review the [changelogs](https://openedx.atlassian.net/wiki/spaces/TE/pages/1001521320/Python+Package+Changelogs) for the upgraded packages.",
+    "created_at": "2026-04-14T04:18:28Z",
+    "merged_at": "2026-04-14T13:29:15Z",
+    "base_sha": "7871838e72fd7ef1c15ff862f9ad822753f25fc6",
+    "head_sha": "d38cfc8e0b785a15f13b589f98cc222ca319ddfc",
+    "merge_commit_sha": "48784c7e92cb551ab6c7e61fb592a4a821e00fd0",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "7871838e72fd7ef1c15ff862f9ad822753f25fc6",
+  "final_sha": "d38cfc8e0b785a15f13b589f98cc222ca319ddfc",
+  "changed_files": [
+    {
+      "sha": "ed771d7cbb76c3fb25c6e5b598af902fbfb03343",
+      "filename": "requirements/base.txt",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/openedx/event-tracking/blob/d38cfc8e0b785a15f13b589f98cc222ca319ddfc/requirements%2Fbase.txt",
+      "raw_url": "https://github.com/openedx/event-tracking/raw/d38cfc8e0b785a15f13b589f98cc222ca319ddfc/requirements%2Fbase.txt",
+      "contents_url": "https://api.github.com/repos/openedx/event-tracking/contents/requirements%2Fbase.txt?ref=d38cfc8e0b785a15f13b589f98cc222ca319ddfc",
+      "patch": "@@ -34,7 +34,7 @@ click-repl==0.3.0\n     # via celery\n code-annotations==3.0.0\n     # via edx-toggles\n-django==5.2.12\n+django==5.2.13\n     # via\n     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt\n     #   -r requirements/base.in\n@@ -64,7 +64,7 @@ edx-opaque-keys[django]==4.0.0\n     # via\n     #   edx-ccx-keys\n     #   openedx-events\n-edx-toggles==5.4.1\n+edx-toggles==6.0.0\n     # via -r requirements/base.in\n fastavro==1.12.1\n     # via openedx-events\n@@ -74,7 +74,7 @@ kombu==5.6.2\n     # via celery\n markupsafe==3.0.3\n     # via jinja2\n-openedx-events==11.1.0\n+openedx-events==11.1.1\n     # via -r requirements/base.in\n packaging==26.0\n     # via kombu"
+    },
+    {
+      "sha": "4cd8fccc9546870ee5a05f4c55d3b9c6df1ae507",
+      "filename": "requirements/ci.txt",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/openedx/event-tracking/blob/d38cfc8e0b785a15f13b589f98cc222ca319ddfc/requirements%2Fci.txt",
+      "raw_url": "https://github.com/openedx/event-tracking/raw/d38cfc8e0b785a15f13b589f98cc222ca319ddfc/requirements%2Fci.txt",
+      "contents_url": "https://api.github.com/repos/openedx/event-tracking/contents/requirements%2Fci.txt?ref=d38cfc8e0b785a15f13b589f98cc222ca319ddfc",
+      "patch": "@@ -21,7 +21,7 @@ packaging==26.0\n     # via\n     #   pyproject-api\n     #   tox\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   python-discovery\n     #   tox\n@@ -30,13 +30,13 @@ pluggy==1.6.0\n     # via tox\n pyproject-api==1.10.0\n     # via tox\n-python-discovery==1.2.1\n+python-discovery==1.2.2\n     # via\n     #   tox\n     #   virtualenv\n tomli-w==1.2.0\n     # via tox\n-tox==4.52.0\n+tox==4.52.1\n     # via -r requirements/ci.in\n-virtualenv==21.2.0\n+virtualenv==21.2.3\n     # via tox"
+    },
+    {
+      "sha": "c97153fb4d2f128197ab6f546a06f60d2b6cd4d1",
+      "filename": "requirements/dev.txt",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 9,
+      "changes": 18,
+      "blob_url": "https://github.com/openedx/event-tracking/blob/d38cfc8e0b785a15f13b589f98cc222ca319ddfc/requirements%2Fdev.txt",
+      "raw_url": "https://github.com/openedx/event-tracking/raw/d38cfc8e0b785a15f13b589f98cc222ca319ddfc/requirements%2Fdev.txt",
+      "contents_url": "https://api.github.com/repos/openedx/event-tracking/contents/requirements%2Fdev.txt?ref=d38cfc8e0b785a15f13b589f98cc222ca319ddfc",
+      "patch": "@@ -29,7 +29,7 @@ billiard==4.2.4\n     # via\n     #   -r requirements/test.txt\n     #   celery\n-build==1.4.2\n+build==1.4.3\n     # via\n     #   -r requirements/pip-tools.txt\n     #   pip-tools\n@@ -102,7 +102,7 @@ distlib==0.4.0\n     # via\n     #   -r requirements/ci.txt\n     #   virtualenv\n-django==5.2.12\n+django==5.2.13\n     # via\n     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt\n     #   -r requirements/test.txt\n@@ -145,7 +145,7 @@ edx-opaque-keys[django]==4.0.0\n     #   -r requirements/test.txt\n     #   edx-ccx-keys\n     #   openedx-events\n-edx-toggles==5.4.1\n+edx-toggles==6.0.0\n     # via -r requirements/test.txt\n fastavro==1.12.1\n     # via\n@@ -188,7 +188,7 @@ mccabe==0.7.0\n     #   pylint\n mock==5.2.0\n     # via -r requirements/test.txt\n-openedx-events==11.1.0\n+openedx-events==11.1.1\n     # via -r requirements/test.txt\n packaging==26.0\n     # via\n@@ -206,7 +206,7 @@ pip-tools==7.5.3\n     # via\n     #   -r requirements/dev.in\n     #   -r requirements/pip-tools.txt\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   -r requirements/ci.txt\n     #   -r requirements/test.txt\n@@ -279,7 +279,7 @@ pyproject-hooks==1.2.0\n     #   -r requirements/pip-tools.txt\n     #   build\n     #   pip-tools\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   -r requirements/test.txt\n     #   pytest-cov\n@@ -289,7 +289,7 @@ python-dateutil==2.9.0.post0\n     # via\n     #   -r requirements/test.txt\n     #   celery\n-python-discovery==1.2.1\n+python-discovery==1.2.2\n     # via\n     #   -r requirements/ci.txt\n     #   tox\n@@ -352,7 +352,7 @@ tomlkit==0.14.0\n     # via\n     #   -r requirements/test.txt\n     #   pylint\n-tox==4.52.0\n+tox==4.52.1\n     # via\n     #   -r requirements/ci.txt\n     #   -r requirements/dev.in\n@@ -376,7 +376,7 @@ vine==5.1.0\n     #   amqp\n     #   celery\n     #   kombu\n-virtualenv==21.2.0\n+virtualenv==21.2.3\n     # via\n     #   -r requirements/ci.txt\n     #   tox"
+    },
+    {
+      "sha": "49215e4710a05055f018116d0b61dac009a0d0db",
+      "filename": "requirements/pip-tools.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/openedx/event-tracking/blob/d38cfc8e0b785a15f13b589f98cc222ca319ddfc/requirements%2Fpip-tools.txt",
+      "raw_url": "https://github.com/openedx/event-tracking/raw/d38cfc8e0b785a15f13b589f98cc222ca319ddfc/requirements%2Fpip-tools.txt",
+      "contents_url": "https://api.github.com/repos/openedx/event-tracking/contents/requirements%2Fpip-tools.txt?ref=d38cfc8e0b785a15f13b589f98cc222ca319ddfc",
+      "patch": "@@ -4,7 +4,7 @@\n #\n #    make upgrade\n #\n-build==1.4.2\n+build==1.4.3\n     # via pip-tools\n click==8.3.2\n     # via pip-tools"
+    },
+    {
+      "sha": "290b4338472e807be4367c1b8f6e22370a5cc1ef",
+      "filename": "requirements/test.txt",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/openedx/event-tracking/blob/d38cfc8e0b785a15f13b589f98cc222ca319ddfc/requirements%2Ftest.txt",
+      "raw_url": "https://github.com/openedx/event-tracking/raw/d38cfc8e0b785a15f13b589f98cc222ca319ddfc/requirements%2Ftest.txt",
+      "contents_url": "https://api.github.com/repos/openedx/event-tracking/contents/requirements%2Ftest.txt?ref=d38cfc8e0b785a15f13b589f98cc222ca319ddfc",
+      "patch": "@@ -100,7 +100,7 @@ edx-opaque-keys[django]==4.0.0\n     #   -r requirements/base.txt\n     #   edx-ccx-keys\n     #   openedx-events\n-edx-toggles==5.4.1\n+edx-toggles==6.0.0\n     # via -r requirements/base.txt\n fastavro==1.12.1\n     # via\n@@ -125,14 +125,14 @@ mccabe==0.7.0\n     # via pylint\n mock==5.2.0\n     # via -r requirements/test.in\n-openedx-events==11.1.0\n+openedx-events==11.1.1\n     # via -r requirements/base.txt\n packaging==26.0\n     # via\n     #   -r requirements/base.txt\n     #   kombu\n     #   pytest\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via pylint\n pluggy==1.6.0\n     # via\n@@ -175,7 +175,7 @@ pynacl==1.6.2\n     # via\n     #   -r requirements/base.txt\n     #   edx-django-utils\n-pytest==9.0.2\n+pytest==9.0.3\n     # via pytest-cov\n pytest-cov==7.1.0\n     # via -r requirements/test.in"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d38cfc8e0b785a15f13b589f98cc222ca319ddfc",
+      "message": "chore: Upgrade Python requirements",
+      "parent_shas": [
+        "7871838e72fd7ef1c15ff862f9ad822753f25fc6"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "dependency_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__openedx__event-tracking__pr401.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\openedx__event-tracking__pr401__python_java__openedx__event-tracking__pr401\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\openedx__event-tracking__pr401__python_java__openedx__event-tracking__pr401\\rn"
+  }
+}

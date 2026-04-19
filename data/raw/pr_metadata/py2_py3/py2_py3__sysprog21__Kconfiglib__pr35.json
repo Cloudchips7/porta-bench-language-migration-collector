@@ -1,0 +1,235 @@
+{
+  "instance_id": "py2_py3__sysprog21__Kconfiglib__pr35",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "sysprog21/Kconfiglib",
+  "pr_number": 35,
+  "pr_url": "https://github.com/sysprog21/Kconfiglib/pull/35",
+  "repo": {
+    "full_name": "sysprog21/Kconfiglib",
+    "clone_url": "https://github.com/sysprog21/Kconfiglib.git",
+    "default_branch": "main",
+    "created_at": "2025-02-15T11:12:23Z",
+    "stars": 19,
+    "license": "ISC",
+    "size_kb": 3758
+  },
+  "pull_request": {
+    "id": 3296597250,
+    "title": "Drop Python 2.7 support",
+    "body": "Python 2.7 has been EOL since January 2020. This removes compatibility shims, conditional imports, and version guards that existed solely to support Python 2.\n\n<!-- This is an auto-generated description by cubic. -->\n---\n## Summary by cubic\nDrops Python 2.7 support and sets the minimum to Python 3.6. Removes compatibility shims, simplifies I/O and Tkinter code, and updates docs, packaging, and tests.\n\n- **Refactors**\n  - Removed __future__ imports, raw_input/input shims, and version guards across utilities.\n  - Simplified Tkinter usage in guiconfig.py; use tkinter.*, iconphoto(True, …), and Text.replace().\n  - Standardized open(..., encoding=\"utf-8\") and removed universal newline hacks.\n  - Deleted _IS_PY2 and Python 2 branches in kconfiglib; always use dict.values(), re.ASCII, and decode subprocess output.\n  - Cleaned menuconfig and examples (no print_function, unified erasechar decoding).\n  - Updated README/KBUILD to “Python 3.6+”, pruned Python 2 instructions.\n  - setup.py: python_requires=\">=3.6\", removed Python 2 classifiers; setup.cfg no universal wheel.\n  - tests: reltest runs only python3; testsuite unconditionally runs warn-undef checks.\n\n- **Migration**\n  - Use Python 3.6+ for all tools (menuconfig.py, guiconfig.py, scripts).\n  - Update scripts/CI to invoke python3 instead of python2.\n  - On Windows, install windows-curses for menuconfig; ensure Tkinter (python3-tk) is installed where needed.\n\n<sup>Written for commit b6a23cef11a1c8d5e3da539a477f558e94f9ba3f. Summary will update on new commits.</sup>\n\n<!-- End of auto-generated description by cubic. -->\n\n",
+    "created_at": "2026-02-18T01:06:07Z",
+    "merged_at": "2026-02-18T01:28:19Z",
+    "base_sha": "68686186bc52d7dc2ef1d6288c5fca306a73e24c",
+    "head_sha": "b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+    "merge_commit_sha": "dab1a67b9e7f9c7bf73ace28efc98ee80e7c0ab8",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "68686186bc52d7dc2ef1d6288c5fca306a73e24c",
+  "final_sha": "b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+  "changed_files": [
+    {
+      "sha": "4c057ef7538103eb0d8ea2166c23eb7af103e404",
+      "filename": "KBUILD.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/KBUILD.md",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/KBUILD.md",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/KBUILD.md?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -107,7 +107,7 @@ Functions are implemented in `kconfiglib.py` following these principles:\n \n - Uniform interface through the `_functions` dictionary\n - No special-case handling\n-- Python 2.7+ and 3.2+ compatibility using standard library only\n+- Python 3.6+ using standard library only\n - Graceful error handling (missing tools return `n`)\n \n ### Environment Variables"
+    },
+    {
+      "sha": "e1465072087595a0e409d0aac1d781b99e442b2b",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 17,
+      "changes": 25,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/README.md",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/README.md",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/README.md?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -68,8 +68,7 @@ such as unused symbols, symbols that can never be enabled, pointless menuconfig\n prefixes in source code. Run it directly with `python3 lint.py <Kconfig>` or see `python3 lint.py --help`\n for available checks.\n \n-Starting with Kconfiglib version 12.2.0, all utilities are compatible with both Python 2 and Python 3.\n-Previously, `menuconfig.py` was limited to Python 3, so it now offers improved backward compatibility.\n+Kconfiglib requires Python 3.6 or later.\n \n **Note:** If Kconfiglib is installed with the `pip --user` flag,\n ensure that the `PATH` variable includes the directory where the executables are installed.\n@@ -95,14 +94,10 @@ is installed.\n \n See the module docstring at the top of [kconfiglib.py](kconfiglib.py).\n \n-### Python version compatibility (2.7/3.2+)\n+### Python version compatibility\n \n-Kconfiglib and all of its utilities run under Python 2.7 as well as Python 3.2 and later.\n-The code primarily relies on basic Python features and does not depend on third-party libraries,\n-making it relatively easy to maintain backward compatibility.\n-\n-The Python 3.2 requirement stems from using the `argparse` module and the `format()` function with unnumbered braces (`{}`).\n-If given a choice, using a more recent Python 3 release is recommended due to its improved Unicode handling.\n+Kconfiglib requires Python 3.6 or later.\n+The code primarily relies on basic Python features and does not depend on third-party libraries.\n \n ## Getting started\n \n@@ -339,7 +334,7 @@ This warning can also be toggled by setting `Kconfig.warn_assign_undef` to `True\n \n - Windows support\n \n-  Nothing in Kconfiglib is specific to Linux. Universal newline mode is used for both Python 2 and Python 3.\n+  Nothing in Kconfiglib is specific to Linux.\n   The [Zephyr](https://www.zephyrproject.org/) project uses Kconfiglib to generate `.config` files and C headers on both Linux and Windows.\n \n - Internals that (mostly) mirror the C implementation\n@@ -358,9 +353,7 @@ Three configuration interfaces are currently available:\n \n   There is also a show-help mode that displays the help text of the currently selected symbol in the bottom help window.\n \n-  Starting with Kconfiglib 12.2.0, `menuconfig.py` runs under both Python 2 and Python 3\n-  (it previously ran only under Python 3, so this was a backport).\n-  Running it under Python 3 provides better support for Unicode text entry (`get_wch()` is unavailable in the Python 2 `curses` module).\n+  `menuconfig.py` requires Python 3.6+.\n \n   There are no third-party dependencies on Unix-like systems.\n   On Windows, the `curses` module is not included by default, but can be added by installing the `windows-curses` package:\n@@ -384,18 +377,16 @@ Three configuration interfaces are currently available:\n   Toggle between themes via the Theme menu.\n   The interface includes a responsive layout that adapts to window resizing.\n \n-  `guiconfig.py` has been tested on X11, Windows, and macOS, and it works with both Python 2 and Python 3.\n+  `guiconfig.py` has been tested on X11, Windows, and macOS, and requires Python 3.6+.\n \n   Although Tkinter is part of the Python standard library, it is not always installed by default on Linux.\n   The commands below install it on a few different systems:\n   - Ubuntu/Debian:\n     ```shell\n-    sudo apt install python-tk\n     sudo apt install python3-tk\n     ```\n   - Fedora:\n     ```shell\n-    dnf install python2-tkinter\n     dnf install python3-tkinter\n     ```\n   - Arch:\n@@ -496,7 +487,7 @@ The test suite consists of a set of self-tests and a set of compatibility tests\n generated by Kconfiglib with those generated by the C tools across various scenarios.\n See [testsuite.py](testsuite.py) for available options.\n \n-The [tests/reltest](tests/reltest) script runs the test suite and all example scripts under both Python 2 and Python 3 to verify that everything works as expected.\n+The [tests/reltest](tests/reltest) script runs the test suite and all example scripts to verify that everything works as expected.\n \n Occasionally, the C tools' output may change slightly (for example, due to a [recent change](https://www.spinics.net/lists/linux-kbuild/msg17074.html)).\n If the test suite reports failures, try running it again against the [linux-next tree](https://www.kernel.org/doc/man-pages/linux-next.html),"
+    },
+    {
+      "sha": "8aeb99d27e54dc06f80963d8aede53d26b669567",
+      "filename": "examples/menuconfig_example.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 5,
+      "changes": 5,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/examples%2Fmenuconfig_example.py",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/examples%2Fmenuconfig_example.py",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/examples%2Fmenuconfig_example.py?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -119,7 +119,6 @@\n #\n #   Enter a symbol/choice name, \"load_config\", or \"write_config\" (or press CTRL+D to exit): ^D\n \n-from __future__ import print_function\n import readline\n import sys\n \n@@ -138,10 +137,6 @@\n     TRI_TO_STR,\n )\n \n-# Python 2/3 compatibility hack\n-if sys.version_info[0] < 3:\n-    input = raw_input\n-\n \n def indent_print(s, indent):\n     print(indent * \" \" + s)"
+    },
+    {
+      "sha": "c6164c1f5f06cd40572d55f4eb22f4aeb6d42f62",
+      "filename": "examples/merge_config.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/examples%2Fmerge_config.py",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/examples%2Fmerge_config.py",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/examples%2Fmerge_config.py?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -70,7 +70,6 @@\n #     CONFIG_BAR=y\n #     CONFIG_BAZ=\"baz string\"\n \n-from __future__ import print_function\n import sys\n \n from kconfiglib import Kconfig, BOOL, TRISTATE, TRI_TO_STR"
+    },
+    {
+      "sha": "28bc675cd3564041485d88837be35aabdc862e40",
+      "filename": "genconfig.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 6,
+      "changes": 6,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/genconfig.py",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/genconfig.py",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/genconfig.py?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -35,7 +35,6 @@\n \n import argparse\n import os\n-import sys\n \n import kconfiglib\n \n@@ -146,11 +145,6 @@ def main():\n \n \n def _open_write(path):\n-    # Python 2/3 compatibility. io.open() is available on both, but makes\n-    # write() expect 'unicode' strings on Python 2.\n-\n-    if sys.version_info[0] < 3:\n-        return open(path, \"w\")\n     return open(path, \"w\", encoding=\"utf-8\")\n \n "
+    },
+    {
+      "sha": "90506da78d6cd25ef127089760daebb52f2fac07",
+      "filename": "guiconfig.py",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 33,
+      "changes": 47,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/guiconfig.py",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/guiconfig.py",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/guiconfig.py?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -9,7 +9,7 @@\n \n A Tkinter-based menuconfig implementation, based around a treeview control and\n a help display. The interface should feel familiar to people used to qconf\n-('make xconfig'). Compatible with both Python 2 and Python 3.\n+('make xconfig'). Requires Python 3.6+.\n \n The display can be toggled between showing the full tree and showing just a\n single menu (like menuconfig.py). Only single-menu mode distinguishes between\n@@ -59,24 +59,12 @@\n \n import errno\n import os\n-import sys\n import re\n \n-_PY2 = sys.version_info[0] < 3\n-\n-if _PY2:\n-    # Python 2\n-    from Tkinter import *\n-    import ttk\n-    import tkFont as font\n-    import tkFileDialog as filedialog\n-    import tkMessageBox as messagebox\n-else:\n-    # Python 3\n-    from tkinter import *\n-    import tkinter.ttk as ttk\n-    import tkinter.font as font\n-    from tkinter import filedialog, messagebox\n+from tkinter import *\n+import tkinter.ttk as ttk\n+import tkinter.font as font\n+from tkinter import filedialog, messagebox\n \n from kconfiglib import (\n     Symbol,\n@@ -649,8 +637,7 @@ def _init_misc_ui():\n     # Does misc. UI initialization, like setting the title, icon, and theme\n \n     _root.title(_kconf.mainmenu_text)\n-    # iconphoto() isn't available in Python 2's Tkinter\n-    _root.tk.call(\"wm\", \"iconphoto\", _root._w, \"-default\", _icon_img)\n+    _root.iconphoto(True, _icon_img)\n     # Reducing the width of the window to 1 pixel makes it move around, at\n     # least on GNOME. Prevent weird stuff like that.\n     _root.minsize(128, 128)\n@@ -880,9 +867,7 @@ def tree_select(_):\n             desc[\"state\"] = \"disabled\"\n             return\n \n-        # Text.replace() is not available in Python 2's Tkinter\n-        desc.delete(\"1.0\", \"end\")\n-        desc.insert(\"end\", _info_str(_id_to_node[sel[0]]))\n+        desc.replace(\"1.0\", \"end\", _info_str(_id_to_node[sel[0]]))\n \n         desc[\"state\"] = \"disabled\"\n \n@@ -1612,11 +1597,6 @@ def _change_node(node, parent):\n     if sc.type in (INT, HEX, STRING):\n         s = _set_val_dialog(node, parent)\n \n-        # Tkinter can return 'unicode' strings on Python 2, which Kconfiglib\n-        # can't deal with. UTF-8-encode the string to work around it.\n-        if _PY2 and isinstance(s, unicode):\n-            s = s.encode(\"utf-8\", \"ignore\")\n-\n         if s is not None:\n             _set_val(sc, s)\n \n@@ -1671,21 +1651,22 @@ def _set_val_dialog(node, parent):\n     # Pops up a dialog for setting the value of the string/int/hex\n     # symbol at node 'node'. 'parent' is the parent window.\n \n+    result = None\n+\n     def ok(_=None):\n-        # No 'nonlocal' in Python 2\n-        global _entry_res\n+        nonlocal result\n \n         s = entry.get()\n         if sym.type == HEX and not s.startswith((\"0x\", \"0X\")):\n             s = \"0x\" + s\n \n         if _check_valid(dialog, entry, sym, s):\n-            _entry_res = s\n+            result = s\n             dialog.destroy()\n \n     def cancel(_=None):\n-        global _entry_res\n-        _entry_res = None\n+        nonlocal result\n+        result = None\n         dialog.destroy()\n \n     sym = node.item\n@@ -1753,7 +1734,7 @@ def scroll_entry(_):\n     # Regrab the input in the parent\n     parent.grab_set()\n \n-    return _entry_res\n+    return result\n \n \n def _center_on_root(dialog):"
+    },
+    {
+      "sha": "50f53a55ef5f480bcbe250f01e79bc426427a8ad",
+      "filename": "kconfiglib.py",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 68,
+      "changes": 85,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/kconfiglib.py",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/kconfiglib.py",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/kconfiglib.py?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -5,7 +5,7 @@\n Overview\n ========\n \n-Kconfiglib is a Python 2/3 library for scripting and extracting information\n+Kconfiglib is a Python 3 library for scripting and extracting information\n from Kconfig (https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt)\n configuration systems.\n \n@@ -53,15 +53,14 @@\n ----------------\n \n This target runs the curses menuconfig interface with Python 3. As of\n-Kconfiglib 12.2.0, both Python 2 and Python 3 are supported (previously, only\n-Python 3 was supported, so this was a backport).\n+Kconfiglib 12.2.0, Python 3 (3.6+) is required.\n \n \n make guiconfig\n --------------\n \n-This target runs the Tkinter menuconfig interface. Both Python 2 and Python 3\n-are supported. To change the Python interpreter used, pass\n+This target runs the Tkinter menuconfig interface. To change the Python\n+interpreter used, pass\n PYTHONCMD=<executable> to 'make'. The default is 'python'.\n \n \n@@ -886,13 +885,8 @@ def __init__(\n         default warning settings (KCONFIG_WARN_UNDEF and\n         KCONFIG_WARN_UNDEF_ASSIGN).\n \n-        Raises KconfigError on syntax/semantic errors, and OSError or (possibly\n-        a subclass of) IOError on IO errors ('errno', 'strerror', and\n-        'filename' are available). Note that IOError is an alias for OSError on\n-        Python 3, so it's enough to catch OSError there. If you need Python 2/3\n-        compatibility, it's easiest to catch EnvironmentError, which is a\n-        common base class of OSError/IOError on Python 2 and an alias for\n-        OSError on Python 3.\n+        Raises KconfigError on syntax/semantic errors, and OSError on IO errors\n+        ('errno', 'strerror', and 'filename' are available).\n \n         filename (default: \"Kconfig\"):\n           The Kconfig file to load. For the Linux kernel, you'll want \"Kconfig\"\n@@ -935,11 +929,6 @@ def __init__(\n           The \"utf-8\" default avoids exceptions on systems that are configured\n           to use the C locale, which implies an ASCII encoding.\n \n-          This parameter has no effect on Python 2, due to implementation\n-          issues (regular strings turning into Unicode strings, which are\n-          distinct in Python 2). Python 2 doesn't decode regular strings\n-          anyway.\n-\n           Related PEP: https://www.python.org/dev/peps/pep-0538/\n \n         suppress_traceback (default: False):\n@@ -4134,44 +4123,9 @@ def _trailing_tokens_error(self):\n         self._parse_error(\"extra tokens at end of line\")\n \n     def _open(self, filename, mode):\n-        # open() wrapper:\n-        #\n-        # - Enable universal newlines mode on Python 2 to ease\n-        #   interoperability between Linux and Windows. It's already the\n-        #   default on Python 3.\n-        #\n-        #   The \"U\" flag would currently work for both Python 2 and 3, but it's\n-        #   deprecated on Python 3, so play it future-safe.\n-        #\n-        #   io.open() defaults to universal newlines on Python 2 (and is an\n-        #   alias for open() on Python 3), but it returns 'unicode' strings and\n-        #   slows things down:\n-        #\n-        #     Parsing x86 Kconfigs on Python 2\n-        #\n-        #     with open(..., \"rU\"):\n-        #\n-        #       real  0m0.930s\n-        #       user  0m0.905s\n-        #       sys   0m0.025s\n-        #\n-        #     with io.open():\n-        #\n-        #       real  0m1.069s\n-        #       user  0m1.040s\n-        #       sys   0m0.029s\n-        #\n-        #   There's no appreciable performance difference between \"r\" and\n-        #   \"rU\" for parsing performance on Python 2.\n-        #\n-        # - For Python 3, force the encoding. Forcing the encoding on Python 2\n-        #   turns strings into Unicode strings, which gets messy. Python 2\n-        #   doesn't decode regular strings anyway.\n-        return (\n-            open(filename, \"rU\" if mode == \"r\" else mode)\n-            if _IS_PY2\n-            else open(filename, mode, encoding=self._encoding)\n-        )\n+        # open() wrapper that forces the encoding for consistent behavior\n+        # across locales (e.g. C locale implies ASCII).\n+        return open(filename, mode, encoding=self._encoding)\n \n     def _check_undef_syms(self):\n         # Prints warnings for all references to undefined symbols within the\n@@ -4212,7 +4166,7 @@ def is_num(s):\n                     sym_to_nodes[ref_sym] = []\n                 sym_to_nodes[ref_sym].append(node)\n \n-        for sym in (self.syms.viewvalues if _IS_PY2 else self.syms.values)():\n+        for sym in self.syms.values():\n             # - sym.nodes empty means the symbol is undefined (has no\n             #   definition locations)\n             #\n@@ -7298,12 +7252,11 @@ def _shell_fn(kconf, _, command):\n         command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE\n     ).communicate()\n \n-    if not _IS_PY2:\n-        try:\n-            stdout = stdout.decode(kconf._encoding)\n-            stderr = stderr.decode(kconf._encoding)\n-        except UnicodeDecodeError as e:\n-            _decoding_error(e, kconf.filename, kconf.linenr)\n+    try:\n+        stdout = stdout.decode(kconf._encoding)\n+        stderr = stderr.decode(kconf._encoding)\n+    except UnicodeDecodeError as e:\n+        _decoding_error(e, kconf.filename, kconf.linenr)\n \n     if stderr:\n         kconf._warn(\n@@ -7476,8 +7429,6 @@ def _rustc_option_fn(kconf, _, option):\n # Symbol will do. We test this with 'is'.\n _NO_CACHED_SELECTION = 0\n \n-# Are we running on Python 2?\n-_IS_PY2 = sys.version_info[0] < 3\n \n try:\n     _UNAME_RELEASE = os.uname()[2]\n@@ -7793,16 +7744,14 @@ def _rustc_option_fn(kconf, _, option):\n \n # Helper functions for getting compiled regular expressions, with the needed\n # matching function returned directly as a small optimization.\n-#\n-# Use ASCII regex matching on Python 3. It's already the default on Python 2.\n \n \n def _re_match(regex):\n-    return re.compile(regex, 0 if _IS_PY2 else re.ASCII).match\n+    return re.compile(regex, re.ASCII).match\n \n \n def _re_search(regex):\n-    return re.compile(regex, 0 if _IS_PY2 else re.ASCII).search\n+    return re.compile(regex, re.ASCII).search\n \n \n # Various regular expressions used during parsing"
+    },
+    {
+      "sha": "f3ef9f2291c295f9bff0ac925e0d4d93725f6436",
+      "filename": "listnewconfig.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 4,
+      "changes": 5,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/listnewconfig.py",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/listnewconfig.py",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/listnewconfig.py?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -12,8 +12,6 @@\n passed in the KCONFIG_CONFIG environment variable.\n \"\"\"\n \n-from __future__ import print_function\n-\n import argparse\n import sys\n \n@@ -67,8 +65,7 @@ def main():\n             if args.show_help:\n                 for node in sym.nodes:\n                     if node.help is not None:\n-                        # Indent by two spaces. textwrap.indent() is not\n-                        # available in Python 2 (it's 3.3+).\n+                        # Indent by two spaces.\n                         print(\"\\n\".join(\"  \" + line for line in node.help.split(\"\\n\")))\n                         break\n "
+    },
+    {
+      "sha": "c54e59f6a4a5a07afa0a335a8c58d56134959551",
+      "filename": "menuconfig.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 11,
+      "changes": 16,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/menuconfig.py",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/menuconfig.py",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/menuconfig.py?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -7,7 +7,7 @@\n Overview\n ========\n \n-A curses-based Python 2/3 menuconfig implementation. The interface should feel\n+A curses-based menuconfig implementation. The interface should feel\n familiar to people used to mconf ('make menuconfig').\n \n Supports the same keys as mconf, and also supports a set of keybindings\n@@ -182,8 +182,6 @@\n See the https://github.com/zephyrproject-rtos/windows-curses repository.\n \"\"\"\n \n-from __future__ import print_function\n-\n import os\n import sys\n \n@@ -1098,12 +1096,9 @@ def _init():\n     # Looking for this in addition to KEY_BACKSPACE (which is unreliable) makes\n     # backspace work with TERM=vt100. That makes it likely to work in sane\n     # environments.\n-    _ERASE_CHAR = curses.erasechar()\n-    if sys.version_info[0] >= 3:\n-        # erasechar() returns a one-byte bytes object on Python 3. This sets\n-        # _ERASE_CHAR to a blank string if it can't be decoded, which should be\n-        # harmless.\n-        _ERASE_CHAR = _ERASE_CHAR.decode(\"utf-8\", \"ignore\")\n+    # erasechar() returns a one-byte bytes object. This sets _ERASE_CHAR to a\n+    # blank string if it can't be decoded, which should be harmless.\n+    _ERASE_CHAR = curses.erasechar().decode(\"utf-8\", \"ignore\")\n \n     _init_styles()\n \n@@ -3495,8 +3490,7 @@ def _menu_path_info(node):\n \n \n def _indent(s, n):\n-    # Returns 's' with each line indented 'n' spaces. textwrap.indent() is not\n-    # available in Python 2 (it's 3.3+).\n+    # Returns 's' with each line indented 'n' spaces.\n \n     return \"\\n\".join(n * \" \" + line for line in s.split(\"\\n\"))\n "
+    },
+    {
+      "sha": "30eae1d816097da60d2e3d01fd1f2d2f6593f470",
+      "filename": "oldconfig.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 6,
+      "changes": 6,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/oldconfig.py",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/oldconfig.py",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/oldconfig.py?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -26,16 +26,10 @@\n to skip \"irrelevant\" menus).\n \"\"\"\n \n-from __future__ import print_function\n-\n import sys\n \n from kconfiglib import Symbol, Choice, BOOL, TRISTATE, HEX, standard_kconfig\n \n-# Python 2/3 compatibility hack\n-if sys.version_info[0] < 3:\n-    input = raw_input\n-\n \n def _main():\n     # Earlier symbols in Kconfig files might depend on later symbols and become"
+    },
+    {
+      "sha": "8946836d66a6e35c9d15506efec8f1a23a02e96f",
+      "filename": "setup.cfg",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/setup.cfg",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/setup.cfg",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/setup.cfg?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -1,6 +1,4 @@\n [bdist_wheel]\n-# We support both Python 2 and Python 3\n-universal = 1\n \n [metadata]\n # Include the license file in wheels"
+    },
+    {
+      "sha": "c8b9f32ea3e8355da6adf180c87dd22b628d23ec",
+      "filename": "setup.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 17,
+      "changes": 21,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/setup.py",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/setup.py",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/setup.py?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -1,16 +1,10 @@\n-import io\n import os\n \n import setuptools\n \n-# Make sure that README.md decodes on Python 3 in environments that use\n-# the C locale (which implies ASCII), by explicitly giving the encoding.\n-#\n-# io.open() has the 'encoding' parameter on both Python 2 and 3. open()\n-# doesn't have it on Python 2. This lets us use the same code for both.\n-with io.open(\n-    os.path.join(os.path.dirname(__file__), \"README.md\"), encoding=\"utf-8\"\n-) as f:\n+# Make sure that README.md decodes in environments that use the C locale\n+# (which implies ASCII), by explicitly giving the encoding.\n+with open(os.path.join(os.path.dirname(__file__), \"README.md\"), encoding=\"utf-8\") as f:\n     long_description = f.read()\n \n \n@@ -60,8 +54,7 @@\n     },\n     # Note: windows-curses is not automatically installed on Windows anymore,\n     # because it made Kconfiglib impossible to install on MSYS2 with pip\n-    # Needs support for unnumbered {} in format() and argparse\n-    python_requires=\">=2.7,!=3.0.*,!=3.1.*\",\n+    python_requires=\">=3.6\",\n     project_urls={\n         \"GitHub repository\": \"https://github.com/sysprog21/Kconfiglib\",\n         \"Examples\": \"https://github.com/sysprog21/Kconfiglib/tree/main/examples\",\n@@ -74,13 +67,7 @@\n         \"License :: OSI Approved :: ISC License (ISCL)\",\n         \"Operating System :: POSIX\",\n         \"Operating System :: Microsoft :: Windows\",\n-        \"Programming Language :: Python :: 2\",\n-        \"Programming Language :: Python :: 2.7\",\n         \"Programming Language :: Python :: 3\",\n-        \"Programming Language :: Python :: 3.2\",\n-        \"Programming Language :: Python :: 3.3\",\n-        \"Programming Language :: Python :: 3.4\",\n-        \"Programming Language :: Python :: 3.5\",\n         \"Programming Language :: Python :: 3.6\",\n         \"Programming Language :: Python :: 3.7\",\n         \"Programming Language :: Python :: 3.8\","
+    },
+    {
+      "sha": "f5f8fa2c66481e6f6ded0d72a430c7170c51cad0",
+      "filename": "tests/reltest",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/tests%2Freltest",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/tests%2Freltest",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/tests%2Freltest?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -1,8 +1,8 @@\n #!/usr/bin/env bash\n \n-# Runs the test suite and all examples scripts with Python 2 and Python 3,\n-# bailing immediately if anything fails. For the examples that aren't tested in\n-# the test suite, we just confirm that they at least run.\n+# Runs the test suite and all examples scripts, bailing immediately if anything\n+# fails. For the examples that aren't tested in the test suite, we just confirm\n+# that they at least run.\n #\n # Should be run from the kernel root with  $ Kconfiglib/tests/reltest\n \n@@ -21,7 +21,7 @@ test_script() {\n }\n \n if [ $# == \"0\" ]; then\n-    py_execs=\"python2 python3\"\n+    py_execs=\"python3\"\n else\n     py_execs=$@\n fi"
+    },
+    {
+      "sha": "2d9c213820c4fe7d49c2bb28e111bd42630c6630",
+      "filename": "testsuite.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 18,
+      "changes": 26,
+      "blob_url": "https://github.com/sysprog21/Kconfiglib/blob/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/testsuite.py",
+      "raw_url": "https://github.com/sysprog21/Kconfiglib/raw/b6a23cef11a1c8d5e3da539a477f558e94f9ba3f/testsuite.py",
+      "contents_url": "https://api.github.com/repos/sysprog21/Kconfiglib/contents/testsuite.py?ref=b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "patch": "@@ -3129,18 +3129,14 @@ def verify_bad_argno(name):\n     # Test nested function calls\n     verify_value(\"TEST_NESTED_SUCCESS_SHELL\", \"y\")\n \n-    # This test can fail on older Python 3.x versions, because they don't\n-    # preserve dict insertion order during iteration. The output is still\n-    # correct, just different.\n-    if not (3, 0) <= sys.version_info <= (3, 5):\n-        print(\"Testing KCONFIG_WARN_UNDEF\")\n+    print(\"Testing KCONFIG_WARN_UNDEF\")\n \n-        os.environ[\"KCONFIG_WARN_UNDEF\"] = \"y\"\n-        c = Kconfig(\"Kconfiglib/tests/Kundef\", warn_to_stderr=False)\n+    os.environ[\"KCONFIG_WARN_UNDEF\"] = \"y\"\n+    c = Kconfig(\"Kconfiglib/tests/Kundef\", warn_to_stderr=False)\n \n-        verify_equal(\n-            \"\\n\".join(c.warnings),\n-            \"\"\"\n+    verify_equal(\n+        \"\\n\".join(c.warnings),\n+        \"\"\"\n warning: the int symbol INT (defined at Kconfiglib/tests/Kundef:8) has a non-int range [UNDEF_2 (undefined), 8 (undefined)]\n warning: undefined symbol UNDEF_1:\n \n@@ -3178,9 +3174,9 @@ def verify_bad_argno(name):\n \tdepends on UNDEF_1\n \tvisible if UNDEF_3\n \"\"\"[1:-1],\n-        )\n+    )\n \n-        os.environ.pop(\"KCONFIG_WARN_UNDEF\")\n+    os.environ.pop(\"KCONFIG_WARN_UNDEF\")\n \n     print(\"\\nAll selftests passed\\n\" if all_passed else \"\\nSome selftests failed\\n\")\n \n@@ -3190,10 +3186,6 @@ def run_compatibility_tests():\n     # C implementation by comparing outputs.\n \n     # Referenced inside the kernel Kconfig files.\n-    #\n-    # The str() makes the type of the value 'str' on both Python 2 and Python 3,\n-    # which is nice for some later dictionary key sanity checks.\n-\n     os.environ[\"KERNELVERSION\"] = str(\n         subprocess.check_output(\"make kernelversion\", shell=True)\n         .decode(\"utf-8\")\n@@ -3362,13 +3354,11 @@ def test_sanity(arch, srcarch):\n \n     kconf.write_autoconf(\"/dev/null\")\n \n-    # No tempfile.TemporaryDirectory in Python 2\n     tmpdir = tempfile.mkdtemp()\n     kconf.sync_deps(os.path.join(tmpdir, \"deps\"))  # Create\n     kconf.sync_deps(os.path.join(tmpdir, \"deps\"))  # Update\n     shutil.rmtree(tmpdir)\n \n-    # Python 2/3 compatible\n     for key, sym in kconf.syms.items():\n         verify(isinstance(key, str), \"weird key '{}' in syms dict\".format(key))\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "b6a23cef11a1c8d5e3da539a477f558e94f9ba3f",
+      "message": "Drop Python 2.7 support\n\nPython 2.7 has been EOL since January 2020. This removes compatibility\nshims, conditional imports, and version guards that existed solely to\nsupport Python 2.",
+      "parent_shas": [
+        "68686186bc52d7dc2ef1d6288c5fca306a73e24c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__sysprog21__Kconfiglib__pr35.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\sysprog21__Kconfiglib__pr35__py2_py3__sysprog21__Kconfiglib__pr35\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\sysprog21__Kconfiglib__pr35__py2_py3__sysprog21__Kconfiglib__pr35\\rn"
+  }
+}

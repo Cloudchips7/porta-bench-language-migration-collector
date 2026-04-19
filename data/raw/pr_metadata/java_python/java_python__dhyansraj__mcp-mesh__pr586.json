@@ -1,0 +1,584 @@
+{
+  "instance_id": "java_python__dhyansraj__mcp-mesh__pr586",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "dhyansraj/mcp-mesh",
+  "pr_number": 586,
+  "pr_url": "https://github.com/dhyansraj/mcp-mesh/pull/586",
+  "repo": {
+    "full_name": "dhyansraj/mcp-mesh",
+    "clone_url": "https://github.com/dhyansraj/mcp-mesh.git",
+    "default_branch": "main",
+    "created_at": "2025-06-02T13:06:49Z",
+    "stars": 33,
+    "license": "MIT",
+    "size_kb": 131173
+  },
+  "pull_request": {
+    "id": 3311968222,
+    "title": "feat: language-agnostic Helm chart and arbitrary namespace support",
+    "body": "## Summary\n- **Language-agnostic agent chart (#580)**: Remove Python bias from `mcp-mesh-agent` Helm chart. Add `agent.runtime` field and `isPython` helper for conditional Python env var injection. Remove dead `agent.script` and `agent.python` fields. Rewrite README with Python/TypeScript/Java examples.\n- **Arbitrary namespace support (#579)**: Replace hardcoded FQDN hostnames with short names in `mcp-mesh-core` values. Add `| default .Release.Namespace` fallback to namespace template. Add `networkPolicy.allowedNamespace` for dynamic ingress rules. Document custom namespace, multi-tenant, and cross-namespace patterns.\n- **ENTRYPOINT/CMD alignment**: Fix TypeScript runtime ENTRYPOINT (`node` → `npx tsx`). Align all scaffold Dockerfiles so CMD only provides the script/jar path (ENTRYPOINT provides the runtime command). Update Go handlers to match.\n- **NetworkPolicy fix**: AND namespaceSelector with podSelector in registry ingress (was incorrectly OR'd as separate `from` entries).\n- **Scaffold improvements**: Add `agent.runtime` to all helm-values templates. Add Docker/K8s/Documentation sections to Java/Python basic READMEs. Remove obsolete \"Adding Tools\" sections. Add cross-namespace comments to registryUrl.\n\n## Review Notes\n- Short service names replace FQDNs in mcp-mesh-core defaults — intentional for namespace flexibility, but a breaking change for cross-namespace users (documented override path)\n- Duplicate PYTHONUNBUFFERED in ConfigMap + deployment env (minor, explicit env wins)\n\nCloses #579\nCloses #580\n\n## Test plan\n- [x] `helm lint` passes for all 3 charts (agent, core, registry)\n- [x] `helm template` Python agent includes PYTHONUNBUFFERED/PYTHONPATH/UVICORN_* env vars\n- [x] `helm template` TypeScript/Java agent does NOT include Python env vars\n- [x] `helm template` with `--set agent.runtime=python` injects Python env vars regardless of image name\n- [x] Registry NetworkPolicy renders AND'd selectors (namespace + podSelector in same from entry)\n- [x] `go build` and `go test` pass for handlers\n- [ ] Deploy Python/TypeScript/Java agents to K8s cluster and verify registration\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n## Summary by CodeRabbit\n\n* **New Features**\n  * Multi-runtime agent support with runtime detection (Python, TypeScript, Java).\n  * New agent.runtime configuration field.\n\n* **Improvements**\n  * Container images and starter commands updated to rely on base image entrypoints.\n  * Network policies made namespace-aware with explicit ingress ports and allowedNamespace.\n  * Service hostnames default to in‑namespace short names.\n\n* **Documentation**\n  * Expanded docs and Helm notes for custom namespaces, cross‑namespace access, and multi‑runtime deployments.\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "created_at": "2026-02-22T03:22:34Z",
+    "merged_at": "2026-02-22T05:18:45Z",
+    "base_sha": "c7b58722363e9cd947a412a098a5565eae81874e",
+    "head_sha": "2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+    "merge_commit_sha": "787bcebbe4d8771dffbe37f813781d81b12731d3",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "c7b58722363e9cd947a412a098a5565eae81874e",
+  "final_sha": "2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+  "changed_files": [
+    {
+      "sha": "f08f77cb6812ccdde466f255c1321e8360ff753c",
+      "filename": "cmd/meshctl/templates/java/basic/Dockerfile.tmpl",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fbasic%2FDockerfile.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fbasic%2FDockerfile.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fbasic%2FDockerfile.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -1,5 +1,5 @@\n # Dockerfile for {{ .Name }} MCP Mesh agent (Java/Spring Boot)\n-FROM mcpmesh/java-runtime:0.8\n+FROM mcpmesh/java-runtime:0.9\n \n WORKDIR /app\n \n@@ -23,4 +23,5 @@ USER mcp-mesh\n EXPOSE {{ .Port }}\n \n # Run the agent\n-CMD [\"java\", \"-jar\", \"target/{{ .NameKebab }}-1.0.0-SNAPSHOT.jar\"]\n+# NOTE: Base image has ENTRYPOINT [\"java\", \"-jar\"], so CMD only needs the jar path\n+CMD [\"target/{{ .NameKebab }}-1.0.0-SNAPSHOT.jar\"]"
+    },
+    {
+      "sha": "a7a4ae91476205c569e00731b592d72bf713e758",
+      "filename": "cmd/meshctl/templates/java/basic/README.md.tmpl",
+      "status": "modified",
+      "additions": 27,
+      "deletions": 0,
+      "changes": 27,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fbasic%2FREADME.md.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fbasic%2FREADME.md.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fbasic%2FREADME.md.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -39,6 +39,33 @@ The agent will start on port {{ .Port }} by default.\n     └── {{ .NamePascal }}Application.java\n ```\n \n+## Docker\n+\n+```bash\n+# Build the image\n+docker build -t {{ .Name }}:latest .\n+\n+# Run the container\n+docker run -p {{ .Port }}:{{ .Port }} {{ .Name }}:latest\n+```\n+\n+## Kubernetes\n+\n+```bash\n+# Deploy using Helm\n+helm install {{ .Name }} oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-agent \\\n+  -n mcp-mesh \\\n+  -f helm-values.yaml \\\n+  --set image.repository=your-registry/{{ .Name }} \\\n+  --set image.tag=v1.0.0\n+```\n+\n+## Documentation\n+\n+- [MCP Mesh Documentation](https://github.com/dhyansraj/mcp-mesh)\n+- [Java SDK Reference](https://github.com/dhyansraj/mcp-mesh/tree/main/src/runtime/java)\n+- Run `meshctl man decorators --java` for decorator reference\n+\n ## License\n \n MIT"
+    },
+    {
+      "sha": "93372cf919244a8977f9f548970ee66987de8d08",
+      "filename": "cmd/meshctl/templates/java/basic/helm-values.yaml.tmpl",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 1,
+      "changes": 8,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fbasic%2Fhelm-values.yaml.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fbasic%2Fhelm-values.yaml.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fbasic%2Fhelm-values.yaml.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -9,6 +9,7 @@ image:\n \n agent:\n   name: {{ .Name }}\n+  runtime: java\n \n resources:\n   limits:\n@@ -20,7 +21,12 @@ resources:\n \n mesh:\n   enabled: true\n-  registryUrl: http://mcp-core-mcp-mesh-registry:8000\n+  # Short name resolves in same namespace as core. For cross-namespace:\n+  #   registry.host: mcp-core-mcp-mesh-registry.<core-namespace>.svc.cluster.local\n+\n+registry:\n+  host: \"mcp-core-mcp-mesh-registry\"\n+  port: \"8000\"\n \n env: []\n "
+    },
+    {
+      "sha": "915d7eea6df292cc3d8ae49d42044c74289c5903",
+      "filename": "cmd/meshctl/templates/java/llm-agent/Dockerfile.tmpl",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fllm-agent%2FDockerfile.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fllm-agent%2FDockerfile.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fllm-agent%2FDockerfile.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -1,5 +1,5 @@\n # Dockerfile for {{ .Name }} MCP Mesh LLM agent (Java/Spring Boot)\n-FROM mcpmesh/java-runtime:0.8\n+FROM mcpmesh/java-runtime:0.9\n \n WORKDIR /app\n \n@@ -23,4 +23,5 @@ USER mcp-mesh\n EXPOSE {{ .Port }}\n \n # Run the agent\n-CMD [\"java\", \"-jar\", \"target/{{ .NameKebab }}-1.0.0-SNAPSHOT.jar\"]\n+# NOTE: Base image has ENTRYPOINT [\"java\", \"-jar\"], so CMD only needs the jar path\n+CMD [\"target/{{ .NameKebab }}-1.0.0-SNAPSHOT.jar\"]"
+    },
+    {
+      "sha": "b91a2f67186ae60167fb204a3593b3c0c79d94b2",
+      "filename": "cmd/meshctl/templates/java/llm-agent/helm-values.yaml.tmpl",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 2,
+      "changes": 9,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fllm-agent%2Fhelm-values.yaml.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fllm-agent%2Fhelm-values.yaml.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fllm-agent%2Fhelm-values.yaml.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -9,6 +9,7 @@ image:\n \n agent:\n   name: {{ .Name }}\n+  runtime: java\n   # K8s uses port 8080 by default (each pod has its own IP, no conflicts)\n   # http:\n   #   port: 8080\n@@ -21,10 +22,14 @@ resources:\n     cpu: 200m\n     memory: 256Mi\n \n-# Enable mesh connectivity for cross-agent calls\n mesh:\n   enabled: true\n-  registryUrl: http://mcp-core-mcp-mesh-registry:8000\n+  # Short name resolves in same namespace as core. For cross-namespace:\n+  #   registry.host: mcp-core-mcp-mesh-registry.<core-namespace>.svc.cluster.local\n+\n+registry:\n+  host: \"mcp-core-mcp-mesh-registry\"\n+  port: \"8000\"\n \n # LLM agent typically needs API keys\n env:"
+    },
+    {
+      "sha": "f08f77cb6812ccdde466f255c1321e8360ff753c",
+      "filename": "cmd/meshctl/templates/java/llm-provider/Dockerfile.tmpl",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fllm-provider%2FDockerfile.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fllm-provider%2FDockerfile.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fllm-provider%2FDockerfile.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -1,5 +1,5 @@\n # Dockerfile for {{ .Name }} MCP Mesh agent (Java/Spring Boot)\n-FROM mcpmesh/java-runtime:0.8\n+FROM mcpmesh/java-runtime:0.9\n \n WORKDIR /app\n \n@@ -23,4 +23,5 @@ USER mcp-mesh\n EXPOSE {{ .Port }}\n \n # Run the agent\n-CMD [\"java\", \"-jar\", \"target/{{ .NameKebab }}-1.0.0-SNAPSHOT.jar\"]\n+# NOTE: Base image has ENTRYPOINT [\"java\", \"-jar\"], so CMD only needs the jar path\n+CMD [\"target/{{ .NameKebab }}-1.0.0-SNAPSHOT.jar\"]"
+    },
+    {
+      "sha": "d1560520689b70b40f5f1fc00e584a63fd5eec7a",
+      "filename": "cmd/meshctl/templates/java/llm-provider/helm-values.yaml.tmpl",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 2,
+      "changes": 9,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fllm-provider%2Fhelm-values.yaml.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fllm-provider%2Fhelm-values.yaml.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Fjava%2Fllm-provider%2Fhelm-values.yaml.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -9,6 +9,7 @@ image:\n \n agent:\n   name: {{ .Name }}\n+  runtime: java\n   # K8s uses port 8080 by default (each pod has its own IP, no conflicts)\n   # http:\n   #   port: 8080\n@@ -21,10 +22,14 @@ resources:\n     cpu: 200m\n     memory: 256Mi\n \n-# Enable mesh connectivity\n mesh:\n   enabled: true\n-  registryUrl: http://mcp-core-mcp-mesh-registry:8000\n+  # Short name resolves in same namespace as core. For cross-namespace:\n+  #   registry.host: mcp-core-mcp-mesh-registry.<core-namespace>.svc.cluster.local\n+\n+registry:\n+  host: \"mcp-core-mcp-mesh-registry\"\n+  port: \"8000\"\n \n # LLM provider needs API keys for the backend LLM service\n env:"
+    },
+    {
+      "sha": "85b110b013793e7d3860cc8360ad9f5e172be9e8",
+      "filename": "cmd/meshctl/templates/python/basic/README.md.tmpl",
+      "status": "modified",
+      "additions": 23,
+      "deletions": 33,
+      "changes": 56,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fpython%2Fbasic%2FREADME.md.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fpython%2Fbasic%2FREADME.md.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Fpython%2Fbasic%2FREADME.md.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -54,43 +54,33 @@ To override the port, modify the `http_port` parameter in the `@mesh.agent` deco\n └── requirements.txt  # Python dependencies\n ```\n \n-## Adding New Tools\n-\n-To add a new tool, use the dual decorator pattern:\n-\n-```python\n-@app.tool()\n-@mesh.tool(\n-    capability=\"my_capability\",\n-    description=\"Description of what this tool does\",\n-)\n-async def my_tool(param: str) -> str:\n-    \"\"\"Tool docstring.\"\"\"\n-    return f\"Result: {param}\"\n+## Docker\n+\n+```bash\n+# Build the image\n+docker build -t {{ .Name }}:latest .\n+\n+# Run the container\n+docker run -p {{ .Port }}:{{ .Port }} {{ .Name }}:latest\n ```\n \n-## Adding Dependencies\n-\n-To inject dependencies from other agents:\n-\n-```python\n-@app.tool()\n-@mesh.tool(\n-    capability=\"my_capability\",\n-    dependencies=[\"other_capability\"],\n-    description=\"Tool with dependency injection\",\n-)\n-async def my_tool_with_deps(\n-    param: str,\n-    other_capability: mesh.McpMeshTool = None,\n-) -> str:\n-    \"\"\"Tool with injected dependency.\"\"\"\n-    if other_capability:\n-        result = await other_capability()\n-        return f\"Got: {result}\"\n-    return \"Dependency not available\"\n+## Kubernetes\n+\n+```bash\n+# Deploy using Helm\n+helm install {{ .Name }} oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-agent \\\n+  -n mcp-mesh \\\n+  -f helm-values.yaml \\\n+  --set image.repository=your-registry/{{ .Name }} \\\n+  --set image.tag=v1.0.0\n ```\n \n+## Documentation\n+\n+- [MCP Mesh Documentation](https://github.com/dhyansraj/mcp-mesh)\n+- [Python SDK Reference](https://github.com/dhyansraj/mcp-mesh/tree/main/src/runtime/python)\n+- Run `meshctl man decorators` for decorator reference\n+\n ## License\n \n MIT"
+    },
+    {
+      "sha": "3dfcaac27a941bc6c27dd809936105300fac59e6",
+      "filename": "cmd/meshctl/templates/python/basic/helm-values.yaml.tmpl",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 2,
+      "changes": 9,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fpython%2Fbasic%2Fhelm-values.yaml.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fpython%2Fbasic%2Fhelm-values.yaml.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Fpython%2Fbasic%2Fhelm-values.yaml.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -9,6 +9,7 @@ image:\n \n agent:\n   name: {{ .Name }}\n+  runtime: python\n   # K8s uses port 8080 by default (each pod has its own IP, no conflicts)\n   # http:\n   #   port: 8080\n@@ -21,10 +22,14 @@ resources:\n     cpu: 100m\n     memory: 128Mi\n \n-# Enable if you need to connect to other mesh agents\n mesh:\n   enabled: true\n-  registryUrl: http://mcp-core-mcp-mesh-registry:8000\n+  # Short name resolves in same namespace as core. For cross-namespace:\n+  #   registry.host: mcp-core-mcp-mesh-registry.<core-namespace>.svc.cluster.local\n+\n+registry:\n+  host: \"mcp-core-mcp-mesh-registry\"\n+  port: \"8000\"\n \n # Optional: Configure environment variables\n env: []"
+    },
+    {
+      "sha": "cafaac32534063f650258c9a0851576831d5c66e",
+      "filename": "cmd/meshctl/templates/python/llm-agent/helm-values.yaml.tmpl",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 2,
+      "changes": 9,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fpython%2Fllm-agent%2Fhelm-values.yaml.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fpython%2Fllm-agent%2Fhelm-values.yaml.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Fpython%2Fllm-agent%2Fhelm-values.yaml.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -9,6 +9,7 @@ image:\n \n agent:\n   name: {{ .Name }}\n+  runtime: python\n   # K8s uses port 8080 by default (each pod has its own IP, no conflicts)\n   # http:\n   #   port: 8080\n@@ -21,10 +22,14 @@ resources:\n     cpu: 200m\n     memory: 256Mi\n \n-# Enable mesh connectivity for cross-agent calls\n mesh:\n   enabled: true\n-  registryUrl: http://mcp-core-mcp-mesh-registry:8000\n+  # Short name resolves in same namespace as core. For cross-namespace:\n+  #   registry.host: mcp-core-mcp-mesh-registry.<core-namespace>.svc.cluster.local\n+\n+registry:\n+  host: \"mcp-core-mcp-mesh-registry\"\n+  port: \"8000\"\n \n # LLM agent typically needs API keys\n env:"
+    },
+    {
+      "sha": "5abf2bec8e531caba8ddab2e744f150ff0114d90",
+      "filename": "cmd/meshctl/templates/python/llm-provider/helm-values.yaml.tmpl",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 2,
+      "changes": 9,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fpython%2Fllm-provider%2Fhelm-values.yaml.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Fpython%2Fllm-provider%2Fhelm-values.yaml.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Fpython%2Fllm-provider%2Fhelm-values.yaml.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -9,6 +9,7 @@ image:\n \n agent:\n   name: {{ .Name }}\n+  runtime: python\n   # K8s uses port 8080 by default (each pod has its own IP, no conflicts)\n   # http:\n   #   port: 8080\n@@ -21,10 +22,14 @@ resources:\n     cpu: 200m\n     memory: 256Mi\n \n-# Enable mesh connectivity\n mesh:\n   enabled: true\n-  registryUrl: http://mcp-core-mcp-mesh-registry:8000\n+  # Short name resolves in same namespace as core. For cross-namespace:\n+  #   registry.host: mcp-core-mcp-mesh-registry.<core-namespace>.svc.cluster.local\n+\n+registry:\n+  host: \"mcp-core-mcp-mesh-registry\"\n+  port: \"8000\"\n \n # LLM provider needs API keys for the backend LLM service\n env:"
+    },
+    {
+      "sha": "93568056ecd8fcc640a460d137f7ed65bcacbd7c",
+      "filename": "cmd/meshctl/templates/typescript/basic/Dockerfile.tmpl",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fbasic%2FDockerfile.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fbasic%2FDockerfile.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fbasic%2FDockerfile.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -1,5 +1,5 @@\n # Dockerfile for {{ .Name }} MCP Mesh agent\n-FROM mcpmesh/typescript-runtime:0.8\n+FROM mcpmesh/typescript-runtime:0.9\n \n WORKDIR /app\n \n@@ -20,6 +20,6 @@ USER mcp-mesh\n # Expose the agent port\n EXPOSE {{ .Port }}\n \n-# Run the agent (tsx for .ts files)\n-# NOTE: Base image has tsx installed for TypeScript execution\n-CMD [\"npx\", \"tsx\", \"src/index.ts\"]\n+# Run the agent\n+# NOTE: Base image has ENTRYPOINT [\"npx\", \"tsx\"], so CMD only needs the script path\n+CMD [\"src/index.ts\"]"
+    },
+    {
+      "sha": "483caee19935ce0b05030644fbc495ab0b3827f4",
+      "filename": "cmd/meshctl/templates/typescript/basic/README.md.tmpl",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 20,
+      "changes": 21,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fbasic%2FREADME.md.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fbasic%2FREADME.md.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fbasic%2FREADME.md.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -42,31 +42,12 @@ docker run -p {{ .Port }}:{{ .Port }} {{ .Name }}:latest\n ```bash\n # Deploy using Helm\n helm install {{ .Name }} oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-agent \\\n+  -n mcp-mesh \\\n   -f helm-values.yaml \\\n   --set image.repository=your-registry/{{ .Name }} \\\n   --set image.tag=v1.0.0\n ```\n \n-## Adding Tools\n-\n-Add new tools in `src/index.ts`:\n-\n-```typescript\n-agent.addTool({\n-  name: \"my_tool\",\n-  capability: \"my_capability\",\n-  description: \"What this tool does\",\n-  tags: [\"tools\"],\n-  parameters: z.object({\n-    input: z.string().describe(\"Input parameter\"),\n-  }),\n-  execute: async ({ input }) => {\n-    // Implement your tool logic\n-    return `Result: ${input}`;\n-  },\n-});\n-```\n-\n ## Documentation\n \n - [MCP Mesh Documentation](https://github.com/dhyansraj/mcp-mesh)"
+    },
+    {
+      "sha": "974b3f0fab10521763e47028ad42fa4475b6a20f",
+      "filename": "cmd/meshctl/templates/typescript/basic/helm-values.yaml.tmpl",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 2,
+      "changes": 8,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fbasic%2Fhelm-values.yaml.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fbasic%2Fhelm-values.yaml.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fbasic%2Fhelm-values.yaml.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -22,10 +22,14 @@ resources:\n     cpu: 100m\n     memory: 128Mi\n \n-# Enable if you need to connect to other mesh agents\n mesh:\n   enabled: true\n-  registryUrl: http://mcp-core-mcp-mesh-registry:8000\n+  # Short name resolves in same namespace as core. For cross-namespace:\n+  #   registry.host: mcp-core-mcp-mesh-registry.<core-namespace>.svc.cluster.local\n+\n+registry:\n+  host: \"mcp-core-mcp-mesh-registry\"\n+  port: \"8000\"\n \n # Optional: Configure environment variables\n env: []"
+    },
+    {
+      "sha": "407913c8172e2d9b8d24545f26e5567fe28a6211",
+      "filename": "cmd/meshctl/templates/typescript/llm-agent/Dockerfile.tmpl",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 3,
+      "changes": 7,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fllm-agent%2FDockerfile.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fllm-agent%2FDockerfile.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fllm-agent%2FDockerfile.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -1,5 +1,5 @@\n # Dockerfile for {{ .Name }} MCP Mesh LLM agent\n-FROM mcpmesh/typescript-runtime:0.8\n+FROM mcpmesh/typescript-runtime:0.9\n \n WORKDIR /app\n \n@@ -20,5 +20,6 @@ USER mcp-mesh\n # Expose the agent port\n EXPOSE {{ .Port }}\n \n-# Run the agent (tsx for .ts files)\n-CMD [\"npx\", \"tsx\", \"src/index.ts\"]\n+# Run the agent\n+# NOTE: Base image has ENTRYPOINT [\"npx\", \"tsx\"], so CMD only needs the script path\n+CMD [\"src/index.ts\"]"
+    },
+    {
+      "sha": "ba0641d5747a1334f94db0ecfc3a945a29e50236",
+      "filename": "cmd/meshctl/templates/typescript/llm-agent/helm-values.yaml.tmpl",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 2,
+      "changes": 8,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fllm-agent%2Fhelm-values.yaml.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fllm-agent%2Fhelm-values.yaml.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fllm-agent%2Fhelm-values.yaml.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -22,10 +22,14 @@ resources:\n     cpu: 200m\n     memory: 256Mi\n \n-# Enable mesh connectivity for cross-agent calls\n mesh:\n   enabled: true\n-  registryUrl: http://mcp-core-mcp-mesh-registry:8000\n+  # Short name resolves in same namespace as core. For cross-namespace:\n+  #   registry.host: mcp-core-mcp-mesh-registry.<core-namespace>.svc.cluster.local\n+\n+registry:\n+  host: \"mcp-core-mcp-mesh-registry\"\n+  port: \"8000\"\n \n # LLM agent typically needs API keys\n env:"
+    },
+    {
+      "sha": "dd5e495522a2394430adbe8f35051454422bfd77",
+      "filename": "cmd/meshctl/templates/typescript/llm-provider/Dockerfile.tmpl",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 3,
+      "changes": 7,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fllm-provider%2FDockerfile.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fllm-provider%2FDockerfile.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fllm-provider%2FDockerfile.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -1,5 +1,5 @@\n # Dockerfile for {{ .Name }} MCP Mesh LLM provider\n-FROM mcpmesh/typescript-runtime:0.8\n+FROM mcpmesh/typescript-runtime:0.9\n \n WORKDIR /app\n \n@@ -20,5 +20,6 @@ USER mcp-mesh\n # Expose the agent port\n EXPOSE {{ .Port }}\n \n-# Run the agent (tsx for .ts files)\n-CMD [\"npx\", \"tsx\", \"src/index.ts\"]\n+# Run the agent\n+# NOTE: Base image has ENTRYPOINT [\"npx\", \"tsx\"], so CMD only needs the script path\n+CMD [\"src/index.ts\"]"
+    },
+    {
+      "sha": "32f0323d03cbe9194377848cb94d48636439dced",
+      "filename": "cmd/meshctl/templates/typescript/llm-provider/helm-values.yaml.tmpl",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 2,
+      "changes": 8,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fllm-provider%2Fhelm-values.yaml.tmpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fllm-provider%2Fhelm-values.yaml.tmpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/cmd%2Fmeshctl%2Ftemplates%2Ftypescript%2Fllm-provider%2Fhelm-values.yaml.tmpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -22,10 +22,14 @@ resources:\n     cpu: 200m\n     memory: 256Mi\n \n-# Enable mesh connectivity\n mesh:\n   enabled: true\n-  registryUrl: http://mcp-core-mcp-mesh-registry:8000\n+  # Short name resolves in same namespace as core. For cross-namespace:\n+  #   registry.host: mcp-core-mcp-mesh-registry.<core-namespace>.svc.cluster.local\n+\n+registry:\n+  host: \"mcp-core-mcp-mesh-registry\"\n+  port: \"8000\"\n \n # LLM provider needs API keys for the backend LLM service\n env:"
+    },
+    {
+      "sha": "32ee98cbe04ebaf66882f5701d49a9a524c6f21e",
+      "filename": "docs/04-kubernetes-basics.md",
+      "status": "modified",
+      "additions": 44,
+      "deletions": 0,
+      "changes": 44,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/docs%2F04-kubernetes-basics.md",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/docs%2F04-kubernetes-basics.md",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/docs%2F04-kubernetes-basics.md?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -153,6 +153,50 @@ helm install mcp-registry oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-registry \\\n   --namespace mcp-mesh\n ```\n \n+### Custom Namespace\n+\n+By default, examples use `mcp-mesh` as the namespace. You can deploy into any namespace —\n+just match `-n` with `--set global.namespace`:\n+\n+```bash\n+# Deploy core to a custom namespace\n+helm install mcp-core oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-core \\\n+  --version 0.9.6 \\\n+  -n my-namespace --create-namespace \\\n+  --set global.namespace=my-namespace\n+\n+# Deploy agent to the same namespace\n+helm install my-agent oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-agent \\\n+  --version 0.9.6 \\\n+  -n my-namespace \\\n+  -f helm-values.yaml\n+```\n+\n+Service hostnames use short names (e.g., `mcp-core-mcp-mesh-registry`) that resolve\n+within the same namespace automatically. No FQDN changes needed.\n+\n+For **multi-tenant** clusters (separate core per team), deploy each core to its own namespace:\n+\n+```bash\n+# Team A\n+helm install mcp-core oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-core \\\n+  --version 0.9.6 \\\n+  -n team-a --create-namespace --set global.namespace=team-a\n+\n+# Team B — same values, different namespace\n+helm install mcp-core oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-core \\\n+  --version 0.9.6 \\\n+  -n team-b --create-namespace --set global.namespace=team-b\n+```\n+\n+For **cross-namespace** access (agent in one namespace, core in another), use FQDNs:\n+\n+```bash\n+helm install my-agent oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-agent \\\n+  --version 0.9.6 -n other-ns \\\n+  --set mesh.registryUrl=http://mcp-core-mcp-mesh-registry.team-a.svc.cluster.local:8000\n+```\n+\n ## Common Operations\n \n ```bash"
+    },
+    {
+      "sha": "9559ee9e062a86d1db625652672946b8c3251842",
+      "filename": "helm/mcp-mesh-agent/README.md",
+      "status": "modified",
+      "additions": 158,
+      "deletions": 225,
+      "changes": 383,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-agent%2FREADME.md",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-agent%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/helm%2Fmcp-mesh-agent%2FREADME.md?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -1,220 +1,191 @@\n # MCP Mesh Agent Helm Chart\n \n-This Helm chart deploys MCP Mesh agents with Python runtime on Kubernetes.\n+This Helm chart deploys MCP Mesh agents on Kubernetes. It supports Python, TypeScript, and Java runtimes.\n \n ## Prerequisites\n \n - Kubernetes 1.19+\n - Helm 3.2.0+\n - MCP Mesh Registry deployed and accessible\n-- Python-based MCP agent script\n+- An MCP agent packaged as a Docker image\n \n-## Installing the Chart\n+## Quick Start\n \n-### Method 1: Single-File Agent\n-\n-For simple agents with a single Python file:\n+### Python Agent\n \n ```bash\n-helm install hello-world ./helm/mcp-mesh-agent -n mcp-mesh \\\n-  --set agent.name=hello-world \\\n-  --set agent.command='[\"/app/agent.py\"]'\n-```\n-\n-### Method 2: Multi-File Agent (Custom Docker Image)\n-\n-For complex agents packaged as Docker images with their own CMD:\n-\n-```bash\n-helm install avatar ./helm/mcp-mesh-agent -n mcp-mesh \\\n-  --set image.repository=myregistry/avatar-agent \\\n+helm install my-agent ./helm/mcp-mesh-agent -n mcp-mesh \\\n+  --set image.repository=myregistry/my-python-agent \\\n   --set image.tag=v1.0.0 \\\n-  --set agent.name=avatar \\\n-  --set agent.script=\"\"\n+  --set agent.name=my-agent\n ```\n \n-The chart uses the Docker image's CMD instead of overriding it.\n+Default image is `mcpmesh/python-runtime` — Python-specific env vars (`PYTHONUNBUFFERED`, `PYTHONPATH`, `UVICORN_*`) are auto-injected when the runtime is detected as Python (see [Runtime Detection](#runtime-detection)).\n \n-### Method 3: External ConfigMap\n-\n-To install with an externally managed ConfigMap:\n+### TypeScript Agent\n \n ```bash\n-kubectl create configmap my-agent-code --from-file=agent.py=./my-agent.py\n-helm install my-agent ./helm/mcp-mesh-agent \\\n-  --set agentCode.enabled=true \\\n-  --set agentCode.configMapName=my-agent-code \\\n-  --set registry.url=http://mcp-mesh-registry:8080\n+helm install my-agent ./helm/mcp-mesh-agent -n mcp-mesh \\\n+  --set image.repository=myregistry/my-ts-agent \\\n+  --set image.tag=v1.0.0 \\\n+  --set agent.name=my-agent\n ```\n \n-### Method 4: Auto-Generated ConfigMap\n-\n-To install with automatic ConfigMap generation from a script file:\n+### Java Agent\n \n ```bash\n-helm install my-agent ./helm/mcp-mesh-agent \\\n-  --set agentCode.enabled=true \\\n-  --set agentCode.scriptPath=scripts/my-agent.py \\\n-  --set registry.url=http://mcp-mesh-registry:8080\n+helm install my-agent ./helm/mcp-mesh-agent -n mcp-mesh \\\n+  --set image.repository=myregistry/my-java-agent \\\n+  --set image.tag=v1.0.0 \\\n+  --set agent.name=my-agent\n ```\n \n-Or using a values file:\n+### Using a Values File\n \n ```bash\n-helm install my-agent ./helm/mcp-mesh-agent -f examples/auto-configmap-values.yaml\n+helm install my-agent ./helm/mcp-mesh-agent -n mcp-mesh -f my-values.yaml\n ```\n \n ## Uninstalling the Chart\n \n-To uninstall the `my-agent` deployment:\n-\n ```bash\n-helm uninstall my-agent\n+helm uninstall my-agent -n mcp-mesh\n ```\n \n ## Configuration\n \n-The following table lists the configurable parameters of the MCP Mesh Agent chart and their default values.\n-\n ### Key Parameters\n \n-| Parameter       | Description                                         | Default                        |\n-| --------------- | --------------------------------------------------- | ------------------------------ |\n-| `agent.name`    | Agent name for registry                             | `\"\"`                           |\n-| `agent.script`  | Python script path (single-file agents)             | `\"/app/agent.py\"`              |\n-| `agent.command` | Container command override (empty = use Docker CMD) | `[]`                           |\n-| `registry.host` | MCP Mesh Registry host                              | `\"mcp-core-mcp-mesh-registry\"` |\n-| `registry.port` | MCP Mesh Registry port                              | `\"8000\"`                       |\n+| Parameter          | Description                                         | Default                        |\n+| ------------------ | --------------------------------------------------- | ------------------------------ |\n+| `image.repository` | Container image repository                          | `\"mcpmesh/python-runtime\"`     |\n+| `image.tag`        | Image tag (overrides chart appVersion)              | `\"0.9\"`                        |\n+| `agent.name`       | Agent name for registry                             | `\"\"`                           |\n+| `agent.command`    | Container command override (empty = use Docker CMD) | `[]`                           |\n+| `registry.host`    | MCP Mesh Registry host                              | `\"mcp-core-mcp-mesh-registry\"` |\n+| `registry.port`    | MCP Mesh Registry port                              | `\"8000\"`                       |\n \n ### Agent Configuration\n \n-| Parameter                   | Description                                        | Default   |\n-| --------------------------- | -------------------------------------------------- | --------- |\n-| `agent.name`                | Agent name override (empty = use from @mesh.agent) | `\"\"`      |\n-| `agent.version`             | Agent version                                      | `\"1.0.0\"` |\n-| `agent.description`         | Agent description                                  | `\"\"`      |\n-| `agent.capabilities`        | List of capabilities provided                      | `[]`      |\n-| `agent.dependencies`        | List of required dependencies                      | `[]`      |\n-| `agent.healthCheck.enabled` | Enable health checks                               | `true`    |\n+| Parameter                   | Description                                       | Default   |\n+| --------------------------- | ------------------------------------------------- | --------- |\n+| `agent.name`                | Agent name override (empty = use from decorator)  | `\"\"`      |\n+| `agent.runtime`             | Runtime override (empty = auto-detect from image) | `\"\"`      |\n+| `agent.version`             | Agent version                                     | `\"1.0.0\"` |\n+| `agent.description`         | Agent description                                 | `\"\"`      |\n+| `agent.capabilities`        | List of capabilities provided                     | `[]`      |\n+| `agent.dependencies`        | List of required dependencies                     | `[]`      |\n+| `agent.healthCheck.enabled` | Enable health checks                              | `true`    |\n+| `agent.command`             | Container command override                        | `[]`      |\n+| `agent.advertisedHost`      | Hostname advertised to registry                   | `\"\"`      |\n \n-### Agent Code Configuration\n+### HTTP Configuration\n \n-| Parameter                        | Description                                         | Default        |\n-| -------------------------------- | --------------------------------------------------- | -------------- |\n-| `agentCode.enabled`              | Enable mounting agent code from ConfigMap           | `false`        |\n-| `agentCode.configMapName`        | External ConfigMap name (for Method 2)              | `\"\"`           |\n-| `agentCode.scriptPath`           | Script path for auto-generated ConfigMap (Method 3) | `\"\"`           |\n-| `agentCode.mountPath`            | Mount path for agent code                           | `\"/app/agent\"` |\n-| `agent.healthCheck.interval`     | Health check interval (seconds)                     | `30`           |\n-| `agent.retry.attempts`           | Retry attempts                                      | `3`            |\n-| `agent.retry.delay`              | Retry delay (seconds)                               | `5`            |\n-| `agent.performance.timeout`      | Operation timeout (seconds)                         | `30`           |\n-| `agent.performance.cacheEnabled` | Enable caching                                      | `true`         |\n+| Parameter                 | Description          | Default     |\n+| ------------------------- | -------------------- | ----------- |\n+| `agent.http.enabled`      | Enable HTTP wrapper  | `true`      |\n+| `agent.http.host`         | HTTP host            | `\"0.0.0.0\"` |\n+| `agent.http.port`         | HTTP port            | `8080`      |\n+| `agent.http.cors.enabled` | Enable CORS          | `true`      |\n+| `agent.http.cors.origins` | CORS allowed origins | `[\"*\"]`     |\n \n-### HTTP Configuration\n+### Mesh Configuration\n \n-| Parameter                 | Description                 | Default     |\n-| ------------------------- | --------------------------- | ----------- |\n-| `agent.http.enabled`      | Enable HTTP wrapper         | `true`      |\n-| `agent.http.host`         | HTTP host                   | `\"0.0.0.0\"` |\n-| `agent.http.port`         | HTTP port (0 = auto-assign) | `0`         |\n-| `agent.http.cors.enabled` | Enable CORS                 | `true`      |\n-| `agent.http.cors.origins` | CORS allowed origins        | `[\"*\"]`     |\n+| Parameter       | Description          | Default  |\n+| --------------- | -------------------- | -------- |\n+| `mesh.enabled`  | Enable mesh features | `true`   |\n+| `mesh.debug`    | Debug mode           | `false`  |\n+| `mesh.logLevel` | Log level            | `\"INFO\"` |\n \n-### Python Configuration\n+### Deployment Configuration\n \n-| Parameter                  | Description                               | Default |\n-| -------------------------- | ----------------------------------------- | ------- |\n-| `agent.python.interpreter` | Python interpreter (auto-detect if empty) | `\"\"`    |\n-| `agent.python.packages`    | Additional Python packages                | `[]`    |\n-| `agent.python.env`         | Python environment variables              | `[]`    |\n+| Parameter                   | Description                            | Default                    |\n+| --------------------------- | -------------------------------------- | -------------------------- |\n+| `replicaCount`              | Number of replicas                     | `1`                        |\n+| `image.repository`          | Container image repository             | `\"mcpmesh/python-runtime\"` |\n+| `image.pullPolicy`          | Image pull policy                      | `IfNotPresent`             |\n+| `image.tag`                 | Image tag (overrides chart appVersion) | `\"0.9\"`                    |\n+| `resources.limits.cpu`      | CPU limit                              | `1`                        |\n+| `resources.limits.memory`   | Memory limit                           | `1Gi`                      |\n+| `resources.requests.cpu`    | CPU request                            | `100m`                     |\n+| `resources.requests.memory` | Memory request                         | `256Mi`                    |\n \n-### Mesh Configuration\n+### Agent Code Configuration\n \n-| Parameter             | Description                    | Default  |\n-| --------------------- | ------------------------------ | -------- |\n-| `mesh.enabled`        | Enable mesh features           | `true`   |\n-| `mesh.debug`          | Debug mode                     | `false`  |\n-| `mesh.logLevel`       | Log level                      | `\"INFO\"` |\n-| `mesh.tracingEnabled` | Enable distributed tracing     | `false`  |\n-| `mesh.metricsEnabled` | Enable metrics collection      | `true`   |\n-| `mesh.decorators`     | Custom decorator configuration | `{}`     |\n+| Parameter                 | Description                               | Default        |\n+| ------------------------- | ----------------------------------------- | -------------- |\n+| `agentCode.enabled`       | Enable mounting agent code from ConfigMap | `false`        |\n+| `agentCode.configMapName` | External ConfigMap name                   | `\"\"`           |\n+| `agentCode.scriptPath`    | Script path for auto-generated ConfigMap  | `\"\"`           |\n+| `agentCode.mountPath`     | Mount path for agent code                 | `\"/app/agent\"` |\n \n-### Deployment Configuration\n+## Runtime Detection\n+\n+The chart detects the runtime in two ways:\n+\n+1. **Explicit**: Set `agent.runtime` to `\"python\"`, `\"typescript\"`, or `\"java\"`\n+2. **Auto-detect**: If `agent.runtime` is empty, checks if `image.repository` contains \"python\"\n+\n+When Python runtime is detected:\n \n-| Parameter                   | Description                            | Default          |\n-| --------------------------- | -------------------------------------- | ---------------- |\n-| `replicaCount`              | Number of replicas                     | `1`              |\n-| `image.repository`          | Container image repository             | `mcp-mesh-agent` |\n-| `image.pullPolicy`          | Image pull policy                      | `IfNotPresent`   |\n-| `image.tag`                 | Image tag (overrides chart appVersion) | `\"\"`             |\n-| `resources.limits.cpu`      | CPU limit                              | `1`              |\n-| `resources.limits.memory`   | Memory limit                           | `1Gi`            |\n-| `resources.requests.cpu`    | CPU request                            | `100m`           |\n-| `resources.requests.memory` | Memory request                         | `256Mi`          |\n+- `PYTHONUNBUFFERED`, `PYTHONPATH`, and `UVICORN_*` env vars are injected\n+- Non-Python runtimes (TypeScript, Java, other) get no Python-specific env vars\n+\n+Scaffold-generated `helm-values.yaml` files set `agent.runtime` explicitly, so auto-detection is mainly for manual deployments using the default `mcpmesh/python-runtime` image.\n \n ## Examples\n \n-### Basic Agent Deployment\n+### Python Agent with Custom Packages\n \n ```yaml\n # values.yaml\n+image:\n+  repository: myregistry/my-python-agent\n+  tag: v1.0.0\n+\n agent:\n-  script: /app/agents/hello_world.py\n-  name: hello-world-agent\n-  capabilities:\n-    - name: greeting\n-      version: \"1.0.0\"\n-      description: \"Provides greeting functionality\"\n-\n-registry:\n-  url: http://mcp-mesh-registry:8080\n+  name: data-processor\n+\n+env:\n+  - name: PYTHONPATH\n+    value: \"/app/lib\"\n ```\n \n-### Agent with Dependencies\n+### TypeScript Agent\n \n ```yaml\n-agent:\n-  script: /app/agents/translator.py\n-  name: translator-agent\n-  capabilities:\n-    - name: translation\n-      version: \"1.0.0\"\n-  dependencies:\n-    - name: dictionary-service\n-      version: \">=1.0.0\"\n-      optional: false\n+# values.yaml\n+image:\n+  repository: myregistry/my-ts-agent\n+  tag: v1.0.0\n \n-mesh:\n-  decorators:\n-    mesh_agent:\n-      enable_http: true\n-      health_interval: 30\n-      fallback_mode: true\n+agent:\n+  name: ts-greeter\n ```\n \n-### Agent with Custom Python Packages\n+### Java Agent\n \n ```yaml\n+# values.yaml\n+image:\n+  repository: myregistry/my-java-agent\n+  tag: v1.0.0\n+\n agent:\n-  script: /app/agents/data_processor.py\n-  python:\n-    packages:\n-      - numpy==1.24.0\n-      - pandas>=1.5.0\n-      - scikit-learn==1.3.0\n-    env:\n-      - name: PYTHONPATH\n-        value: \"/app/lib\"\n+  name: java-greeter\n ```\n \n ### Production Configuration\n \n ```yaml\n replicaCount: 3\n \n+image:\n+  repository: myregistry/my-agent\n+  tag: v1.0.0\n+\n agent:\n-  script: /app/agents/production_agent.py\n+  name: production-agent\n   healthCheck:\n     interval: 15\n   performance:\n@@ -241,60 +212,58 @@ podDisruptionBudget:\n \n networkPolicy:\n   enabled: true\n-\n-persistence:\n-  enabled: true\n-  size: 10Gi\n ```\n \n-### Using ConfigMap for Agent Code\n+### With Secrets\n \n ```yaml\n-agentCode:\n-  enabled: true\n-  configMapName: my-agent-code\n-  mountPath: /app/agent\n+secrets:\n+  API_KEY: \"your-api-key\"\n+  DATABASE_PASSWORD: \"your-password\"\n \n-agent:\n-  script: /app/agent/main.py\n+# Or use existing secret\n+existingSecret: my-secret\n ```\n \n-Create the ConfigMap separately:\n+## Building Custom Agent Images\n \n-```bash\n-kubectl create configmap my-agent-code \\\n-  --from-file=main.py=./my_agent.py \\\n-  --from-file=utils.py=./utils.py\n+### Python\n+\n+```dockerfile\n+FROM mcpmesh/python-runtime:0.9\n+\n+COPY . /app/\n+CMD [\"-m\", \"myagent\"]\n ```\n \n-### With Secrets\n+### TypeScript\n \n-```yaml\n-secrets:\n-  API_KEY: \"your-api-key\"\n-  DATABASE_PASSWORD: \"your-password\"\n+```dockerfile\n+FROM mcpmesh/typescript-runtime:0.9\n \n-# Or use existing secret\n-existingSecret: my-secret\n+COPY . /app/\n+CMD [\"src/index.ts\"]\n ```\n \n-## Decorators and Metadata\n+### Java\n \n-The chart supports MCP Mesh decorators through the `mesh.decorators` configuration:\n+```dockerfile\n+FROM mcpmesh/java-runtime:0.9\n \n-```yaml\n-mesh:\n-  decorators:\n-    mesh_agent:\n-      enable_http: true\n-      health_interval: 30\n-      timeout: 60\n-      retry_attempts: 5\n-      enable_caching: true\n-      fallback_mode: true\n-      performance_profile:\n-        max_concurrent: 10\n-        queue_size: 100\n+COPY target/myagent.jar /app/\n+CMD [\"/app/myagent.jar\"]\n+```\n+\n+Build and deploy:\n+\n+```bash\n+docker build -t myregistry/my-agent:v1.0.0 .\n+docker push myregistry/my-agent:v1.0.0\n+\n+helm install my-agent ./helm/mcp-mesh-agent -n mcp-mesh \\\n+  --set image.repository=myregistry/my-agent \\\n+  --set image.tag=v1.0.0 \\\n+  --set agent.name=my-agent\n ```\n \n ## Monitoring\n@@ -319,67 +288,30 @@ mesh:\n Check pod logs:\n \n ```bash\n-kubectl logs -l app.kubernetes.io/name=mcp-mesh-agent\n+kubectl logs -l app.kubernetes.io/name=mcp-mesh-agent -n mcp-mesh\n ```\n \n ### Registry connection issues\n \n Verify registry is accessible:\n \n ```bash\n-kubectl exec -it <pod-name> -- curl http://mcp-mesh-registry:8080/health\n-```\n-\n-### Python package installation\n-\n-Check init container logs if using custom packages:\n-\n-```bash\n-kubectl logs <pod-name> -c init-packages\n-```\n-\n-## Building Custom Agent Images\n-\n-Base your Dockerfile on `mcpmesh/python-runtime`:\n-\n-```dockerfile\n-FROM mcpmesh/python-runtime:0.8\n-\n-# Copy agent code\n-COPY . /app/\n-\n-# For multi-file agents, set the command\n-CMD [\"python\", \"-m\", \"myagent\"]\n-```\n-\n-Build and deploy:\n-\n-```bash\n-docker build -t myregistry/my-agent:v1.0.0 .\n-docker push myregistry/my-agent:v1.0.0\n-\n-helm install my-agent ./helm/mcp-mesh-agent -n mcp-mesh \\\n-  --set image.repository=myregistry/my-agent \\\n-  --set image.tag=v1.0.0 \\\n-  --set agent.name=my-agent \\\n-  --set agent.script=\"\"\n+kubectl exec -it <pod-name> -n mcp-mesh -- curl http://mcp-core-mcp-mesh-registry:8000/health\n ```\n \n ## Advanced Usage\n \n ### Multi-Environment Deployment\n \n-Deploy the same agent to multiple environments:\n-\n ```bash\n # Development\n-helm install dev-agent ./helm/mcp-mesh-agent -f values-dev.yaml\n+helm install dev-agent ./helm/mcp-mesh-agent -n mcp-mesh -f values-dev.yaml\n \n # Staging\n-helm install staging-agent ./helm/mcp-mesh-agent -f values-staging.yaml\n+helm install staging-agent ./helm/mcp-mesh-agent -n mcp-mesh -f values-staging.yaml\n \n # Production\n-helm install prod-agent ./helm/mcp-mesh-agent -f values-prod.yaml\n+helm install prod-agent ./helm/mcp-mesh-agent -n mcp-mesh -f values-prod.yaml\n ```\n \n ### GitOps Integration\n@@ -398,8 +330,9 @@ spec:\n     path: helm/mcp-mesh-agent\n     helm:\n       values: |\n+        image:\n+          repository: myregistry/my-agent\n+          tag: v1.0.0\n         agent:\n-          script: /app/agents/my_agent.py\n-        registry:\n-          url: http://mcp-mesh-registry:8080\n+          name: my-agent\n ```"
+    },
+    {
+      "sha": "3eaa5ac87e60dfd576141d7e0390137abf4e8adb",
+      "filename": "helm/mcp-mesh-agent/templates/_helpers.tpl",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 0,
+      "changes": 9,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-agent%2Ftemplates%2F_helpers.tpl",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-agent%2Ftemplates%2F_helpers.tpl",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/helm%2Fmcp-mesh-agent%2Ftemplates%2F_helpers.tpl?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -105,3 +105,12 @@ Build dependencies JSON\n []\n {{- end }}\n {{- end }}\n+\n+{{/*\n+Detect if using Python runtime (checks agent.runtime first, then image name)\n+*/}}\n+{{- define \"mcp-mesh-agent.isPython\" -}}\n+{{- if eq (toString .Values.agent.runtime) \"python\" }}true\n+{{- else if and (not .Values.agent.runtime) (contains \"python\" .Values.image.repository) }}true\n+{{- end }}\n+{{- end }}"
+    },
+    {
+      "sha": "5010e6c84521c822a1a901e7794ef71b2e972b9a",
+      "filename": "helm/mcp-mesh-agent/templates/configmap.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-agent%2Ftemplates%2Fconfigmap.yaml",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-agent%2Ftemplates%2Fconfigmap.yaml",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/helm%2Fmcp-mesh-agent%2Ftemplates%2Fconfigmap.yaml?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -42,6 +42,7 @@ data:\n   MCP_MESH_NAMESPACE: \"default\"\n   HOST: \"0.0.0.0\"\n \n+  {{- if include \"mcp-mesh-agent.isPython\" . }}\n   # Python runtime\n   PYTHONUNBUFFERED: \"1\"\n   PYTHONPATH: \"/app/lib:/app/agents\"\n@@ -50,6 +51,7 @@ data:\n   UVICORN_WORKERS: \"1\"\n   UVICORN_LOOP: \"auto\"\n   UVICORN_LIFESPAN: \"on\"\n+  {{- end }}\n \n   # Observability configuration - matches Docker setup\n   MCP_MESH_DISTRIBUTED_TRACING_ENABLED: {{ .Values.agent.observability.distributedTracing.enabled | default true | quote }}"
+    },
+    {
+      "sha": "157b5d311dfa0e70263cd55329139118ac7fa491",
+      "filename": "helm/mcp-mesh-agent/templates/deployment.yaml",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 11,
+      "changes": 17,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-agent%2Ftemplates%2Fdeployment.yaml",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-agent%2Ftemplates%2Fdeployment.yaml",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/helm%2Fmcp-mesh-agent%2Ftemplates%2Fdeployment.yaml?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -1,5 +1,5 @@\n-{{- /* Render deployment if either script is specified OR using custom image (not base runtime) */ -}}\n-{{- if or .Values.agent.script (ne .Values.image.repository \"mcpmesh/python-runtime\") -}}\n+{{- /* Render deployment — always enabled when image.repository is set */ -}}\n+{{- if .Values.image.repository -}}\n apiVersion: apps/v1\n kind: Deployment\n metadata:\n@@ -136,11 +136,10 @@ spec:\n             - name: MCP_MESH_AGENT_NAME\n               value: {{ .Values.agent.name | quote }}\n             {{- end }}\n+            {{- if include \"mcp-mesh-agent.isPython\" . }}\n             # Python environment variables\n             - name: PYTHONUNBUFFERED\n               value: \"1\"\n-            {{- with .Values.agent.python.env }}\n-            {{- toYaml . | nindent 12 }}\n             {{- end }}\n             {{- with .Values.env }}\n             {{- toYaml . | nindent 12 }}\n@@ -200,7 +199,7 @@ spec:\n       {{- end }}\n {{- else }}\n ---\n-# Warning: No agent configured - using base runtime image without agent code\n+# Warning: No agent image configured\n apiVersion: v1\n kind: ConfigMap\n metadata:\n@@ -209,14 +208,10 @@ metadata:\n     {{- include \"mcp-mesh-agent.labels\" . | nindent 4 }}\n data:\n   message: |\n-    WARNING: No agent configured!\n+    WARNING: No agent image configured!\n \n-    Either set image.repository to your built agent image:\n+    Set image.repository to your built agent image:\n       helm install my-agent ... --set image.repository=your-registry/my-agent\n \n-    Or set agent.script for single-file agents:\n-      agent:\n-        script: \"/app/main.py\"\n-\n     See: meshctl man deployment\n {{- end }}"
+    },
+    {
+      "sha": "728a2d4b123e6a61710d9b7b5fd5b3a5e74a42d4",
+      "filename": "helm/mcp-mesh-agent/templates/networkpolicy.yaml",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 3,
+      "changes": 9,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-agent%2Ftemplates%2Fnetworkpolicy.yaml",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-agent%2Ftemplates%2Fnetworkpolicy.yaml",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/helm%2Fmcp-mesh-agent%2Ftemplates%2Fnetworkpolicy.yaml?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -18,10 +18,13 @@ spec:\n       {{- include \"mcp-mesh-agent.selectorLabels\" . | nindent 6 }}\n   policyTypes:\n     {{- toYaml .Values.networkPolicy.policyTypes | nindent 4 }}\n-  {{- if .Values.networkPolicy.ingress }}\n   ingress:\n-    {{- toYaml .Values.networkPolicy.ingress | nindent 4 }}\n-  {{- end }}\n+    - from:\n+        - namespaceSelector:\n+            matchLabels:\n+              kubernetes.io/metadata.name: {{ .Values.networkPolicy.allowedNamespace | default .Release.Namespace }}\n+      ports:\n+        {{- toYaml .Values.networkPolicy.ingressPorts | nindent 8 }}\n   {{- if .Values.networkPolicy.egress }}\n   egress:\n     {{- toYaml .Values.networkPolicy.egress | nindent 4 }}"
+    },
+    {
+      "sha": "9cff2a0162497e2ffbfdf97426a7a7b2cc470ccf",
+      "filename": "helm/mcp-mesh-agent/values.yaml",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 35,
+      "changes": 49,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-agent%2Fvalues.yaml",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-agent%2Fvalues.yaml",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/helm%2Fmcp-mesh-agent%2Fvalues.yaml?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -12,7 +12,8 @@ global:\n replicaCount: 1\n \n image:\n-  # Default: base runtime image (has no agent code)\n+  # Default: Python base runtime image (has no agent code)\n+  # Available runtimes: mcpmesh/python-runtime, mcpmesh/typescript-runtime, mcpmesh/java-runtime\n   # Override with your built agent image: --set image.repository=your-registry/my-agent\n   repository: mcpmesh/python-runtime\n   pullPolicy: IfNotPresent\n@@ -43,7 +44,7 @@ securityContext:\n   capabilities:\n     drop:\n       - ALL\n-  readOnlyRootFilesystem: false # Python apps often need writable filesystem\n+  readOnlyRootFilesystem: false # Agents may need writable filesystem\n   runAsNonRoot: true\n   runAsUser: 999 # mcp-mesh user in the container\n \n@@ -108,16 +109,14 @@ mesh:\n \n # Agent-specific configuration\n agent:\n-  # Python script to run (for single-file agents)\n-  # Leave empty if using a multi-file agent with custom Docker CMD\n-  script: \"/app/agent.py\"\n-  # Example: \"/app/agents/hello_world.py\"\n+  # Runtime type (auto-detected from image if empty)\n+  # Explicit values: \"python\", \"typescript\", \"java\"\n+  # When set, controls which language-specific env vars are injected\n+  runtime: \"\"\n \n   # Container command override (optional)\n-  # If empty, uses Docker image's CMD (recommended for multi-file agents)\n-  # For single-file agents: [\"/app/agent.py\"]\n-  # For multi-file agents: [] (uses Docker CMD)\n-  # Note: Don't include \"python\" - the mcpmesh/python-runtime image ENTRYPOINT provides it\n+  # If empty, uses the Docker image's CMD (recommended)\n+  # Example: [\"python\", \"-m\", \"myagent\"]\n   command: []\n \n   # Hostname advertised to registry for service discovery\n@@ -173,15 +172,6 @@ agent:\n       enabled: true\n       origins: [\"*\"]\n \n-  # Python runtime configuration\n-  python:\n-    # Python interpreter (leave empty to auto-detect)\n-    interpreter: \"\"\n-    # Additional Python packages to install\n-    packages: []\n-    # Example:\n-    # - numpy==1.24.0\n-\n   # Observability configuration\n   # Hostnames use global.coreReleaseName prefix (default: \"mcp-core\")\n   observability:\n@@ -201,14 +191,6 @@ agent:\n     TELEMETRY_ENDPOINT: \"mcp-core-mcp-mesh-tempo:4317\"\n     MCP_MESH_TRACING_ENABLED: \"true\"\n     MCP_MESH_METRICS_ENABLED: \"true\"\n-    # - pandas>=1.5.0\n-\n-    # Environment variables for Python\n-    env: []\n-    # Example:\n-    # - name: PYTHONUNBUFFERED\n-    #   value: \"1\"\n-\n # Duplicate registry and mesh sections removed - see lines 85-97 for the main definitions\n \n # ConfigMap for agent code\n@@ -300,17 +282,14 @@ podDisruptionBudget:\n # Network policies\n networkPolicy:\n   enabled: false\n+  # Namespace allowed to send ingress traffic. Empty = release namespace.\n+  allowedNamespace: \"\"\n   policyTypes:\n     - Ingress\n     - Egress\n-  ingress:\n-    - from:\n-        - namespaceSelector:\n-            matchLabels:\n-              name: mcp-mesh\n-      ports:\n-        - protocol: TCP\n-          port: 8080\n+  ingressPorts:\n+    - protocol: TCP\n+      port: 8080\n   egress:\n     - to:\n         - namespaceSelector: {}"
+    },
+    {
+      "sha": "f8579c28f37ce4217745876b06c2942847e5e92e",
+      "filename": "helm/mcp-mesh-core/templates/NOTES.txt",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-core%2Ftemplates%2FNOTES.txt",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-core%2Ftemplates%2FNOTES.txt",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/helm%2Fmcp-mesh-core%2Ftemplates%2FNOTES.txt?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -12,10 +12,10 @@ Components deployed:\n {{- end }}\n \n To check the status of your deployment:\n-  kubectl get pods -n {{ .Values.global.namespace }}\n+  kubectl get pods -n {{ .Values.global.namespace | default .Release.Namespace }}\n \n To access the registry:\n-  kubectl port-forward -n {{ .Values.global.namespace }} svc/{{ .Release.Name }}-mcp-mesh-registry 8000:8000\n+  kubectl port-forward -n {{ .Values.global.namespace | default .Release.Namespace }} svc/{{ .Release.Name }}-mcp-mesh-registry 8000:8000\n \n Then visit: http://localhost:8000/health\n "
+    },
+    {
+      "sha": "da15d65cf9416d67ae27f704d91dac33caa1088d",
+      "filename": "helm/mcp-mesh-core/templates/namespace.yaml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-core%2Ftemplates%2Fnamespace.yaml",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-core%2Ftemplates%2Fnamespace.yaml",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/helm%2Fmcp-mesh-core%2Ftemplates%2Fnamespace.yaml?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -2,9 +2,9 @@\n apiVersion: v1\n kind: Namespace\n metadata:\n-  name: {{ .Values.global.namespace }}\n+  name: {{ .Values.global.namespace | default .Release.Namespace }}\n   labels:\n-    name: {{ .Values.global.namespace }}\n+    name: {{ .Values.global.namespace | default .Release.Namespace }}\n     {{- with .Values.commonLabels }}\n     {{- toYaml . | nindent 4 }}\n     {{- end }}"
+    },
+    {
+      "sha": "09a1f6a5ff478951fd90dcba0e10e7551ab17b27",
+      "filename": "helm/mcp-mesh-core/values.yaml",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 6,
+      "changes": 19,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-core%2Fvalues.yaml",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-core%2Fvalues.yaml",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/helm%2Fmcp-mesh-core%2Fvalues.yaml?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -3,13 +3,20 @@\n \n # Global configuration\n global:\n-  # Namespace for all components\n+  # Namespace for all components (used by namespaceCreate).\n+  # Usually matches the -n flag: helm install ... -n my-namespace --set global.namespace=my-namespace\n   namespace: mcp-mesh\n   # Release name for mcp-mesh-core (used to construct service hostnames)\n   # Override this if you install mcp-mesh-core with a different release name\n   # Example: helm install my-core ... → set coreReleaseName: \"my-core\"\n   coreReleaseName: \"mcp-core\"\n \n+# Service hostname convention:\n+# All internal service hostnames use short names (e.g., \"mcp-core-mcp-mesh-redis\")\n+# which resolve within the same namespace via Kubernetes DNS.\n+# For cross-namespace access, override with FQDNs:\n+#   --set mcp-mesh-registry.registry.redis.host=mcp-core-mcp-mesh-redis.other-ns.svc.cluster.local\n+\n # Component enablement\n postgres:\n   enabled: true\n@@ -74,7 +81,7 @@ mcp-mesh-registry:\n     # Note: Hostnames use global.coreReleaseName prefix (default: \"mcp-core\")\n     database:\n       type: \"postgres\"\n-      host: \"mcp-core-mcp-mesh-postgres.mcp-mesh.svc.cluster.local\"\n+      host: \"mcp-core-mcp-mesh-postgres\"\n       port: 5432\n       name: \"mcpmesh\"\n       username: \"mcpmesh\"\n@@ -90,14 +97,14 @@ mcp-mesh-registry:\n     # Redis configuration (optional session storage)\n     redis:\n       enabled: true\n-      host: \"mcp-core-mcp-mesh-redis.mcp-mesh.svc.cluster.local\" # Full DNS name for reliable resolution\n+      host: \"mcp-core-mcp-mesh-redis\"\n       port: 6379\n \n     # Observability configuration - matches k8s examples\n     observability:\n       distributedTracing:\n         enabled: true\n-        redisUrl: \"redis://mcp-core-mcp-mesh-redis.mcp-mesh.svc.cluster.local:6379\"\n+        redisUrl: \"redis://mcp-core-mcp-mesh-redis:6379\"\n         exporterType: \"otlp\"\n         telemetryProtocol: \"grpc\"\n         batchSize: \"100\"\n@@ -106,7 +113,7 @@ mcp-mesh-registry:\n         enableStats: \"true\"\n         streamName: \"mesh:trace\"\n         consumerGroup: \"mcp-mesh-registry-processors\"\n-      telemetryEndpoint: \"mcp-core-mcp-mesh-tempo.mcp-mesh.svc.cluster.local:4317\"\n+      telemetryEndpoint: \"mcp-core-mcp-mesh-tempo:4317\"\n \n     # Additional environment variables for tracing (matches k8s examples)\n     environment:\n@@ -178,7 +185,7 @@ mcp-mesh-grafana:\n     datasources:\n       tempo:\n         enabled: true\n-        url: \"http://mcp-core-mcp-mesh-tempo.mcp-mesh.svc.cluster.local:3200\"\n+        url: \"http://mcp-core-mcp-mesh-tempo:3200\"\n       prometheus:\n         enabled: true\n         url: \"http://prometheus:9090\""
+    },
+    {
+      "sha": "cb7b102e81a9a19e87675d089f48ff5846f8c7c6",
+      "filename": "helm/mcp-mesh-registry/templates/networkpolicy.yaml",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 3,
+      "changes": 9,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-registry%2Ftemplates%2Fnetworkpolicy.yaml",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-registry%2Ftemplates%2Fnetworkpolicy.yaml",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/helm%2Fmcp-mesh-registry%2Ftemplates%2Fnetworkpolicy.yaml?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -18,10 +18,13 @@ spec:\n       {{- include \"mcp-mesh-registry.selectorLabels\" . | nindent 6 }}\n   policyTypes:\n     {{- toYaml .Values.networkPolicy.policyTypes | nindent 4 }}\n-  {{- if .Values.networkPolicy.ingress }}\n   ingress:\n-    {{- toYaml .Values.networkPolicy.ingress | nindent 4 }}\n-  {{- end }}\n+    - from:\n+        - namespaceSelector:\n+            matchLabels:\n+              kubernetes.io/metadata.name: {{ .Values.networkPolicy.allowedNamespace | default .Release.Namespace }}\n+      ports:\n+        {{- toYaml .Values.networkPolicy.ingressPorts | nindent 8 }}\n   {{- if .Values.networkPolicy.egress }}\n   egress:\n     {{- toYaml .Values.networkPolicy.egress | nindent 4 }}"
+    },
+    {
+      "sha": "57b83face58ed7f7d80a532510493cd42dff562c",
+      "filename": "helm/mcp-mesh-registry/values.yaml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 11,
+      "changes": 16,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-registry%2Fvalues.yaml",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/helm%2Fmcp-mesh-registry%2Fvalues.yaml",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/helm%2Fmcp-mesh-registry%2Fvalues.yaml?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -245,20 +245,14 @@ podDisruptionBudget:\n # Network policies\n networkPolicy:\n   enabled: false\n+  # Namespace allowed to send ingress traffic. Empty = release namespace.\n+  allowedNamespace: \"\"\n   policyTypes:\n     - Ingress\n     - Egress\n-  ingress:\n-    - from:\n-        - namespaceSelector:\n-            matchLabels:\n-              name: mcp-mesh\n-        - podSelector:\n-            matchLabels:\n-              app: mcp-agent\n-      ports:\n-        - protocol: TCP\n-          port: 8080\n+  ingressPorts:\n+    - protocol: TCP\n+      port: 8000\n   egress:\n     - to:\n         - namespaceSelector: {}"
+    },
+    {
+      "sha": "07fadf7ff969a802c7a4a098c4521a23d68c7984",
+      "filename": "packaging/docker/typescript-runtime.Dockerfile",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 3,
+      "changes": 7,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/packaging%2Fdocker%2Ftypescript-runtime.Dockerfile",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/packaging%2Fdocker%2Ftypescript-runtime.Dockerfile",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/packaging%2Fdocker%2Ftypescript-runtime.Dockerfile?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -22,7 +22,8 @@ WORKDIR /app\n RUN if [ -z \"$VERSION\" ]; then echo \"VERSION build arg is required\" && exit 1; fi && \\\n     echo \"Installing @mcpmesh/sdk@${VERSION} from npm\" && \\\n     npm init -y && \\\n-    npm install @mcpmesh/sdk@${VERSION}\n+    npm install @mcpmesh/sdk@${VERSION} && \\\n+    npm install -g tsx@4\n \n # Switch to non-root user\n USER mcp-mesh\n@@ -33,5 +34,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \\\n \n EXPOSE 8080\n \n-# Default entrypoint - agents will override with their scripts\n-ENTRYPOINT [\"node\"]\n+# Default entrypoint - agents provide the script path as CMD\n+ENTRYPOINT [\"npx\", \"tsx\"]"
+    },
+    {
+      "sha": "f1b41fd35d1162e7f9e084e5f89cfa2f3e193bbf",
+      "filename": "src/core/cli/handlers/java_handler.go",
+      "status": "modified",
+      "additions": 19,
+      "deletions": 15,
+      "changes": 34,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fhandlers%2Fjava_handler.go",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fhandlers%2Fjava_handler.go",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/src%2Fcore%2Fcli%2Fhandlers%2Fjava_handler.go?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -79,25 +79,29 @@ func (h *JavaHandler) GenerateAgent(config ScaffoldConfig) error {\n // GenerateDockerfile returns Java Dockerfile content\n func (h *JavaHandler) GenerateDockerfile() string {\n \treturn `# Dockerfile for MCP Mesh Java agent\n-FROM eclipse-temurin:17-jdk-jammy\n+FROM mcpmesh/java-runtime:0.9\n \n WORKDIR /app\n \n-# Copy Maven wrapper and pom.xml\n-COPY .mvn/ .mvn/\n-COPY mvnw pom.xml ./\n+# Switch to root to copy files\n+USER root\n \n-# Download dependencies\n-RUN ./mvnw dependency:resolve -q\n-\n-# Copy source code\n+# Copy Maven config and source\n+COPY pom.xml .\n COPY src/ src/\n \n # Build the application\n-RUN ./mvnw package -DskipTests -q\n+RUN mvn package -DskipTests -q\n+\n+# Set permissions\n+RUN chown -R mcp-mesh:mcp-mesh /app\n+\n+# Switch back to non-root user\n+USER mcp-mesh\n \n-# Run the agent\n-CMD [\"java\", \"-jar\", \"target/*.jar\"]\n+# NOTE: Base image has ENTRYPOINT [\"java\", \"-jar\"], so CMD only needs the jar path\n+# Replace with your actual jar name: target/<artifactId>-<version>.jar\n+CMD [\"target/agent-1.0.0-SNAPSHOT.jar\"]\n `\n }\n \n@@ -106,10 +110,10 @@ func (h *JavaHandler) GenerateHelmValues() map[string]interface{} {\n \treturn map[string]interface{}{\n \t\t\"runtime\": \"java\",\n \t\t\"image\": map[string]interface{}{\n-\t\t\t\"repository\": \"eclipse-temurin\",\n-\t\t\t\"tag\":        \"17-jdk-jammy\",\n+\t\t\t\"repository\": \"mcpmesh/java-runtime\",\n+\t\t\t\"tag\":        \"0.9\",\n \t\t},\n-\t\t\"command\": []string{\"java\", \"-jar\", \"target/*.jar\"},\n+\t\t\"command\": []string{\"target/agent-1.0.0-SNAPSHOT.jar\"},\n \t}\n }\n \n@@ -152,7 +156,7 @@ func (h *JavaHandler) ParseAgentFile(path string) (*AgentInfo, error) {\n \n // GetDockerImage returns the Java runtime Docker image\n func (h *JavaHandler) GetDockerImage() string {\n-\treturn \"eclipse-temurin:17-jdk-jammy\"\n+\treturn \"mcpmesh/java-runtime:0.9\"\n }\n \n // ValidatePrerequisites checks Java environment"
+    },
+    {
+      "sha": "d1ec8b0db412f96fb317ba40cfa12097bf9eab01",
+      "filename": "src/core/cli/handlers/language_test.go",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fhandlers%2Flanguage_test.go",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fhandlers%2Flanguage_test.go",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/src%2Fcore%2Fcli%2Fhandlers%2Flanguage_test.go?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -412,7 +412,7 @@ func TestTypeScriptHandler_GetDockerImage(t *testing.T) {\n \t\tt.Error(\"GetDockerImage() returned empty string\")\n \t}\n \t// Should contain typescript\n-\tif image != \"mcpmesh/typescript-runtime:0.8\" && image != \"mcpmesh/typescript-runtime:latest\" {\n+\tif image != \"mcpmesh/typescript-runtime:0.9\" && image != \"mcpmesh/typescript-runtime:latest\" {\n \t\t// Just check it's not empty - version may vary\n \t\tt.Logf(\"Docker image: %s\", image)\n \t}"
+    },
+    {
+      "sha": "b2e5ffb06b268fe2aafc6e42a6e64d2433f94b7c",
+      "filename": "src/core/cli/handlers/python_handler.go",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fhandlers%2Fpython_handler.go",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fhandlers%2Fpython_handler.go",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/src%2Fcore%2Fcli%2Fhandlers%2Fpython_handler.go?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -107,8 +107,8 @@ USER mcp-mesh\n # Expose the agent port\n EXPOSE 9000\n \n-# Run the agent\n-CMD [\"python\", \"main.py\"]\n+# NOTE: Base image has ENTRYPOINT [\"python\"], so CMD only needs the script name\n+CMD [\"main.py\"]\n `\n }\n \n@@ -120,7 +120,7 @@ func (h *PythonHandler) GenerateHelmValues() map[string]interface{} {\n \t\t\t\"repository\": \"mcpmesh/python-runtime\",\n \t\t\t\"tag\":        \"0.8\",\n \t\t},\n-\t\t\"command\": []string{\"python\", \"main.py\"},\n+\t\t\"command\": []string{\"main.py\"},\n \t}\n }\n "
+    },
+    {
+      "sha": "af717df4e2d615c918ba3286ab07158ba5d0a740",
+      "filename": "src/core/cli/handlers/typescript_handler.go",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 6,
+      "changes": 12,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fhandlers%2Ftypescript_handler.go",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fhandlers%2Ftypescript_handler.go",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/src%2Fcore%2Fcli%2Fhandlers%2Ftypescript_handler.go?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -92,7 +92,7 @@ func (h *TypeScriptHandler) GenerateAgent(config ScaffoldConfig) error {\n // GenerateDockerfile returns TypeScript Dockerfile content\n func (h *TypeScriptHandler) GenerateDockerfile() string {\n \treturn `# Dockerfile for MCP Mesh TypeScript agent\n-FROM mcpmesh/typescript-runtime:0.8\n+FROM mcpmesh/typescript-runtime:0.9\n \n WORKDIR /app\n \n@@ -113,8 +113,8 @@ USER mcp-mesh\n # Expose the agent port\n EXPOSE 9000\n \n-# Run the agent (tsx for .ts files)\n-CMD [\"npx\", \"tsx\", \"src/index.ts\"]\n+# NOTE: Base image has ENTRYPOINT [\"npx\", \"tsx\"], so CMD only needs the script path\n+CMD [\"src/index.ts\"]\n `\n }\n \n@@ -124,9 +124,9 @@ func (h *TypeScriptHandler) GenerateHelmValues() map[string]interface{} {\n \t\t\"runtime\": \"typescript\",\n \t\t\"image\": map[string]interface{}{\n \t\t\t\"repository\": \"mcpmesh/typescript-runtime\",\n-\t\t\t\"tag\":        \"0.8\",\n+\t\t\t\"tag\":        \"0.9\",\n \t\t},\n-\t\t\"command\": []string{\"npx\", \"tsx\", \"src/index.ts\"},\n+\t\t\"command\": []string{\"src/index.ts\"},\n \t}\n }\n \n@@ -167,7 +167,7 @@ func (h *TypeScriptHandler) ParseAgentFile(path string) (*AgentInfo, error) {\n \n // GetDockerImage returns the TypeScript runtime Docker image\n func (h *TypeScriptHandler) GetDockerImage() string {\n-\treturn \"mcpmesh/typescript-runtime:0.8\"\n+\treturn \"mcpmesh/typescript-runtime:0.9\"\n }\n \n // ValidatePrerequisites checks TypeScript environment"
+    },
+    {
+      "sha": "7e7d961829cd32eb590159200914025b56ddc834",
+      "filename": "src/core/cli/man/content/deployment.md",
+      "status": "modified",
+      "additions": 50,
+      "deletions": 2,
+      "changes": 52,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fman%2Fcontent%2Fdeployment.md",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fman%2Fcontent%2Fdeployment.md",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/src%2Fcore%2Fcli%2Fman%2Fcontent%2Fdeployment.md?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -12,7 +12,7 @@ MCP Mesh supports multiple deployment patterns from local development to product\n | -------------------------------- | -------------------------------------------------- |\n | `mcpmesh/registry:0.8`           | Registry service for agent discovery               |\n | `mcpmesh/python-runtime:0.8`     | Python runtime with mcp-mesh SDK pre-installed     |\n-| `mcpmesh/typescript-runtime:0.8` | TypeScript runtime with @mcpmesh/sdk pre-installed |\n+| `mcpmesh/typescript-runtime:0.9` | TypeScript runtime with @mcpmesh/sdk pre-installed |\n \n ## Local Development\n \n@@ -162,6 +162,51 @@ helm install my-agent oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-agent \\\n   -f my-agent/helm-values.yaml\n ```\n \n+### Custom Namespace\n+\n+Deploy into any namespace — just match `-n` with `--set global.namespace`:\n+\n+```bash\n+helm install mcp-core oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-core \\\n+  --version 0.9.6 \\\n+  -n my-namespace --create-namespace \\\n+  --set global.namespace=my-namespace\n+\n+helm install my-agent oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-agent \\\n+  --version 0.9.6 \\\n+  -n my-namespace \\\n+  -f helm-values.yaml\n+```\n+\n+For cross-namespace deployments (core and agents in different namespaces),\n+override service hostnames with FQDNs:\n+\n+```bash\n+helm install my-agent ... \\\n+  --set registry.host=mcp-core-mcp-mesh-registry.core-ns.svc.cluster.local\n+```\n+\n+For multi-tenant clusters (separate core per team/app), deploy each core into\n+its own namespace. Short service names resolve independently within each namespace:\n+\n+```bash\n+# Team A\n+helm install mcp-core oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-core \\\n+  --version 0.9.6 \\\n+  -n team-a --create-namespace --set global.namespace=team-a\n+\n+helm install greeter oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-agent \\\n+  --version 0.9.6 -n team-a -f greeter/helm-values.yaml\n+\n+# Team B — same helm-values.yaml, different namespace\n+helm install mcp-core oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-core \\\n+  --version 0.9.6 \\\n+  -n team-b --create-namespace --set global.namespace=team-b\n+\n+helm install greeter oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-agent \\\n+  --version 0.9.6 -n team-b -f greeter/helm-values.yaml\n+```\n+\n ### Available Helm Charts\n \n | Chart                                                | Description                                     |\n@@ -186,7 +231,10 @@ agent:\n \n mesh:\n   enabled: true\n-  registry_url: http://mcp-core-mcp-mesh-registry:8000\n+\n+registry:\n+  host: \"mcp-core-mcp-mesh-registry\"\n+  port: \"8000\"\n \n resources:\n   limits:"
+    },
+    {
+      "sha": "6462342c818daead327ed52f1834deda4d778487",
+      "filename": "src/core/cli/man/content/deployment_typescript.md",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fman%2Fcontent%2Fdeployment_typescript.md",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fman%2Fcontent%2Fdeployment_typescript.md",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/src%2Fcore%2Fcli%2Fman%2Fcontent%2Fdeployment_typescript.md?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -11,7 +11,7 @@ MCP Mesh supports multiple deployment patterns for TypeScript agents. Use `meshc\n | Image                            | Description                                        |\n | -------------------------------- | -------------------------------------------------- |\n | `mcpmesh/registry:0.8`           | Registry service for agent discovery               |\n-| `mcpmesh/typescript-runtime:0.8` | TypeScript runtime with @mcpmesh/sdk pre-installed |\n+| `mcpmesh/typescript-runtime:0.9` | TypeScript runtime with @mcpmesh/sdk pre-installed |\n \n ## Local Development\n \n@@ -75,7 +75,7 @@ meshctl stop               # Stop all\n \n ```dockerfile\n # Dockerfile for my-agent MCP Mesh agent\n-FROM mcpmesh/typescript-runtime:0.8\n+FROM mcpmesh/typescript-runtime:0.9\n \n WORKDIR /app\n \n@@ -124,7 +124,7 @@ Generated `docker-compose.yml` includes:\n \n - PostgreSQL database for registry\n - Registry service (`mcpmesh/registry:0.8`)\n-- TypeScript agents with `mcpmesh/typescript-runtime:0.8`\n+- TypeScript agents with `mcpmesh/typescript-runtime:0.9`\n - Health checks and dependency ordering\n - Optional: Redis, Tempo, Grafana (with `--observability`)\n "
+    },
+    {
+      "sha": "d44fb86f037c58ef110422ddb38f4b75fbf28175",
+      "filename": "src/core/cli/scaffold.go",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fscaffold.go",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fscaffold.go",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/src%2Fcore%2Fcli%2Fscaffold.go?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -71,7 +71,7 @@ Infrastructure:\n   Docker Images:\n     mcpmesh/registry:0.8            - Registry service\n     mcpmesh/python-runtime:0.8      - Python agent runtime (has mcp-mesh SDK)\n-    mcpmesh/typescript-runtime:0.8  - TypeScript agent runtime (has @mcpmesh/sdk)\n+    mcpmesh/typescript-runtime:0.9  - TypeScript agent runtime (has @mcpmesh/sdk)\n \n   Helm Charts (for Kubernetes - OCI registry, no helm repo add needed):\n     oci://ghcr.io/dhyansraj/mcp-mesh/mcp-mesh-core   - Registry + PostgreSQL + observability"
+    },
+    {
+      "sha": "cd7ce994d6c8aa61ade1237c6a89bba5f5ba4288",
+      "filename": "src/core/cli/scaffold/compose.go",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/dhyansraj/mcp-mesh/blob/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fscaffold%2Fcompose.go",
+      "raw_url": "https://github.com/dhyansraj/mcp-mesh/raw/2d41aa082ba43473e036b3ed80e073cacb9d29f0/src%2Fcore%2Fcli%2Fscaffold%2Fcompose.go",
+      "contents_url": "https://api.github.com/repos/dhyansraj/mcp-mesh/contents/src%2Fcore%2Fcli%2Fscaffold%2Fcompose.go?ref=2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "patch": "@@ -988,7 +988,7 @@ const agentServicesTemplate = `{{- range .Agents }}\n # NOTE: In dev mode, npm install runs on startup and source is mounted.\n #       In production (Dockerfile), dependencies are pre-installed in the image.\n {{ .Name }}:\n-  image: mcpmesh/typescript-runtime:0.8\n+  image: mcpmesh/typescript-runtime:0.9\n   container_name: {{ $.ProjectName }}-{{ .Name }}\n   hostname: {{ .Name }}\n   user: root\n@@ -1031,7 +1031,7 @@ const agentServicesTemplate = `{{- range .Agents }}\n # Agent: {{ .Name }} (Java/Spring Boot)\n # NOTE: In dev mode, maven builds on startup. In production, use the Dockerfile.\n {{ .Name }}:\n-  image: mcpmesh/java-runtime:0.8\n+  image: mcpmesh/java-runtime:0.9\n   container_name: {{ $.ProjectName }}-{{ .Name }}\n   hostname: {{ .Name }}\n   user: root\n@@ -1772,7 +1772,7 @@ services:\n   # NOTE: In dev mode, npm install runs on startup and source is mounted.\n   #       In production (Dockerfile), dependencies are pre-installed in the image.\n   {{ .Name }}:\n-    image: mcpmesh/typescript-runtime:0.8\n+    image: mcpmesh/typescript-runtime:0.9\n     container_name: {{ $.ProjectName }}-{{ .Name }}\n     hostname: {{ .Name }}\n     user: root\n@@ -1816,7 +1816,7 @@ services:\n   # Java Agent: {{ .Name }}\n   # NOTE: In dev mode, maven builds on startup. In production, use the Dockerfile.\n   {{ .Name }}:\n-    image: mcpmesh/java-runtime:0.8\n+    image: mcpmesh/java-runtime:0.9\n     container_name: {{ $.ProjectName }}-{{ .Name }}\n     hostname: {{ .Name }}\n     user: root"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "3bdf4ee1f334ab5905c1aaa2787d6c98a8199513",
+      "message": "feat: support deploying helm charts into arbitrary namespaces (#579)\n\nReplace hardcoded .mcp-mesh.svc.cluster.local FQDNs with short service names\nthat resolve within the same namespace via K8s DNS, making helm install -n\n<any-namespace> work out of the box. Add dynamic namespace selectors to\nNetworkPolicy templates and document custom namespace, multi-tenant, and\ncross-namespace deployment patterns.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "c7b58722363e9cd947a412a098a5565eae81874e"
+      ]
+    },
+    {
+      "sha": "4c263587325cc9aec689eefe0e66b0f50fc4ad78",
+      "message": "feat: make mcp-mesh-agent helm chart language-agnostic (#580)\n\nRemove Python-specific bias from the mcp-mesh-agent Helm chart so Java\nand TypeScript agents work without undocumented workarounds.\n\nHelm chart:\n- Add agent.runtime field for explicit runtime detection (python/typescript/java)\n- Add isPython helper that checks agent.runtime first, falls back to image name\n- Gate Python env vars (PYTHONUNBUFFERED, PYTHONPATH, UVICORN_*) behind isPython\n- Remove dead agent.script field and agent.python section from values.yaml\n- Simplify deployment rendering condition (always render when image is set)\n- Rewrite README with Python, TypeScript, and Java examples\n\nRuntime images:\n- Fix TypeScript runtime ENTRYPOINT from [\"node\"] to [\"npx\", \"tsx\"] so\n  CMD only needs the script path (consistent with Python and Java patterns)\n\nScaffold templates:\n- Fix Dockerfile CMD to match runtime ENTRYPOINT for all languages:\n  Python: CMD [\"main.py\"], TS: CMD [\"src/index.ts\"], Java: CMD [\"target/app.jar\"]\n- Add agent.runtime field to Python and Java helm-values templates\n  (TypeScript already had it)\n- Remove \"Adding Tools\" sections from README templates\n- Add Docker/Kubernetes sections to Python and Java README templates\n\nGo handlers:\n- Update GenerateDockerfile/GenerateHelmValues to match runtime ENTRYPOINTs\n- Update Java handler to use mcpmesh/java-runtime base image\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "3bdf4ee1f334ab5905c1aaa2787d6c98a8199513"
+      ]
+    },
+    {
+      "sha": "6e2469598b1733cd7d3c0a0070f390b94ce0aa1d",
+      "message": "fix: resolve review blockers — java glob expansion and networkpolicy AND logic\n\n- java_handler.go: Replace target/*.jar glob with concrete target/agent-1.0.0-SNAPSHOT.jar\n  since exec-form ENTRYPOINT does not invoke a shell for glob expansion\n- registry networkpolicy: AND namespaceSelector with podSelector (same from entry)\n  instead of OR'ing them as separate entries\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "4c263587325cc9aec689eefe0e66b0f50fc4ad78"
+      ]
+    },
+    {
+      "sha": "de03f33079d19d729ff4a51ea26821139a246572",
+      "message": "fix: install tsx globally in TS runtime and add agent.runtime to README\n\n- typescript-runtime.Dockerfile: Install tsx globally so ENTRYPOINT [\"npx\", \"tsx\"]\n  works without network access (tsx was only in devDependencies, skipped by --omit=dev)\n- helm/mcp-mesh-agent/README.md: Add missing agent.runtime row to Agent Configuration table\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "6e2469598b1733cd7d3c0a0070f390b94ce0aa1d"
+      ]
+    },
+    {
+      "sha": "a9edad4cf8c90d19e1b640f24e67d0ee1f2e3e5c",
+      "message": "fix: pin tsx version and fix README Dockerfile CMD examples\n\n- typescript-runtime.Dockerfile: Pin tsx to major version 4 (tsx@4) for\n  reproducible builds\n- helm/mcp-mesh-agent/README.md: Fix CMD examples to only provide args\n  to base image ENTRYPOINT (was duplicating executables)\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "de03f33079d19d729ff4a51ea26821139a246572"
+      ]
+    },
+    {
+      "sha": "d925732ca566b2b0ff8f210a454bccc4475b0828",
+      "message": "fix: networkpolicy labels, registry port, and runtime image tag bump\n\n- NetworkPolicy: Use kubernetes.io/metadata.name label (auto-applied by K8s 1.21+)\n  instead of manual 'name' label for namespace selector (agent + registry charts)\n- Registry ingressPorts: Fix default from 8080 to 8000 to match service.port\n- Bump typescript-runtime and java-runtime image tags from 0.8 to 0.9 across\n  all handlers, scaffold templates, compose, man pages, and tests\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "a9edad4cf8c90d19e1b640f24e67d0ee1f2e3e5c"
+      ]
+    },
+    {
+      "sha": "a31cf7f68fe90f543da0fd7531e06075bf646834",
+      "message": "fix: registry NetworkPolicy namespace-only filtering and README runtime detection docs\n\n- Remove podSelector from registry NetworkPolicy ingress rule so both\n  agents and APIs in the allowed namespace can reach the registry\n- Update README runtime detection section to document explicit\n  agent.runtime override alongside auto-detection from image name\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "d925732ca566b2b0ff8f210a454bccc4475b0828"
+      ]
+    },
+    {
+      "sha": "2d41aa082ba43473e036b3ed80e073cacb9d29f0",
+      "message": "fix: use correct registry.host/port Helm values in docs and scaffold templates\n\nThe chart reads registry.host and registry.port (top-level keys) but\ndeployment docs and all 9 scaffold helm-values templates were using\nmesh.registryUrl which the chart silently ignores. This caused\ncross-namespace registry overrides to have no effect.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "a31cf7f68fe90f543da0fd7531e06075bf646834"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "java_python_bridge_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "java_python_bridge_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__dhyansraj__mcp-mesh__pr586.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\dhyansraj__mcp-mesh__pr586__java_python__dhyansraj__mcp-mesh__pr586\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\dhyansraj__mcp-mesh__pr586__java_python__dhyansraj__mcp-mesh__pr586\\rn"
+  }
+}

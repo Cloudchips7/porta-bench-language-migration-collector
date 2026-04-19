@@ -1,0 +1,369 @@
+{
+  "instance_id": "cpp_python__huawei-csl__pto-kernels__pr97",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "huawei-csl/pto-kernels",
+  "pr_number": 97,
+  "pr_url": "https://github.com/huawei-csl/pto-kernels/pull/97",
+  "repo": {
+    "full_name": "huawei-csl/pto-kernels",
+    "clone_url": "https://github.com/huawei-csl/pto-kernels.git",
+    "default_branch": "main",
+    "created_at": "2026-02-12T12:31:00Z",
+    "stars": 16,
+    "license": "BSD-3-Clause-Clear",
+    "size_kb": 965
+  },
+  "pull_request": {
+    "id": 3521993839,
+    "title": "[Feat] swiGLU",
+    "body": ">This PR is additive only: it introduces new files without changing any existing ones.\r\n\r\n# swiGLU PTO-ISA vs torch_npu\r\n\r\n## msprof on simulator\r\n|PTO-ISA|torch_npu|\r\n|---------|-----------|\r\n|![PTO-ISA](https://github.com/Mocchibird/pto-kernels-plots/blob/main/swiglu/swiglu_pto-isa.png?raw=true)|![torch_npu](https://github.com/Mocchibird/pto-kernels-plots/blob/main/swiglu/swiglu_torch.png?raw=true)|\r\n\r\n## msprof on device\r\n|PTO-ISA|torch_npu|\r\n|---------|-----------|\r\n|![PTO-ISA](https://github.com/Mocchibird/pto-kernels-plots/blob/main/swiglu/swiglu_pto-isa_on_device.png?raw=true)|![torch_npu](https://github.com/Mocchibird/pto-kernels-plots/blob/main/swiglu/swiglu_torch_on_device.png?raw=true)|\r\n\r\nPTO-ISA is around `24% faster` than torch_npu for simulated profiling and `13% faster`for on device profiling.\r\n\r\n## python benchmark\r\n|Speedup jit-compiler/ctypes vs torch_npu|Speedup cmake/pybind vs torch_npu|\r\n|-----------|----|\r\n|![Speedup ctypes](https://github.com/Mocchibird/pto-kernels-plots/blob/main/swiglu/swiglu_speedup_heatmap_bd24.png?raw=true)|![Speedup pybind](https://github.com/Mocchibird/pto-kernels-plots/blob/main/swiglu/swiglu_speedup_heatmap_bd24_pybind.png?raw=true)|\r\n\r\nThe benchmark with pybind has `1.5x` the speed of torch_npu, while the benchmark with jit-compiler has `0.78x` the speed of torch_npu.\r\nMost of the slowdown for the jit-compiler version comes from repeated stream_ptr lookup. Caching the stream_ptr speeds-up the jit-compiler version significantly for smaller shapes, but not much for larger shapes.\r\n\r\n|Speedup jit-compiler/ctypes w. cached stream_ptr vs torch_npu|\r\n|---|\r\n|![Speedup ctypes cached stream_ptr](https://github.com/Mocchibird/pto-kernels-plots/blob/main/swiglu/swiglu_speedup_heatmap_bd24_cached_stream_ptr.png?raw=true)|",
+    "created_at": "2026-04-13T09:19:37Z",
+    "merged_at": "2026-04-14T13:27:03Z",
+    "base_sha": "7f996a57a5b0992da543c6f46418d171abdab4f1",
+    "head_sha": "4598ef007906eed7510fba0c567f88f5bbe0fe34",
+    "merge_commit_sha": "90a92ae29d6aed10bc3eeb216681e534758b7da2",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "a2ad73809f59e8c444ca5d16b378f5ce4b4f7743",
+  "final_sha": "4598ef007906eed7510fba0c567f88f5bbe0fe34",
+  "changed_files": [
+    {
+      "sha": "435ceccc22217f1c1103d17e989fef460a913750",
+      "filename": "CMakeLists.txt",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/CMakeLists.txt",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/CMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/CMakeLists.txt?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -112,7 +112,8 @@ ascendc_library(\n   csrc/kernel/kernel_simple_matmul.cpp\n   csrc/kernel/kernel_batch_matrix_square.cpp\n   csrc/kernel/kernel_tri_inv_rec_unroll.cpp\n-  csrc/kernel/kernel_tri_inv_trick.cpp)\n+  csrc/kernel/kernel_tri_inv_trick.cpp\n+  csrc/kernel/swiglu.cpp)\n \n ascendc_include_directories(\n   no_workspace_kernel PRIVATE ${libpto_isa_headers_SOURCE_DIR}/include"
+    },
+    {
+      "sha": "725a0fc0eb42bf965ca7c9f45da88ecc623d43c4",
+      "filename": "csrc/host/pybind11.cpp",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/csrc%2Fhost%2Fpybind11.cpp",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/csrc%2Fhost%2Fpybind11.cpp",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/csrc%2Fhost%2Fpybind11.cpp?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -12,6 +12,7 @@ for the full License text.\n #include \"torch_abs.h\"\n #include \"torch_batch_matrix_square.h\"\n #include \"torch_simple_matmul.h\"\n+#include \"torch_swiglu.h\"\n #include \"torch_tri_inv.h\"\n #include \"torch_tri_inv_rec_unroll.h\"\n #include \"torch_tri_inv_trick.h\"\n@@ -36,6 +37,8 @@ PYBIND11_MODULE(pto_kernels_ops, m) {\n   m.def(\"pto_abs\", &pto_isa_ops::run_abs);\n   m.def(\"pto_batch_matrix_square\", &pto_isa_ops::run_batch_matrix_square);\n   m.def(\"pto_simple_matmul\", &pto_isa_ops::run_simple_matmul);\n+  m.def(\"pto_swiglu\", &pto_isa_ops::run_swiglu, py::arg(\"x\"),\n+        py::arg(\"dim\") = -1);\n   m.def(\"pto_tri_inv_trick\", &pto_isa_ops::run_tri_inv_trick);\n   m.def(\"pto_tri_inv_rec_unroll\", &pto_isa_ops::run_tri_inv_rec_unroll,\n         py::arg(\"M\"), py::arg(\"is_bsnd_format\") = false);"
+    },
+    {
+      "sha": "acc7ba146b8d3075d1962a6a8dd0ed6ab148c9c8",
+      "filename": "csrc/host/torch_swiglu.h",
+      "status": "added",
+      "additions": 70,
+      "deletions": 0,
+      "changes": 70,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/csrc%2Fhost%2Ftorch_swiglu.h",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/csrc%2Fhost%2Ftorch_swiglu.h",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/csrc%2Fhost%2Ftorch_swiglu.h?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -0,0 +1,70 @@\n+/**\n+Copyright (c) 2026 Huawei Technologies Co., Ltd.\n+All rights reserved.\n+\n+See LICENSE in the root of the software repository:\n+https://github.com/huawei-csl/pto-kernels/\n+for the full License text.\n+*/\n+#pragma once\n+\n+#include <ATen/ATen.h>\n+#include <torch/library.h>\n+\n+#include <limits>\n+\n+#include \"aclrtlaunch_swiglu_fp16.h\"\n+#include \"utils.h\"\n+\n+namespace pto_isa_ops {\n+\n+/**\n+ * @brief Runs fp16 SwiGLU over the last dimension of a 2D tensor.\n+ *\n+ * The input is interpreted as `x = [gate | up]` along `dim`, and the output is\n+ * `silu(gate) * up`.\n+ *\n+ * @param [in] x Contiguous fp16 input tensor with shape [batch, 2 * N].\n+ * @param [in] dim Split dimension. Only -1/1 is currently supported.\n+ * @return at::Tensor Contiguous fp16 output tensor with shape [batch, N].\n+ */\n+at::Tensor run_swiglu(const at::Tensor& x, int64_t dim = -1) {\n+  if (x.dim() != 2) {\n+    throw std::runtime_error(\"`pto_swiglu` expects a 2D input tensor.\");\n+  }\n+  if (dim < 0) {\n+    dim += x.dim();\n+  }\n+  if (dim != 1) {\n+    throw std::runtime_error(\"`pto_swiglu` currently supports only dim=-1.\");\n+  }\n+  if (x.scalar_type() != at::kHalf) {\n+    throw std::runtime_error(\"`pto_swiglu` supports only fp16 input.\");\n+  }\n+  if (!x.is_contiguous()) {\n+    throw std::runtime_error(\"`pto_swiglu` expects a contiguous input tensor.\");\n+  }\n+\n+  const auto batch_i64 = x.size(0);\n+  const auto input_n_i64 = x.size(1);\n+  if (batch_i64 <= 0 || input_n_i64 <= 0 || (input_n_i64 & 1) != 0) {\n+    throw std::runtime_error(\n+        \"`pto_swiglu` input shape must be [batch, 2 * N] with positive N.\");\n+  }\n+\n+  const auto output_n_i64 = input_n_i64 / 2;\n+  if (batch_i64 > std::numeric_limits<uint32_t>::max() ||\n+      input_n_i64 > std::numeric_limits<uint32_t>::max()) {\n+    throw std::runtime_error(\"`pto_swiglu` dimensions exceed uint32_t range.\");\n+  }\n+\n+  const uint32_t batch = static_cast<uint32_t>(batch_i64);\n+  const uint32_t input_n = static_cast<uint32_t>(input_n_i64);\n+  const uint32_t block_dim = GetNumCubeCores();\n+\n+  at::Tensor y = at::empty({batch_i64, output_n_i64}, x.options());\n+  EXEC_KERNEL_CMD(swiglu_fp16, block_dim, x, y, batch, input_n);\n+  return y;\n+}\n+\n+}  // namespace pto_isa_ops"
+    },
+    {
+      "sha": "234515a256223d99be1f67773cd53fd2a6c7de68",
+      "filename": "csrc/kernel/swiglu.cpp",
+      "status": "added",
+      "additions": 423,
+      "deletions": 0,
+      "changes": 423,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/csrc%2Fkernel%2Fswiglu.cpp",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/csrc%2Fkernel%2Fswiglu.cpp",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/csrc%2Fkernel%2Fswiglu.cpp?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -0,0 +1,423 @@\n+/**\n+Copyright (c) 2026 Huawei Technologies Co., Ltd.\n+All rights reserved.\n+\n+See LICENSE in the root of the software repository:\n+https://github.com/huawei-csl/pto-kernels/\n+for the full License text.\n+*/\n+\n+#define MEMORY_BASE\n+\n+#include <pto/pto-inst.hpp>\n+\n+// clang-format off: so it does not get wrongfully flagged by linter\n+#define GM_ADDR __gm__ uint8_t*  // To avoid #include \"kernel_operator.h\"\n+// clang-format on\n+\n+using namespace pto;\n+\n+#define DIV_ROUNDUP(x, y) (((x) + (y) - 1) / (y))\n+#define ALIGN_UP(x, y) (DIV_ROUNDUP((x), (y)) * (y))\n+\n+constexpr uint32_t UB_SLOT_BYTES = (192 * 1024) / 6;\n+constexpr uint32_t X0_BUFFER_BYTES = UB_SLOT_BYTES;\n+constexpr uint32_t X1_BUFFER_BYTES = UB_SLOT_BYTES;\n+constexpr uint32_t Y_BUFFER_BYTES = UB_SLOT_BYTES;\n+constexpr uint32_t ELEMENTS_PER_TILE = Y_BUFFER_BYTES / sizeof(half);\n+constexpr uint32_t UB_USABLE_BYTES = 192 * 1024;\n+constexpr uint32_t TILE_ALIGNMENT = 16;\n+\n+#define SWIGLU_FOR_EACH_COL_TILE(X) \\\n+  X(16)                             \\\n+  X(32)                             \\\n+  X(64)                             \\\n+  X(128)                            \\\n+  X(256)                            \\\n+  X(512)                            \\\n+  X(1024)                           \\\n+  X(2048)                           \\\n+  X(4096)                           \\\n+  X(8192)                           \\\n+  X(16384)\n+\n+// Col tile widths tried by chooseTileConfig: powers of 2 from TILE_ALIGNMENT\n+// up to ELEMENTS_PER_TILE. The 16/32/64 entries handle narrow hidden dims.\n+#define SWIGLU_COL_VALUE(width) width,\n+constexpr uint32_t COL_TILE_CANDIDATES[] = {\n+    SWIGLU_FOR_EACH_COL_TILE(SWIGLU_COL_VALUE)};\n+#undef SWIGLU_COL_VALUE\n+constexpr uint32_t NUM_COL_TILE_CANDIDATES =\n+    sizeof(COL_TILE_CANDIDATES) / sizeof(COL_TILE_CANDIDATES[0]);\n+\n+// Keep the active-tile target fixed at half the available cores.\n+constexpr uint32_t TARGET_ACTIVE_TILES_DIVISOR = 2;\n+\n+constexpr unsigned X0_PING = 0x00000;\n+constexpr unsigned X1_PING = X0_PING + X0_BUFFER_BYTES;\n+constexpr unsigned Y_PING = X1_PING + X1_BUFFER_BYTES;\n+constexpr unsigned X0_PONG = Y_PING + Y_BUFFER_BYTES;\n+constexpr unsigned X1_PONG = X0_PONG + X0_BUFFER_BYTES;\n+constexpr unsigned Y_PONG = X1_PONG + X1_BUFFER_BYTES;\n+\n+static_assert(UB_SLOT_BYTES * 6 == UB_USABLE_BYTES,\n+              \"SwiGLU UB slots must fully pack the usable UB budget.\");\n+static_assert(Y_PONG + Y_BUFFER_BYTES <= UB_USABLE_BYTES,\n+              \"SwiGLU UB layout exceeds usable UB.\");\n+\n+#if __CCE_AICORE__ == 220 && defined(__DAV_C220_VEC__)\n+\n+namespace {\n+\n+struct TileConfig {\n+  uint32_t row_tile_len;\n+  uint32_t col_tile_len;\n+  uint32_t total_tiles;\n+  uint32_t area;\n+  bool meets_target;\n+};\n+\n+struct TileWork {\n+  uint32_t row_offset;\n+  uint32_t col_offset;\n+  uint32_t row_count;\n+  uint32_t col_count;        // padded to TILE_ALIGNMENT; for UB tile sizing\n+  uint32_t col_count_store;  // actual output elements; for HBM stores/loads\n+};\n+\n+AICORE inline uint32_t maxRowsForColTile(uint32_t col_tile_len) {\n+  return ELEMENTS_PER_TILE / col_tile_len;\n+}\n+\n+AICORE inline void initTilePipeFlags() {\n+  set_flag(PIPE_V, PIPE_MTE2, EVENT_ID0);\n+  set_flag(PIPE_V, PIPE_MTE2, EVENT_ID1);\n+  set_flag(PIPE_MTE3, PIPE_V, EVENT_ID0);\n+  set_flag(PIPE_MTE3, PIPE_V, EVENT_ID1);\n+}\n+\n+AICORE inline void drainTilePipeFlags() {\n+  wait_flag(PIPE_V, PIPE_MTE2, EVENT_ID0);\n+  wait_flag(PIPE_V, PIPE_MTE2, EVENT_ID1);\n+  wait_flag(PIPE_MTE3, PIPE_V, EVENT_ID0);\n+  wait_flag(PIPE_MTE3, PIPE_V, EVENT_ID1);\n+}\n+\n+AICORE inline TileConfig makeTileConfig(uint32_t batch, uint32_t output_n,\n+                                        uint32_t num_cores,\n+                                        uint32_t col_tile_len) {\n+  const uint32_t max_rows = maxRowsForColTile(col_tile_len);\n+  const uint32_t col_tiles = DIV_ROUNDUP(output_n, col_tile_len);\n+  const uint32_t target_tiles =\n+      max(1U, num_cores / TARGET_ACTIVE_TILES_DIVISOR);\n+  const uint32_t min_row_tiles = max(1U, DIV_ROUNDUP(target_tiles, col_tiles));\n+\n+  uint32_t row_tile_len = min(batch, max_rows);\n+  if (min_row_tiles > 1) {\n+    const uint32_t capped = batch / min_row_tiles;\n+    row_tile_len = min(row_tile_len, max(1U, capped));\n+  }\n+  if (row_tile_len == 0) {\n+    row_tile_len = 1;\n+  }\n+\n+  const uint32_t row_tiles = DIV_ROUNDUP(batch, row_tile_len);\n+  const uint32_t total_tiles = row_tiles * col_tiles;\n+  return TileConfig{\n+      row_tile_len,\n+      col_tile_len,\n+      total_tiles,\n+      row_tile_len * col_tile_len,\n+      total_tiles >= target_tiles,\n+  };\n+}\n+\n+AICORE inline bool preferTileConfig(const TileConfig &cand,\n+                                    const TileConfig &best) {\n+  if (cand.meets_target != best.meets_target) {\n+    return cand.meets_target;\n+  }\n+  if (cand.area != best.area) {\n+    return cand.area > best.area;\n+  }\n+  if (cand.meets_target) {\n+    if (cand.total_tiles != best.total_tiles) {\n+      return cand.total_tiles < best.total_tiles;\n+    }\n+  } else if (cand.total_tiles != best.total_tiles) {\n+    return cand.total_tiles > best.total_tiles;\n+  }\n+  if (cand.col_tile_len != best.col_tile_len) {\n+    return cand.col_tile_len > best.col_tile_len;\n+  }\n+  return cand.row_tile_len > best.row_tile_len;\n+}\n+\n+AICORE inline TileConfig chooseTileConfig(uint32_t batch, uint32_t output_n,\n+                                          uint32_t num_cores) {\n+  TileConfig best =\n+      makeTileConfig(batch, output_n, num_cores, COL_TILE_CANDIDATES[0]);\n+  for (uint32_t c = 1; c < NUM_COL_TILE_CANDIDATES; ++c) {\n+    const TileConfig cand =\n+        makeTileConfig(batch, output_n, num_cores, COL_TILE_CANDIDATES[c]);\n+    if (preferTileConfig(cand, best)) {\n+      best = cand;\n+    }\n+  }\n+  return best;\n+}\n+\n+AICORE inline TileWork makeTileWork(uint32_t global_tile_idx,\n+                                    uint32_t row_tile_len,\n+                                    uint32_t col_tile_len, uint32_t batch,\n+                                    uint32_t output_n) {\n+  const uint32_t col_tiles = DIV_ROUNDUP(output_n, col_tile_len);\n+  const uint32_t row_tile_idx = global_tile_idx / col_tiles;\n+  const uint32_t col_tile_idx = global_tile_idx % col_tiles;\n+  const uint32_t row_offset = row_tile_idx * row_tile_len;\n+  const uint32_t col_offset = col_tile_idx * col_tile_len;\n+  const uint32_t actual_col = min(col_tile_len, output_n - col_offset);\n+  return TileWork{\n+      row_offset,\n+      col_offset,\n+      min(row_tile_len, batch - row_offset),\n+      ALIGN_UP(actual_col, TILE_ALIGNMENT),\n+      actual_col,\n+  };\n+}\n+\n+template <typename TileData, typename T>\n+AICORE inline void computeSwiGLUTile(TileData &x0Tile, TileData &x1Tile,\n+                                     TileData &yTile) {\n+  TMULS(yTile, x0Tile, (T)-1);\n+  pipe_barrier(PIPE_V);\n+  TEXP(yTile, yTile);\n+  pipe_barrier(PIPE_V);\n+  TADDS(yTile, yTile, (T)1);\n+  pipe_barrier(PIPE_V);\n+  TDIV(yTile, x0Tile, yTile);\n+  pipe_barrier(PIPE_V);\n+  TMUL(yTile, yTile, x1Tile);\n+  pipe_barrier(PIPE_V);\n+}\n+\n+// col_count is padded for UB tile sizing; col_count_store is the actual GM\n+// element count so tail columns never read past the tensor end.\n+template <typename T, uint32_t kTileRows, uint32_t kTileCols>\n+AICORE void issueTLoad(__gm__ T *x, uint32_t input_n, uint32_t output_n,\n+                       const TileWork &tile, unsigned x0_base, unsigned x1_base,\n+                       event_t ev) {\n+  using TileShapeND = TileShape2D<T, DYNAMIC, DYNAMIC, Layout::ND>;\n+  using DynStrideND = Stride<1, 1, 1, DYNAMIC, 1>;\n+  using GlobalData = GlobalTensor<T, TileShapeND, DynStrideND, Layout::ND>;\n+  using TileData = Tile<TileType::Vec, T, kTileRows, kTileCols,\n+                        BLayout::RowMajor, DYNAMIC, DYNAMIC>;\n+\n+  TileData x0Tile(tile.row_count, tile.col_count);\n+  TileData x1Tile(tile.row_count, tile.col_count);\n+  TASSIGN(x0Tile, x0_base);\n+  TASSIGN(x1Tile, x1_base);\n+\n+  const uint32_t input_offset = tile.row_offset * input_n + tile.col_offset;\n+  const TileShapeND shape(tile.row_count, tile.col_count_store);\n+  const DynStrideND stride(input_n);\n+\n+  GlobalData x0Global(x + input_offset, shape, stride);\n+  GlobalData x1Global(x + input_offset + output_n, shape, stride);\n+\n+  wait_flag(PIPE_V, PIPE_MTE2, ev);\n+  wait_flag(PIPE_MTE3, PIPE_V, ev);\n+  TLOAD(x0Tile, x0Global);\n+  TLOAD(x1Tile, x1Global);\n+  set_flag(PIPE_MTE2, PIPE_V, ev);\n+}\n+\n+// col_count is padded for UB tile sizing; col_count_store is the actual GM\n+// element count so tail columns never write past the tensor end.\n+template <typename T, uint32_t kTileRows, uint32_t kTileCols>\n+AICORE void issueTStore(__gm__ T *y, uint32_t output_n, const TileWork &tile,\n+                        unsigned y_base, event_t ev) {\n+  using TileShapeND = TileShape2D<T, DYNAMIC, DYNAMIC, Layout::ND>;\n+  using DynStrideND = Stride<1, 1, 1, DYNAMIC, 1>;\n+  using GlobalData = GlobalTensor<T, TileShapeND, DynStrideND, Layout::ND>;\n+  using TileData = Tile<TileType::Vec, T, kTileRows, kTileCols,\n+                        BLayout::RowMajor, DYNAMIC, DYNAMIC>;\n+\n+  TileData yTile(tile.row_count, tile.col_count);\n+  TASSIGN(yTile, y_base);\n+\n+  const uint32_t output_offset = tile.row_offset * output_n + tile.col_offset;\n+  const TileShapeND shape(tile.row_count, tile.col_count_store);\n+  const DynStrideND stride(output_n);\n+  GlobalData yGlobal(y + output_offset, shape, stride);\n+\n+  set_flag(PIPE_V, PIPE_MTE3, ev);\n+  wait_flag(PIPE_V, PIPE_MTE3, ev);\n+  TSTORE(yGlobal, yTile);\n+  set_flag(PIPE_MTE3, PIPE_V, ev);\n+  set_flag(PIPE_V, PIPE_MTE2, ev);\n+}\n+\n+template <uint32_t kTileCols, typename T>\n+AICORE void runTSwiGLUTiled(__gm__ T *x, __gm__ T *y, uint32_t batch,\n+                            uint32_t input_n, uint32_t num_cores, uint32_t vid,\n+                            uint32_t row_tile_len) {\n+#if __CCE_AICORE__ == 220 && defined(__DAV_C220_VEC__)\n+  constexpr uint32_t kTileRows = ELEMENTS_PER_TILE / kTileCols;\n+  static_assert(kTileRows * kTileCols == ELEMENTS_PER_TILE,\n+                \"2D tile shape must match the UB vector tile capacity.\");\n+\n+  const uint32_t output_n = input_n >> 1;\n+  const uint32_t col_tiles = DIV_ROUNDUP(output_n, kTileCols);\n+  const uint32_t row_tiles = DIV_ROUNDUP(batch, row_tile_len);\n+  const uint32_t total_tiles = row_tiles * col_tiles;\n+  if (vid >= total_tiles) {\n+    return;\n+  }\n+\n+  using TileData = Tile<TileType::Vec, T, kTileRows, kTileCols,\n+                        BLayout::RowMajor, DYNAMIC, DYNAMIC>;\n+\n+  initTilePipeFlags();\n+\n+  uint32_t current_tile_idx = vid;\n+  TileWork current_tile =\n+      makeTileWork(current_tile_idx, row_tile_len, kTileCols, batch, output_n);\n+  bool ping = true;\n+  issueTLoad<T, kTileRows, kTileCols>(x, input_n, output_n, current_tile,\n+                                      X0_PING, X1_PING, (event_t)EVENT_ID0);\n+\n+  while (true) {\n+    const event_t current_ev = ping ? (event_t)EVENT_ID0 : (event_t)EVENT_ID1;\n+    const unsigned current_x0_base = ping ? X0_PING : X0_PONG;\n+    const unsigned current_x1_base = ping ? X1_PING : X1_PONG;\n+    const unsigned current_y_base = ping ? Y_PING : Y_PONG;\n+\n+    wait_flag(PIPE_MTE2, PIPE_V, current_ev);\n+\n+    TileWork next_tile{0, 0, 0, 0, 0};\n+    const uint32_t next_tile_idx = current_tile_idx + num_cores;\n+    const bool has_next = next_tile_idx < total_tiles;\n+    if (has_next) {\n+      next_tile =\n+          makeTileWork(next_tile_idx, row_tile_len, kTileCols, batch, output_n);\n+      const event_t next_ev = ping ? (event_t)EVENT_ID1 : (event_t)EVENT_ID0;\n+      const unsigned next_x0_base = ping ? X0_PONG : X0_PING;\n+      const unsigned next_x1_base = ping ? X1_PONG : X1_PING;\n+      issueTLoad<T, kTileRows, kTileCols>(x, input_n, output_n, next_tile,\n+                                          next_x0_base, next_x1_base, next_ev);\n+    }\n+\n+    TileData x0Tile(current_tile.row_count, current_tile.col_count);\n+    TileData x1Tile(current_tile.row_count, current_tile.col_count);\n+    TileData yTile(current_tile.row_count, current_tile.col_count);\n+    TASSIGN(x0Tile, current_x0_base);\n+    TASSIGN(x1Tile, current_x1_base);\n+    TASSIGN(yTile, current_y_base);\n+\n+    computeSwiGLUTile<TileData, T>(x0Tile, x1Tile, yTile);\n+    issueTStore<T, kTileRows, kTileCols>(y, output_n, current_tile,\n+                                         current_y_base, current_ev);\n+\n+    if (!has_next) {\n+      break;\n+    }\n+\n+    current_tile = next_tile;\n+    current_tile_idx = next_tile_idx;\n+    ping = !ping;\n+  }\n+\n+  drainTilePipeFlags();\n+#else\n+  (void)x;\n+  (void)y;\n+  (void)batch;\n+  (void)input_n;\n+  (void)num_cores;\n+  (void)vid;\n+  (void)row_tile_len;\n+#endif\n+}\n+\n+template <typename T>\n+AICORE void runTSwiGLUMainTiled(__gm__ T *x, __gm__ T *y, uint32_t batch,\n+                                uint32_t input_n, uint32_t num_cores,\n+                                uint32_t vid) {\n+#if __CCE_AICORE__ == 220 && defined(__DAV_C220_VEC__)\n+  const uint32_t output_n = input_n >> 1;\n+  const TileConfig cfg = chooseTileConfig(batch, output_n, num_cores);\n+\n+  switch (cfg.col_tile_len) {\n+#define SWIGLU_TILE_CASE(width)                                     \\\n+  case width:                                                       \\\n+    runTSwiGLUTiled<width, T>(x, y, batch, input_n, num_cores, vid, \\\n+                              cfg.row_tile_len);                    \\\n+    break;\n+    SWIGLU_FOR_EACH_COL_TILE(SWIGLU_TILE_CASE)\n+#undef SWIGLU_TILE_CASE\n+    default:\n+      runTSwiGLUTiled<128, T>(x, y, batch, input_n, num_cores, vid,\n+                              cfg.row_tile_len);\n+      break;\n+  }\n+#else\n+  (void)x;\n+  (void)y;\n+  (void)batch;\n+  (void)input_n;\n+  (void)num_cores;\n+  (void)vid;\n+#endif\n+}\n+\n+template <typename T>\n+AICORE void runTSwiGLU(__gm__ T *x, __gm__ T *y, uint32_t batch,\n+                       uint32_t input_n, uint32_t num_cores, uint32_t vid) {\n+#if __CCE_AICORE__ == 220 && defined(__DAV_C220_VEC__)\n+  set_mask_norm();\n+  set_vector_mask(-1, -1);\n+\n+  if (input_n == 0 || (input_n & 1U) != 0) {\n+    return;\n+  }\n+\n+  // The 2D path handles all shapes including non-16-aligned output_n via\n+  // col_count_store: UB tiles are padded to TILE_ALIGNMENT, HBM\n+  // loads/stores use the actual element count.\n+  runTSwiGLUMainTiled(x, y, batch, input_n, num_cores, vid);\n+#else\n+  (void)x;\n+  (void)y;\n+  (void)batch;\n+  (void)input_n;\n+  (void)num_cores;\n+  (void)vid;\n+#endif\n+}\n+\n+}  // namespace\n+\n+#endif\n+\n+extern \"C\" __global__ AICORE void swiglu_fp16(GM_ADDR x, GM_ADDR y,\n+                                              uint32_t batch,\n+                                              uint32_t input_n) {\n+#if defined(__DAV_VEC__)\n+  const uint32_t num_cores = get_block_num() * get_subblockdim();\n+  const uint32_t vid = get_block_idx() * get_subblockdim() + get_subblockid();\n+  runTSwiGLU<half>((__gm__ half *)x, (__gm__ half *)y, batch, input_n,\n+                   num_cores, vid);\n+#else\n+  (void)x;\n+  (void)y;\n+  (void)batch;\n+  (void)input_n;\n+#endif\n+}\n+\n+extern \"C\" void call_swiglu_kernel(uint32_t blockDim, void *stream, uint8_t *x,\n+                                   uint8_t *y, uint32_t batch,\n+                                   uint32_t input_n) {\n+  swiglu_fp16<<<blockDim * 2, nullptr, stream>>>(x, y, batch, input_n);\n+}"
+    },
+    {
+      "sha": "40c80ad10af369d037188ae6974840e321b9ad3c",
+      "filename": "examples/jit_cpp/swiglu/.gitignore",
+      "status": "added",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2F.gitignore",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2F.gitignore",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/examples%2Fjit_cpp%2Fswiglu%2F.gitignore?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -0,0 +1,4 @@\n+*.csv\n+*.so\n+*.png\n+**outputs"
+    },
+    {
+      "sha": "6349fb73edc311c0bce669b15b04c17f395802b1",
+      "filename": "examples/jit_cpp/swiglu/README.md",
+      "status": "added",
+      "additions": 63,
+      "deletions": 0,
+      "changes": 63,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2FREADME.md",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/examples%2Fjit_cpp%2Fswiglu%2FREADME.md?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -0,0 +1,63 @@\n+# SwiGLU\n+\n+This directory contains JIT and CMake/pybind demos for the PTO `SwiGLU`\n+kernel, plus validation and benchmark workflows against `torch_npu.npu_swiglu`.\n+\n+The source file here is a symlink to\n+`../../../csrc/kernel/swiglu.cpp`, so edits made from the demo\n+directory also update the CMake/pybind kernel source.\n+\n+Outputs:\n+- benchmark CSVs: `outputs/csv/`\n+- plots: `outputs/plots/`\n+- JIT shared objects: `outputs/so/`\n+\n+The benchmark reports:\n+- runtime in microseconds\n+- effective elementwise TOPS\n+- PTO speedup over `torch_npu.npu_swiglu`\n+\n+The TOPS estimate is not a real FLOPS metric: `exp` and `div` are counted as\n+one effective elementwise operation each so that PTO and `torch_npu` can be\n+compared on the same scale. The PTO kernel executes `5` vector operations per\n+output element:\n+- negate\n+- exp\n+- add\n+- divide\n+- multiply by the gate\n+\n+Suggested workflow:\n+\n+```bash\n+pytest test_swiglu.py -q --npu npu:0\n+python bench_swiglu.py --npu 0\n+python plot_swiglu.py\n+```\n+\n+JIT benchmark without repeated Python stream lookup:\n+\n+```bash\n+python bench_swiglu.py --cache-stream --npu npu:0 --csv-dir outputs/csv/cached_stream\n+python plot_swiglu.py --csv-dir outputs/csv/cached_stream --plot-dir outputs/plots/cached_stream\n+```\n+\n+CMake/pybind benchmark:\n+\n+```bash\n+./bench_swiglu_pybind.sh\n+```\n+\n+The script builds the CMake extension, copies `pto_kernels_ops*.so` into\n+`python/pto_kernels`, sets `LD_LIBRARY_PATH` and `PYTHONPATH`, runs\n+`bench_swiglu_pybind.py`, then plots the CSV. By default it builds for\n+`Ascend910B2` and writes to `outputs/csv/pybind` and `outputs/plots/pybind`.\n+\n+Useful overrides:\n+\n+```bash\n+SOC_VERSION=Ascend910B4 ./bench_swiglu_pybind.sh\n+SKIP_BUILD=1 ./bench_swiglu_pybind.sh --batches 64 --hidden-dims 1024\n+RUN_PLOT=0 ./bench_swiglu_pybind.sh --warmup 1 --repeats 10 --trials 1\n+CSV_DIR=outputs/csv/pybind_smoke PLOT_DIR=outputs/plots/pybind_smoke ./bench_swiglu_pybind.sh\n+```"
+    },
+    {
+      "sha": "532e79313e47ad6c16e43bac4028fd916f789dd1",
+      "filename": "examples/jit_cpp/swiglu/bench_swiglu.py",
+      "status": "added",
+      "additions": 202,
+      "deletions": 0,
+      "changes": 202,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fbench_swiglu.py",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fbench_swiglu.py",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/examples%2Fjit_cpp%2Fswiglu%2Fbench_swiglu.py?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -0,0 +1,202 @@\n+# pylint: disable=wrong-import-position\n+import argparse\n+import sys\n+from pathlib import Path\n+\n+import torch\n+import torch_npu  # noqa\n+\n+THIS_DIR = Path(__file__).resolve().parent\n+FAST_HADAMARD_DIR = THIS_DIR.parent / \"fast_hadamard\"\n+if str(FAST_HADAMARD_DIR) not in sys.path:\n+    sys.path.insert(0, str(FAST_HADAMARD_DIR))\n+\n+from bench_common import (  # noqa: E402\n+    add_common_benchmark_args,\n+    benchmark_batches,\n+    benchmark_hidden_dims,\n+    benchmark_npu_us,\n+    benchmark_trials_us,\n+    ensure_output_dir,\n+    make_buffer_pool,\n+    pool_item,\n+    resolve_dir_arg,\n+    validate_benchmark_args,\n+    write_csv_records,\n+)\n+\n+from jit_util_common import get_current_stream_ptr  # noqa: E402\n+from jit_util_swiglu import jit_compile  # noqa: E402\n+\n+DEFAULT_WARMUP = 10\n+DEFAULT_REPEATS = 100\n+EFFECTIVE_OPS_PER_OUTPUT_ELEMENT = 5.0\n+CSV_HEADER = (\n+    \"batch,N,pto_duration_us,torch_npu_duration_us,\"\n+    \"pto_effective_tops,torch_npu_effective_tops,pto_speedup_vs_torch_npu,\"\n+    \"trials,pto_duration_mean_us,pto_duration_std_us,pto_duration_min_us,\"\n+    \"pto_duration_max_us,pto_duration_cv_pct,torch_npu_duration_mean_us,\"\n+    \"torch_npu_duration_std_us,torch_npu_duration_min_us,\"\n+    \"torch_npu_duration_max_us,torch_npu_duration_cv_pct\\n\"\n+)\n+\n+\n+def _parse_args():\n+    parser = argparse.ArgumentParser(\n+        description=\"Benchmark PTO SwiGLU against torch_npu.npu_swiglu.\"\n+    )\n+    parser.add_argument(\n+        \"--cache-stream\",\n+        action=\"store_true\",\n+        help=\"Resolve the current NPU stream once and reuse it for PTO launches.\",\n+    )\n+    return add_common_benchmark_args(\n+        parser,\n+        default_warmup=DEFAULT_WARMUP,\n+        default_repeats=DEFAULT_REPEATS,\n+    ).parse_args()\n+\n+\n+def _effective_tops(batch, n, duration_us):\n+    if duration_us <= 0:\n+        return 0.0\n+    total_ops = batch * n * EFFECTIVE_OPS_PER_OUTPUT_ELEMENT\n+    return total_ops / (duration_us * 1e6)\n+\n+\n+def _make_shape_pools(batch, n, warmup, repeats, device):\n+    return {\n+        \"x\": make_buffer_pool(\n+            warmup,\n+            repeats,\n+            lambda: torch.randn(batch, 2 * n, device=device, dtype=torch.float16),\n+        ),\n+        \"y\": make_buffer_pool(\n+            warmup,\n+            repeats,\n+            lambda: torch.empty(batch, n, device=device, dtype=torch.float16),\n+        ),\n+    }\n+\n+\n+def benchmark(\n+    swiglu_func,\n+    *,\n+    warmup: int,\n+    repeats: int,\n+    trials: int,\n+    output_dir: Path,\n+    device: str,\n+    batches,\n+    hidden_dims,\n+    stream_ptr=None,\n+):\n+    ensure_output_dir(output_dir)\n+    block_dim = swiglu_func.block_dim\n+\n+    print(f\"\\n{'=' * 96}\")\n+    print(f\"SWIGLU BENCHMARK (BLOCK_DIM={block_dim})\")\n+    print(f\"{'=' * 96}\")\n+    header = (\n+        f\"{'batch':>6s}  {'N':>6s}\"\n+        f\"  {'pto_us':>10s}  {'torch_npu_us':>13s}\"\n+        f\"  {'pto_eff_tops':>12s}  {'torch_eff_tops':>16s}  {'pto_speedup':>11s}\"\n+    )\n+    print(header)\n+    print(\"-\" * len(header))\n+\n+    records = []\n+    for batch in batches:\n+        for n in hidden_dims:\n+            pools = _make_shape_pools(batch, n, warmup, repeats, device)\n+            x_list = pools[\"x\"]\n+            y_list = pools[\"y\"]\n+\n+            pto_stats = benchmark_trials_us(\n+                trials,\n+                lambda x_list=x_list, y_list=y_list: benchmark_npu_us(\n+                    warmup,\n+                    repeats,\n+                    lambda i: swiglu_func(\n+                        pool_item(x_list, i),\n+                        pool_item(y_list, i),\n+                        block_dim=block_dim,\n+                        stream_ptr=stream_ptr,\n+                    ),\n+                ),\n+            )\n+            torch_npu_stats = benchmark_trials_us(\n+                trials,\n+                lambda x_list=x_list: benchmark_npu_us(\n+                    warmup,\n+                    repeats,\n+                    lambda i: torch_npu.npu_swiglu(pool_item(x_list, i), dim=-1),\n+                ),\n+            )\n+\n+            pto_us = pto_stats[\"median_us\"]\n+            torch_npu_us = torch_npu_stats[\"median_us\"]\n+            pto_effective_tops = _effective_tops(batch, n, pto_us)\n+            torch_npu_effective_tops = _effective_tops(batch, n, torch_npu_us)\n+            pto_speedup = torch_npu_us / pto_us if pto_us > 0 else 0.0\n+\n+            print(\n+                f\"{batch:>6d}  {n:>6d}\"\n+                f\"  {pto_us:>10.2f}  {torch_npu_us:>13.2f}\"\n+                f\"  {pto_effective_tops:>12.4f}  {torch_npu_effective_tops:>16.4f}\"\n+                f\"  {pto_speedup:>11.3f}\"\n+            )\n+\n+            records.append(\n+                f\"{batch},{n},{pto_us:.4f},{torch_npu_us:.4f},\"\n+                f\"{pto_effective_tops:.6f},{torch_npu_effective_tops:.6f},\"\n+                f\"{pto_speedup:.4f},\"\n+                f\"{trials},{pto_stats['mean_us']:.4f},{pto_stats['std_us']:.4f},\"\n+                f\"{pto_stats['min_us']:.4f},{pto_stats['max_us']:.4f},\"\n+                f\"{pto_stats['cv_pct']:.4f},{torch_npu_stats['mean_us']:.4f},\"\n+                f\"{torch_npu_stats['std_us']:.4f},\"\n+                f\"{torch_npu_stats['min_us']:.4f},\"\n+                f\"{torch_npu_stats['max_us']:.4f},\"\n+                f\"{torch_npu_stats['cv_pct']:.4f}\"\n+            )\n+\n+    csv_path = output_dir / f\"swiglu_compare_bd{block_dim}.csv\"\n+    write_csv_records(csv_path, CSV_HEADER, records)\n+    print(f\"\\nSaved to {csv_path}\")\n+\n+\n+def main():\n+    args = _parse_args()\n+    validate_benchmark_args(args)\n+\n+    torch.npu.set_device(args.npu)\n+    base = Path(__file__).resolve().parent\n+    kernel_path = base / \"swiglu.cpp\"\n+    csv_dir = resolve_dir_arg(base, args.csv_dir)\n+\n+    print(f\"Using device: {args.npu}\")\n+    print(\"Compiling swiglu.cpp ...\")\n+    swiglu_func = jit_compile(\n+        str(kernel_path),\n+        verbose=True,\n+        device=args.npu,\n+    )\n+    stream_ptr = get_current_stream_ptr() if args.cache_stream else None\n+    if stream_ptr is not None:\n+        print(\"Using cached NPU stream pointer for PTO launches.\")\n+\n+    benchmark(\n+        swiglu_func,\n+        warmup=args.warmup,\n+        repeats=args.repeats,\n+        trials=args.trials,\n+        output_dir=csv_dir,\n+        device=args.npu,\n+        batches=benchmark_batches(args),\n+        hidden_dims=benchmark_hidden_dims(args),\n+        stream_ptr=stream_ptr,\n+    )\n+\n+\n+if __name__ == \"__main__\":\n+    main()"
+    },
+    {
+      "sha": "3da71eb47bde9191e668eb99bdf8de9597655f40",
+      "filename": "examples/jit_cpp/swiglu/bench_swiglu_pybind.py",
+      "status": "added",
+      "additions": 181,
+      "deletions": 0,
+      "changes": 181,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fbench_swiglu_pybind.py",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fbench_swiglu_pybind.py",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/examples%2Fjit_cpp%2Fswiglu%2Fbench_swiglu_pybind.py?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -0,0 +1,181 @@\n+# pylint: disable=wrong-import-position\n+import argparse\n+import sys\n+from pathlib import Path\n+\n+import torch\n+import torch_npu  # noqa\n+\n+THIS_DIR = Path(__file__).resolve().parent\n+REPO_ROOT = THIS_DIR.parents[2]\n+PYTHON_DIR = REPO_ROOT / \"python\"\n+FAST_HADAMARD_DIR = THIS_DIR.parent / \"fast_hadamard\"\n+for path in (PYTHON_DIR, FAST_HADAMARD_DIR):\n+    if str(path) not in sys.path:\n+        sys.path.insert(0, str(path))\n+\n+from bench_common import (  # noqa: E402\n+    add_common_benchmark_args,\n+    benchmark_batches,\n+    benchmark_hidden_dims,\n+    benchmark_npu_us,\n+    benchmark_trials_us,\n+    ensure_output_dir,\n+    make_buffer_pool,\n+    pool_item,\n+    resolve_dir_arg,\n+    validate_benchmark_args,\n+    write_csv_records,\n+)\n+from pto_kernels import get_aic_cores, pto_swiglu  # noqa: E402\n+\n+DEFAULT_WARMUP = 10\n+DEFAULT_REPEATS = 100\n+DEFAULT_CSV_DIR = Path(\"outputs\") / \"csv\" / \"pybind\"\n+EFFECTIVE_OPS_PER_OUTPUT_ELEMENT = 5.0\n+CSV_HEADER = (\n+    \"batch,N,pto_duration_us,torch_npu_duration_us,\"\n+    \"pto_effective_tops,torch_npu_effective_tops,pto_speedup_vs_torch_npu,\"\n+    \"trials,pto_duration_mean_us,pto_duration_std_us,pto_duration_min_us,\"\n+    \"pto_duration_max_us,pto_duration_cv_pct,torch_npu_duration_mean_us,\"\n+    \"torch_npu_duration_std_us,torch_npu_duration_min_us,\"\n+    \"torch_npu_duration_max_us,torch_npu_duration_cv_pct\\n\"\n+)\n+\n+\n+def _parse_args():\n+    parser = argparse.ArgumentParser(\n+        description=\"Benchmark CMake/pybind PTO SwiGLU against torch_npu.npu_swiglu.\"\n+    )\n+    parser = add_common_benchmark_args(\n+        parser,\n+        default_warmup=DEFAULT_WARMUP,\n+        default_repeats=DEFAULT_REPEATS,\n+    )\n+    parser.set_defaults(csv_dir=str(DEFAULT_CSV_DIR))\n+    return parser.parse_args()\n+\n+\n+def _device_id(device: str) -> int:\n+    if str(device).startswith(\"npu:\"):\n+        return int(str(device).split(\":\", 1)[1])\n+    return int(device)\n+\n+\n+def _effective_tops(batch, n, duration_us):\n+    if duration_us <= 0:\n+        return 0.0\n+    total_ops = batch * n * EFFECTIVE_OPS_PER_OUTPUT_ELEMENT\n+    return total_ops / (duration_us * 1e6)\n+\n+\n+def _make_input_pool(batch, n, warmup, repeats, device):\n+    return make_buffer_pool(\n+        warmup,\n+        repeats,\n+        lambda: torch.randn(batch, 2 * n, device=device, dtype=torch.float16),\n+    )\n+\n+\n+def benchmark(\n+    *,\n+    warmup: int,\n+    repeats: int,\n+    trials: int,\n+    output_dir: Path,\n+    device: str,\n+    batches,\n+    hidden_dims,\n+    block_dim: int,\n+):\n+    ensure_output_dir(output_dir)\n+\n+    print(f\"\\n{'=' * 96}\")\n+    print(f\"SWIGLU PYBIND BENCHMARK (BLOCK_DIM={block_dim})\")\n+    print(f\"{'=' * 96}\")\n+    header = (\n+        f\"{'batch':>6s}  {'N':>6s}\"\n+        f\"  {'pto_us':>10s}  {'torch_npu_us':>13s}\"\n+        f\"  {'pto_eff_tops':>12s}  {'torch_eff_tops':>16s}  {'pto_speedup':>11s}\"\n+    )\n+    print(header)\n+    print(\"-\" * len(header))\n+\n+    records = []\n+    for batch in batches:\n+        for n in hidden_dims:\n+            x_list = _make_input_pool(batch, n, warmup, repeats, device)\n+\n+            pto_stats = benchmark_trials_us(\n+                trials,\n+                lambda x_list=x_list: benchmark_npu_us(\n+                    warmup,\n+                    repeats,\n+                    lambda i: pto_swiglu(pool_item(x_list, i), dim=-1),\n+                ),\n+            )\n+            torch_npu_stats = benchmark_trials_us(\n+                trials,\n+                lambda x_list=x_list: benchmark_npu_us(\n+                    warmup,\n+                    repeats,\n+                    lambda i: torch_npu.npu_swiglu(pool_item(x_list, i), dim=-1),\n+                ),\n+            )\n+\n+            pto_us = pto_stats[\"median_us\"]\n+            torch_npu_us = torch_npu_stats[\"median_us\"]\n+            pto_effective_tops = _effective_tops(batch, n, pto_us)\n+            torch_npu_effective_tops = _effective_tops(batch, n, torch_npu_us)\n+            pto_speedup = torch_npu_us / pto_us if pto_us > 0 else 0.0\n+\n+            print(\n+                f\"{batch:>6d}  {n:>6d}\"\n+                f\"  {pto_us:>10.2f}  {torch_npu_us:>13.2f}\"\n+                f\"  {pto_effective_tops:>12.4f}  {torch_npu_effective_tops:>16.4f}\"\n+                f\"  {pto_speedup:>11.3f}\"\n+            )\n+\n+            records.append(\n+                f\"{batch},{n},{pto_us:.4f},{torch_npu_us:.4f},\"\n+                f\"{pto_effective_tops:.6f},{torch_npu_effective_tops:.6f},\"\n+                f\"{pto_speedup:.4f},\"\n+                f\"{trials},{pto_stats['mean_us']:.4f},{pto_stats['std_us']:.4f},\"\n+                f\"{pto_stats['min_us']:.4f},{pto_stats['max_us']:.4f},\"\n+                f\"{pto_stats['cv_pct']:.4f},{torch_npu_stats['mean_us']:.4f},\"\n+                f\"{torch_npu_stats['std_us']:.4f},\"\n+                f\"{torch_npu_stats['min_us']:.4f},\"\n+                f\"{torch_npu_stats['max_us']:.4f},\"\n+                f\"{torch_npu_stats['cv_pct']:.4f}\"\n+            )\n+\n+    csv_path = output_dir / f\"swiglu_compare_bd{block_dim}.csv\"\n+    write_csv_records(csv_path, CSV_HEADER, records)\n+    print(f\"\\nSaved to {csv_path}\")\n+\n+\n+def main():\n+    args = _parse_args()\n+    validate_benchmark_args(args)\n+\n+    torch.npu.set_device(args.npu)\n+    csv_dir = resolve_dir_arg(THIS_DIR, args.csv_dir)\n+    block_dim = get_aic_cores(_device_id(args.npu))\n+\n+    print(f\"Using device: {args.npu}\")\n+    print(\"Using CMake/pybind pto_kernels.pto_swiglu\")\n+\n+    benchmark(\n+        warmup=args.warmup,\n+        repeats=args.repeats,\n+        trials=args.trials,\n+        output_dir=csv_dir,\n+        device=args.npu,\n+        batches=benchmark_batches(args),\n+        hidden_dims=benchmark_hidden_dims(args),\n+        block_dim=block_dim,\n+    )\n+\n+\n+if __name__ == \"__main__\":\n+    main()"
+    },
+    {
+      "sha": "02887c10bea42f6341b961b1936a71f65ec00afa",
+      "filename": "examples/jit_cpp/swiglu/bench_swiglu_pybind.sh",
+      "status": "added",
+      "additions": 69,
+      "deletions": 0,
+      "changes": 69,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fbench_swiglu_pybind.sh",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fbench_swiglu_pybind.sh",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/examples%2Fjit_cpp%2Fswiglu%2Fbench_swiglu_pybind.sh?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -0,0 +1,69 @@\n+#!/usr/bin/env bash\n+\n+set -euo pipefail\n+\n+SCRIPT_DIR=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")\" && pwd)\"\n+REPO_ROOT=\"$(cd \"${SCRIPT_DIR}/../../..\" && pwd)\"\n+\n+SOC_VERSION=\"${SOC_VERSION:-Ascend910B2}\"\n+CSV_DIR=\"${CSV_DIR:-outputs/csv/pybind}\"\n+PLOT_DIR=\"${PLOT_DIR:-outputs/plots/pybind}\"\n+SKIP_BUILD=\"${SKIP_BUILD:-0}\"\n+RUN_PLOT=\"${RUN_PLOT:-1}\"\n+\n+if [[ -n \"${ASCEND_INSTALL_PATH:-}\" ]]; then\n+    ASCEND_ENV_ROOT=\"${ASCEND_INSTALL_PATH}\"\n+elif [[ -n \"${ASCEND_HOME_PATH:-}\" ]]; then\n+    ASCEND_ENV_ROOT=\"${ASCEND_HOME_PATH}\"\n+elif [[ -d \"${HOME}/Ascend/ascend-toolkit/latest\" ]]; then\n+    ASCEND_ENV_ROOT=\"${HOME}/Ascend/ascend-toolkit/latest\"\n+else\n+    ASCEND_ENV_ROOT=\"/usr/local/Ascend/ascend-toolkit/latest\"\n+fi\n+\n+if [[ -f \"${ASCEND_ENV_ROOT}/bin/setenv.bash\" ]]; then\n+    # shellcheck source=/dev/null\n+    source \"${ASCEND_ENV_ROOT}/bin/setenv.bash\"\n+fi\n+\n+if [[ \"${SKIP_BUILD}\" != \"1\" ]]; then\n+    PYBIND11_CMAKE_DIR=\"$(python -m pybind11 --cmakedir 2>/dev/null || true)\"\n+    if [[ -n \"${PYBIND11_CMAKE_DIR}\" ]]; then\n+        if [[ -n \"${CMAKE_PREFIX_PATH:-}\" ]]; then\n+            export CMAKE_PREFIX_PATH=\"${CMAKE_PREFIX_PATH}:${PYBIND11_CMAKE_DIR}\"\n+        else\n+            export CMAKE_PREFIX_PATH=\"${PYBIND11_CMAKE_DIR}\"\n+        fi\n+    fi\n+\n+    (\n+        cd \"${REPO_ROOT}\"\n+        bash scripts/build.sh --soc-version \"${SOC_VERSION}\"\n+    )\n+fi\n+\n+PYBIND_MODULE=\"$(ls -t \"${REPO_ROOT}\"/pto_kernels_ops*.so 2>/dev/null | head -n 1 || true)\"\n+if [[ -z \"${PYBIND_MODULE}\" ]]; then\n+    echo \"Could not find pto_kernels_ops*.so. Run with SKIP_BUILD=0 or build first.\" >&2\n+    exit 1\n+fi\n+\n+mkdir -p \"${REPO_ROOT}/python/pto_kernels\"\n+cp \"${PYBIND_MODULE}\" \"${REPO_ROOT}/python/pto_kernels/\"\n+\n+export LD_LIBRARY_PATH=\"${REPO_ROOT}/build/lib:${LD_LIBRARY_PATH:-}\"\n+export PYTHONPATH=\"${REPO_ROOT}/python:${PYTHONPATH:-}\"\n+\n+(\n+    cd \"${REPO_ROOT}\"\n+    python \"${SCRIPT_DIR}/bench_swiglu_pybind.py\" --csv-dir \"${CSV_DIR}\" \"$@\"\n+)\n+\n+if [[ \"${RUN_PLOT}\" == \"1\" ]]; then\n+    (\n+        cd \"${REPO_ROOT}\"\n+        python \"${SCRIPT_DIR}/plot_swiglu.py\" \\\n+            --csv-dir \"${CSV_DIR}\" \\\n+            --plot-dir \"${PLOT_DIR}\"\n+    )\n+fi"
+    },
+    {
+      "sha": "34e7fa81f2a27ae3ca82dc1eaf1bcea4bd9859f8",
+      "filename": "examples/jit_cpp/swiglu/conftest.py",
+      "status": "added",
+      "additions": 40,
+      "deletions": 0,
+      "changes": 40,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fconftest.py",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fconftest.py",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/examples%2Fjit_cpp%2Fswiglu%2Fconftest.py?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -0,0 +1,40 @@\n+import pytest\n+import torch\n+\n+\n+def normalize_npu_device(device: str | int) -> str:\n+    text = str(device).strip().strip('\"').strip(\"'\")\n+    if text.lower().startswith(\"npu:\"):\n+        index = text.split(\":\", 1)[1].strip()\n+    else:\n+        index = text\n+\n+    if not index.isdigit():\n+        raise ValueError(\n+            f\"Invalid NPU device '{device}'. Expected values like 0 or npu:0.\"\n+        )\n+    return f\"npu:{int(index)}\"\n+\n+\n+def pytest_addoption(parser):\n+    try:\n+        parser.addoption(\n+            \"--npu\",\n+            action=\"store\",\n+            default=\"npu:0\",\n+            help=\"NPU device (examples: 0, npu:0, '0', 'npu:0').\",\n+        )\n+    except ValueError as exc:\n+        if \"--npu\" not in str(exc):\n+            raise\n+\n+\n+@pytest.fixture(scope=\"session\")\n+def npu_device(request):\n+    raw = request.config.getoption(\"--npu\")\n+    return normalize_npu_device(raw)\n+\n+\n+@pytest.fixture(scope=\"session\", autouse=True)\n+def setup_npu_device(npu_device):\n+    torch.npu.set_device(npu_device)"
+    },
+    {
+      "sha": "7b10d41c3c29b1c7de4fd8813feaf6612d055065",
+      "filename": "examples/jit_cpp/swiglu/jit_util_swiglu.py",
+      "status": "added",
+      "additions": 100,
+      "deletions": 0,
+      "changes": 100,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fjit_util_swiglu.py",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fjit_util_swiglu.py",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/examples%2Fjit_cpp%2Fswiglu%2Fjit_util_swiglu.py?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -0,0 +1,100 @@\n+# pylint: disable=wrong-import-position\n+import ctypes\n+import sys\n+from pathlib import Path\n+\n+import torch\n+\n+THIS_DIR = Path(__file__).resolve().parent\n+FAST_HADAMARD_DIR = THIS_DIR.parent / \"fast_hadamard\"\n+if str(FAST_HADAMARD_DIR) not in sys.path:\n+    sys.path.insert(0, str(FAST_HADAMARD_DIR))\n+\n+from jit_util_common import (  # noqa: E402\n+    BLOCK_DIM,\n+    DEFAULT_DEVICE,\n+    jit_compile_with_loader,\n+    load_cdll,\n+    load_required_symbol,\n+    resolve_launch_block_dim,\n+    resolve_stream_ptr,\n+    torch_to_ctypes,\n+)\n+\n+UINT32_MAX = (1 << 32) - 1\n+SWIGLU_ARGTYPES = [\n+    ctypes.c_uint32,  # blockDim\n+    ctypes.c_void_p,  # stream\n+    ctypes.c_void_p,  # x\n+    ctypes.c_void_p,  # y\n+    ctypes.c_uint32,  # batch\n+    ctypes.c_uint32,  # input_n\n+]\n+\n+\n+def _validate_swiglu_io(x, y):\n+    if x.dim() != 2 or y.dim() != 2:\n+        raise ValueError(\"x and y must be 2D tensors.\")\n+    if x.dtype != torch.float16:\n+        raise TypeError(\"x must use torch.float16.\")\n+    if y.dtype != torch.float16:\n+        raise TypeError(\"y must use torch.float16.\")\n+    if x.device != y.device:\n+        raise ValueError(\"x and y must be on the same device.\")\n+    if not x.is_contiguous() or not y.is_contiguous():\n+        raise ValueError(\"x and y must be contiguous.\")\n+    if x.shape[0] != y.shape[0]:\n+        raise ValueError(\"x and y must have the same batch size.\")\n+    if x.shape[1] <= 0 or (x.shape[1] & 1):\n+        raise ValueError(\"x.shape[1] must be a positive even integer.\")\n+    if x.shape[0] > UINT32_MAX or x.shape[1] > UINT32_MAX:\n+        raise ValueError(\"x dimensions must fit uint32_t kernel arguments.\")\n+    output_n = x.shape[1] // 2\n+    if y.shape[1] != output_n:\n+        raise ValueError(\"y must have shape [batch, x.shape[1] // 2].\")\n+\n+\n+def load_lib(lib_path, block_dim=BLOCK_DIM):\n+    lib = load_cdll(lib_path)\n+    resolved_block_dim = max(1, int(block_dim))\n+\n+    kernel = load_required_symbol(\n+        lib,\n+        \"call_swiglu_kernel\",\n+        SWIGLU_ARGTYPES,\n+    )\n+\n+    def swiglu_func(x, y, *, block_dim=resolved_block_dim, stream_ptr=None):\n+        _validate_swiglu_io(x, y)\n+        kernel(\n+            resolve_launch_block_dim(block_dim, resolved_block_dim),\n+            resolve_stream_ptr(stream_ptr),\n+            torch_to_ctypes(x),\n+            torch_to_ctypes(y),\n+            x.shape[0],\n+            x.shape[1],\n+        )\n+\n+    swiglu_func.block_dim = resolved_block_dim\n+    return swiglu_func\n+\n+\n+def jit_compile(\n+    src_path,\n+    verbose=True,\n+    clean_up=False,\n+    so_dir=None,\n+    device: str | int = DEFAULT_DEVICE,\n+    block_dim=None,\n+):\n+    if so_dir is None:\n+        so_dir = THIS_DIR / \"outputs\" / \"so\"\n+    return jit_compile_with_loader(\n+        src_path,\n+        load_lib,\n+        verbose=verbose,\n+        clean_up=clean_up,\n+        so_dir=so_dir,\n+        device=device,\n+        block_dim=block_dim,\n+    )"
+    },
+    {
+      "sha": "26e81defc0b13b40c98ef535e14390a9974f642a",
+      "filename": "examples/jit_cpp/swiglu/plot_swiglu.py",
+      "status": "added",
+      "additions": 134,
+      "deletions": 0,
+      "changes": 134,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fplot_swiglu.py",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fplot_swiglu.py",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/examples%2Fjit_cpp%2Fswiglu%2Fplot_swiglu.py?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -0,0 +1,134 @@\n+# pylint: disable=wrong-import-position\n+import argparse\n+import sys\n+from pathlib import Path\n+\n+THIS_DIR = Path(__file__).resolve().parent\n+FAST_HADAMARD_DIR = THIS_DIR.parent / \"fast_hadamard\"\n+if str(FAST_HADAMARD_DIR) not in sys.path:\n+    sys.path.insert(0, str(FAST_HADAMARD_DIR))\n+\n+from plot_common import (  # noqa: E402\n+    add_common_plot_args,\n+    block_dim_from_path,\n+    ensure_matplotlib,\n+    ensure_plot_dir,\n+    load_nonempty_rows,\n+    make_batched_line_plot,\n+    make_speedup_heatmap,\n+    plot_csv_collection,\n+    resolve_dir_arg,\n+)\n+\n+CSV_PREFIX = \"swiglu_compare_bd\"\n+CSV_PATTERN = f\"{CSV_PREFIX}*.csv\"\n+\n+DURATION_LINE_PLOT = {\n+    \"filename\": \"swiglu_duration_bd{block_dim}.png\",\n+    \"series\": (\n+        (\"pto_duration_us\", \"PTO SwiGLU\", \"#dc2626\", \"s--\"),\n+        (\"torch_npu_duration_us\", \"torch_npu.npu_swiglu\", \"#2563eb\", \"o-\"),\n+    ),\n+    \"y_label\": \"Duration (us)\",\n+    \"title\": \"SwiGLU Duration: PTO vs torch_npu\",\n+}\n+\n+EFFECTIVE_TOPS_LINE_PLOT = {\n+    \"filename\": \"swiglu_effective_tops_bd{block_dim}.png\",\n+    \"series\": (\n+        (\"pto_effective_tops\", \"PTO SwiGLU\", \"#dc2626\", \"s--\"),\n+        (\n+            \"torch_npu_effective_tops\",\n+            \"torch_npu.npu_swiglu\",\n+            \"#2563eb\",\n+            \"o-\",\n+        ),\n+    ),\n+    \"y_label\": \"Effective TOPS\",\n+    \"title\": \"SwiGLU Effective Elementwise TOPS: PTO vs torch_npu\",\n+}\n+\n+LEGACY_TFLOPS_LINE_PLOT = {\n+    \"filename\": \"swiglu_tflops_bd{block_dim}.png\",\n+    \"series\": (\n+        (\"pto_tflops\", \"PTO SwiGLU\", \"#dc2626\", \"s--\"),\n+        (\"torch_npu_tflops\", \"torch_npu.npu_swiglu\", \"#2563eb\", \"o-\"),\n+    ),\n+    \"y_label\": \"Legacy effective TFLOPS\",\n+    \"title\": \"SwiGLU Legacy Effective TFLOPS: PTO vs torch_npu\",\n+}\n+\n+HEATMAPS = (\n+    {\n+        \"filename\": \"swiglu_speedup_heatmap_bd{block_dim}.png\",\n+        \"key\": \"pto_speedup_vs_torch_npu\",\n+        \"title\": \"SwiGLU PTO Speedup over torch_npu\",\n+        \"colorbar_label\": \"log2(PTO speedup)\",\n+    },\n+)\n+\n+\n+def _parse_args():\n+    parser = argparse.ArgumentParser(\n+        description=\"Plot SwiGLU benchmark comparison from CSV files.\"\n+    )\n+    return add_common_plot_args(parser).parse_args()\n+\n+\n+def plot_swiglu(csv_path: Path, plot_dir: Path):\n+    if not ensure_matplotlib():\n+        return\n+\n+    rows = load_nonempty_rows(csv_path)\n+    if rows is None:\n+        return\n+\n+    block_dim = block_dim_from_path(csv_path, CSV_PREFIX)\n+    ensure_plot_dir(plot_dir)\n+\n+    metric_plot = (\n+        EFFECTIVE_TOPS_LINE_PLOT\n+        if \"pto_effective_tops\" in rows[0]\n+        else LEGACY_TFLOPS_LINE_PLOT\n+    )\n+    for plot in (DURATION_LINE_PLOT, metric_plot):\n+        make_batched_line_plot(\n+            rows,\n+            block_dim,\n+            plot_dir / plot[\"filename\"].format(block_dim=block_dim),\n+            plot[\"series\"],\n+            plot[\"y_label\"],\n+            plot[\"title\"],\n+        )\n+\n+    for heatmap in HEATMAPS:\n+        make_speedup_heatmap(\n+            rows,\n+            block_dim,\n+            plot_dir / heatmap[\"filename\"].format(block_dim=block_dim),\n+            heatmap[\"key\"],\n+            heatmap[\"title\"],\n+            colorbar_label=heatmap.get(\"colorbar_label\", \"log2(speedup)\"),\n+        )\n+\n+    print(f\"Plotted {csv_path.name}\")\n+\n+\n+def main():\n+    args = _parse_args()\n+    base = Path(__file__).resolve().parent\n+    csv_dir = resolve_dir_arg(base, args.csv_dir)\n+    plot_dir = resolve_dir_arg(base, args.plot_dir)\n+\n+    plot_csv_collection(\n+        csv_dir,\n+        plot_dir,\n+        pattern=CSV_PATTERN,\n+        prefix=CSV_PREFIX,\n+        warning=\"no SwiGLU benchmark CSV files found\",\n+        plot_csv_fn=plot_swiglu,\n+    )\n+\n+\n+if __name__ == \"__main__\":\n+    main()"
+    },
+    {
+      "sha": "8aac2016ad6bcd6fb2cdbc0821f6dc1b7b0b344c",
+      "filename": "examples/jit_cpp/swiglu/swiglu.cpp",
+      "status": "added",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fswiglu.cpp",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Fswiglu.cpp",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/examples%2Fjit_cpp%2Fswiglu%2Fswiglu.cpp?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -0,0 +1 @@\n+../../../csrc/kernel/swiglu.cpp\n\\ No newline at end of file"
+    },
+    {
+      "sha": "60191857c81b70cb1c3017ccd221f5173f347676",
+      "filename": "examples/jit_cpp/swiglu/test_swiglu.py",
+      "status": "added",
+      "additions": 54,
+      "deletions": 0,
+      "changes": 54,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Ftest_swiglu.py",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/examples%2Fjit_cpp%2Fswiglu%2Ftest_swiglu.py",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/examples%2Fjit_cpp%2Fswiglu%2Ftest_swiglu.py?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -0,0 +1,54 @@\n+from pathlib import Path\n+\n+import pytest\n+import torch\n+import torch_npu  # noqa\n+\n+from jit_util_swiglu import jit_compile\n+\n+DTYPE = torch.float16\n+KERNEL_CPP = Path(__file__).resolve().parent / \"swiglu.cpp\"\n+TEST_BATCHES = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]\n+TEST_HIDDEN_DIMS = [128, 256, 512, 1024, 4096, 6144, 16384, 32768, 65536, 262144]\n+TEST_SEEDS = [0, 1]\n+TEST_LARGE_HIDDEN_DIM_MIN = 16384\n+TEST_LARGE_HIDDEN_DIM_MAX_BATCH = 64\n+TEST_CASES = [\n+    (batch, n)\n+    for batch in TEST_BATCHES\n+    for n in TEST_HIDDEN_DIMS\n+    if n < TEST_LARGE_HIDDEN_DIM_MIN or batch <= TEST_LARGE_HIDDEN_DIM_MAX_BATCH\n+]\n+\n+\n+def swiglu_ref(x):\n+    a, b = torch.chunk(x.float(), 2, dim=-1)\n+    return (a * torch.sigmoid(a) * b).to(x.dtype)\n+\n+\n+@pytest.fixture(scope=\"session\")\n+def swiglu_kernel(npu_device):\n+    return jit_compile(str(KERNEL_CPP), verbose=True, device=npu_device)\n+\n+\n+@pytest.mark.parametrize(\"seed\", TEST_SEEDS)\n+@pytest.mark.parametrize(\"batch,n\", TEST_CASES)\n+def test_swiglu_matches_reference_and_torch_npu(\n+    swiglu_kernel,\n+    npu_device,\n+    seed,\n+    batch,\n+    n,\n+):\n+    torch.manual_seed(seed)\n+    x = torch.randn(batch, n * 2, device=npu_device, dtype=DTYPE)\n+    y = torch.empty(batch, n, device=npu_device, dtype=DTYPE)\n+\n+    swiglu_kernel(x, y)\n+    torch.npu.synchronize()\n+\n+    ref = swiglu_ref(x.cpu())\n+    torch_npu_ref = torch_npu.npu_swiglu(x, dim=-1)\n+\n+    torch.testing.assert_close(y.cpu(), ref, rtol=1e-2, atol=1e-5)\n+    torch.testing.assert_close(y, torch_npu_ref, rtol=1e-2, atol=1e-5)"
+    },
+    {
+      "sha": "508078de498d6178e42b7ea4f98d451f79cf44a2",
+      "filename": "tests/test_swiglu.py",
+      "status": "added",
+      "additions": 50,
+      "deletions": 0,
+      "changes": 50,
+      "blob_url": "https://github.com/huawei-csl/pto-kernels/blob/4598ef007906eed7510fba0c567f88f5bbe0fe34/tests%2Ftest_swiglu.py",
+      "raw_url": "https://github.com/huawei-csl/pto-kernels/raw/4598ef007906eed7510fba0c567f88f5bbe0fe34/tests%2Ftest_swiglu.py",
+      "contents_url": "https://api.github.com/repos/huawei-csl/pto-kernels/contents/tests%2Ftest_swiglu.py?ref=4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "patch": "@@ -0,0 +1,50 @@\n+import pytest\n+import torch\n+import torch_npu  # noqa\n+\n+from pto_kernels import pto_swiglu\n+\n+DTYPE = torch.float16\n+TEST_SEEDS = [0, 1]\n+TEST_BATCHES = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]\n+TEST_HIDDEN_DIMS = [128, 256, 512, 1024, 4096, 6144, 16384, 32768, 65536, 262144]\n+TEST_LARGE_HIDDEN_DIM_MIN = 16384\n+TEST_LARGE_HIDDEN_DIM_MAX_BATCH = 64\n+TEST_CASES = [\n+    (batch, hidden_dim)\n+    for batch in TEST_BATCHES\n+    for hidden_dim in TEST_HIDDEN_DIMS\n+    if hidden_dim < TEST_LARGE_HIDDEN_DIM_MIN\n+    or batch <= TEST_LARGE_HIDDEN_DIM_MAX_BATCH\n+]\n+\n+\n+def swiglu_ref(x):\n+    gate, up = torch.chunk(x.float(), 2, dim=-1)\n+    return (gate * torch.sigmoid(gate) * up).to(x.dtype)\n+\n+\n+@pytest.mark.parametrize(\"seed\", TEST_SEEDS)\n+@pytest.mark.parametrize(\"batch,hidden_dim\", TEST_CASES)\n+def test_pto_swiglu_matches_reference_and_torch_npu(\n+    npu_device,\n+    seed,\n+    batch,\n+    hidden_dim,\n+):\n+    torch.manual_seed(seed)\n+    x = torch.randn(batch, hidden_dim * 2, device=npu_device, dtype=DTYPE)\n+\n+    actual = pto_swiglu(x)\n+    expected = swiglu_ref(x.cpu())\n+    torch_npu_expected = torch_npu.npu_swiglu(x, dim=-1)\n+\n+    torch.testing.assert_close(actual.cpu(), expected, rtol=1e-2, atol=1e-5)\n+    torch.testing.assert_close(actual, torch_npu_expected, rtol=1e-2, atol=1e-5)\n+\n+\n+def test_pto_swiglu_rejects_non_last_dim(npu_device):\n+    x = torch.randn(2, 256, device=npu_device, dtype=DTYPE)\n+\n+    with pytest.raises(RuntimeError, match=\"dim=-1\"):\n+        pto_swiglu(x, dim=0)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "ed1e70ff784c59bfe3cc272c9e3cb88a630314dd",
+      "message": "Add PTO dynamic SwiGLU kernel",
+      "parent_shas": [
+        "a2ad73809f59e8c444ca5d16b378f5ce4b4f7743"
+      ]
+    },
+    {
+      "sha": "ed17a84d38fab841c99b0702cefdebd34e552978",
+      "message": "Update .gitignore to exclude output directories and files",
+      "parent_shas": [
+        "ed1e70ff784c59bfe3cc272c9e3cb88a630314dd"
+      ]
+    },
+    {
+      "sha": "8fefb4de1d8e74f4021c184fb375ed7f8b56758c",
+      "message": "Update test batches in swiglu test to include more sizes",
+      "parent_shas": [
+        "ed17a84d38fab841c99b0702cefdebd34e552978"
+      ]
+    },
+    {
+      "sha": "ea28f145d46af6d960ad45bcb04e0bb651177097",
+      "message": "Refactor SwiGLU dynamic kernel: remove deprecated 1D tile handling and optimize 2D tile configuration",
+      "parent_shas": [
+        "8fefb4de1d8e74f4021c184fb375ed7f8b56758c"
+      ]
+    },
+    {
+      "sha": "2a07ed986c3d75a846efb188a5386ae805727531",
+      "message": "Format code for consistency and improve readability in swiglu_dynamic.cpp",
+      "parent_shas": [
+        "ea28f145d46af6d960ad45bcb04e0bb651177097"
+      ]
+    },
+    {
+      "sha": "b384b2ebb229fb06190fcbb4c439dd39ca786b72",
+      "message": "Add documentation for fp16 SwiGLU kernel launch parameters and implementation details",
+      "parent_shas": [
+        "2a07ed986c3d75a846efb188a5386ae805727531"
+      ]
+    },
+    {
+      "sha": "1635ff2288cd5ec52bfec4eba660a16222be2ca0",
+      "message": "Refactor SwiGLU dynamic kernel: improve code organization, update variable names, and enhance test parameters for clarity",
+      "parent_shas": [
+        "b384b2ebb229fb06190fcbb4c439dd39ca786b72"
+      ]
+    },
+    {
+      "sha": "26b17be6577a57c28d813a840e9fe618c64103ee",
+      "message": "changed flops calc",
+      "parent_shas": [
+        "1635ff2288cd5ec52bfec4eba660a16222be2ca0"
+      ]
+    },
+    {
+      "sha": "48f22ca73c213690381dfdd9b7c293d9ee335a07",
+      "message": "linting",
+      "parent_shas": [
+        "26b17be6577a57c28d813a840e9fe618c64103ee"
+      ]
+    },
+    {
+      "sha": "a91e7edcab7415525128d1b53ddd5a809404f701",
+      "message": "refert unintentional conftest chagnes",
+      "parent_shas": [
+        "48f22ca73c213690381dfdd9b7c293d9ee335a07"
+      ]
+    },
+    {
+      "sha": "715827bb7876ab68c5387fdc4f96dbbec62316c0",
+      "message": "black",
+      "parent_shas": [
+        "a91e7edcab7415525128d1b53ddd5a809404f701"
+      ]
+    },
+    {
+      "sha": "bfc6d5a5a622afc0a290d60cfc912de5cab90c55",
+      "message": "Update tolerance values in SwiGLU tests for improved accuracy",
+      "parent_shas": [
+        "715827bb7876ab68c5387fdc4f96dbbec62316c0"
+      ]
+    },
+    {
+      "sha": "da958cf5e50ee111c9aca117e74d9e0ce686c5e5",
+      "message": "[Feat] Add SwiGLU PTO kernel to csrc",
+      "parent_shas": [
+        "bfc6d5a5a622afc0a290d60cfc912de5cab90c55"
+      ]
+    },
+    {
+      "sha": "c4342e0a82dc6afde6038e4fe0b1d987cb7b8282",
+      "message": "clang-format",
+      "parent_shas": [
+        "da958cf5e50ee111c9aca117e74d9e0ce686c5e5"
+      ]
+    },
+    {
+      "sha": "0fe90dc4edbdf4fd6a31e3bd20fd66c8be245485",
+      "message": "Refactor SwiGLU kernel limits and update tests for dynamic input sizes",
+      "parent_shas": [
+        "c4342e0a82dc6afde6038e4fe0b1d987cb7b8282"
+      ]
+    },
+    {
+      "sha": "c293775ca2c2451b3e30d9e558d1dbda013e2887",
+      "message": "Remove unnecessary preprocessor guards for MEMORY_BASE in swiglu.cpp",
+      "parent_shas": [
+        "0fe90dc4edbdf4fd6a31e3bd20fd66c8be245485"
+      ]
+    },
+    {
+      "sha": "c6a7620c8b11f3efb89e4e952f4f289702ef13da",
+      "message": "Fix clang-format flags in swiglu.cpp for consistent formatting",
+      "parent_shas": [
+        "c293775ca2c2451b3e30d9e558d1dbda013e2887"
+      ]
+    },
+    {
+      "sha": "4598ef007906eed7510fba0c567f88f5bbe0fe34",
+      "message": "Enhance SwiGLU benchmarks with CMake/pybind support and add caching for NPU streams",
+      "parent_shas": [
+        "c6a7620c8b11f3efb89e4e952f4f289702ef13da"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "adds_new_tests",
+      "binding_wrapper_noise",
+      "cross_language_mapping_visible",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__huawei-csl__pto-kernels__pr97.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\huawei-csl__pto-kernels__pr97__cpp_python__huawei-csl__pto-kernels__pr97\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\huawei-csl__pto-kernels__pr97__cpp_python__huawei-csl__pto-kernels__pr97\\rn"
+  }
+}

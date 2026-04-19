@@ -1,0 +1,103 @@
+{
+  "instance_id": "cpp_python__SpM-lab__sparse-ir-rs__pr213",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "SpM-lab/sparse-ir-rs",
+  "pr_number": 213,
+  "pr_url": "https://github.com/SpM-lab/sparse-ir-rs/pull/213",
+  "repo": {
+    "full_name": "SpM-lab/sparse-ir-rs",
+    "clone_url": "https://github.com/SpM-lab/sparse-ir-rs.git",
+    "default_branch": "main",
+    "created_at": "2025-10-02T10:55:40Z",
+    "stars": 6,
+    "license": "MIT",
+    "size_kb": 4633
+  },
+  "pull_request": {
+    "id": 3442332940,
+    "title": "fix(python): ctypes _Bool mapping, missing mitigate arg, NULL detection",
+    "body": "## Summary\n- **`_Bool` unmapped** in `gen_ctypes.py`: Added `'_Bool': 'c_bool'` mapping so 7 Matsubara sampling functions get proper argtypes/restype (fixes #190)\n- **Missing `mitigate` argument** in `basis_get_n_default_matsus_ext`: Was passing 4 args to a 5-arg C function, corrupting the call stack (fixes #189)\n- **NULL pointer detection broken**: Changed `is None` to `not` for ctypes pointer null checks (fixes #191)\n- **`c_int` where `_Bool` expected**: Replaced `c_int(1 if x else 0)` with `c_bool(x)` for all boolean C-API parameters (fixes #191)\n\n## Test plan\n- [x] `uv run pytest tests/ -v` — all 63 tests pass\n\nCloses #189, #190, #191\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "created_at": "2026-03-25T00:42:35Z",
+    "merged_at": "2026-03-25T01:49:34Z",
+    "base_sha": "c96c50defe931856242caaad1004e7b722c4e03e",
+    "head_sha": "820927626544288fa6de2c65c721618f840c7a02",
+    "merge_commit_sha": "e36a387a296e9ea58ef5c507b827412a9211731b",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "c96c50defe931856242caaad1004e7b722c4e03e",
+  "final_sha": "820927626544288fa6de2c65c721618f840c7a02",
+  "changed_files": [
+    {
+      "sha": "1d2ac1c0fa3a149d6c5e20e4711549a860d1e14a",
+      "filename": "python/pylibsparseir/core.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 9,
+      "changes": 18,
+      "blob_url": "https://github.com/SpM-lab/sparse-ir-rs/blob/820927626544288fa6de2c65c721618f840c7a02/python%2Fpylibsparseir%2Fcore.py",
+      "raw_url": "https://github.com/SpM-lab/sparse-ir-rs/raw/820927626544288fa6de2c65c721618f840c7a02/python%2Fpylibsparseir%2Fcore.py",
+      "contents_url": "https://api.github.com/repos/SpM-lab/sparse-ir-rs/contents/python%2Fpylibsparseir%2Fcore.py?ref=820927626544288fa6de2c65c721618f840c7a02",
+      "patch": "@@ -106,7 +106,7 @@ def _find_library():\n     _lib.spir_gemm_backend_new_from_fblas_lp64.restype = spir_gemm_backend\n     _blas_backend = _lib.spir_gemm_backend_new_from_fblas_lp64(ptr, ptr_z)\n \n-    if _blas_backend is None:\n+    if not _blas_backend:\n         raise RuntimeError(\"Failed to create BLAS backend handle\")\n \n     if os.environ.get(\"SPARSEIR_DEBUG\", \"\").lower() in (\"1\", \"true\", \"yes\", \"on\"):\n@@ -134,7 +134,7 @@ def release_blas_backend(backend):\n     Args:\n         backend: The backend handle to release (can be None).\n     \"\"\"\n-    if backend is not None:\n+    if backend:\n         _lib.spir_gemm_backend_release.argtypes = [spir_gemm_backend]\n         _lib.spir_gemm_backend_release.restype = None\n         _lib.spir_gemm_backend_release(backend)\n@@ -515,26 +515,26 @@ def basis_get_default_matsubara_sampling_points(basis, positive_only=False):\n     # Get number of points\n     n_points = c_int()\n     status = _lib.spir_basis_get_n_default_matsus(\n-        basis, c_int(1 if positive_only else 0), byref(n_points))\n+        basis, c_bool(positive_only), byref(n_points))\n     if status != COMPUTATION_SUCCESS:\n         raise RuntimeError(\n             f\"Failed to get number of default Matsubara points: {status}\")\n \n     # Get the points\n     points = np.zeros(n_points.value, dtype=np.int64)\n-    status = _lib.spir_basis_get_default_matsus(basis, c_int(\n-        1 if positive_only else 0), points.ctypes.data_as(POINTER(c_int64)))\n+    status = _lib.spir_basis_get_default_matsus(basis, c_bool(\n+        positive_only), points.ctypes.data_as(POINTER(c_int64)))\n     if status != COMPUTATION_SUCCESS:\n         raise RuntimeError(f\"Failed to get default Matsubara points: {status}\")\n \n     return points\n \n \n-def basis_get_n_default_matsus_ext(basis, n_points, positive_only):\n+def basis_get_n_default_matsus_ext(basis, n_points, positive_only, mitigate=False):\n     \"\"\"Get the number of default Matsubara sampling points for a basis.\"\"\"\n     n_points_returned = c_int()\n     status = _lib.spir_basis_get_n_default_matsus_ext(\n-        basis, c_int(1 if positive_only else 0), n_points, byref(n_points_returned))\n+        basis, c_bool(positive_only), c_bool(mitigate), c_int(n_points), byref(n_points_returned))\n     if status != COMPUTATION_SUCCESS:\n         raise RuntimeError(\n             f\"Failed to get number of default Matsubara points: {status}\")\n@@ -544,8 +544,8 @@ def basis_get_n_default_matsus_ext(basis, n_points, positive_only):\n def basis_get_default_matsus_ext(basis, positive_only, points):\n     n_points = len(points)\n     n_points_returned = c_int()\n-    status = _lib.spir_basis_get_default_matsus_ext(basis, c_int(\n-        1 if positive_only else 0), c_int(0), n_points, points.ctypes.data_as(POINTER(c_int64)), byref(n_points_returned))\n+    status = _lib.spir_basis_get_default_matsus_ext(basis, c_bool(\n+        positive_only), c_bool(False), c_int(n_points), points.ctypes.data_as(POINTER(c_int64)), byref(n_points_returned))\n     if status != COMPUTATION_SUCCESS:\n         raise RuntimeError(f\"Failed to get default Matsubara points: {status}\")\n     return points"
+    },
+    {
+      "sha": "cfdd0eac6620f7f300e835e8fc8dddbb519ea36a",
+      "filename": "python/pylibsparseir/ctypes_autogen.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 7,
+      "changes": 14,
+      "blob_url": "https://github.com/SpM-lab/sparse-ir-rs/blob/820927626544288fa6de2c65c721618f840c7a02/python%2Fpylibsparseir%2Fctypes_autogen.py",
+      "raw_url": "https://github.com/SpM-lab/sparse-ir-rs/raw/820927626544288fa6de2c65c721618f840c7a02/python%2Fpylibsparseir%2Fctypes_autogen.py",
+      "contents_url": "https://api.github.com/repos/SpM-lab/sparse-ir-rs/contents/python%2Fpylibsparseir%2Fctypes_autogen.py?ref=820927626544288fa6de2c65c721618f840c7a02",
+      "patch": "@@ -28,13 +28,13 @@ def value(self):\n # Function prototypes: {name: (restype, [argtypes])}\n FUNCTIONS = {\n     'spir_basis_clone': ('POINTER(struct spir_basis)', ['POINTER(struct spir_basis)']),\n-    'spir_basis_get_default_matsus': ('c_int', ['POINTER(struct spir_basis)', '_Bool', 'POINTER(c_int64)']),\n-    'spir_basis_get_default_matsus_ext': ('c_int', ['POINTER(struct spir_basis)', '_Bool', '_Bool', 'c_int', 'POINTER(c_int64)', 'POINTER(c_int)']),\n+    'spir_basis_get_default_matsus': ('c_int', ['POINTER(struct spir_basis)', 'c_bool', 'POINTER(c_int64)']),\n+    'spir_basis_get_default_matsus_ext': ('c_int', ['POINTER(struct spir_basis)', 'c_bool', 'c_bool', 'c_int', 'POINTER(c_int64)', 'POINTER(c_int)']),\n     'spir_basis_get_default_taus': ('c_int', ['POINTER(struct spir_basis)', 'POINTER(c_double)']),\n     'spir_basis_get_default_taus_ext': ('c_int', ['POINTER(struct spir_basis)', 'c_int', 'POINTER(c_double)', 'POINTER(c_int)']),\n     'spir_basis_get_default_ws': ('c_int', ['POINTER(struct spir_basis)', 'POINTER(c_double)']),\n-    'spir_basis_get_n_default_matsus': ('c_int', ['POINTER(struct spir_basis)', '_Bool', 'POINTER(c_int)']),\n-    'spir_basis_get_n_default_matsus_ext': ('c_int', ['POINTER(struct spir_basis)', '_Bool', '_Bool', 'c_int', 'POINTER(c_int)']),\n+    'spir_basis_get_n_default_matsus': ('c_int', ['POINTER(struct spir_basis)', 'c_bool', 'POINTER(c_int)']),\n+    'spir_basis_get_n_default_matsus_ext': ('c_int', ['POINTER(struct spir_basis)', 'c_bool', 'c_bool', 'c_int', 'POINTER(c_int)']),\n     'spir_basis_get_n_default_taus': ('c_int', ['POINTER(struct spir_basis)', 'POINTER(c_int)']),\n     'spir_basis_get_n_default_ws': ('c_int', ['POINTER(struct spir_basis)', 'POINTER(c_int)']),\n     'spir_basis_get_singular_values': ('c_int', ['POINTER(struct spir_basis)', 'POINTER(c_double)']),\n@@ -87,8 +87,8 @@ def value(self):\n     'spir_kernel_is_assigned': ('c_int', ['POINTER(struct spir_kernel)']),\n     'spir_kernel_release': ('None', ['POINTER(struct spir_kernel)']),\n     'spir_logistic_kernel_new': ('POINTER(struct spir_kernel)', ['c_double', 'POINTER(c_int)']),\n-    'spir_matsu_sampling_new': ('POINTER(struct spir_sampling)', ['POINTER(struct spir_basis)', '_Bool', 'c_int', 'POINTER(c_int64)', 'POINTER(c_int)']),\n-    'spir_matsu_sampling_new_with_matrix': ('POINTER(struct spir_sampling)', ['c_int', 'c_int', 'c_int', '_Bool', 'c_int', 'POINTER(c_int64)', 'POINTER(struct Complex64)', 'POINTER(c_int)']),\n+    'spir_matsu_sampling_new': ('POINTER(struct spir_sampling)', ['POINTER(struct spir_basis)', 'c_bool', 'c_int', 'POINTER(c_int64)', 'POINTER(c_int)']),\n+    'spir_matsu_sampling_new_with_matrix': ('POINTER(struct spir_sampling)', ['c_int', 'c_int', 'c_int', 'c_bool', 'c_int', 'POINTER(c_int64)', 'POINTER(struct Complex64)', 'POINTER(c_int)']),\n     'spir_reg_bose_kernel_new': ('POINTER(struct spir_kernel)', ['c_double', 'POINTER(c_int)']),\n     'spir_sampling_clone': ('POINTER(struct spir_sampling)', ['POINTER(struct spir_sampling)']),\n     'spir_sampling_eval_dd': ('c_int', ['POINTER(struct spir_sampling)', 'POINTER(struct spir_gemm_backend)', 'c_int', 'c_int', 'POINTER(c_int)', 'c_int', 'POINTER(c_double)', 'POINTER(c_double)']),\n@@ -114,5 +114,5 @@ def value(self):\n     'spir_sve_result_truncate': ('POINTER(struct spir_sve_result)', ['POINTER(struct spir_sve_result)', 'c_double', 'c_int', 'POINTER(c_int)']),\n     'spir_tau_sampling_new': ('POINTER(struct spir_sampling)', ['POINTER(struct spir_basis)', 'c_int', 'POINTER(c_double)', 'POINTER(c_int)']),\n     'spir_tau_sampling_new_with_matrix': ('POINTER(struct spir_sampling)', ['c_int', 'c_int', 'c_int', 'c_int', 'POINTER(c_double)', 'POINTER(c_double)', 'POINTER(c_int)']),\n-    'spir_uhat_get_default_matsus': ('c_int', ['POINTER(struct spir_funcs)', 'c_int', '_Bool', '_Bool', 'POINTER(c_int64)', 'POINTER(c_int)']),\n+    'spir_uhat_get_default_matsus': ('c_int', ['POINTER(struct spir_funcs)', 'c_int', 'c_bool', 'c_bool', 'POINTER(c_int64)', 'POINTER(c_int)']),\n }"
+    },
+    {
+      "sha": "26ae1a55d7aebab0d681cd6e3ab5ded5f3ef32b5",
+      "filename": "python/tools/gen_ctypes.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/SpM-lab/sparse-ir-rs/blob/820927626544288fa6de2c65c721618f840c7a02/python%2Ftools%2Fgen_ctypes.py",
+      "raw_url": "https://github.com/SpM-lab/sparse-ir-rs/raw/820927626544288fa6de2c65c721618f840c7a02/python%2Ftools%2Fgen_ctypes.py",
+      "contents_url": "https://api.github.com/repos/SpM-lab/sparse-ir-rs/contents/python%2Ftools%2Fgen_ctypes.py?ref=820927626544288fa6de2c65c721618f840c7a02",
+      "patch": "@@ -75,6 +75,7 @@ def configure_libclang():\n     'int': 'c_int',\n     'double': 'c_double',\n     'bool': 'c_bool',\n+    '_Bool': 'c_bool',\n     'int64_t': 'c_int64',\n     'long long': 'c_int64',  # int64_t is often typedef'd to long long on Linux\n     'long long int': 'c_int64',"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "820927626544288fa6de2c65c721618f840c7a02",
+      "message": "fix(python): ctypes _Bool mapping, missing mitigate arg, NULL detection, bool types\n\n- Add '_Bool': 'c_bool' to gen_ctypes.py CTYPE_MAP and regenerate\n  ctypes_autogen.py so 7 Matsubara sampling functions get proper\n  type checking (fixes #190)\n\n- Add missing mitigate parameter to basis_get_n_default_matsus_ext\n  which was passing 4 args instead of 5 to the C function (fixes #189)\n\n- Fix NULL pointer detection: change `is None` to `not` for ctypes\n  pointer checks, since ctypes wraps NULL in a Python object that\n  is never None (fixes #191)\n\n- Replace c_int(1 if x else 0) with c_bool(x) for all bool parameters\n  to match C _Bool ABI (fixes #191)\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "c96c50defe931856242caaad1004e7b722c4e03e"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__SpM-lab__sparse-ir-rs__pr213.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\SpM-lab__sparse-ir-rs__pr213__cpp_python__SpM-lab__sparse-ir-rs__pr213\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\SpM-lab__sparse-ir-rs__pr213__cpp_python__SpM-lab__sparse-ir-rs__pr213\\rn"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "instance_id": "cpp_python__sonic-net__sonic-swss-common__pr1159",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "sonic-net/sonic-swss-common",
+  "pr_number": 1159,
+  "pr_url": "https://github.com/sonic-net/sonic-swss-common/pull/1159",
+  "repo": {
+    "full_name": "sonic-net/sonic-swss-common",
+    "clone_url": "https://github.com/sonic-net/sonic-swss-common.git",
+    "default_branch": "master",
+    "created_at": "2016-03-23T22:39:26Z",
+    "stars": 57,
+    "license": "NOASSERTION",
+    "size_kb": 2348
+  },
+  "pull_request": {
+    "id": 3414828292,
+    "title": "Adding zmqclient to swig file.",
+    "body": "Including zmqclient.h into the SWIG file.",
+    "created_at": "2026-03-18T13:13:57Z",
+    "merged_at": "2026-03-18T18:44:33Z",
+    "base_sha": "364023a770566039d494a18dac42e5dd6ffbc2ec",
+    "head_sha": "887079ba7628946391a5b36b27e52567cdaae0f7",
+    "merge_commit_sha": "1e0584c4ab22924ffa8438985474389af81187b3",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "364023a770566039d494a18dac42e5dd6ffbc2ec",
+  "final_sha": "887079ba7628946391a5b36b27e52567cdaae0f7",
+  "changed_files": [
+    {
+      "sha": "7dc2809525d3b861f66dd2fcfddb160a815cc27a",
+      "filename": "pyext/swsscommon.i",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/sonic-net/sonic-swss-common/blob/887079ba7628946391a5b36b27e52567cdaae0f7/pyext%2Fswsscommon.i",
+      "raw_url": "https://github.com/sonic-net/sonic-swss-common/raw/887079ba7628946391a5b36b27e52567cdaae0f7/pyext%2Fswsscommon.i",
+      "contents_url": "https://api.github.com/repos/sonic-net/sonic-swss-common/contents/pyext%2Fswsscommon.i?ref=887079ba7628946391a5b36b27e52567cdaae0f7",
+      "patch": "@@ -53,6 +53,7 @@\n #include \"status_code_util.h\"\n #include \"redis_table_waiter.h\"\n #include \"restart_waiter.h\"\n+#include \"zmqclient.h\"\n #include \"zmqserver.h\"\n #include \"zmqconsumerstatetable.h\"\n #include \"zmqproducerstatetable.h\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "887079ba7628946391a5b36b27e52567cdaae0f7",
+      "message": "Adding zmqclient to swig file.\n\nSigned-off-by: divyagayathri-hcl <divyagayathri.s@hcl.com>",
+      "parent_shas": [
+        "364023a770566039d494a18dac42e5dd6ffbc2ec"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__sonic-net__sonic-swss-common__pr1159.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\sonic-net__sonic-swss-common__pr1159__cpp_python__sonic-net__sonic-swss-common__pr1159\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\sonic-net__sonic-swss-common__pr1159__cpp_python__sonic-net__sonic-swss-common__pr1159\\rn"
+  }
+}

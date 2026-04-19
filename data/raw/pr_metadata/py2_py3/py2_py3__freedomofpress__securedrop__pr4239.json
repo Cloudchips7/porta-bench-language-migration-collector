@@ -1,0 +1,1076 @@
+{
+  "instance_id": "py2_py3__freedomofpress__securedrop__pr4239",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "freedomofpress/securedrop",
+  "pr_number": 4239,
+  "pr_url": "https://github.com/freedomofpress/securedrop/pull/4239",
+  "repo": {
+    "full_name": "freedomofpress/securedrop",
+    "clone_url": "https://github.com/freedomofpress/securedrop.git",
+    "default_branch": "develop",
+    "created_at": "2012-01-11T19:57:55Z",
+    "stars": 3805,
+    "license": "NOASSERTION",
+    "size_kb": 112208
+  },
+  "pull_request": {
+    "id": 258822439,
+    "title": "Make application code Python 3 compliant",
+    "body": "## Status\r\n\r\nReady for review\r\n\r\n## Description of Changes\r\n\r\nMoving the application code base into `Python3` in `Xenial`.\r\n\r\n## Testing\r\n\r\n1. There should be a new Python 3 test CI job that is passing, all other CI jobs should pass.\r\n\r\n2. Tests should pass on Python 2 and Python 3\r\n\r\n```\r\nBASE_OS=xenial PYTHON_VERSION=3 make test\r\nBASE_OS=xenial PYTHON_VERSION=2 make test\r\n```\r\n\r\n3. Dev envs should work on both Python 2 and Python 3:\r\n\r\n```\r\nPYTHON_VERSION=3 BASE_OS=xenial make dev\r\nPYTHON_VERSION=2 BASE_OS=xenial make dev\r\n```\r\n\r\n## Deployment\r\n\r\nUntil we are ready to deploy Python 3 in a virtualenv, we'll continue to deploy using Python 2 on production servers. However, all changes once this PR are merged should work under both Python 2 and Python 3.\r\n\r\n## Checklist\r\n\r\n### If you made changes to the server application code:\r\n\r\n- [ ] Linting (`make ci-lint`) and tests (`make -C securedrop test`) pass in the development container\r\n\r\n### If you made non-trivial code changes:\r\n\r\n- [ ] I have written a test plan and validated it for this PR\r\n",
+    "created_at": "2019-03-06T18:00:01Z",
+    "merged_at": "2019-04-16T10:43:42Z",
+    "base_sha": "a886f810e9510d49ec0b488ebbf6317be3ca7a02",
+    "head_sha": "44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+    "merge_commit_sha": "4410a6cc8804a5c0a91a6abbc9640ba525196a12",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "f0f2240ee00b176ac4270485e7cdf198b58f4fdd",
+  "final_sha": "44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+  "changed_files": [
+    {
+      "sha": "5fb921f520f175d10343f1a36f2e2d652c3f116b",
+      "filename": ".circleci/config.yml",
+      "status": "modified",
+      "additions": 78,
+      "deletions": 23,
+      "changes": 101,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/.circleci%2Fconfig.yml",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/.circleci%2Fconfig.yml",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/.circleci%2Fconfig.yml?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -13,7 +13,7 @@ common-steps:\n \n   - &restorecache\n     restore_cache:\n-      key: v1-sd-layers-{{ checksum \"securedrop/dockerfiles/xenial/Dockerfile\" }}\n+      key: v1-sd-layers-{{ checksum \"securedrop/dockerfiles/xenial/python2/Dockerfile\" }}\n       paths:\n         - /caches/layers.tar.gz\n \n@@ -30,19 +30,19 @@ common-steps:\n       command: |\n         set +o pipefail\n         docker images\n-        fromtag=$(docker images |grep securedrop-test-xenial |head -n1 |awk '{print $2}')\n-        cd securedrop && DOCKER_BUILD_ARGUMENTS=\"--cache-from securedrop-test-xenial:${fromtag:-latest}\" ./bin/dev-shell true\n+        fromtag=$(docker images |grep securedrop-test-xenial-py2 |head -n1 |awk '{print $2}')\n+        cd securedrop && DOCKER_BUILD_ARGUMENTS=\"--cache-from securedrop-test-xenial-py2:${fromtag:-latest}\" ./bin/dev-shell true\n \n   - &saveimagelayers\n     run:\n       name: Save Docker image layer cache\n       command: |\n         docker images\n-        docker save -o /caches/layers.tar securedrop-test-xenial:latest\n+        docker save -o /caches/layers.tar securedrop-test-xenial-py2:latest\n \n   - &savecache\n     save_cache:\n-      key: v1-sd-layers-{{ checksum \"securedrop/dockerfiles/xenial/Dockerfile\" }}\n+      key: v1-sd-layers-{{ checksum \"securedrop/dockerfiles/xenial/python2/Dockerfile\" }}\n       paths:\n         - /caches/layers.tar\n \n@@ -66,22 +66,14 @@ jobs:\n     steps:\n       - checkout\n       - *rebaseontarget\n-\n-      - run:\n-          name: Ensure cache dir exists and permissions are good\n-          command: |\n-            sudo mkdir -p /caches && sudo chown circleci: -R /caches\n+      - *createcachedir\n \n       - restore_cache:\n-          key: v1-sd-layers-{{ checksum \"securedrop/dockerfiles/trusty/Dockerfile\" }}\n+          key: v1-sd-layers-{{ checksum \"securedrop/dockerfiles/trusty/python2/Dockerfile\" }}\n           paths:\n             - /caches/layers.tar.gz\n \n-      - run:\n-          name: Load image layer cache\n-          command: |\n-            set +o pipefail\n-            docker load -i /caches/layers.tar |true\n+      - *loadimagelayers\n \n       - run:\n           name: Build Docker image\n@@ -98,7 +90,7 @@ jobs:\n             docker save -o /caches/layers.tar securedrop-test-trusty:latest\n \n       - save_cache:\n-          key: v1-sd-layers-{{ checksum \"securedrop/dockerfiles/trusty/Dockerfile\" }}\n+          key: v1-sd-layers-{{ checksum \"securedrop/dockerfiles/trusty/python2/Dockerfile\" }}\n           paths:\n             - /caches/layers.tar\n \n@@ -145,9 +137,66 @@ jobs:\n           name: Run tests\n           command: |\n             export TESTFILES=$(cd securedrop; circleci tests glob 'tests/test*py' 'tests/**/test*py' |circleci tests split --split-by=timings |xargs echo)\n-            docker rm -f securedrop-test-xenial || true\n-            fromtag=$(docker images |grep securedrop-test-xenial |head -n1 |awk '{print $2}')\n-            cd securedrop && DOCKER_RUN_ARGUMENTS=$(bash <(curl -s https://codecov.io/env)) DOCKER_BUILD_ARGUMENTS=\"--cache-from securedrop-test-xenial:${fromtag:-latest}\" make test\n+            docker rm -f securedrop-test-xenial-py2 || true\n+            fromtag=$(docker images |grep securedrop-test-xenial-py2 |head -n1 |awk '{print $2}')\n+            cd securedrop && DOCKER_RUN_ARGUMENTS=$(bash <(curl -s https://codecov.io/env)) DOCKER_BUILD_ARGUMENTS=\"--cache-from securedrop-test-xenial-py2:${fromtag:-latest}\" make test\n+\n+      - store_test_results:\n+          path: ~/test-results\n+\n+      - store_artifacts:\n+          path: ~/test-results\n+\n+  python3-app-tests:\n+    machine:\n+      enabled: true\n+    environment:\n+      DOCKER_API_VERSION: 1.23\n+      BASE_OS: xenial\n+      PYTHON_VERSION: 3\n+    parallelism: 3\n+    steps:\n+      - checkout\n+      - *rebaseontarget\n+      - *createcachedir\n+\n+      - restore_cache:\n+          key: v1-sd-layers-{{ checksum \"securedrop/dockerfiles/xenial/python3/Dockerfile\" }}\n+          paths:\n+            - /caches/layers.tar.gz\n+\n+      - *loadimagelayers\n+\n+      - run:\n+          name: Build Docker images\n+          command: |\n+            set +o pipefail\n+            docker images\n+            fromtag=$(docker images |grep securedrop-test-xenial-py3 |head -n1 |awk '{print $2}')\n+            cd securedrop && DOCKER_BUILD_ARGUMENTS=\"--cache-from securedrop-test-xenial-py3:${fromtag:-latest}\" ./bin/dev-shell true\n+\n+      - run:\n+          name: Save Docker image layer cache\n+          command: |\n+            docker images\n+            docker save -o /caches/layers.tar securedrop-test-xenial-py3:latest\n+\n+      - save_cache:\n+          key: v1-sd-layers-{{ checksum \"securedrop/dockerfiles/xenial/python3/Dockerfile\" }}\n+          paths:\n+            - /caches/layers.tar\n+\n+      - run:\n+          name: Make test results directory\n+          command: mkdir -p ~/test-results\n+\n+      - run:\n+          name: Run tests\n+          command: |\n+            export TESTFILES=$(cd securedrop; circleci tests glob 'tests/test*py' 'tests/**/test*py' |circleci tests split --split-by=timings |xargs echo)\n+            docker rm -f securedrop-test-xenial-py3 || true\n+            fromtag=$(docker images |grep securedrop-test-xenial-py3 |head -n1 |awk '{print $2}')\n+            cd securedrop && DOCKER_BUILD_ARGUMENTS=\"--cache-from securedrop-test-xenial-py3:${fromtag:-latest}\" make test\n \n       - store_test_results:\n           path: ~/test-results\n@@ -180,9 +229,9 @@ jobs:\n           name: Run tests\n           command: |\n             export TESTFILES=$(cd securedrop; circleci tests glob 'tests/pageslayout/test*py' |circleci tests split --split-by=timings |xargs echo)\n-            docker rm -f securedrop-test-xenial || true\n-            fromtag=$(docker images |grep securedrop-test-xenial |head -n1 |awk '{print $2}')\n-            cd securedrop && DOCKER_BUILD_ARGUMENTS=\"--cache-from securedrop-test-xenial:${fromtag:-latest}\" make translation-test\n+            docker rm -f securedrop-test-xenial-py2 || true\n+            fromtag=$(docker images |grep securedrop-test-xenial-py2 |head -n1 |awk '{print $2}')\n+            cd securedrop && DOCKER_BUILD_ARGUMENTS=\"--cache-from securedrop-test-xenial-py2:${fromtag:-latest}\" make translation-test\n \n       - store_test_results:\n           path: ~/test-results\n@@ -284,6 +333,12 @@ workflows:\n               ignore:\n                 - /docs-.*/\n                 - /i18n-.*/\n+      - python3-app-tests:\n+          filters:\n+            branches:\n+              ignore:\n+                - /docs-.*/\n+                - /i18n-.*/\n       - admin-tests:\n           filters:\n             branches:"
+    },
+    {
+      "sha": "636251e23cd057646a468b762c3c2e5bdfd643dc",
+      "filename": "docs/development/setup_development.rst",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 0,
+      "changes": 10,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/docs%2Fdevelopment%2Fsetup_development.rst",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/docs%2Fdevelopment%2Fsetup_development.rst",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/docs%2Fdevelopment%2Fsetup_development.rst?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -106,6 +106,16 @@ To get started, you can try the following:\n    bin/dev-shell bin/run-test tests/functional # functional tests only\n    bin/dev-shell bash                          # shell inside the container\n \n+To specify the version of Python you want to use, set the ``PYTHON_VERSION``\n+environmental variable, like so:\n+\n+.. code:: sh\n+\n+    PYTHON_VERSION=3 make test    # Run tests on Python 3\n+    PYTHON_VERSION=2 make test    # Run tests on Python 2\n+    PYTHON_VERSION=3 make dev     # Run dev container on Python 3\n+    PYTHON_VERSION=2 make dev     # Run dev container on Python 2\n+\n .. tip:: The interactive shell in the container does not run\n          ``redis``, ``Xvfb`` etc.  However you can import shell helper\n          functions with ``source bin/dev-deps`` and call ``run_xvfb``,"
+    },
+    {
+      "sha": "d6c91e65c658eeee12d4f1c58b3a75554a2402c2",
+      "filename": "molecule/testinfra/staging/app/test_apparmor.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/molecule%2Ftestinfra%2Fstaging%2Fapp%2Ftest_apparmor.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/molecule%2Ftestinfra%2Fstaging%2Fapp%2Ftest_apparmor.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/molecule%2Ftestinfra%2Fstaging%2Fapp%2Ftest_apparmor.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -105,8 +105,8 @@ def test_apparmor_total_profiles(host):\n     \"\"\" Ensure number of total profiles is sum of enforced and\n         complaining profiles \"\"\"\n     with host.sudo():\n-        total_expected = str((len(sdvars.apparmor_enforce)\n-                             + len(sdvars.apparmor_complain)))\n+        total_expected = str(len(sdvars.apparmor_enforce)\n+                             + len(sdvars.apparmor_complain))\n         # Trusty has ~10, Xenial about ~20 profiles, so let's expect\n         # *at least* the sum.\n         assert host.check_output(\"aa-status --profiled\") >= total_expected"
+    },
+    {
+      "sha": "2e6b80cae2743a0f15b2a4436672b0d73c57dea0",
+      "filename": "securedrop/Makefile",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 1,
+      "changes": 6,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2FMakefile",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2FMakefile",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2FMakefile?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -24,6 +24,10 @@ test: ## Run the test suite in a Ubuntu 16.04 (Xenial) dockerized environment\n test-trusty: ## Run the test suite in a Ubuntu 14.04 (Trusty) dockerized environment (to be removed April 30, 2019)\n \tBASE_OS=trusty ./bin/dev-shell ./bin/run-test -v $${TESTFILES:-tests}\n \n+.PHONY: test-python3\n+test-python3: ## Run the Python 3 test suite in a Ubuntu 16.04 (Xenial) dockerized environment\n+\tPYTHON_VERSION=3 BASE_OS=xenial ./bin/dev-shell ./bin/run-test -v $${TESTFILES:-tests}\n+\n .PHONY: translation-test\n translation-test: ## Run all pages-layout tests in all supported languages\n \t./bin/dev-shell ./bin/translation-test $${TESTFILES:-tests/pageslayout}\n@@ -43,7 +47,7 @@ test-config: ## Generate the test config\n \tpython -c 'import os; from jinja2 import Environment, FileSystemLoader; \\\n          env = Environment(loader=FileSystemLoader(\".\")); \\\n          ctx = {\"securedrop_app_gpg_fingerprint\": \"65A1B5FF195B56353CC63DFFCC40EF1228271441\"}; \\\n-         ctx.update(dict((k, {\"stdout\":v}) for k,v in os.environ.iteritems())); \\\n+         ctx.update(dict((k, {\"stdout\":v}) for k,v in os.environ.items())); \\\n          ctx = open(\"config.py\", \"w\").write(env.get_template(\"config.py.example\").render(ctx))'\n \t@echo >> config.py\n \t@echo \"SUPPORTED_LOCALES = ['ar', 'de_DE', 'es_ES', 'en_US', 'el', 'fr_FR', 'it_IT', 'nb_NO', 'nl', 'pt_BR', 'tr', 'zh_Hant']\"  >> config.py"
+    },
+    {
+      "sha": "dba211a567ded02067b01fb6eec2705e75aeef25",
+      "filename": "securedrop/bin/dev-shell",
+      "status": "modified",
+      "additions": 34,
+      "deletions": 17,
+      "changes": 51,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fbin%2Fdev-shell",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fbin%2Fdev-shell",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fbin%2Fdev-shell?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -7,13 +7,16 @@\n set -eu\n \n TOPLEVEL=$(git rev-parse --show-toplevel)\n-source \"${BASH_SOURCE%/*}/../../devops/scripts/ticker\"\n \n if ! test -n \"${BASE_OS:-}\" ; then\n     # If no base OS was specified, then we use Xenial\n     BASE_OS=xenial\n fi\n \n+if ! test -n \"${PYTHON_VERSION:-}\" ; then\n+    PYTHON_VERSION=2\n+fi\n+\n function exit_if_not_supported_base_image() {\n     # Currently we only support Xenial or Trusty.\n     if [[ \"$1\" != \"xenial\" && \"$1\" != \"trusty\" ]]\n@@ -23,37 +26,51 @@ function exit_if_not_supported_base_image() {\n     fi\n }\n \n+function validate_python_version() {\n+    # Trusty will be EOL April 2019. Orgs must be on Xenial to upgrade to Python 3.\n+    if [[ \"$1\" != \"xenial\" && \"$2\" != \"2\" ]]\n+    then\n+        echo \"For Ubuntu Trusty, PYTHON_VERSION must be 2\"\n+        exit 1\n+    fi\n+\n+    if [[ \"$2\" != \"2\" && \"$2\" != \"3\" ]]\n+    then\n+        echo \"PYTHON_VERSION must be 2 or 3\"\n+        exit 1\n+    fi\n+}\n+\n function docker_image() {\n     exit_if_not_supported_base_image $1\n+    validate_python_version $1 $2\n \n     docker build \\\n            ${DOCKER_BUILD_ARGUMENTS:-} \\\n-       --build-arg=USER_ID=\"$(id -u)\" \\\n-       --build-arg=USER_NAME=\"${USER:-root}\" \\\n-           -t \"securedrop-test-${1}\" \\\n-       --file \"${TOPLEVEL}/securedrop/dockerfiles/${1}/Dockerfile\" \\\n+\t   --build-arg=USER_ID=\"$(id -u)\" \\\n+\t   --build-arg=USER_NAME=\"${USER:-root}\" \\\n+           -t \"securedrop-test-${1}-py${2}\" \\\n+       --file \"${TOPLEVEL}/securedrop/dockerfiles/${1}/python${2}/Dockerfile\" \\\n        \"${TOPLEVEL}/securedrop\"\n }\n \n function docker_run() {\n     exit_if_not_supported_base_image $1\n+    validate_python_version $1 $2\n \n     find . \\( -name '*.pyc' -o -name __pycache__ \\) -delete\n     docker run \\\n        -p 127.0.0.1:5901:5901 \\\n-       --rm \\\n+\t   --rm \\\n+\t   --user \"${USER:-root}\" \\\n+\t   --volume \"${TOPLEVEL}:${TOPLEVEL}\" \\\n+\t   --workdir \"${TOPLEVEL}/securedrop\" \\\n        -e NUM_SOURCES \\\n-       --user \"${USER:-root}\" \\\n-       --volume \"${TOPLEVEL}:${TOPLEVEL}\" \\\n-       --workdir \"${TOPLEVEL}/securedrop\" \\\n+       -e LC_ALL=C.UTF-8 \\\n+       -e LANG=C.UTF-8 \\\n        --name securedrop-dev \\\n-       -ti ${DOCKER_RUN_ARGUMENTS:-} \"securedrop-test-${1}\" \"${@:2}\"\n+\t   -ti ${DOCKER_RUN_ARGUMENTS:-} \"securedrop-test-${1}-py${2}\" \"${@:3}\"\n }\n \n-if test -n \"${CIRCLE_SHA1:-}\" ; then\n-   docker_image $BASE_OS\n-else\n-   ticker docker_image $BASE_OS\n-fi\n-\n-docker_run $BASE_OS \"$@\"\n+docker_image $BASE_OS $PYTHON_VERSION\n+docker_run $BASE_OS $PYTHON_VERSION \"$@\""
+    },
+    {
+      "sha": "d06b146fbb90136214eb5014d8265587522539c7",
+      "filename": "securedrop/bin/run-test",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fbin%2Frun-test",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fbin%2Frun-test",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fbin%2Frun-test?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -27,7 +27,7 @@ mkdir -p \"/tmp/test-results/logs\"\n : \"${PAGE_LAYOUT_LOCALES:=en_US,ar,fr_FR}\"\n export PAGE_LAYOUT_LOCALES\n \n-pytest \\\n+py.test \\\n   --page-layout \\\n   --durations 10 \\\n   --junitxml=/tmp/test-results/junit.xml \\"
+    },
+    {
+      "sha": "2e4d753c6326eae439a7bfe02d134800e26f3666",
+      "filename": "securedrop/create-dev-data.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fcreate-dev-data.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fcreate-dev-data.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fcreate-dev-data.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -102,10 +102,9 @@ def create_source_and_submissions(num_submissions=2, num_replies=2):\n \n     db.session.commit()\n \n-    print((\"Test source (codename: '{}', journalist designation '{}') \"\n-           \"added with {} submissions and {} replies\")\n-          .format(codename, journalist_designation, num_submissions,\n-                  num_replies))\n+    print(\"Test source (codename: '{}', journalist designation '{}') \"\n+          \"added with {} submissions and {} replies\").format(\n+              codename, journalist_designation, num_submissions, num_replies)\n \n \n if __name__ == \"__main__\":  # pragma: no cover"
+    },
+    {
+      "sha": "a91c385c6766f6023f8f315e956271311b00e207",
+      "filename": "securedrop/crypto_util.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 2,
+      "changes": 9,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fcrypto_util.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fcrypto_util.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fcrypto_util.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -5,6 +5,7 @@\n import pretty_bad_protocol as gnupg\n import os\n import io\n+import six\n import scrypt\n import subprocess\n from random import SystemRandom\n@@ -162,7 +163,7 @@ def hash_codename(self, codename, salt=None):\n             salt = self.scrypt_id_pepper\n         return b32encode(scrypt.hash(clean(codename),\n                          salt,\n-                         **self.scrypt_params))\n+                         **self.scrypt_params)).decode('utf-8')\n \n     def genkeypair(self, name, secret):\n         \"\"\"Generate a GPG key through batch file key generation. A source's\n@@ -259,7 +260,11 @@ def decrypt(self, secret, ciphertext):\n         \"\"\"\n         hashed_codename = self.hash_codename(secret,\n                                              salt=self.scrypt_gpg_pepper)\n-        return self.gpg.decrypt(ciphertext, passphrase=hashed_codename).data\n+        data = self.gpg.decrypt(ciphertext, passphrase=hashed_codename).data\n+\n+        if not six.PY2:  # Python3\n+            return data.decode('utf-8')\n+        return data\n \n \n def clean(s, also=''):"
+    },
+    {
+      "sha": "4ca81eab5f4327a27e98211e02e82dc11e1ab978",
+      "filename": "securedrop/dockerfiles/trusty/python2/Dockerfile",
+      "status": "renamed",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fdockerfiles%2Ftrusty%2Fpython2%2FDockerfile",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fdockerfiles%2Ftrusty%2Fpython2%2FDockerfile",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fdockerfiles%2Ftrusty%2Fpython2%2FDockerfile?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "previous_filename": "securedrop/dockerfiles/trusty/Dockerfile"
+    },
+    {
+      "sha": "f17d7bab21b897e931d1615e439f541c5b16c316",
+      "filename": "securedrop/dockerfiles/xenial/python2/Dockerfile",
+      "status": "renamed",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fdockerfiles%2Fxenial%2Fpython2%2FDockerfile",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fdockerfiles%2Fxenial%2Fpython2%2FDockerfile",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fdockerfiles%2Fxenial%2Fpython2%2FDockerfile?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -14,8 +14,7 @@ RUN apt-get update && \\\n RUN apt-get install -y devscripts vim \\\n                        python-pip libpython2.7-dev libssl-dev secure-delete \\\n                        gnupg2 ruby redis-server firefox git xvfb haveged curl \\\n-                       gettext paxctl x11vnc enchant libffi-dev sqlite3 gettext sudo \\\n-                       libgtk2.0\n+                       gettext paxctl x11vnc enchant libffi-dev sqlite3 gettext sudo\n \n ENV FIREFOX_CHECKSUM=88d25053306d33658580973b063cd459a56e3596a3a298c1fb8ab1d52171d860\n RUN curl -LO https://launchpad.net/~ubuntu-mozilla-security/+archive/ubuntu/ppa/+build/9727836/+files/firefox_46.0.1+build1-0ubuntu0.14.04.3_amd64.deb && \\\n@@ -27,7 +26,6 @@ RUN curl -LO https://launchpad.net/~ubuntu-mozilla-security/+archive/ubuntu/ppa/\n RUN gem install sass -v 3.4.23\n \n COPY requirements requirements\n-\n RUN pip install -r requirements/securedrop-app-code-requirements.txt && \\\n     pip install -r requirements/test-requirements.txt\n ",
+      "previous_filename": "securedrop/dockerfiles/xenial/Dockerfile"
+    },
+    {
+      "sha": "72170c235cb2cb98e09be08b4260bcdf4a5b59c7",
+      "filename": "securedrop/dockerfiles/xenial/python3/Dockerfile",
+      "status": "added",
+      "additions": 43,
+      "deletions": 0,
+      "changes": 43,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fdockerfiles%2Fxenial%2Fpython3%2FDockerfile",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fdockerfiles%2Fxenial%2Fpython3%2FDockerfile",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fdockerfiles%2Fxenial%2Fpython3%2FDockerfile?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -0,0 +1,43 @@\n+# ubuntu 16.04 image from 2019-03-12\n+FROM ubuntu@sha256:58d0da8bc2f434983c6ca4713b08be00ff5586eb5cdff47bcde4b2e88fd40f88\n+ARG USER_NAME\n+ENV USER_NAME ${USER_NAME:-root}\n+ARG USER_ID\n+ENV USER_ID ${USER_ID:-0}\n+\n+# If running grsecurity kernel on the host, Memprotect must be disabled on mono-sgen in the container\n+RUN apt-get update && apt-get install -y paxctl && \\\n+    { apt-get install -y libgtk2.0 || echo 'libgtk2.0 was not installed'; } && \\\n+    paxctl -cm /usr/bin/mono-sgen && dpkg-reconfigure mono-runtime-sgen\n+\n+RUN apt-get install -y devscripts \\\n+                       python3-pip libpython3.5-dev libssl-dev secure-delete \\\n+                       gnupg2 ruby redis-server firefox git xvfb haveged curl \\\n+                       gettext paxctl x11vnc enchant libffi-dev sqlite3 gettext sudo \\\n+                       libgtk2.0\n+\n+ENV FIREFOX_CHECKSUM=88d25053306d33658580973b063cd459a56e3596a3a298c1fb8ab1d52171d860\n+RUN curl -LO https://launchpad.net/~ubuntu-mozilla-security/+archive/ubuntu/ppa/+build/9727836/+files/firefox_46.0.1+build1-0ubuntu0.14.04.3_amd64.deb && \\\n+    shasum -a 256 firefox*deb && \\\n+    echo \"${FIREFOX_CHECKSUM}  firefox_46.0.1+build1-0ubuntu0.14.04.3_amd64.deb\" | shasum -a 256 -c - && \\\n+    dpkg -i firefox*deb && apt-get install -f && \\\n+    paxctl -cm /usr/lib/firefox/firefox\n+\n+RUN gem install sass -v 3.4.23\n+\n+COPY requirements requirements\n+\n+RUN pip3 install -r requirements/securedrop-app-code-requirements.txt && \\\n+    pip3 install -r requirements/test-requirements.txt\n+\n+# Fixes #4036 pybabel requires latest version of setuptools\n+RUN pip3 install --upgrade setuptools\n+\n+# Temporary workaround: Revert when python 3 is deployed to prod\n+RUN sudo rm /usr/bin/python && sudo ln -s /usr/bin/python3 /usr/bin/python\n+\n+RUN if test $USER_NAME != root ; then useradd --no-create-home --home-dir /tmp --uid $USER_ID $USER_NAME && echo \"$USER_NAME ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers ; fi\n+\n+STOPSIGNAL SIGKILL\n+\n+EXPOSE 8080 8081 5901"
+    },
+    {
+      "sha": "9535f315b0dfd8e494127d7f66a9d0b0512c3f3a",
+      "filename": "securedrop/i18n.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fi18n.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fi18n.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fi18n.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -80,7 +80,7 @@ def get_locale(config):\n     \"\"\"\n     locale = None\n     accept_languages = []\n-    for l in request.accept_languages.values():\n+    for l in list(request.accept_languages.values()):\n         if '-' in l:\n             sep = '-'\n         else:"
+    },
+    {
+      "sha": "8c982ebc3be5f7d0c662130b3ae085fdee63aa0a",
+      "filename": "securedrop/i18n_tool.py",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 16,
+      "changes": 32,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fi18n_tool.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fi18n_tool.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fi18n_tool.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -3,6 +3,7 @@\n \n import argparse\n import io\n+import six\n import logging\n import os\n import glob\n@@ -58,7 +59,7 @@ def file_is_modified(self, path):\n \n     def ensure_i18n_remote(self, args):\n         k = {'_cwd': args.root}\n-        if 'i18n' not in git.remote(**k).stdout:\n+        if six.b('i18n') not in git.remote(**k).stdout:\n             git.remote.add('i18n', args.url, **k)\n         git.fetch('i18n', **k)\n \n@@ -124,9 +125,8 @@ def translate_desktop(self, args):\n                 log.warning(\"desktop translations are already up to date\")\n \n         if args.compile:\n-            pos = filter(lambda f: f.endswith('.po'),\n-                         os.listdir(args.translations_dir))\n-            linguas = map(lambda l: l[:-3], pos)\n+            pos = [f for f in os.listdir(args.translations_dir) if f.endswith('.po')]\n+            linguas = [l[:-3] for l in pos]\n             content = \"\\n\".join(linguas) + \"\\n\"\n             open(join(args.translations_dir, 'LINGUAS'), 'w').write(content)\n \n@@ -201,15 +201,15 @@ def require_git_email_name(git_dir):\n                'git -C {d} config --get user.email > /dev/null'.format(\n                    d=git_dir))\n         if subprocess.call(cmd, shell=True):  # nosec\n-            if u'docker' in io.open('/proc/1/cgroup').read():\n+            if six.u('docker') in io.open('/proc/1/cgroup').read():\n                 log.error(\"remember ~/.gitconfig does not exist \"\n                           \"in the dev-shell Docker container, \"\n                           \"only .git/config does\")\n             raise Exception(cmd + ' returned false, please set name and email')\n         return True\n \n     def update_docs(self, args):\n-        l10n_content = u'.. GENERATED BY i18n_tool.py DO NOT EDIT:\\n\\n'\n+        l10n_content = six.u('.. GENERATED BY i18n_tool.py DO NOT EDIT:\\n\\n')\n         for (code, info) in sorted(I18NTool.SUPPORTED_LANGUAGES.items()):\n             l10n_content += '* ' + info['name'] + ' (``' + code + '``)\\n'\n         includes = join(args.documentation_dir, 'includes')\n@@ -240,7 +240,7 @@ def set_update_docs_parser(self, subps):\n \n     def update_from_weblate(self, args):\n         self.ensure_i18n_remote(args)\n-        codes = I18NTool.SUPPORTED_LANGUAGES.keys()\n+        codes = list(I18NTool.SUPPORTED_LANGUAGES.keys())\n         if args.supported_languages:\n             codes = args.supported_languages.split(',')\n         for code in codes:\n@@ -285,26 +285,26 @@ def add(p):\n     def upstream_commit(self, args, code):\n         self.require_git_email_name(args.root)\n         authors = set()\n-        diffs = git('--no-pager', '-C', args.root,\n-                    'diff', '--name-only', '--cached').stdout\n+        diffs = six.text_type(git('--no-pager', '-C', args.root,\n+                                  'diff', '--name-only', '--cached').stdout)\n         for path in diffs.strip().split('\\n'):\n-            previous_message = unicode(git(\n+            previous_message = str(git(\n                 '--no-pager', '-C', args.root, 'log', '-n', '1', path,\n                 _encoding='utf-8'))\n-            m = re.search(u'copied from (\\w+)', previous_message)\n+            m = re.search('copied from (\\w+)', previous_message)\n             if m:\n                 origin = m.group(1)\n             else:\n                 origin = ''\n-            git_authors = unicode(git(\n+            git_authors = str(git(\n                 '--no-pager', '-C', args.root, 'log', '--format=%aN',\n                 '{}..i18n/i18n'.format(origin), '--',\n                 path, _encoding='utf-8'))\n-            git_authors = git_authors.strip().split(u'\\n')\n+            git_authors = git_authors.strip().split('\\n')\n             authors |= set(git_authors)\n         current = git('-C', args.root, 'rev-parse', 'i18n/i18n').stdout\n         info = I18NTool.SUPPORTED_LANGUAGES[code]\n-        message = textwrap.dedent(u\"\"\"\n+        message = textwrap.dedent(six.u(\"\"\"\n         l10n: updated {code} {name}\n \n         localizers: {authors}\n@@ -313,9 +313,9 @@ def upstream_commit(self, args, code):\n         copied from {current}\n         \"\"\".format(remote=args.url,\n                    name=info['name'],\n-                   authors=u\", \".join(authors),\n+                   authors=\", \".join(authors),\n                    code=code,\n-                   current=current))\n+                   current=current)))\n         git('-C', args.root, 'commit', '-m', message)\n \n     def set_update_from_weblate_parser(self, subps):"
+    },
+    {
+      "sha": "fd4d2cd43693a7423e7038dcd4b5fd0da0d0af62",
+      "filename": "securedrop/journalist_app/__init__.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fjournalist_app%2F__init__.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fjournalist_app%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fjournalist_app%2F__init__.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -94,7 +94,7 @@ def handle_csrf_error(e):\n     def _handle_http_exception(error):\n         # Workaround for no blueprint-level 404/5 error handlers, see:\n         # https://github.com/pallets/flask/issues/503#issuecomment-71383286\n-        handler = app.error_handler_spec['api'][error.code].values()[0]\n+        handler = list(app.error_handler_spec['api'][error.code].values())[0]\n         if request.path.startswith('/api/') and handler:\n             return handler(error)\n "
+    },
+    {
+      "sha": "5d81ce665893055b904772406bc7d10fad04041f",
+      "filename": "securedrop/journalist_app/admin.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fjournalist_app%2Fadmin.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fjournalist_app%2Fadmin.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fjournalist_app%2Fadmin.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -42,7 +42,7 @@ def manage_config():\n             finally:\n                 return redirect(url_for(\"admin.manage_config\"))\n         else:\n-            for field, errors in form.errors.items():\n+            for field, errors in list(form.errors.items()):\n                 for error in errors:\n                     flash(error, \"logo-error\")\n             return render_template(\"config.html\", form=form)"
+    },
+    {
+      "sha": "1db02d1958995812c574d235993a87454104250c",
+      "filename": "securedrop/journalist_app/api.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fjournalist_app%2Fapi.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fjournalist_app%2Fapi.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fjournalist_app%2Fapi.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -82,13 +82,13 @@ def validate_data():\n             # other requests must have valid JSON payload\n             else:\n                 try:\n-                    json.loads(request.data)\n+                    json.loads(request.data.decode('utf-8'))\n                 except (ValueError):\n                     return abort(400, 'malformed request')\n \n     @api.route('/token', methods=['POST'])\n     def get_token():\n-        creds = json.loads(request.data)\n+        creds = json.loads(request.data.decode('utf-8'))\n \n         username = creds.get('username', None)\n         passphrase = creds.get('passphrase', None)\n@@ -232,7 +232,7 @@ def all_source_replies(source_uuid):\n \n             user = get_user_object(request)\n \n-            data = json.loads(request.data)\n+            data = request.json\n             if not data['reply']:\n                 abort(400, 'reply should not be empty')\n "
+    },
+    {
+      "sha": "8bf79e94c86c6a194aa366e567dc7ac13a3b0381",
+      "filename": "securedrop/journalist_app/forms.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fjournalist_app%2Fforms.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fjournalist_app%2Fforms.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fjournalist_app%2Fforms.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -46,7 +46,7 @@ class NewUserForm(FlaskForm):\n \n class ReplyForm(FlaskForm):\n     message = TextAreaField(\n-        u'Message',\n+        'Message',\n         id=\"content-area\",\n         validators=[\n             InputRequired(message=gettext("
+    },
+    {
+      "sha": "f6f7e1a0ff2182a133cb54b9ecbbb48efd98533e",
+      "filename": "securedrop/journalist_app/utils.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fjournalist_app%2Futils.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fjournalist_app%2Futils.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fjournalist_app%2Futils.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,5 +1,6 @@\n # -*- coding: utf-8 -*-\n \n+import binascii\n from datetime import datetime\n from flask import (g, flash, current_app, abort, send_file, redirect, url_for,\n                    render_template, Markup, sessions, request)\n@@ -121,7 +122,7 @@ def validate_hotp_secret(user, otp_secret):\n     \"\"\"\n     try:\n         user.set_hotp_secret(otp_secret)\n-    except TypeError as e:\n+    except (binascii.Error, TypeError) as e:\n         if \"Non-hexadecimal digit found\" in str(e):\n             flash(gettext(\n                 \"Invalid secret format: \""
+    },
+    {
+      "sha": "97ccda2a709d6bf68059bf307eee5db634f8fb54",
+      "filename": "securedrop/manage.py",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 9,
+      "changes": 23,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fmanage.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fmanage.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fmanage.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -2,7 +2,6 @@\n # -*- coding: utf-8 -*-\n \n import argparse\n-import codecs\n import datetime\n import logging\n import os\n@@ -15,6 +14,7 @@\n import time\n import traceback\n \n+from six.moves import input\n from contextlib import contextmanager\n from flask import current_app\n from sqlalchemy import create_engine\n@@ -33,6 +33,12 @@\n log = logging.getLogger(__name__)\n \n \n+def obtain_input(text):\n+    \"\"\"Wrapper for testability as suggested in\n+    https://github.com/pytest-dev/pytest/issues/1598#issuecomment-224761877\"\"\"\n+    return input(text)\n+\n+\n def reset(args):\n     \"\"\"Clears the SecureDrop development applications' state, restoring them to\n     the way they were immediately after running `setup_dev.sh`. This command:\n@@ -110,7 +116,7 @@ def add_journalist(args):\n \n def _get_username():\n     while True:\n-        username = raw_input('Username: ')\n+        username = obtain_input('Username: ')\n         try:\n             Journalist.check_username_acceptable(username)\n         except InvalidUsernameException as e:\n@@ -122,8 +128,8 @@ def _get_username():\n def _get_yubikey_usage():\n     '''Function used to allow for test suite mocking'''\n     while True:\n-        answer = raw_input('Will this user be using a YubiKey [HOTP]? '\n-                           '(y/N): ').lower().strip()\n+        answer = obtain_input('Will this user be using a YubiKey [HOTP]? '\n+                              '(y/N): ').lower().strip()\n         if answer in ('y', 'yes'):\n             return True\n         elif answer in ('', 'n', 'no'):\n@@ -154,7 +160,7 @@ def _add_user(is_admin=False):\n         otp_secret = None\n         if is_hotp:\n             while True:\n-                otp_secret = raw_input(\n+                otp_secret = obtain_input(\n                     \"Please configure this user's YubiKey and enter the \"\n                     \"secret: \")\n                 if otp_secret:\n@@ -192,7 +198,6 @@ def _add_user(is_admin=False):\n                                                  issuer_name='SecureDrop')\n                 qr = qrcode.QRCode()\n                 qr.add_data(uri)\n-                sys.stdout = codecs.getwriter(\"utf-8\")(sys.stdout)\n                 qr.print_ascii(tty=sys.stdout.isatty())\n                 print('\\nIf the barcode does not render correctly, try '\n                       \"changing your terminal's font (Monospace for Linux, \"\n@@ -205,12 +210,12 @@ def _add_user(is_admin=False):\n \n \n def _get_username_to_delete():\n-    return raw_input('Username to delete: ')\n+    return obtain_input('Username to delete: ')\n \n \n def _get_delete_confirmation(user):\n-    confirmation = raw_input('Are you sure you want to delete user '\n-                             '\"{}\" (y/n)?'.format(user))\n+    confirmation = obtain_input('Are you sure you want to delete user '\n+                                '\"{}\" (y/n)?'.format(user))\n     if confirmation.lower() != 'y':\n         print('Confirmation not received: user \"{}\" was NOT '\n               'deleted'.format(user))"
+    },
+    {
+      "sha": "fb28c883017cb1e986a80d67ab5a32f7ae59385d",
+      "filename": "securedrop/management/run.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fmanagement%2Frun.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fmanagement%2Frun.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fmanagement%2Frun.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -99,7 +99,7 @@ def monitor(self):\n                     self.last_proc = proc\n \n                 line = proc.stdout.readline()\n-                sys.stdout.write(line)\n+                sys.stdout.write(line.decode('utf-8'))\n                 sys.stdout.flush()\n \n             if any(proc.poll() is not None for proc in self.procs):\n@@ -143,8 +143,7 @@ def run(args):  # pragma: no cover\n     * https://stackoverflow.com/q/22565606/837471\n \n     \"\"\"\n-    print \\\n-\"\"\"\n+    print(\"\"\"\n  ____                                        ____                           \n /\\\\  _`\\\\                                     /\\\\  _`\\\\                         \n \\\\ \\\\,\\\\L\\\\_\\\\     __    ___   __  __  _ __    __\\\\ \\\\ \\\\/\\\\ \\\\  _ __   ___   _____   \n@@ -154,7 +153,7 @@ def run(args):  # pragma: no cover\n     \\\\/_____/\\\\/____/\\\\/____/ \\\\/___/  \\\\/_/ \\\\/____/ \\\\/___/  \\\\/_/ \\\\/___/  \\\\ \\\\ \\\\/ \n                                                                       \\\\ \\\\_\\\\ \n                                                                        \\\\/_/ \n-\"\"\"  # noqa\n+\"\"\")  # noqa\n \n     procs = [\n         lambda: DevServerProcess('Source Interface',"
+    },
+    {
+      "sha": "99896c0228354bbe0361bfac73da9b1d6ec0d7b3",
+      "filename": "securedrop/models.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 8,
+      "changes": 11,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fmodels.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fmodels.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fmodels.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -9,12 +9,7 @@\n # Using svg because it doesn't require additional dependencies\n import qrcode.image.svg\n import uuid\n-\n-# Find the best implementation available on this platform\n-try:\n-    from cStringIO import StringIO\n-except ImportError:\n-    from StringIO import StringIO  # type: ignore\n+from io import BytesIO\n \n from flask import current_app, url_for\n from itsdangerous import TimedJSONWebSignatureSerializer, BadData\n@@ -470,9 +465,9 @@ def shared_secret_qrcode(self):\n         qr.add_data(uri)\n         img = qr.make_image()\n \n-        svg_out = StringIO()\n+        svg_out = BytesIO()\n         img.save(svg_out)\n-        return Markup(svg_out.getvalue())\n+        return Markup(svg_out.getvalue().decode('utf-8'))\n \n     @property\n     def formatted_otp_secret(self):"
+    },
+    {
+      "sha": "b193345f12430ec749907d6a2072ecadc3e23dee",
+      "filename": "securedrop/qa_loader.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fqa_loader.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fqa_loader.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fqa_loader.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -86,8 +86,8 @@ def new_journalist(self):\n         if random_bool():\n             # to add legacy passwords back in\n             journalist.passphrase_hash = None\n-            journalist.pw_salt = random_chars(32, nullable=False)\n-            journalist.pw_hash = random_chars(64, nullable=False)\n+            journalist.pw_salt = random_chars(32, nullable=False).encode('utf-8')\n+            journalist.pw_hash = random_chars(64, nullable=False).encode('utf-8')\n \n         journalist.is_admin = bool_or_none()\n "
+    },
+    {
+      "sha": "89890974d69ddc4274273df402fbe35d3d153365",
+      "filename": "securedrop/secure_tempfile.py",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 4,
+      "changes": 20,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fsecure_tempfile.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fsecure_tempfile.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fsecure_tempfile.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -2,6 +2,7 @@\n import base64\n import os\n import io\n+import six\n from tempfile import _TemporaryFileWrapper\n \n from pretty_bad_protocol._util import _STREAMLIKE_TYPES\n@@ -47,7 +48,13 @@ def __init__(self, store_dir):\n         \"\"\"\n         self.last_action = 'init'\n         self.create_key()\n-        self.tmp_file_id = base64.urlsafe_b64encode(os.urandom(32)).strip('=')\n+\n+        data = base64.urlsafe_b64encode(os.urandom(32))\n+        if not six.PY2:  # For Python3\n+            self.tmp_file_id = data.decode('utf-8').strip('=')\n+        else:\n+            self.tmp_file_id = data.strip('=')\n+\n         self.filepath = os.path.join(store_dir,\n                                      '{}.aes'.format(self.tmp_file_id))\n         self.file = io.open(self.filepath, 'w+b')\n@@ -61,8 +68,8 @@ def create_key(self):\n         grsecurity-patched kernel it uses (for further details consult\n         https://github.com/freedomofpress/securedrop/pull/477#issuecomment-168445450).\n         \"\"\"\n-        self.key = os.urandom(self.AES_key_size / 8)\n-        self.iv = os.urandom(self.AES_block_size / 8)\n+        self.key = os.urandom(self.AES_key_size // 8)\n+        self.iv = os.urandom(self.AES_block_size // 8)\n         self.initialize_cipher()\n \n     def initialize_cipher(self):\n@@ -83,7 +90,12 @@ def write(self, data):\n             raise AssertionError('You cannot write after reading!')\n         self.last_action = 'write'\n \n-        if isinstance(data, unicode):  # noqa\n+        # This is the old Python related code\n+        if six.PY2:  # noqa\n+            if isinstance(data, unicode):\n+                data = data.encode('utf-8')\n+        elif isinstance(data, str):  # noqa\n+            # For Python 3\n             data = data.encode('utf-8')\n \n         self.file.write(self.encryptor.update(data))"
+    },
+    {
+      "sha": "4c27ba219dce3d35c01eeb0afaca0bdc087cdb35",
+      "filename": "securedrop/source_app/info.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fsource_app%2Finfo.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fsource_app%2Finfo.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fsource_app%2Finfo.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,6 +1,6 @@\n # -*- coding: utf-8 -*-\n \n-from cStringIO import StringIO\n+from io import StringIO\n from flask import Blueprint, render_template, send_file, current_app\n \n "
+    },
+    {
+      "sha": "fa125740a356405d0f2ce6683fd580ab514e7dd1",
+      "filename": "securedrop/source_app/main.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 1,
+      "changes": 6,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fsource_app%2Fmain.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fsource_app%2Fmain.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fsource_app%2Fmain.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,6 +1,7 @@\n import operator\n import os\n import io\n+import six\n \n from datetime import datetime\n from flask import (Blueprint, render_template, flash, redirect, url_for, g,\n@@ -87,7 +88,10 @@ def lookup():\n                 with io.open(reply_path, \"rb\") as f:\n                     contents = f.read()\n                 reply_obj = current_app.crypto_util.decrypt(g.codename, contents)\n-                reply.decrypted = reply_obj.decode('utf-8')\n+                if six.PY2:  # Python2\n+                    reply.decrypted = reply_obj.decode('utf-8')\n+                else:\n+                    reply.decrypted = reply_obj\n             except UnicodeDecodeError:\n                 current_app.logger.error(\"Could not decode reply %s\" %\n                                          reply.filename)"
+    },
+    {
+      "sha": "7acdbbe745f2b176463ed53d4d7ec9bbce20808f",
+      "filename": "securedrop/store.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fstore.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Fstore.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Fstore.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -162,7 +162,7 @@ def save_pre_encrypted_reply(self, filesystem_id, count,\n                                                          journalist_filename)\n         encrypted_file_path = self.path(filesystem_id, encrypted_file_name)\n \n-        with open(encrypted_file_path, 'wb') as fh:\n+        with open(encrypted_file_path, 'w') as fh:\n             fh.write(content)\n \n         return encrypted_file_path"
+    },
+    {
+      "sha": "d73561c1bcc32b8bcd82f4d51bed53880cd44bde",
+      "filename": "securedrop/template_filters.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftemplate_filters.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftemplate_filters.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftemplate_filters.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -18,7 +18,7 @@ def rel_datetime_format(dt, fmt=None, relative=False):\n \n \n def nl2br(context, value):\n-    formatted = u'<br>\\n'.join(escape(value).split('\\n'))\n+    formatted = '<br>\\n'.join(escape(value).split('\\n'))\n     if context.autoescape:\n         formatted = Markup(formatted)\n     return formatted"
+    },
+    {
+      "sha": "1cb8dd3dd080c640dce847de64e0dace42e46d80",
+      "filename": "securedrop/tests/conftest.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 6,
+      "changes": 15,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Fconftest.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Fconftest.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Fconftest.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -11,7 +11,11 @@\n import signal\n import subprocess\n \n-from ConfigParser import SafeConfigParser\n+try:\n+    import configparser\n+except ImportError:\n+    from six.moves import configparser  # renamed in Python 3\n+\n from flask import url_for\n from pyotp import TOTP\n \n@@ -24,7 +28,7 @@\n from journalist_app import create_app as create_journalist_app\n import models\n from source_app import create_app as create_source_app\n-import utils\n+from . import utils\n \n # The PID file for the redis worker is hard-coded below.\n # Ideally this constant would be provided by a test harness.\n@@ -117,7 +121,7 @@ def config(tmpdir):\n def alembic_config(config):\n     base_dir = path.join(path.dirname(__file__), '..')\n     migrations_dir = path.join(base_dir, 'alembic')\n-    ini = SafeConfigParser()\n+    ini = configparser.SafeConfigParser()\n     ini.read(path.join(base_dir, 'alembic.ini'))\n \n     ini.set('alembic', 'script_location', path.join(migrations_dir))\n@@ -224,8 +228,7 @@ def journalist_api_token(journalist_app, test_journo):\n                                  'passphrase': test_journo['password'],\n                                  'one_time_code': valid_token}),\n                             headers=utils.api_helper.get_api_headers())\n-        observed_response = json.loads(response.data)\n-        return observed_response['token']\n+        return response.json['token']\n \n \n def _start_test_rqworker(config):\n@@ -252,7 +255,7 @@ def _get_pid_from_file(pid_file_name):\n     try:\n         return int(io.open(pid_file_name).read())\n     except IOError:\n-        return None\n+        return -1\n \n \n def _cleanup_test_securedrop_dataroot(config):"
+    },
+    {
+      "sha": "23ec5a3501554b93002e37d0dbfa465ce7ca2ddb",
+      "filename": "securedrop/tests/functional/functional_test.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ffunctional_test.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ffunctional_test.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ffunctional%2Ffunctional_test.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -64,8 +64,8 @@ def _create_webdriver(self, firefox, profile=None):\n                                            firefox_profile=profile)\n                 if i > 0:\n                     # i==0 is normal behavior without connection refused.\n-                    print('NOTE: Retried {} time(s) due to '\n-                          'connection refused.'.format(i))\n+                    print(('NOTE: Retried {} time(s) due to '\n+                          'connection refused.'.format(i)))\n                 return driver\n             except socket.error as socket_error:\n                 if (socket_error.errno == errno.ECONNREFUSED"
+    },
+    {
+      "sha": "f16dabb2ca6e3b2f33ffdb4dd132318877d1f1f6",
+      "filename": "securedrop/tests/functional/journalist_navigation_steps.py",
+      "status": "modified",
+      "additions": 19,
+      "deletions": 14,
+      "changes": 33,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Fjournalist_navigation_steps.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Fjournalist_navigation_steps.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ffunctional%2Fjournalist_navigation_steps.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,5 +1,10 @@\n import pytest\n-import urllib2\n+\n+try:\n+    from urllib.request import urlopen, Request\n+except ImportError:  # Python 2/3 compatibility\n+    from urllib2 import urlopen, Request\n+\n import re\n import tempfile\n import gzip\n@@ -394,9 +399,8 @@ def _edit_account(self):\n     def _edit_user(self, username):\n         user = Journalist.query.filter_by(username=username).one()\n \n-        new_user_edit_links = filter(\n-            lambda el: el.get_attribute('data-username') == username,\n-            self.driver.find_elements_by_tag_name('a'))\n+        new_user_edit_links = [el for el in self.driver.find_elements_by_tag_name('a')\n+                               if el.get_attribute('data-username') == username]\n         assert 1 == len(new_user_edit_links)\n         new_user_edit_links[0].click()\n         # The header says \"Edit user \"username\"\".\n@@ -447,10 +451,9 @@ def _admin_can_edit_new_user(self):\n \n         # Click the \"edit user\" link for the new user\n         # self._edit_user(self.new_user['username'])\n-        new_user_edit_links = filter(\n-            lambda el: (el.get_attribute('data-username') ==\n-                        self.new_user['username']),\n-            self.driver.find_elements_by_tag_name('a'))\n+        new_user_edit_links = [el for el in self.driver.find_elements_by_tag_name('a')\n+                               if (el.get_attribute('data-username') ==\n+                               self.new_user['username'])]\n         assert len(new_user_edit_links) == 1\n         new_user_edit_links[0].click()\n \n@@ -587,16 +590,19 @@ def cookie_string_from_selenium_cookies(cookies):\n                 cookie_strs.append(cookie_str)\n             return ' '.join(cookie_strs)\n \n-        submission_req = urllib2.Request(file_url)\n+        submission_req = Request(file_url)\n         submission_req.add_header(\n             'Cookie',\n             cookie_string_from_selenium_cookies(\n                 self.driver.get_cookies()))\n-        raw_content = urllib2.urlopen(submission_req).read()\n+        raw_content = urlopen(submission_req).read()\n \n         decrypted_submission = self.gpg.decrypt(raw_content)\n         submission = self._get_submission_content(file_url,\n                                                   decrypted_submission)\n+        if type(submission) == bytes:\n+            submission = submission.decode('utf-8')\n+\n         assert self.secret_message == submission\n \n     def _journalist_composes_reply(self):\n@@ -652,10 +658,9 @@ def _admin_visits_add_user(self):\n         add_user_btn.click()\n \n     def _admin_visits_edit_user(self):\n-        new_user_edit_links = filter(\n-            lambda el: (el.get_attribute('data-username') ==\n-                        self.new_user['username']),\n-            self.driver.find_elements_by_tag_name('a'))\n+        new_user_edit_links = [el for el in self.driver.find_elements_by_tag_name('a')\n+                               if (el.get_attribute('data-username') ==\n+                               self.new_user['username'])]\n         assert len(new_user_edit_links) == 1\n         new_user_edit_links[0].click()\n "
+    },
+    {
+      "sha": "d8a46f87389ca009e960f6734097c46dfa0d2df5",
+      "filename": "securedrop/tests/functional/source_navigation_steps.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Fsource_navigation_steps.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Fsource_navigation_steps.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ffunctional%2Fsource_navigation_steps.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -139,7 +139,7 @@ def _source_continues_to_submit_page(self):\n \n     def _source_submits_a_file(self):\n         with tempfile.NamedTemporaryFile() as file:\n-            file.write(self.secret_message)\n+            file.write(self.secret_message.encode('utf-8'))\n             file.seek(0)\n \n             filename = file.name"
+    },
+    {
+      "sha": "d96c4123dca416108abe56b66f4df40f26be4251",
+      "filename": "securedrop/tests/functional/test_admin_interface.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_admin_interface.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_admin_interface.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ffunctional%2Ftest_admin_interface.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,5 +1,5 @@\n-import functional_test\n-import journalist_navigation_steps\n+from . import functional_test\n+from . import journalist_navigation_steps\n \n \n class TestAdminInterface("
+    },
+    {
+      "sha": "98235c38afd79e7b9e180dd2814b0ff563bba33f",
+      "filename": "securedrop/tests/functional/test_journalist.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_journalist.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_journalist.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ffunctional%2Ftest_journalist.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -15,9 +15,9 @@\n # You should have received a copy of the GNU Affero General Public License\n # along with this program.  If not, see <http://www.gnu.org/licenses/>.\n #\n-import source_navigation_steps\n-import journalist_navigation_steps\n-import functional_test\n+from . import source_navigation_steps\n+from . import journalist_navigation_steps\n+from . import functional_test\n \n \n class TestJournalist("
+    },
+    {
+      "sha": "3606fdc76db5d002d372e2d831e7f224d6a357e3",
+      "filename": "securedrop/tests/functional/test_make_account_changes.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_make_account_changes.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_make_account_changes.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ffunctional%2Ftest_make_account_changes.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,6 +1,6 @@\n # -*- coding: utf-8 -*-\n-import journalist_navigation_steps\n-import functional_test\n+from . import journalist_navigation_steps\n+from . import functional_test\n \n \n class TestMakeAccountChanges("
+    },
+    {
+      "sha": "55721d71be092b0f5eaf0775bc74bd394cfa26d1",
+      "filename": "securedrop/tests/functional/test_source.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_source.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_source.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ffunctional%2Ftest_source.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,5 +1,5 @@\n-import source_navigation_steps\n-import functional_test\n+from . import source_navigation_steps\n+from . import functional_test\n \n \n class TestSourceInterface("
+    },
+    {
+      "sha": "2da3889259bcdd53170a76a057e6f2f2d4b8718d",
+      "filename": "securedrop/tests/functional/test_source_notfound.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_source_notfound.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_source_notfound.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ffunctional%2Ftest_source_notfound.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,5 +1,5 @@\n-import source_navigation_steps\n-import functional_test\n+from . import source_navigation_steps\n+from . import functional_test\n \n \n class TestSourceInterfaceNotFound("
+    },
+    {
+      "sha": "aaf1c15e936593da4c364e624bcc1bbdad18c6a5",
+      "filename": "securedrop/tests/functional/test_source_session_timeout.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_source_session_timeout.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_source_session_timeout.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ffunctional%2Ftest_source_session_timeout.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,5 +1,5 @@\n-import source_navigation_steps\n-import functional_test\n+from . import source_navigation_steps\n+from . import functional_test\n \n \n class TestSourceSessions("
+    },
+    {
+      "sha": "74a3cc9cfb90f74e1ae0d80cdbac00ea8d85f1cc",
+      "filename": "securedrop/tests/functional/test_source_warnings.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_source_warnings.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_source_warnings.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ffunctional%2Ftest_source_warnings.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,5 +1,5 @@\n-import source_navigation_steps\n-import functional_test\n+from . import source_navigation_steps\n+from . import functional_test\n from selenium import webdriver\n \n "
+    },
+    {
+      "sha": "299a6ae9e7302c81fee05a87872151e63969d320",
+      "filename": "securedrop/tests/functional/test_submit_and_retrieve_file.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_submit_and_retrieve_file.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_submit_and_retrieve_file.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ffunctional%2Ftest_submit_and_retrieve_file.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,6 +1,6 @@\n-import source_navigation_steps\n-import journalist_navigation_steps\n-import functional_test\n+from . import source_navigation_steps\n+from . import journalist_navigation_steps\n+from . import functional_test\n \n \n class TestSubmitAndRetrieveFile("
+    },
+    {
+      "sha": "eef263a47c291cec301134b1ea12ca2a65f2ef87",
+      "filename": "securedrop/tests/functional/test_submit_and_retrieve_message.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_submit_and_retrieve_message.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ffunctional%2Ftest_submit_and_retrieve_message.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ffunctional%2Ftest_submit_and_retrieve_message.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,6 +1,6 @@\n-import functional_test\n-import source_navigation_steps\n-import journalist_navigation_steps\n+from . import functional_test\n+from . import source_navigation_steps\n+from . import journalist_navigation_steps\n \n \n class TestSubmitAndRetrieveMessage("
+    },
+    {
+      "sha": "1c50f229ba10f702577bce8af19cd0a91a76d088",
+      "filename": "securedrop/tests/pageslayout/test_journalist.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Fpageslayout%2Ftest_journalist.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Fpageslayout%2Ftest_journalist.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Fpageslayout%2Ftest_journalist.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -17,7 +17,7 @@\n #\n from tests.functional import journalist_navigation_steps\n from tests.functional import source_navigation_steps\n-import functional_test\n+from . import functional_test\n import pytest\n import time\n "
+    },
+    {
+      "sha": "22193567918581aecad36abdc037f1aadf3c5db3",
+      "filename": "securedrop/tests/pageslayout/test_source.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Fpageslayout%2Ftest_source.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Fpageslayout%2Ftest_source.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Fpageslayout%2Ftest_source.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -17,7 +17,7 @@\n #\n from tests.functional import journalist_navigation_steps\n from tests.functional import source_navigation_steps\n-import functional_test\n+from . import functional_test\n import pytest\n \n "
+    },
+    {
+      "sha": "67283613b31e0937a6f02b04cf28d31673b0fd79",
+      "filename": "securedrop/tests/test_2fa.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_2fa.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_2fa.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ftest_2fa.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -10,8 +10,8 @@\n \n os.environ['SECUREDROP_ENV'] = 'test'  # noqa\n from models import Journalist, BadTokenException\n-from utils import login_user\n-from utils.instrument import InstrumentedApp\n+from .utils import login_user\n+from .utils.instrument import InstrumentedApp\n \n \n @contextmanager\n@@ -89,7 +89,7 @@ def test_bad_token_fails_to_verify_on_admin_new_user_two_factor_page(\n        https://github.com/freedomofpress/securedrop/pull/1692\n     '''\n \n-    invalid_token = u'000000'\n+    invalid_token = '000000'\n \n     with totp_window():\n         with journalist_app.test_client() as app:\n@@ -127,7 +127,7 @@ def test_bad_token_fails_to_verify_on_new_user_two_factor_page(\n     '''Regression test for\n        https://github.com/freedomofpress/securedrop/pull/1692\n     '''\n-    invalid_token = u'000000'\n+    invalid_token = '000000'\n \n     with totp_window():\n         with journalist_app.test_client() as app:"
+    },
+    {
+      "sha": "33ba88a3fa20f8d20bdfac77caa54b03dc3b5134",
+      "filename": "securedrop/tests/test_alembic.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_alembic.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_alembic.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ftest_alembic.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -10,7 +10,7 @@\n from os import path\n from sqlalchemy import text\n \n-import conftest\n+from . import conftest\n \n from db import db\n from journalist_app import create_app\n@@ -55,7 +55,7 @@ def get_schema(app):\n \n \n def assert_schemas_equal(left, right):\n-    for (k, v) in left.items():\n+    for (k, v) in list(left.items()):\n         if k not in right:\n             raise AssertionError(\n                 'Left contained {} but right did not'.format(k))\n@@ -67,7 +67,7 @@ def assert_schemas_equal(left, right):\n \n     if right:\n         raise AssertionError(\n-            'Right had additional tables: {}'.format(right.keys()))\n+            'Right had additional tables: {}'.format(list(right.keys())))\n \n \n def ddl_equal(left, right):\n@@ -118,7 +118,7 @@ def test_alembic_head_matches_db_models(journalist_app,\n \n     # The initial migration creates the table 'alembic_version', but this is\n     # not present in the schema created by `db.create_all()`.\n-    alembic_schema = {k: v for k, v in alembic_schema.items()\n+    alembic_schema = {k: v for k, v in list(alembic_schema.items())\n                       if k[2] != 'alembic_version'}\n \n     assert_schemas_equal(alembic_schema, models_schema)\n@@ -171,7 +171,7 @@ def test_schema_unchanged_after_up_then_downgrade(alembic_config,\n     # The initial migration is a degenerate case because it creates the table\n     # 'alembic_version', but rolling back the migration doesn't clear it.\n     if len(migrations) == 1:\n-        reverted_schema = {k: v for k, v in reverted_schema.items()\n+        reverted_schema = {k: v for k, v in list(reverted_schema.items())\n                            if k[2] != 'alembic_version'}\n \n     assert_schemas_equal(reverted_schema, original_schema)"
+    },
+    {
+      "sha": "c5e2b20e1e52c61179cbe6f9016ef6688e16f088",
+      "filename": "securedrop/tests/test_crypto_util.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_crypto_util.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_crypto_util.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ftest_crypto_util.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -43,8 +43,8 @@ def test_encrypt_success(source_app, config, test_source):\n             source_app.storage.path(test_source['filesystem_id'],\n                                     'somefile.gpg'))\n \n-        assert isinstance(ciphertext, str)\n-        assert ciphertext != message\n+        assert isinstance(ciphertext, bytes)\n+        assert ciphertext.decode('utf-8') != message\n         assert len(ciphertext) > 0\n \n \n@@ -145,7 +145,7 @@ def test_basic_encrypt_then_decrypt_multiple_recipients(source_app,\n         # ensure we can decrypt with the `config.JOURNALIST_KEY`.\n         source_app.crypto_util.delete_reply_keypair(\n             test_source['filesystem_id'])\n-        plaintext = source_app.crypto_util.gpg.decrypt(ciphertext).data\n+        plaintext = source_app.crypto_util.gpg.decrypt(ciphertext).data.decode('utf-8')\n \n         assert plaintext == message\n "
+    },
+    {
+      "sha": "c0462c1d9410148abc6206650af56cf46e5d4774",
+      "filename": "securedrop/tests/test_db.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_db.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_db.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ftest_db.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -3,7 +3,7 @@\n \n from mock import MagicMock\n \n-from utils import db_helper\n+from .utils import db_helper\n from models import (Journalist, Submission, Reply, Source, get_one_or_else,\n                     LoginThrottledException)\n "
+    },
+    {
+      "sha": "1e6dbd9f71ee51f937c280f4dd7c4685e0bcdcf2",
+      "filename": "securedrop/tests/test_i18n.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_i18n.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_i18n.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ftest_i18n.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -93,15 +93,15 @@ def verify_i18n(app):\n         page = c.get('/login')\n         assert session.get('locale') is None\n         assert not_translated == gettext(not_translated)\n-        assert '?l=fr_FR' in page.data\n-        assert '?l=en_US' not in page.data\n+        assert b'?l=fr_FR' in page.data\n+        assert b'?l=en_US' not in page.data\n \n         page = c.get('/login?l=fr_FR',\n                      headers=Headers([('Accept-Language', 'en_US')]))\n         assert session.get('locale') == 'fr_FR'\n         assert translated_fr == gettext(not_translated)\n-        assert '?l=fr_FR' not in page.data\n-        assert '?l=en_US' in page.data\n+        assert b'?l=fr_FR' not in page.data\n+        assert b'?l=en_US' in page.data\n \n         c.get('/', headers=Headers([('Accept-Language', 'en_US')]))\n         assert session.get('locale') == 'fr_FR'"
+    },
+    {
+      "sha": "e0245b690d78954717ced643f2ee679298d1272e",
+      "filename": "securedrop/tests/test_i18n_tool.py",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 17,
+      "changes": 35,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_i18n_tool.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_i18n_tool.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ftest_i18n_tool.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -2,6 +2,7 @@\n \n import io\n import os\n+import six\n from os.path import abspath, dirname, exists, getmtime, join, realpath\n os.environ['SECUREDROP_ENV'] = 'test'  # noqa\n import i18n_tool\n@@ -65,7 +66,7 @@ def test_translate_desktop_l10n(self, tmpdir):\n             '--verbose',\n             'translate-desktop',\n             '--translations-dir', str(tmpdir),\n-            '--sources', \",\".join(in_files.values()),\n+            '--sources', \",\".join(list(in_files.values())),\n             '--extract-update',\n         ])\n         assert not exists(i18n_file)\n@@ -108,7 +109,7 @@ def test_translate_desktop_l10n(self, tmpdir):\n             '--verbose',\n             'translate-desktop',\n             '--translations-dir', str(tmpdir),\n-            '--sources', \",\".join(in_files.values() + ['BOOM']),\n+            '--sources', \",\".join(list(in_files.values()) + ['BOOM']),\n             '--compile',\n         ])\n         assert old_messages_mtime == getmtime(messages_file)\n@@ -137,10 +138,10 @@ def test_translate_messages_l10n(self, tmpdir):\n         i18n_tool.I18NTool().main(args)\n         messages_file = join(str(tmpdir), 'messages.pot')\n         assert exists(messages_file)\n-        with io.open(messages_file) as fobj:\n+        with io.open(messages_file, 'rb') as fobj:\n             pot = fobj.read()\n-            assert 'code hello i18n' in pot\n-            assert 'template hello i18n' in pot\n+            assert b'code hello i18n' in pot\n+            assert b'template hello i18n' in pot\n \n         locale = 'en_US'\n         locale_dir = join(str(tmpdir), locale)\n@@ -151,8 +152,8 @@ def test_translate_messages_l10n(self, tmpdir):\n         assert exists(mo_file)\n         with io.open(mo_file, mode='rb') as fobj:\n             mo = fobj.read()\n-            assert 'code hello i18n' in mo\n-            assert 'template hello i18n' in mo\n+            assert b'code hello i18n' in mo\n+            assert b'template hello i18n' in mo\n \n     def test_translate_messages_compile_arg(self, tmpdir):\n         args = [\n@@ -210,15 +211,15 @@ def test_translate_messages_compile_arg(self, tmpdir):\n         assert old_po_mtime == getmtime(po_file)\n         with io.open(mo_file, mode='rb') as fobj:\n             mo = fobj.read()\n-            assert 'code hello i18n' in mo\n-            assert 'template hello i18n' not in mo\n+            assert b'code hello i18n' in mo\n+            assert b'template hello i18n' not in mo\n \n     def test_require_git_email_name(self, tmpdir):\n         k = {'_cwd': str(tmpdir)}\n         git('init', **k)\n         with pytest.raises(Exception) as excinfo:\n             i18n_tool.I18NTool.require_git_email_name(str(tmpdir))\n-        assert 'please set name' in excinfo.value.message\n+        assert 'please set name' in str(excinfo.value)\n \n         git.config('user.email', \"you@example.com\", **k)\n         git.config('user.name', \"Your Name\", **k)\n@@ -253,7 +254,7 @@ def test_update_from_weblate(self, tmpdir, caplog):\n             k = {'_cwd': join(d, repo)}\n             git.init(**k)\n             git.config('user.email', 'you@example.com', **k)\n-            git.config('user.name',  u'Loïc Nordhøy', **k)\n+            git.config('user.name',  six.u('Loïc Nordhøy'), **k)\n             touch('README.md', **k)\n             git.add('README.md', **k)\n             git.commit('-m', 'README', 'README.md', **k)\n@@ -314,9 +315,9 @@ def r():\n         ])\n         assert 'l10n: updated nl' not in r()\n         assert 'l10n: updated de_DE' not in r()\n-        message = unicode(git('--no-pager', '-C', 'securedrop', 'show',\n-                              _cwd=d, _encoding='utf-8'))\n-        assert u\"Loïc\" in message\n+        message = six.text_type(git('--no-pager', '-C', 'securedrop', 'show',\n+                                    _cwd=d, _encoding='utf-8'))\n+        assert six.u(\"Loïc\") in message\n \n         #\n         # an update is done to nl in weblate\n@@ -347,7 +348,7 @@ def r():\n         ])\n         assert 'l10n: updated nl' in r()\n         assert 'l10n: updated de_DE' not in r()\n-        message = unicode(git('--no-pager', '-C', 'securedrop', 'show',\n-                              _cwd=d))\n+        message = six.text_type(git('--no-pager', '-C', 'securedrop', 'show',\n+                                    _cwd=d))\n         assert \"Someone Else\" in message\n-        assert u\"Loïc\" not in message\n+        assert six.u(\"Loïc\") not in message"
+    },
+    {
+      "sha": "12940ebde9f39f02761da5a2d62446b1419b8e0d",
+      "filename": "securedrop/tests/test_integration.py",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 16,
+      "changes": 33,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_integration.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_integration.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ftest_integration.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -6,18 +6,19 @@\n import random\n import re\n import zipfile\n+import six\n \n from base64 import b32encode\n from binascii import unhexlify\n from bs4 import BeautifulSoup\n-from cStringIO import StringIO\n+from io import BytesIO\n from flask import session, g, escape, current_app\n from pyotp import TOTP, HOTP\n \n os.environ['SECUREDROP_ENV'] = 'test'  # noqa\n-import utils\n+from . import utils\n \n-from utils.instrument import InstrumentedApp\n+from .utils.instrument import InstrumentedApp\n \n # Seed the RNG for deterministic testing\n random.seed('ಠ_ಠ')\n@@ -45,7 +46,7 @@ def test_submit_message(source_app, journalist_app, test_journo):\n         # redirected to submission form\n         resp = app.post('/submit', data=dict(\n             msg=test_msg,\n-            fh=(StringIO(''), ''),\n+            fh=(BytesIO(b''), ''),\n         ), follow_redirects=True)\n         assert resp.status_code == 200\n         app.get('/logout')\n@@ -79,7 +80,7 @@ def test_submit_message(source_app, journalist_app, test_journo):\n         assert resp.status_code == 200\n         decrypted_data = journalist_app.crypto_util.gpg.decrypt(resp.data)\n         assert decrypted_data.ok\n-        assert decrypted_data.data == test_msg\n+        assert decrypted_data.data.decode('utf-8') == test_msg\n \n         # delete submission\n         resp = app.get(col_url)\n@@ -132,7 +133,7 @@ def assertion():\n def test_submit_file(source_app, journalist_app, test_journo):\n     \"\"\"When a source creates an account, test that a new entry appears\n     in the journalist interface\"\"\"\n-    test_file_contents = \"This is a test file.\"\n+    test_file_contents = six.b(\"This is a test file.\")\n     test_filename = \"test.txt\"\n \n     with source_app.test_client() as app:\n@@ -142,7 +143,7 @@ def test_submit_file(source_app, journalist_app, test_journo):\n         # redirected to submission form\n         resp = app.post('/submit', data=dict(\n             msg=\"\",\n-            fh=(StringIO(test_file_contents), test_filename),\n+            fh=(six.BytesIO(test_file_contents), test_filename),\n         ), follow_redirects=True)\n         assert resp.status_code == 200\n         app.get('/logout')\n@@ -176,7 +177,7 @@ def test_submit_file(source_app, journalist_app, test_journo):\n         decrypted_data = journalist_app.crypto_util.gpg.decrypt(resp.data)\n         assert decrypted_data.ok\n \n-        sio = StringIO(decrypted_data.data)\n+        sio = six.BytesIO(decrypted_data.data)\n         with gzip.GzipFile(mode='rb', fileobj=sio) as gzip_file:\n             unzipped_decrypted_data = gzip_file.read()\n             mtime = gzip_file.mtime\n@@ -244,7 +245,7 @@ def _helper_test_reply(journalist_app, source_app, config, test_journo,\n         # redirected to submission form\n         resp = app.post('/submit', data=dict(\n             msg=test_msg,\n-            fh=(StringIO(''), ''),\n+            fh=(six.BytesIO(six.b('')), ''),\n         ), follow_redirects=True)\n         assert resp.status_code == 200\n         assert not g.source.flagged\n@@ -322,7 +323,7 @@ def assertion():\n     ), follow_redirects=True)\n     assert resp.status_code == 200\n \n-    zf = zipfile.ZipFile(StringIO(resp.data), 'r')\n+    zf = zipfile.ZipFile(six.BytesIO(resp.data), 'r')\n     data = zf.read(zf.namelist()[0])\n     _can_decrypt_with_key(journalist_app, data)\n     _can_decrypt_with_key(\n@@ -448,7 +449,7 @@ def test_unicode_reply_with_ansi_env(journalist_app,\n     journalist_app.crypto_util.gpg._encoding = \"ansi_x3.4_1968\"\n     source_app.crypto_util.gpg._encoding = \"ansi_x3.4_1968\"\n     _helper_test_reply(journalist_app, source_app, config, test_journo,\n-                       u\"ᚠᛇᚻ᛫ᛒᛦᚦ᛫ᚠᚱᚩᚠᚢᚱ᛫ᚠᛁᚱᚪ᛫ᚷᛖᚻᚹᛦᛚᚳᚢᛗ\", True)\n+                       six.u(\"ᚠᛇᚻ᛫ᛒᛦᚦ᛫ᚠᚱᚩᚠᚢᚱ᛫ᚠᛁᚱᚪ᛫ᚷᛖᚻᚹᛦᛚᚳᚢᛗ\"), True)\n \n \n def test_delete_collection(mocker, source_app, journalist_app, test_journo):\n@@ -461,7 +462,7 @@ def test_delete_collection(mocker, source_app, journalist_app, test_journo):\n         app.post('/create')\n         resp = app.post('/submit', data=dict(\n             msg=\"This is a test.\",\n-            fh=(StringIO(''), ''),\n+            fh=(BytesIO(b''), ''),\n         ), follow_redirects=True)\n         assert resp.status_code == 200\n \n@@ -510,7 +511,7 @@ def test_delete_collections(mocker, journalist_app, source_app, test_journo):\n             app.post('/create')\n             app.post('/submit', data=dict(\n                 msg=\"This is a test \" + str(i) + \".\",\n-                fh=(StringIO(''), ''),\n+                fh=(BytesIO(b''), ''),\n             ), follow_redirects=True)\n             app.get('/logout')\n \n@@ -543,15 +544,15 @@ def assertion():\n def _helper_filenames_submit(app):\n     app.post('/submit', data=dict(\n         msg=\"This is a test.\",\n-        fh=(StringIO(''), ''),\n+        fh=(BytesIO(b''), ''),\n     ), follow_redirects=True)\n     app.post('/submit', data=dict(\n         msg=\"This is a test.\",\n-        fh=(StringIO('This is a test'), 'test.txt'),\n+        fh=(BytesIO(b'This is a test'), 'test.txt'),\n     ), follow_redirects=True)\n     app.post('/submit', data=dict(\n         msg=\"\",\n-        fh=(StringIO('This is a test'), 'test.txt'),\n+        fh=(BytesIO(b'This is a test'), 'test.txt'),\n     ), follow_redirects=True)\n \n "
+    },
+    {
+      "sha": "324ada9bae5dcb14470d2db3dd81724433312e7b",
+      "filename": "securedrop/tests/test_journalist.py",
+      "status": "modified",
+      "additions": 28,
+      "deletions": 23,
+      "changes": 51,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_journalist.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_journalist.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ftest_journalist.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -2,13 +2,14 @@\n import os\n import pytest\n import io\n+import six\n import random\n import zipfile\n import base64\n import datetime\n+import binascii\n \n from base64 import b64decode\n-from cStringIO import StringIO\n from io import BytesIO\n from flask import url_for, escape, session, current_app, g\n from mock import patch\n@@ -20,15 +21,15 @@\n import crypto_util\n import models\n import journalist_app as journalist_app_module\n-import utils\n+from . import utils\n \n os.environ['SECUREDROP_ENV'] = 'test'  # noqa\n from sdconfig import SDConfig, config\n \n from db import db\n from models import (InvalidPasswordLength, Journalist, Reply, Source,\n                     Submission)\n-from utils.instrument import InstrumentedApp\n+from .utils.instrument import InstrumentedApp\n \n # Smugly seed the RNG for deterministic testing\n random.seed('¯\\_(ツ)_/¯')\n@@ -767,7 +768,7 @@ def test_admin_resets_user_hotp_error(mocker,\n                     test_admin['otp_secret'])\n \n         mocker.patch('models.Journalist.set_hotp_secret',\n-                     side_effect=TypeError(error_message))\n+                     side_effect=binascii.Error(error_message))\n \n         with InstrumentedApp(journalist_app) as ins:\n             app.post(url_for('admin.reset_two_factor_hotp'),\n@@ -866,7 +867,7 @@ def test_user_resets_user_hotp_error(mocker,\n                     test_journo['otp_secret'])\n \n         mocker.patch('models.Journalist.set_hotp_secret',\n-                     side_effect=TypeError(error_message))\n+                     side_effect=binascii.Error(error_message))\n \n         with InstrumentedApp(journalist_app) as ins:\n             app.post(url_for('account.reset_two_factor_hotp'),\n@@ -1145,8 +1146,12 @@ def test_admin_add_user_integrity_error(journalist_app, test_admin, mocker):\n                 \"error\")\n \n     log_event = mocked_error_logger.call_args[0][0]\n-    assert (\"Adding user 'username' failed: (__builtin__.NoneType) \"\n-            \"None [SQL: 'STATEMENT'] [parameters: 'PARAMETERS']\") in log_event\n+    if six.PY2:\n+        assert (\"Adding user 'username' failed: (__builtin__.NoneType) \"\n+                \"None [SQL: 'STATEMENT'] [parameters: 'PARAMETERS']\") in log_event\n+    else:\n+        assert (\"Adding user 'username' failed: (builtins.NoneType) \"\n+                \"None [SQL: 'STATEMENT'] [parameters: 'PARAMETERS']\") in log_event\n \n \n def test_logo_upload_with_valid_image_succeeds(journalist_app, test_admin):\n@@ -1163,8 +1168,8 @@ def test_logo_upload_with_valid_image_succeeds(journalist_app, test_admin):\n             # Create 1px * 1px 'white' PNG file from its base64 string\n             form = journalist_app_module.forms.LogoForm(\n                 logo=(BytesIO(base64.decodestring\n-                      (\"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQ\"\n-                       \"VR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=\")), 'test.png')\n+                      (b\"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQ\"\n+                       b\"VR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=\")), 'test.png')\n             )\n             with InstrumentedApp(journalist_app) as ins:\n                 app.post(url_for('admin.manage_config'),\n@@ -1184,7 +1189,7 @@ def test_logo_upload_with_invalid_filetype_fails(journalist_app, test_admin):\n                     test_admin['otp_secret'])\n \n         form = journalist_app_module.forms.LogoForm(\n-            logo=(StringIO('filedata'), 'bad.exe')\n+            logo=(BytesIO(b'filedata'), 'bad.exe')\n         )\n         with InstrumentedApp(journalist_app) as ins:\n             resp = app.post(url_for('admin.manage_config'),\n@@ -1214,7 +1219,7 @@ def test_logo_upload_with_empty_input_field_fails(journalist_app, test_admin):\n                     test_admin['otp_secret'])\n \n         form = journalist_app_module.forms.LogoForm(\n-            logo=(StringIO(''), '')\n+            logo=(BytesIO(b''), '')\n         )\n \n         with InstrumentedApp(journalist_app) as ins:\n@@ -1662,12 +1667,12 @@ def test_download_selected_submissions_from_source(journalist_app,\n     # The download request was succesful, and the app returned a zipfile\n     assert resp.status_code == 200\n     assert resp.content_type == 'application/zip'\n-    assert zipfile.is_zipfile(StringIO(resp.data))\n+    assert zipfile.is_zipfile(BytesIO(resp.data))\n \n     # The submissions selected are in the zipfile\n     for filename in selected_fnames:\n         # Check that the expected filename is in the zip file\n-        zipinfo = zipfile.ZipFile(StringIO(resp.data)).getinfo(\n+        zipinfo = zipfile.ZipFile(BytesIO(resp.data)).getinfo(\n             os.path.join(\n                 source.journalist_filename,\n                 \"%s_%s\" % (filename.split('-')[0],\n@@ -1684,7 +1689,7 @@ def test_download_selected_submissions_from_source(journalist_app,\n \n     for filename in not_selected_fnames:\n         with pytest.raises(KeyError):\n-            zipfile.ZipFile(StringIO(resp.data)).getinfo(\n+            zipfile.ZipFile(BytesIO(resp.data)).getinfo(\n                 os.path.join(\n                     source.journalist_filename,\n                     source.journalist_designation,\n@@ -1741,11 +1746,11 @@ def test_download_unread_all_sources(journalist_app, test_journo):\n     # The download request was succesful, and the app returned a zipfile\n     assert resp.status_code == 200\n     assert resp.content_type == 'application/zip'\n-    assert zipfile.is_zipfile(StringIO(resp.data))\n+    assert zipfile.is_zipfile(BytesIO(resp.data))\n \n     # All the not dowloaded submissions are in the zipfile\n     for submission in bulk['not_downloaded0']:\n-        zipinfo = zipfile.ZipFile(StringIO(resp.data)).getinfo(\n+        zipinfo = zipfile.ZipFile(BytesIO(resp.data)).getinfo(\n                 os.path.join(\n                     \"unread\",\n                     bulk['source0'].journalist_designation,\n@@ -1756,7 +1761,7 @@ def test_download_unread_all_sources(journalist_app, test_journo):\n         assert zipinfo\n \n     for submission in bulk['not_downloaded1']:\n-        zipinfo = zipfile.ZipFile(StringIO(resp.data)).getinfo(\n+        zipinfo = zipfile.ZipFile(BytesIO(resp.data)).getinfo(\n             os.path.join(\n                 \"unread\",\n                 bulk['source1'].journalist_designation,\n@@ -1769,7 +1774,7 @@ def test_download_unread_all_sources(journalist_app, test_journo):\n     # All the downloaded submissions are absent from the zipfile\n     for submission in bulk['downloaded0']:\n         with pytest.raises(KeyError):\n-            zipfile.ZipFile(StringIO(resp.data)).getinfo(\n+            zipfile.ZipFile(BytesIO(resp.data)).getinfo(\n                 os.path.join(\n                     \"unread\",\n                     bulk['source0'].journalist_designation,\n@@ -1780,7 +1785,7 @@ def test_download_unread_all_sources(journalist_app, test_journo):\n \n     for submission in bulk['downloaded1']:\n         with pytest.raises(KeyError):\n-            zipfile.ZipFile(StringIO(resp.data)).getinfo(\n+            zipfile.ZipFile(BytesIO(resp.data)).getinfo(\n                 os.path.join(\n                     \"unread\",\n                     bulk['source1'].journalist_designation,\n@@ -1811,11 +1816,11 @@ def test_download_all_selected_sources(journalist_app, test_journo):\n     # The download request was succesful, and the app returned a zipfile\n     assert resp.status_code == 200\n     assert resp.content_type == 'application/zip'\n-    assert zipfile.is_zipfile(StringIO(resp.data))\n+    assert zipfile.is_zipfile(BytesIO(resp.data))\n \n     # All messages from source1 are in the zipfile\n     for submission in bulk['submissions1']:\n-        zipinfo = zipfile.ZipFile(StringIO(resp.data)).getinfo(\n+        zipinfo = zipfile.ZipFile(BytesIO(resp.data)).getinfo(\n             os.path.join(\n                 \"all\",\n                 bulk['source1'].journalist_designation,\n@@ -1828,7 +1833,7 @@ def test_download_all_selected_sources(journalist_app, test_journo):\n     # All messages from source0 are absent from the zipfile\n     for submission in bulk['submissions0']:\n         with pytest.raises(KeyError):\n-            zipfile.ZipFile(StringIO(resp.data)).getinfo(\n+            zipfile.ZipFile(BytesIO(resp.data)).getinfo(\n                 os.path.join(\n                     \"all\",\n                     bulk['source0'].journalist_designation,\n@@ -2022,7 +2027,7 @@ def test_does_set_cookie_headers(journalist_app, test_journo):\n         response = app.get(url_for('main.login'))\n \n         observed_headers = response.headers\n-        assert 'Set-Cookie' in observed_headers.keys()\n+        assert 'Set-Cookie' in list(observed_headers.keys())\n         assert 'Cookie' in observed_headers['Vary']\n \n "
+    },
+    {
+      "sha": "e8e47330f135d8a436f57fb9a9f3b37871313571",
+      "filename": "securedrop/tests/test_journalist_api.py",
+      "status": "modified",
+      "additions": 51,
+      "deletions": 80,
+      "changes": 131,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_journalist_api.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_journalist_api.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ftest_journalist_api.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -14,7 +14,7 @@\n from models import Journalist, Reply, Source, SourceStar, Submission\n \n os.environ['SECUREDROP_ENV'] = 'test'  # noqa\n-from utils.api_helper import get_api_headers\n+from .utils.api_helper import get_api_headers\n \n random.seed('◔ ⌣ ◔')\n \n@@ -23,11 +23,13 @@ def test_unauthenticated_user_gets_all_endpoints(journalist_app):\n     with journalist_app.test_client() as app:\n         response = app.get(url_for('api.get_endpoints'))\n \n-        observed_endpoints = json.loads(response.data)\n-        expected_endpoints = [u'current_user_url', u'submissions_url',\n-                              u'sources_url', u'auth_token_url',\n-                              u'replies_url']\n-        assert expected_endpoints == observed_endpoints.keys()\n+        expected_endpoints = ['current_user_url', 'submissions_url',\n+                              'sources_url', 'auth_token_url',\n+                              'replies_url']\n+        expected_endpoints.sort()\n+        sorted_observed_endpoints = list(response.json.keys())\n+        sorted_observed_endpoints.sort()\n+        assert expected_endpoints == sorted_observed_endpoints\n \n \n def test_valid_user_can_get_an_api_token(journalist_app, test_journo):\n@@ -39,11 +41,10 @@ def test_valid_user_can_get_an_api_token(journalist_app, test_journo):\n                                  'passphrase': test_journo['password'],\n                                  'one_time_code': valid_token}),\n                             headers=get_api_headers())\n-        observed_response = json.loads(response.data)\n \n-        assert observed_response['journalist_uuid'] == test_journo['uuid']\n+        assert response.json['journalist_uuid'] == test_journo['uuid']\n         assert isinstance(Journalist.validate_api_token_and_get_user(\n-            observed_response['token']), Journalist) is True\n+            response.json['token']), Journalist) is True\n         assert response.status_code == 200\n \n \n@@ -57,10 +58,9 @@ def test_user_cannot_get_an_api_token_with_wrong_password(journalist_app,\n                                  'passphrase': 'wrong password',\n                                  'one_time_code': valid_token}),\n                             headers=get_api_headers())\n-        observed_response = json.loads(response.data)\n \n         assert response.status_code == 403\n-        assert observed_response['error'] == 'Forbidden'\n+        assert response.json['error'] == 'Forbidden'\n \n \n def test_user_cannot_get_an_api_token_with_wrong_2fa_token(journalist_app,\n@@ -73,10 +73,9 @@ def test_user_cannot_get_an_api_token_with_wrong_2fa_token(journalist_app,\n                                  'passphrase': test_journo['password'],\n                                  'one_time_code': '123456'}),\n                             headers=get_api_headers())\n-        observed_response = json.loads(response.data)\n \n         assert response.status_code == 403\n-        assert observed_response['error'] == 'Forbidden'\n+        assert response.json['error'] == 'Forbidden'\n \n \n def test_user_cannot_get_an_api_token_with_no_passphase_field(journalist_app,\n@@ -88,11 +87,10 @@ def test_user_cannot_get_an_api_token_with_no_passphase_field(journalist_app,\n                                 {'username': test_journo['username'],\n                                  'one_time_code': valid_token}),\n                             headers=get_api_headers())\n-        observed_response = json.loads(response.data)\n \n         assert response.status_code == 400\n-        assert observed_response['error'] == 'Bad Request'\n-        assert observed_response['message'] == 'passphrase field is missing'\n+        assert response.json['error'] == 'Bad Request'\n+        assert response.json['message'] == 'passphrase field is missing'\n \n \n def test_user_cannot_get_an_api_token_with_no_username_field(journalist_app,\n@@ -104,11 +102,10 @@ def test_user_cannot_get_an_api_token_with_no_username_field(journalist_app,\n                                 {'passphrase': test_journo['password'],\n                                  'one_time_code': valid_token}),\n                             headers=get_api_headers())\n-        observed_response = json.loads(response.data)\n \n         assert response.status_code == 400\n-        assert observed_response['error'] == 'Bad Request'\n-        assert observed_response['message'] == 'username field is missing'\n+        assert response.json['error'] == 'Bad Request'\n+        assert response.json['message'] == 'username field is missing'\n \n \n def test_user_cannot_get_an_api_token_with_no_otp_field(journalist_app,\n@@ -119,11 +116,10 @@ def test_user_cannot_get_an_api_token_with_no_otp_field(journalist_app,\n                                 {'username': test_journo['username'],\n                                  'passphrase': test_journo['password']}),\n                             headers=get_api_headers())\n-        observed_response = json.loads(response.data)\n \n         assert response.status_code == 400\n-        assert observed_response['error'] == 'Bad Request'\n-        assert observed_response['message'] == 'one_time_code field is missing'\n+        assert response.json['error'] == 'Bad Request'\n+        assert response.json['message'] == 'one_time_code field is missing'\n \n \n def test_authorized_user_gets_all_sources(journalist_app, test_submissions,\n@@ -132,13 +128,11 @@ def test_authorized_user_gets_all_sources(journalist_app, test_submissions,\n         response = app.get(url_for('api.get_all_sources'),\n                            headers=get_api_headers(journalist_api_token))\n \n-        data = json.loads(response.data)\n-\n         assert response.status_code == 200\n \n         # We expect to see our test source in the response\n         assert test_submissions['source'].journalist_designation == \\\n-            data['sources'][0]['journalist_designation']\n+            response.json['sources'][0]['journalist_designation']\n \n \n def test_user_without_token_cannot_get_protected_endpoints(journalist_app,\n@@ -250,17 +244,16 @@ def test_api_error_handlers_defined(journalist_app):\n         result = journalist_app.error_handler_spec['api'][status_code]\n \n         expected_error_handler = '_handle_api_http_exception'\n-        assert result.values()[0].__name__ == expected_error_handler\n+        assert list(result.values())[0].__name__ == expected_error_handler\n \n \n def test_api_error_handler_404(journalist_app, journalist_api_token):\n     with journalist_app.test_client() as app:\n         response = app.get('/api/v1/invalidendpoint',\n                            headers=get_api_headers(journalist_api_token))\n-        json_response = json.loads(response.data)\n \n         assert response.status_code == 404\n-        assert json_response['error'] == 'Not Found'\n+        assert response.json['error'] == 'Not Found'\n \n \n def test_trailing_slash_cleanly_404s(journalist_app, test_source,\n@@ -270,10 +263,9 @@ def test_trailing_slash_cleanly_404s(journalist_app, test_source,\n         response = app.get(url_for('api.single_source',\n                                    source_uuid=uuid) + '/',\n                            headers=get_api_headers(journalist_api_token))\n-        json_response = json.loads(response.data)\n \n         assert response.status_code == 404\n-        assert json_response['error'] == 'Not Found'\n+        assert response.json['error'] == 'Not Found'\n \n \n def test_authorized_user_gets_single_source(journalist_app, test_source,\n@@ -285,9 +277,8 @@ def test_authorized_user_gets_single_source(journalist_app, test_source,\n \n         assert response.status_code == 200\n \n-        data = json.loads(response.data)\n-        assert data['uuid'] == test_source['source'].uuid\n-        assert 'BEGIN PGP PUBLIC KEY' in data['key']['public']\n+        assert response.json['uuid'] == test_source['source'].uuid\n+        assert 'BEGIN PGP PUBLIC KEY' in response.json['key']['public']\n \n \n def test_get_non_existant_source_404s(journalist_app, journalist_api_token):\n@@ -329,8 +320,7 @@ def test_authorized_user_can_star_a_source(journalist_app, test_source,\n         # API should also report is_starred is true\n         response = app.get(url_for('api.single_source', source_uuid=uuid),\n                            headers=get_api_headers(journalist_api_token))\n-        json_response = json.loads(response.data)\n-        assert json_response['is_starred'] is True\n+        assert response.json['is_starred'] is True\n \n \n def test_authorized_user_can_unstar_a_source(journalist_app, test_source,\n@@ -353,8 +343,7 @@ def test_authorized_user_can_unstar_a_source(journalist_app, test_source,\n         # API should also report is_starred is false\n         response = app.get(url_for('api.single_source', source_uuid=uuid),\n                            headers=get_api_headers(journalist_api_token))\n-        json_response = json.loads(response.data)\n-        assert json_response['is_starred'] is False\n+        assert response.json['is_starred'] is False\n \n \n def test_disallowed_methods_produces_405(journalist_app, test_source,\n@@ -363,10 +352,9 @@ def test_disallowed_methods_produces_405(journalist_app, test_source,\n         uuid = test_source['source'].uuid\n         response = app.delete(url_for('api.add_star', source_uuid=uuid),\n                               headers=get_api_headers(journalist_api_token))\n-        json_response = json.loads(response.data)\n \n         assert response.status_code == 405\n-        assert json_response['error'] == 'Method Not Allowed'\n+        assert response.json['error'] == 'Method Not Allowed'\n \n \n def test_authorized_user_can_get_all_submissions(journalist_app,\n@@ -377,10 +365,8 @@ def test_authorized_user_can_get_all_submissions(journalist_app,\n                            headers=get_api_headers(journalist_api_token))\n         assert response.status_code == 200\n \n-        json_response = json.loads(response.data)\n-\n         observed_submissions = [submission['filename'] for\n-                                submission in json_response['submissions']]\n+                                submission in response.json['submissions']]\n \n         expected_submissions = [submission.filename for\n                                 submission in Submission.query.all()]\n@@ -397,10 +383,8 @@ def test_authorized_user_get_source_submissions(journalist_app,\n                            headers=get_api_headers(journalist_api_token))\n         assert response.status_code == 200\n \n-        json_response = json.loads(response.data)\n-\n         observed_submissions = [submission['filename'] for\n-                                submission in json_response['submissions']]\n+                                submission in response.json['submissions']]\n \n         expected_submissions = [submission.filename for submission in\n                                 test_submissions['source'].submissions]\n@@ -420,13 +404,11 @@ def test_authorized_user_can_get_single_submission(journalist_app,\n \n         assert response.status_code == 200\n \n-        json_response = json.loads(response.data)\n-\n-        assert json_response['uuid'] == submission_uuid\n-        assert json_response['is_read'] is False\n-        assert json_response['filename'] == \\\n+        assert response.json['uuid'] == submission_uuid\n+        assert response.json['is_read'] is False\n+        assert response.json['filename'] == \\\n             test_submissions['source'].submissions[0].filename\n-        assert json_response['size'] == \\\n+        assert response.json['size'] == \\\n             test_submissions['source'].submissions[0].size\n \n \n@@ -437,10 +419,8 @@ def test_authorized_user_can_get_all_replies(journalist_app, test_files,\n                            headers=get_api_headers(journalist_api_token))\n         assert response.status_code == 200\n \n-        json_response = json.loads(response.data)\n-\n         observed_replies = [reply['filename'] for\n-                            reply in json_response['replies']]\n+                            reply in response.json['replies']]\n \n         expected_replies = [reply.filename for\n                             reply in Reply.query.all()]\n@@ -456,10 +436,8 @@ def test_authorized_user_get_source_replies(journalist_app, test_files,\n                            headers=get_api_headers(journalist_api_token))\n         assert response.status_code == 200\n \n-        json_response = json.loads(response.data)\n-\n         observed_replies = [reply['filename'] for\n-                            reply in json_response['replies']]\n+                            reply in response.json['replies']]\n \n         expected_replies = [reply.filename for\n                             reply in test_files['source'].replies]\n@@ -478,19 +456,17 @@ def test_authorized_user_can_get_single_reply(journalist_app, test_files,\n \n         assert response.status_code == 200\n \n-        json_response = json.loads(response.data)\n-\n         reply = Reply.query.filter(Reply.uuid == reply_uuid).one()\n \n-        assert json_response['uuid'] == reply_uuid\n-        assert json_response['journalist_username'] == \\\n+        assert response.json['uuid'] == reply_uuid\n+        assert response.json['journalist_username'] == \\\n             reply.journalist.username\n-        assert json_response['journalist_uuid'] == \\\n+        assert response.json['journalist_uuid'] == \\\n             reply.journalist.uuid\n-        assert json_response['is_deleted_by_source'] is False\n-        assert json_response['filename'] == \\\n+        assert response.json['is_deleted_by_source'] is False\n+        assert response.json['filename'] == \\\n             test_files['source'].replies[0].filename\n-        assert json_response['size'] == \\\n+        assert response.json['size'] == \\\n             test_files['source'].replies[0].size\n \n \n@@ -598,10 +574,9 @@ def test_authorized_user_can_get_current_user_endpoint(journalist_app,\n                            headers=get_api_headers(journalist_api_token))\n         assert response.status_code == 200\n \n-        json_response = json.loads(response.data)\n-        assert json_response['is_admin'] is False\n-        assert json_response['username'] == test_journo['username']\n-        assert json_response['uuid'] == test_journo['journalist'].uuid\n+        assert response.json['is_admin'] is False\n+        assert response.json['username'] == test_journo['username']\n+        assert response.json['uuid'] == test_journo['journalist'].uuid\n \n \n def test_request_with_missing_auth_header_triggers_403(journalist_app):\n@@ -652,7 +627,7 @@ def test_authorized_user_can_add_reply(journalist_app, journalist_api_token,\n \n         response = app.post(url_for('api.all_source_replies',\n                                     source_uuid=uuid),\n-                            data=json.dumps({'reply': reply_content}),\n+                            data=json.dumps({'reply': reply_content.decode('utf-8')}),\n                             headers=get_api_headers(journalist_api_token))\n         assert response.status_code == 201\n \n@@ -730,8 +705,7 @@ def test_reply_with_valid_curly_json_400(journalist_app, journalist_api_token,\n                             headers=get_api_headers(journalist_api_token))\n         assert response.status_code == 400\n \n-        json_response = json.loads(response.data)\n-        assert json_response['message'] == 'reply not found in request body'\n+        assert response.json['message'] == 'reply not found in request body'\n \n \n def test_reply_with_valid_square_json_400(journalist_app, journalist_api_token,\n@@ -744,8 +718,7 @@ def test_reply_with_valid_square_json_400(journalist_app, journalist_api_token,\n                             headers=get_api_headers(journalist_api_token))\n         assert response.status_code == 400\n \n-        json_response = json.loads(response.data)\n-        assert json_response['message'] == 'reply not found in request body'\n+        assert response.json['message'] == 'reply not found in request body'\n \n \n def test_malformed_json_400(journalist_app, journalist_api_token, test_journo,\n@@ -765,10 +738,9 @@ def test_malformed_json_400(journalist_app, journalist_api_token, test_journo,\n             response = app.post(protected_route,\n                                 data=\"{this is invalid {json!\",\n                                 headers=get_api_headers(journalist_api_token))\n-            observed_response = json.loads(response.data)\n \n             assert response.status_code == 400\n-            assert observed_response['error'] == 'Bad Request'\n+            assert response.json['error'] == 'Bad Request'\n \n \n def test_empty_json_400(journalist_app, journalist_api_token, test_journo,\n@@ -786,10 +758,9 @@ def test_empty_json_400(journalist_app, journalist_api_token, test_journo,\n             response = app.post(protected_route,\n                                 data=\"\",\n                                 headers=get_api_headers(journalist_api_token))\n-            observed_response = json.loads(response.data)\n \n             assert response.status_code == 400\n-            assert observed_response['error'] == 'Bad Request'\n+            assert response.json['error'] == 'Bad Request'\n \n \n def test_empty_json_20X(journalist_app, journalist_api_token, test_journo,\n@@ -871,8 +842,8 @@ def test_api_does_not_set_cookie_headers(journalist_app, test_journo):\n         response = app.get(url_for('api.get_endpoints'))\n \n         observed_headers = response.headers\n-        assert 'Set-Cookie' not in observed_headers.keys()\n-        if 'Vary' in observed_headers.keys():\n+        assert 'Set-Cookie' not in list(observed_headers.keys())\n+        if 'Vary' in list(observed_headers.keys()):\n             assert 'Cookie' not in observed_headers['Vary']\n \n "
+    },
+    {
+      "sha": "ff1fbfb4d76d9b534e084067dfd53ecdae549a2a",
+      "filename": "securedrop/tests/test_manage.py",
+      "status": "modified",
+      "additions": 21,
+      "deletions": 23,
+      "changes": 44,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_manage.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_manage.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ftest_manage.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -7,15 +7,12 @@\n import os\n import manage\n import mock\n-import sys\n import time\n \n-from StringIO import StringIO\n-\n os.environ['SECUREDROP_ENV'] = 'test'  # noqa\n \n from models import Journalist, db\n-from utils import db_helper\n+from .utils import db_helper\n \n \n YUBIKEY_HOTP = ['cb a0 5f ad 41 a2 ff 4e eb 53 56 3a 1b f7 23 2e ce fc dc',\n@@ -42,35 +39,34 @@ def test_verbose(caplog):\n \n \n def test_get_username_success():\n-    with mock.patch(\"__builtin__.raw_input\", return_value='jen'):\n+    with mock.patch(\"manage.obtain_input\", return_value='jen'):\n         assert manage._get_username() == 'jen'\n \n \n def test_get_username_fail():\n     bad_username = 'a' * (Journalist.MIN_USERNAME_LEN - 1)\n-    with mock.patch(\"__builtin__.raw_input\",\n+    with mock.patch(\"manage.obtain_input\",\n                     side_effect=[bad_username, 'jen']):\n         assert manage._get_username() == 'jen'\n \n \n def test_get_yubikey_usage_yes():\n-    with mock.patch(\"__builtin__.raw_input\", return_value='y'):\n+    with mock.patch(\"manage.obtain_input\", return_value='y'):\n         assert manage._get_yubikey_usage()\n \n \n def test_get_yubikey_usage_no():\n-    with mock.patch(\"__builtin__.raw_input\", return_value='n'):\n+    with mock.patch(\"manage.obtain_input\", return_value='n'):\n         assert not manage._get_yubikey_usage()\n \n \n # Note: we use the `journalist_app` fixture because it creates the DB\n-def test_handle_invalid_secret(journalist_app, config, mocker):\n+def test_handle_invalid_secret(journalist_app, config, mocker, capsys):\n     \"\"\"Regression test for bad secret logic in manage.py\"\"\"\n \n     mocker.patch(\"manage._get_username\", return_value='ntoll'),\n     mocker.patch(\"manage._get_yubikey_usage\", return_value=True),\n-    mocker.patch(\"__builtin__.raw_input\", side_effect=YUBIKEY_HOTP),\n-    mocker.patch(\"sys.stdout\", new_callable=StringIO),\n+    mocker.patch(\"manage.obtain_input\", side_effect=YUBIKEY_HOTP),\n \n     original_config = manage.config\n \n@@ -80,23 +76,23 @@ def test_handle_invalid_secret(journalist_app, config, mocker):\n \n         # We will try to provide one invalid and one valid secret\n         return_value = manage._add_user()\n+        out, err = capsys.readouterr()\n \n         assert return_value == 0\n-        assert 'Try again.' in sys.stdout.getvalue()\n-        assert 'successfully added' in sys.stdout.getvalue()\n+        assert 'Try again.' in out\n+        assert 'successfully added' in out\n     finally:\n         manage.config = original_config\n \n \n # Note: we use the `journalist_app` fixture because it creates the DB\n def test_exception_handling_when_duplicate_username(journalist_app,\n                                                     config,\n-                                                    mocker):\n+                                                    mocker, capsys):\n     \"\"\"Regression test for duplicate username logic in manage.py\"\"\"\n \n     mocker.patch(\"manage._get_username\", return_value='foo-bar-baz')\n     mocker.patch(\"manage._get_yubikey_usage\", return_value=False)\n-    mocker.patch(\"sys.stdout\", new_callable=StringIO)\n \n     original_config = manage.config\n \n@@ -106,14 +102,16 @@ def test_exception_handling_when_duplicate_username(journalist_app,\n \n         # Inserting the user for the first time should succeed\n         return_value = manage._add_user()\n+        out, err = capsys.readouterr()\n+\n         assert return_value == 0\n-        assert 'successfully added' in sys.stdout.getvalue()\n+        assert 'successfully added' in out\n \n         # Inserting the user for a second time should fail\n         return_value = manage._add_user()\n+        out, err = capsys.readouterr()\n         assert return_value == 1\n-        assert ('ERROR: That username is already taken!' in\n-                sys.stdout.getvalue())\n+        assert 'ERROR: That username is already taken!' in out\n     finally:\n         manage.config = original_config\n \n@@ -142,26 +140,26 @@ def test_delete_user(journalist_app, config, mocker):\n \n \n # Note: we use the `journalist_app` fixture because it creates the DB\n-def test_delete_non_existent_user(journalist_app, config, mocker):\n+def test_delete_non_existent_user(journalist_app, config, mocker, capsys):\n     mocker.patch(\"manage._get_username_to_delete\",\n                  return_value='does-not-exist')\n     mocker.patch('manage._get_delete_confirmation', return_value=True)\n-    mocker.patch(\"sys.stdout\", new_callable=StringIO)\n \n     original_config = manage.config\n \n     try:\n         # We need to override the config to point at the per-test DB\n         manage.config = config\n         return_value = manage.delete_user(args=None)\n+        out, err = capsys.readouterr()\n         assert return_value == 0\n-        assert 'ERROR: That user was not found!' in sys.stdout.getvalue()\n+        assert 'ERROR: That user was not found!' in out\n     finally:\n         manage.config = original_config\n \n \n def test_get_username_to_delete(mocker):\n-    mocker.patch(\"__builtin__.raw_input\", return_value='test-user-12345')\n+    mocker.patch(\"manage.obtain_input\", return_value='test-user-12345')\n     return_value = manage._get_username_to_delete()\n     assert return_value == 'test-user-12345'\n \n@@ -192,7 +190,7 @@ def test_reset(journalist_app, test_journo, alembic_config, config):\n \n \n def test_get_username(mocker):\n-    mocker.patch(\"__builtin__.raw_input\", return_value='foo-bar-baz')\n+    mocker.patch(\"manage.obtain_input\", return_value='foo-bar-baz')\n     assert manage._get_username() == 'foo-bar-baz'\n \n "
+    },
+    {
+      "sha": "358aa1d1bfd0ba329b69257f8501458e5e63a119",
+      "filename": "securedrop/tests/test_secure_tempfile.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 7,
+      "changes": 15,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_secure_tempfile.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_secure_tempfile.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ftest_secure_tempfile.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,6 +1,7 @@\n # -*- coding: utf-8 -*-\n import io\n import os\n+import six\n import pytest\n \n from pretty_bad_protocol._util import _is_stream\n@@ -21,21 +22,21 @@ def test_read_before_writing():\n def test_write_then_read_once():\n     f = SecureTemporaryFile('/tmp')\n     f.write(MESSAGE)\n-    assert f.read() == MESSAGE\n+    assert f.read().decode('utf-8') == MESSAGE\n \n \n def test_write_twice_then_read_once():\n     f = SecureTemporaryFile('/tmp')\n     f.write(MESSAGE)\n     f.write(MESSAGE)\n-    assert f.read() == MESSAGE * 2\n+    assert f.read().decode('utf-8') == MESSAGE * 2\n \n \n def test_write_then_read_twice():\n     f = SecureTemporaryFile('/tmp')\n     f.write(MESSAGE)\n-    assert f.read() == MESSAGE\n-    assert f.read() == ''\n+    assert f.read().decode('utf-8') == MESSAGE\n+    assert f.read() == b''\n \n \n def test_write_then_read_then_write():\n@@ -50,7 +51,7 @@ def test_write_then_read_then_write():\n \n def test_read_write_unicode():\n     f = SecureTemporaryFile('/tmp')\n-    unicode_msg = u'鬼神 Kill Em All 1989'\n+    unicode_msg = six.u('鬼神 Kill Em All 1989')\n     f.write(unicode_msg)\n     assert f.read().decode('utf-8') == unicode_msg\n \n@@ -90,15 +91,15 @@ def test_buffered_read():\n     f = SecureTemporaryFile('/tmp')\n     msg = MESSAGE * 1000\n     f.write(msg)\n-    out = ''\n+    out = b''\n     while True:\n         chars = f.read(1024)\n         if chars:\n             out += chars\n         else:\n             break\n \n-    assert out == msg\n+    assert out.decode('utf-8') == msg\n \n \n def test_tmp_file_id_omits_invalid_chars():"
+    },
+    {
+      "sha": "4499054642f8a83702a662c81387cf9810fb2783",
+      "filename": "securedrop/tests/test_source.py",
+      "status": "modified",
+      "additions": 19,
+      "deletions": 21,
+      "changes": 40,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_source.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_source.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ftest_source.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -1,17 +1,17 @@\n # -*- coding: utf-8 -*-\n import gzip\n-import json\n import platform\n import re\n import subprocess\n+import six\n \n-from cStringIO import StringIO\n+from io import BytesIO\n from flask import session, escape, current_app, url_for, g\n from mock import patch, ANY\n \n import crypto_util\n import source\n-import utils\n+from . import utils\n import version\n \n from datetime import date\n@@ -20,8 +20,8 @@\n from source_app import main as source_app_main\n from source_app import api as source_app_api\n from source_app import disable as source_app_disable\n-from utils.db_helper import new_codename\n-from utils.instrument import InstrumentedApp\n+from .utils.db_helper import new_codename\n+from .utils.instrument import InstrumentedApp\n \n overly_long_codename = 'a' * (Source.MAX_CODENAME_LEN + 1)\n TRUSTY_DISABLED_ENDPOINTS = ['main.index', 'main.lookup', 'main.generate', 'main.login',\n@@ -96,7 +96,7 @@ def test_generate(source_app):\n     text = resp.data.decode('utf-8')\n     assert \"This codename is what you will use in future visits\" in text\n \n-    codename = _find_codename(resp.data)\n+    codename = _find_codename(resp.data.decode('utf-8'))\n     assert len(codename.split()) == Source.NUM_WORDS\n     # codename is also stored in the session - make sure it matches the\n     # codename displayed to the source\n@@ -274,8 +274,8 @@ def _dummy_submission(app):\n     \"\"\"\n     return app.post(\n         url_for('main.submit'),\n-        data=dict(msg=\"Pay no attention to the man behind the curtain.\",\n-                  fh=(StringIO(''), '')),\n+        data=dict(msg=six.u(\"Pay no attention to the man behind the curtain.\"),\n+                  fh=(BytesIO(b''), '')),\n         follow_redirects=True)\n \n \n@@ -299,7 +299,7 @@ def test_submit_message(source_app):\n         _dummy_submission(app)\n         resp = app.post(\n             url_for('main.submit'),\n-            data=dict(msg=\"This is a test.\", fh=(StringIO(''), '')),\n+            data=dict(msg=six.u(\"This is a test.\"), fh=(six.StringIO(six.u('')), '')),\n             follow_redirects=True)\n         assert resp.status_code == 200\n         text = resp.data.decode('utf-8')\n@@ -311,7 +311,7 @@ def test_submit_empty_message(source_app):\n         new_codename(app, session)\n         resp = app.post(\n             url_for('main.submit'),\n-            data=dict(msg=\"\", fh=(StringIO(''), '')),\n+            data=dict(msg=\"\", fh=(six.StringIO(six.u('')), '')),\n             follow_redirects=True)\n         assert resp.status_code == 200\n         text = resp.data.decode('utf-8')\n@@ -330,7 +330,7 @@ def test_submit_big_message(source_app):\n         _dummy_submission(app)\n         resp = app.post(\n             url_for('main.submit'),\n-            data=dict(msg=\"AA\" * (1024 * 512), fh=(StringIO(''), '')),\n+            data=dict(msg=\"AA\" * (1024 * 512), fh=(six.StringIO(six.u('')), '')),\n             follow_redirects=True)\n         assert resp.status_code == 200\n         text = resp.data.decode('utf-8')\n@@ -343,7 +343,7 @@ def test_submit_file(source_app):\n         _dummy_submission(app)\n         resp = app.post(\n             url_for('main.submit'),\n-            data=dict(msg=\"\", fh=(StringIO('This is a test'), 'test.txt')),\n+            data=dict(msg=\"\", fh=(BytesIO(b'This is a test'), 'test.txt')),\n             follow_redirects=True)\n         assert resp.status_code == 200\n         text = resp.data.decode('utf-8')\n@@ -358,7 +358,7 @@ def test_submit_both(source_app):\n             url_for('main.submit'),\n             data=dict(\n                 msg=\"This is a test\",\n-                fh=(StringIO('This is a test'), 'test.txt')),\n+                fh=(BytesIO(b'This is a test'), 'test.txt')),\n             follow_redirects=True)\n         assert resp.status_code == 200\n         text = resp.data.decode('utf-8')\n@@ -376,7 +376,7 @@ def test_submit_message_with_low_entropy(source_app):\n                 _dummy_submission(app)\n                 resp = app.post(\n                     url_for('main.submit'),\n-                    data=dict(msg=\"This is a test.\", fh=(StringIO(''), '')),\n+                    data=dict(msg=\"This is a test.\", fh=(six.StringIO(six.u('')), '')),\n                     follow_redirects=True)\n                 assert resp.status_code == 200\n                 assert not async_genkey.called\n@@ -393,7 +393,7 @@ def test_submit_message_with_enough_entropy(source_app):\n                 _dummy_submission(app)\n                 resp = app.post(\n                     url_for('main.submit'),\n-                    data=dict(msg=\"This is a test.\", fh=(StringIO(''), '')),\n+                    data=dict(msg=\"This is a test.\", fh=(six.StringIO(six.u('')), '')),\n                     follow_redirects=True)\n                 assert resp.status_code == 200\n                 assert async_genkey.called\n@@ -482,7 +482,7 @@ def test_submit_sanitizes_filename(source_app):\n                 url_for('main.submit'),\n                 data=dict(\n                     msg=\"\",\n-                    fh=(StringIO('This is a test'), insecure_filename)),\n+                    fh=(BytesIO(b'This is a test'), insecure_filename)),\n                 follow_redirects=True)\n             assert resp.status_code == 200\n             gzipfile.assert_called_with(filename=sanitized_filename,\n@@ -531,10 +531,8 @@ def test_metadata_route(source_app):\n             resp = app.get(url_for('api.metadata'))\n             assert resp.status_code == 200\n             assert resp.headers.get('Content-Type') == 'application/json'\n-            assert json.loads(resp.data.decode('utf-8')).get('sd_version') \\\n-                == version.__version__\n-            assert json.loads(resp.data.decode('utf-8')).get('server_os') \\\n-                == '16.04'\n+            assert resp.json.get('sd_version') == version.__version__\n+            assert resp.json.get('server_os') == '16.04'\n \n \n def test_login_with_overly_long_codename(source_app):\n@@ -569,7 +567,7 @@ def test_failed_normalize_timestamps_logs_warning(source_app):\n                     url_for('main.submit'),\n                     data=dict(\n                         msg=\"This is a test.\",\n-                        fh=(StringIO(''), '')),\n+                        fh=(six.StringIO(six.u('')), '')),\n                     follow_redirects=True)\n                 assert resp.status_code == 200\n                 text = resp.data.decode('utf-8')"
+    },
+    {
+      "sha": "c278f94492dd296e9c65ae79b31fa199143fe45a",
+      "filename": "securedrop/tests/test_store.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_store.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Ftest_store.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Ftest_store.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -7,7 +7,7 @@\n import zipfile\n \n os.environ['SECUREDROP_ENV'] = 'test'  # noqa\n-import utils\n+from . import utils\n \n from store import Storage\n "
+    },
+    {
+      "sha": "bd0eb75cc82879cf52bcaedd46af2685530d5cd7",
+      "filename": "securedrop/tests/utils/__init__.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Futils%2F__init__.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Futils%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Futils%2F__init__.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -3,9 +3,9 @@\n from flask import g\n from pyotp import TOTP\n \n-import async  # noqa\n-import db_helper  # noqa\n-import env  # noqa\n+from . import async  # noqa\n+from . import db_helper  # noqa\n+from . import env  # noqa\n \n \n def login_user(app, test_user):"
+    },
+    {
+      "sha": "989f1c539a7a7b65ba975b1eb17957b4b2a5b419",
+      "filename": "securedrop/tests/utils/instrument.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/freedomofpress/securedrop/blob/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Futils%2Finstrument.py",
+      "raw_url": "https://github.com/freedomofpress/securedrop/raw/44e8d062b441df8cac8c956a4c72565c8df5d1f1/securedrop%2Ftests%2Futils%2Finstrument.py",
+      "contents_url": "https://api.github.com/repos/freedomofpress/securedrop/contents/securedrop%2Ftests%2Futils%2Finstrument.py?ref=44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "patch": "@@ -7,7 +7,7 @@\n :copyright: (c) 2010 by Dan Jacob.\n :license: BSD, see LICENSE for more details.\n \"\"\"\n-from __future__ import absolute_import, with_statement\n+\n \n try:\n     from urllib.parse import urlparse, urljoin"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "f99b21165d244a43da226b4fa9141968194ea553",
+      "message": "Updates Dockerfile for Python3 environment",
+      "parent_shas": [
+        "f0f2240ee00b176ac4270485e7cdf198b58f4fdd"
+      ]
+    },
+    {
+      "sha": "5b7d08d9245388da712fdeaf02901cdf17943375",
+      "message": "Uses py.test executable for tests",
+      "parent_shas": [
+        "f99b21165d244a43da226b4fa9141968194ea553"
+      ]
+    },
+    {
+      "sha": "5432a48573cee6ed0ccd644381b4776d2cac7046",
+      "message": "Uses Python3 to create dev config",
+      "parent_shas": [
+        "5b7d08d9245388da712fdeaf02901cdf17943375"
+      ]
+    },
+    {
+      "sha": "cbe3f251c86b3a45a2c9b1b874af763ea2d9734c",
+      "message": "Uses BytesIO for svg\n\nIn Python3 we need to use BytesIO and then later convert\nbytes to string for viewing svg QR code on the browser.",
+      "parent_shas": [
+        "5432a48573cee6ed0ccd644381b4776d2cac7046"
+      ]
+    },
+    {
+      "sha": "2490ba766aed58040723bd3c789f8a34157220f2",
+      "message": "Uses Python3 interpreter",
+      "parent_shas": [
+        "cbe3f251c86b3a45a2c9b1b874af763ea2d9734c"
+      ]
+    },
+    {
+      "sha": "88f30498ba426cb15514dd24ef1d080142f177e8",
+      "message": "Returns str instead of bytes in Python3",
+      "parent_shas": [
+        "2490ba766aed58040723bd3c789f8a34157220f2"
+      ]
+    },
+    {
+      "sha": "c00fdc797f74c00770aabac7ca37a3bac64d7fdd",
+      "message": "Mass update from 2to3 tool of the source",
+      "parent_shas": [
+        "88f30498ba426cb15514dd24ef1d080142f177e8"
+      ]
+    },
+    {
+      "sha": "5a2e66fd4416cb36286e14cd29671db4d0d52c38",
+      "message": "Mass update of tests using 2to3 tool",
+      "parent_shas": [
+        "c00fdc797f74c00770aabac7ca37a3bac64d7fdd"
+      ]
+    },
+    {
+      "sha": "14bebc390860581cf8ad044bfbd8803d5bba5a80",
+      "message": "Fixes crypto_util tests for python3",
+      "parent_shas": [
+        "5a2e66fd4416cb36286e14cd29671db4d0d52c38"
+      ]
+    },
+    {
+      "sha": "d4840a78888e71b7a28b5146d1f0c3e6f117339f",
+      "message": "Fixes bytes vs strings for Python3\n\nAlso fixes the import statement for Python3",
+      "parent_shas": [
+        "14bebc390860581cf8ad044bfbd8803d5bba5a80"
+      ]
+    },
+    {
+      "sha": "e31e2127d0319bfe96581245d7af48801136a1a4",
+      "message": "Fixes bytes vs strings for the i18n tool",
+      "parent_shas": [
+        "d4840a78888e71b7a28b5146d1f0c3e6f117339f"
+      ]
+    },
+    {
+      "sha": "bfed0d1398678846f4f2cc32bbedfac150c7f872",
+      "message": "Fixes rq on Python3\n\nRequires any locale other than posix for click\nmodule.",
+      "parent_shas": [
+        "e31e2127d0319bfe96581245d7af48801136a1a4"
+      ]
+    },
+    {
+      "sha": "c0a60a965bae4095cd79609c70b94fa4141d31d9",
+      "message": "Fixes for bytes vs strings in Python3",
+      "parent_shas": [
+        "bfed0d1398678846f4f2cc32bbedfac150c7f872"
+      ]
+    },
+    {
+      "sha": "a7847d3caab1002694da2819268dd511993e50fc",
+      "message": "Uses binascii.Error as the actual error in exception",
+      "parent_shas": [
+        "c0a60a965bae4095cd79609c70b94fa4141d31d9"
+      ]
+    },
+    {
+      "sha": "7fbefcb6813c3f96cbcb0297a8bd1b870ec3f891",
+      "message": "Fixes bytes vs strings for Python3",
+      "parent_shas": [
+        "a7847d3caab1002694da2819268dd511993e50fc"
+      ]
+    },
+    {
+      "sha": "053901798082d4e510c200d785d063a070e514b9",
+      "message": "Fixes encrypted reply file opening as text file\n\nThe encrypted data is already encoded to ascii, so we\ncan just save it with `open(filename,'w')` file.",
+      "parent_shas": [
+        "7fbefcb6813c3f96cbcb0297a8bd1b870ec3f891"
+      ]
+    },
+    {
+      "sha": "64308a2f4806c7016720827d00de0ec69eef3b3f",
+      "message": "Fixes bytes vs strings for Python3",
+      "parent_shas": [
+        "053901798082d4e510c200d785d063a070e514b9"
+      ]
+    },
+    {
+      "sha": "3f0750064cbcc5d3fc3806ede46ccf20b52c562a",
+      "message": "Python3 stdout takes care of the QR code",
+      "parent_shas": [
+        "64308a2f4806c7016720827d00de0ec69eef3b3f"
+      ]
+    },
+    {
+      "sha": "fefd614db5e68ea6bab706c2c2789ae3f64de53f",
+      "message": "Fixes tests by mocking builtins.input function\n\nThis is the correct input method name.",
+      "parent_shas": [
+        "3f0750064cbcc5d3fc3806ede46ccf20b52c562a"
+      ]
+    },
+    {
+      "sha": "8c91695f32331339bbf9996973e5158035183152",
+      "message": "Uses bytes on Python3",
+      "parent_shas": [
+        "fefd614db5e68ea6bab706c2c2789ae3f64de53f"
+      ]
+    },
+    {
+      "sha": "d152ea7480422208e072839b9ab0348f9f653e54",
+      "message": "Fixes bytes vs strings for Python3",
+      "parent_shas": [
+        "8c91695f32331339bbf9996973e5158035183152"
+      ]
+    },
+    {
+      "sha": "15e443f4e064b8a20af212f4047d23aa22e1753b",
+      "message": "Fixes import path for Python3",
+      "parent_shas": [
+        "d152ea7480422208e072839b9ab0348f9f653e54"
+      ]
+    },
+    {
+      "sha": "2b50b0b481cdb43989c4e2d77b3ce8051cde2ff8",
+      "message": "Fixes bytes vs strings for Python3",
+      "parent_shas": [
+        "15e443f4e064b8a20af212f4047d23aa22e1753b"
+      ]
+    },
+    {
+      "sha": "7eb87be08ed0d9e701ceb39f4678fc825a0df721",
+      "message": "Fixes bytes vs strings for Python3",
+      "parent_shas": [
+        "2b50b0b481cdb43989c4e2d77b3ce8051cde2ff8"
+      ]
+    },
+    {
+      "sha": "fc1dd67386a066b4ba83cee8eb467c061bf0221b",
+      "message": "dockerfiles: add python2 and python3 dockerfiles",
+      "parent_shas": [
+        "7eb87be08ed0d9e701ceb39f4678fc825a0df721"
+      ]
+    },
+    {
+      "sha": "ac92d2adf0e1093765522ffd45975fd8940307bf",
+      "message": "ci: add application test run on python 3 (xenial only)",
+      "parent_shas": [
+        "fc1dd67386a066b4ba83cee8eb467c061bf0221b"
+      ]
+    },
+    {
+      "sha": "5935641991ff9d0d74fc72a4fd77fa8f4e353965",
+      "message": "dockerfile: move trusty dockerfile into python2 dir",
+      "parent_shas": [
+        "ac92d2adf0e1093765522ffd45975fd8940307bf"
+      ]
+    },
+    {
+      "sha": "945211d9f8b72257120c8510a69021cfff90cb62",
+      "message": "dev: add python 2 / 3 functionality to dev env",
+      "parent_shas": [
+        "5935641991ff9d0d74fc72a4fd77fa8f4e353965"
+      ]
+    },
+    {
+      "sha": "8a8ca222c41f9fdd5d6d2422c6c25c03e65568b7",
+      "message": "dev: add makefile target for running test suite under python 3",
+      "parent_shas": [
+        "945211d9f8b72257120c8510a69021cfff90cb62"
+      ]
+    },
+    {
+      "sha": "80b5a93afbbf5181a41f5797b971f67c2b3ad19f",
+      "message": "dev: remove ticker",
+      "parent_shas": [
+        "8a8ca222c41f9fdd5d6d2422c6c25c03e65568b7"
+      ]
+    },
+    {
+      "sha": "bf5460d1c77b7575e19d4ed35d481470e4728e29",
+      "message": "python 2/3 compatibility: revert when python 3 is ready for prod\n\nthis commit reverts changes in python->python3, which can only\nbe deployed when python3 changes are ready for prod. For now, we\nplan on having both python2 and python3 compatibility, and we will\nupdate the shebangs to point to /usr/bin/env python3 when we\nremove support for python2 and deploy python3 to prod (to be done\nin a single release).",
+      "parent_shas": [
+        "80b5a93afbbf5181a41f5797b971f67c2b3ad19f"
+      ]
+    },
+    {
+      "sha": "8e0aeb7d430a52fb708cc71e137effca3f67dc83",
+      "message": "python 2/3 compatibility: update remainder of imports",
+      "parent_shas": [
+        "bf5460d1c77b7575e19d4ed35d481470e4728e29"
+      ]
+    },
+    {
+      "sha": "41ef26069e0da1c0e7e24621dcc126d207f9d075",
+      "message": "python 2/3 compatibility: fix test_api_error_handlers_defined",
+      "parent_shas": [
+        "8e0aeb7d430a52fb708cc71e137effca3f67dc83"
+      ]
+    },
+    {
+      "sha": "5335bb2e905e8cd411f0d38eb6f2e257115f94f3",
+      "message": "round of flake8 fixes",
+      "parent_shas": [
+        "41ef26069e0da1c0e7e24621dcc126d207f9d075"
+      ]
+    },
+    {
+      "sha": "0af962c4a335d388b921b98b65887f11102f9a0a",
+      "message": "python 2/3 compatibility: use input() from six\n\n(bandit will flag the use of input() in python 2 as a high severity\nsecurity issue otherwise)\n\nAlso adds a wrapper as a workaround for\nhttps://github.com/pytest-dev/pytest/issues/1598",
+      "parent_shas": [
+        "5335bb2e905e8cd411f0d38eb6f2e257115f94f3"
+      ]
+    },
+    {
+      "sha": "f3855ae009e6763e6362356c4c0de7ac95db8c01",
+      "message": "Uses six to work on both Python2 and 3",
+      "parent_shas": [
+        "0af962c4a335d388b921b98b65887f11102f9a0a"
+      ]
+    },
+    {
+      "sha": "a669aa442b415074cf0d9804c608b9d232ab5434",
+      "message": "Assert based on python2 or python3",
+      "parent_shas": [
+        "f3855ae009e6763e6362356c4c0de7ac95db8c01"
+      ]
+    },
+    {
+      "sha": "a9b75fdb3b9c5476cbc904b3a2fbe2f9ffe33a5d",
+      "message": "Uses six for both Python2 and Python3",
+      "parent_shas": [
+        "a669aa442b415074cf0d9804c608b9d232ab5434"
+      ]
+    },
+    {
+      "sha": "08c6301dbefe3e05346e3b99078169070c656b2d",
+      "message": "Uses six for both Python2 and Python3",
+      "parent_shas": [
+        "a9b75fdb3b9c5476cbc904b3a2fbe2f9ffe33a5d"
+      ]
+    },
+    {
+      "sha": "14f5cc7719189c380dfdc5c75224983b73a8db70",
+      "message": "Uses six for unicode in Python2 and Python3",
+      "parent_shas": [
+        "08c6301dbefe3e05346e3b99078169070c656b2d"
+      ]
+    },
+    {
+      "sha": "45b635136b8b2e8012dba9e70063778fdb6baddb",
+      "message": "Fixes code formatting for CI",
+      "parent_shas": [
+        "14f5cc7719189c380dfdc5c75224983b73a8db70"
+      ]
+    },
+    {
+      "sha": "2030779fac18ea95c806ed3a3314aa2d5914578f",
+      "message": "Updates code branching for Python2 vs Python3\n\nBased on code review and easy code reading of the branches.",
+      "parent_shas": [
+        "45b635136b8b2e8012dba9e70063778fdb6baddb"
+      ]
+    },
+    {
+      "sha": "9e8b6b1d12763b38261e2887cb603673135670b9",
+      "message": "python 2/3 compatibility: use six.text_type where possible",
+      "parent_shas": [
+        "2030779fac18ea95c806ed3a3314aa2d5914578f"
+      ]
+    },
+    {
+      "sha": "f39195f2bb291667454bcc1b25a1e1fd54853ae8",
+      "message": "python 2/3 compatibility: use six.BytesIO in test_submit_file",
+      "parent_shas": [
+        "9e8b6b1d12763b38261e2887cb603673135670b9"
+      ]
+    },
+    {
+      "sha": "3606e48fd5fe9cc4c3dacc92a9bc07187499fe3e",
+      "message": "docs: explain how to use dev env and run tests on either py2 or 3",
+      "parent_shas": [
+        "f39195f2bb291667454bcc1b25a1e1fd54853ae8"
+      ]
+    },
+    {
+      "sha": "3d3e0d876a871d6bcf5601e2171280011486315f",
+      "message": "python 2/3 compatibility: cleaning up nits before merge",
+      "parent_shas": [
+        "3606e48fd5fe9cc4c3dacc92a9bc07187499fe3e"
+      ]
+    },
+    {
+      "sha": "44e8d062b441df8cac8c956a4c72565c8df5d1f1",
+      "message": "ci: fix app-test job, DRY up docker layer cache loading",
+      "parent_shas": [
+        "3d3e0d876a871d6bcf5601e2171280011486315f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "too_many_commits"
+    ],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__freedomofpress__securedrop__pr4239.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\freedomofpress__securedrop__pr4239__py2_py3__freedomofpress__securedrop__pr4239\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\freedomofpress__securedrop__pr4239__py2_py3__freedomofpress__securedrop__pr4239\\rn"
+  }
+}

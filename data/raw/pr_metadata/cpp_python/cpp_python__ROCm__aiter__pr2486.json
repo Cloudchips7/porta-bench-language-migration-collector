@@ -1,0 +1,89 @@
+{
+  "instance_id": "cpp_python__ROCm__aiter__pr2486",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "ROCm/aiter",
+  "pr_number": 2486,
+  "pr_url": "https://github.com/ROCm/aiter/pull/2486",
+  "repo": {
+    "full_name": "ROCm/aiter",
+    "clone_url": "https://github.com/ROCm/aiter.git",
+    "default_branch": "main",
+    "created_at": "2024-11-11T10:38:20Z",
+    "stars": 407,
+    "license": "MIT",
+    "size_kb": 197551
+  },
+  "pull_request": {
+    "id": 3450296325,
+    "title": "support_int64_ctypes",
+    "body": "## Motivation\r\n\r\nsupport int_64 when use ctypes ffi\r\n\r\n## Technical Details\r\n\r\n<!-- Explain the changes along with any relevant GitHub links. -->\r\n\r\n## Test Plan\r\n\r\n<!-- Explain any relevant testing done to verify this PR. -->\r\n\r\n## Test Result\r\n\r\n<!-- Briefly summarize test outcomes. -->\r\n\r\n## Submission Checklist\r\n\r\n- [ ] Look over the contributing guidelines at https://github.com/ROCm/ROCm/blob/develop/CONTRIBUTING.md#pull-requests.\r\n",
+    "created_at": "2026-03-26T09:58:39Z",
+    "merged_at": "2026-03-29T07:06:01Z",
+    "base_sha": "46afd48647d4336f93d1c9e1135df4c75ce5fa1f",
+    "head_sha": "a2096475d87bd509612a9607cc01c14d6166b456",
+    "merge_commit_sha": "849b888417e4e7c401e9a5e1d66647764f4af388",
+    "labels": [
+      "ci:atom"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "f02877b8c29a9c3469af5ee0a400fffc14b805c9",
+  "final_sha": "a2096475d87bd509612a9607cc01c14d6166b456",
+  "changed_files": [
+    {
+      "sha": "7e8bea66dd2846a0296985fc58b2266314bca32e",
+      "filename": "aiter/jit/core.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/ROCm/aiter/blob/a2096475d87bd509612a9607cc01c14d6166b456/aiter%2Fjit%2Fcore.py",
+      "raw_url": "https://github.com/ROCm/aiter/raw/a2096475d87bd509612a9607cc01c14d6166b456/aiter%2Fjit%2Fcore.py",
+      "contents_url": "https://api.github.com/repos/ROCm/aiter/contents/aiter%2Fjit%2Fcore.py?ref=a2096475d87bd509612a9607cc01c14d6166b456",
+      "patch": "@@ -1049,8 +1049,8 @@ def _ctypes_call(func, fc_name, md_name):\n     ----------------------|----------------------|---------\n     Tensor                | POINTER(aiter_tensor_t) | aiter_tensor_t*\n     Optional[Tensor]      | POINTER(aiter_tensor_t) | aiter_tensor_t* (NULL if None)\n-    int                   | c_int                | int\n-    Optional[int]         | c_int                | int   (-1 if None)\n+    int                   | c_int64              | int64_t\n+    Optional[int]         | c_int64              | int64_t (-1 if None)\n     str                   | c_char_p             | char* (.encode())\n     Optional[str]         | c_char_p             | char* (NULL if None)\n     bool                  | c_int                | int   (0 / 1)\n@@ -1116,15 +1116,15 @@ def _ensure_loaded():\n                 argtypes.append(ctypes.POINTER(aiter_tensor_t))\n                 has_tensor = True\n             elif _is_union(origin) and int in type_args:\n-                argtypes.append(ctypes.c_int)\n+                argtypes.append(ctypes.c_int64)\n             elif _is_union(origin) and str in type_args:\n                 argtypes.append(ctypes.c_char_p)\n             elif hint is str:\n                 argtypes.append(ctypes.c_char_p)\n             elif hint is bool:\n                 argtypes.append(ctypes.c_int)\n             elif hint is int:\n-                argtypes.append(ctypes.c_int)\n+                argtypes.append(ctypes.c_int64)\n             elif hint is float:\n                 argtypes.append(ctypes.c_float)\n             else:\n@@ -1239,7 +1239,7 @@ def caller(*args, **kwargs):\n             elif hint is bool:\n                 c_args.append(1 if value else 0)\n             elif hint is int:\n-                c_args.append(ctypes.c_int(value))\n+                c_args.append(ctypes.c_int64(value))\n             elif hint is float:\n                 c_args.append(ctypes.c_float(value))\n             else:"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "ab5f3a60401afb727290b710ec77331a37b13ebd",
+      "message": "support_int64_ctypes",
+      "parent_shas": [
+        "f02877b8c29a9c3469af5ee0a400fffc14b805c9"
+      ]
+    },
+    {
+      "sha": "a2096475d87bd509612a9607cc01c14d6166b456",
+      "message": "Merge branch 'main' into support_int64_ctypes",
+      "parent_shas": [
+        "ab5f3a60401afb727290b710ec77331a37b13ebd",
+        "46afd48647d4336f93d1c9e1135df4c75ce5fa1f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__ROCm__aiter__pr2486.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\ROCm__aiter__pr2486__cpp_python__ROCm__aiter__pr2486\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\ROCm__aiter__pr2486__cpp_python__ROCm__aiter__pr2486\\rn"
+  }
+}

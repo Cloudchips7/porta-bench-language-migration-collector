@@ -1,0 +1,101 @@
+{
+  "instance_id": "cpp_python__dotflow-io__dotflow__pr226",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "dotflow-io/dotflow",
+  "pr_number": 226,
+  "pr_url": "https://github.com/dotflow-io/dotflow/pull/226",
+  "repo": {
+    "full_name": "dotflow-io/dotflow",
+    "clone_url": "https://github.com/dotflow-io/dotflow.git",
+    "default_branch": "master",
+    "created_at": "2024-12-26T03:05:48Z",
+    "stars": 5,
+    "license": "MIT",
+    "size_kb": 10357
+  },
+  "pull_request": {
+    "id": 3506060149,
+    "title": "🪲 BUG-#204: Replace unsafe ctypes memory access in StorageDefault",
+    "body": "# Description\n\nReplace `ctypes.cast(id, py_object)` with a safe dict-based in-memory storage in `StorageDefault`.\n\nIssue: [📌 ISSUE-#204](https://github.com/dotflow-io/dotflow/issues/204)\n\n## Changes\n\n- `post()` — now stores context in `_store` dict (was no-op returning `None`)\n- `get()` — retrieves from dict, returns `Context()` for missing keys (was `ctypes.cast` on memory address)\n- `key()` — returns `f\"{workflow_id}-{task_id}\"` consistent with S3/GCS/File (was `id()` memory address)\n- Removed `ctypes` import\n- Updated tests with roundtrip, missing key, and key format assertions\n\n## Type of change\n\n- [x] Bug fix (non-breaking change which fixes an issue)\n\n# Checklist:\n\n- [x] My code follows the style guidelines of this project\n- [x] I have performed a self-review of my code\n- [x] My changes generate no new warnings\n- [x] I have added tests that prove my fix is effective or that my feature works\n- [x] New and existing unit tests pass locally with my changes",
+    "created_at": "2026-04-09T00:26:53Z",
+    "merged_at": "2026-04-09T00:31:54Z",
+    "base_sha": "b927056ad79f87a03491bc0b5b2af37468f92bd4",
+    "head_sha": "4ae2c2d0e89cd28b92a1a43d22198343bab79b9e",
+    "merge_commit_sha": "f3f7f5fff06349cb4db342872c92464175e7837a",
+    "labels": [
+      "bug"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "b927056ad79f87a03491bc0b5b2af37468f92bd4",
+  "final_sha": "4ae2c2d0e89cd28b92a1a43d22198343bab79b9e",
+  "changed_files": [
+    {
+      "sha": "c57e5111ff592c2d2e36c6eb8cd04979a655fad4",
+      "filename": "dotflow/providers/storage_default.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 6,
+      "changes": 14,
+      "blob_url": "https://github.com/dotflow-io/dotflow/blob/4ae2c2d0e89cd28b92a1a43d22198343bab79b9e/dotflow%2Fproviders%2Fstorage_default.py",
+      "raw_url": "https://github.com/dotflow-io/dotflow/raw/4ae2c2d0e89cd28b92a1a43d22198343bab79b9e/dotflow%2Fproviders%2Fstorage_default.py",
+      "contents_url": "https://api.github.com/repos/dotflow-io/dotflow/contents/dotflow%2Fproviders%2Fstorage_default.py?ref=4ae2c2d0e89cd28b92a1a43d22198343bab79b9e",
+      "patch": "@@ -1,20 +1,22 @@\n \"\"\"Storage Default\"\"\"\n \n from collections.abc import Callable\n-from ctypes import cast, py_object\n \n from dotflow.abc.storage import Storage\n from dotflow.core.context import Context\n \n \n class StorageDefault(Storage):\n-    \"\"\"Storage\"\"\"\n+    \"\"\"In-memory storage using a dictionary.\"\"\"\n+\n+    def __init__(self):\n+        self._store: dict[str, Context] = {}\n \n     def post(self, key: str, context: Context) -> None:\n-        return None\n+        self._store[key] = context\n \n     def get(self, key: str) -> Context:\n-        return Context(storage=cast(key, py_object).value)\n+        return self._store.get(key, Context())\n \n-    def key(self, task: Callable):\n-        return id(task.current_context)\n+    def key(self, task: Callable) -> str:\n+        return f\"{task.workflow_id}-{task.task_id}\""
+    },
+    {
+      "sha": "5ca42fdf89504942389dcb03b1fe7663394f7f4b",
+      "filename": "tests/providers/test_storage_default.py",
+      "status": "modified",
+      "additions": 44,
+      "deletions": 6,
+      "changes": 50,
+      "blob_url": "https://github.com/dotflow-io/dotflow/blob/4ae2c2d0e89cd28b92a1a43d22198343bab79b9e/tests%2Fproviders%2Ftest_storage_default.py",
+      "raw_url": "https://github.com/dotflow-io/dotflow/raw/4ae2c2d0e89cd28b92a1a43d22198343bab79b9e/tests%2Fproviders%2Ftest_storage_default.py",
+      "contents_url": "https://api.github.com/repos/dotflow-io/dotflow/contents/tests%2Fproviders%2Ftest_storage_default.py?ref=4ae2c2d0e89cd28b92a1a43d22198343bab79b9e",
+      "patch": "@@ -1,4 +1,4 @@\n-\"\"\"Test StorageFile\"\"\"\n+\"\"\"Test StorageDefault\"\"\"\n \n import unittest\n from uuid import uuid4\n@@ -13,18 +13,56 @@ class TestStorageDefault(unittest.TestCase):\n     def test_storage_default_instance(self):\n         StorageDefault()\n \n-    def test_get(self):\n-        expected_value = \"flow\"\n+    def test_post_and_get_roundtrip(self):\n+        storage = StorageDefault()\n+        context = Context(storage={\"data\": 42})\n+\n+        storage.post(key=\"test-key\", context=context)\n+        result = storage.get(key=\"test-key\")\n+\n+        self.assertIsInstance(result, Context)\n+        self.assertEqual(result.storage, {\"data\": 42})\n+\n+    def test_get_missing_key_returns_empty_context(self):\n+        storage = StorageDefault()\n+        result = storage.get(key=\"nonexistent\")\n \n+        self.assertIsInstance(result, Context)\n+        self.assertIsNone(result.storage)\n+\n+    def test_key_format(self):\n         task = Task(\n             task_id=0,\n             workflow_id=uuid4(),\n             step=action_step,\n         )\n-        task.current_context = expected_value\n \n         storage = StorageDefault()\n-        result = storage.get(key=storage.key(task=task))\n+        key = storage.key(task=task)\n+\n+        self.assertEqual(key, f\"{task.workflow_id}-{task.task_id}\")\n+\n+    def test_post_overwrites_previous_value(self):\n+        storage = StorageDefault()\n+\n+        storage.post(key=\"k\", context=Context(storage=\"first\"))\n+        storage.post(key=\"k\", context=Context(storage=\"second\"))\n+        result = storage.get(key=\"k\")\n+\n+        self.assertEqual(result.storage, \"second\")\n+\n+    def test_post_and_get_with_task(self):\n+        storage = StorageDefault()\n+        task = Task(\n+            task_id=0,\n+            workflow_id=uuid4(),\n+            step=action_step,\n+        )\n+\n+        key = storage.key(task=task)\n+        context = Context(storage=\"flow\")\n+        storage.post(key=key, context=context)\n+        result = storage.get(key=key)\n \n         self.assertIsInstance(result, Context)\n-        self.assertEqual(result.storage, expected_value)\n+        self.assertEqual(result.storage, \"flow\")"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d6447c0658cda17cf6a636946b44c3c51a100da0",
+      "message": "🪲 BUG-#204: Replace unsafe ctypes memory access with dict-based storage in StorageDefault",
+      "parent_shas": [
+        "b927056ad79f87a03491bc0b5b2af37468f92bd4"
+      ]
+    },
+    {
+      "sha": "4ae2c2d0e89cd28b92a1a43d22198343bab79b9e",
+      "message": "❤️ TEST-#204: Fix test coverage for StorageDefault post/get roundtrip and overwrite",
+      "parent_shas": [
+        "d6447c0658cda17cf6a636946b44c3c51a100da0"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__dotflow-io__dotflow__pr226.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\dotflow-io__dotflow__pr226__cpp_python__dotflow-io__dotflow__pr226\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\dotflow-io__dotflow__pr226__cpp_python__dotflow-io__dotflow__pr226\\rn"
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "instance_id": "python_java__usemoss__moss__pr151",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "usemoss/moss",
+  "pr_number": 151,
+  "pr_url": "https://github.com/usemoss/moss/pull/151",
+  "repo": {
+    "full_name": "usemoss/moss",
+    "clone_url": "https://github.com/usemoss/moss.git",
+    "default_branch": "main",
+    "created_at": "2025-10-04T22:36:49Z",
+    "stars": 309,
+    "license": "BSD-2-Clause",
+    "size_kb": 103909
+  },
+  "pull_request": {
+    "id": 3531276449,
+    "title": "fix: update requires-python to support Python 3.14",
+    "body": "## Summary\n- Updated `requires-python` from `>=3.10,<3.14` to `>=3.10,<3.15` in four packages: elevenlabs-moss, pipecat-moss, strands-agents-moss, vapi-moss\n- The publish workflows test against Python 3.10-3.14, but the `<3.14` upper bound caused pip to reject wheel installation during the 3.14 smoke test\n\n## Note\nThe moss-md-indexer and vitepress-plugin-moss publish failures are caused by a missing `NPM_PUBLISH_TOKEN` repo secret -- not a code issue.\n\n## Test plan\n- [ ] Re-run publish workflows for elevenlabs-moss, vapi-moss, strands-agents-moss to verify 3.14 matrix passes\n- [ ] Set `NPM_PUBLISH_TOKEN` secret and re-run moss-md-indexer / vitepress-plugin-moss workflows\n<!-- devin-review-badge-begin -->\n\n---\n\n<a href=\"https://app.devin.ai/review/usemoss/moss/pull/151\" target=\"_blank\">\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://static.devin.ai/assets/gh-open-in-devin-review-dark.svg?v=1\">\n    <img src=\"https://static.devin.ai/assets/gh-open-in-devin-review-light.svg?v=1\" alt=\"Open with Devin\">\n  </picture>\n</a>\n<!-- devin-review-badge-end -->\n",
+    "created_at": "2026-04-15T00:41:46Z",
+    "merged_at": "2026-04-15T00:51:13Z",
+    "base_sha": "4c3a4145de9505d751d9cc3040e99f830b3df60e",
+    "head_sha": "acbaac82a062de936ca0cf9dc792805db63f972c",
+    "merge_commit_sha": "05af3b64bb62eec03854c5e9ad23acfd0375a22c",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "4c3a4145de9505d751d9cc3040e99f830b3df60e",
+  "final_sha": "acbaac82a062de936ca0cf9dc792805db63f972c",
+  "changed_files": [
+    {
+      "sha": "08e2a2674a0965ad8c142ef15b71ea253aa60338",
+      "filename": "packages/elevenlabs-moss/pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/usemoss/moss/blob/acbaac82a062de936ca0cf9dc792805db63f972c/packages%2Felevenlabs-moss%2Fpyproject.toml",
+      "raw_url": "https://github.com/usemoss/moss/raw/acbaac82a062de936ca0cf9dc792805db63f972c/packages%2Felevenlabs-moss%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/usemoss/moss/contents/packages%2Felevenlabs-moss%2Fpyproject.toml?ref=acbaac82a062de936ca0cf9dc792805db63f972c",
+      "patch": "@@ -3,7 +3,7 @@ name = \"elevenlabs-moss\"\n version = \"0.0.1\"\n description = \"Moss semantic search integration for ElevenLabs Conversational AI\"\n readme = \"README.md\"\n-requires-python = \">=3.10,<3.14\"\n+requires-python = \">=3.10,<3.15\"\n dependencies = [\n     \"moss>=1.0.0\",\n     \"elevenlabs>=2.40.0\","
+    },
+    {
+      "sha": "e000c959ffdd731b72e2bb9385c916e6c79b05f6",
+      "filename": "packages/pipecat-moss/pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/usemoss/moss/blob/acbaac82a062de936ca0cf9dc792805db63f972c/packages%2Fpipecat-moss%2Fpyproject.toml",
+      "raw_url": "https://github.com/usemoss/moss/raw/acbaac82a062de936ca0cf9dc792805db63f972c/packages%2Fpipecat-moss%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/usemoss/moss/contents/packages%2Fpipecat-moss%2Fpyproject.toml?ref=acbaac82a062de936ca0cf9dc792805db63f972c",
+      "patch": "@@ -3,7 +3,7 @@ name = \"pipecat-moss\"\n version = \"0.0.3\"\n description = \"Moss vector search integration for Pipecat\"\n readme = \"README.md\"\n-requires-python = \">=3.10,<3.14\"\n+requires-python = \">=3.10,<3.15\"\n dependencies = [\n     \"moss>=1.0.0\",\n     \"loguru>=0.7.0\","
+    },
+    {
+      "sha": "60684164a1ff79ae149da8ba6db7cfb23f7f5866",
+      "filename": "packages/strands-agents-moss/pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/usemoss/moss/blob/acbaac82a062de936ca0cf9dc792805db63f972c/packages%2Fstrands-agents-moss%2Fpyproject.toml",
+      "raw_url": "https://github.com/usemoss/moss/raw/acbaac82a062de936ca0cf9dc792805db63f972c/packages%2Fstrands-agents-moss%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/usemoss/moss/contents/packages%2Fstrands-agents-moss%2Fpyproject.toml?ref=acbaac82a062de936ca0cf9dc792805db63f972c",
+      "patch": "@@ -3,7 +3,7 @@ name = \"strands-agents-moss\"\n version = \"0.0.1\"\n description = \"Moss semantic search integration for Strands Agents\"\n readme = \"README.md\"\n-requires-python = \">=3.10,<3.14\"\n+requires-python = \">=3.10,<3.15\"\n dependencies = [\n     \"moss>=1.0.0\",\n     \"strands-agents>=0.1.0\","
+    },
+    {
+      "sha": "57d468673f102bc375a96ed55ec8766921dc06b5",
+      "filename": "packages/vapi-moss/pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/usemoss/moss/blob/acbaac82a062de936ca0cf9dc792805db63f972c/packages%2Fvapi-moss%2Fpyproject.toml",
+      "raw_url": "https://github.com/usemoss/moss/raw/acbaac82a062de936ca0cf9dc792805db63f972c/packages%2Fvapi-moss%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/usemoss/moss/contents/packages%2Fvapi-moss%2Fpyproject.toml?ref=acbaac82a062de936ca0cf9dc792805db63f972c",
+      "patch": "@@ -3,7 +3,7 @@ name = \"vapi-moss\"\n version = \"0.0.1\"\n description = \"Moss semantic search integration for VAPI Custom Knowledge Base webhooks\"\n readme = \"README.md\"\n-requires-python = \">=3.10,<3.14\"\n+requires-python = \">=3.10,<3.15\"\n dependencies = [\n     \"moss>=1.0.0\",\n ]"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "406a9646e2a0aebf056f60df4eeeb4fa41329620",
+      "message": "fix: update requires-python to support Python 3.14\n\nThe publish workflows test against Python 3.10-3.14, but four packages\nhad requires-python = \">=3.10,<3.14\" which caused the 3.14 smoke test\nto fail with \"requires a different Python\" during pip install.",
+      "parent_shas": [
+        "4c3a4145de9505d751d9cc3040e99f830b3df60e"
+      ]
+    },
+    {
+      "sha": "989464be339e3287845137e4526f98a8e60de767",
+      "message": "fix: update crewai cookbook requires-python to support 3.14",
+      "parent_shas": [
+        "406a9646e2a0aebf056f60df4eeeb4fa41329620"
+      ]
+    },
+    {
+      "sha": "acbaac82a062de936ca0cf9dc792805db63f972c",
+      "message": "Revert \"fix: update crewai cookbook requires-python to support 3.14\"\n\nThis reverts commit 989464be339e3287845137e4526f98a8e60de767.",
+      "parent_shas": [
+        "989464be339e3287845137e4526f98a8e60de767"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "dependency_only",
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__usemoss__moss__pr151.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\usemoss__moss__pr151__python_java__usemoss__moss__pr151\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\usemoss__moss__pr151__python_java__usemoss__moss__pr151\\rn"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "instance_id": "cpp_python__picotech__pyPicoSDK__pr175",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "picotech/pyPicoSDK",
+  "pr_number": 175,
+  "pr_url": "https://github.com/picotech/pyPicoSDK/pull/175",
+  "repo": {
+    "full_name": "picotech/pyPicoSDK",
+    "clone_url": "https://github.com/picotech/pyPicoSDK.git",
+    "default_branch": "main",
+    "created_at": "2025-03-18T17:19:37Z",
+    "stars": 21,
+    "license": "ISC",
+    "size_kb": 36908
+  },
+  "pull_request": {
+    "id": 3527982947,
+    "title": "Constrained max sample length to uint32/64 in run_streaming in base.py",
+    "body": "- Added conversion of max_pre_trigger_samples and max_post_trigger_samples to ctypes based on device type (32 or 64 bit).\r\n- Improved compatibility for different PicoScope models.",
+    "created_at": "2026-04-14T11:14:02Z",
+    "merged_at": "2026-04-15T05:16:34Z",
+    "base_sha": "9901aab9e4d9bc84b9fe5442b61a31b3b0bf6d0d",
+    "head_sha": "fb81205ea9c20e40950bd981b089a4e8eacd2281",
+    "merge_commit_sha": "93c723c1d552fb03c2f1969a3e8ae7663957da2b",
+    "labels": [
+      "bug"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "9901aab9e4d9bc84b9fe5442b61a31b3b0bf6d0d",
+  "final_sha": "fb81205ea9c20e40950bd981b089a4e8eacd2281",
+  "changed_files": [
+    {
+      "sha": "93341b7d87f693ac8350905d41cc8be2e252ec2b",
+      "filename": "pypicosdk/base.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 0,
+      "changes": 9,
+      "blob_url": "https://github.com/picotech/pyPicoSDK/blob/fb81205ea9c20e40950bd981b089a4e8eacd2281/pypicosdk%2Fbase.py",
+      "raw_url": "https://github.com/picotech/pyPicoSDK/raw/fb81205ea9c20e40950bd981b089a4e8eacd2281/pypicosdk%2Fbase.py",
+      "contents_url": "https://api.github.com/repos/picotech/pyPicoSDK/contents/pypicosdk%2Fbase.py?ref=fb81205ea9c20e40950bd981b089a4e8eacd2281",
+      "patch": "@@ -2027,6 +2027,15 @@ def run_streaming(\n         else:\n             c_sample_interval = ctypes.c_double(sample_interval)\n \n+        # Convert max_pre_trigger_samples and max_post_trigger_samples to ctypes \n+        # depending on the device type (32 or 64 bit device)\n+        if self._unit_prefix_n in ['ps5000a', 'ps4000a']:\n+            max_pre_trigger_samples = ctypes.c_uint32(max_pre_trigger_samples)\n+            max_post_trigger_samples = ctypes.c_uint32(max_post_trigger_samples)\n+        else:\n+            max_pre_trigger_samples = ctypes.c_uint64(max_pre_trigger_samples)\n+            max_post_trigger_samples = ctypes.c_uint64(max_post_trigger_samples)\n+\n         if overview_buffer_size is None:\n             overview_buffer_size = self.base_dataclass.last_buffer_size\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "fb81205ea9c20e40950bd981b089a4e8eacd2281",
+      "message": "Constrained max sample length to uint32/64 in run_streaming in base.py\n\n- Added conversion of max_pre_trigger_samples and max_post_trigger_samples to ctypes based on device type (32 or 64 bit).\n- Improved compatibility for different PicoScope models.",
+      "parent_shas": [
+        "9901aab9e4d9bc84b9fe5442b61a31b3b0bf6d0d"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__picotech__pyPicoSDK__pr175.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\picotech__pyPicoSDK__pr175__cpp_python__picotech__pyPicoSDK__pr175\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\picotech__pyPicoSDK__pr175__cpp_python__picotech__pyPicoSDK__pr175\\rn"
+  }
+}

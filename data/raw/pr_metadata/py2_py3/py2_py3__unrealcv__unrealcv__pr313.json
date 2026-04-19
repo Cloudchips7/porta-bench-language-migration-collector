@@ -1,0 +1,126 @@
+{
+  "instance_id": "py2_py3__unrealcv__unrealcv__pr313",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "unrealcv/unrealcv",
+  "pr_number": 313,
+  "pr_url": "https://github.com/unrealcv/unrealcv/pull/313",
+  "repo": {
+    "full_name": "unrealcv/unrealcv",
+    "clone_url": "https://github.com/unrealcv/unrealcv.git",
+    "default_branch": "5.2",
+    "created_at": "2016-09-08T18:03:51Z",
+    "stars": 2165,
+    "license": "MIT",
+    "size_kb": 19240
+  },
+  "pull_request": {
+    "id": 3350980088,
+    "title": "fix: Remove Python 2 compat, fix bugs, modernize idioms",
+    "body": "## Summary\n\nComprehensive cleanup pass removing Python 2 compatibility code and fixing longstanding bugs across the Python client.\n\n## Changes\n- **Python 2 removal**: Remove all sys.version_info guards, raw_input shim\n- **Bug fixes**: Fix print(print()) double-call, deprecated np.float, undefined parser.error, docstring-as-attribute in write_port, mutable default args, type() anti-pattern, duplicate get_camera_num, unused variables, debug print left in get_obj_scale\n- **Modernization**: Remove old-style (object) bases, replace assert 0 with proper exceptions, replace bare except with except Exception, replace print warnings with logging, fix devnull file leak, add __all__\n",
+    "created_at": "2026-03-03T23:08:44Z",
+    "merged_at": "2026-03-11T16:09:34Z",
+    "base_sha": "8ec7a8cf389c0e2eb6658d5fe64806ad22e586d3",
+    "head_sha": "e418866b74312c5ec2a865f59f85597061288c1d",
+    "merge_commit_sha": "abe9328f485614e5e62fe3bf59f4454b25bdd4a0",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "8ec7a8cf389c0e2eb6658d5fe64806ad22e586d3",
+  "final_sha": "e418866b74312c5ec2a865f59f85597061288c1d",
+  "changed_files": [
+    {
+      "sha": "0c174c822815f040139929d0ecedd4ddb4ad1670",
+      "filename": "client/python/unrealcv/__init__.py",
+      "status": "modified",
+      "additions": 29,
+      "deletions": 27,
+      "changes": 56,
+      "blob_url": "https://github.com/unrealcv/unrealcv/blob/e418866b74312c5ec2a865f59f85597061288c1d/client%2Fpython%2Funrealcv%2F__init__.py",
+      "raw_url": "https://github.com/unrealcv/unrealcv/raw/e418866b74312c5ec2a865f59f85597061288c1d/client%2Fpython%2Funrealcv%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/unrealcv/unrealcv/contents/client%2Fpython%2Funrealcv%2F__init__.py?ref=e418866b74312c5ec2a865f59f85597061288c1d",
+      "patch": "@@ -12,6 +12,12 @@\n from .launcher import *\n from queue import SimpleQueue\n \n+__all__ = [\n+    \"Client\",\n+    \"SocketMessage\",\n+    \"__version__\",\n+]\n+\n \n _L = logging.getLogger(__name__)\n # _L.addHandler(logging.NullHandler()) # Let client to decide how to do logging\n@@ -194,11 +200,12 @@ def raw_message_handler(self, raw_message):\n                 message_body = message_body.decode('utf-8')\n             except UnicodeDecodeError:\n                 pass\n-            # print 'Received message id %s' % message_id\n             if message_id == self.recv_message_id:\n                 return message_body\n             else:\n-                assert False, f'this_msg_id: {message_id}; record_msg_id: {self.recv_message_id}'\n+                raise RuntimeError(\n+                    f'Message ID mismatch: got {message_id}, expected {self.recv_message_id}'\n+                )\n         else:\n             # Instead of just dropping this message, give a verbose notice\n             _L.error('No message handler to handle message with length %d', len(raw_message))\n@@ -299,18 +306,18 @@ def receive(self):\n                 self.disconnect()\n \n                 # try reconnect\n-                print('try reconnecting!')\n+                _L.warning('Remote disconnected, attempting reconnect...')\n                 for _ in range(5):\n                     flag = self.connect()\n                     if flag:\n-                        print('reconnect succeed!')\n+                        _L.info('Reconnect succeeded')\n                         break\n                     else:\n-                        print('reconnect fail! sleep 1s and retry...')\n+                        _L.warning('Reconnect failed, retrying in 1s...')\n                         time.sleep(1)\n-                print('disconnecting...')\n+                _L.error('All reconnect attempts failed, disconnecting')\n                 self.disconnect()\n-                assert 0, 'exit because of abnormal disconnection'\n+                raise ConnectionError('Remote disconnected and reconnection failed')\n \n             return message\n \n@@ -341,17 +348,15 @@ def request_async(self, message):\n         \"\"\"\n         Send request without waiting for any reply\n         \"\"\"\n-        if type(message) is list:\n+        if isinstance(message, list):\n             return self.request_batch_async(message)\n \n-        if sys.version_info[0] == 3:\n-            if not isinstance(message, bytes):\n-                message = message.encode('utf-8')\n+        if not isinstance(message, bytes):\n+            message = message.encode('utf-8')\n \n         raw_message = b'%d:%s' % (self.send_message_id, message)\n         if not self.send(raw_message):\n-            assert 0, 'failed send because of socket is closed'\n-            # return None\n+            raise ConnectionError('Failed to send: socket is closed')\n \n         self.send_message_id += 1\n \n@@ -371,13 +376,12 @@ def request_batch_async(self, batch):\n         None\n         \"\"\"\n         for message in batch:\n-            if sys.version_info[0] == 3:\n-                if not isinstance(message, bytes):\n-                    message = message.encode('utf-8')\n+            if not isinstance(message, bytes):\n+                message = message.encode('utf-8')\n \n             raw_message = b'%d:%s' % (self.send_message_id, message)\n             if not self.send(raw_message):\n-                assert 0, 'failed send because of socket is closed'\n+                raise ConnectionError('Failed to send: socket is closed')\n             # self.send(raw_message)\n             self.send_message_id += 1\n \n@@ -402,13 +406,12 @@ def request_batch(self, batch):\n         ['100.0 -100.0 100.0', '0.0 0.0 0.0']\n         \"\"\"\n         for message in batch:\n-            if sys.version_info[0] == 3:\n-                if not isinstance(message, bytes):\n-                    message = message.encode('utf-8')\n+            if not isinstance(message, bytes):\n+                message = message.encode('utf-8')\n \n             raw_message = b'%d:%s' % (self.send_message_id, message)\n             if not self.send(raw_message):\n-                assert 0, 'failed send because of socket is closed'\n+                raise ConnectionError('Failed to send: socket is closed')\n                 # return None\n             self.send_message_id += 1\n \n@@ -451,23 +454,22 @@ def request(self, message, timeout=5):\n         \"\"\"\n \n         if timeout < 0 : # async\n-            if type(message) is list:\n+            if isinstance(message, list):\n                 self.request_batch_async(message)\n             else:\n                 self.request_async(message)\n             return True\n \n-        if type(message) is list:\n+        if isinstance(message, list):\n             return self.request_batch(message)\n \n-        if sys.version_info[0] == 3:\n-            if not isinstance(message, bytes):\n-                message = message.encode('utf-8')\n+        if not isinstance(message, bytes):\n+            message = message.encode('utf-8')\n \n         raw_message = b'%d:%s' % (self.send_message_id, message)\n         # _L.debug('Request: %s', raw_message.decode(\"utf-8\"))\n         if not self.send(raw_message):\n-            assert 0, 'failed send because of socket is closed'\n+            raise ConnectionError('Failed to send: socket is closed')\n             # return None\n \n         self.send_message_id += 1"
+    },
+    {
+      "sha": "b5318af3e8f5a1c8df1f2d33dbe5f72e6fc290b7",
+      "filename": "client/python/unrealcv/api.py",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 17,
+      "changes": 29,
+      "blob_url": "https://github.com/unrealcv/unrealcv/blob/e418866b74312c5ec2a865f59f85597061288c1d/client%2Fpython%2Funrealcv%2Fapi.py",
+      "raw_url": "https://github.com/unrealcv/unrealcv/raw/e418866b74312c5ec2a865f59f85597061288c1d/client%2Fpython%2Funrealcv%2Fapi.py",
+      "contents_url": "https://api.github.com/repos/unrealcv/unrealcv/contents/client%2Fpython%2Funrealcv%2Fapi.py?ref=e418866b74312c5ec2a865f59f85597061288c1d",
+      "patch": "@@ -31,7 +31,7 @@\n from unrealcv.util import ResChecker, time_it\n import warnings\n \n-class UnrealCv_API(object):\n+class UnrealCv_API:\n     \"\"\"\n     A class to interact with UnrealCV, a toolkit for using Unreal Engine (UE) in Python.\n     \"\"\"\n@@ -157,15 +157,6 @@ def get_camera_config(self):\n             )\n         return cam\n \n-    def get_camera_num(self):\n-        \"\"\"\n-        Get the number of cameras.\n-\n-        Returns:\n-            int: The number of cameras.\n-        \"\"\"\n-        return len(self.client.request('vget /cameras').split())\n-\n     def get_objects(self):\n         \"\"\"\n         Get all object names in the map.\n@@ -314,7 +305,7 @@ def get_image_multicam(self, cam_ids, viewmode='lit', mode='bmp', inverse=True):\n         img_list = self.batch_cmd(cmds, decoders, mode=mode, inverse=inverse)\n         return img_list\n \n-    def get_image_multimodal(self, cam_id, viewmodes=['lit', 'depth'], modes=['bmp', 'npy']): # get rgb and depth image\n+    def get_image_multimodal(self, cam_id, viewmodes=None, modes=None): # get rgb and depth image\n         \"\"\"\n         Get multimodal images from a camera, such as RGB-D images (default).\n \n@@ -326,6 +317,10 @@ def get_image_multimodal(self, cam_id, viewmodes=['lit', 'depth'], modes=['bmp',\n         Returns:\n             np.ndarray: The concatenated image.\n         \"\"\"\n+        if viewmodes is None:\n+            viewmodes = ['lit', 'depth']\n+        if modes is None:\n+            modes = ['bmp', 'npy']\n         cmds = [self.get_image(cam_id, viewmode, mode, return_cmd=True) for viewmode, mode in zip(viewmodes, modes)]\n         decoders = [self.decoder.decode_map[mode] for mode in modes]\n         res = self.batch_cmd(cmds, decoders)\n@@ -699,11 +694,10 @@ def get_bbox(self, object_mask, obj, normalize=True):\n         width = object_mask.shape[1]\n         height = object_mask.shape[0]\n         mask = self.get_mask(object_mask, obj)\n-        nparray = np.array([[[0, 0]]])\n         pixelpointsCV2 = cv2.findNonZero(mask)\n \n \n-        if type(pixelpointsCV2) == type(nparray):  # exist target in image\n+        if isinstance(pixelpointsCV2, np.ndarray):  # exist target in image\n             x_min = pixelpointsCV2[:, :, 0].min()\n             x_max = pixelpointsCV2[:, :, 0].max()\n             y_min = pixelpointsCV2[:, :, 1].min()\n@@ -898,18 +892,19 @@ def get_obj_scale(self, obj, return_cmd=False):\n         res = None\n         while res is None:\n             res = self.client.request(cmd)\n-        print(obj, res)\n         return self.decoder.string2floats(res)  # [scale_x, scale_y, scale_z]\n \n-    def set_obj_scale(self, obj, scale=[1, 1, 1], return_cmd=False):\n+    def set_obj_scale(self, obj, scale=None, return_cmd=False):\n         \"\"\"\n         Set the scale of an object.\n \n         Args:\n             obj (str): The object name.\n-            scale (list): The scale to set [scale_x, scale_y, scale_z].\n+            scale (list): The scale to set [scale_x, scale_y, scale_z]. Default is [1, 1, 1].\n             return_cmd (bool): Whether to return the command instead of executing it. Default is False.\n         \"\"\"\n+        if scale is None:\n+            scale = [1, 1, 1]\n         [x, y, z] = scale\n         cmd = f'vset /object/{obj}/scale {x} {y} {z}'\n         if return_cmd:\n@@ -1177,7 +1172,7 @@ def set_max_FPS(self, max_fps, return_cmd=False):\n         self.client.request(cmd, -1)\n \n \n-class MsgDecoder(object):\n+class MsgDecoder:\n     \"\"\"\n     Message decoder for UnrealCV server responses.\n "
+    },
+    {
+      "sha": "0034d5c6d88d48cc1e72d50586545e90ecbe0890",
+      "filename": "client/python/unrealcv/automation.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 12,
+      "changes": 21,
+      "blob_url": "https://github.com/unrealcv/unrealcv/blob/e418866b74312c5ec2a865f59f85597061288c1d/client%2Fpython%2Funrealcv%2Fautomation.py",
+      "raw_url": "https://github.com/unrealcv/unrealcv/raw/e418866b74312c5ec2a865f59f85597061288c1d/client%2Fpython%2Funrealcv%2Fautomation.py",
+      "contents_url": "https://api.github.com/repos/unrealcv/unrealcv/contents/client%2Fpython%2Funrealcv%2Fautomation.py?ref=e418866b74312c5ec2a865f59f85597061288c1d",
+      "patch": "@@ -2,8 +2,6 @@\n # A single file library\n # Weichao Qiu @ 2017\n import subprocess, sys, os, argparse, platform, logging, glob, shutil, json\n-try: input = raw_input # to support python3\n-except NameError: pass\n \n def get_platform_name():\n     ''''\n@@ -57,8 +55,7 @@ def build_plugin(self, plugin_descriptor, output_folder, overwrite = False):\n         abs_plugin_descriptor = os.path.abspath(plugin_descriptor)\n         abs_output_folder = os.path.abspath(output_folder)\n \n-        if overwrite == False and os.path.isdir(abs_output_folder):\n-            print('Output folder \"%s\" already exists, skip compilation.' % abs_output_folder)\n+        if not overwrite and os.path.isdir(abs_output_folder):\n             print('Remove this folder if you want to compile the plugin with a different UE4 version.')\n         else:\n             script_dir = os.path.dirname(os.path.realpath(__file__))\n@@ -109,7 +106,7 @@ def package(self, project_descriptor, output_folder, overwrite = False):\n         abs_project_path = os.path.abspath(project_descriptor)\n         abs_output_folder = os.path.abspath(output_folder)\n \n-        if overwrite == False and os.path.isdir(abs_output_folder):\n+        if not overwrite and os.path.isdir(abs_output_folder):\n             print('Packaged binary already exist')\n         else:\n             subprocess.call([\n@@ -191,7 +188,7 @@ def UE4Binary(binary_path):\n \n import time, os\n # The environment runner\n-class UE4BinaryBase(object):\n+class UE4BinaryBase:\n     '''\n     UE4BinaryBase is the base class for all platform-dependent classes, it is different from UE4Binary which serves as a factory to create a platform-dependent binary wrapper. User should use UE4Binary instead of UE4BinaryBase\n \n@@ -213,7 +210,7 @@ def __enter__(self):\n         else:\n             print('Binary %s can not be found' % self.binary_path)\n \n-    def __exit__(self, type, value, traceback):\n+    def __exit__(self, exc_type, exc_val, exc_tb):\n         ''' Close the binary '''\n         self.close()\n \n@@ -233,8 +230,11 @@ def close(self):\n \n class LinuxBinary(UE4BinaryBase):\n     def start(self):\n-        null_file = open(os.devnull, 'w')\n-        popen_obj = subprocess.Popen([self.binary_path], stdout = null_file, stderr = null_file)\n+        popen_obj = subprocess.Popen(\n+            [self.binary_path],\n+            stdout=subprocess.DEVNULL,\n+            stderr=subprocess.DEVNULL,\n+        )\n         self.pid = popen_obj.pid\n         time.sleep(6)\n \n@@ -285,6 +285,3 @@ def close(self):\n     with binary:\n         client.connect()\n         client.request('vget /unrealcv/status')\n-\n-    pass\n-    # Try some simple tests in here?"
+    },
+    {
+      "sha": "6696c31a5df10d6c13bd0561467b736997afff2c",
+      "filename": "client/python/unrealcv/launcher.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/unrealcv/unrealcv/blob/e418866b74312c5ec2a865f59f85597061288c1d/client%2Fpython%2Funrealcv%2Flauncher.py",
+      "raw_url": "https://github.com/unrealcv/unrealcv/raw/e418866b74312c5ec2a865f59f85597061288c1d/client%2Fpython%2Funrealcv%2Flauncher.py",
+      "contents_url": "https://api.github.com/repos/unrealcv/unrealcv/contents/client%2Fpython%2Funrealcv%2Flauncher.py?ref=e418866b74312c5ec2a865f59f85597061288c1d",
+      "patch": "@@ -272,7 +272,7 @@ def read_port(self):\n             return 9000 # default port number\n \n     def write_port(self, port):\n-        self.write__ = \"\"\"\n+        \"\"\"\n         Write the port number to unrealcv.ini.\n \n         Args:\n@@ -371,7 +371,6 @@ def start(self,\n             warnings.warn('Did not find unreal environment, Please move your binary file to env/UnrealEnv')\n             sys.exit()\n \n-        client = docker.from_env()\n         # network_settings = self.container.attrs['NetworkSettings']\n         volumes = f'-v {self.path2env}:{ENV_DIR_DOCKER}:rw'\n "
+    },
+    {
+      "sha": "f6faaaa27372a8274703628c7a062fe4c0f8048f",
+      "filename": "client/python/unrealcv/util.py",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 10,
+      "changes": 22,
+      "blob_url": "https://github.com/unrealcv/unrealcv/blob/e418866b74312c5ec2a865f59f85597061288c1d/client%2Fpython%2Funrealcv%2Futil.py",
+      "raw_url": "https://github.com/unrealcv/unrealcv/raw/e418866b74312c5ec2a865f59f85597061288c1d/client%2Fpython%2Funrealcv%2Futil.py",
+      "contents_url": "https://api.github.com/repos/unrealcv/unrealcv/contents/client%2Fpython%2Funrealcv%2Futil.py?ref=e418866b74312c5ec2a865f59f85597061288c1d",
+      "patch": "@@ -1,10 +1,12 @@\n+import logging\n import numpy as np\n import PIL.Image\n from io import BytesIO\n import os\n import time\n import warnings\n-# StringIO module is removed in python3, use io module\n+\n+_L = logging.getLogger(__name__)\n \n class ResChecker:\n     # Define some utility functions to check whether the response is as expected\n@@ -20,7 +22,7 @@ def not_error(self, res):\n     def is_expected_file_extension(self, path, valid_ext):\n         ext = os.path.splitext(path)[-1]\n         if ext not in valid_ext:\n-            print(print(f'Invalid file extension {ext}, should be in {valid_ext}'))\n+            _L.warning('Invalid file extension %s, should be in %s', ext, valid_ext)\n         return ext in valid_ext\n \n def measure_fps(func, *args, **kwargs):\n@@ -61,8 +63,8 @@ def read_png(res):\n     try:\n         PIL_img = PIL.Image.open(BytesIO(res))\n         img = np.asarray(PIL_img)\n-    except:\n-        print('Read png can not parse response %s' % str(res[:20]))\n+    except Exception:\n+        _L.warning('read_png cannot parse response %s', repr(res[:20]))\n     return img\n \n def read_npy(res):\n@@ -83,8 +85,8 @@ def read_npy(res):\n     arr = None\n     try:\n         arr = np.load(BytesIO(res))\n-    except:\n-        print('Read npy can not parse response %s' % str(res[:20]))\n+    except Exception:\n+        _L.warning('read_npy cannot parse response %s', repr(res[:20]))\n     return arr\n \n \n@@ -101,8 +103,8 @@ def convert2planedepth(PointDepth, f=320): # convert point depth to plane depth\n     \"\"\"\n     H = PointDepth.shape[0]\n     W = PointDepth.shape[1]\n-    i_c = np.float(H) / 2 - 1\n-    j_c = np.float(W) / 2 - 1\n+    i_c = float(H) / 2 - 1\n+    j_c = float(W) / 2 - 1\n     columns, rows = np.meshgrid(np.linspace(0, W - 1, num=W), np.linspace(0, H - 1, num=H))\n     DistanceFromCenter = ((rows - i_c) ** 2 + (columns - j_c) ** 2) ** 0.5\n     PlaneDepth = PointDepth / (1 + (DistanceFromCenter / f) ** 2) ** 0.5\n@@ -142,11 +144,11 @@ def parse_resolution(res):\n     \"\"\"\n     resolution = res.split('x')\n     if len(resolution) != 2:\n-        parser.error('Resolution must be specified as WIDTHxHEIGHT')\n+        raise ValueError('Resolution must be specified as WIDTHxHEIGHT')\n     try:\n         return (int(resolution[0]), int(resolution[1]))\n     except ValueError:\n-        parser.error('WIDTH and HEIGHT must be integers')\n+        raise ValueError('WIDTH and HEIGHT must be integers')\n \n def get_path2UnrealEnv():\n     # get path to UnrealEnv"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "e418866b74312c5ec2a865f59f85597061288c1d",
+      "message": "fix: remove Python 2 compat, fix bugs, modernize idioms\n\n- Remove all sys.version_info[0] == 3 guards (Python 2 is dead)\n- Remove try: input = raw_input compat shim\n- Replace assert 0/False with proper exceptions (ConnectionError, RuntimeError)\n- Fix print(print(...)) double-call bug in ResChecker\n- Fix deprecated np.float to float\n- Fix undefined parser.error to raise ValueError in parse_resolution\n- Fix docstring-as-attribute bug in launcher.write_port\n- Fix mutable default args: scale=[1,1,1], viewmodes=[...], modes=[...]\n- Fix type(x) == type(y) to isinstance(x, np.ndarray)\n- Remove old-style (object) base classes\n- Remove duplicate get_camera_num definition\n- Remove unused docker.from_env() variable in RunDocker.start\n- Remove debug print(obj, res) in get_obj_scale\n- Add __all__ to __init__.py\n- Fix bare except to except Exception\n- Replace print warnings with logging calls in util.py\n- Fix devnull file leak in LinuxBinary.start (use subprocess.DEVNULL)",
+      "parent_shas": [
+        "8ec7a8cf389c0e2eb6658d5fe64806ad22e586d3"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__unrealcv__unrealcv__pr313.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\unrealcv__unrealcv__pr313__py2_py3__unrealcv__unrealcv__pr313\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\unrealcv__unrealcv__pr313__py2_py3__unrealcv__unrealcv__pr313\\rn"
+  }
+}

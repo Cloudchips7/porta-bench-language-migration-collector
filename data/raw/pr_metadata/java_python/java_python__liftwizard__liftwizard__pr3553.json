@@ -1,0 +1,82 @@
+{
+  "instance_id": "java_python__liftwizard__liftwizard__pr3553",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "liftwizard/liftwizard",
+  "pr_number": 3553,
+  "pr_url": "https://github.com/liftwizard/liftwizard/pull/3553",
+  "repo": {
+    "full_name": "liftwizard/liftwizard",
+    "clone_url": "https://github.com/liftwizard/liftwizard.git",
+    "default_branch": "main",
+    "created_at": "2020-01-08T00:21:57Z",
+    "stars": 17,
+    "license": "Apache-2.0",
+    "size_kb": 12432
+  },
+  "pull_request": {
+    "id": 3383517129,
+    "title": "Bump org.openrewrite:rewrite-java-17 from 8.75.2 to 8.75.3",
+    "body": "Bumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.75.2 to 8.75.3.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/openrewrite/rewrite/releases\">org.openrewrite:rewrite-java-17's releases</a>.</em></p>\n<blockquote>\n<h2>8.75.3</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>Handle new ty-types 0.0.21 descriptor kinds and enriched fields by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6893\">openrewrite/rewrite#6893</a></li>\n<li>UpgradeTransitiveDependencyVersion should not add managed deps to child modules by <a href=\"https://github.com/steve-aom-elliott\"><code>@​steve-aom-elliott</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6896\">openrewrite/rewrite#6896</a></li>\n<li>JavaScript: Add missing Type properties to some test classes by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6901\">openrewrite/rewrite#6901</a></li>\n<li>Also check thread context classloader in <code>TypeTable.fromClasspath()</code> by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6900\">openrewrite/rewrite#6900</a></li>\n<li>Fix NPE in Markup.markup() when tree node has null markers by <a href=\"https://github.com/bmuschko\"><code>@​bmuschko</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6895\">openrewrite/rewrite#6895</a></li>\n<li>Filter SNAPSHOT versions from BOM upgrade candidates by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6902\">openrewrite/rewrite#6902</a></li>\n<li>Support ext subscript and set-in-block syntax for version upgrades by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6905\">openrewrite/rewrite#6905</a></li>\n<li>JavaScript: Detect empty diffs in <code>rewriteRun()</code> test harness and fix surfaced issues by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6904\">openrewrite/rewrite#6904</a></li>\n<li>Improved C# RPC server bootstrapping by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6899\">openrewrite/rewrite#6899</a></li>\n<li>Add tests for Gradle 9 migration and best practices recipes by <a href=\"https://github.com/sullis\"><code>@​sullis</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6907\">openrewrite/rewrite#6907</a></li>\n<li>Add NuGet API key to CI and publish workflows by <a href=\"https://github.com/macsux\"><code>@​macsux</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6911\">openrewrite/rewrite#6911</a></li>\n<li>Split C# NuGet into library and tool packages by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6912\">openrewrite/rewrite#6912</a></li>\n<li>Fix ScanningRecipe accumulator loss in preconditioned DeclarativeRecipes across RecipeRunCycles by <a href=\"https://github.com/pstreef\"><code>@​pstreef</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6913\">openrewrite/rewrite#6913</a></li>\n<li>fix: switch npm publishing to OIDC trusted publishing by <a href=\"https://github.com/zieka\"><code>@​zieka</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6919\">openrewrite/rewrite#6919</a></li>\n<li>fix: add setup-node for npm OIDC trusted publishing by <a href=\"https://github.com/zieka\"><code>@​zieka</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6922\">openrewrite/rewrite#6922</a></li>\n<li>Fix Python RPC GetObject timeout on Windows by <a href=\"https://github.com/kmccarp\"><code>@​kmccarp</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6920\">openrewrite/rewrite#6920</a></li>\n<li>Fix NoWhitespaceAfter removing required space after type-use annotation by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6921\">openrewrite/rewrite#6921</a></li>\n<li>fix: decouple npmPublish from Gradle publish task for OIDC-only npm auth by <a href=\"https://github.com/zieka\"><code>@​zieka</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6923\">openrewrite/rewrite#6923</a></li>\n<li>fix: add workflow_dispatch to npm-publish for manual OIDC testing by <a href=\"https://github.com/zieka\"><code>@​zieka</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6924\">openrewrite/rewrite#6924</a></li>\n<li>fix: replace setup-node with manual .npmrc for npm OIDC trusted publishing by <a href=\"https://github.com/zieka\"><code>@​zieka</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6925\">openrewrite/rewrite#6925</a></li>\n<li>fix: use system npm for publish to support OIDC trusted publishing by <a href=\"https://github.com/zieka\"><code>@​zieka</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6926\">openrewrite/rewrite#6926</a></li>\n<li>fix: use system npm for publish to support OIDC trusted publishing by <a href=\"https://github.com/zieka\"><code>@​zieka</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6927\">openrewrite/rewrite#6927</a></li>\n<li>fix: use NPM_TOKEN for npm publish authentication by <a href=\"https://github.com/zieka\"><code>@​zieka</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6928\">openrewrite/rewrite#6928</a></li>\n<li>fix: add repository field to package.json for npm provenance by <a href=\"https://github.com/zieka\"><code>@​zieka</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6929\">openrewrite/rewrite#6929</a></li>\n<li>fix: switch npm publish back to OIDC trusted publishing by <a href=\"https://github.com/zieka\"><code>@​zieka</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6930\">openrewrite/rewrite#6930</a></li>\n<li>fix: revert OIDC-only npm auth, restore NPM_TOKEN by <a href=\"https://github.com/zieka\"><code>@​zieka</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6931\">openrewrite/rewrite#6931</a></li>\n<li>Isolate C# plugin assemblies in custom AssemblyLoadContext by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6915\">openrewrite/rewrite#6915</a></li>\n<li>C# Template API for pattern matching and code generation by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6916\">openrewrite/rewrite#6916</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.75.2...v8.75.3\">https://github.com/openrewrite/rewrite/compare/v8.75.2...v8.75.3</a></p>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/5148950e24a3dc3015741dc70204f5049f359a9f\"><code>5148950</code></a> C# Template API for pattern matching and code generation (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6916\">#6916</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/01ae7222a41283369a12fc8ea6a166a9fb0be3b8\"><code>01ae722</code></a> Isolate plugin assemblies in custom AssemblyLoadContext to fix type identity ...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/997287f87cc9c13e09b6243161c174f5e1ca0b64\"><code>997287f</code></a> Revert &quot;fix: remove NPM_TOKEN, use OIDC trusted publishing for npm auth (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/693\">#693</a>...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/8d60a63ea8abe7953d8f4d52f80f90c7014c43fa\"><code>8d60a63</code></a> fix: remove NPM_TOKEN, use OIDC trusted publishing for npm auth (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6930\">#6930</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/ebdab0a648791672cab9241bd60429aa6832dc66\"><code>ebdab0a</code></a> fix: add repository field to package.json for npm provenance verification (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6\">#6</a>...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/faafc29d444d9f58f59ec43c6a81d4783485929e\"><code>faafc29</code></a> fix: pass NPM_TOKEN for npm publish authentication (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6928\">#6928</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/419eddabf9acfbe518224740470e3aecd16b3757\"><code>419edda</code></a> fix: use system npm for publish to support OIDC trusted publishing (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6927\">#6927</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/14f3c452339f76ce62e0f0c502ccb3381724ebbe\"><code>14f3c45</code></a> fix: use system npm for publish to support OIDC trusted publishing (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6926\">#6926</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/47fda3e95b7c4f12823586429e0729ed1b4c27a4\"><code>47fda3e</code></a> fix: replace setup-node with manual .npmrc for npm OIDC trusted publishing (#...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/75cd7cfc11cd83fd40dba325355fa45f148dcc54\"><code>75cd7cf</code></a> fix: add workflow_dispatch trigger to npm-publish for manual testing (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6924\">#6924</a>)</li>\n<li>Additional commits viewable in <a href=\"https://github.com/openrewrite/rewrite/compare/v8.75.2...v8.75.3\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=org.openrewrite:rewrite-java-17&package-manager=maven&previous-version=8.75.2&new-version=8.75.3)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)\n\n\n</details>",
+    "created_at": "2026-03-11T11:05:02Z",
+    "merged_at": "2026-03-11T11:47:41Z",
+    "base_sha": "75c059b00e95b08c1fbb8319065de61538cbe78c",
+    "head_sha": "e46623640103bbec94265468ddbd7ffbe507489e",
+    "merge_commit_sha": "36993fa71424187a27a54fd03b1d6c10cdcc48ba",
+    "labels": [
+      "dependencies",
+      "java"
+    ]
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "75c059b00e95b08c1fbb8319065de61538cbe78c",
+  "final_sha": "e46623640103bbec94265468ddbd7ffbe507489e",
+  "changed_files": [
+    {
+      "sha": "9ce7b010a271de2d990fbd04201a77f42221f150",
+      "filename": "liftwizard-utility/liftwizard-rewrite/pom.xml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/liftwizard/liftwizard/blob/e46623640103bbec94265468ddbd7ffbe507489e/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "raw_url": "https://github.com/liftwizard/liftwizard/raw/e46623640103bbec94265468ddbd7ffbe507489e/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "contents_url": "https://api.github.com/repos/liftwizard/liftwizard/contents/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml?ref=e46623640103bbec94265468ddbd7ffbe507489e",
+      "patch": "@@ -307,7 +307,7 @@\n                     <dependency>\n                         <groupId>org.openrewrite</groupId>\n                         <artifactId>rewrite-java-17</artifactId>\n-                        <version>8.75.2</version>\n+                        <version>8.75.3</version>\n                     </dependency>\n                 </dependencies>\n             </plugin>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "e46623640103bbec94265468ddbd7ffbe507489e",
+      "message": "Bump org.openrewrite:rewrite-java-17 from 8.75.2 to 8.75.3\n\nBumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.75.2 to 8.75.3.\n- [Release notes](https://github.com/openrewrite/rewrite/releases)\n- [Commits](https://github.com/openrewrite/rewrite/compare/v8.75.2...v8.75.3)\n\n---\nupdated-dependencies:\n- dependency-name: org.openrewrite:rewrite-java-17\n  dependency-version: 8.75.3\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "75c059b00e95b08c1fbb8319065de61538cbe78c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__liftwizard__liftwizard__pr3553.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3553__java_python__liftwizard__liftwizard__pr3553\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3553__java_python__liftwizard__liftwizard__pr3553\\rn"
+  }
+}

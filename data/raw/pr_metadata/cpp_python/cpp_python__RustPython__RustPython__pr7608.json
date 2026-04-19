@@ -1,0 +1,84 @@
+{
+  "instance_id": "cpp_python__RustPython__RustPython__pr7608",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "RustPython/RustPython",
+  "pr_number": 7608,
+  "pr_url": "https://github.com/RustPython/RustPython/pull/7608",
+  "repo": {
+    "full_name": "RustPython/RustPython",
+    "clone_url": "https://github.com/RustPython/RustPython.git",
+    "default_branch": "main",
+    "created_at": "2018-05-28T19:27:01Z",
+    "stars": 22017,
+    "license": "MIT",
+    "size_kb": 90610
+  },
+  "pull_request": {
+    "id": 3528294456,
+    "title": "Update `test_bz2.py` from 3.14.4",
+    "body": "",
+    "created_at": "2026-04-14T12:25:59Z",
+    "merged_at": "2026-04-15T05:17:27Z",
+    "base_sha": "898da7f58c0c3d943208f82f5b49c1f4980bd4c2",
+    "head_sha": "25d8430827c7c7ce8912a6a6210369e2eaef112e",
+    "merge_commit_sha": "63a1c0e95ca444433fb4b7345ccc5d80704091e7",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "898da7f58c0c3d943208f82f5b49c1f4980bd4c2",
+  "final_sha": "25d8430827c7c7ce8912a6a6210369e2eaef112e",
+  "changed_files": [
+    {
+      "sha": "cc7122f1516851dce77b281f39a20f9ad4eb1a47",
+      "filename": "Lib/test/test_bz2.py",
+      "status": "modified",
+      "additions": 19,
+      "deletions": 8,
+      "changes": 27,
+      "blob_url": "https://github.com/RustPython/RustPython/blob/25d8430827c7c7ce8912a6a6210369e2eaef112e/Lib%2Ftest%2Ftest_bz2.py",
+      "raw_url": "https://github.com/RustPython/RustPython/raw/25d8430827c7c7ce8912a6a6210369e2eaef112e/Lib%2Ftest%2Ftest_bz2.py",
+      "contents_url": "https://api.github.com/repos/RustPython/RustPython/contents/Lib%2Ftest%2Ftest_bz2.py?ref=25d8430827c7c7ce8912a6a6210369e2eaef112e",
+      "patch": "@@ -66,18 +66,28 @@ class BaseTest(unittest.TestCase):\n     EMPTY_DATA = b'BZh9\\x17rE8P\\x90\\x00\\x00\\x00\\x00'\n     BAD_DATA = b'this is not a valid bzip2 file'\n \n-    # Some tests need more than one block of uncompressed data. Since one block\n-    # is at least 100,000 bytes, we gather some data dynamically and compress it.\n-    # Note that this assumes that compression works correctly, so we cannot\n-    # simply use the bigger test data for all tests.\n+    # Some tests need more than one block of data. The bz2 module does not\n+    # support flushing a block during compression, so we must read in data until\n+    # there are at least 2 blocks. Since different orderings of Python files may\n+    # be compressed differently, we need to check the compression output for\n+    # more than one bzip2 block header magic, a hex encoding of Pi\n+    # (0x314159265359)\n+    bz2_block_magic = bytes.fromhex('314159265359')\n     test_size = 0\n-    BIG_TEXT = bytearray(128*1024)\n+    BIG_TEXT = b''\n+    BIG_DATA = b''\n+    compressor = BZ2Compressor(1)\n     for fname in glob.glob(os.path.join(glob.escape(os.path.dirname(__file__)), '*.py')):\n         with open(fname, 'rb') as fh:\n-            test_size += fh.readinto(memoryview(BIG_TEXT)[test_size:])\n-        if test_size > 128*1024:\n+            data = fh.read()\n+            BIG_DATA += compressor.compress(data)\n+            BIG_TEXT += data\n+        # TODO(emmatyping): if it is impossible for a block header to cross\n+        # multiple outputs, we can just search the output of each compress call\n+        # which should be more efficient\n+        if BIG_DATA.count(bz2_block_magic) > 1:\n+            BIG_DATA += compressor.flush()\n             break\n-    BIG_DATA = bz2.compress(BIG_TEXT, compresslevel=1)\n \n     def setUp(self):\n         fd, self.filename = tempfile.mkstemp()\n@@ -927,6 +937,7 @@ def testPickle(self):\n             with self.assertRaises(TypeError):\n                 pickle.dumps(BZ2Decompressor(), proto)\n \n+    @unittest.expectedFailure  # TODO: RUSTPYTHON; AssertionError: 0 != 100\n     def testDecompressorChunksMaxsize(self):\n         bzd = BZ2Decompressor()\n         max_length = 100"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "2c63f7e101d8c65063d9b4fe8da5b3df0804484c",
+      "message": "Update `test_bz2.py` from 3.14.4",
+      "parent_shas": [
+        "898da7f58c0c3d943208f82f5b49c1f4980bd4c2"
+      ]
+    },
+    {
+      "sha": "25d8430827c7c7ce8912a6a6210369e2eaef112e",
+      "message": "Mark failing test",
+      "parent_shas": [
+        "2c63f7e101d8c65063d9b4fe8da5b3df0804484c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__RustPython__RustPython__pr7608.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\RustPython__RustPython__pr7608__cpp_python__RustPython__RustPython__pr7608\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\RustPython__RustPython__pr7608__cpp_python__RustPython__RustPython__pr7608\\rn"
+  }
+}

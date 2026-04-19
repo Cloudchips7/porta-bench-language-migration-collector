@@ -1,0 +1,114 @@
+{
+  "instance_id": "python_cpp__openedx__codejail__pr296",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "openedx/codejail",
+  "pr_number": 296,
+  "pr_url": "https://github.com/openedx/codejail/pull/296",
+  "repo": {
+    "full_name": "openedx/codejail",
+    "clone_url": "https://github.com/openedx/codejail.git",
+    "default_branch": "master",
+    "created_at": "2013-04-26T20:48:06Z",
+    "stars": 475,
+    "license": "Apache-2.0",
+    "size_kb": 437
+  },
+  "pull_request": {
+    "id": 3520409170,
+    "title": "chore: Upgrade Python requirements",
+    "body": "Python requirements update. Please review the [changelogs](https://openedx.atlassian.net/wiki/spaces/TE/pages/1001521320/Python+Package+Changelogs) for the upgraded packages.",
+    "created_at": "2026-04-13T00:06:57Z",
+    "merged_at": "2026-04-13T00:21:11Z",
+    "base_sha": "2d96dd808a32ed13b8d28de0a402d1d404969879",
+    "head_sha": "3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850",
+    "merge_commit_sha": "1fbfceed5834c340555c53f14cb22413d75a1836",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "2d96dd808a32ed13b8d28de0a402d1d404969879",
+  "final_sha": "3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850",
+  "changed_files": [
+    {
+      "sha": "db0ae1cd3673678eb9b42c188336437db319e192",
+      "filename": "requirements/development.txt",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/openedx/codejail/blob/3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850/requirements%2Fdevelopment.txt",
+      "raw_url": "https://github.com/openedx/codejail/raw/3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850/requirements%2Fdevelopment.txt",
+      "contents_url": "https://api.github.com/repos/openedx/codejail/contents/requirements%2Fdevelopment.txt?ref=3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850",
+      "patch": "@@ -7,16 +7,16 @@\n asgiref==3.11.1           # via -r requirements/testing.txt, django\n astroid==4.0.4            # via -r requirements/testing.txt, pylint\n dill==0.4.1               # via -r requirements/testing.txt, pylint\n-django==5.2.12            # via -c requirements/common_constraints.txt, -r requirements/testing.txt\n+django==5.2.13            # via -c requirements/common_constraints.txt, -r requirements/testing.txt\n iniconfig==2.3.0          # via -r requirements/testing.txt, pytest\n isort==8.0.1              # via -r requirements/testing.txt, pylint\n mccabe==0.7.0             # via -r requirements/testing.txt, pylint\n packaging==26.0           # via -r requirements/testing.txt, pytest\n-platformdirs==4.9.4       # via -r requirements/testing.txt, pylint\n+platformdirs==4.9.6       # via -r requirements/testing.txt, pylint\n pluggy==1.6.0             # via -r requirements/testing.txt, pytest\n pycodestyle==2.14.0       # via -r requirements/testing.txt\n pygments==2.20.0          # via -r requirements/testing.txt, pytest\n pylint==4.0.5             # via -r requirements/testing.txt\n-pytest==9.0.2             # via -r requirements/testing.txt\n+pytest==9.0.3             # via -r requirements/testing.txt\n sqlparse==0.5.5           # via -r requirements/testing.txt, django\n tomlkit==0.14.0           # via -r requirements/testing.txt, pylint"
+    },
+    {
+      "sha": "e2aca12cfcdb5dfaff29e25f657abeddcf9cd823",
+      "filename": "requirements/pip_tools.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/openedx/codejail/blob/3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850/requirements%2Fpip_tools.txt",
+      "raw_url": "https://github.com/openedx/codejail/raw/3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850/requirements%2Fpip_tools.txt",
+      "contents_url": "https://api.github.com/repos/openedx/codejail/contents/requirements%2Fpip_tools.txt?ref=3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850",
+      "patch": "@@ -4,7 +4,7 @@\n #\n #    make upgrade\n #\n-build==1.4.2              # via pip-tools\n+build==1.4.3              # via pip-tools\n click==8.3.2              # via pip-tools\n packaging==26.0           # via build, wheel\n pip-tools==7.5.3          # via -r requirements/pip_tools.in"
+    },
+    {
+      "sha": "14282827ac3625cf2c59a9e390ef16d127eaf5ba",
+      "filename": "requirements/testing.txt",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/openedx/codejail/blob/3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850/requirements%2Ftesting.txt",
+      "raw_url": "https://github.com/openedx/codejail/raw/3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850/requirements%2Ftesting.txt",
+      "contents_url": "https://api.github.com/repos/openedx/codejail/contents/requirements%2Ftesting.txt?ref=3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850",
+      "patch": "@@ -11,11 +11,11 @@ iniconfig==2.3.0          # via pytest\n isort==8.0.1              # via -r requirements/testing.in, pylint\n mccabe==0.7.0             # via pylint\n packaging==26.0           # via pytest\n-platformdirs==4.9.4       # via pylint\n+platformdirs==4.9.6       # via pylint\n pluggy==1.6.0             # via pytest\n pycodestyle==2.14.0       # via -r requirements/testing.in\n pygments==2.20.0          # via pytest\n pylint==4.0.5             # via -r requirements/testing.in\n-pytest==9.0.2             # via -r requirements/testing.in\n+pytest==9.0.3             # via -r requirements/testing.in\n sqlparse==0.5.5           # via django\n tomlkit==0.14.0           # via pylint"
+    },
+    {
+      "sha": "4acd96290f2f285e92e1fb9028fec6f6a7048ba1",
+      "filename": "requirements/tox.txt",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/openedx/codejail/blob/3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850/requirements%2Ftox.txt",
+      "raw_url": "https://github.com/openedx/codejail/raw/3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850/requirements%2Ftox.txt",
+      "contents_url": "https://api.github.com/repos/openedx/codejail/contents/requirements%2Ftox.txt?ref=3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850",
+      "patch": "@@ -9,10 +9,10 @@ colorama==0.4.6           # via tox\n distlib==0.4.0            # via virtualenv\n filelock==3.25.2          # via python-discovery, tox, virtualenv\n packaging==26.0           # via pyproject-api, tox\n-platformdirs==4.9.4       # via python-discovery, tox, virtualenv\n+platformdirs==4.9.6       # via python-discovery, tox, virtualenv\n pluggy==1.6.0             # via tox\n pyproject-api==1.10.0     # via tox\n-python-discovery==1.2.1   # via tox, virtualenv\n+python-discovery==1.2.2   # via tox, virtualenv\n tomli-w==1.2.0            # via tox\n-tox==4.52.0               # via -r requirements/tox.in\n-virtualenv==21.2.0        # via tox\n+tox==4.52.1               # via -r requirements/tox.in\n+virtualenv==21.2.1        # via tox"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "3b6c2a5ec0b4fef69de42eaca93f2e8daa4f2850",
+      "message": "chore: Upgrade Python requirements",
+      "parent_shas": [
+        "2d96dd808a32ed13b8d28de0a402d1d404969879"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "dependency_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__openedx__codejail__pr296.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\openedx__codejail__pr296__python_cpp__openedx__codejail__pr296\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\openedx__codejail__pr296__python_cpp__openedx__codejail__pr296\\rn"
+  }
+}

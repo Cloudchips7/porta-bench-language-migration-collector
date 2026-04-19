@@ -1,0 +1,80 @@
+{
+  "instance_id": "python_java__protocolbuffers__protobuf__pr26744",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "protocolbuffers/protobuf",
+  "pr_number": 26744,
+  "pr_url": "https://github.com/protocolbuffers/protobuf/pull/26744",
+  "repo": {
+    "full_name": "protocolbuffers/protobuf",
+    "clone_url": "https://github.com/protocolbuffers/protobuf.git",
+    "default_branch": "main",
+    "created_at": "2014-08-26T15:52:15Z",
+    "stars": 71104,
+    "license": "NOASSERTION",
+    "size_kb": 219683
+  },
+  "pull_request": {
+    "id": 3495468771,
+    "title": "Fix python SyntaxWarning",
+    "body": "Fix python SyntaxWarning\n\n\\( is not a valid escape sequence.\n",
+    "created_at": "2026-04-06T23:58:20Z",
+    "merged_at": "2026-04-07T02:05:24Z",
+    "base_sha": "230170c9f21b54bc945599f863cc452eec335f6c",
+    "head_sha": "f9821fcf4f86eb21c97d7294fa33efb23bcb0616",
+    "merge_commit_sha": "f9821fcf4f86eb21c97d7294fa33efb23bcb0616",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "230170c9f21b54bc945599f863cc452eec335f6c",
+  "final_sha": "f9821fcf4f86eb21c97d7294fa33efb23bcb0616",
+  "changed_files": [
+    {
+      "sha": "cf3ccf7501a697d2421f2e6a19c2b6739457e039",
+      "filename": "python/google/protobuf/internal/json_format_test.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/protocolbuffers/protobuf/blob/f9821fcf4f86eb21c97d7294fa33efb23bcb0616/python%2Fgoogle%2Fprotobuf%2Finternal%2Fjson_format_test.py",
+      "raw_url": "https://github.com/protocolbuffers/protobuf/raw/f9821fcf4f86eb21c97d7294fa33efb23bcb0616/python%2Fgoogle%2Fprotobuf%2Finternal%2Fjson_format_test.py",
+      "contents_url": "https://api.github.com/repos/protocolbuffers/protobuf/contents/python%2Fgoogle%2Fprotobuf%2Finternal%2Fjson_format_test.py?ref=f9821fcf4f86eb21c97d7294fa33efb23bcb0616",
+      "patch": "@@ -1242,7 +1242,7 @@ def testInvalidIntegerValue(self):\n     )\n     self.CheckError(\n         '{\"int32Value\": \"foo\"}',\n-        'Failed to parse int32Value field: invalid literal for int\\(\\) with'\n+        'Failed to parse int32Value field: invalid literal for int\\\\(\\\\) with'\n         \" base 10: 'foo'.\",\n     )\n     self.CheckError("
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "f9821fcf4f86eb21c97d7294fa33efb23bcb0616",
+      "message": "Fix python SyntaxWarning\n\n\\( is not a valid escape sequence.\n\nPiperOrigin-RevId: 895607647",
+      "parent_shas": [
+        "230170c9f21b54bc945599f863cc452eec335f6c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__protocolbuffers__protobuf__pr26744.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\protocolbuffers__protobuf__pr26744__python_java__protocolbuffers__protobuf__pr26744\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\protocolbuffers__protobuf__pr26744__python_java__protocolbuffers__protobuf__pr26744\\rn"
+  }
+}

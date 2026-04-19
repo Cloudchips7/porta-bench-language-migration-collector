@@ -1,0 +1,197 @@
+{
+  "instance_id": "cpp_python__jamiebullock__LibXtract__pr133",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "jamiebullock/LibXtract",
+  "pr_number": 133,
+  "pr_url": "https://github.com/jamiebullock/LibXtract/pull/133",
+  "repo": {
+    "full_name": "jamiebullock/LibXtract",
+    "clone_url": "https://github.com/jamiebullock/LibXtract.git",
+    "default_branch": "main",
+    "created_at": "2012-05-31T15:16:08Z",
+    "stars": 230,
+    "license": "MIT",
+    "size_kb": 1563
+  },
+  "pull_request": {
+    "id": 3499370308,
+    "title": "feat: add Node.js bindings via SWIG NAPI backend",
+    "body": "## Summary\n\n- Add Node.js/NAPI bindings using SWIG's `-javascript -napi` backend\n- The existing `xtract.i` interface works as-is — only change is a C++-compatible cast in `create_filterbank`\n- Add `node` target and `check-node` to `swig/Makefile`\n- Add `test.js` mirroring `test.py` and `test.java` (mean, variance, spectrum, stateful functions)\n- Add `node-addon-api` install step to CI for Linux and macOS\n\n### Usage\n\n```bash\ncd swig\nnpm install node-addon-api\nmake node\nnode test.js\n```\n\n### Dependencies\n\n- Node.js 14+ with headers\n- `node-addon-api` (installed via npm)\n- SWIG 4.1+ (NAPI support)\n\nCloses #26\n\n## Test plan\n\n- [x] `make && make check` passes (375 assertions, 61 test cases)\n- [x] `make -C swig check` — Python, Java, and Node.js tests all pass on macOS\n- [ ] Verify on Linux CI\n- [ ] Verify Node.js test on CI",
+    "created_at": "2026-04-07T18:00:05Z",
+    "merged_at": "2026-04-08T10:17:52Z",
+    "base_sha": "dc1cfd2ee7072f8ee241e4d701cd1d98eb17c11f",
+    "head_sha": "2666c6b10715b410a5e6d31d85dfb20f1de14146",
+    "merge_commit_sha": "049489e61847f900a6f6205693dd4ab35934e055",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "dc1cfd2ee7072f8ee241e4d701cd1d98eb17c11f",
+  "final_sha": "2666c6b10715b410a5e6d31d85dfb20f1de14146",
+  "changed_files": [
+    {
+      "sha": "de005c88ceb96b643f61ace77c2227e0fa0e2805",
+      "filename": ".github/workflows/ci.yml",
+      "status": "modified",
+      "additions": 22,
+      "deletions": 2,
+      "changes": 24,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/2666c6b10715b410a5e6d31d85dfb20f1de14146/.github%2Fworkflows%2Fci.yml",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/2666c6b10715b410a5e6d31d85dfb20f1de14146/.github%2Fworkflows%2Fci.yml",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/.github%2Fworkflows%2Fci.yml?ref=2666c6b10715b410a5e6d31d85dfb20f1de14146",
+      "patch": "@@ -23,12 +23,18 @@ jobs:\n           distribution: temurin\n           java-version: 17\n \n+      - name: Setup Node.js (Linux/macOS)\n+        if: runner.os != 'Windows'\n+        uses: actions/setup-node@v4\n+        with:\n+          node-version: 22\n+\n       - name: Setup MSYS2 (Windows)\n         if: runner.os == 'Windows'\n         uses: msys2/setup-msys2@v2\n         with:\n           msystem: MINGW64\n-          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-python mingw-w64-x86_64-swig make\n+          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-python mingw-w64-x86_64-swig mingw-w64-x86_64-nodejs make\n \n       - name: Install SWIG (Linux)\n         if: runner.os == 'Linux'\n@@ -57,20 +63,34 @@ jobs:\n           make\n           make check\n \n+      - name: Install Node.js headers (Linux/macOS)\n+        if: runner.os != 'Windows'\n+        run: |\n+          NODE_VER=$(node -v | tr -d v)\n+          curl -sL \"https://nodejs.org/dist/v${NODE_VER}/node-v${NODE_VER}-headers.tar.gz\" | tar xz\n+          echo \"NODE_INCLUDE=$(pwd)/node-v${NODE_VER}/include/node\" >> $GITHUB_ENV\n+          npm install --prefix swig node-addon-api\n+\n       - name: SWIG bindings (Linux)\n         if: runner.os == 'Linux'\n         run: make -C swig check\n         env:\n           JAVA_HOME: ${{ env.JAVA_HOME }}\n+          NODE_INCLUDE: ${{ env.NODE_INCLUDE }}\n           PYTHON: python3\n \n       - name: SWIG bindings (macOS)\n         if: runner.os == 'macOS'\n         run: make -C swig check\n         env:\n           JAVA_HOME: ${{ env.JAVA_HOME }}\n+          NODE_INCLUDE: ${{ env.NODE_INCLUDE }}\n \n       - name: SWIG bindings (Windows)\n         if: runner.os == 'Windows'\n         shell: msys2 {0}\n-        run: PYTHON=python make -C swig check-python\n+        run: |\n+          npm install --prefix swig node-addon-api\n+          export JAVA_HOME=\"$(cygpath -u \"$JAVA_HOME\")\"\n+          export PATH=\"${JAVA_HOME}/bin:${PATH}\"\n+          PYTHON=python NODE_INCLUDE=/mingw64/include/node make -C swig check"
+    },
+    {
+      "sha": "d084f54b0b644eb03e996bfa6ba9b706f82c4756",
+      "filename": "swig/.gitignore",
+      "status": "added",
+      "additions": 11,
+      "deletions": 0,
+      "changes": 11,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/2666c6b10715b410a5e6d31d85dfb20f1de14146/swig%2F.gitignore",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/2666c6b10715b410a5e6d31d85dfb20f1de14146/swig%2F.gitignore",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2F.gitignore?ref=2666c6b10715b410a5e6d31d85dfb20f1de14146",
+      "patch": "@@ -0,0 +1,11 @@\n+node_modules/\n+package.json\n+package-lock.json\n+java/\n+*.o\n+*.so\n+*.dylib\n+*.node\n+*.pyc\n+xtract_wrap.c\n+xtract.py"
+    },
+    {
+      "sha": "a1a2a8d8d89e7b478b2574f3b6ed8d4abd424549",
+      "filename": "swig/Makefile",
+      "status": "modified",
+      "additions": 37,
+      "deletions": 3,
+      "changes": 40,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/2666c6b10715b410a5e6d31d85dfb20f1de14146/swig%2FMakefile",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/2666c6b10715b410a5e6d31d85dfb20f1de14146/swig%2FMakefile",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2FMakefile?ref=2666c6b10715b410a5e6d31d85dfb20f1de14146",
+      "patch": "@@ -12,19 +12,34 @@ ifeq ($(OS), Darwin)\n     CFLAGS=-g -c\n     LDFLAGS=-bundle -flat_namespace -undefined suppress\n     LIBS=-framework Accelerate\n+    NODE_LIBS=\n     JAVA_LIB_SUFFIX=dylib\n+    JAVA_LIB_PREFIX=libj\n     LIBXTRACT=../src/lib$(NAME).a\n     LINK_LIB=$(LIBXTRACT)\n+else ifneq (,$(findstring MINGW,$(OS)))\n+    CFLAGS=-g -c\n+    LDFLAGS=-shared\n+    LIBS=-lm\n+    NODE_LIBS=-lnode\n+    JAVA_LIB_SUFFIX=dll\n+    JAVA_LIB_PREFIX=j\n+    LIBXTRACT=$(wildcard ../src/lib$(NAME).a ../src/lib$(NAME).lib)\n+    LINK_LIB=-Wl,--whole-archive $(LIBXTRACT) -Wl,--no-whole-archive\n else\n     CFLAGS=-g -c -fPIC\n     LDFLAGS=-shared\n     LIBS=-lm\n+    NODE_LIBS=\n     JAVA_LIB_SUFFIX=so\n+    JAVA_LIB_PREFIX=libj\n     LIBXTRACT=$(wildcard ../src/lib$(NAME).a ../src/lib$(NAME).lib)\n     LINK_LIB=-Wl,--whole-archive $(LIBXTRACT) -Wl,--no-whole-archive\n endif\n \n-.PHONY: python java check check-python check-java\n+NAPI_INCLUDE = $(shell node -e \"console.log(require('node-addon-api').include)\" 2>/dev/null | tr -d '\"')\n+\n+.PHONY: python java node check check-python check-java check-node\n \n python:\n \t@swig -I../include -python $(NAME).i\n@@ -38,10 +53,18 @@ endif\n \t@mkdir -p java\n \t@swig -I../include -java -package $(NAME) -outdir java $(NAME).i\n \t@$(CC) $(CFLAGS) $(NAME)_wrap.c -o $(NAME)_wrap.o -I$(JAVA_HOME)/include -I$(wildcard $(JAVA_HOME)/include/darwin $(JAVA_HOME)/include/linux $(JAVA_HOME)/include/win32) -I../include\n-\t@$(CC) $(LDFLAGS) $(LINK_LIB) $(NAME)_wrap.o -o libj$(NAME).$(JAVA_LIB_SUFFIX) $(LIBS)\n+\t@$(CC) $(LDFLAGS) $(LINK_LIB) $(NAME)_wrap.o -o $(JAVA_LIB_PREFIX)$(NAME).$(JAVA_LIB_SUFFIX) $(LIBS)\n \t@javac java/*.java\n \n-check: check-python check-java\n+node:\n+ifndef NODE_INCLUDE\n+\t$(error NODE_INCLUDE is not set. Set it to your Node.js include directory containing node_api.h)\n+endif\n+\t@swig -I../include -javascript -napi $(NAME).i\n+\t@$(CXX) -std=c++17 $(CFLAGS) $(NAME)_wrap.c -o $(NAME)_wrap.o -I$(NODE_INCLUDE) -I$(NAPI_INCLUDE) -I../include\n+\t@$(CXX) $(LDFLAGS) $(LINK_LIB) $(NAME)_wrap.o -o $(NAME).node $(LIBS) $(NODE_LIBS)\n+\n+check: check-python check-java check-node\n \n check-python: python\n \t@echo \"Running Python bindings test...\"\n@@ -55,6 +78,15 @@ check-java: java\n \t@java -Djava.library.path=. -cp . test\n \t@$(RM) -r $(NAME) test.class\n \n+check-node:\n+ifdef NODE_INCLUDE\n+\t@$(MAKE) node\n+\t@echo \"Running Node.js bindings test...\"\n+\t@node test.js\n+else\n+\t@echo \"Skipping Node.js bindings test (NODE_INCLUDE not set)\"\n+endif\n+\n install: python\n \t@SITE_DIR=$$($(PYTHON) -c \"import site; print(site.getsitepackages()[0])\") && \\\n \tinstall -d \"$$SITE_DIR\" && \\\n@@ -66,6 +98,8 @@ clean:\n \t@$(RM) *.pyc\n \t@$(RM) *.so\n \t@$(RM) *.dylib\n+\t@$(RM) *.dll\n+\t@$(RM) *.node\n \t@$(RM) $(NAME)_wrap.c\n \t@$(RM) $(NAME).py\n \t@$(RM) -r java"
+    },
+    {
+      "sha": "028a048c2fd8c67e977b6f79ac52cba6b26c7262",
+      "filename": "swig/test.js",
+      "status": "added",
+      "additions": 60,
+      "deletions": 0,
+      "changes": 60,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/2666c6b10715b410a5e6d31d85dfb20f1de14146/swig%2Ftest.js",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/2666c6b10715b410a5e6d31d85dfb20f1de14146/swig%2Ftest.js",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2Ftest.js?ref=2666c6b10715b410a5e6d31d85dfb20f1de14146",
+      "patch": "@@ -0,0 +1,60 @@\n+const xtract = require('./xtract');\n+\n+console.log('\\nRunning libxtract Node.js bindings test...\\n');\n+\n+const len = 8;\n+\n+const a = new xtract.doubleArray(len);\n+const temp = [];\n+\n+for (let i = 0; i < len; i++) {\n+    a.setitem(i, 2.0 * i);\n+    temp.push(2.0 * i);\n+}\n+\n+const mean = xtract.xtract_mean(a.cast(), len, null)[1];\n+console.log('The mean of ' + temp.join(', ') + ' is: ' + mean.toFixed(2));\n+\n+const argv = new xtract.doubleArray(1);\n+argv.setitem(0, mean);\n+\n+const variance = xtract.xtract_variance(a.cast(), len, xtract.doublea_to_voidp(argv.cast()))[1];\n+console.log('The variance is ' + variance.toFixed(2));\n+\n+console.log('Computing spectrum...');\n+\n+const specArgv = new xtract.doubleArray(4);\n+specArgv.setitem(0, 44100.0 / len);\n+specArgv.setitem(1, xtract.XTRACT_MAGNITUDE_SPECTRUM);\n+specArgv.setitem(2, 0.0);\n+specArgv.setitem(3, 0.0);\n+\n+xtract.xtract_init_fft(len, xtract.XTRACT_SPECTRUM);\n+\n+const result = new xtract.doubleArray(len);\n+xtract.xtract_spectrum(a.cast(), len, xtract.doublea_to_voidp(specArgv.cast()), result.cast());\n+\n+for (let i = 0; i < len; i++) {\n+    console.log(result.getitem(i));\n+}\n+\n+console.log('Testing stateful functions...');\n+\n+const N = 4;\n+const state = xtract.xtract_last_n_state_new(N);\n+const lastN = new xtract.doubleArray(N);\n+for (let i = 0; i < N; i++) lastN.setitem(i, 0.0);\n+\n+const data = new xtract.doubleArray(1);\n+data.setitem(0, 42.0);\n+// N.B. data is a single sample; N is the window size, not the size of data\n+xtract.xtract_last_n(state, data.cast(), N, null, lastN.cast());\n+console.log('last_n after one value: ' + lastN.getitem(N - 1).toFixed(1));\n+\n+data.setitem(0, 99.0);\n+xtract.xtract_last_n(state, data.cast(), N, null, lastN.cast());\n+console.log('last_n after two values: ' + lastN.getitem(N - 2).toFixed(1) + ', ' + lastN.getitem(N - 1).toFixed(1));\n+\n+xtract.xtract_last_n_state_delete(state);\n+\n+console.log('\\nFinished!\\n');"
+    },
+    {
+      "sha": "2b0e0a9d13017cba57cfc22ae67af55fcf11b0af",
+      "filename": "swig/xtract.i",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/2666c6b10715b410a5e6d31d85dfb20f1de14146/swig%2Fxtract.i",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/2666c6b10715b410a5e6d31d85dfb20f1de14146/swig%2Fxtract.i",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2Fxtract.i?ref=2666c6b10715b410a5e6d31d85dfb20f1de14146",
+      "patch": "@@ -42,7 +42,7 @@\n \n         N = blocksize;\n \n-        mf = malloc(sizeof(xtract_mel_filter));\n+        mf = (xtract_mel_filter *)malloc(sizeof(xtract_mel_filter));\n         mf->n_filters = n_filters;\n \n         filters = (double **)malloc(n_filters * sizeof(double *));"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "13032d6388b28c2ad4c5616a01f8c68d7cded07e",
+      "message": "feat: add Node.js bindings via SWIG NAPI backend\n\nAdd Node.js/NAPI bindings using SWIG's -javascript -napi backend.\nThe existing xtract.i interface works as-is — no SWIG interface\nchanges needed beyond a C++ compatible cast in create_filterbank.\n\n- Add node target to swig/Makefile\n- Add test.js mirroring test.py and test.java (mean, variance,\n  spectrum, stateful functions)\n- Add node-addon-api install step and check-node to CI\n- Requires node-addon-api: npm install node-addon-api in swig/\n\nCloses #26",
+      "parent_shas": [
+        "dc1cfd2ee7072f8ee241e4d701cd1d98eb17c11f"
+      ]
+    },
+    {
+      "sha": "adbf4872c8179015abfd96b4b024e35bcdbf656b",
+      "message": "fix: gitignore all generated SWIG build artifacts",
+      "parent_shas": [
+        "13032d6388b28c2ad4c5616a01f8c68d7cded07e"
+      ]
+    },
+    {
+      "sha": "95b35b1fbf6c4640d56357051a5d2d041a71e9d6",
+      "message": "fix: install Node.js headers on CI for NAPI compilation\n\nGitHub runners have Node.js runtime but not development headers.\nUse node-gyp install to fetch headers, and update NODE_INCLUDE\nin Makefile to check both the prefix path and ~/.node-gyp fallback.",
+      "parent_shas": [
+        "adbf4872c8179015abfd96b4b024e35bcdbf656b"
+      ]
+    },
+    {
+      "sha": "a7666d3bb9b37045e9da23de20732531dc1c179c",
+      "message": "fix: simplify Node.js include path handling\n\nRequire NODE_INCLUDE to be set explicitly, matching the JAVA_HOME\npattern. CI sets it via node-gyp install path. Remove inline\nJavaScript from Makefile.",
+      "parent_shas": [
+        "95b35b1fbf6c4640d56357051a5d2d041a71e9d6"
+      ]
+    },
+    {
+      "sha": "c2d0c40284ee8941ad826f64afb207031a1fa0a1",
+      "message": "fix: use ${HOME} not $(HOME) for shell variable expansion in CI",
+      "parent_shas": [
+        "a7666d3bb9b37045e9da23de20732531dc1c179c"
+      ]
+    },
+    {
+      "sha": "36a467d639aab406ccc54523468bbf500682979e",
+      "message": "fix: find node-gyp headers reliably, skip check-node gracefully\n\nnode-gyp stores headers in platform-dependent cache directories\n(~/Library/Caches/node-gyp on macOS, ~/.cache/node-gyp on Linux).\nUse find to locate the actual path after node-gyp install.\n\nMake check-node skip gracefully when NODE_INCLUDE is not set\n(e.g. on Windows) instead of erroring.",
+      "parent_shas": [
+        "c2d0c40284ee8941ad826f64afb207031a1fa0a1"
+      ]
+    },
+    {
+      "sha": "99af19345ce1abce455793d9348d658b639567d0",
+      "message": "fix: run all SWIG binding tests on all platforms\n\n- Linux/macOS: download Node.js headers directly from nodejs.org\n  instead of using node-gyp (simpler, no platform-dependent cache)\n- Windows: add mingw-w64-x86_64-nodejs to MSYS2 for Node.js headers\n  at /mingw64/include/node, run full check (Python + Java + Node)\n- All three platforms now run make -C swig check",
+      "parent_shas": [
+        "36a467d639aab406ccc54523468bbf500682979e"
+      ]
+    },
+    {
+      "sha": "8a96e25a6bcccfa4c4ca298bdd82364080389d89",
+      "message": "fix: convert Windows JAVA_HOME to MSYS2 path with cygpath",
+      "parent_shas": [
+        "99af19345ce1abce455793d9348d658b639567d0"
+      ]
+    },
+    {
+      "sha": "f5ae717b6cc57f265eadee06d3dc83da32a6b3b3",
+      "message": "fix: add Java bin directory to PATH in MSYS2 shell",
+      "parent_shas": [
+        "8a96e25a6bcccfa4c4ca298bdd82364080389d89"
+      ]
+    },
+    {
+      "sha": "660a0d954125716d1a08e502c41bba654113a847",
+      "message": "fix: Windows Java native library naming (jxtract.dll not libjxtract.so)\n\nSystem.loadLibrary(\"jxtract\") looks for jxtract.dll on Windows\n(no lib prefix), libjxtract.dylib on macOS, libjxtract.so on Linux.\nAdd MINGW detection to produce correct output name per platform.",
+      "parent_shas": [
+        "f5ae717b6cc57f265eadee06d3dc83da32a6b3b3"
+      ]
+    },
+    {
+      "sha": "2666c6b10715b410a5e6d31d85dfb20f1de14146",
+      "message": "fix: link Node.js extension against libnode on Windows\n\nOn Windows, NAPI symbols must be resolved at link time.\nAdd -lnode for MINGW builds (provided by mingw-w64-x86_64-nodejs).",
+      "parent_shas": [
+        "660a0d954125716d1a08e502c41bba654113a847"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__jamiebullock__LibXtract__pr133.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\jamiebullock__LibXtract__pr133__cpp_python__jamiebullock__LibXtract__pr133\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\jamiebullock__LibXtract__pr133__cpp_python__jamiebullock__LibXtract__pr133\\rn"
+  }
+}

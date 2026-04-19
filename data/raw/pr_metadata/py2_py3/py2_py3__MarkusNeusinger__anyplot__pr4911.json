@@ -1,0 +1,158 @@
+{
+  "instance_id": "py2_py3__MarkusNeusinger__anyplot__pr4911",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "MarkusNeusinger/anyplot",
+  "pr_number": 4911,
+  "pr_url": "https://github.com/MarkusNeusinger/anyplot/pull/4911",
+  "repo": {
+    "full_name": "MarkusNeusinger/anyplot",
+    "clone_url": "https://github.com/MarkusNeusinger/anyplot.git",
+    "default_branch": "main",
+    "created_at": "2025-11-18T18:15:06Z",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 33528
+  },
+  "pull_request": {
+    "id": 3401876458,
+    "title": "feat(pygal): implement stereonet-equal-area",
+    "body": "## Implementation: `stereonet-equal-area` - pygal\n\nImplements the **pygal** version of `stereonet-equal-area`.\n\n**File:** `plots/stereonet-equal-area/implementations/pygal.py`\n\n**Parent Issue:** #4576\n\n---\n:robot: *[impl-generate workflow](https://github.com/MarkusNeusinger/pyplots/actions/runs/23121188964)*",
+    "created_at": "2026-03-15T22:58:51Z",
+    "merged_at": "2026-03-15T23:36:36Z",
+    "base_sha": "67025befb80ab07d3372ed222f2a9b95d1f75a95",
+    "head_sha": "7a9eb3d4ba4ecf2b114569596e1e468e99516e3a",
+    "merge_commit_sha": "ce64401e8dd3da8c0f2910298530d6f5c2137011",
+    "labels": [
+      "ai-attempt-1",
+      "ai-attempt-2",
+      "ai-attempt-3",
+      "ai-approved",
+      "quality:78",
+      "quality:68",
+      "quality:65",
+      "quality:70"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "4a54060bf190bef64513da85704c4ed4512c6908",
+  "final_sha": "7a9eb3d4ba4ecf2b114569596e1e468e99516e3a",
+  "changed_files": [
+    {
+      "sha": "eb2ae13ea634e6f2d2c3e70ec8999bbfbedaa9e7",
+      "filename": "plots/stereonet-equal-area/implementations/pygal.py",
+      "status": "added",
+      "additions": 378,
+      "deletions": 0,
+      "changes": 378,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/7a9eb3d4ba4ecf2b114569596e1e468e99516e3a/plots%2Fstereonet-equal-area%2Fimplementations%2Fpygal.py",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/7a9eb3d4ba4ecf2b114569596e1e468e99516e3a/plots%2Fstereonet-equal-area%2Fimplementations%2Fpygal.py",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fstereonet-equal-area%2Fimplementations%2Fpygal.py?ref=7a9eb3d4ba4ecf2b114569596e1e468e99516e3a",
+      "patch": "@@ -0,0 +1,378 @@\n+\"\"\" pyplots.ai\n+stereonet-equal-area: Structural Geology Stereonet (Equal-Area Projection)\n+Library: pygal 3.1.0 | Python 3.14.3\n+Quality: 78/100 | Created: 2026-03-15\n+\"\"\"\n+\n+import numpy as np\n+import pygal\n+from pygal.style import Style\n+\n+\n+# Data - Field measurements from a geological mapping campaign\n+np.random.seed(42)\n+\n+# Bedding planes - consistent NE strike (~040°), moderate SE dip (~30°)\n+n_bedding = 25\n+bedding_strike = np.random.normal(40, 8, n_bedding) % 360\n+bedding_dip = np.clip(np.random.normal(30, 5, n_bedding), 5, 85)\n+\n+# Fault planes - steeper, striking ESE (~120°), steep dip (~65°)\n+n_faults = 15\n+fault_strike = np.random.normal(120, 12, n_faults) % 360\n+fault_dip = np.clip(np.random.normal(65, 8, n_faults), 10, 89)\n+\n+# Joint set - sub-vertical (~80°), striking roughly N-S (~350°)\n+n_joints = 20\n+joint_strike = np.random.normal(350, 10, n_joints) % 360\n+joint_dip = np.clip(np.random.normal(80, 6, n_joints), 15, 89)\n+\n+# Equal-area (Schmidt net) lower-hemisphere projection\n+# Pole to plane: trend = strike + 90°, plunge = 90° - dip\n+# Projection radius: r = √2 · sin(plunge_rad / 2) where plunge = 90 - dip for poles\n+# For great circles: r = √2 · sin((90 - plunge_of_line) / 2)\n+# Cartesian: x = r · sin(trend_rad), y = r · cos(trend_rad)\n+\n+\n+def clip_to_circle(x, y):\n+    \"\"\"Clip point to be within the primitive circle (r <= 1).\"\"\"\n+    r = np.sqrt(x**2 + y**2)\n+    if r > 1.0:\n+        x, y = x / r, y / r\n+    return x, y\n+\n+\n+# Primitive circle + tick marks + N label combined as one series\n+structural_points = []\n+\n+# Primitive circle (outer boundary)\n+theta_circle = np.linspace(0, 2 * np.pi, 361)\n+for t in theta_circle:\n+    structural_points.append((round(float(np.sin(t)), 4), round(float(np.cos(t)), 4)))\n+structural_points.append(None)\n+\n+# Tick marks every 10° around perimeter\n+for deg in range(0, 360, 10):\n+    rad = np.radians(deg)\n+    inner, outer = 0.96, 1.04\n+    structural_points.append((round(inner * np.sin(rad), 4), round(inner * np.cos(rad), 4)))\n+    structural_points.append((round(outer * np.sin(rad), 4), round(outer * np.cos(rad), 4)))\n+    structural_points.append(None)\n+\n+# N label at top - letter shape using connected line segments\n+n_cx, n_cy = 0.0, 1.14\n+n_s = 0.035\n+for t in np.linspace(0, 1, 10):\n+    structural_points.append((round(n_cx - n_s, 4), round(n_cy - n_s * 2.5 + t * n_s * 5, 4)))\n+structural_points.append(None)\n+for t in np.linspace(0, 1, 10):\n+    structural_points.append((round(n_cx - n_s + t * n_s * 2, 4), round(n_cy + n_s * 2.5 - t * n_s * 5, 4)))\n+structural_points.append(None)\n+for t in np.linspace(0, 1, 10):\n+    structural_points.append((round(n_cx + n_s, 4), round(n_cy - n_s * 2.5 + t * n_s * 5, 4)))\n+\n+# Equal-area net grid lines (subtle, as spec requires)\n+grid_points = []\n+# Small circles at dip intervals of 30° (at 30°, 60°)\n+for dip_grid in [30, 60]:\n+    r_grid = np.sqrt(2) * np.sin(np.radians(dip_grid / 2))\n+    theta_grid = np.linspace(0, 2 * np.pi, 181)\n+    for t in theta_grid:\n+        grid_points.append((round(float(r_grid * np.sin(t)), 4), round(float(r_grid * np.cos(t)), 4)))\n+    grid_points.append(None)\n+\n+# Diametral lines every 30° (great circle diameters through center)\n+for az in range(0, 180, 30):\n+    rad = np.radians(az)\n+    grid_points.append((round(-np.sin(rad), 4), round(-np.cos(rad), 4)))\n+    grid_points.append((round(np.sin(rad), 4), round(np.cos(rad), 4)))\n+    grid_points.append(None)\n+\n+\n+# Great circle computation for all planes\n+alphas = np.linspace(0, np.pi, 91)\n+\n+feature_sets = [\n+    (\"Bedding\", bedding_strike, bedding_dip),\n+    (\"Faults\", fault_strike, fault_dip),\n+    (\"Joints\", joint_strike, joint_dip),\n+]\n+\n+# Visual hierarchy: bedding is primary feature (thickest), faults secondary, joints tertiary\n+gc_widths = {\"Bedding\": 3.0, \"Faults\": 2.2, \"Joints\": 1.8}\n+pole_sizes = {\"Bedding\": 16, \"Faults\": 12, \"Joints\": 10}\n+\n+gc_series = {}\n+pole_series = {}\n+all_pole_x = []\n+all_pole_y = []\n+\n+for name, strikes, dips in feature_sets:\n+    # Great circles with None separators between each plane\n+    gc_data = []\n+    for i in range(len(strikes)):\n+        d_rad = np.radians(dips[i])\n+        plunges = np.degrees(np.arcsin(np.sin(d_rad) * np.sin(alphas)))\n+        trends = strikes[i] + np.degrees(np.arctan2(np.sin(alphas) * np.cos(d_rad), np.cos(alphas)))\n+        r = np.sqrt(2) * np.sin(np.radians((90 - plunges) / 2))\n+        x = r * np.sin(np.radians(trends))\n+        y = r * np.cos(np.radians(trends))\n+        if gc_data:\n+            gc_data.append(None)\n+        for xi, yi in zip(x, y, strict=True):\n+            cx, cy = clip_to_circle(float(xi), float(yi))\n+            gc_data.append((round(cx, 4), round(cy, 4)))\n+    gc_series[name] = gc_data\n+\n+    # Poles to planes\n+    pole_trend_rad = np.radians((strikes + 90) % 360)\n+    pole_r = np.sqrt(2) * np.sin(np.radians(dips / 2))\n+    pole_x = pole_r * np.sin(pole_trend_rad)\n+    pole_y = pole_r * np.cos(pole_trend_rad)\n+    pole_series[name] = [(round(float(xi), 4), round(float(yi), 4)) for xi, yi in zip(pole_x, pole_y, strict=True)]\n+    all_pole_x.extend(pole_x)\n+    all_pole_y.extend(pole_y)\n+\n+# Kamb density contours on all pole data\n+all_pole_x = np.array(all_pole_x)\n+all_pole_y = np.array(all_pole_y)\n+\n+grid_res = 80\n+gx = np.linspace(-1, 1, grid_res)\n+gy = np.linspace(-1, 1, grid_res)\n+gxx, gyy = np.meshgrid(gx, gy)\n+dx = gx[1] - gx[0]\n+\n+# Gaussian kernel density on projected coordinates\n+sigma = 0.12\n+density = np.zeros_like(gxx)\n+for px, py in zip(all_pole_x, all_pole_y, strict=True):\n+    density += np.exp(-((gxx - px) ** 2 + (gyy - py) ** 2) / (2 * sigma**2))\n+\n+# Mask outside the primitive circle\n+mask = gxx**2 + gyy**2 > 1.0\n+density[mask] = 0\n+\n+\n+def trace_contour(density, gx, gy, level):\n+    \"\"\"Trace contour lines using marching squares with proper edge following.\"\"\"\n+    ny, nx = density.shape\n+    segments = []\n+\n+    # Find all cell edge crossings and build segments\n+    for j in range(ny - 1):\n+        for i in range(nx - 1):\n+            # Four corners of cell: TL, TR, BR, BL\n+            vals = [density[j, i], density[j, i + 1], density[j + 1, i + 1], density[j + 1, i]]\n+            above = [v >= level for v in vals]\n+            case = above[0] * 8 + above[1] * 4 + above[2] * 2 + above[3] * 1\n+\n+            if case == 0 or case == 15:\n+                continue\n+\n+            # Interpolation along edges\n+            def interp_edge(v0, v1, p0, p1):\n+                if abs(v1 - v0) < 1e-12:\n+                    t = 0.5\n+                else:\n+                    t = (level - v0) / (v1 - v0)\n+                return (p0[0] + t * (p1[0] - p0[0]), p0[1] + t * (p1[1] - p0[1]))\n+\n+            corners = [(gx[i], gy[j]), (gx[i + 1], gy[j]), (gx[i + 1], gy[j + 1]), (gx[i], gy[j + 1])]\n+\n+            edges = {}\n+            # Top edge (0-1)\n+            if above[0] != above[1]:\n+                edges[\"top\"] = interp_edge(vals[0], vals[1], corners[0], corners[1])\n+            # Right edge (1-2)\n+            if above[1] != above[2]:\n+                edges[\"right\"] = interp_edge(vals[1], vals[2], corners[1], corners[2])\n+            # Bottom edge (2-3)\n+            if above[2] != above[3]:\n+                edges[\"bottom\"] = interp_edge(vals[2], vals[3], corners[2], corners[3])\n+            # Left edge (3-0)\n+            if above[3] != above[0]:\n+                edges[\"left\"] = interp_edge(vals[3], vals[0], corners[3], corners[0])\n+\n+            edge_keys = list(edges.keys())\n+            if len(edge_keys) == 2:\n+                p0, p1 = edges[edge_keys[0]], edges[edge_keys[1]]\n+                if p0[0] ** 2 + p0[1] ** 2 <= 1.02 and p1[0] ** 2 + p1[1] ** 2 <= 1.02:\n+                    segments.append((p0, p1))\n+            elif len(edge_keys) == 4:\n+                # Saddle point - connect based on center value\n+                center = sum(vals) / 4\n+                if center >= level:\n+                    pairs = [(\"top\", \"right\"), (\"bottom\", \"left\")]\n+                else:\n+                    pairs = [(\"top\", \"left\"), (\"bottom\", \"right\")]\n+                for k0, k1 in pairs:\n+                    p0, p1 = edges[k0], edges[k1]\n+                    if p0[0] ** 2 + p0[1] ** 2 <= 1.02 and p1[0] ** 2 + p1[1] ** 2 <= 1.02:\n+                        segments.append((p0, p1))\n+\n+    # Chain segments into polylines\n+    if not segments:\n+        return []\n+\n+    polylines = []\n+    used = [False] * len(segments)\n+    eps = dx * 1.5\n+\n+    for start_idx in range(len(segments)):\n+        if used[start_idx]:\n+            continue\n+        used[start_idx] = True\n+        chain = [segments[start_idx][0], segments[start_idx][1]]\n+\n+        # Extend forward\n+        changed = True\n+        while changed:\n+            changed = False\n+            for k in range(len(segments)):\n+                if used[k]:\n+                    continue\n+                s = segments[k]\n+                d0 = (chain[-1][0] - s[0][0]) ** 2 + (chain[-1][1] - s[0][1]) ** 2\n+                d1 = (chain[-1][0] - s[1][0]) ** 2 + (chain[-1][1] - s[1][1]) ** 2\n+                if d0 < eps**2:\n+                    chain.append(s[1])\n+                    used[k] = True\n+                    changed = True\n+                    break\n+                elif d1 < eps**2:\n+                    chain.append(s[0])\n+                    used[k] = True\n+                    changed = True\n+                    break\n+\n+        # Extend backward\n+        changed = True\n+        while changed:\n+            changed = False\n+            for k in range(len(segments)):\n+                if used[k]:\n+                    continue\n+                s = segments[k]\n+                d0 = (chain[0][0] - s[0][0]) ** 2 + (chain[0][1] - s[0][1]) ** 2\n+                d1 = (chain[0][0] - s[1][0]) ** 2 + (chain[0][1] - s[1][1]) ** 2\n+                if d0 < eps**2:\n+                    chain.insert(0, s[1])\n+                    used[k] = True\n+                    changed = True\n+                    break\n+                elif d1 < eps**2:\n+                    chain.insert(0, s[0])\n+                    used[k] = True\n+                    changed = True\n+                    break\n+\n+        if len(chain) >= 3:\n+            polylines.append(chain)\n+\n+    return polylines\n+\n+\n+# Extract contour polylines at density levels\n+contour_levels = [2.0, 4.0, 6.0, 8.0]\n+max_density = density.max()\n+all_contour_points = []\n+\n+for level in contour_levels:\n+    if level >= max_density:\n+        continue\n+    polylines = trace_contour(density, gx, gy, level)\n+    for polyline in polylines:\n+        if all_contour_points:\n+            all_contour_points.append(None)\n+        for pt in polyline:\n+            cx, cy = clip_to_circle(pt[0], pt[1])\n+            all_contour_points.append((round(cx, 4), round(cy, 4)))\n+\n+\n+# Style - colorblind-safe palette (blue, red, amber)\n+custom_style = Style(\n+    background=\"white\",\n+    plot_background=\"white\",\n+    foreground=\"#333333\",\n+    foreground_strong=\"#333333\",\n+    foreground_subtle=\"#eeeeee\",\n+    colors=(\n+        \"#306998\",  # bedding great circles (blue - primary)\n+        \"#D4513D\",  # fault great circles (red)\n+        \"#DAA520\",  # joint great circles (amber/gold)\n+        \"#306998\",  # bedding poles\n+        \"#D4513D\",  # fault poles\n+        \"#DAA520\",  # joint poles\n+        \"#888888\",  # density contours\n+        \"#bbbbbb\",  # grid lines\n+        \"#555555\",  # stereonet boundary\n+    ),\n+    title_font_size=56,\n+    label_font_size=1,\n+    major_label_font_size=1,\n+    legend_font_size=36,\n+    value_font_size=20,\n+    tooltip_font_size=28,\n+    opacity=0.7,\n+    opacity_hover=0.9,\n+)\n+\n+# Chart\n+chart = pygal.XY(\n+    width=3600,\n+    height=3600,\n+    style=custom_style,\n+    title=\"stereonet-equal-area \\u00b7 pygal \\u00b7 pyplots.ai\",\n+    show_legend=True,\n+    legend_at_bottom=True,\n+    legend_at_bottom_columns=4,\n+    show_x_labels=False,\n+    show_y_labels=False,\n+    show_x_guides=False,\n+    show_y_guides=False,\n+    xrange=(-1.25, 1.25),\n+    range=(-1.25, 1.25),\n+    dots_size=0,\n+    allow_interruptions=True,\n+    margin_top=30,\n+    margin_bottom=50,\n+    margin_left=10,\n+    margin_right=10,\n+)\n+\n+# Great circles (planes) - visual hierarchy via line weight\n+chart.add(\n+    \"Bedding (planes)\", gc_series[\"Bedding\"], stroke=True, show_dots=False, stroke_style={\"width\": gc_widths[\"Bedding\"]}\n+)\n+chart.add(\n+    \"Faults (planes)\", gc_series[\"Faults\"], stroke=True, show_dots=False, stroke_style={\"width\": gc_widths[\"Faults\"]}\n+)\n+chart.add(\n+    \"Joints (planes)\", gc_series[\"Joints\"], stroke=True, show_dots=False, stroke_style={\"width\": gc_widths[\"Joints\"]}\n+)\n+\n+# Poles to planes (scatter points) - visual hierarchy via dot size\n+chart.add(\"Bedding (poles)\", pole_series[\"Bedding\"], stroke=False, show_dots=True, dots_size=pole_sizes[\"Bedding\"])\n+chart.add(\"Faults (poles)\", pole_series[\"Faults\"], stroke=False, show_dots=True, dots_size=pole_sizes[\"Faults\"])\n+chart.add(\"Joints (poles)\", pole_series[\"Joints\"], stroke=False, show_dots=True, dots_size=pole_sizes[\"Joints\"])\n+\n+# Density contours - single combined series\n+if all_contour_points:\n+    chart.add(\n+        \"Density contours\",\n+        all_contour_points,\n+        stroke=True,\n+        show_dots=False,\n+        stroke_style={\"width\": 1.8, \"dasharray\": \"6,3\"},\n+    )\n+\n+# Grid lines (subtle equal-area net) - named to avoid orphan legend entry\n+chart.add(\"Grid\", grid_points, stroke=True, show_dots=False, stroke_style={\"width\": 0.8, \"dasharray\": \"4,4\"})\n+\n+# Stereonet boundary: primitive circle + tick marks + N label\n+chart.add(\"Stereonet\", structural_points, stroke=True, show_dots=False, stroke_style={\"width\": 2.5})\n+\n+# Save\n+chart.render_to_png(\"plot.png\")\n+chart.render_to_file(\"plot.html\")"
+    },
+    {
+      "sha": "740010bfca030a2f570dc148fb863b298abc1ce4",
+      "filename": "plots/stereonet-equal-area/metadata/pygal.yaml",
+      "status": "added",
+      "additions": 233,
+      "deletions": 0,
+      "changes": 233,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/7a9eb3d4ba4ecf2b114569596e1e468e99516e3a/plots%2Fstereonet-equal-area%2Fmetadata%2Fpygal.yaml",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/7a9eb3d4ba4ecf2b114569596e1e468e99516e3a/plots%2Fstereonet-equal-area%2Fmetadata%2Fpygal.yaml",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fstereonet-equal-area%2Fmetadata%2Fpygal.yaml?ref=7a9eb3d4ba4ecf2b114569596e1e468e99516e3a",
+      "patch": "@@ -0,0 +1,233 @@\n+library: pygal\n+specification_id: stereonet-equal-area\n+created: '2026-03-15T22:58:45Z'\n+updated: '2026-03-15T23:36:19Z'\n+generated_by: claude-opus-4-5-20251101\n+workflow_run: 23121188964\n+issue: 4576\n+python_version: 3.14.3\n+library_version: 3.1.0\n+preview_url: https://storage.googleapis.com/pyplots-images/plots/stereonet-equal-area/pygal/plot.png\n+preview_thumb: https://storage.googleapis.com/pyplots-images/plots/stereonet-equal-area/pygal/plot_thumb.png\n+preview_html: https://storage.googleapis.com/pyplots-images/plots/stereonet-equal-area/pygal/plot.html\n+quality_score: 78\n+review:\n+  strengths:\n+  - 'Full spec compliance: all required stereonet features implemented (great circles,\n+    poles, density contours, N label, tick marks, grid)'\n+  - Correct equal-area projection mathematics with proper lower-hemisphere pole computation\n+  - Visual hierarchy through differentiated stroke widths and dot sizes creates clear\n+    feature distinction\n+  - Colorblind-safe palette with good contrast\n+  - Creative use of pygal allow_interruptions to render complex disconnected geometry\n+  weaknesses:\n+  - Density contours and grid lines use similar gray dashed styling, making them hard\n+    to distinguish visually\n+  - The trace_contour marching squares function adds ~116 lines of complexity, violating\n+    KISS\n+  - Legend has 9 entries including structural elements like Grid and Stereonet which\n+    clutters the legend\n+  - Only N cardinal direction labeled; E/S/W would improve orientation context\n+  image_description: 'The plot displays a Schmidt equal-area (lower-hemisphere) stereonet\n+    projection on a white background at 3600x3600 px. A circular primitive boundary\n+    is drawn in dark gray with tick marks every 10 degrees around the perimeter. An\n+    \"N\" letter is rendered at the top using connected line segments. Inside the circle,\n+    three sets of great circles represent planar features: blue lines for bedding\n+    planes (sweeping across the right side with ~NE strike), red/coral lines for fault\n+    planes (lower-left area with ~ESE strike), and amber/gold lines for joint planes\n+    (running roughly N-S through the center). Corresponding poles are plotted as colored\n+    dots — blue dots clustered in the center-right area, red dots clustered in the\n+    lower-left, and amber/gold dots along the right edge near the primitive circle.\n+    Gray dashed density contours are overlaid highlighting pole concentrations. Subtle\n+    gray dashed grid lines show small circles at 30 and 60 degree dip intervals plus\n+    diametral lines every 30 degrees. The legend at the bottom shows 9 entries in\n+    4 columns: Bedding (planes), Faults (planes), Joints (planes), Bedding (poles),\n+    Faults (poles), Joints (poles), Density contours, Grid, and Stereonet. The title\n+    reads \"stereonet-equal-area · pygal · pyplots.ai\" at the top.'\n+  criteria_checklist:\n+    visual_quality:\n+      score: 23\n+      max: 30\n+      items:\n+      - id: VQ-01\n+        name: Text Legibility\n+        score: 6\n+        max: 8\n+        passed: true\n+        comment: Font sizes explicitly set (title=56, legend=36); title clear, legend\n+          readable but small relative to 3600px canvas\n+      - id: VQ-02\n+        name: No Overlap\n+        score: 5\n+        max: 6\n+        passed: true\n+        comment: No text overlap; density contours blend slightly with grid\n+      - id: VQ-03\n+        name: Element Visibility\n+        score: 4\n+        max: 6\n+        passed: true\n+        comment: Poles visible with size hierarchy; density contours hard to distinguish\n+          from grid lines\n+      - id: VQ-04\n+        name: Color Accessibility\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: Blue/red/amber palette is colorblind-safe with good contrast\n+      - id: VQ-05\n+        name: Layout & Canvas\n+        score: 3\n+        max: 4\n+        passed: true\n+        comment: Square format appropriate; plot fills canvas well\n+      - id: VQ-06\n+        name: Axis Labels & Title\n+        score: 1\n+        max: 2\n+        passed: true\n+        comment: Title correct format; N label present; no other cardinal directions\n+    design_excellence:\n+      score: 13\n+      max: 20\n+      items:\n+      - id: DE-01\n+        name: Aesthetic Sophistication\n+        score: 5\n+        max: 8\n+        passed: true\n+        comment: Custom palette, visual hierarchy through stroke widths and dot sizes;\n+          above defaults\n+      - id: DE-02\n+        name: Visual Refinement\n+        score: 4\n+        max: 6\n+        passed: true\n+        comment: Axes hidden, grid subtle, whitespace balanced\n+      - id: DE-03\n+        name: Data Storytelling\n+        score: 4\n+        max: 6\n+        passed: true\n+        comment: Visual hierarchy through line weights and dot sizes; three distinct\n+          clusters visible\n+    spec_compliance:\n+      score: 15\n+      max: 15\n+      items:\n+      - id: SC-01\n+        name: Plot Type\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Equal-area Schmidt net lower-hemisphere projection correctly implemented\n+      - id: SC-02\n+        name: Required Features\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: 'All spec features present: great circles, poles, density contours,\n+          N label, ticks, grid, legend'\n+      - id: SC-03\n+        name: Data Mapping\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: Strike/dip correctly projected with equal-area formula\n+      - id: SC-04\n+        name: Title & Legend\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: Title format correct; legend labels descriptive\n+    data_quality:\n+      score: 14\n+      max: 15\n+      items:\n+      - id: DQ-01\n+        name: Feature Coverage\n+        score: 5\n+        max: 6\n+        passed: true\n+        comment: Three feature types with distinct orientations; good variation\n+      - id: DQ-02\n+        name: Realistic Context\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Geological field measurements from mapping campaign\n+      - id: DQ-03\n+        name: Appropriate Scale\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: Strike 0-360, dip 5-89; realistic field data ranges\n+    code_quality:\n+      score: 7\n+      max: 10\n+      items:\n+      - id: CQ-01\n+        name: KISS Structure\n+        score: 1\n+        max: 3\n+        passed: false\n+        comment: Two helper functions; marching squares contour implementation ~116\n+          lines\n+      - id: CQ-02\n+        name: Reproducibility\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: np.random.seed(42) set\n+      - id: CQ-03\n+        name: Clean Imports\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: All imports used (numpy, pygal, Style)\n+      - id: CQ-04\n+        name: Code Elegance\n+        score: 1\n+        max: 2\n+        passed: false\n+        comment: Marching squares necessary but adds significant complexity\n+      - id: CQ-05\n+        name: Output & API\n+        score: 1\n+        max: 1\n+        passed: true\n+        comment: Saves as plot.png; also renders HTML\n+    library_mastery:\n+      score: 6\n+      max: 10\n+      items:\n+      - id: LM-01\n+        name: Idiomatic Usage\n+        score: 3\n+        max: 5\n+        passed: true\n+        comment: Uses pygal XY, Style, allow_interruptions, stroke_style; much manual\n+          computation outside pygal\n+      - id: LM-02\n+        name: Distinctive Features\n+        score: 3\n+        max: 5\n+        passed: true\n+        comment: allow_interruptions is pygal-specific; stroke_style with dasharray;\n+          dual SVG+PNG output\n+  verdict: APPROVED\n+impl_tags:\n+  dependencies: []\n+  techniques:\n+  - polar-projection\n+  - custom-legend\n+  - html-export\n+  patterns:\n+  - data-generation\n+  - iteration-over-groups\n+  - matrix-construction\n+  dataprep:\n+  - kde\n+  styling:\n+  - alpha-blending\n+  - grid-styling"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "69ef26cddde7112954635ac3a39feca7eac81da3",
+      "message": "feat(pygal): implement stereonet-equal-area",
+      "parent_shas": [
+        "4a54060bf190bef64513da85704c4ed4512c6908"
+      ]
+    },
+    {
+      "sha": "24cdb3106366613585e39a6ce57ed682c155132b",
+      "message": "chore(pygal): add metadata for stereonet-equal-area",
+      "parent_shas": [
+        "69ef26cddde7112954635ac3a39feca7eac81da3"
+      ]
+    },
+    {
+      "sha": "ff598110bb1afb0c4d04e9c88e4f6330cdaa3876",
+      "message": "chore(pygal): update quality score 65 and review feedback for stereonet-equal-area",
+      "parent_shas": [
+        "24cdb3106366613585e39a6ce57ed682c155132b"
+      ]
+    },
+    {
+      "sha": "b67b038c227d87ca94dd22b4bacd52f0a9583c33",
+      "message": "chore(pygal): update quality score 68 and review feedback for stereonet-equal-area",
+      "parent_shas": [
+        "ff598110bb1afb0c4d04e9c88e4f6330cdaa3876"
+      ]
+    },
+    {
+      "sha": "a8ecc0e65b9f086c58886924db7a65d781320512",
+      "message": "fix(pygal): address review feedback for stereonet-equal-area\n\nAttempt 2/3 - fixes based on AI review",
+      "parent_shas": [
+        "b67b038c227d87ca94dd22b4bacd52f0a9583c33"
+      ]
+    },
+    {
+      "sha": "af825ce21f6c68cee0db3352579ec5dde7643429",
+      "message": "chore(pygal): update quality score 70 and review feedback for stereonet-equal-area",
+      "parent_shas": [
+        "a8ecc0e65b9f086c58886924db7a65d781320512"
+      ]
+    },
+    {
+      "sha": "32673323f24eb415fe81779c8beda83ac6b8b3ae",
+      "message": "fix(pygal): address review feedback for stereonet-equal-area\n\nAttempt 3/3 - fixes based on AI review",
+      "parent_shas": [
+        "af825ce21f6c68cee0db3352579ec5dde7643429"
+      ]
+    },
+    {
+      "sha": "037723dd2901b750ec6ee24140574c5eaa8cd6db",
+      "message": "chore(pygal): update quality score 78 and review feedback for stereonet-equal-area",
+      "parent_shas": [
+        "32673323f24eb415fe81779c8beda83ac6b8b3ae"
+      ]
+    },
+    {
+      "sha": "7a9eb3d4ba4ecf2b114569596e1e468e99516e3a",
+      "message": "Merge branch 'main' into implementation/stereonet-equal-area/pygal",
+      "parent_shas": [
+        "037723dd2901b750ec6ee24140574c5eaa8cd6db",
+        "67025befb80ab07d3372ed222f2a9b95d1f75a95"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__MarkusNeusinger__anyplot__pr4911.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4911__py2_py3__MarkusNeusinger__anyplot__pr4911\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4911__py2_py3__MarkusNeusinger__anyplot__pr4911\\rn"
+  }
+}

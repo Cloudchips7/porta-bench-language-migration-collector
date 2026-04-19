@@ -1,0 +1,88 @@
+{
+  "instance_id": "cpp_python__encounter__aurora__pr105",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "encounter/aurora",
+  "pr_number": 105,
+  "pr_url": "https://github.com/encounter/aurora/pull/105",
+  "repo": {
+    "full_name": "encounter/aurora",
+    "clone_url": "https://github.com/encounter/aurora.git",
+    "default_branch": "main",
+    "created_at": "2022-07-27T15:25:30Z",
+    "stars": 148,
+    "license": "MIT",
+    "size_kb": 1065
+  },
+  "pull_request": {
+    "id": 3499548160,
+    "title": "Remove C++ syntax from card.h and pad.h",
+    "body": "",
+    "created_at": "2026-04-07T18:45:42Z",
+    "merged_at": "2026-04-07T19:36:07Z",
+    "base_sha": "81e43dab4f72fede71cd35f9d388eff3a1467766",
+    "head_sha": "77d816ab101395a045b68fea8220f9e269d1d2c0",
+    "merge_commit_sha": "f173c876dee70b3e16db22c989b1d549c31d3765",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "81e43dab4f72fede71cd35f9d388eff3a1467766",
+  "final_sha": "77d816ab101395a045b68fea8220f9e269d1d2c0",
+  "changed_files": [
+    {
+      "sha": "b3de4810a11c83184cc70df669a971cc36a314a3",
+      "filename": "include/dolphin/card.h",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/encounter/aurora/blob/77d816ab101395a045b68fea8220f9e269d1d2c0/include%2Fdolphin%2Fcard.h",
+      "raw_url": "https://github.com/encounter/aurora/raw/77d816ab101395a045b68fea8220f9e269d1d2c0/include%2Fdolphin%2Fcard.h",
+      "contents_url": "https://api.github.com/repos/encounter/aurora/contents/include%2Fdolphin%2Fcard.h?ref=77d816ab101395a045b68fea8220f9e269d1d2c0",
+      "patch": "@@ -1,7 +1,6 @@\n #ifndef _DOLPHIN_CARD_H_\n #define _DOLPHIN_CARD_H_\n \n-#include <string_view>\n #include <dolphin/os.h>\n #include <dolphin/dsp.h>\n #include <dolphin/dvd.h>"
+    },
+    {
+      "sha": "e3be5eefe793f61cc4ae042c9435e44d353b37b9",
+      "filename": "include/dolphin/pad.h",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/encounter/aurora/blob/77d816ab101395a045b68fea8220f9e269d1d2c0/include%2Fdolphin%2Fpad.h",
+      "raw_url": "https://github.com/encounter/aurora/raw/77d816ab101395a045b68fea8220f9e269d1d2c0/include%2Fdolphin%2Fpad.h",
+      "contents_url": "https://api.github.com/repos/encounter/aurora/contents/include%2Fdolphin%2Fpad.h?ref=77d816ab101395a045b68fea8220f9e269d1d2c0",
+      "patch": "@@ -41,7 +41,7 @@\n #define PAD_BUTTON_MENU 0x1000\n #define PAD_BUTTON_START 0x1000\n \n-const static uint32_t PAD_BUTTON_COUNT = 12;\n+#define PAD_BUTTON_COUNT 12\n \n // added by Aurora, not present in original SDK\n #define PAD_AXIS_LEFT_X_POS 0\n@@ -55,7 +55,7 @@ const static uint32_t PAD_BUTTON_COUNT = 12;\n #define PAD_AXIS_TRIGGER_L 8\n #define PAD_AXIS_TRIGGER_R 9\n \n-const static uint32_t PAD_AXIS_COUNT = 10;\n+#define PAD_AXIS_COUNT 10\n \n #define PAD_CHAN0_BIT 0x80000000\n #define PAD_CHAN1_BIT 0x40000000"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "77d816ab101395a045b68fea8220f9e269d1d2c0",
+      "message": "Remove C++ syntax from card.h and pad.h",
+      "parent_shas": [
+        "81e43dab4f72fede71cd35f9d388eff3a1467766"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__encounter__aurora__pr105.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\encounter__aurora__pr105__cpp_python__encounter__aurora__pr105\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\encounter__aurora__pr105__cpp_python__encounter__aurora__pr105\\rn"
+  }
+}

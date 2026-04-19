@@ -1,0 +1,107 @@
+{
+  "instance_id": "java_python__pelican-eggs__yolks__pr356",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "pelican-eggs/yolks",
+  "pr_number": 356,
+  "pr_url": "https://github.com/pelican-eggs/yolks/pull/356",
+  "repo": {
+    "full_name": "pelican-eggs/yolks",
+    "clone_url": "https://github.com/pelican-eggs/yolks.git",
+    "default_branch": "master",
+    "created_at": "2021-05-16T12:42:02Z",
+    "stars": 147,
+    "license": "MIT",
+    "size_kb": 1007
+  },
+  "pull_request": {
+    "id": 3517738669,
+    "title": "Java 26",
+    "body": "## Description\r\n\r\n<!-- Please explain what is being changed or added as a short overview for this PR. Also, link existing relevant issues if they exist with resolves # -->\r\n\r\n### All Submissions:\r\n\r\n* [x] Have you ensured there aren't other open [Pull Requests](../pulls) for the same update or change?\r\n* [x] Have you created a new branch for your changes and PR from that branch and not from your master branch?\r\n\r\n<!-- The new image submission below can be removed if you are not adding a new image -->\r\n\r\n### New Image Submissions:\r\n\r\n1. [x] Have you added your image to the [Github workflows](https://github.com/pelican-eggs/yolks/tree/master/.github/workflows)?\r\n2. [x] Have you updated the README list to contain your new image?\r\n",
+    "created_at": "2026-04-11T14:49:52Z",
+    "merged_at": "2026-04-11T17:43:29Z",
+    "base_sha": "164cf27f9d840ce851ecd8779394752cdb23a173",
+    "head_sha": "6e82504b7c9a64db03274255acce04708e1a28ea",
+    "merge_commit_sha": "18deb8e96dbf19c3fdb1c47bfccd096177742685",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "164cf27f9d840ce851ecd8779394752cdb23a173",
+  "final_sha": "6e82504b7c9a64db03274255acce04708e1a28ea",
+  "changed_files": [
+    {
+      "sha": "7cd807c15ef15c657fbee2eb79853f9f262acde2",
+      "filename": ".github/workflows/java.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/pelican-eggs/yolks/blob/6e82504b7c9a64db03274255acce04708e1a28ea/.github%2Fworkflows%2Fjava.yml",
+      "raw_url": "https://github.com/pelican-eggs/yolks/raw/6e82504b7c9a64db03274255acce04708e1a28ea/.github%2Fworkflows%2Fjava.yml",
+      "contents_url": "https://api.github.com/repos/pelican-eggs/yolks/contents/.github%2Fworkflows%2Fjava.yml?ref=6e82504b7c9a64db03274255acce04708e1a28ea",
+      "patch": "@@ -30,6 +30,7 @@ jobs:\n           - 21\n           - 22\n           - 25\n+          - 26\n     steps:\n       - uses: actions/checkout@v4\n       - uses: docker/setup-qemu-action@v3"
+    },
+    {
+      "sha": "526f522340de5e3ac7cdd5a9af2f3bd78c61bf71",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/pelican-eggs/yolks/blob/6e82504b7c9a64db03274255acce04708e1a28ea/README.md",
+      "raw_url": "https://github.com/pelican-eggs/yolks/raw/6e82504b7c9a64db03274255acce04708e1a28ea/README.md",
+      "contents_url": "https://api.github.com/repos/pelican-eggs/yolks/contents/README.md?ref=6e82504b7c9a64db03274255acce04708e1a28ea",
+      "patch": "@@ -194,6 +194,8 @@ is tagged correctly.\n   * `ghcr.io/pelican-eggs/yolks:java_22`\n * [`java25`](/java/25)\n   * `ghcr.io/pelican-eggs/yolks:java_25`\n+* [`java26`](/java/26)\n+  * `ghcr.io/pelican-eggs/yolks:java_26`\n \n ### [MariaDB](/mariadb)\n "
+    },
+    {
+      "sha": "a68804c2746baed1e6e7151fb01903cb146b4f2f",
+      "filename": "java/26/Dockerfile",
+      "status": "added",
+      "additions": 37,
+      "deletions": 0,
+      "changes": 37,
+      "blob_url": "https://github.com/pelican-eggs/yolks/blob/6e82504b7c9a64db03274255acce04708e1a28ea/java%2F26%2FDockerfile",
+      "raw_url": "https://github.com/pelican-eggs/yolks/raw/6e82504b7c9a64db03274255acce04708e1a28ea/java%2F26%2FDockerfile",
+      "contents_url": "https://api.github.com/repos/pelican-eggs/yolks/contents/java%2F26%2FDockerfile?ref=6e82504b7c9a64db03274255acce04708e1a28ea",
+      "patch": "@@ -0,0 +1,37 @@\n+FROM        --platform=$TARGETOS/$TARGETARCH eclipse-temurin:26-jdk-noble\n+\n+LABEL       author=\"Michael Parker\" maintainer=\"parker@pelican.dev\"\n+\n+LABEL       org.opencontainers.image.source=\"https://github.com/pterodactyl/yolks\"\n+LABEL       org.opencontainers.image.licenses=MIT\n+\n+RUN         apt update -y \\\n+            && apt install -y \\\n+                curl \\\n+                lsof \\\n+                ca-certificates \\\n+                openssl \\\n+                git \\\n+                tar \\\n+                sqlite3 \\\n+                fontconfig \\\n+                tzdata \\\n+                iproute2 \\\n+                libfreetype6 \\\n+                tini \\\n+                zip \\\n+                unzip \\\n+                jq\n+\n+## Setup user and working directory\n+RUN         useradd -m -d /home/container -s /bin/bash container\n+USER        container\n+ENV         USER=container HOME=/home/container\n+WORKDIR     /home/container\n+\n+STOPSIGNAL SIGINT\n+\n+COPY        --chown=container:container ./../entrypoint.sh /entrypoint.sh\n+RUN         chmod +x /entrypoint.sh\n+ENTRYPOINT    [\"/usr/bin/tini\", \"-g\", \"--\"]\n+CMD         [\"/entrypoint.sh\"]"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "74ec15502cff320eefc4bc58a0234bbfcbff05e9",
+      "message": "Add: java 26",
+      "parent_shas": [
+        "164cf27f9d840ce851ecd8779394752cdb23a173"
+      ]
+    },
+    {
+      "sha": "6e82504b7c9a64db03274255acce04708e1a28ea",
+      "message": "Add to workflow and readme",
+      "parent_shas": [
+        "74ec15502cff320eefc4bc58a0234bbfcbff05e9"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__pelican-eggs__yolks__pr356.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\pelican-eggs__yolks__pr356__java_python__pelican-eggs__yolks__pr356\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\pelican-eggs__yolks__pr356__java_python__pelican-eggs__yolks__pr356\\rn"
+  }
+}

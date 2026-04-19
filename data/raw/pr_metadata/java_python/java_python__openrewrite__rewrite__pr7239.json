@@ -1,0 +1,188 @@
+{
+  "instance_id": "java_python__openrewrite__rewrite__pr7239",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "openrewrite/rewrite",
+  "pr_number": 7239,
+  "pr_url": "https://github.com/openrewrite/rewrite/pull/7239",
+  "repo": {
+    "full_name": "openrewrite/rewrite",
+    "clone_url": "https://github.com/openrewrite/rewrite.git",
+    "default_branch": "main",
+    "created_at": "2020-05-12T20:16:14Z",
+    "stars": 3407,
+    "license": "Apache-2.0",
+    "size_kb": 126345
+  },
+  "pull_request": {
+    "id": 3481033030,
+    "title": "Fix `ChangeType` `UnsupportedOperationException` on JS `FunctionCall` nodes",
+    "body": "## Motivation\n\nWhen running Java recipes (e.g., `NoGuavaPredicate` → `ChangeType`) against repositories containing JavaScript files, `ChangeType.postVisit()` throws `UnsupportedOperationException` on `JS.FunctionCall` nodes. This was discovered in flagship recipe run alerts on app.moderne.io — the \"Java best practices\" recipe run against Netflix+Spring org produced 46 per-file errors on `metaflow/plugins/cards/ui/prism.js`.\n\nThe root cause: `ChangeType.postVisit()` has explicit handling for `J.MethodInvocation` and `J.NewClass` (both `MethodCall` implementations), but `JS.FunctionCall` — also a `MethodCall` — falls through to the generic `TypedTree` branch, which calls `withType()`. All `MethodCall` implementations throw `UnsupportedOperationException` on `withType()` because the type is derived from the method type.\n\nAdditionally, `J.ClassDeclaration.type` (a `JavaType.FullyQualified`) was not being serialized over RPC, causing JavaScript class declarations to lose their type attribution when crossing the RPC boundary.\n\n## Summary\n\n- Add a `MethodCall` catch-all branch in `ChangeType.postVisit()` between the `J.NewClass` and `TypedTree` branches, using `withMethodType()` instead of `withType()`\n- Add `J.ClassDeclaration.type` to the RPC sender/receiver in all language implementations (Java, TypeScript, C#, Python)\n- Add `ChangeTypeAdaptabilityTest` in `rewrite-javascript` that verifies `ChangeType` can handle JS source containing `FunctionCall` nodes\n\n## Test plan\n\n- [x] New `ChangeTypeAdaptabilityTest.functionCallDoesNotThrow()` — applies `ChangeType(\"Foo\", \"Bar\", false)` to JavaScript containing a class with a method returning a function, verifying both the class rename and that `JS.FunctionCall` nodes don't cause exceptions\n- [x] Existing `ChangeTypeTest` in `rewrite-java-test` passes\n- [x] Existing `ChangeTypeAdaptabilityTest` in `rewrite-groovy` passes\n- [x] Existing `ChangeTypeTest` in `rewrite-kotlin` passes",
+    "created_at": "2026-04-02T08:18:15Z",
+    "merged_at": "2026-04-02T14:14:26Z",
+    "base_sha": "e498e167afec835dafcfe1bca12bb4d9ae5f781f",
+    "head_sha": "d82239d3a0fa3de5418b777a191bb7b49e8a8b3d",
+    "merge_commit_sha": "cd4178cdd0d3b4ca452cc821b6c11d91e222e431",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "5b212d906d0a1e5b066bd6472d749b02d8aec8f0",
+  "final_sha": "d82239d3a0fa3de5418b777a191bb7b49e8a8b3d",
+  "changed_files": [
+    {
+      "sha": "9c7908910593dc7389b28ce1a743d3b86265794d",
+      "filename": "rewrite-csharp/csharp/OpenRewrite/Java/Rpc/JavaReceiver.cs",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-csharp%2Fcsharp%2FOpenRewrite%2FJava%2FRpc%2FJavaReceiver.cs",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-csharp%2Fcsharp%2FOpenRewrite%2FJava%2FRpc%2FJavaReceiver.cs",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-csharp%2Fcsharp%2FOpenRewrite%2FJava%2FRpc%2FJavaReceiver.cs?ref=d82239d3a0fa3de5418b777a191bb7b49e8a8b3d",
+      "patch": "@@ -262,7 +262,8 @@ public override J VisitClassDeclaration(ClassDeclaration classDecl, RpcReceiveQu\n         var implements_ = q.Receive(classDecl.Implements, c => VisitContainer(c, q));\n         var permits = q.Receive(classDecl.Permits, c => VisitContainer(c, q));\n         var body = q.Receive((J)classDecl.Body, el => (J)VisitNonNull(el, q));\n-        return classDecl.WithId(_pvId).WithPrefix(_pvPrefix).WithMarkers(_pvMarkers).WithLeadingAnnotations(leadingAnnotations!).WithModifiers(modifiers!).WithClassKind((ClassDeclaration.Kind)kind!).WithName((Identifier)name!).WithTypeParameters(typeParameters).WithPrimaryConstructor(primaryConstructor).WithExtends(extends_).WithImplements(implements_).WithPermits(permits).WithBody((Block)body!);\n+        var type = q.Receive(classDecl.Type, t => (JavaType.FullyQualified?)VisitType(t, q));\n+        return classDecl.WithId(_pvId).WithPrefix(_pvPrefix).WithMarkers(_pvMarkers).WithLeadingAnnotations(leadingAnnotations!).WithModifiers(modifiers!).WithClassKind((ClassDeclaration.Kind)kind!).WithName((Identifier)name!).WithTypeParameters(typeParameters).WithPrimaryConstructor(primaryConstructor).WithExtends(extends_).WithImplements(implements_).WithPermits(permits).WithBody((Block)body!).WithType(type);\n     }\n \n     private J VisitClassDeclarationKind(ClassDeclaration.Kind kind, RpcReceiveQueue q)"
+    },
+    {
+      "sha": "044d55b0100aa47bef8ae48a07863ceae8e48f2a",
+      "filename": "rewrite-csharp/csharp/OpenRewrite/Java/Rpc/JavaSender.cs",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-csharp%2Fcsharp%2FOpenRewrite%2FJava%2FRpc%2FJavaSender.cs",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-csharp%2Fcsharp%2FOpenRewrite%2FJava%2FRpc%2FJavaSender.cs",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-csharp%2Fcsharp%2FOpenRewrite%2FJava%2FRpc%2FJavaSender.cs?ref=d82239d3a0fa3de5418b777a191bb7b49e8a8b3d",
+      "patch": "@@ -234,6 +234,7 @@ public override J VisitClassDeclaration(ClassDeclaration classDecl, RpcSendQueue\n         q.GetAndSend(classDecl, c => c.Implements, impl => VisitContainer(impl, q));\n         q.GetAndSend(classDecl, c => c.Permits, perm => VisitContainer(perm, q));\n         q.GetAndSend(classDecl, c => (J)c.Body, j => Visit(j, q));\n+        q.GetAndSend(classDecl, c => AsRef(c.Type), type => VisitType(GetValueNonNull<JavaType>(type), q));\n         return classDecl;\n     }\n "
+    },
+    {
+      "sha": "d86fdff974d5687a6445fc788bf27a648158933e",
+      "filename": "rewrite-java/src/main/java/org/openrewrite/java/ChangeType.java",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fopenrewrite%2Fjava%2FChangeType.java",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fopenrewrite%2Fjava%2FChangeType.java",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fopenrewrite%2Fjava%2FChangeType.java?ref=d82239d3a0fa3de5418b777a191bb7b49e8a8b3d",
+      "patch": "@@ -221,6 +221,9 @@ private void addImport(JavaType.FullyQualified owningClass) {\n             } else if (j instanceof J.NewClass) {\n                 J.NewClass n = (J.NewClass) j;\n                 j = n.withConstructorType(updateType(n.getConstructorType()));\n+            } else if (j instanceof MethodCall) {\n+                MethodCall call = (MethodCall) j;\n+                j = (J) call.withMethodType(updateType(call.getMethodType()));\n             } else if (tree instanceof TypedTree) {\n                 j = ((TypedTree) tree).withType(updateType(((TypedTree) tree).getType()));\n             } else if (tree instanceof JavaSourceFile) {"
+    },
+    {
+      "sha": "a2f598794be0dc3f558cc4a65a8be5519e6eedd7",
+      "filename": "rewrite-java/src/main/java/org/openrewrite/java/internal/rpc/JavaReceiver.java",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fopenrewrite%2Fjava%2Finternal%2Frpc%2FJavaReceiver.java",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fopenrewrite%2Fjava%2Finternal%2Frpc%2FJavaReceiver.java",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fopenrewrite%2Fjava%2Finternal%2Frpc%2FJavaReceiver.java?ref=d82239d3a0fa3de5418b777a191bb7b49e8a8b3d",
+      "patch": "@@ -146,7 +146,8 @@ public J visitClassDeclaration(J.ClassDeclaration classDecl, RpcReceiveQueue q)\n                 .getPadding().withExtends(q.receive(classDecl.getPadding().getExtends(), e -> visitLeftPadded(e, q)))\n                 .getPadding().withImplements(q.receive(classDecl.getPadding().getImplements(), i -> visitContainer(i, q)))\n                 .getPadding().withPermits(q.receive(classDecl.getPadding().getPermits(), p -> visitContainer(p, q)))\n-                .withBody(q.receive(classDecl.getBody(), b -> (J.Block) visitNonNull(b, q)));\n+                .withBody(q.receive(classDecl.getBody(), b -> (J.Block) visitNonNull(b, q)))\n+                .withType(q.receive(classDecl.getType(), t -> (JavaType.FullyQualified) visitType(t, q)));\n     }\n \n     private J.ClassDeclaration.Kind visitClassDeclarationKind(J.ClassDeclaration.Kind kind, RpcReceiveQueue q) {"
+    },
+    {
+      "sha": "06b36f79ec9b8ec2294528c73d16ea827a474177",
+      "filename": "rewrite-java/src/main/java/org/openrewrite/java/internal/rpc/JavaSender.java",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fopenrewrite%2Fjava%2Finternal%2Frpc%2FJavaSender.java",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fopenrewrite%2Fjava%2Finternal%2Frpc%2FJavaSender.java",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-java%2Fsrc%2Fmain%2Fjava%2Forg%2Fopenrewrite%2Fjava%2Finternal%2Frpc%2FJavaSender.java?ref=d82239d3a0fa3de5418b777a191bb7b49e8a8b3d",
+      "patch": "@@ -140,6 +140,7 @@ public J visitClassDeclaration(J.ClassDeclaration classDecl, RpcSendQueue q) {\n         q.getAndSend(classDecl, c -> c.getPadding().getImplements(), impl -> visitContainer(impl, q));\n         q.getAndSend(classDecl, c -> c.getPadding().getPermits(), impl -> visitContainer(impl, q));\n         q.getAndSend(classDecl, J.ClassDeclaration::getBody, j -> visit(j, q));\n+        q.getAndSend(classDecl, c -> asRef(c.getType()), type -> visitType(getValueNonNull(type), q));\n         return classDecl;\n     }\n "
+    },
+    {
+      "sha": "fb984c8efcf8e822c9675d4d3bd4dccc8779ad6a",
+      "filename": "rewrite-javascript/rewrite/src/java/rpc.ts",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1,
+      "changes": 4,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-javascript%2Frewrite%2Fsrc%2Fjava%2Frpc.ts",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-javascript%2Frewrite%2Fsrc%2Fjava%2Frpc.ts",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-javascript%2Frewrite%2Fsrc%2Fjava%2Frpc.ts?ref=d82239d3a0fa3de5418b777a191bb7b49e8a8b3d",
+      "patch": "@@ -713,6 +713,7 @@ export class JavaSender extends JavaVisitor<RpcSendQueue> {\n         await q.getAndSend(cls, c => c.implements, impl => this.visitContainer(impl, q));\n         await q.getAndSend(cls, c => c.permitting, perm => this.visitContainer(perm, q));\n         await q.getAndSend(cls, c => c.body, body => this.visit(body, q));\n+        await q.getAndSend(cls, c => asRef(c.type), type => this.visitType(type, q));\n         return cls;\n     }\n \n@@ -1435,7 +1436,8 @@ export class JavaReceiver extends JavaVisitor<RpcReceiveQueue> {\n             extends: await q.receive(cls.extends, ext => this.visitLeftPadded(ext, q)),\n             implements: await q.receive(cls.implements, impl => this.visitContainer(impl, q)),\n             permitting: await q.receive(cls.permitting, perm => this.visitContainer(perm, q)),\n-            body: await q.receive(cls.body, body => this.visit(body, q))\n+            body: await q.receive(cls.body, body => this.visit(body, q)),\n+            type: await q.receive(cls.type, type => this.visitType(type, q)) as Type.Class\n         };\n         return updateIfChanged(cls, updates);\n     }"
+    },
+    {
+      "sha": "959c063f85c4d24d3a2ee9c38901bdfa5e3c545b",
+      "filename": "rewrite-javascript/src/integTest/java/org/openrewrite/javascript/ChangeTypeAdaptabilityTest.java",
+      "status": "added",
+      "additions": 75,
+      "deletions": 0,
+      "changes": 75,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-javascript%2Fsrc%2FintegTest%2Fjava%2Forg%2Fopenrewrite%2Fjavascript%2FChangeTypeAdaptabilityTest.java",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-javascript%2Fsrc%2FintegTest%2Fjava%2Forg%2Fopenrewrite%2Fjavascript%2FChangeTypeAdaptabilityTest.java",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-javascript%2Fsrc%2FintegTest%2Fjava%2Forg%2Fopenrewrite%2Fjavascript%2FChangeTypeAdaptabilityTest.java?ref=d82239d3a0fa3de5418b777a191bb7b49e8a8b3d",
+      "patch": "@@ -0,0 +1,75 @@\n+/*\n+ * Copyright 2025 the original author or authors.\n+ * <p>\n+ * Licensed under the Moderne Source Available License (the \"License\");\n+ * you may not use this file except in compliance with the License.\n+ * You may obtain a copy of the License at\n+ * <p>\n+ * https://docs.moderne.io/licensing/moderne-source-available-license\n+ * <p>\n+ * Unless required by applicable law or agreed to in writing, software\n+ * distributed under the License is distributed on an \"AS IS\" BASIS,\n+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+ * See the License for the specific language governing permissions and\n+ * limitations under the License.\n+ */\n+package org.openrewrite.javascript;\n+\n+import org.junit.jupiter.api.Test;\n+import org.openrewrite.java.ChangeType;\n+import org.openrewrite.java.tree.J;\n+import org.openrewrite.javascript.tree.JS;\n+import org.openrewrite.test.RewriteTest;\n+\n+import java.util.concurrent.atomic.AtomicBoolean;\n+\n+import static org.assertj.core.api.Assertions.assertThat;\n+import static org.openrewrite.javascript.Assertions.javascript;\n+\n+/**\n+ * Prove that {@link ChangeType}, written for Java, does not fail on JavaScript source files\n+ * containing {@link JS.FunctionCall} nodes.\n+ */\n+class ChangeTypeAdaptabilityTest implements RewriteTest {\n+\n+    @Test\n+    void functionCallDoesNotThrow() {\n+        AtomicBoolean hasFunctionCall = new AtomicBoolean(false);\n+        rewriteRun(\n+          spec -> spec.recipe(new ChangeType(\"Foo\", \"Bar\", false)),\n+          javascript(\n+            \"\"\"\n+              class Foo {\n+                  getHandler() {\n+                      return function() { return 1; };\n+                  }\n+              }\n+              var result = new Foo().getHandler()();\n+              \"\"\",\n+            \"\"\"\n+              class Bar {\n+                  getHandler() {\n+                      return function() { return 1; };\n+                  }\n+              }\n+              var result = new Bar().getHandler()();\n+              \"\"\",\n+            spec -> spec.afterRecipe(cu -> {\n+                new JavaScriptVisitor<Integer>() {\n+                    @Override\n+                    public JS.FunctionCall visitFunctionCall(JS.FunctionCall functionCall, Integer p) {\n+                        hasFunctionCall.set(true);\n+                        return functionCall;\n+                    }\n+                }.visit(cu, 0);\n+                assertThat(hasFunctionCall.get())\n+                  .as(\"Expected parsed JavaScript to contain a JS.FunctionCall node\")\n+                  .isTrue();\n+                assertThat(cu.getClasses().getFirst().getType())\n+                  .as(\"Expected JS ClassDeclaration to have type attribution\")\n+                  .isNotNull();\n+            })\n+          )\n+        );\n+    }\n+}"
+    },
+    {
+      "sha": "04ae3c3c47050f0ae0328d865ad18c3290175ae4",
+      "filename": "rewrite-python/rewrite/src/rewrite/rpc/python_receiver.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Frpc%2Fpython_receiver.py",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Frpc%2Fpython_receiver.py",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Frpc%2Fpython_receiver.py?ref=d82239d3a0fa3de5418b777a191bb7b49e8a8b3d",
+      "patch": "@@ -727,10 +727,11 @@ def _visit_j_class_declaration(self, class_decl, q: RpcReceiveQueue):\n             lambda c: self._receive_container(c, q) if c else None\n         )\n         body = q.receive(class_decl.body)\n+        type_ = q.receive(class_decl.type)\n         return replace_if_changed(class_decl, leading_annotations=leading_annotations, modifiers=modifiers,\n                                   kind=kind, name=name, type_parameters=type_parameters,\n                                   primary_constructor=primary_constructor, extends=extends, implements=implements,\n-                                  permits=permits, body=body)\n+                                  permits=permits, body=body, type=type_)\n \n     def _visit_j_class_declaration_kind(self, kind, q: RpcReceiveQueue):\n         from rewrite.java.tree import ClassDeclaration"
+    },
+    {
+      "sha": "259fe85d80f565869920ea840ccb433fe28bf96f",
+      "filename": "rewrite-python/rewrite/src/rewrite/rpc/python_sender.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Frpc%2Fpython_sender.py",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/d82239d3a0fa3de5418b777a191bb7b49e8a8b3d/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Frpc%2Fpython_sender.py",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Frpc%2Fpython_sender.py?ref=d82239d3a0fa3de5418b777a191bb7b49e8a8b3d",
+      "patch": "@@ -678,6 +678,7 @@ def _visit_j_class_declaration(self, class_decl, q: 'RpcSendQueue') -> None:\n         q.get_and_send(class_decl, lambda x: x.padding.permits if hasattr(x.padding, 'permits') else None,\n                       lambda c: self._visit_container(c, q) if c else None)\n         q.get_and_send(class_decl, lambda x: x.body, lambda el: self._visit(el, q))\n+        q.get_and_send_as_ref(class_decl, lambda x: x.type, lambda t: self._visit_type(t, q) if t else None)\n \n     def _visit_j_class_declaration_kind(self, kind, q: 'RpcSendQueue') -> None:\n         # Java ClassDeclaration.Kind: preVisit IS automatically called by _visit before this method"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "0bceb5cc93c09300b5e150dcc767ae520fb5fed1",
+      "message": "Fix ChangeType UnsupportedOperationException on JS FunctionCall nodes\n\nChangeType.postVisit() falls through to the TypedTree branch for\nJS.FunctionCall nodes, which throws UnsupportedOperationException\nbecause withType() is not supported on MethodCall implementations.\n\nAdd a MethodCall catch-all branch before the TypedTree fallback that\nuses withMethodType() instead, handling JS.FunctionCall and any other\nfuture MethodCall implementations not explicitly handled.",
+      "parent_shas": [
+        "5b212d906d0a1e5b066bd6472d749b02d8aec8f0"
+      ]
+    },
+    {
+      "sha": "25ec05803093f1e0def4a2e9a09622860493986b",
+      "message": "Merge branch 'main' into fix-changetype-unsupportedoperationexception-on-js-nodes",
+      "parent_shas": [
+        "0bceb5cc93c09300b5e150dcc767ae520fb5fed1",
+        "e498e167afec835dafcfe1bca12bb4d9ae5f781f"
+      ]
+    },
+    {
+      "sha": "d82239d3a0fa3de5418b777a191bb7b49e8a8b3d",
+      "message": "Move ChangeTypeAdaptabilityTest to integTest source set\n\nThis test exercises the JS RPC parser and belongs with the other\nintegration tests that are not run in CI.",
+      "parent_shas": [
+        "25ec05803093f1e0def4a2e9a09622860493986b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "cross_language_mapping_visible",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__openrewrite__rewrite__pr7239.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\openrewrite__rewrite__pr7239__java_python__openrewrite__rewrite__pr7239\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\openrewrite__rewrite__pr7239__java_python__openrewrite__rewrite__pr7239\\rn"
+  }
+}

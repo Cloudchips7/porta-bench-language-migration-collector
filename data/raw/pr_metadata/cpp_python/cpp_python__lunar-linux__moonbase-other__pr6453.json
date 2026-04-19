@@ -1,0 +1,79 @@
+{
+  "instance_id": "cpp_python__lunar-linux__moonbase-other__pr6453",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "lunar-linux/moonbase-other",
+  "pr_number": 6453,
+  "pr_url": "https://github.com/lunar-linux/moonbase-other/pull/6453",
+  "repo": {
+    "full_name": "lunar-linux/moonbase-other",
+    "clone_url": "https://github.com/lunar-linux/moonbase-other.git",
+    "default_branch": "master",
+    "created_at": "2012-07-01T21:49:22Z",
+    "stars": 16,
+    "license": "NOASSERTION",
+    "size_kb": 79653
+  },
+  "pull_request": {
+    "id": 3482142662,
+    "title": "swig: Version bumped to 4.4.1",
+    "body": "Upgrade swig from 4.3.1 to 4.4.1\n\n- Updated VERSION to 4.4.1\n- Updated SOURCE_VFY checksum\n- Updated UPDATED date to 20260402\n\n---\n*Automated PR created by n8n + Claude AI*",
+    "created_at": "2026-04-02T12:51:21Z",
+    "merged_at": "2026-04-02T12:52:36Z",
+    "base_sha": "7f0ca244f1b5383974a8f12b1b94dcc099ff2875",
+    "head_sha": "8fcf768f5bd0d6884ad33d855047c94001d058a3",
+    "merge_commit_sha": "7e3726afe3fdd53d24553ace05651ee90ec2ab02",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "7f0ca244f1b5383974a8f12b1b94dcc099ff2875",
+  "final_sha": "8fcf768f5bd0d6884ad33d855047c94001d058a3",
+  "changed_files": [
+    {
+      "sha": "5f8765c55ac38670cc7d50b024a79d2a3fc45dc8",
+      "filename": "devel/swig/DETAILS",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 9,
+      "changes": 18,
+      "blob_url": "https://github.com/lunar-linux/moonbase-other/blob/8fcf768f5bd0d6884ad33d855047c94001d058a3/devel%2Fswig%2FDETAILS",
+      "raw_url": "https://github.com/lunar-linux/moonbase-other/raw/8fcf768f5bd0d6884ad33d855047c94001d058a3/devel%2Fswig%2FDETAILS",
+      "contents_url": "https://api.github.com/repos/lunar-linux/moonbase-other/contents/devel%2Fswig%2FDETAILS?ref=8fcf768f5bd0d6884ad33d855047c94001d058a3",
+      "patch": "@@ -1,12 +1,12 @@\n-        MODULE=swig\n-       VERSION=4.3.1\n-        SOURCE=$MODULE-$VERSION.tar.gz\n-    SOURCE_URL=https://downloads.sourceforge.net/${MODULE}/\n-    SOURCE_VFY=sha256:44fc829f70f1e17d635a2b4d69acab38896699ecc24aa023e516e0eabbec61b8\n-      WEB_SITE=http://www.swig.org\n-       ENTERED=20011207\n-       UPDATED=20250629\n-         SHORT=\"Creates wrapper code\"\n+    MODULE=swig\n+   VERSION=4.4.1\n+    SOURCE=$MODULE-$VERSION.tar.gz\n+SOURCE_URL=https://downloads.sourceforge.net/${MODULE}/\n+SOURCE_VFY=sha256:40162a706c56f7592d08fd52ef5511cb7ac191f3593cf07306a0a554c6281fcf\n+  WEB_SITE=http://www.swig.org\n+   ENTERED=20011207\n+   UPDATED=20260402\n+     SHORT=\"Creates wrapper code\"\n \n cat << EOF\n SWIG is a compiler that makes it easy to integrate C and C++ code with"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8fcf768f5bd0d6884ad33d855047c94001d058a3",
+      "message": "swig: Version bumped to 4.4.1\n\nCo-authored-by: dveatch <dennislveatch@gmail.com>",
+      "parent_shas": [
+        "7f0ca244f1b5383974a8f12b1b94dcc099ff2875"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__lunar-linux__moonbase-other__pr6453.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\lunar-linux__moonbase-other__pr6453__cpp_python__lunar-linux__moonbase-other__pr6453\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\lunar-linux__moonbase-other__pr6453__cpp_python__lunar-linux__moonbase-other__pr6453\\rn"
+  }
+}

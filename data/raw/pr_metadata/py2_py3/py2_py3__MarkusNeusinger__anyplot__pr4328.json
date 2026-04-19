@@ -1,0 +1,155 @@
+{
+  "instance_id": "py2_py3__MarkusNeusinger__anyplot__pr4328",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "MarkusNeusinger/anyplot",
+  "pr_number": 4328,
+  "pr_url": "https://github.com/MarkusNeusinger/anyplot/pull/4328",
+  "repo": {
+    "full_name": "MarkusNeusinger/anyplot",
+    "clone_url": "https://github.com/MarkusNeusinger/anyplot.git",
+    "default_branch": "main",
+    "created_at": "2025-11-18T18:15:06Z",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 33528
+  },
+  "pull_request": {
+    "id": 3311565650,
+    "title": "update(violin-basic): pygal — comprehensive quality review",
+    "body": "## Summary\n\nUpdated **pygal** implementation for **violin-basic**.\n\n**Changes:** Comprehensive quality review improving code quality, data choice, visual design, spec compliance, and library feature usage.\n\n### Changes\n- Improved data generation with distinct distribution shapes per category\n- Enhanced visual design (explicit font sizes, refined color palette, layout balance)\n- Fixed review weaknesses from previous evaluation\n- Updated metadata with current library/Python versions\n- Preview images uploaded to GCS staging\n\n## Test Plan\n\n- [x] Preview images uploaded to GCS staging\n- [x] Implementation file passes ruff format/check\n- [x] Metadata YAML updated with current versions\n- [ ] Automated review triggered\n\n---\nGenerated with [Claude Code](https://claude.com/claude-code) `/update` command",
+    "created_at": "2026-02-21T22:28:01Z",
+    "merged_at": "2026-02-21T23:13:52Z",
+    "base_sha": "dffd16e29cfc21a9a8a86d788dbb0d84e52676f7",
+    "head_sha": "3fa79442742910284249d71e54b121bfa92f65b3",
+    "merge_commit_sha": "d9c175b458f53333582050ed89935565700bd1c4",
+    "labels": [
+      "ai-attempt-1",
+      "ai-attempt-2",
+      "ai-attempt-3",
+      "ai-approved",
+      "quality:85",
+      "quality:80",
+      "quality:86",
+      "quality:81"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "e9894a3388774c337b5a1655735ff42c1e034860",
+  "final_sha": "3fa79442742910284249d71e54b121bfa92f65b3",
+  "changed_files": [
+    {
+      "sha": "f3e0d837fc3a89e4d53fc6dd4b7a4fc1fd8da981",
+      "filename": "plots/violin-basic/implementations/pygal.py",
+      "status": "modified",
+      "additions": 64,
+      "deletions": 49,
+      "changes": 113,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/3fa79442742910284249d71e54b121bfa92f65b3/plots%2Fviolin-basic%2Fimplementations%2Fpygal.py",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/3fa79442742910284249d71e54b121bfa92f65b3/plots%2Fviolin-basic%2Fimplementations%2Fpygal.py",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fviolin-basic%2Fimplementations%2Fpygal.py?ref=3fa79442742910284249d71e54b121bfa92f65b3",
+      "patch": "@@ -1,38 +1,47 @@\n \"\"\" pyplots.ai\n violin-basic: Basic Violin Plot\n-Library: pygal 3.1.0 | Python 3.13.11\n-Quality: 91/100 | Created: 2025-12-23\n+Library: pygal 3.1.0 | Python 3.14.3\n+Quality: 85/100 | Updated: 2026-02-21\n \"\"\"\n \n import numpy as np\n import pygal\n from pygal.style import Style\n \n \n-# Data - Generate distributions for different categories\n+# Data - Test scores across 4 class groups with distinct distribution shapes\n np.random.seed(42)\n data = {\n-    \"Engineering\": np.random.normal(85, 12, 200),\n-    \"Marketing\": np.random.normal(72, 15, 200),\n-    \"Sales\": np.random.normal(78, 20, 200),\n-    \"Operations\": np.random.normal(65, 10, 200),\n+    \"Honors\": np.clip(np.random.normal(88, 6, 200), 50, 100),\n+    \"Standard\": np.clip(60 + np.random.gamma(3.5, 4, 200), 40, 100),\n+    \"Remedial\": np.clip(np.random.normal(62, 8, 200), 30, 100),\n+    \"Advanced\": np.clip(np.concatenate([np.random.normal(75, 6, 120), np.random.normal(93, 4, 80)]), 45, 100),\n }\n \n-# Custom style for 4800x2700 px canvas\n+# Colors: 3 series per violin (fill, IQR fill, median line)\n+# Purple replaces green for deuteranopia accessibility; gold emphasizes bimodal Advanced\n+violin_colors = [\"#306998\", \"#E8875B\", \"#8B6FBF\", \"#D4A017\"]\n+iqr_colors = [\"#1d3f5c\", \"#a35a38\", \"#5A3F82\", \"#8a6a10\"]\n+median_color = \"#FFFFFF\"\n+palette = []\n+for vc, ic in zip(violin_colors, iqr_colors, strict=True):\n+    palette.extend([vc, ic, median_color])\n+\n custom_style = Style(\n     background=\"white\",\n     plot_background=\"white\",\n-    foreground=\"#333333\",\n+    foreground=\"#555555\",\n     foreground_strong=\"#333333\",\n-    foreground_subtle=\"#666666\",\n-    colors=(\"#306998\", \"#FFD43B\", \"#4CAF50\", \"#FF5722\", \"#666666\", \"#999999\", \"#333333\", \"#AAAAAA\"),\n+    foreground_subtle=\"#e0e0e0\",\n+    colors=tuple(palette),\n     title_font_size=72,\n     label_font_size=48,\n     major_label_font_size=42,\n     legend_font_size=36,\n     value_font_size=36,\n-    opacity=0.7,\n-    opacity_hover=0.9,\n+    opacity=0.78,\n+    opacity_hover=0.92,\n+    transition=\"200ms ease-in\",\n )\n \n # Create XY chart for violin plot (pygal has no native violin)\n@@ -41,37 +50,44 @@\n     height=2700,\n     style=custom_style,\n     title=\"violin-basic · pygal · pyplots.ai\",\n-    x_title=\"Category\",\n-    y_title=\"Performance Score\",\n-    show_legend=True,\n-    legend_at_bottom=True,\n+    x_title=\"Class Group\",\n+    y_title=\"Test Score (%)\",\n+    show_legend=False,\n     stroke=True,\n     fill=True,\n     dots_size=0,\n     show_x_guides=False,\n     show_y_guides=True,\n-    range=(20, 130),\n-    xrange=(0, 6),\n+    range=(33, 103),\n+    xrange=(0, 5.0),\n     margin=50,\n+    value_formatter=lambda x: f\"{x:.0f}%\",\n+    x_value_formatter=lambda x: \"\",\n+    tooltip_border_radius=10,\n+    tooltip_fancy_mode=True,\n+    human_readable=True,\n+    pretty_print=True,\n )\n \n-# Parameters for violin shapes\n-violin_width = 0.4\n+# Violin widths — Advanced is wider to visually highlight its bimodal shape\n+base_width = 0.38\n+widths = {\"Honors\": base_width, \"Standard\": base_width, \"Remedial\": base_width, \"Advanced\": 0.46}\n n_points = 100\n \n-# Add violins for each category\n+# Build violins with quartile markers and median lines\n for i, (category, values) in enumerate(data.items()):\n-    center_x = i + 1.5\n+    center_x = i + 1.0\n+    violin_width = widths[category]\n \n-    # Compute KDE using Silverman's rule\n+    # KDE using Silverman's rule\n     n = len(values)\n     std = np.std(values)\n-    iqr = np.percentile(values, 75) - np.percentile(values, 25)\n-    bandwidth = 0.9 * min(std, iqr / 1.34) * n ** (-0.2)\n+    iqr_val = np.percentile(values, 75) - np.percentile(values, 25)\n+    bandwidth = 0.9 * min(std, iqr_val / 1.34) * n ** (-0.2)\n \n-    # Create range of y values for density\n+    # Y values for density estimation\n     y_min, y_max = values.min(), values.max()\n-    y_range = np.linspace(y_min - 5, y_max + 5, n_points)\n+    y_range = np.linspace(y_min - 2, y_max + 2, n_points)\n \n     # Gaussian kernel density estimation\n     density = np.zeros_like(y_range)\n@@ -82,37 +98,36 @@\n     # Normalize density to desired width\n     density = density / density.max() * violin_width\n \n-    # Create violin shape (mirrored density)\n+    # Mirrored violin shape with tooltip showing statistics\n+    median_val = float(np.median(values))\n+    q1 = float(np.percentile(values, 25))\n+    q3 = float(np.percentile(values, 75))\n+    tooltip = f\"{category} — Median: {median_val:.1f}%, Q1: {q1:.1f}%, Q3: {q3:.1f}%\"\n+\n     left_points = [(center_x - d, y) for y, d in zip(y_range, density, strict=True)]\n     right_points = [(center_x + d, y) for y, d in zip(y_range[::-1], density[::-1], strict=True)]\n     violin_points = left_points + right_points + [left_points[0]]\n+    chart.add(category, violin_points, formatter=lambda x, t=tooltip: t, stroke_style={\"width\": 2})\n \n-    chart.add(category, violin_points)\n-\n-    # Calculate quartiles and median for inner box\n-    median = float(np.median(values))\n-    q1 = float(np.percentile(values, 25))\n-    q3 = float(np.percentile(values, 75))\n-    box_width = 0.06\n-\n-    # Quartile box (IQR)\n+    # Quartile markers — filled box in darker shade for clear visibility\n+    box_w = 0.16\n     quartile_box = [\n-        (center_x - box_width, q1),\n-        (center_x - box_width, q3),\n-        (center_x + box_width, q3),\n-        (center_x + box_width, q1),\n-        (center_x - box_width, q1),\n+        (center_x - box_w, q1),\n+        (center_x - box_w, q3),\n+        (center_x + box_w, q3),\n+        (center_x + box_w, q1),\n+        (center_x - box_w, q1),\n     ]\n-    chart.add(None, quartile_box, stroke=True, fill=False, show_dots=False)\n+    chart.add(None, quartile_box, stroke=True, fill=True, show_dots=False, stroke_style={\"width\": 5})\n \n-    # Median line\n-    median_line = [(center_x - box_width * 1.5, median), (center_x + box_width * 1.5, median)]\n-    chart.add(None, median_line, stroke=True, fill=False, show_dots=False, stroke_style={\"width\": 4})\n+    # Median line — thick white for high contrast against dark IQR box\n+    median_line = [(center_x - box_w * 1.1, median_val), (center_x + box_w * 1.1, median_val)]\n+    chart.add(None, median_line, stroke=True, fill=False, show_dots=False, stroke_style={\"width\": 18})\n \n # X-axis labels at violin positions\n-chart.x_labels = [\"\", \"Engineering\", \"Marketing\", \"Sales\", \"Operations\", \"\"]\n+chart.x_labels = [\"\", \"Honors\", \"Standard\", \"Remedial\", \"Advanced\", \"\"]\n chart.x_labels_major_count = 4\n \n-# Save outputs\n+# Save\n chart.render_to_file(\"plot.html\")\n chart.render_to_png(\"plot.png\")"
+    },
+    {
+      "sha": "e6d1f2f1ccf0101dec72065b503ea219c71b9128",
+      "filename": "plots/violin-basic/metadata/pygal.yaml",
+      "status": "modified",
+      "additions": 142,
+      "deletions": 117,
+      "changes": 259,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/3fa79442742910284249d71e54b121bfa92f65b3/plots%2Fviolin-basic%2Fmetadata%2Fpygal.yaml",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/3fa79442742910284249d71e54b121bfa92f65b3/plots%2Fviolin-basic%2Fmetadata%2Fpygal.yaml",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fviolin-basic%2Fmetadata%2Fpygal.yaml?ref=3fa79442742910284249d71e54b121bfa92f65b3",
+      "patch": "@@ -1,163 +1,181 @@\n library: pygal\n specification_id: violin-basic\n created: '2025-12-23T00:37:04Z'\n-updated: '2025-12-23T00:40:29Z'\n-generated_by: claude-opus-4-5-20251101\n+updated: '2026-02-21T23:13:33Z'\n+generated_by: claude-opus-4-6\n workflow_run: 20447782572\n issue: 0\n-python_version: 3.13.11\n+python_version: 3.14.3\n library_version: 3.1.0\n preview_url: https://storage.googleapis.com/pyplots-images/plots/violin-basic/pygal/plot.png\n preview_thumb: https://storage.googleapis.com/pyplots-images/plots/violin-basic/pygal/plot_thumb.png\n preview_html: https://storage.googleapis.com/pyplots-images/plots/violin-basic/pygal/plot.html\n-quality_score: 91\n+quality_score: 85\n impl_tags:\n   dependencies: []\n   techniques:\n-    - html-export\n+  - hover-tooltips\n+  - html-export\n   patterns:\n-    - data-generation\n-    - iteration-over-groups\n-  dataprep: []\n-  styling: []\n+  - data-generation\n+  - iteration-over-groups\n+  dataprep:\n+  - kde\n+  styling:\n+  - alpha-blending\n review:\n   strengths:\n-  - Excellent creative solution implementing violin plots in pygal which lacks native\n-    violin chart support\n-  - Clean manual KDE implementation with proper bandwidth calculation using Silvermans\n-    rule\n-  - 'Properly includes all spec requirements: mirrored density, quartile boxes, and\n-    median lines'\n-  - Well-chosen colorblind-safe color palette\n-  - Good separation and layout of four categories\n+  - Creative implementation of violin plot using pygal XY chart despite no native\n+    violin support\n+  - Excellent data quality with 4 distinct distribution shapes including bimodal Advanced\n+    group\n+  - Thoughtful colorblind-safe palette with explicit accessibility reasoning (purple\n+    instead of green)\n+  - All font sizes explicitly set for clear legibility at target resolution\n+  - Clean manual KDE using Silverman rule with proper normalization\n+  - Deliberate wider Advanced violin to emphasize bimodality adds visual storytelling\n   weaknesses:\n-  - Legend at bottom is redundant since x-axis already shows category labels\n-  - Quartile boxes inside violins are quite small and subtle, could be more prominent\n-  - Performance scores exceeding 100 seems unusual for a score context (typically\n-    0-100)\n-  image_description: 'The plot displays four violin shapes representing performance\n-    score distributions for Engineering, Marketing, Sales, and Operations departments.\n-    Each violin is rendered in a distinct color: blue (Engineering), coral/orange\n-    (Marketing), dark gray (Sales), and olive/gold (Operations). The violins show\n-    mirrored kernel density estimates with small rectangular quartile boxes inside\n-    and horizontal median lines. The title \"violin-basic · pygal · pyplots.ai\" appears\n-    at the top. X-axis shows \"Category\" with department labels, Y-axis shows \"Performance\n-    Score\" ranging from 20 to 130. A legend at the bottom repeats the category names\n-    with color indicators.'\n+  - Library mastery inherently limited by pygal lack of native violin chart type\n+  - Monospace font rendering from pygal SVG reduces typographic polish\n+  - Y-axis range extends below data range creating some unused canvas space\n+  image_description: 'The plot displays 4 violin shapes representing test score distributions\n+    for class groups: Honors (steel blue), Standard (salmon/orange), Remedial (medium\n+    purple), and Advanced (gold/yellow). Each violin has a mirrored KDE shape with\n+    a darker-shaded inner rectangle representing the IQR (interquartile range) and\n+    a white horizontal median line inside each IQR box. The title \"violin-basic ·\n+    pygal · pyplots.ai\" is displayed at the top in monospace font. The Y-axis reads\n+    \"Test Score (%)\" ranging from ~35% to 100% with horizontal grid lines at 10% intervals.\n+    The X-axis reads \"Class Group\" with labels beneath each violin. The Honors violin\n+    is compact and centered around ~88%, Standard is right-skewed peaking around ~72%,\n+    Remedial is wider and lower centered around ~62%, and Advanced shows a distinctive\n+    bimodal/wider shape spanning ~50-100% with a deliberately wider violin to highlight\n+    its two-peak nature. The background is white with subtle light gray horizontal\n+    grid lines.'\n   criteria_checklist:\n     visual_quality:\n-      score: 36\n-      max: 40\n+      score: 28\n+      max: 30\n       items:\n       - id: VQ-01\n         name: Text Legibility\n-        score: 9\n-        max: 10\n+        score: 8\n+        max: 8\n         passed: true\n-        comment: Title and labels are clearly readable at full size, well-scaled for\n-          4800x2700\n+        comment: All font sizes explicitly set (title=72, label=48, major_label=42,\n+          legend=36, value=36); all text clearly readable at 4800x2700\n       - id: VQ-02\n         name: No Overlap\n-        score: 8\n-        max: 8\n+        score: 6\n+        max: 6\n         passed: true\n-        comment: No overlapping text, all elements clearly separated\n+        comment: No overlapping elements; violins well-spaced, labels clear\n       - id: VQ-03\n         name: Element Visibility\n-        score: 7\n-        max: 8\n+        score: 5\n+        max: 6\n         passed: true\n-        comment: Violins are well-sized and visible; quartile boxes could be slightly\n-          larger for better visibility\n+        comment: Violin shapes, IQR boxes, and median lines visible; median lines\n+          could be slightly more prominent in rendered PNG\n       - id: VQ-04\n         name: Color Accessibility\n-        score: 5\n-        max: 5\n+        score: 4\n+        max: 4\n         passed: true\n-        comment: Four distinct colors that are colorblind-friendly (no red-green conflict)\n+        comment: Colorblind-safe palette with explicit accessibility reasoning (purple\n+          replaces green for deuteranopia)\n       - id: VQ-05\n-        name: Layout Balance\n-        score: 5\n-        max: 5\n+        name: Layout & Canvas\n+        score: 3\n+        max: 4\n         passed: true\n-        comment: Good proportions, proper spacing between violins\n+        comment: Good canvas utilization (~60-70%); some unused space at bottom of\n+          y-range\n       - id: VQ-06\n-        name: Axis Labels\n-        score: 1\n+        name: Axis Labels & Title\n+        score: 2\n         max: 2\n         passed: true\n-        comment: Labels are descriptive (\"Performance Score\", \"Category\") but lack\n-          units\n-      - id: VQ-07\n-        name: Grid & Legend\n-        score: 1\n-        max: 2\n+        comment: Y-axis 'Test Score (%)' with units, X-axis 'Class Group' descriptive\n+    design_excellence:\n+      score: 13\n+      max: 20\n+      items:\n+      - id: DE-01\n+        name: Aesthetic Sophistication\n+        score: 5\n+        max: 8\n+        passed: true\n+        comment: Custom palette with accessibility reasoning, intentional fill/IQR/median\n+          hierarchy; monospace font limits polish\n+      - id: DE-02\n+        name: Visual Refinement\n+        score: 4\n+        max: 6\n         passed: true\n-        comment: Legend is redundant (same info as x-axis labels), grid is subtle\n+        comment: Selective grid (y-guides only), subtle grid color, white background,\n+          custom opacity and margins\n+      - id: DE-03\n+        name: Data Storytelling\n+        score: 4\n+        max: 6\n+        passed: true\n+        comment: Different distribution shapes tell a story; bimodal Advanced violin\n+          wider to draw attention; visual hierarchy through color and sizing\n     spec_compliance:\n-      score: 25\n-      max: 25\n+      score: 14\n+      max: 15\n       items:\n       - id: SC-01\n         name: Plot Type\n-        score: 8\n-        max: 8\n-        passed: true\n-        comment: Correct violin plot implementation using KDE\n-      - id: SC-02\n-        name: Data Mapping\n         score: 5\n         max: 5\n         passed: true\n-        comment: Categories on X-axis, values on Y-axis correctly assigned\n-      - id: SC-03\n+        comment: Correct violin plot with mirrored KDE, creatively implemented via\n+          XY chart\n+      - id: SC-02\n         name: Required Features\n-        score: 5\n-        max: 5\n+        score: 4\n+        max: 4\n         passed: true\n-        comment: Has mirrored density, quartile markers, median lines as specified\n-      - id: SC-04\n-        name: Data Range\n+        comment: Quartile markers (IQR boxes), mirrored density, median line all present\n+      - id: SC-03\n+        name: Data Mapping\n         score: 3\n         max: 3\n         passed: true\n-        comment: Y-axis range (20-130) shows all data appropriately\n-      - id: SC-05\n-        name: Legend Accuracy\n-        score: 2\n-        max: 2\n-        passed: true\n-        comment: Legend labels match category names\n-      - id: SC-06\n-        name: Title Format\n+        comment: Categories on X, values on Y, all data visible\n+      - id: SC-04\n+        name: Title & Legend\n         score: 2\n-        max: 2\n+        max: 3\n         passed: true\n-        comment: Correctly uses \"violin-basic · pygal · pyplots.ai\" format\n+        comment: Title format correct; legend hidden with x-axis labels as category\n+          identifiers\n     data_quality:\n-      score: 18\n-      max: 20\n+      score: 15\n+      max: 15\n       items:\n       - id: DQ-01\n         name: Feature Coverage\n-        score: 7\n-        max: 8\n+        score: 6\n+        max: 6\n         passed: true\n-        comment: Shows different distributions with varying means and spreads; Sales\n-          has widest spread showing variance well\n+        comment: 'Shows all violin aspects: different distribution shapes (normal,\n+          gamma-skewed, wide normal, bimodal), different spreads and central tendencies'\n       - id: DQ-02\n         name: Realistic Context\n-        score: 7\n-        max: 7\n+        score: 5\n+        max: 5\n         passed: true\n-        comment: Performance scores by department is a plausible real-world scenario\n+        comment: Real-world educational scenario (test scores by class group), neutral\n+          and comprehensible\n       - id: DQ-03\n         name: Appropriate Scale\n         score: 4\n-        max: 5\n+        max: 4\n         passed: true\n-        comment: Scores in 40-130 range are reasonable but some values exceed 100\n-          which is unusual for \"scores\"\n+        comment: Realistic test score values (30-100% range) with plausible group\n+          means\n     code_quality:\n       score: 10\n       max: 10\n@@ -167,41 +185,48 @@ review:\n         score: 3\n         max: 3\n         passed: true\n-        comment: 'Linear flow: imports → data → plot → save (no functions/classes)'\n+        comment: 'Clean linear flow: imports, data, style, chart, violin loop, save'\n       - id: CQ-02\n         name: Reproducibility\n-        score: 3\n-        max: 3\n+        score: 2\n+        max: 2\n         passed: true\n-        comment: Uses np.random.seed(42)\n+        comment: np.random.seed(42) set\n       - id: CQ-03\n         name: Clean Imports\n         score: 2\n         max: 2\n         passed: true\n-        comment: Only numpy, pygal, and Style are imported, all used\n+        comment: All imports used (numpy, pygal, Style)\n       - id: CQ-04\n-        name: No Deprecated API\n-        score: 1\n-        max: 1\n+        name: Code Elegance\n+        score: 2\n+        max: 2\n         passed: true\n-        comment: Uses current pygal API\n+        comment: Clean and appropriately complex; manual KDE necessary since pygal\n+          lacks native violin support\n       - id: CQ-05\n-        name: Output Correct\n+        name: Output & API\n         score: 1\n         max: 1\n         passed: true\n-        comment: Saves as plot.png and plot.html\n-    library_features:\n-      score: 2\n-      max: 5\n+        comment: Saves as plot.png, uses current pygal API\n+    library_mastery:\n+      score: 5\n+      max: 10\n       items:\n-      - id: LF-01\n-        name: Uses distinctive library features\n+      - id: LM-01\n+        name: Idiomatic Usage\n+        score: 3\n+        max: 5\n+        passed: true\n+        comment: Uses pygal XY chart, Style system, formatters correctly, but core\n+          visualization is manual coordinate construction\n+      - id: LM-02\n+        name: Distinctive Features\n         score: 2\n         max: 5\n         passed: true\n-        comment: Creative workaround using XY chart since pygal lacks native violin\n-          support; custom KDE implementation shows ingenuity but doesn't leverage\n-          pygal-specific features\n-  verdict: APPROVED\n+        comment: Leverages pygal-specific features (tooltip_fancy_mode, tooltip_border_radius,\n+          SVG interactivity) but core is manual plotting\n+  verdict: REJECTED"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "776c392a3cc10bf1f2a3edb231f9486b7ea6ff2e",
+      "message": "update(violin-basic): pygal — comprehensive quality review\n\nComprehensive quality review improving code quality, data choice, visual design, spec compliance, and library feature usage.",
+      "parent_shas": [
+        "e9894a3388774c337b5a1655735ff42c1e034860"
+      ]
+    },
+    {
+      "sha": "92d99c8207e60fc19b4cd10b43b12992d1bd9dcc",
+      "message": "chore(pygal): update quality score 80 and review feedback for violin-basic",
+      "parent_shas": [
+        "776c392a3cc10bf1f2a3edb231f9486b7ea6ff2e"
+      ]
+    },
+    {
+      "sha": "ffb1109f16222d12bc28840956b9325888b292a9",
+      "message": "fix(pygal): address review feedback for violin-basic\n\nAttempt 1/3 - fixes based on AI review",
+      "parent_shas": [
+        "92d99c8207e60fc19b4cd10b43b12992d1bd9dcc"
+      ]
+    },
+    {
+      "sha": "b021be66c8d419563389836b03e7d1dc64b9638d",
+      "message": "chore(pygal): update quality score 81 and review feedback for violin-basic",
+      "parent_shas": [
+        "ffb1109f16222d12bc28840956b9325888b292a9"
+      ]
+    },
+    {
+      "sha": "ec6e580878626c444d8b44d8d517866adba088be",
+      "message": "fix(pygal): address review feedback for violin-basic\n\nAttempt 2/3 - fixes based on AI review",
+      "parent_shas": [
+        "b021be66c8d419563389836b03e7d1dc64b9638d"
+      ]
+    },
+    {
+      "sha": "c91f3d2b6cb39ad9a5e68865c8a5ef3314687d1a",
+      "message": "chore(pygal): update quality score 86 and review feedback for violin-basic",
+      "parent_shas": [
+        "ec6e580878626c444d8b44d8d517866adba088be"
+      ]
+    },
+    {
+      "sha": "83b2e566a38719d453ccc959517552d4fc182bf0",
+      "message": "fix(pygal): address review feedback for violin-basic\n\nAttempt 3/3 - fixes based on AI review",
+      "parent_shas": [
+        "c91f3d2b6cb39ad9a5e68865c8a5ef3314687d1a"
+      ]
+    },
+    {
+      "sha": "e7682c1f6eb640120cc018eca42a9ec67411089a",
+      "message": "chore(pygal): update quality score 85 and review feedback for violin-basic",
+      "parent_shas": [
+        "83b2e566a38719d453ccc959517552d4fc182bf0"
+      ]
+    },
+    {
+      "sha": "3fa79442742910284249d71e54b121bfa92f65b3",
+      "message": "Merge branch 'main' into implementation/violin-basic/pygal",
+      "parent_shas": [
+        "e7682c1f6eb640120cc018eca42a9ec67411089a",
+        "dffd16e29cfc21a9a8a86d788dbb0d84e52676f7"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__MarkusNeusinger__anyplot__pr4328.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4328__py2_py3__MarkusNeusinger__anyplot__pr4328\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4328__py2_py3__MarkusNeusinger__anyplot__pr4328\\rn"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "instance_id": "cpp_python__firebase__firebase-unity-sdk__pr1420",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "firebase/firebase-unity-sdk",
+  "pr_number": 1420,
+  "pr_url": "https://github.com/firebase/firebase-unity-sdk/pull/1420",
+  "repo": {
+    "full_name": "firebase/firebase-unity-sdk",
+    "clone_url": "https://github.com/firebase/firebase-unity-sdk.git",
+    "default_branch": "main",
+    "created_at": "2020-09-25T16:55:49Z",
+    "stars": 314,
+    "license": "Apache-2.0",
+    "size_kb": 13899
+  },
+  "pull_request": {
+    "id": 3458730445,
+    "title": "Ignore missing StorageListResult swig",
+    "body": "### Description\r\n> Provide details of the change, and generalize the change in the PR title above.\r\n\r\nIgnore missing StorageListResult swig\r\n***\r\n### Testing\r\n> Describe how you've tested these changes.\r\n\r\nRun build\r\n***\r\n\r\n### Type of Change\r\nPlace an `x` the applicable box:\r\n- [ ] Bug fix. Add the issue # below if applicable.\r\n- [ ] New feature. A non-breaking change which adds functionality.\r\n- [X] Other, such as a build process or documentation change.\r\n***\r\n\r\n",
+    "created_at": "2026-03-27T20:43:24Z",
+    "merged_at": "2026-03-28T14:54:19Z",
+    "base_sha": "46f57b79f2cff780bdea16f5c57e651c2dd52269",
+    "head_sha": "1197834257b4c5aa21c0a8ed01aab6957e744dfa",
+    "merge_commit_sha": "c1b2bad6c911b90e6427dcdfeecbb053891147f9",
+    "labels": [
+      "tests: failed"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "46f57b79f2cff780bdea16f5c57e651c2dd52269",
+  "final_sha": "1197834257b4c5aa21c0a8ed01aab6957e744dfa",
+  "changed_files": [
+    {
+      "sha": "9c01248c2550ea335b1150c162d74778dcee6d20",
+      "filename": "storage/src/swig/storage.i",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/firebase/firebase-unity-sdk/blob/1197834257b4c5aa21c0a8ed01aab6957e744dfa/storage%2Fsrc%2Fswig%2Fstorage.i",
+      "raw_url": "https://github.com/firebase/firebase-unity-sdk/raw/1197834257b4c5aa21c0a8ed01aab6957e744dfa/storage%2Fsrc%2Fswig%2Fstorage.i",
+      "contents_url": "https://api.github.com/repos/firebase/firebase-unity-sdk/contents/storage%2Fsrc%2Fswig%2Fstorage.i?ref=1197834257b4c5aa21c0a8ed01aab6957e744dfa",
+      "patch": "@@ -160,6 +160,11 @@ static AttributeType& %mangle(Class) ##_## AttributeName ## _get_func(Class* sel\n %ignore firebase::storage::StorageReference::GetBytes;\n %ignore firebase::storage::StorageReference::PutBytes;\n %ignore firebase::storage::StorageReference::PutFile;\n+// Ignore List methods and StorageListResult since StorageListResult is not wrapped yet.\n+%ignore firebase::storage::StorageReference::List;\n+%ignore firebase::storage::StorageReference::ListLastResult;\n+%ignore firebase::storage::StorageListResult;\n+\n // Remove the copy operator as the proxy uses the copy constructor.\n %ignore firebase::storage::StorageReference::operator=(const StorageReference&);\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "1197834257b4c5aa21c0a8ed01aab6957e744dfa",
+      "message": "Ignore missing StorageListResult swig",
+      "parent_shas": [
+        "46f57b79f2cff780bdea16f5c57e651c2dd52269"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__firebase__firebase-unity-sdk__pr1420.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\firebase__firebase-unity-sdk__pr1420__cpp_python__firebase__firebase-unity-sdk__pr1420\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\firebase__firebase-unity-sdk__pr1420__cpp_python__firebase__firebase-unity-sdk__pr1420\\rn"
+  }
+}

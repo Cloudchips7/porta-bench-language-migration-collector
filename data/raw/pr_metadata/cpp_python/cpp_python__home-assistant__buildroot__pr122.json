@@ -1,0 +1,91 @@
+{
+  "instance_id": "cpp_python__home-assistant__buildroot__pr122",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "home-assistant/buildroot",
+  "pr_number": 122,
+  "pr_url": "https://github.com/home-assistant/buildroot/pull/122",
+  "repo": {
+    "full_name": "home-assistant/buildroot",
+    "clone_url": "https://github.com/home-assistant/buildroot.git",
+    "default_branch": "2025.02.x-haos",
+    "created_at": "2021-07-06T09:35:50Z",
+    "stars": 42,
+    "license": "NOASSERTION",
+    "size_kb": 135106
+  },
+  "pull_request": {
+    "id": 3528146019,
+    "title": "package/go: security bump to version 1.25.9",
+    "body": "Release notes: https://go.dev/doc/devel/release#go1.25.0\r\n\r\nThis release fixes the following vulnerabilities:\r\n* CVE-2026-32282: os: Root.Chmod can follow symlinks out of the root on Linux\r\n* CVE-2026-32289: html/template: JS template literal context incorrectly tracked\r\n* CVE-2026-27144: cmd/compile: no-op interface conversion bypasses overlap checking\r\n* CVE-2026-27143: cmd/compile: possible memory corruption after bound check elimination\r\n* CVE-2026-32288: archive/tar: unbounded allocation when parsing old format GNU sparse map\r\n* CVE-2026-32283: crypto/tls: multiple key update handshake messages can cause connection to deadlock\r\n* CVE-2026-27140: cmd/go: trust layer bypass when using cgo and SWIG\r\n* CVE-2026-32280: crypto/x509: unexpected work during chain building\r\n* CVE-2026-32281: crypto/x509: inefficient policy validation\r\n\r\nGo 1.25.9 also includes bug fixes to the go command, the compiler, and the runtime.\r\n\r\nFor more details, see the announcement:\r\nhttps://groups.google.com/g/golang-announce/c/0uYbvbPZRWU",
+    "created_at": "2026-04-14T11:52:02Z",
+    "merged_at": "2026-04-14T13:34:06Z",
+    "base_sha": "c0e24ce54b237212dd56408f94620a03d3bfa2ce",
+    "head_sha": "17514879541d1390cd5ed05da4ab88a2f5892221",
+    "merge_commit_sha": "17514879541d1390cd5ed05da4ab88a2f5892221",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "c0e24ce54b237212dd56408f94620a03d3bfa2ce",
+  "final_sha": "17514879541d1390cd5ed05da4ab88a2f5892221",
+  "changed_files": [
+    {
+      "sha": "766dcbe6c4c7f34fed1b8659dcdf15943a6a3b9b",
+      "filename": "package/go/go.hash",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 7,
+      "changes": 14,
+      "blob_url": "https://github.com/home-assistant/buildroot/blob/17514879541d1390cd5ed05da4ab88a2f5892221/package%2Fgo%2Fgo.hash",
+      "raw_url": "https://github.com/home-assistant/buildroot/raw/17514879541d1390cd5ed05da4ab88a2f5892221/package%2Fgo%2Fgo.hash",
+      "contents_url": "https://api.github.com/repos/home-assistant/buildroot/contents/package%2Fgo%2Fgo.hash?ref=17514879541d1390cd5ed05da4ab88a2f5892221",
+      "patch": "@@ -1,9 +1,9 @@\n # sha256 checksum from https://go.dev/dl/\n-sha256  e988d4a2446ac7fe3f6daa089a58e9936a52a381355adec1c8983230a8d6c59e  go1.25.8.src.tar.gz\n-sha256  40530cd40ccfa4c9934663c1d6c4ef6fb1651db70ffd50af6687520f51b311bb  go1.25.8.linux-386.tar.gz\n-sha256  ceb5e041bbc3893846bd1614d76cb4681c91dadee579426cf21a63f2d7e03be6  go1.25.8.linux-amd64.tar.gz\n-sha256  7d137f59f66bb93f40a6b2b11e713adc2a9d0c8d9ae581718e3fad19e5295dc7  go1.25.8.linux-arm64.tar.gz\n-sha256  cda7e553fa9f6d39e48ed9061bd3da47f6a30b398179d1b2a2f50d9853cafcae  go1.25.8.linux-armv6l.tar.gz\n-sha256  28ed144a945e4d7188c93f8d85fb772a98ed18f8f9f8d3a650696b739f8cc57c  go1.25.8.linux-ppc64le.tar.gz\n-sha256  5496dec036f044ba9833db5d1748b6335a679b61f95ac448bdc356a8a7cbcb10  go1.25.8.linux-s390x.tar.gz\n+sha256  0ec9ef8ebcea097aac37decae9f09a7218b451cd96be7d6ed513d8e4bcf909cf  go1.25.9.src.tar.gz\n+sha256  1e14a73bc2b19e370e0d4c57ba87aabfe8aef1e435e14d246742d48a13254f36  go1.25.9.linux-386.tar.gz\n+sha256  00859d7bd6defe8bf84d9db9e57b9a4467b2887c18cd93ae7460e713db774bc1  go1.25.9.linux-amd64.tar.gz\n+sha256  ec342e7389b7f489564ed5463c63b16cf8040023dabc7861256677165a8c0e2b  go1.25.9.linux-arm64.tar.gz\n+sha256  7d4f0d266d871301e08ef4ac31c56e66048688893b2848392e5c600276351ee8  go1.25.9.linux-armv6l.tar.gz\n+sha256  b0c41c7da1fc8d39020d65296a0dc54167afd9f76d67064e22c31ce3d839a739  go1.25.9.linux-ppc64le.tar.gz\n+sha256  0cf55136ac7eaccfc36d849054f849510ea289c2d959ffbed7b3866b4f484d17  go1.25.9.linux-s390x.tar.gz\n sha256  911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad  LICENSE"
+    },
+    {
+      "sha": "d95ffc630d0f504cbe60c909f9043179cd8ebfa8",
+      "filename": "package/go/go.mk",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/home-assistant/buildroot/blob/17514879541d1390cd5ed05da4ab88a2f5892221/package%2Fgo%2Fgo.mk",
+      "raw_url": "https://github.com/home-assistant/buildroot/raw/17514879541d1390cd5ed05da4ab88a2f5892221/package%2Fgo%2Fgo.mk",
+      "contents_url": "https://api.github.com/repos/home-assistant/buildroot/contents/package%2Fgo%2Fgo.mk?ref=17514879541d1390cd5ed05da4ab88a2f5892221",
+      "patch": "@@ -4,7 +4,7 @@\n #\n ################################################################################\n \n-GO_VERSION = 1.25.8\n+GO_VERSION = 1.25.9\n \n HOST_GO_GOPATH = $(HOST_DIR)/share/go-path\n HOST_GO_HOST_CACHE = $(HOST_DIR)/share/host-go-cache"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "17514879541d1390cd5ed05da4ab88a2f5892221",
+      "message": "package/go: security bump to version 1.25.9\n\nRelease notes: https://go.dev/doc/devel/release#go1.25.0\n\nThis release fixes the following vulnerabilities:\n* CVE-2026-32282: os: Root.Chmod can follow symlinks out of the root\n  on Linux\n* CVE-2026-32289: html/template: JS template literal context\n  incorrectly tracked\n* CVE-2026-27144: cmd/compile: no-op interface conversion bypasses\n  overlap checking\n* CVE-2026-27143: cmd/compile: possible memory corruption after bound\n  check elimination\n* CVE-2026-32288: archive/tar: unbounded allocation when parsing old\n  format GNU sparse map\n* CVE-2026-32283: crypto/tls: multiple key update handshake messages\n  can cause connection to deadlock\n* CVE-2026-27140: cmd/go: trust layer bypass when using cgo and SWIG\n* CVE-2026-32280: crypto/x509: unexpected work during chain building\n* CVE-2026-32281: crypto/x509: inefficient policy validation\n\nGo 1.25.9 also includes bug fixes to the go command, the compiler,\nand the runtime.\n\nFor more details, see the announcement:\nhttps://groups.google.com/g/golang-announce/c/0uYbvbPZRWU\n\nSigned-off-by: Jan Čermák <sairon@sairon.cz>",
+      "parent_shas": [
+        "c0e24ce54b237212dd56408f94620a03d3bfa2ce"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__home-assistant__buildroot__pr122.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\home-assistant__buildroot__pr122__cpp_python__home-assistant__buildroot__pr122\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\home-assistant__buildroot__pr122__cpp_python__home-assistant__buildroot__pr122\\rn"
+  }
+}

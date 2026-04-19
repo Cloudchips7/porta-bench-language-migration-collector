@@ -1,0 +1,83 @@
+{
+  "instance_id": "cpp_python__rpm-software-management__dnf5__pr2673",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "rpm-software-management/dnf5",
+  "pr_number": 2673,
+  "pr_url": "https://github.com/rpm-software-management/dnf5/pull/2673",
+  "repo": {
+    "full_name": "rpm-software-management/dnf5",
+    "clone_url": "https://github.com/rpm-software-management/dnf5.git",
+    "default_branch": "main",
+    "created_at": "2022-07-27T09:30:41Z",
+    "stars": 424,
+    "license": "NOASSERTION",
+    "size_kb": 15974
+  },
+  "pull_request": {
+    "id": 3484691715,
+    "title": "fix(python_plugins_loader): suppress -Wconversion for SWIG-generated code",
+    "body": "The SWIG-generated swigpyrun.h contains an implicit size_t to int narrowing in SWIG_Hash():\r\n```c\r\n  rem -= sizeof(unsigned int);\r\n```\r\nThis triggers -Werror=conversion with GCC 16 (not Clang). The bug is fixed in SWIG master (https://github.com/swig/swig/pull/3287), but unfortunately, not in any released SWIG version at the time of writing (see\r\nhttps://github.com/swig/swig/pull/3287/changes/296fe5e4325795e8fea933341c20b73566cffc87, 4.4.1 narrowly missed it).\r\n\r\nThis warning was previously masked by a leaked -Wconversion diagnostic suppression in fmt < 12 (https://github.com/fmtlib/fmt/pull/4588). fmt 12 properly scoped the suppression, exposing this pre-existing SWIG issue.\r\n\r\nAdd -Wno-conversion to the existing warning suppression list for the python_plugins_loader target, consistent with the existing approach of suppressing warnings in SWIG-generated code that we don't control.\r\n\r\nWe can revert this change once the downstream packaging picks up the SWIG fix.",
+    "created_at": "2026-04-03T01:38:38Z",
+    "merged_at": "2026-04-05T05:54:38Z",
+    "base_sha": "93886bef5dccd06d4a4e48dc671e11c3c275d226",
+    "head_sha": "29ad4aa5f029e2b1a4a28f633d04aab3fe7585cb",
+    "merge_commit_sha": "5122f837f8d6e14971b1caac15a86990f2af26bf",
+    "labels": [
+      "downstream"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "93886bef5dccd06d4a4e48dc671e11c3c275d226",
+  "final_sha": "29ad4aa5f029e2b1a4a28f633d04aab3fe7585cb",
+  "changed_files": [
+    {
+      "sha": "6275d4fb92deb8427f2a3056478a5e1a2e2bce24",
+      "filename": "libdnf5-plugins/python_plugins_loader/CMakeLists.txt",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/rpm-software-management/dnf5/blob/29ad4aa5f029e2b1a4a28f633d04aab3fe7585cb/libdnf5-plugins%2Fpython_plugins_loader%2FCMakeLists.txt",
+      "raw_url": "https://github.com/rpm-software-management/dnf5/raw/29ad4aa5f029e2b1a4a28f633d04aab3fe7585cb/libdnf5-plugins%2Fpython_plugins_loader%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/rpm-software-management/dnf5/contents/libdnf5-plugins%2Fpython_plugins_loader%2FCMakeLists.txt?ref=29ad4aa5f029e2b1a4a28f633d04aab3fe7585cb",
+      "patch": "@@ -28,9 +28,9 @@ add_library(python_plugins_loader MODULE python_plugins_loader.cpp)\n add_dependencies(python_plugins_loader swigpyrun-header)\n # Include directory with the gereated swigpyrun.h header\n target_include_directories(python_plugins_loader PRIVATE ${CMAKE_CURRENT_BINARY_DIR})\n-# This is need because the generated swigpyrun.h contains warnings\n+# This is needed because the generated swigpyrun.h contains warnings\n # (which get treated as errors)\n-target_compile_options(python_plugins_loader PRIVATE -Wno-sign-conversion -Wno-missing-field-initializers)\n+target_compile_options(python_plugins_loader PRIVATE -Wno-sign-conversion -Wno-missing-field-initializers -Wno-conversion)\n \n # disable the 'lib' prefix in order to create python_plugins_loader.so\n set_target_properties(python_plugins_loader PROPERTIES PREFIX \"\")"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "29ad4aa5f029e2b1a4a28f633d04aab3fe7585cb",
+      "message": "fix(python_plugins_loader): suppress -Wconversion for SWIG-generated code\n\nThe SWIG-generated swigpyrun.h contains an implicit size_t to int\nnarrowing in SWIG_Hash():\n\n  rem -= sizeof(unsigned int);\n\nThis triggers -Werror=conversion with GCC 16 (not Clang). The bug is\nfixed in SWIG master (https://github.com/swig/swig/pull/3287), but\nunfortunately, not in any released SWIG version at the time of writing\n(see\nhttps://github.com/swig/swig/pull/3287/changes/296fe5e4325795e8fea933341c20b73566cffc87,\n4.4.1 narrowly missed it).\n\nThis warning was previously masked by a leaked -Wconversion diagnostic\nsuppression in fmt < 12 (https://github.com/fmtlib/fmt/pull/4588).\nfmt 12 properly scoped the suppression, exposing this pre-existing\nSWIG issue.\n\nAdd -Wno-conversion to the existing warning suppression list for\nthe python_plugins_loader target, consistent with the existing\napproach of suppressing warnings in SWIG-generated code that we\ndon't control.\n\nWe can revert this change once the downstream packaging picks up the\nSWIG fix.\n\nSigned-off-by: Kefu Chai <tchaikov@gmail.com>",
+      "parent_shas": [
+        "93886bef5dccd06d4a4e48dc671e11c3c275d226"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "ci_only",
+      "dependency_only",
+      "doc_only"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__rpm-software-management__dnf5__pr2673.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\rpm-software-management__dnf5__pr2673__cpp_python__rpm-software-management__dnf5__pr2673\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\rpm-software-management__dnf5__pr2673__cpp_python__rpm-software-management__dnf5__pr2673\\rn"
+  }
+}

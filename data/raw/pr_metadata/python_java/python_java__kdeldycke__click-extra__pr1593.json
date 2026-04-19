@@ -1,0 +1,118 @@
+{
+  "instance_id": "python_java__kdeldycke__click-extra__pr1593",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "kdeldycke/click-extra",
+  "pr_number": 1593,
+  "pr_url": "https://github.com/kdeldycke/click-extra/pull/1593",
+  "repo": {
+    "full_name": "kdeldycke/click-extra",
+    "clone_url": "https://github.com/kdeldycke/click-extra.git",
+    "default_branch": "main",
+    "created_at": "2021-10-18T08:02:27Z",
+    "stars": 114,
+    "license": "GPL-2.0",
+    "size_kb": 10592
+  },
+  "pull_request": {
+    "id": 3470325177,
+    "title": "Format Python",
+    "body": "### Description\n\nAuto-formats Python files with [autopep8](https://github.com/hhatto/autopep8) (comment wrapping) and [Ruff](https://docs.astral.sh/ruff/) (linting and formatting). When no `[tool.ruff]` section or `ruff.toml` is present, [repomatic's bundled defaults](https://github.com/kdeldycke/repomatic/blob/main/repomatic/data/ruff.toml) are applied at runtime. See the [`format-python` job documentation](https://github.com/kdeldycke/repomatic?tab=readme-ov-file#githubworkflowsautofixyaml-jobs) for details.\n\n> [!TIP]\n> Customize formatting and linting rules via [`[tool.ruff]`](https://docs.astral.sh/ruff/configuration/) and [`[tool.autopep8]`](https://github.com/hhatto/autopep8#configuration) in your `pyproject.toml`.\n\n\n> [!IMPORTANT]\n> If you suspect the PR content is outdated, **[click `Run workflow`](https://github.com/kdeldycke/click-extra/actions/workflows/autofix.yaml)** to refresh it manually before merging.\n\n\n<details><summary><code>Workflow metadata</code></summary>\n\n| Field | Value |\n| :-- | :-- |\n| **Trigger** | `push` |\n| **Actor** | @kdeldycke |\n| **Ref** | `main` |\n| **Commit** | [`d548fe09`](https://github.com/kdeldycke/click-extra/commit/d548fe09d903dc1e483602d7588350d64c10bdd6) |\n| **Job** | [`format-python`](https://github.com/kdeldycke/click-extra/blob/d548fe09d903dc1e483602d7588350d64c10bdd6/.github/workflows/autofix.yaml) |\n| **Workflow** | [`autofix.yaml`](https://github.com/kdeldycke/click-extra/blob/d548fe09d903dc1e483602d7588350d64c10bdd6/.github/workflows/autofix.yaml) |\n| **Run** | [#2494.1](https://github.com/kdeldycke/click-extra/actions/runs/23785188306) |\n\n</details>\n\n---\n\n🏭 Generated with [repomatic](https://github.com/kdeldycke/repomatic)",
+    "created_at": "2026-03-31T06:46:06Z",
+    "merged_at": "2026-03-31T07:17:37Z",
+    "base_sha": "d548fe09d903dc1e483602d7588350d64c10bdd6",
+    "head_sha": "7a070a2738658950e2a4290eb93b756857164991",
+    "merge_commit_sha": "6764f282d91d04adfb5df333ecaff413a399124e",
+    "labels": [
+      "🤖 ci"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "d548fe09d903dc1e483602d7588350d64c10bdd6",
+  "final_sha": "7a070a2738658950e2a4290eb93b756857164991",
+  "changed_files": [
+    {
+      "sha": "d8124d8d0b8847a72eabbc9b71e4bc7a18da12c0",
+      "filename": "click_extra/config.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/7a070a2738658950e2a4290eb93b756857164991/click_extra%2Fconfig.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/7a070a2738658950e2a4290eb93b756857164991/click_extra%2Fconfig.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/click_extra%2Fconfig.py?ref=7a070a2738658950e2a4290eb93b756857164991",
+      "patch": "@@ -1171,9 +1171,7 @@ def _search_pyproject_cwd(\n \n         for directory in (cwd, *cwd.parents):\n             if self._should_stop_walking(directory, stop_at):\n-                logger.debug(\n-                    f\"pyproject.toml CWD search stopped at {directory}.\"\n-                )\n+                logger.debug(f\"pyproject.toml CWD search stopped at {directory}.\")\n                 break\n \n             candidate = directory / \"pyproject.toml\"\n@@ -1377,7 +1375,8 @@ def _from_dataclass(raw: dict[str, Any]) -> Any:\n                             f\"Valid options: {', '.join(sorted(known))}\"\n                         )\n                         raise ValueError(msg)\n-                return schema(**{k: v for k, v in flattened.items() if k in known})  # type: ignore[call-arg]\n+                # type: ignore[call-arg]\n+                return schema(**{k: v for k, v in flattened.items() if k in known})\n \n             return _from_dataclass\n "
+    },
+    {
+      "sha": "495d1c97259bac8147208d987633bbef034cc1b3",
+      "filename": "docs/conf.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/7a070a2738658950e2a4290eb93b756857164991/docs%2Fconf.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/7a070a2738658950e2a4290eb93b756857164991/docs%2Fconf.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/docs%2Fconf.py?ref=7a070a2738658950e2a4290eb93b756857164991",
+      "patch": "@@ -4,7 +4,6 @@\n \n import tomllib  # type: ignore[import-not-found]  # stdlib >=3.11; docs require >=3.14.\n \n-\n project_path = Path(__file__).parent.parent.resolve()\n \n # Fetch general information about the project from pyproject.toml."
+    },
+    {
+      "sha": "ec08eb07355a7bb452eecd91e02c42472db9fad8",
+      "filename": "docs/config.md",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/7a070a2738658950e2a4290eb93b756857164991/docs%2Fconfig.md",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/7a070a2738658950e2a4290eb93b756857164991/docs%2Fconfig.md",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/docs%2Fconfig.md?ref=7a070a2738658950e2a4290eb93b756857164991",
+      "patch": "@@ -471,11 +471,13 @@ from dataclasses import dataclass\n from click_extra import group, pass_context\n from click_extra.config import get_tool_config\n \n+\n @dataclass\n class AppConfig:\n     setup_guide: bool = True\n     sync_interval: int = 60\n \n+\n @group(config_schema=AppConfig, schema_strict=True, included_params=())\n @pass_context\n def my_app(ctx):\n@@ -1497,8 +1499,7 @@ By default, configuration keys that don't match any dataclass field are silently\n \n ```python\n @group(config_schema=AppConfig, schema_strict=True)\n-def my_app():\n-    ...\n+def my_app(): ...\n ```\n \n Or directly on the config option:"
+    },
+    {
+      "sha": "6e7e1bd268ec506e8eeacffe9bb9728094cb78b1",
+      "filename": "tests/test_config.py",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 6,
+      "changes": 24,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/7a070a2738658950e2a4290eb93b756857164991/tests%2Ftest_config.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/7a070a2738658950e2a4290eb93b756857164991/tests%2Ftest_config.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/tests%2Ftest_config.py?ref=7a070a2738658950e2a4290eb93b756857164991",
+      "patch": "@@ -3890,7 +3890,11 @@ def subcommand():\n     )\n \n     result = invoke(\n-        strict_ok_cli, \"--config\", str(conf_path), \"subcommand\", color=False,\n+        strict_ok_cli,\n+        \"--config\",\n+        str(conf_path),\n+        \"subcommand\",\n+        color=False,\n     )\n     assert result.exit_code == 0\n     assert \"known_field is 'good'\" in result.stdout\n@@ -3926,7 +3930,11 @@ def subcommand():\n     )\n \n     result = invoke(\n-        strict_nested_cli, \"--config\", str(conf_path), \"subcommand\", color=False,\n+        strict_nested_cli,\n+        \"--config\",\n+        str(conf_path),\n+        \"subcommand\",\n+        color=False,\n     )\n     assert result.exit_code != 0\n     assert result.exception\n@@ -4014,7 +4022,9 @@ def subcommand():\n     assert \"value is 'from_parent'\" in result.stdout\n \n \n-def test_pyproject_toml_explicit_config_skips_cwd(invoke, create_config, tmp_path, monkeypatch):\n+def test_pyproject_toml_explicit_config_skips_cwd(\n+    invoke, create_config, tmp_path, monkeypatch\n+):\n     \"\"\"Explicit --config skips CWD pyproject.toml discovery.\"\"\"\n     from dataclasses import dataclass\n \n@@ -4057,10 +4067,12 @@ def subcommand():\n     )\n \n     result = invoke(\n-        explicit_cli, \"--config\", str(conf_path), \"subcommand\", color=False,\n+        explicit_cli,\n+        \"--config\",\n+        str(conf_path),\n+        \"subcommand\",\n+        color=False,\n     )\n     assert result.exit_code == 0\n     # Explicit --config wins over CWD pyproject.toml.\n     assert \"value is 'from_explicit'\" in result.stdout\n-\n-"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "7a070a2738658950e2a4290eb93b756857164991",
+      "message": "Format Python",
+      "parent_shas": [
+        "d548fe09d903dc1e483602d7588350d64c10bdd6"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__kdeldycke__click-extra__pr1593.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__click-extra__pr1593__python_java__kdeldycke__click-extra__pr1593\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__click-extra__pr1593__python_java__kdeldycke__click-extra__pr1593\\rn"
+  }
+}

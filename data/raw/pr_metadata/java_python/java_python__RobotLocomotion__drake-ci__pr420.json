@@ -1,0 +1,100 @@
+{
+  "instance_id": "java_python__RobotLocomotion__drake-ci__pr420",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "RobotLocomotion/drake-ci",
+  "pr_number": 420,
+  "pr_url": "https://github.com/RobotLocomotion/drake-ci/pull/420",
+  "repo": {
+    "full_name": "RobotLocomotion/drake-ci",
+    "clone_url": "https://github.com/RobotLocomotion/drake-ci.git",
+    "default_branch": "main",
+    "created_at": "2016-03-31T10:33:51Z",
+    "stars": 6,
+    "license": "NOASSERTION",
+    "size_kb": 1459
+  },
+  "pull_request": {
+    "id": 3523071336,
+    "title": "Remove JAVA_HOME workaround",
+    "body": "\n\n<!-- Reviewable:start -->\nThis change is [<img src=\"https://reviewable.io/review_button.svg\" height=\"34\" align=\"absmiddle\" alt=\"Reviewable\"/>](https://reviewable.io/reviews/RobotLocomotion/drake-ci/420)\n<!-- Reviewable:end -->\n",
+    "created_at": "2026-04-13T13:26:46Z",
+    "merged_at": "2026-04-13T22:22:05Z",
+    "base_sha": "5a5d0cc7a798ab56c96163942b20751e00ff70d2",
+    "head_sha": "3bde87fd292aab88791d27e48299c3aa72678ca8",
+    "merge_commit_sha": "f7d64af84d5e551e5e9301b332e87483843763c3",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "5a5d0cc7a798ab56c96163942b20751e00ff70d2",
+  "final_sha": "3bde87fd292aab88791d27e48299c3aa72678ca8",
+  "changed_files": [
+    {
+      "sha": "665a496368fccfda54c35cbfe7842938e90a7f4d",
+      "filename": "driver/configurations/bazel.cmake",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 4,
+      "changes": 4,
+      "blob_url": "https://github.com/RobotLocomotion/drake-ci/blob/3bde87fd292aab88791d27e48299c3aa72678ca8/driver%2Fconfigurations%2Fbazel.cmake",
+      "raw_url": "https://github.com/RobotLocomotion/drake-ci/raw/3bde87fd292aab88791d27e48299c3aa72678ca8/driver%2Fconfigurations%2Fbazel.cmake",
+      "contents_url": "https://api.github.com/repos/RobotLocomotion/drake-ci/contents/driver%2Fconfigurations%2Fbazel.cmake?ref=3bde87fd292aab88791d27e48299c3aa72678ca8",
+      "patch": "@@ -32,10 +32,6 @@\n # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n \n-# Jenkins passes down an incorrect value of JAVA_HOME from controller to agent\n-# for some inexplicable reason.\n-unset(ENV{JAVA_HOME})\n-\n # Set build locations and ensure there are no leftover artifacts.\n set(CTEST_SOURCE_DIRECTORY \"${DASHBOARD_SOURCE_DIRECTORY}\")\n set(CTEST_BINARY_DIRECTORY \"${DASHBOARD_WORKSPACE}/_bazel_$ENV{USER}\")"
+    },
+    {
+      "sha": "65ee004c43ff3cd6aff093a90cdda942fc4ed107",
+      "filename": "driver/configurations/cmake.cmake",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 4,
+      "changes": 4,
+      "blob_url": "https://github.com/RobotLocomotion/drake-ci/blob/3bde87fd292aab88791d27e48299c3aa72678ca8/driver%2Fconfigurations%2Fcmake.cmake",
+      "raw_url": "https://github.com/RobotLocomotion/drake-ci/raw/3bde87fd292aab88791d27e48299c3aa72678ca8/driver%2Fconfigurations%2Fcmake.cmake",
+      "contents_url": "https://api.github.com/repos/RobotLocomotion/drake-ci/contents/driver%2Fconfigurations%2Fcmake.cmake?ref=3bde87fd292aab88791d27e48299c3aa72678ca8",
+      "patch": "@@ -48,10 +48,6 @@ if (PACKAGE)\n   set(DASHBOARD_SUBMIT OFF)\n endif()\n \n-# Jenkins passes down an incorrect value of JAVA_HOME from controller to agent\n-# for some inexplicable reason.\n-unset(ENV{JAVA_HOME})\n-\n set(DASHBOARD_CXX_FLAGS)\n if(DEFINED ENV{TERM})\n   if(COMPILER STREQUAL \"clang\")"
+    },
+    {
+      "sha": "814f059f3ef09c3eca2b0617777325e125ff0c4c",
+      "filename": "driver/configurations/wheel.cmake",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 4,
+      "changes": 4,
+      "blob_url": "https://github.com/RobotLocomotion/drake-ci/blob/3bde87fd292aab88791d27e48299c3aa72678ca8/driver%2Fconfigurations%2Fwheel.cmake",
+      "raw_url": "https://github.com/RobotLocomotion/drake-ci/raw/3bde87fd292aab88791d27e48299c3aa72678ca8/driver%2Fconfigurations%2Fwheel.cmake",
+      "contents_url": "https://api.github.com/repos/RobotLocomotion/drake-ci/contents/driver%2Fconfigurations%2Fwheel.cmake?ref=3bde87fd292aab88791d27e48299c3aa72678ca8",
+      "patch": "@@ -32,10 +32,6 @@\n # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n \n-# Jenkins passes down an incorrect value of JAVA_HOME from controller to agent\n-# for some inexplicable reason.\n-unset(ENV{JAVA_HOME})\n-\n # Set build locations and ensure there are no leftover artifacts.\n set(CTEST_SOURCE_DIRECTORY \"${DASHBOARD_SOURCE_DIRECTORY}\")\n set(CTEST_BINARY_DIRECTORY \"${DASHBOARD_WORKSPACE}/_wheel_$ENV{USER}\")"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "3bde87fd292aab88791d27e48299c3aa72678ca8",
+      "message": "Remove JAVA_HOME workaround",
+      "parent_shas": [
+        "5a5d0cc7a798ab56c96163942b20751e00ff70d2"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__RobotLocomotion__drake-ci__pr420.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\RobotLocomotion__drake-ci__pr420__java_python__RobotLocomotion__drake-ci__pr420\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\RobotLocomotion__drake-ci__pr420__java_python__RobotLocomotion__drake-ci__pr420\\rn"
+  }
+}

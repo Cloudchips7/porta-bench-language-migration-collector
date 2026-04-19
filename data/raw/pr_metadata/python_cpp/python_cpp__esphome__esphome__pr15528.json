@@ -1,0 +1,94 @@
+{
+  "instance_id": "python_cpp__esphome__esphome__pr15528",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "esphome/esphome",
+  "pr_number": 15528,
+  "pr_url": "https://github.com/esphome/esphome/pull/15528",
+  "repo": {
+    "full_name": "esphome/esphome",
+    "clone_url": "https://github.com/esphome/esphome.git",
+    "default_branch": "dev",
+    "created_at": "2018-04-06T23:23:25Z",
+    "stars": 10906,
+    "license": "NOASSERTION",
+    "size_kb": 79173
+  },
+  "pull_request": {
+    "id": 3498350920,
+    "title": "[mcp4461] Fix terminal disable passing string where C++ expects char",
+    "body": "# What does this implement/fix?\n\nFix compile error when disabling MCP4461 terminals (`terminal_a: false`, `terminal_b: false`, or `terminal_w: false`).\n\nThe Python codegen passed string literals `\"a\"`, `\"b\"`, `\"w\"` to `initialize_terminal_disabled()` which expects a `char` parameter. ESPHome's codegen converts Python strings to C++ string literals (`\"a\"` = `const char*`), but the C++ function signature is `void initialize_terminal_disabled(Mcp4461WiperIdx wiper, char terminal)`.\n\n**Generated C++ before (broken):**\n```cpp\nparent->initialize_terminal_disabled(wiper, \"a\");  // const char* → char: compile error\n```\n\n**Generated C++ after (fixed):**\n```cpp\nparent->initialize_terminal_disabled(wiper, 97);  // int → char: implicit conversion\n```\n\nFix uses `ord(\"a\")` to pass the ASCII value as an integer, which C++ implicitly converts to `char`.\n\nThis bug was never caught in CI because no test set any terminal to `false` — the defaults are all `true`, so the code path was never exercised. Added test coverage for all three terminals disabled.\n\n## Types of changes\n\n- [x] Bugfix (non-breaking change which fixes an issue)\n- [ ] New feature (non-breaking change which adds functionality)\n- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected) — [policy](https://developers.esphome.io/contributing/code/#what-constitutes-a-c-breaking-change)\n- [ ] Developer breaking change (an API change that could break external components) — [policy](https://developers.esphome.io/contributing/code/#what-is-considered-public-c-api)\n- [ ] Undocumented C++ API change (removal or change of undocumented public methods that lambda users may depend on) — [policy](https://developers.esphome.io/contributing/code/#c-user-expectations)\n- [ ] Code quality improvements to existing code or addition of tests\n- [ ] Other\n\n**Related issue or feature (if applicable):**\n\n- N/A\n\n**Pull request in [esphome-docs](https://github.com/esphome/esphome-docs) with documentation (if applicable):**\n\n- N/A\n\n## Test Environment\n\n- [x] ESP32\n- [x] ESP32 IDF\n- [ ] ESP8266\n- [ ] RP2040/RP2350\n- [ ] BK72xx\n- [ ] RTL87xx\n- [ ] LN882x\n- [ ] nRF52840\n\n## Example entry for `config.yaml`:\n\n```yaml\noutput:\n  - platform: mcp4461\n    id: my_digipot\n    mcp4461_id: mcp4461_1\n    channel: A\n    terminal_a: false  # this caused a compile error before the fix\n```\n\n## Checklist:\n  - [x] The code change is tested and works locally.\n  - [x] Tests have been added to verify that the new code works (under `tests/` folder).\n\nIf user exposed functionality or configuration variables are added/changed:\n  - [ ] Documentation added/updated in [esphome-docs](https://github.com/esphome/esphome-docs).",
+    "created_at": "2026-04-07T14:14:48Z",
+    "merged_at": "2026-04-07T21:07:29Z",
+    "base_sha": "7ab7538220372b85deb233dc40f198b9940d744c",
+    "head_sha": "c4fdd1b9aa74278087515d455d4c73f3b58c157c",
+    "merge_commit_sha": "17ec5389d88e9562eee2fcc80acdbe44b8e73cf7",
+    "labels": [
+      "has-tests",
+      "small-pr",
+      "bugfix",
+      "component: mcp4461"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "7ab7538220372b85deb233dc40f198b9940d744c",
+  "final_sha": "c4fdd1b9aa74278087515d455d4c73f3b58c157c",
+  "changed_files": [
+    {
+      "sha": "0d145d81d30e66bca4a4e3d8b6e16ded83247563",
+      "filename": "esphome/components/mcp4461/output/__init__.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/esphome/esphome/blob/c4fdd1b9aa74278087515d455d4c73f3b58c157c/esphome%2Fcomponents%2Fmcp4461%2Foutput%2F__init__.py",
+      "raw_url": "https://github.com/esphome/esphome/raw/c4fdd1b9aa74278087515d455d4c73f3b58c157c/esphome%2Fcomponents%2Fmcp4461%2Foutput%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/esphome/esphome/contents/esphome%2Fcomponents%2Fmcp4461%2Foutput%2F__init__.py?ref=c4fdd1b9aa74278087515d455d4c73f3b58c157c",
+      "patch": "@@ -48,11 +48,11 @@ async def to_code(config):\n         config[CONF_CHANNEL],\n     )\n     if not config[CONF_TERMINAL_A]:\n-        cg.add(parent.initialize_terminal_disabled(config[CONF_CHANNEL], \"a\"))\n+        cg.add(parent.initialize_terminal_disabled(config[CONF_CHANNEL], ord(\"a\")))\n     if not config[CONF_TERMINAL_B]:\n-        cg.add(parent.initialize_terminal_disabled(config[CONF_CHANNEL], \"b\"))\n+        cg.add(parent.initialize_terminal_disabled(config[CONF_CHANNEL], ord(\"b\")))\n     if not config[CONF_TERMINAL_W]:\n-        cg.add(parent.initialize_terminal_disabled(config[CONF_CHANNEL], \"w\"))\n+        cg.add(parent.initialize_terminal_disabled(config[CONF_CHANNEL], ord(\"w\")))\n     if CONF_INITIAL_VALUE in config:\n         cg.add(\n             parent.set_initial_value(config[CONF_CHANNEL], config[CONF_INITIAL_VALUE])"
+    },
+    {
+      "sha": "71e2528aa499b56a01adae44cebc023839b37467",
+      "filename": "tests/components/mcp4461/common.yaml",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/esphome/esphome/blob/c4fdd1b9aa74278087515d455d4c73f3b58c157c/tests%2Fcomponents%2Fmcp4461%2Fcommon.yaml",
+      "raw_url": "https://github.com/esphome/esphome/raw/c4fdd1b9aa74278087515d455d4c73f3b58c157c/tests%2Fcomponents%2Fmcp4461%2Fcommon.yaml",
+      "contents_url": "https://api.github.com/repos/esphome/esphome/contents/tests%2Fcomponents%2Fmcp4461%2Fcommon.yaml?ref=c4fdd1b9aa74278087515d455d4c73f3b58c157c",
+      "patch": "@@ -22,3 +22,11 @@ output:\n     id: digipot_wiper_4\n     mcp4461_id: mcp4461_digipot_01\n     channel: D\n+\n+  - platform: mcp4461\n+    id: digipot_wiper_5\n+    mcp4461_id: mcp4461_digipot_01\n+    channel: A\n+    terminal_a: false\n+    terminal_b: false\n+    terminal_w: false"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "c4fdd1b9aa74278087515d455d4c73f3b58c157c",
+      "message": "[mcp4461] Fix terminal disable passing string where C++ expects char\n\nPython strings \"a\", \"b\", \"w\" were passed to\ninitialize_terminal_disabled() which expects char. ESPHome's codegen\nconverts Python strings to C++ string literals (\"a\" = const char*),\ncausing a compile error when any terminal is disabled.\n\nFix by passing ord(\"a\") etc. which generates integer literals (97,\n98, 119) that C++ implicitly converts to char.\n\nAdd test coverage for terminal_a/b/w: false.",
+      "parent_shas": [
+        "7ab7538220372b85deb233dc40f198b9940d744c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__esphome__esphome__pr15528.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\esphome__esphome__pr15528__python_cpp__esphome__esphome__pr15528\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\esphome__esphome__pr15528__python_cpp__esphome__esphome__pr15528\\rn"
+  }
+}

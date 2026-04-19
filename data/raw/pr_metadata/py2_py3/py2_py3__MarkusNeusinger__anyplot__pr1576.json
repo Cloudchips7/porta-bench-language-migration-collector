@@ -1,0 +1,117 @@
+{
+  "instance_id": "py2_py3__MarkusNeusinger__anyplot__pr1576",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "MarkusNeusinger/anyplot",
+  "pr_number": 1576,
+  "pr_url": "https://github.com/MarkusNeusinger/anyplot/pull/1576",
+  "repo": {
+    "full_name": "MarkusNeusinger/anyplot",
+    "clone_url": "https://github.com/MarkusNeusinger/anyplot.git",
+    "default_branch": "main",
+    "created_at": "2025-11-18T18:15:06Z",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 33528
+  },
+  "pull_request": {
+    "id": 3126370149,
+    "title": "feat(pygal): implement lollipop-basic",
+    "body": "## Implementation: `lollipop-basic` - pygal\n\nImplements the **pygal** version of `lollipop-basic`.\n\n**File:** `plots/lollipop-basic/implementations/pygal.py`\n\n---\n:robot: *[impl-generate workflow](https://github.com/MarkusNeusinger/pyplots/actions/runs/20464354570)*",
+    "created_at": "2025-12-23T15:14:13Z",
+    "merged_at": "2025-12-23T15:25:11Z",
+    "base_sha": "718ac3ce57fe0cbec6a48966f37ab8721cc29730",
+    "head_sha": "5260610cd24b58cd961ee8184046ce70f677e548",
+    "merge_commit_sha": "ee63b342c9cecb11e8ef289f3b1b0c813fb32eb4",
+    "labels": [
+      "ai-approved",
+      "quality:91"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "97a2a9fa9833d7d04b85934003755cf8ddb0a9b6",
+  "final_sha": "5260610cd24b58cd961ee8184046ce70f677e548",
+  "changed_files": [
+    {
+      "sha": "ae9a2ccc28462501dcdbe3353ca554452daf0406",
+      "filename": "plots/lollipop-basic/implementations/pygal.py",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 18,
+      "changes": 35,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/5260610cd24b58cd961ee8184046ce70f677e548/plots%2Flollipop-basic%2Fimplementations%2Fpygal.py",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/5260610cd24b58cd961ee8184046ce70f677e548/plots%2Flollipop-basic%2Fimplementations%2Fpygal.py",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Flollipop-basic%2Fimplementations%2Fpygal.py?ref=5260610cd24b58cd961ee8184046ce70f677e548",
+      "patch": "@@ -1,65 +1,64 @@\n \"\"\" pyplots.ai\n lollipop-basic: Basic Lollipop Chart\n Library: pygal 3.1.0 | Python 3.13.11\n-Quality: 90/100 | Created: 2025-12-15\n+Quality: 91/100 | Created: 2025-12-23\n \"\"\"\n \n import pygal\n from pygal.style import Style\n \n \n-# Data - Product sales by category (sorted by value)\n+# Data - Product sales by category (sorted by value for better readability)\n categories = [\"Smartphones\", \"Laptops\", \"Tablets\", \"Headphones\", \"Smartwatches\", \"Cameras\", \"Speakers\", \"Gaming\"]\n values = [892, 654, 478, 312, 287, 198, 156, 134]\n \n-# Sort by value descending for better readability\n+# Sort by value descending (already sorted in this example)\n sorted_data = sorted(zip(categories, values, strict=True), key=lambda x: x[1], reverse=True)\n categories = [item[0] for item in sorted_data]\n values = [item[1] for item in sorted_data]\n \n-# Custom style for 4800x2700 canvas\n-# Use tuple with same color repeated for all 8 series to ensure consistent color\n+# Custom style for 4800x2700 canvas with visible stroke\n custom_style = Style(\n     background=\"white\",\n     plot_background=\"white\",\n     foreground=\"#333333\",\n     foreground_strong=\"#333333\",\n     foreground_subtle=\"#666666\",\n-    colors=(\"#306998\",) * 8,  # Python Blue for all series\n+    colors=(\"#306998\",) * len(categories),  # Python Blue for all series\n     title_font_size=72,\n     label_font_size=48,\n     major_label_font_size=42,\n     legend_font_size=42,\n     value_font_size=36,\n     value_label_font_size=36,\n+    stroke_width=8,  # Line width in style\n )\n \n-# Create XY chart for lollipop visualization\n-# Each lollipop is a line from (0, y) to (value, y) with a dot at the end\n+# Create horizontal lollipop chart using XY\n+# Categories on y-axis, values on x-axis (horizontal orientation)\n n = len(categories)\n chart = pygal.XY(\n     width=4800,\n     height=2700,\n     title=\"lollipop-basic · pygal · pyplots.ai\",\n     x_title=\"Sales (units)\",\n     style=custom_style,\n-    show_legend=False,  # Category names shown on y-axis\n-    dots_size=30,  # Large dots for clearly visible lollipop heads\n-    stroke_style={\"width\": 8},  # Visible stems at 4800px width\n+    show_legend=False,\n+    dots_size=24,\n+    stroke=True,  # Enable stroke/lines\n     show_y_guides=True,\n     show_x_guides=True,\n     margin=100,\n-    xrange=(0, max(values) * 1.1),  # X-axis range\n-    range=(0, n + 1),  # Y-axis range to fit all categories\n+    xrange=(0, max(values) * 1.1),\n+    range=(0.5, n + 0.5),\n     y_labels=[{\"label\": cat, \"value\": n - i} for i, cat in enumerate(categories)],\n )\n \n-# Create lollipop data - each category is a line from 0 to value\n-# Using node config to hide dot at baseline, only show dot at value end\n+# Add lollipop data - each is a line from x=0 to value\n for i, (cat, val) in enumerate(zip(categories, values, strict=True)):\n-    y_pos = n - i  # Position from top to bottom (highest value at top)\n-    # Line from baseline (x=0) to value with dot only at value end\n-    chart.add(cat, [{\"value\": (0, y_pos), \"node\": {\"r\": 0}}, {\"value\": (val, y_pos)}], dots_size=30)\n+    y_pos = n - i\n+    # Hide dot at baseline (r=0), show large dot at value end\n+    chart.add(cat, [{\"value\": (0, y_pos), \"node\": {\"r\": 0}}, {\"value\": (val, y_pos)}])\n \n # Save outputs\n chart.render_to_png(\"plot.png\")"
+    },
+    {
+      "sha": "8982919b39b5e02a9e38d5607d0725f1592f9efa",
+      "filename": "plots/lollipop-basic/metadata/pygal.yaml",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 8,
+      "changes": 23,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/5260610cd24b58cd961ee8184046ce70f677e548/plots%2Flollipop-basic%2Fmetadata%2Fpygal.yaml",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/5260610cd24b58cd961ee8184046ce70f677e548/plots%2Flollipop-basic%2Fmetadata%2Fpygal.yaml",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Flollipop-basic%2Fmetadata%2Fpygal.yaml?ref=5260610cd24b58cd961ee8184046ce70f677e548",
+      "patch": "@@ -1,17 +1,24 @@\n library: pygal\n specification_id: lollipop-basic\n-created: 2025-12-15 16:07:20+00:00\n-updated: 2025-12-15 16:07:20+00:00\n+created: '2025-12-23T15:14:09Z'\n+updated: '2025-12-23T15:20:53Z'\n generated_by: claude-opus-4-5-20251101\n-workflow_run: 20238744271\n-issue: 934\n+workflow_run: 20464354570\n+issue: 0\n python_version: 3.13.11\n library_version: 3.1.0\n preview_url: https://storage.googleapis.com/pyplots-images/plots/lollipop-basic/pygal/plot.png\n preview_thumb: https://storage.googleapis.com/pyplots-images/plots/lollipop-basic/pygal/plot_thumb.png\n preview_html: https://storage.googleapis.com/pyplots-images/plots/lollipop-basic/pygal/plot.html\n-quality_score: 90\n+quality_score: 91\n review:\n-  strengths: []\n-  weaknesses: []\n-  improvements: []\n+  strengths:\n+  - Excellent implementation of lollipop chart using pygal XY chart with creative\n+    baseline dot hiding technique\n+  - Clean horizontal orientation that handles category labels well\n+  - Proper title format and color scheme following pyplots standards\n+  - Data sorted by value for optimal readability as recommended in spec\n+  - Good canvas utilization at 4800x2700 with appropriate font scaling\n+  weaknesses:\n+  - Missing y_title axis label (could add Product Category or similar)\n+  - Font sizes in Style could be better optimized for the large canvas"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "7bb969aa0164e9655784b48c7f20420be2827f04",
+      "message": "feat(pygal): implement lollipop-basic",
+      "parent_shas": [
+        "97a2a9fa9833d7d04b85934003755cf8ddb0a9b6"
+      ]
+    },
+    {
+      "sha": "2e28ffb8ff498c13358d208ab947017e2cf4dcca",
+      "message": "chore(pygal): add metadata for lollipop-basic",
+      "parent_shas": [
+        "7bb969aa0164e9655784b48c7f20420be2827f04"
+      ]
+    },
+    {
+      "sha": "75c3ad8e71b3e98be33c6f7f29cd9bca82223587",
+      "message": "chore(pygal): update quality score 91 and review feedback for lollipop-basic",
+      "parent_shas": [
+        "2e28ffb8ff498c13358d208ab947017e2cf4dcca"
+      ]
+    },
+    {
+      "sha": "5260610cd24b58cd961ee8184046ce70f677e548",
+      "message": "Merge branch 'main' into implementation/lollipop-basic/pygal",
+      "parent_shas": [
+        "75c3ad8e71b3e98be33c6f7f29cd9bca82223587",
+        "718ac3ce57fe0cbec6a48966f37ab8721cc29730"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__MarkusNeusinger__anyplot__pr1576.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr1576__py2_py3__MarkusNeusinger__anyplot__pr1576\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr1576__py2_py3__MarkusNeusinger__anyplot__pr1576\\rn"
+  }
+}

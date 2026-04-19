@@ -1,0 +1,241 @@
+{
+  "instance_id": "python_cpp__Simple-Robotics__pinocchio__pr32",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "Simple-Robotics/pinocchio",
+  "pr_number": 32,
+  "pr_url": "https://github.com/Simple-Robotics/pinocchio/pull/32",
+  "repo": {
+    "full_name": "Simple-Robotics/pinocchio",
+    "clone_url": "https://github.com/Simple-Robotics/pinocchio.git",
+    "default_branch": "pin4",
+    "created_at": "2025-02-10T17:57:42Z",
+    "stars": 14,
+    "license": "BSD-2-Clause",
+    "size_kb": 36069
+  },
+  "pull_request": {
+    "id": 3497122624,
+    "title": "Lcaba python bindings",
+    "body": "## Description\r\nAdds Python bindings for the LCABA algo in the Pin4 branch.\r\n\r\n## Checklist\r\n\r\n- [ ] I have run `pre-commit run --all-files` or `pixi run lint`. \r\n- [x] I have performed a self-review of my own code\r\n- [x] I have commented my code where necessary\r\n- [ ] I have made corresponding changes to the doxygen documentation\r\n- [x] I have added tests that prove my fix or feature works\r\n- [x] I have updated the [CHANGELOG](https://github.com/stack-of-tasks/pinocchio/blob/devel/CHANGELOG.md) or added the \"no changelog\" label if it's a CI-related issue\r\n- [ ] I have updated the [README credits section](https://github.com/stack-of-tasks/pinocchio?tab=readme-ov-file#credits)\r\n",
+    "created_at": "2026-04-07T09:36:26Z",
+    "merged_at": "2026-04-08T07:11:57Z",
+    "base_sha": "8bc8d5750e375077e8db60ce6786aa6a7eda6793",
+    "head_sha": "6d973dc00175236c9aeeaedc6bd01f7ca368c99d",
+    "merge_commit_sha": "83732f846286700185fbed720986e1401d1bc9c6",
+    "labels": [
+      "build_all"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "8bc8d5750e375077e8db60ce6786aa6a7eda6793",
+  "final_sha": "6d973dc00175236c9aeeaedc6bd01f7ca368c99d",
+  "changed_files": [
+    {
+      "sha": "9edcb954557bb7d84a97d84981ba6bf15fa466c9",
+      "filename": "CHANGELOG.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/Simple-Robotics/pinocchio/blob/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/CHANGELOG.md",
+      "raw_url": "https://github.com/Simple-Robotics/pinocchio/raw/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/CHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/Simple-Robotics/pinocchio/contents/CHANGELOG.md?ref=6d973dc00175236c9aeeaedc6bd01f7ca368c99d",
+      "patch": "@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).\n ## [Unreleased]\n \n ### Added\n+- Added Python bindings for loop-constrained-aba.\n - Added Lie group method `tangentMap` which gives, in the form of a `nq x nv` matrix, the linear mapping that transforms a configuration variation expressed in the Lie algebra (size `nv`) into a small variation expressed in the parametric space (size `nq`). Composed with Jacobian of other methods of Pinocchio that use the Lie group structure, it allows obtaining standard Jacobians in order to, for example, insert Pinocchio derivatives into standard Euclidean differentiation pipelines.\n - Added Lie group methods `tangentMapProduct` and `tangentMapTransport` that apply `tangentMap` while exploiting sparsity.\n - Added model methods `tangentMap`, `tangentMapProduct` and `tangentMapTransport` that perform tangent map for the whole configuration space of the model."
+    },
+    {
+      "sha": "2a06f0c1a8a9f74c3ef6bccce0f0dbd4c7aae056",
+      "filename": "bindings/python/algorithm/expose-algorithms.cpp",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/Simple-Robotics/pinocchio/blob/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/bindings%2Fpython%2Falgorithm%2Fexpose-algorithms.cpp",
+      "raw_url": "https://github.com/Simple-Robotics/pinocchio/raw/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/bindings%2Fpython%2Falgorithm%2Fexpose-algorithms.cpp",
+      "contents_url": "https://api.github.com/repos/Simple-Robotics/pinocchio/contents/bindings%2Fpython%2Falgorithm%2Fexpose-algorithms.cpp?ref=6d973dc00175236c9aeeaedc6bd01f7ca368c99d",
+      "patch": "@@ -25,6 +25,7 @@ namespace pinocchio\n       exposeConstraintDynamics();\n       exposeConstraintDynamicsDerivatives();\n       exposeContactDynamics();\n+      exposeLcaba();\n       exposeContactInverseDynamics();\n       exposeDelassus();\n       exposeCAT();"
+    },
+    {
+      "sha": "3f9fb746379c36458d61be3a1243ca7335032591",
+      "filename": "bindings/python/algorithm/expose-loop-constrained-aba.cpp",
+      "status": "added",
+      "additions": 86,
+      "deletions": 0,
+      "changes": 86,
+      "blob_url": "https://github.com/Simple-Robotics/pinocchio/blob/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/bindings%2Fpython%2Falgorithm%2Fexpose-loop-constrained-aba.cpp",
+      "raw_url": "https://github.com/Simple-Robotics/pinocchio/raw/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/bindings%2Fpython%2Falgorithm%2Fexpose-loop-constrained-aba.cpp",
+      "contents_url": "https://api.github.com/repos/Simple-Robotics/pinocchio/contents/bindings%2Fpython%2Falgorithm%2Fexpose-loop-constrained-aba.cpp?ref=6d973dc00175236c9aeeaedc6bd01f7ca368c99d",
+      "patch": "@@ -0,0 +1,86 @@\n+//\n+// Copyright (c) 2024-2025 INRIA\n+//\n+\n+#include \"pinocchio/bindings/python/algorithm/algorithms.hpp\"\n+#include \"pinocchio/bindings/python/utils/model-checker.hpp\"\n+\n+#include \"pinocchio/algorithm/loop-constrained-aba.hpp\"\n+\n+namespace pinocchio\n+{\n+  namespace python\n+  {\n+    namespace bp = boost::python;\n+\n+#ifdef PINOCCHIO_PYTHON_PLAIN_SCALAR_TYPE\n+    template<typename ConstraintModel, typename ConstraintData>\n+    static const context::VectorXs lcaba_proxy(\n+      const context::Model & model,\n+      context::Data & data,\n+      const context::VectorXs & q,\n+      const context::VectorXs & v,\n+      const context::VectorXs & tau,\n+      const std::vector<ConstraintModel> & constraint_models,\n+      std::vector<ConstraintData> & constraint_datas,\n+      context::ProximalSettings & prox_settings)\n+    {\n+      return lcaba(model, data, q, v, tau, constraint_models, constraint_datas, prox_settings);\n+    }\n+#endif // ifdef PINOCCHIO_PYTHON_PLAIN_SCALAR_TYPE\n+\n+    template<typename ConstraintModel>\n+    void exposeLcabaFor()\n+    {\n+#ifdef PINOCCHIO_PYTHON_PLAIN_SCALAR_TYPE\n+      typedef typename ConstraintModel::ConstraintData ConstraintData;\n+      typedef std::allocator<ConstraintModel> ConstraintModelAllocator;\n+\n+      bp::def(\n+        \"computeJointMinimalOrdering\",\n+        &computeJointMinimalOrdering<\n+          context::Scalar, context::Options, JointCollectionDefaultTpl, ConstraintModel,\n+          ConstraintModelAllocator>,\n+        bp::args(\"model\", \"data\", \"constraint_models\"),\n+        \"Computes the joint minimal ordering for closed-loop constrained dynamics.\\n\"\n+        \"This function must be called before lcaba.\\n\"\n+        \"Parameters:\\n\"\n+        \"\\t model: Model of the kinematic tree\\n\"\n+        \"\\t data: Data related to the kinematic tree\\n\"\n+        \"\\t constraint_models: vector of constraint models\",\n+        mimic_not_supported_function<>(0));\n+\n+      bp::def(\n+        \"lcaba\", lcaba_proxy<ConstraintModel, ConstraintData>,\n+        bp::args(\n+          \"model\", \"data\", \"q\", \"v\", \"tau\", \"constraint_models\", \"constraint_datas\",\n+          \"prox_settings\"),\n+        \"Computes the forward dynamics with closed-loop contact constraints using the\\n\"\n+        \"Loop-Constrained Articulated Body Algorithm (LCABA).\\n\"\n+        \"Before calling lcaba for the first time, you should call computeJointMinimalOrdering\\n\"\n+        \"to set up the joint elimination order.\\n\\n\"\n+        \"Parameters:\\n\"\n+        \"\\t model: Model of the kinematic tree\\n\"\n+        \"\\t data: Data related to the kinematic tree\\n\"\n+        \"\\t q: joint configuration (size model.nq)\\n\"\n+        \"\\t v: joint velocity (size model.nv)\\n\"\n+        \"\\t tau: joint torque (size model.nv)\\n\"\n+        \"\\t constraint_models: vector of constraint models\\n\"\n+        \"\\t constraint_datas: vector of constraint data\\n\"\n+        \"\\t prox_settings: Proximal settings (mu, accuracy and maximal number of iterations)\\n\\n\"\n+        \"Note: A typical value for mu in proximal settings is 1e-6, and it must be positive.\\n\"\n+        \"This function returns joint acceleration stored in data.ddq.\\n\"\n+        \"The constraint forces are stored in data.lambdaA[0].\",\n+        mimic_not_supported_function<>(0));\n+#endif // ifdef PINOCCHIO_PYTHON_PLAIN_SCALAR_TYPE\n+    }\n+\n+    void exposeLcaba()\n+    {\n+#ifdef PINOCCHIO_PYTHON_PLAIN_SCALAR_TYPE\n+      exposeLcabaFor<context::RigidConstraintModel>();\n+#endif // ifdef PINOCCHIO_PYTHON_PLAIN_SCALAR_TYPE\n+    }\n+\n+  } // namespace python\n+} // namespace pinocchio"
+    },
+    {
+      "sha": "a784333088b542032bc13e9a88eabf6182b5acc6",
+      "filename": "examples/CMakeLists.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/Simple-Robotics/pinocchio/blob/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/examples%2FCMakeLists.txt",
+      "raw_url": "https://github.com/Simple-Robotics/pinocchio/raw/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/examples%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/Simple-Robotics/pinocchio/contents/examples%2FCMakeLists.txt?ref=6d973dc00175236c9aeeaedc6bd01f7ca368c99d",
+      "patch": "@@ -143,6 +143,7 @@ if(BUILD_PYTHON_INTERFACE)\n             display-shapes\n             simulation-pendulum\n             simulation-closed-kinematic-chains\n+            simulation-lcaba\n             model-graph-geometry\n         )\n         if(BUILD_WITH_URDF_SUPPORT)"
+    },
+    {
+      "sha": "49f3eaf578a1369fc0070ea1890b6161702a9d5e",
+      "filename": "examples/simulation-closed-kinematic-chains.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Simple-Robotics/pinocchio/blob/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/examples%2Fsimulation-closed-kinematic-chains.py",
+      "raw_url": "https://github.com/Simple-Robotics/pinocchio/raw/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/examples%2Fsimulation-closed-kinematic-chains.py",
+      "contents_url": "https://api.github.com/repos/Simple-Robotics/pinocchio/contents/examples%2Fsimulation-closed-kinematic-chains.py?ref=6d973dc00175236c9aeeaedc6bd01f7ca368c99d",
+      "patch": "@@ -154,7 +154,7 @@\n dt = 5e-3\n \n T_sim = 10\n-t = 0\n+t = 0.0\n mu_sim = 1e-10\n constraint_model.m_baumgarte_parameters.Kp = 10\n constraint_model.m_baumgarte_parameters.Kd = 2.0 * np.sqrt("
+    },
+    {
+      "sha": "34ed31a6cdae5520f2811edba506007da0d3e1ce",
+      "filename": "examples/simulation-lcaba.py",
+      "status": "added",
+      "additions": 218,
+      "deletions": 0,
+      "changes": 218,
+      "blob_url": "https://github.com/Simple-Robotics/pinocchio/blob/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/examples%2Fsimulation-lcaba.py",
+      "raw_url": "https://github.com/Simple-Robotics/pinocchio/raw/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/examples%2Fsimulation-lcaba.py",
+      "contents_url": "https://api.github.com/repos/Simple-Robotics/pinocchio/contents/examples%2Fsimulation-lcaba.py?ref=6d973dc00175236c9aeeaedc6bd01f7ca368c99d",
+      "patch": "@@ -0,0 +1,218 @@\n+import sys\n+import time\n+\n+import coal\n+import numpy as np\n+import pinocchio as pin\n+from pinocchio.visualize import MeshcatVisualizer\n+\n+# Simulate a four-bar linkage using the Loop-Constrained Articulated Body Algorithm\n+# (LCABA). This example mirrors simulation-closed-kinematic-chains.py but uses\n+# pin.lcaba instead of pin.constraintDynamics for the forward dynamics.\n+\n+# ── Geometry parameters ──────────────────────────────────────────────────────\n+height = 0.1\n+width = 0.01\n+radius = 0.05\n+\n+mass_link_A = 10.0\n+length_link_A = 1.0\n+shape_link_A = coal.Capsule(radius, length_link_A)\n+\n+mass_link_B = 5.0\n+length_link_B = 0.6\n+shape_link_B = coal.Capsule(radius, length_link_B)\n+\n+inertia_link_A = pin.Inertia.FromBox(mass_link_A, length_link_A, width, height)\n+placement_center_link_A = pin.SE3.Identity()\n+placement_center_link_A.translation = pin.XAxis * length_link_A / 2.0\n+placement_shape_A = placement_center_link_A.copy()\n+placement_shape_A.rotation = pin.Quaternion.FromTwoVectors(\n+    pin.ZAxis, pin.XAxis\n+).matrix()\n+\n+inertia_link_B = pin.Inertia.FromBox(mass_link_B, length_link_B, width, height)\n+placement_center_link_B = pin.SE3.Identity()\n+placement_center_link_B.translation = pin.XAxis * length_link_B / 2.0\n+placement_shape_B = placement_center_link_B.copy()\n+placement_shape_B.rotation = pin.Quaternion.FromTwoVectors(\n+    pin.ZAxis, pin.XAxis\n+).matrix()\n+\n+# ── Build model ──────────────────────────────────────────────────────────────\n+model = pin.Model()\n+collision_model = pin.GeometryModel()\n+\n+RED_COLOR = np.array([1.0, 0.0, 0.0, 1.0])\n+WHITE_COLOR = np.array([1.0, 1.0, 1.0, 1.0])\n+\n+base_joint_id = 0\n+geom_obj0 = pin.GeometryObject(\n+    \"link_A1\",\n+    base_joint_id,\n+    pin.SE3(pin.Quaternion.FromTwoVectors(pin.ZAxis, pin.XAxis).matrix(), np.zeros(3)),\n+    shape_link_A,\n+)\n+geom_obj0.meshColor = WHITE_COLOR\n+collision_model.addGeometryObject(geom_obj0)\n+\n+joint1_placement = pin.SE3.Identity()\n+joint1_placement.translation = pin.XAxis * length_link_A / 2.0\n+joint1_id = model.addJoint(\n+    base_joint_id, pin.JointModelRY(), joint1_placement, \"link_B1\"\n+)\n+model.appendBodyToJoint(joint1_id, inertia_link_B, placement_center_link_B)\n+geom_obj1 = pin.GeometryObject(\"link_B1\", joint1_id, placement_shape_B, shape_link_B)\n+geom_obj1.meshColor = RED_COLOR\n+collision_model.addGeometryObject(geom_obj1)\n+\n+joint2_placement = pin.SE3.Identity()\n+joint2_placement.translation = pin.XAxis * length_link_B\n+joint2_id = model.addJoint(joint1_id, pin.JointModelRY(), joint2_placement, \"link_A2\")\n+model.appendBodyToJoint(joint2_id, inertia_link_A, placement_center_link_A)\n+geom_obj2 = pin.GeometryObject(\"link_A2\", joint2_id, placement_shape_A, shape_link_A)\n+geom_obj2.meshColor = WHITE_COLOR\n+collision_model.addGeometryObject(geom_obj2)\n+\n+joint3_placement = pin.SE3.Identity()\n+joint3_placement.translation = pin.XAxis * length_link_A\n+joint3_id = model.addJoint(joint2_id, pin.JointModelRY(), joint3_placement, \"link_B2\")\n+model.appendBodyToJoint(joint3_id, inertia_link_B, placement_center_link_B)\n+geom_obj3 = pin.GeometryObject(\"link_B2\", joint3_id, placement_shape_B, shape_link_B)\n+geom_obj3.meshColor = RED_COLOR\n+collision_model.addGeometryObject(geom_obj3)\n+visual_model = collision_model\n+\n+q0 = pin.neutral(model)\n+\n+data = model.createData()\n+pin.forwardKinematics(model, data, q0)\n+\n+# ── Set the closed-loop constraint ───────────────────────────────────────────\n+# The tip of the last link (link_B2) is connected back to the base, forming a\n+# closed kinematic loop.\n+constraint1_joint1_placement = pin.SE3.Identity()\n+constraint1_joint1_placement.translation = pin.XAxis * length_link_B\n+\n+constraint1_joint2_placement = pin.SE3.Identity()\n+constraint1_joint2_placement.translation = -pin.XAxis * length_link_A / 2.0\n+\n+constraint_model = pin.RigidConstraintModel(\n+    pin.ContactType.CONTACT_3D,\n+    model,\n+    joint3_id,\n+    constraint1_joint1_placement,\n+    base_joint_id,\n+    constraint1_joint2_placement,\n+)\n+constraint_data = constraint_model.createData()\n+constraint_size = constraint_model.residualSize()\n+\n+constraint_models = [constraint_model]\n+constraint_datas = [constraint_data]\n+\n+# ── Inverse geometry: satisfy constraints at the initial configuration ───────\n+rho = 1e-10\n+mu = 1e-4\n+\n+q = q0.copy()\n+y = np.ones(constraint_size)\n+data.M = np.eye(model.nv) * rho\n+kkt_constraint = pin.ContactCholeskyDecomposition(\n+    model, data, constraint_models, constraint_datas\n+)\n+eps = 1e-10\n+N = 100\n+for k in range(N):\n+    pin.computeJointJacobians(model, data, q)\n+    data.q_in = q\n+    constraint_model.calc(model, data, constraint_data)\n+    kkt_constraint.compute(model, data, constraint_models, constraint_datas, mu)\n+    constraint_value = constraint_data.c1Mc2.translation\n+\n+    J = pin.getFrameJacobian(\n+        model,\n+        data,\n+        constraint_model.joint1_id,\n+        constraint_model.joint1_placement,\n+        constraint_model.reference_frame,\n+    )[:3, :]\n+    primal_feas = np.linalg.norm(constraint_value, np.inf)\n+    dual_feas = np.linalg.norm(J.T.dot(constraint_value + y), np.inf)\n+    if primal_feas < eps and dual_feas < eps:\n+        print(\"Inverse geometry converged at iteration\", k)\n+        break\n+    rhs = np.concatenate([-constraint_value - y * mu, np.zeros(model.nv)])\n+\n+    dz = kkt_constraint.solve(rhs)\n+    dy = dz[:constraint_size]\n+    dq = dz[constraint_size:]\n+\n+    alpha = 1.0\n+    q = pin.integrate(model, q, -alpha * dq)\n+    y -= alpha * (-dy + y)\n+\n+q_sol = (q[:] + np.pi) % np.pi - np.pi\n+print(\"Initial configuration:\", q_sol.T)\n+\n+# ── Simulation with LCABA ────────────────────────────────────────────────────\n+q = q_sol.copy()\n+v = np.zeros(model.nv)\n+tau = np.zeros(model.nv)\n+dt = 5e-3\n+\n+T_sim = 10\n+t = 0.0\n+\n+# Proximal settings for LCABA – mu must be positive\n+mu_sim = 1e-6\n+prox_settings = pin.ProximalSettings(1e-12, mu_sim, 100)\n+\n+# Baumgarte stabilisation\n+constraint_model.m_baumgarte_parameters.Kp = 10\n+constraint_model.m_baumgarte_parameters.Kd = 2.0 * np.sqrt(\n+    constraint_model.m_baumgarte_parameters.Kp\n+)\n+\n+# Pre-compute the joint elimination ordering (required once before lcaba)\n+data_sim = model.createData()\n+pin.computeJointMinimalOrdering(model, data_sim, constraint_models)\n+\n+# ── Visualisation ────────────────────────────────────────────────────────────\n+try:\n+    viz = MeshcatVisualizer(model, collision_model, visual_model)\n+    viz.initViewer(open=True)\n+except ImportError as error:\n+    print(error)\n+    sys.exit(0)\n+viz.loadViewerModel()\n+viz.display(q_sol)\n+\n+# ── Time-stepping loop ──────────────────────────────────────────────────────\n+print(\"Starting LCABA simulation …\")\n+while t <= T_sim:\n+    prox_settings_iter = pin.ProximalSettings(\n+        prox_settings.absolute_accuracy, prox_settings.mu, prox_settings.max_iter\n+    )\n+\n+    # Compute constrained forward dynamics with LCABA\n+    a = pin.lcaba(\n+        model,\n+        data_sim,\n+        q,\n+        v,\n+        tau,\n+        constraint_models,\n+        constraint_datas,\n+        prox_settings_iter,\n+    )\n+\n+    # Semi-implicit Euler integration\n+    v += a * dt\n+    q = pin.integrate(model, q, v * dt)\n+\n+    viz.display(q)\n+    time.sleep(dt)\n+    t += dt\n+\n+print(\"Four-bar linkage simulation finished.\")"
+    },
+    {
+      "sha": "5562c6b22f7f00eef34a7565149412afcc5c96d8",
+      "filename": "include/pinocchio/bindings/python/algorithm/algorithms.hpp",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/Simple-Robotics/pinocchio/blob/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/include%2Fpinocchio%2Fbindings%2Fpython%2Falgorithm%2Falgorithms.hpp",
+      "raw_url": "https://github.com/Simple-Robotics/pinocchio/raw/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/include%2Fpinocchio%2Fbindings%2Fpython%2Falgorithm%2Falgorithms.hpp",
+      "contents_url": "https://api.github.com/repos/Simple-Robotics/pinocchio/contents/include%2Fpinocchio%2Fbindings%2Fpython%2Falgorithm%2Falgorithms.hpp?ref=6d973dc00175236c9aeeaedc6bd01f7ca368c99d",
+      "patch": "@@ -35,6 +35,7 @@ namespace pinocchio\n     void exposeCholesky();\n     void exposeModelAlgo();\n     void exposeImpulseDynamics();\n+    void exposeLcaba();\n \n     void exposeRNEADerivatives();\n     void exposeABADerivatives();"
+    },
+    {
+      "sha": "e9ff793a62209c8a461f3c175767932d296445ca",
+      "filename": "sources.cmake",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/Simple-Robotics/pinocchio/blob/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/sources.cmake",
+      "raw_url": "https://github.com/Simple-Robotics/pinocchio/raw/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/sources.cmake",
+      "contents_url": "https://api.github.com/repos/Simple-Robotics/pinocchio/contents/sources.cmake?ref=6d973dc00175236c9aeeaedc6bd01f7ca368c99d",
+      "patch": "@@ -937,6 +937,7 @@ set(${PROJECT_NAME}_BINDINGS_PYTHON_SOURCES\n     ${PROJECT_SOURCE_DIR}/bindings/python/algorithm/expose-contact-inverse-dynamics.cpp\n     ${PROJECT_SOURCE_DIR}/bindings/python/algorithm/expose-joints.cpp\n     ${PROJECT_SOURCE_DIR}/bindings/python/algorithm/expose-constrained-dynamics.cpp\n+    ${PROJECT_SOURCE_DIR}/bindings/python/algorithm/expose-loop-constrained-aba.cpp\n     ${PROJECT_SOURCE_DIR}/bindings/python/algorithm/expose-rnea.cpp\n     ${PROJECT_SOURCE_DIR}/bindings/python/algorithm/expose-contact-jacobian.cpp\n     ${PROJECT_SOURCE_DIR}/bindings/python/algorithm/constraints/expose-cones.cpp"
+    },
+    {
+      "sha": "6fb33703b933e3bf852682bf9c7a31da90aa4b89",
+      "filename": "unittest/python/CMakeLists.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 6,
+      "changes": 7,
+      "blob_url": "https://github.com/Simple-Robotics/pinocchio/blob/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/unittest%2Fpython%2FCMakeLists.txt",
+      "raw_url": "https://github.com/Simple-Robotics/pinocchio/raw/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/unittest%2Fpython%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/Simple-Robotics/pinocchio/contents/unittest%2Fpython%2FCMakeLists.txt?ref=6d973dc00175236c9aeeaedc6bd01f7ca368c99d",
+      "patch": "@@ -135,14 +135,9 @@ if(BUILD_WITH_COLLISION_SUPPORT)\n     set(${PROJECT_NAME}_PYTHON_TESTS\n         ${${PROJECT_NAME}_PYTHON_TESTS}\n         bindings_geometry_object\n-    )\n-    set(${PROJECT_NAME}_PYTHON_TESTS\n-        ${${PROJECT_NAME}_PYTHON_TESTS}\n         bindings_coal_transform\n-    )\n-    set(${PROJECT_NAME}_PYTHON_TESTS\n-        ${${PROJECT_NAME}_PYTHON_TESTS}\n         bindings_constraints\n+        bindings_lcaba\n     )\n endif()\n "
+    },
+    {
+      "sha": "4f09688ec8e6e27ba5ef95f6824b2160b7300a11",
+      "filename": "unittest/python/bindings_lcaba.py",
+      "status": "added",
+      "additions": 178,
+      "deletions": 0,
+      "changes": 178,
+      "blob_url": "https://github.com/Simple-Robotics/pinocchio/blob/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/unittest%2Fpython%2Fbindings_lcaba.py",
+      "raw_url": "https://github.com/Simple-Robotics/pinocchio/raw/6d973dc00175236c9aeeaedc6bd01f7ca368c99d/unittest%2Fpython%2Fbindings_lcaba.py",
+      "contents_url": "https://api.github.com/repos/Simple-Robotics/pinocchio/contents/unittest%2Fpython%2Fbindings_lcaba.py?ref=6d973dc00175236c9aeeaedc6bd01f7ca368c99d",
+      "patch": "@@ -0,0 +1,178 @@\n+#\n+# Copyright (c) 2024-2025 INRIA\n+#\n+\n+import unittest\n+\n+import numpy as np\n+import pinocchio as pin\n+from test_case import PinocchioTestCase as TestCase\n+\n+\n+def build_four_bar_model():\n+    \"\"\"Build the four-bar linkage model from the simulation-lcaba example.\n+\n+    Returns (model, constraint_model, q_sol) where q_sol satisfies the\n+    closed-loop constraint.\n+    \"\"\"\n+    height = 0.1\n+    width = 0.01\n+\n+    mass_link_A = 10.0\n+    length_link_A = 1.0\n+\n+    mass_link_B = 5.0\n+    length_link_B = 0.6\n+\n+    inertia_link_A = pin.Inertia.FromBox(mass_link_A, length_link_A, width, height)\n+    placement_center_link_A = pin.SE3.Identity()\n+    placement_center_link_A.translation = pin.XAxis * length_link_A / 2.0\n+\n+    inertia_link_B = pin.Inertia.FromBox(mass_link_B, length_link_B, width, height)\n+    placement_center_link_B = pin.SE3.Identity()\n+    placement_center_link_B.translation = pin.XAxis * length_link_B / 2.0\n+\n+    model = pin.Model()\n+    base_joint_id = 0\n+\n+    joint1_placement = pin.SE3.Identity()\n+    joint1_placement.translation = pin.XAxis * length_link_A / 2.0\n+    joint1_id = model.addJoint(\n+        base_joint_id, pin.JointModelRY(), joint1_placement, \"link_B1\"\n+    )\n+    model.appendBodyToJoint(joint1_id, inertia_link_B, placement_center_link_B)\n+\n+    joint2_placement = pin.SE3.Identity()\n+    joint2_placement.translation = pin.XAxis * length_link_B\n+    joint2_id = model.addJoint(\n+        joint1_id, pin.JointModelRY(), joint2_placement, \"link_A2\"\n+    )\n+    model.appendBodyToJoint(joint2_id, inertia_link_A, placement_center_link_A)\n+\n+    joint3_placement = pin.SE3.Identity()\n+    joint3_placement.translation = pin.XAxis * length_link_A\n+    joint3_id = model.addJoint(\n+        joint2_id, pin.JointModelRY(), joint3_placement, \"link_B2\"\n+    )\n+    model.appendBodyToJoint(joint3_id, inertia_link_B, placement_center_link_B)\n+\n+    # Closed-loop constraint: tip of link_B2 connects back to base\n+    constraint1_joint1_placement = pin.SE3.Identity()\n+    constraint1_joint1_placement.translation = pin.XAxis * length_link_B\n+\n+    constraint1_joint2_placement = pin.SE3.Identity()\n+    constraint1_joint2_placement.translation = -pin.XAxis * length_link_A / 2.0\n+\n+    constraint_model = pin.RigidConstraintModel(\n+        pin.ContactType.CONTACT_3D,\n+        model,\n+        joint3_id,\n+        constraint1_joint1_placement,\n+        base_joint_id,\n+        constraint1_joint2_placement,\n+    )\n+\n+    # ── Inverse geometry: satisfy constraints at the initial configuration ──\n+    q = pin.neutral(model)\n+    constraint_data = constraint_model.createData()\n+    constraint_size = constraint_model.residualSize()\n+    constraint_models = [constraint_model]\n+    constraint_datas = [constraint_data]\n+\n+    rho = 1e-10\n+    mu = 1e-4\n+    y = np.ones(constraint_size)\n+    data = model.createData()\n+    data.M = np.eye(model.nv) * rho\n+    kkt_constraint = pin.ContactCholeskyDecomposition(\n+        model, data, constraint_models, constraint_datas\n+    )\n+\n+    for _ in range(100):\n+        pin.computeJointJacobians(model, data, q)\n+        data.q_in = q\n+        constraint_model.calc(model, data, constraint_data)\n+        kkt_constraint.compute(model, data, constraint_models, constraint_datas, mu)\n+        constraint_value = constraint_data.c1Mc2.translation\n+        J = pin.getFrameJacobian(\n+            model,\n+            data,\n+            constraint_model.joint1_id,\n+            constraint_model.joint1_placement,\n+            constraint_model.reference_frame,\n+        )[:3, :]\n+        if (\n+            np.linalg.norm(constraint_value, np.inf) < 1e-10\n+            and np.linalg.norm(J.T.dot(constraint_value + y), np.inf) < 1e-10\n+        ):\n+            break\n+        rhs = np.concatenate([-constraint_value - y * mu, np.zeros(model.nv)])\n+        dz = kkt_constraint.solve(rhs)\n+        dy = dz[:constraint_size]\n+        dq = dz[constraint_size:]\n+        alpha = 1.0\n+        q = pin.integrate(model, q, -alpha * dq)\n+        y -= alpha * (-dy + y)\n+\n+    q_sol = (q[:] + np.pi) % np.pi - np.pi\n+    return model, constraint_model, q_sol\n+\n+\n+class TestLCABABindings(TestCase):\n+    def setUp(self):\n+        self.model, self.constraint_model, self.q_sol = build_four_bar_model()\n+        self.data = self.model.createData()\n+\n+        self.constraint_data = self.constraint_model.createData()\n+        self.constraint_models = [self.constraint_model]\n+        self.constraint_datas = [self.constraint_data]\n+\n+        self.v = np.zeros(self.model.nv)\n+        self.tau = np.zeros(self.model.nv)\n+\n+        self.mu_sim = 1e-6\n+        self.prox_settings = pin.ProximalSettings(1e-12, self.mu_sim, 100)\n+\n+    def _make_prox_settings(self):\n+        \"\"\"Return a fresh ProximalSettings (settings are mutated by lcaba).\"\"\"\n+        return pin.ProximalSettings(\n+            self.prox_settings.absolute_accuracy,\n+            self.prox_settings.mu,\n+            self.prox_settings.max_iter,\n+        )\n+\n+    # ── computeJointMinimalOrdering ────────────────────────────────────────\n+\n+    def test_computeJointMinimalOrdering_run(self):\n+        \"\"\"computeJointMinimalOrdering must run without error.\"\"\"\n+        data = self.model.createData()\n+        pin.computeJointMinimalOrdering(self.model, data, self.constraint_models)\n+\n+    def test_computeJointMinimalOrdering_mimic_not_supported_function(self):\n+        model = pin.buildSampleModelManipulator(True)\n+        data = model.createData()\n+        self.assertRaises(\n+            RuntimeError, pin.computeJointMinimalOrdering, model, data, []\n+        )\n+\n+    # ── lcaba ──────────────────────────────────────────────────────────────\n+\n+    def test_lcaba_run(self):\n+        \"\"\"lcaba must return an acceleration vector of size nv.\"\"\"\n+        data = self.model.createData()\n+        pin.computeJointMinimalOrdering(self.model, data, self.constraint_models)\n+        ddq = pin.lcaba(\n+            self.model,\n+            data,\n+            self.q_sol,\n+            self.v,\n+            self.tau,\n+            self.constraint_models,\n+            self.constraint_datas,\n+            self._make_prox_settings(),\n+        )\n+        self.assertEqual(ddq.shape, (self.model.nv,))\n+\n+\n+if __name__ == \"__main__\":\n+    unittest.main()"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "1526fd6841a7b0be6dd81031ebe093d986716f85",
+      "message": "lcaba: added python bindings",
+      "parent_shas": [
+        "8bc8d5750e375077e8db60ce6786aa6a7eda6793"
+      ]
+    },
+    {
+      "sha": "05b6e4640e23bcc069a4c43c61047990913ec2f3",
+      "message": "lcaba: python four-bar example",
+      "parent_shas": [
+        "1526fd6841a7b0be6dd81031ebe093d986716f85"
+      ]
+    },
+    {
+      "sha": "4293538e38b3ef721219755638446eed1ee740f3",
+      "message": "updated changelog",
+      "parent_shas": [
+        "05b6e4640e23bcc069a4c43c61047990913ec2f3"
+      ]
+    },
+    {
+      "sha": "c179b3d9924f0c3e7c5aa9768b837979067cbd3c",
+      "message": "lcaba: tests for python bindings",
+      "parent_shas": [
+        "4293538e38b3ef721219755638446eed1ee740f3"
+      ]
+    },
+    {
+      "sha": "9a86ad7cd503c82afb5b35f307b2ea29a8b5a0e4",
+      "message": "python: Don't build lcaba bindings with casadi",
+      "parent_shas": [
+        "c179b3d9924f0c3e7c5aa9768b837979067cbd3c"
+      ]
+    },
+    {
+      "sha": "53b8a84b390d432f56ad2beb0023b9d457d14a87",
+      "message": "example: Set lcaba in right section and fix small warnings",
+      "parent_shas": [
+        "9a86ad7cd503c82afb5b35f307b2ea29a8b5a0e4"
+      ]
+    },
+    {
+      "sha": "e298f5d83bb132158ad9b26831960a9767d2af6c",
+      "message": "python: Simplify lcaba unit test",
+      "parent_shas": [
+        "53b8a84b390d432f56ad2beb0023b9d457d14a87"
+      ]
+    },
+    {
+      "sha": "6d973dc00175236c9aeeaedc6bd01f7ca368c99d",
+      "message": "cmake: Avoid copy/past",
+      "parent_shas": [
+        "e298f5d83bb132158ad9b26831960a9767d2af6c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "python_cpp_wrapper_noise"
+    ],
+    "auto_signals": [
+      "adds_new_tests",
+      "cross_language_mapping_visible",
+      "python_cpp_wrapper_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__Simple-Robotics__pinocchio__pr32.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\Simple-Robotics__pinocchio__pr32__python_cpp__Simple-Robotics__pinocchio__pr32\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\Simple-Robotics__pinocchio__pr32__python_cpp__Simple-Robotics__pinocchio__pr32\\rn"
+  }
+}

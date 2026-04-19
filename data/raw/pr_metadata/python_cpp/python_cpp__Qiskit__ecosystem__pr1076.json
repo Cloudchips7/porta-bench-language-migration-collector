@@ -1,0 +1,92 @@
+{
+  "instance_id": "python_cpp__Qiskit__ecosystem__pr1076",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "Qiskit/ecosystem",
+  "pr_number": 1076,
+  "pr_url": "https://github.com/Qiskit/ecosystem/pull/1076",
+  "repo": {
+    "full_name": "Qiskit/ecosystem",
+    "clone_url": "https://github.com/Qiskit/ecosystem.git",
+    "default_branch": "main",
+    "created_at": "2021-08-04T15:53:33Z",
+    "stars": 149,
+    "license": "Apache-2.0",
+    "size_kb": 4841
+  },
+  "pull_request": {
+    "id": 3496883236,
+    "title": "add Python label",
+    "body": "",
+    "created_at": "2026-04-07T08:37:48Z",
+    "merged_at": "2026-04-09T10:31:31Z",
+    "base_sha": "cf29bf7aaeb458a3d7a2eec1595e37ce3995607f",
+    "head_sha": "d7b13552fd6f4fc52950f835d7acf8bd2a1043ce",
+    "merge_commit_sha": "cf295c8f852c53ce57d10ddbcebb97b485e0bebf",
+    "labels": [
+      "member update"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "cf29bf7aaeb458a3d7a2eec1595e37ce3995607f",
+  "final_sha": "d7b13552fd6f4fc52950f835d7acf8bd2a1043ce",
+  "changed_files": [
+    {
+      "sha": "3b1a10878893b6dfa5abc08faaa5479752408793",
+      "filename": "ecosystem/resources/members/doublequan_6e4e5010.toml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/Qiskit/ecosystem/blob/d7b13552fd6f4fc52950f835d7acf8bd2a1043ce/ecosystem%2Fresources%2Fmembers%2Fdoublequan_6e4e5010.toml",
+      "raw_url": "https://github.com/Qiskit/ecosystem/raw/d7b13552fd6f4fc52950f835d7acf8bd2a1043ce/ecosystem%2Fresources%2Fmembers%2Fdoublequan_6e4e5010.toml",
+      "contents_url": "https://api.github.com/repos/Qiskit/ecosystem/contents/ecosystem%2Fresources%2Fmembers%2Fdoublequan_6e4e5010.toml?ref=d7b13552fd6f4fc52950f835d7acf8bd2a1043ce",
+      "patch": "@@ -3,9 +3,10 @@ submission_number = 1070\n url = \"https://github.com/11D-Beyonder/double-quant\"\n description = \"Double Quant means (Qunat)um (Quant)itative, which is a high-performance quantum computing framework for solving quantitative finance problems.\"\n contact_info = \"ztz20001117@gmail.com\"\n-labels = [ \"finance\",]\n+labels = [ \"finance\" ]\n+interface = [ \"Python\" ]\n group = \"Application\"\n-packages = []\n+packages = [\"https://pypi.org/project/double-quant\"]\n uuid = \"6e4e5010-7f25-4f03-9724-c9088b4ce0e0\"\n \n [github]"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d7cafe6109c4127434979bad757c451823798f04",
+      "message": "add Python label",
+      "parent_shas": [
+        "cf29bf7aaeb458a3d7a2eec1595e37ce3995607f"
+      ]
+    },
+    {
+      "sha": "927f784250489186880e08ee0a14bf423ba95b99",
+      "message": "Update ecosystem/resources/members/doublequan_6e4e5010.toml\n\nCo-authored-by: Luciano Bello <766693+1ucian0@users.noreply.github.com>",
+      "parent_shas": [
+        "d7cafe6109c4127434979bad757c451823798f04"
+      ]
+    },
+    {
+      "sha": "d7b13552fd6f4fc52950f835d7acf8bd2a1043ce",
+      "message": "Update ecosystem/resources/members/doublequan_6e4e5010.toml\n\nCo-authored-by: Luciano Bello <766693+1ucian0@users.noreply.github.com>",
+      "parent_shas": [
+        "927f784250489186880e08ee0a14bf423ba95b99"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__Qiskit__ecosystem__pr1076.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\Qiskit__ecosystem__pr1076__python_cpp__Qiskit__ecosystem__pr1076\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\Qiskit__ecosystem__pr1076__python_cpp__Qiskit__ecosystem__pr1076\\rn"
+  }
+}

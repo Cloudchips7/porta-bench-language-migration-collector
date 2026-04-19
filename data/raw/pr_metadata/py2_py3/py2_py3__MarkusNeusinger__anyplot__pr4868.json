@@ -1,0 +1,165 @@
+{
+  "instance_id": "py2_py3__MarkusNeusinger__anyplot__pr4868",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "MarkusNeusinger/anyplot",
+  "pr_number": 4868,
+  "pr_url": "https://github.com/MarkusNeusinger/anyplot/pull/4868",
+  "repo": {
+    "full_name": "MarkusNeusinger/anyplot",
+    "clone_url": "https://github.com/MarkusNeusinger/anyplot.git",
+    "default_branch": "main",
+    "created_at": "2025-11-18T18:15:06Z",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 33528
+  },
+  "pull_request": {
+    "id": 3401667045,
+    "title": "feat(pygal): implement pp-basic",
+    "body": "## Implementation: `pp-basic` - pygal\n\nImplements the **pygal** version of `pp-basic`.\n\n**File:** `plots/pp-basic/implementations/pygal.py`\n\n**Parent Issue:** #4587\n\n---\n:robot: *[impl-generate workflow](https://github.com/MarkusNeusinger/pyplots/actions/runs/23118400186)*",
+    "created_at": "2026-03-15T20:16:41Z",
+    "merged_at": "2026-03-15T20:43:45Z",
+    "base_sha": "7af52078f0915552120038c04418ab0d40d74f6c",
+    "head_sha": "ea4f5f4ef783dd9cad579199cbd98042e7d8cac7",
+    "merge_commit_sha": "8628e2a9d0ba07b0fe4eef99260156f078849f0b",
+    "labels": [
+      "ai-attempt-1",
+      "ai-attempt-2",
+      "ai-attempt-3",
+      "ai-approved",
+      "quality:88",
+      "quality:78",
+      "quality:86",
+      "quality:83"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "7d8db128f8bd60970ef8304392f839ea89bb3951",
+  "final_sha": "ea4f5f4ef783dd9cad579199cbd98042e7d8cac7",
+  "changed_files": [
+    {
+      "sha": "9fe169bed5a0b9fd7b155e76e833d757bb90c9a4",
+      "filename": "plots/pp-basic/implementations/pygal.py",
+      "status": "added",
+      "additions": 145,
+      "deletions": 0,
+      "changes": 145,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/ea4f5f4ef783dd9cad579199cbd98042e7d8cac7/plots%2Fpp-basic%2Fimplementations%2Fpygal.py",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/ea4f5f4ef783dd9cad579199cbd98042e7d8cac7/plots%2Fpp-basic%2Fimplementations%2Fpygal.py",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fpp-basic%2Fimplementations%2Fpygal.py?ref=ea4f5f4ef783dd9cad579199cbd98042e7d8cac7",
+      "patch": "@@ -0,0 +1,145 @@\n+\"\"\" pyplots.ai\n+pp-basic: Probability-Probability (P-P) Plot\n+Library: pygal 3.1.0 | Python 3.14.3\n+Quality: 88/100 | Created: 2026-03-15\n+\"\"\"\n+\n+import math\n+\n+import numpy as np\n+import pygal\n+from pygal.style import Style\n+\n+\n+# Quality-control scenario: 200 tensile strength measurements (MPa) from steel rods\n+# Mix of compliant samples (normal) and heat-treatment anomalies (skewed batch)\n+np.random.seed(42)\n+compliant = np.random.normal(520, 35, 160)  # Standard production run\n+anomalous = np.random.exponential(30, 40) + 480  # Heat-treatment drift batch\n+observed = np.sort(np.concatenate([compliant, anomalous]))\n+n = len(observed)\n+\n+# Fit normal parameters from full sample\n+mu = np.mean(observed)\n+sigma = np.std(observed, ddof=1)\n+\n+# Empirical CDF using plotting position i/(n+1)\n+empirical_cdf = np.arange(1, n + 1) / (n + 1)\n+\n+# Theoretical CDF: Phi((x - mu) / sigma)\n+sqrt2 = math.sqrt(2)\n+theoretical_cdf = np.array([0.5 * (1.0 + math.erf((x - mu) / (sigma * sqrt2))) for x in observed])\n+\n+# Deviation from perfect fit — used for classification and tooltips\n+deviation = empirical_cdf - theoretical_cdf\n+max_dev = float(np.max(np.abs(deviation)))\n+\n+# Classify points into three tiers for visual hierarchy\n+good_fit = []  # |Δ| ≤ 0.01 — tightly along diagonal\n+mild_dev = []  # 0.01 < |Δ| ≤ 0.025 — moderate departure\n+strong_dev = []  # |Δ| > 0.025 — clear distributional mismatch\n+\n+for i in range(n):\n+    t = float(theoretical_cdf[i])\n+    e = float(empirical_cdf[i])\n+    d = float(deviation[i])\n+    label = \"#{} · {:.0f} MPa · Δ = {:+.3f}\".format(i + 1, observed[i], d)\n+    pt = {\"value\": (t, e), \"label\": label}\n+    if abs(d) <= 0.01:\n+        good_fit.append(pt)\n+    elif abs(d) <= 0.025:\n+        mild_dev.append(pt)\n+    else:\n+        strong_dev.append(pt)\n+\n+# Publication-grade style — Python Blue anchor with warm accent\n+custom_style = Style(\n+    background=\"#ffffff\",\n+    plot_background=\"#fafbfc\",\n+    foreground=\"#2d2d2d\",\n+    foreground_strong=\"#111111\",\n+    foreground_subtle=\"#e2e6ea\",\n+    opacity=\".75\",\n+    opacity_hover=\"1\",\n+    colors=(\"#c8d5e0\", \"#306998\", \"#e8913a\", \"#d04a3e\"),\n+    title_font_size=72,\n+    label_font_size=46,\n+    major_label_font_size=44,\n+    legend_font_size=34,\n+    value_font_size=30,\n+    stroke_width=2,\n+    title_font_family=\"Trebuchet MS, Helvetica Neue, sans-serif\",\n+    label_font_family=\"Trebuchet MS, Helvetica Neue, sans-serif\",\n+    major_label_font_family=\"Trebuchet MS, Helvetica Neue, sans-serif\",\n+    legend_font_family=\"Trebuchet MS, Helvetica Neue, sans-serif\",\n+    value_font_family=\"Trebuchet MS, Helvetica Neue, sans-serif\",\n+    tooltip_font_size=26,\n+    tooltip_font_family=\"Trebuchet MS, Helvetica Neue, sans-serif\",\n+    transition=\"150ms ease-in\",\n+    value_colors=(),\n+    guide_stroke_color=\"#eceef1\",\n+    major_guide_stroke_color=\"#dde1e6\",\n+)\n+\n+chart = pygal.XY(\n+    width=3600,\n+    height=3600,\n+    style=custom_style,\n+    title=\"pp-basic · pygal · pyplots.ai\",\n+    x_title=\"Theoretical CDF (Normal Distribution)\",\n+    y_title=\"Empirical CDF (Steel Rod Tensile Strength)\",\n+    show_legend=True,\n+    legend_at_bottom=True,\n+    legend_box_size=24,\n+    dots_size=8,\n+    stroke=False,\n+    show_x_guides=True,\n+    show_y_guides=True,\n+    xrange=(0, 1),\n+    range=(0, 1),\n+    x_label_rotation=0,\n+    x_labels=[0, 0.2, 0.4, 0.6, 0.8, 1.0],\n+    y_labels=[0, 0.2, 0.4, 0.6, 0.8, 1.0],\n+    x_labels_major_every=2,\n+    y_labels_major_every=2,\n+    show_minor_x_labels=True,\n+    show_minor_y_labels=True,\n+    print_values=False,\n+    tooltip_border_radius=8,\n+    tooltip_fancy_mode=True,\n+    explicit_size=True,\n+    spacing=30,\n+    margin_bottom=100,\n+    margin_top=75,\n+    margin_left=75,\n+    margin_right=50,\n+    truncate_legend=-1,\n+    dynamic_print_values=True,\n+    inner_radius=0,\n+    js=[],\n+)\n+\n+# 45° reference line — dashed, drawn first so data sits on top\n+chart.add(\n+    \"Perfect Normal Fit\",\n+    [(0, 0), (0.25, 0.25), (0.5, 0.5), (0.75, 0.75), (1, 1)],\n+    stroke=True,\n+    show_dots=False,\n+    dots_size=0,\n+    stroke_dasharray=\"14, 8\",\n+    stroke_style={\"width\": 3, \"linecap\": \"round\"},\n+    formatter=lambda x, y: \"Reference: y = x\",\n+)\n+\n+# Good fit band — largest group, subtle Python Blue\n+chart.add(\"Good Fit  |Δ| ≤ 0.01  ({} pts)\".format(len(good_fit)), good_fit, dots_size=7)\n+\n+# Mild deviation — medium emphasis\n+chart.add(\"Mild Deviation  0.01 < |Δ| ≤ 0.025  ({} pts)\".format(len(mild_dev)), mild_dev, dots_size=11)\n+\n+# Strong deviation — bold accent for maximum visual weight\n+chart.add(\"Strong Deviation  |Δ| > 0.025  ({} pts)\".format(len(strong_dev)), strong_dev, dots_size=15)\n+\n+# Dual output: interactive SVG as HTML + static PNG\n+chart.render_to_png(\"plot.png\")\n+chart.render_to_file(\"plot.html\")"
+    },
+    {
+      "sha": "6a8576962e71c30e40500f4b4e6f8845956ad399",
+      "filename": "plots/pp-basic/metadata/pygal.yaml",
+      "status": "added",
+      "additions": 224,
+      "deletions": 0,
+      "changes": 224,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/ea4f5f4ef783dd9cad579199cbd98042e7d8cac7/plots%2Fpp-basic%2Fmetadata%2Fpygal.yaml",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/ea4f5f4ef783dd9cad579199cbd98042e7d8cac7/plots%2Fpp-basic%2Fmetadata%2Fpygal.yaml",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fpp-basic%2Fmetadata%2Fpygal.yaml?ref=ea4f5f4ef783dd9cad579199cbd98042e7d8cac7",
+      "patch": "@@ -0,0 +1,224 @@\n+library: pygal\n+specification_id: pp-basic\n+created: '2026-03-15T20:16:37Z'\n+updated: '2026-03-15T20:43:25Z'\n+generated_by: claude-opus-4-5-20251101\n+workflow_run: 23118400186\n+issue: 4587\n+python_version: 3.14.3\n+library_version: 3.1.0\n+preview_url: https://storage.googleapis.com/pyplots-images/plots/pp-basic/pygal/plot.png\n+preview_thumb: https://storage.googleapis.com/pyplots-images/plots/pp-basic/pygal/plot_thumb.png\n+preview_html: https://storage.googleapis.com/pyplots-images/plots/pp-basic/pygal/plot.html\n+quality_score: 88\n+review:\n+  strengths:\n+  - Excellent data storytelling through three-tier classification with graduated dot\n+    sizes creating immediate visual hierarchy\n+  - Thoughtful realistic scenario (steel rod QC) with metallurgically plausible values\n+  - Full spec compliance including square aspect ratio, correct CDF formulas, and\n+    proper reference line\n+  - Clean well-structured code with good comments explaining domain context\n+  - Good use of pygal-specific features (tooltips, HTML export, stroke dash patterns)\n+  weaknesses:\n+  - Orange and red series are somewhat close in hue for some color vision deficiencies\n+  - Good-fit dots (size 7) are slightly small relative to canvas\n+  - 'Minor gap to 90: needs slightly more visual refinement on axis line styling'\n+  image_description: 'The plot displays a P-P (Probability-Probability) plot on a\n+    square canvas (3600x3600). The title reads \"pp-basic · pygal · pyplots.ai\" at\n+    the top. The x-axis is labeled \"Theoretical CDF (Normal Distribution)\" and the\n+    y-axis \"Empirical CDF (Steel Rod Tensile Strength)\", both ranging from 0 to 1\n+    with ticks at 0.2 intervals. A subtle light gray diagonal reference line runs\n+    from (0,0) to (1,1). Data points are classified into three color-coded groups:\n+    blue dots for \"Good Fit |Δ| ≤ 0.01 (88 pts)\", orange dots for \"Mild Deviation\n+    0.01 < |Δ| ≤ 0.025 (79 pts)\", and darker red dots for \"Strong Deviation |Δ| >\n+    0.025 (33 pts)\". Dot sizes increase with deviation severity (7, 11, 15). The points\n+    trace along the diagonal with a visible S-shaped departure in the middle and upper\n+    portions, indicating the mixed normal+exponential data departs from pure normality.\n+    The background is very light gray (#fafbfc) with subtle grid lines. Legend is\n+    at the bottom with all four series clearly labeled.'\n+  criteria_checklist:\n+    visual_quality:\n+      score: 27\n+      max: 30\n+      items:\n+      - id: VQ-01\n+        name: Text Legibility\n+        score: 7\n+        max: 8\n+        passed: true\n+        comment: All font sizes explicitly set (title=72, labels=46, ticks=44, legend=34).\n+          Readable. Legend text slightly small.\n+      - id: VQ-02\n+        name: No Overlap\n+        score: 6\n+        max: 6\n+        passed: true\n+        comment: No text collisions. Legend well-spaced at bottom.\n+      - id: VQ-03\n+        name: Element Visibility\n+        score: 5\n+        max: 6\n+        passed: true\n+        comment: Three dot sizes create good hierarchy. Good-fit dots slightly small\n+          but visible.\n+      - id: VQ-04\n+        name: Color Accessibility\n+        score: 3\n+        max: 4\n+        passed: true\n+        comment: Blue/orange distinguishable. Orange and red somewhat close in hue.\n+      - id: VQ-05\n+        name: Layout & Canvas\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: Square aspect ratio per spec. Plot fills canvas well with balanced\n+          margins.\n+      - id: VQ-06\n+        name: Axis Labels & Title\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: Descriptive labels with context and units.\n+    design_excellence:\n+      score: 15\n+      max: 20\n+      items:\n+      - id: DE-01\n+        name: Aesthetic Sophistication\n+        score: 6\n+        max: 8\n+        passed: true\n+        comment: Custom palette, custom fonts, refined background, intentional color\n+          hierarchy. Above defaults.\n+      - id: DE-02\n+        name: Visual Refinement\n+        score: 4\n+        max: 6\n+        passed: true\n+        comment: Subtle grid with custom guide colors, clean background, good spacing.\n+      - id: DE-03\n+        name: Data Storytelling\n+        score: 5\n+        max: 6\n+        passed: true\n+        comment: Three-tier classification with graduated dot sizes creates clear\n+          visual hierarchy and tells deviation story.\n+    spec_compliance:\n+      score: 15\n+      max: 15\n+      items:\n+      - id: SC-01\n+        name: Plot Type\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Correct P-P plot using XY scatter.\n+      - id: SC-02\n+        name: Required Features\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: Reference line, square ratio, correct CDF formulas, 0-1 axes all\n+          present.\n+      - id: SC-03\n+        name: Data Mapping\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: Theoretical CDF on X, empirical CDF on Y. All 200 points visible.\n+      - id: SC-04\n+        name: Title & Legend\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: Title format correct. Legend labels descriptive with point counts.\n+    data_quality:\n+      score: 14\n+      max: 15\n+      items:\n+      - id: DQ-01\n+        name: Feature Coverage\n+        score: 5\n+        max: 6\n+        passed: true\n+        comment: Shows good fit and deviation regions. S-shaped departure visible.\n+      - id: DQ-02\n+        name: Realistic Context\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Steel rod tensile strength QC scenario. Real-world, neutral, domain-specific.\n+      - id: DQ-03\n+        name: Appropriate Scale\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: 520 MPa ± 35 for steel rods is metallurgically plausible.\n+    code_quality:\n+      score: 10\n+      max: 10\n+      items:\n+      - id: CQ-01\n+        name: KISS Structure\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: 'Linear flow: imports, data, CDF, classification, style, chart, save.'\n+      - id: CQ-02\n+        name: Reproducibility\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: np.random.seed(42) set.\n+      - id: CQ-03\n+        name: Clean Imports\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: All imports used.\n+      - id: CQ-04\n+        name: Code Elegance\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: Clean, well-commented, appropriate complexity.\n+      - id: CQ-05\n+        name: Output & API\n+        score: 1\n+        max: 1\n+        passed: true\n+        comment: Saves as plot.png and plot.html.\n+    library_mastery:\n+      score: 7\n+      max: 10\n+      items:\n+      - id: LM-01\n+        name: Idiomatic Usage\n+        score: 4\n+        max: 5\n+        passed: true\n+        comment: Good use of pygal.XY, Style class, dict-based data points for custom\n+          labels.\n+      - id: LM-02\n+        name: Distinctive Features\n+        score: 3\n+        max: 5\n+        passed: true\n+        comment: SVG tooltips, HTML export, stroke_dasharray, tooltip_fancy_mode,\n+          dual output.\n+  verdict: REJECTED\n+impl_tags:\n+  dependencies: []\n+  techniques:\n+  - manual-ticks\n+  - html-export\n+  patterns:\n+  - data-generation\n+  - iteration-over-groups\n+  dataprep:\n+  - cumulative-sum\n+  styling:\n+  - grid-styling\n+  - alpha-blending"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8fe32298ffd9b798c3ec86d7fd87149e8d9a3836",
+      "message": "feat(pygal): implement pp-basic",
+      "parent_shas": [
+        "7d8db128f8bd60970ef8304392f839ea89bb3951"
+      ]
+    },
+    {
+      "sha": "bcba7209d55f496153a61b81e99413dd150762fd",
+      "message": "chore(pygal): add metadata for pp-basic",
+      "parent_shas": [
+        "8fe32298ffd9b798c3ec86d7fd87149e8d9a3836"
+      ]
+    },
+    {
+      "sha": "c4a63be95e431ac7a6fa95848e400c16f257a8b4",
+      "message": "chore(pygal): update quality score 78 and review feedback for pp-basic",
+      "parent_shas": [
+        "bcba7209d55f496153a61b81e99413dd150762fd"
+      ]
+    },
+    {
+      "sha": "605c816915346a4dbbf44e656f23347c93f04f6e",
+      "message": "fix(pygal): address review feedback for pp-basic\n\nAttempt 1/3 - fixes based on AI review",
+      "parent_shas": [
+        "c4a63be95e431ac7a6fa95848e400c16f257a8b4"
+      ]
+    },
+    {
+      "sha": "5069e2718f401fa3633440fa57dabcc618175601",
+      "message": "chore(pygal): update quality score 83 and review feedback for pp-basic",
+      "parent_shas": [
+        "605c816915346a4dbbf44e656f23347c93f04f6e"
+      ]
+    },
+    {
+      "sha": "bd4c6dbe52183aa8290157e3794898231fc9aa0a",
+      "message": "fix(pygal): address review feedback for pp-basic\n\nAttempt 2/3 - fixes based on AI review",
+      "parent_shas": [
+        "5069e2718f401fa3633440fa57dabcc618175601"
+      ]
+    },
+    {
+      "sha": "5e53bde3a8522a8e86e71bdac715046e484ff25d",
+      "message": "chore(pygal): update quality score 86 and review feedback for pp-basic",
+      "parent_shas": [
+        "bd4c6dbe52183aa8290157e3794898231fc9aa0a"
+      ]
+    },
+    {
+      "sha": "162ed9497c0161746b7f9a5a3dcfe8eac908a831",
+      "message": "fix(pygal): address review feedback for pp-basic\n\nAttempt 3/3 - fixes based on AI review",
+      "parent_shas": [
+        "5e53bde3a8522a8e86e71bdac715046e484ff25d"
+      ]
+    },
+    {
+      "sha": "ffd0987895df43ebb45f37cda13cbf5c647be62b",
+      "message": "chore(pygal): update quality score 88 and review feedback for pp-basic",
+      "parent_shas": [
+        "162ed9497c0161746b7f9a5a3dcfe8eac908a831"
+      ]
+    },
+    {
+      "sha": "ea4f5f4ef783dd9cad579199cbd98042e7d8cac7",
+      "message": "Merge branch 'main' into implementation/pp-basic/pygal",
+      "parent_shas": [
+        "ffd0987895df43ebb45f37cda13cbf5c647be62b",
+        "7af52078f0915552120038c04418ab0d40d74f6c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__MarkusNeusinger__anyplot__pr4868.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4868__py2_py3__MarkusNeusinger__anyplot__pr4868\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4868__py2_py3__MarkusNeusinger__anyplot__pr4868\\rn"
+  }
+}

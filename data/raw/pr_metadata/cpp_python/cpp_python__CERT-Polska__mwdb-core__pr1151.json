@@ -1,0 +1,158 @@
+{
+  "instance_id": "cpp_python__CERT-Polska__mwdb-core__pr1151",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "CERT-Polska/mwdb-core",
+  "pr_number": 1151,
+  "pr_url": "https://github.com/CERT-Polska/mwdb-core/pull/1151",
+  "repo": {
+    "full_name": "CERT-Polska/mwdb-core",
+    "clone_url": "https://github.com/CERT-Polska/mwdb-core.git",
+    "default_branch": "master",
+    "created_at": "2018-01-15T10:41:26Z",
+    "stars": 383,
+    "license": "NOASSERTION",
+    "size_kb": 21050
+  },
+  "pull_request": {
+    "id": 3435136308,
+    "title": "Switch from python-ssdeep to simple ctypes wrapper over libfuzzy2",
+    "body": "<!-- Thank you for contributing! -->\r\n<!-- Please fill this template before submitting your PR (fill the boxes using \"x\") -->\r\n\r\n**Your checklist for this pull request**\r\n- [x] I've read the [contributing guideline](CONTRIBUTING.md).\r\n- [x] I've tested my changes by building and running the project, and testing changed functionality (if applicable)\r\n- [ ] I've added automated tests for my change (if applicable, optional)\r\n- [x] I've updated documentation to reflect my change (if applicable)\r\n\r\n**What is the current behaviour?**\r\n<!-- Explain how the code works currently -->\r\n\r\nhttps://pypi.org/project/ssdeep/ is unmaintained and last release was on 2019. We already had issues with setuptools that removed pkg_resources which broke the building process (https://github.com/CERT-Polska/mwdb-core/pull/1137). \r\n\r\npython-ssdeep requires `libfuzzy-dev` because during installation it is building a native Python extension using cffi that is linking with libfuzzy. On the other hand, libfuzzy has quite simple and stable interface which can be easily called using classic ctypes wrapper.\r\n\r\nWe don't do anything useful with these hashes as we don't support fuzzy search/comparison but this hash is there since initial release, so we maintain it for compatibility reasons.\r\n\r\n**What is the new behaviour?**\r\n<!-- Explain how the code works after your changes -->\r\n\r\nThis PR:\r\n- adds `mwdb.core.ssdeep` with ctypes-based binding to `libfuzzy.so.2` and `SsdeepHash` class\r\n- removes `ssdeep` dependency\r\n- removes build-time dependencies from Docker files, because we no longer need to compile anything (actually most of them were stale)\r\n\r\nlibfuzzy2 is a dependency of libfuzzy-dev, but it would be good to clearly indicate in the release notes that we switch to another solution and things may break (although they shouldn't).\r\n\r\nIn case of problems on some platforms, this PR adds `enable_ssdeep` configuration option that allows to disable ssdeep evaluation.\r\n\r\n**Test plan**\r\n\r\n- Check if ssdeep still produces the same result\r\n- Check if MWDB doesn't break when ssdeep is turned off and produces `null` value in the ssdeep column on file upload\r\n",
+    "created_at": "2026-03-23T17:19:32Z",
+    "merged_at": "2026-03-24T12:40:12Z",
+    "base_sha": "3c9dd1a69a9d0de84a4d8e34370df4fa9bae8d3f",
+    "head_sha": "53814c0d9b73e90c0d2d6c4558d97840c5825cd5",
+    "merge_commit_sha": "9c56b28104d2b8b460dd516866c0f77a19c67f62",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "3c9dd1a69a9d0de84a4d8e34370df4fa9bae8d3f",
+  "final_sha": "53814c0d9b73e90c0d2d6c4558d97840c5825cd5",
+  "changed_files": [
+    {
+      "sha": "da192b24dc5b40f0a7f914897d52d7dff55a2c12",
+      "filename": "deploy/docker/Dockerfile",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/CERT-Polska/mwdb-core/blob/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/deploy%2Fdocker%2FDockerfile",
+      "raw_url": "https://github.com/CERT-Polska/mwdb-core/raw/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/deploy%2Fdocker%2FDockerfile",
+      "contents_url": "https://api.github.com/repos/CERT-Polska/mwdb-core/contents/deploy%2Fdocker%2FDockerfile?ref=53814c0d9b73e90c0d2d6c4558d97840c5825cd5",
+      "patch": "@@ -4,8 +4,6 @@ FROM ghcr.io/astral-sh/uv:python3.12-alpine AS builder\n \n WORKDIR /app\n \n-RUN apk add --no-cache libffi libffi-dev py3-cffi build-base python3-dev automake m4 autoconf libtool gcc g++ musl-dev openssl-dev cargo postgresql-dev libfuzzy2-dev curl ca-certificates\n-\n # Omit development dependencies\n ENV UV_NO_DEV=1\n \n@@ -36,7 +34,7 @@ FROM python:3.12-alpine\n \n LABEL maintainer=\"info@cert.pl\"\n \n-RUN apk add --no-cache postgresql-client postgresql-dev libmagic libfuzzy2-dev\n+RUN apk add --no-cache postgresql-client postgresql-dev libmagic libfuzzy2\n \n # Copy the application from the builder\n COPY --from=builder --chown=nobody:nobody /app /app"
+    },
+    {
+      "sha": "4f2bf10098659bd3147f749f3828fb9f8047a59b",
+      "filename": "docs/setup-and-configuration.rst",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/CERT-Polska/mwdb-core/blob/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/docs%2Fsetup-and-configuration.rst",
+      "raw_url": "https://github.com/CERT-Polska/mwdb-core/raw/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/docs%2Fsetup-and-configuration.rst",
+      "contents_url": "https://api.github.com/repos/CERT-Polska/mwdb-core/contents/docs%2Fsetup-and-configuration.rst?ref=53814c0d9b73e90c0d2d6c4558d97840c5825cd5",
+      "patch": "@@ -47,7 +47,7 @@ For production environments, you need to install:\n \n .. code-block:: console\n \n-    $ apt install gcc libfuzzy-dev python3-dev python3-venv postgresql-client postgresql-common\n+    $ apt install gcc libfuzzy2 python3-dev python3-venv postgresql-client postgresql-common\n \n Optionally you can install:\n \n@@ -338,6 +338,7 @@ Extra features:\n * ``enable_json_logger`` (0 or 1) - Enables JSON logging which may be more convenient for automated log processing. Default is ``0``.\n * ``enable_prometheus_metrics`` (0 or 1) - Enables Prometheus metrics (\\ ``/api/varz`` endpoint\\ )\n * ``enable_debug_log`` (0 or 1) - Enables debug logging\n+* ``enable_ssdeep`` (0 or 1) - Enables ssdeep evaluation. Default is ``1``.\n * ``redis_uri`` (string) - Redis database connection string, required by rate limiter.\n * ``remotes`` (comma separated strings) - list of MWDB remotes (experimental)\n * ``enable_hooks`` (0 or 1) - enable plugin hooks"
+    },
+    {
+      "sha": "57e32a82f34b0e44e2fb0ffea7170ac432468a6a",
+      "filename": "mwdb/core/config.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/CERT-Polska/mwdb-core/blob/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/mwdb%2Fcore%2Fconfig.py",
+      "raw_url": "https://github.com/CERT-Polska/mwdb-core/raw/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/mwdb%2Fcore%2Fconfig.py",
+      "contents_url": "https://api.github.com/repos/CERT-Polska/mwdb-core/contents/mwdb%2Fcore%2Fconfig.py?ref=53814c0d9b73e90c0d2d6c4558d97840c5825cd5",
+      "patch": "@@ -125,6 +125,7 @@ class MWDBConfig(Config):\n     enable_oidc = key(cast=intbool, required=False, default=False)\n     enable_oidc_registration = key(cast=intbool, required=False, default=False)\n     enable_3rd_party_sharing_consent = key(cast=intbool, required=False, default=False)\n+    enable_ssdeep = key(cast=intbool, required=False, default=True)\n \n     mail_smtp = key(cast=str, required=False)\n     mail_from = key(cast=str, required=False, default=\"noreply@mwdb\")"
+    },
+    {
+      "sha": "1c36e8d08ce93ebd9fec29fa9189f889f9e4b6aa",
+      "filename": "mwdb/core/ssdeep.py",
+      "status": "added",
+      "additions": 55,
+      "deletions": 0,
+      "changes": 55,
+      "blob_url": "https://github.com/CERT-Polska/mwdb-core/blob/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/mwdb%2Fcore%2Fssdeep.py",
+      "raw_url": "https://github.com/CERT-Polska/mwdb-core/raw/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/mwdb%2Fcore%2Fssdeep.py",
+      "contents_url": "https://api.github.com/repos/CERT-Polska/mwdb-core/contents/mwdb%2Fcore%2Fssdeep.py?ref=53814c0d9b73e90c0d2d6c4558d97840c5825cd5",
+      "patch": "@@ -0,0 +1,55 @@\n+import ctypes\n+\n+from .config import app_config\n+\n+# https://github.com/ssdeep-project/ssdeep/blob/df3b860f8918261b3faeec9c7d2c8a241089e6e6/fuzzy.h#L221\n+_FUZZY_MAX_RESULT = 2 * 64 + 20\n+_libfuzzy = None\n+\n+if app_config.mwdb.enable_ssdeep:\n+    try:\n+        _libfuzzy = ctypes.cdll.LoadLibrary(\"libfuzzy.so.2\")\n+        _libfuzzy.fuzzy_new.restype = ctypes.c_void_p\n+        _libfuzzy.fuzzy_update.argtypes = ctypes.c_void_p, ctypes.c_char_p, ctypes.c_int\n+        _libfuzzy.fuzzy_update.restype = ctypes.c_int\n+        _libfuzzy.fuzzy_digest.argtypes = ctypes.c_void_p, ctypes.c_char_p, ctypes.c_int\n+        _libfuzzy.fuzzy_digest.restype = ctypes.c_int\n+        _libfuzzy.fuzzy_free.argtypes = (ctypes.c_void_p,)\n+    except Exception as e:\n+        raise RuntimeError(\n+            \"Failed to load libfuzzy.so.2. Disable ssdeep evaluation by setting \"\n+            \"enable_ssdeep option in configuration to 0 or make sure that 'libfuzzy2' \"\n+            \"is installed correctly.\"\n+        ) from e\n+\n+\n+class SsdeepHash:\n+    def __init__(self):\n+        self._state = None\n+        if not _libfuzzy:\n+            raise RuntimeError(\"libfuzzy not loaded\")\n+        self._state = _libfuzzy.fuzzy_new()\n+        if not self._state:\n+            raise RuntimeError(\"fuzzy_new() failed\")\n+\n+    def update(self, buf: bytes) -> None:\n+        if not self._state:\n+            raise ValueError(\"Hash object is closed\")\n+        if (res := _libfuzzy.fuzzy_update(self._state, buf, len(buf))) != 0:\n+            raise RuntimeError(f\"fuzzy_update() failed with {res}\")\n+\n+    def digest(self) -> str:\n+        if not self._state:\n+            raise ValueError(\"Hash object is closed\")\n+        digest_buf = ctypes.create_string_buffer(_FUZZY_MAX_RESULT)\n+        if (res := _libfuzzy.fuzzy_digest(self._state, digest_buf, 0)) != 0:\n+            raise RuntimeError(f\"fuzzy_update() failed with {res}\")\n+        return digest_buf.value.decode(\"ascii\")\n+\n+    def close(self):\n+        if self._state:\n+            _libfuzzy.fuzzy_free(self._state)\n+            self._state = None\n+\n+    def __del__(self):\n+        self.close()"
+    },
+    {
+      "sha": "ae89ff5633345d401ac8abbc1ad72693d4980559",
+      "filename": "mwdb/core/util.py",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 3,
+      "changes": 14,
+      "blob_url": "https://github.com/CERT-Polska/mwdb-core/blob/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/mwdb%2Fcore%2Futil.py",
+      "raw_url": "https://github.com/CERT-Polska/mwdb-core/raw/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/mwdb%2Fcore%2Futil.py",
+      "contents_url": "https://api.github.com/repos/CERT-Polska/mwdb-core/contents/mwdb%2Fcore%2Futil.py?ref=53814c0d9b73e90c0d2d6c4558d97840c5825cd5",
+      "patch": "@@ -16,13 +16,15 @@ def token_hex(nbytes=None):\n import boto3\n import botocore.client\n import magic\n-import ssdeep\n from botocore.credentials import (\n     ContainerProvider,\n     InstanceMetadataFetcher,\n     InstanceMetadataProvider,\n )\n \n+from .config import app_config\n+from .ssdeep import SsdeepHash\n+\n \n def config_dhash(obj):\n     if isinstance(obj, list):\n@@ -103,8 +105,14 @@ def calc_magic(stream) -> str:\n         magic.magic_close(magic_cookie)\n \n \n-def calc_ssdeep(stream):\n-    return calc_hash(stream, ssdeep.Hash(), lambda h: h.digest())\n+def calc_ssdeep(stream) -> str | None:\n+    if not app_config.mwdb.enable_ssdeep:\n+        return None\n+    hash_obj = SsdeepHash()\n+    try:\n+        return calc_hash(stream, hash_obj, lambda h: h.digest())\n+    finally:\n+        hash_obj.close()\n \n \n def calc_crc32(stream):"
+    },
+    {
+      "sha": "0cb259a5f345664ba7373f653ab146eaa1db8e6c",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 6,
+      "changes": 6,
+      "blob_url": "https://github.com/CERT-Polska/mwdb-core/blob/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/pyproject.toml",
+      "raw_url": "https://github.com/CERT-Polska/mwdb-core/raw/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/CERT-Polska/mwdb-core/contents/pyproject.toml?ref=53814c0d9b73e90c0d2d6c4558d97840c5825cd5",
+      "patch": "@@ -46,7 +46,6 @@ dependencies = [\n     \"redis==4.5.4\",\n     \"requests==2.32.4\",\n     \"sqlalchemy==1.4.54\",\n-    \"ssdeep==3.4\",\n     \"typed-config==1.1.0\",\n     \"werkzeug==3.1.6\",\n ]\n@@ -65,11 +64,6 @@ packages = [\"mwdb\", \"mwdb.cli\", \"mwdb.core\", \"mwdb.model\", \"mwdb.resources\", \"mw\n [tool.setuptools.dynamic]\n version = {attr = \"mwdb.version.app_version\"}\n \n-[tool.uv]\n-# ssdeep relies on 'pkg_resources' that was removed in setuptools 82.0.0\n-# Remove this line along with build-constraints file when this issue is resolved\n-build-constraint-dependencies = [\"setuptools<82\"]\n-\n [dependency-groups]\n test = [\n     \"python-dateutil\","
+    },
+    {
+      "sha": "7fcb25dccfb96defdf2f414da0615b026dc97fe6",
+      "filename": "uv.lock",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 15,
+      "changes": 15,
+      "blob_url": "https://github.com/CERT-Polska/mwdb-core/blob/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/uv.lock",
+      "raw_url": "https://github.com/CERT-Polska/mwdb-core/raw/53814c0d9b73e90c0d2d6c4558d97840c5825cd5/uv.lock",
+      "contents_url": "https://api.github.com/repos/CERT-Polska/mwdb-core/contents/uv.lock?ref=53814c0d9b73e90c0d2d6c4558d97840c5825cd5",
+      "patch": "@@ -2,9 +2,6 @@ version = 1\n revision = 3\n requires-python = \">=3.10\"\n \n-[manifest]\n-build-constraints = [{ name = \"setuptools\", specifier = \"<82\" }]\n-\n [[package]]\n name = \"aioboto3\"\n version = \"13.3.0\"\n@@ -1338,7 +1335,6 @@ dependencies = [\n     { name = \"redis\" },\n     { name = \"requests\" },\n     { name = \"sqlalchemy\" },\n-    { name = \"ssdeep\" },\n     { name = \"typed-config\" },\n     { name = \"werkzeug\" },\n ]\n@@ -1386,7 +1382,6 @@ requires-dist = [\n     { name = \"redis\", specifier = \"==4.5.4\" },\n     { name = \"requests\", specifier = \"==2.32.4\" },\n     { name = \"sqlalchemy\", specifier = \"==1.4.54\" },\n-    { name = \"ssdeep\", specifier = \"==3.4\" },\n     { name = \"typed-config\", specifier = \"==1.1.0\" },\n     { name = \"werkzeug\", specifier = \"==3.1.6\" },\n ]\n@@ -2042,16 +2037,6 @@ wheels = [\n     { url = \"https://files.pythonhosted.org/packages/01/c3/c690d037be57efd3a69cde16a2ef1bd2a905dafe869434d33836de0983d0/SQLAlchemy-1.4.54-cp312-cp312-win_amd64.whl\", hash = \"sha256:f941aaf15f47f316123e1933f9ea91a6efda73a161a6ab6046d1cde37be62c88\", size = 1593827, upload-time = \"2024-09-05T17:52:07.454Z\" },\n ]\n \n-[[package]]\n-name = \"ssdeep\"\n-version = \"3.4\"\n-source = { registry = \"https://pypi.org/simple\" }\n-dependencies = [\n-    { name = \"cffi\" },\n-    { name = \"six\" },\n-]\n-sdist = { url = \"https://files.pythonhosted.org/packages/e0/d3/f17602a7dde1231d332f4067fdd421057ffe335c3bbc295e7ccfab769d95/ssdeep-3.4.tar.gz\", hash = \"sha256:1b5510716bc495a2b18300ea837fcf944552a1cc678bb74e384bce251d99a85f\", size = 110839, upload-time = \"2019-10-03T20:50:23.924Z\" }\n-\n [[package]]\n name = \"tomli\"\n version = \"2.4.0\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "acd9692652ed256411a7cbe4514df1a589516e8d",
+      "message": "Switch from python-ssdeep to simple ctypes wrapper over libfuzzy2",
+      "parent_shas": [
+        "3c9dd1a69a9d0de84a4d8e34370df4fa9bae8d3f"
+      ]
+    },
+    {
+      "sha": "53814c0d9b73e90c0d2d6c4558d97840c5825cd5",
+      "message": "Fix RuntimeError",
+      "parent_shas": [
+        "acd9692652ed256411a7cbe4514df1a589516e8d"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__CERT-Polska__mwdb-core__pr1151.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\CERT-Polska__mwdb-core__pr1151__cpp_python__CERT-Polska__mwdb-core__pr1151\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\CERT-Polska__mwdb-core__pr1151__cpp_python__CERT-Polska__mwdb-core__pr1151\\rn"
+  }
+}

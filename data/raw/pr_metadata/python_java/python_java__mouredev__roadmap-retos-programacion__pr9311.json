@@ -1,0 +1,109 @@
+{
+  "instance_id": "python_java__mouredev__roadmap-retos-programacion__pr9311",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "mouredev/roadmap-retos-programacion",
+  "pr_number": 9311,
+  "pr_url": "https://github.com/mouredev/roadmap-retos-programacion/pull/9311",
+  "repo": {
+    "full_name": "mouredev/roadmap-retos-programacion",
+    "clone_url": "https://github.com/mouredev/roadmap-retos-programacion.git",
+    "default_branch": "main",
+    "created_at": "2023-12-18T10:59:18Z",
+    "stars": 8154,
+    "license": "Apache-2.0",
+    "size_kb": 55901
+  },
+  "pull_request": {
+    "id": 3415198416,
+    "title": "#01 - Python, #02 - Python, #03 - Python",
+    "body": "## Describe tus cambios\r\n***(Opcional)*** *Sobre todo aconsejable si la \"Pull Request\" se corresponde con una corrección adicional y no con la presentación de un ejercicio.*\r\n\r\n## Comprobaciones\r\nAsegúrate de cumplir los siguientes puntos antes de realizar la \"Pull Request\":\r\n\r\n- [x] El título de mi Pull Request sigue este formato: \"#[número] - [lenguaje_utilizado]\". *(Ej: #00 - Python\")*\r\n- [x] El nombre el fichero se corresponde con el de mi usuario en GitHub más la extensión del lenguaje. *(Ej: mouredev.py)*\r\n- [x] El fichero de corrección se encuentra dentro del directorio del ejercicio y en una carpeta con el nombre del lenguaje de programación utilizado en minúsculas. *(Ej: Roadmap/00 - SINTAXIS, VARIABLES, TIPOS DE DATOS Y HOLA MUNDO/python/mouredev.py)*\r\n- [x] He revisado que el nombre del directorio del lenguaje no es conflictivo:\r\n\t- c#, no csharp\r\n\t- c++, no cplusplus\r\n\t- go, no golang\r\n\t- javascript, no js\r\n- [x] Únicamente he incluido los ficheros de ejercicios. No se aceptarán Pull Requests que contengan archivos adicionales asociados a editores de código o semejantes.\r\n\r\n## Información\r\n\r\n* Tienes toda la información sobre los retos semanales en [retosdeprogramacion.com/roadmap](https://retosdeprogramacion.com/roadmap).\r\n* Recuerda que tienes un grupo de apoyo llamado \"ejercicios-logica\" en [Discord](https://discord.gg/mouredev).\r\n",
+    "created_at": "2026-03-18T14:28:13Z",
+    "merged_at": "2026-04-06T10:20:48Z",
+    "base_sha": "1efa929ecb14570ee812e082d8e7df73bdb67c94",
+    "head_sha": "066b1dabc7c4ff717d5c5e83fc17053c94945806",
+    "merge_commit_sha": "e5bf733597d74ef5cff7b9158fa12c24f204ab2f",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "1efa929ecb14570ee812e082d8e7df73bdb67c94",
+  "final_sha": "066b1dabc7c4ff717d5c5e83fc17053c94945806",
+  "changed_files": [
+    {
+      "sha": "f0694928e5eca404fa61fa49cdd203e7482ec401",
+      "filename": "Roadmap/01 - OPERADORES Y ESTRUCTURAS DE CONTROL/python/noxordev.py",
+      "status": "added",
+      "additions": 107,
+      "deletions": 0,
+      "changes": 107,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/066b1dabc7c4ff717d5c5e83fc17053c94945806/Roadmap%2F01%20-%20OPERADORES%20Y%20ESTRUCTURAS%20DE%20CONTROL%2Fpython%2Fnoxordev.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/066b1dabc7c4ff717d5c5e83fc17053c94945806/Roadmap%2F01%20-%20OPERADORES%20Y%20ESTRUCTURAS%20DE%20CONTROL%2Fpython%2Fnoxordev.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F01%20-%20OPERADORES%20Y%20ESTRUCTURAS%20DE%20CONTROL%2Fpython%2Fnoxordev.py?ref=066b1dabc7c4ff717d5c5e83fc17053c94945806",
+      "patch": "@@ -0,0 +1,107 @@\n+\"\"\" \n+Operadores \n+\"\"\"\n+\n+# Operadores aritméticos\n+print(f\"Suma: 10 + 3 = {10 + 3}\")\n+print(f\"Resta: 10 - 3 = {10 - 3}\")\n+print(f\"Multiplicación: 10 * 3 = {10 * 3}\")\n+print(f\"División: 10 / 3 = {10 / 3}\")\n+print(f\"División entera: 10 // 3 = {10 // 3}\")\n+print(f\"Módulo: 10 % 3 = {10 % 3}\")\n+print(f\"Potencia: 10 ** 3 = {10 ** 3}\")\n+\n+# Operadores de comparación\n+print(f\"Igualdad: 10 == 3 = {10 == 3}\")\n+print(f\"Desigualdad: 10 != 3 = {10 != 3}\")\n+print(f\"Mayor que: 10 > 3 = {10 > 3}\")\n+print(f\"Menor que: 10 < 3 = {10 < 3}\")\n+\n+base = 10\n+exponente = 3\n+print(f\"Potencia: {base} ** {exponente} = {base ** exponente}\")\n+print(f\"Módulo: {base} % {exponente} = {base % exponente}\")\n+print(f\"División entera: {base} // {exponente} = {base // exponente}\")\n+\n+#Operadores lógicos\n+print(f\"AND: 10 + 3 == 13 and 5 - 1 = {10 + 3 == 13 and 5 - 1 == 4}\")\n+print(f\"AND: 10 > 3 and 10 < 3 = {10 > 3 and 10 < 3}\")\n+print(f\"OR: 10 > 3 or 10 < 3 = {10 > 3 or 10 < 3}\")\n+print(f\"NOT: not 10 > 3 = {not 10 > 3}\")\n+\n+#Operadores de asignación\n+my_number = 10 #asignación\n+print(my_number)\n+my_number += 1 #suma y asignación\n+print(my_number)\n+my_number -= 1 #resta y asignación\n+print(my_number)\n+my_number *= 2 #multiplicación y asignación\n+print(my_number)\n+my_number /= 2 #división y asignación\n+print(my_number)\n+my_number %= 2 #módulo y asignación\n+print(my_number)\n+my_number **= 1 #exponente y asignación\n+print(my_number)\n+my_number //= 1 #división entera y asignación   \n+print(my_number)\n+\n+#Operadores de identidad\n+my_new_number = my_number\n+print(f\"my_number is my_new_number es {my_number is my_new_number}\")\n+print(f\"my_number is not my_new_number es {my_number is not my_new_number}\")\n+\n+#Operadores de pertenencia\n+print(f\"'a' in 'apple' es {'a' in 'apple'}\")\n+print(f\"10 in [1, 2, 3, 4, 5] es {10 in [1, 2, 3, 4, 5]}\")\n+print(f\"10 not in [1, 2, 3, 4, 5] es {10 not in [1, 2, 3, 4, 5]}\")\n+\n+#Operadores de bit a bit\n+a = 10 # 1010\n+b = 3 # 0011\n+print(f\"AND: 10 & 3 = {10 & 3}\") # 0010\n+print(f\"OR: 10 | 3 = {10 | 3}\") # 1011\n+print(f\"XOR: 10 ^ 3 = {10 ^ 3}\") # 1001\n+print(f\"NOT: ~10 = {~10}\") # -11\n+print(f\"Desplazamiento a la derecha: 10 >> 2 = {10 >> 2}\") # 10: 1010 >> 0010\n+print(f\"Desplazamiento a la izquierda: 10 << 2 = {10 << 2}\") # 10: 1010 >> 101000\n+\n+\"\"\"\n+Estructuras de control\n+\"\"\"\n+\n+# Condicionales\n+my_string = \"Victor\"\n+\n+if my_string == \"MoureDev\":\n+    print(\"my_string es 'MoureDev'\")\n+elif my_string == \"Victor\":\n+    print(\"my_string es 'Victor'\")\n+else:\n+    print(\"my_string no es 'MoureDev' ni 'Brais'\")\n+\n+# Iterativas\n+\n+for i in range(5):\n+    print(i)\n+\n+i = 0\n+while i <= 5:\n+    print(i)\n+    i += 1\n+\n+# Manejo de excepciones\n+\n+try:\n+    print(10/0)\n+except:\n+    print(\"Se ha producido un error\")\n+finally:\n+    print(\"Ha finalizado el manejo de excepciones\")\n+\n+# Extra\n+\n+for number in range(10, 56):\n+    if number % 2 == 0 and number != 16 and number % 3 != 0:\n+        print(number)"
+    },
+    {
+      "sha": "3d8e855dc40df652310034f2731618bb7129991d",
+      "filename": "Roadmap/02 - FUNCIONES Y ALCANCE/python/noxordev.py",
+      "status": "added",
+      "additions": 134,
+      "deletions": 0,
+      "changes": 134,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/066b1dabc7c4ff717d5c5e83fc17053c94945806/Roadmap%2F02%20-%20FUNCIONES%20Y%20ALCANCE%2Fpython%2Fnoxordev.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/066b1dabc7c4ff717d5c5e83fc17053c94945806/Roadmap%2F02%20-%20FUNCIONES%20Y%20ALCANCE%2Fpython%2Fnoxordev.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F02%20-%20FUNCIONES%20Y%20ALCANCE%2Fpython%2Fnoxordev.py?ref=066b1dabc7c4ff717d5c5e83fc17053c94945806",
+      "patch": "@@ -0,0 +1,134 @@\n+\"\"\"\n+Funciones definidas por el usuario\n+\"\"\"\n+\n+# Funciones simples\n+\n+from multiprocessing import Value\n+\n+\n+def saludo():\n+    print(\"Hola, mundo!\")\n+\n+saludo()\n+\n+# Con retorno\n+\n+def saludo_retorno():\n+    return \"Hola, mundos!\"\n+\n+return_saludo = saludo_retorno()\n+print(return_saludo)\n+\n+# Con Argumentos\n+\n+def saludo_argumento(saludo, nombre):\n+    print(f\"{saludo}, {nombre}!\")\n+\n+saludo_argumento(\"Hola\", \"Noxordev\")\n+saludo_argumento(nombre=\"Noxordev\", saludo=\"Hola\")\n+\n+# Argumentos predeterminados\n+\n+def saludo_argumento_predeterminado(saludo=\"Hola\", nombre=\"Ejemplo\"):\n+    print(f\"{saludo}, {nombre}!\")\n+\n+saludo_argumento_predeterminado(\"Hola\", \"Noxordev\")\n+\n+# Argumentos y retornos\n+\n+def saludo_argumento_retorno(saludo, nombre):\n+    return f\"{saludo}, {nombre}!\"\n+\n+print(saludo_argumento_retorno(\"Hola\", \"Noxordev\"))\n+\n+# Con retorno de varios valores\n+\n+def saludo_argumento_retorno_varios():\n+    return \"Hola\", \"Noxordev\"\n+\n+saludo, nombre = saludo_argumento_retorno_varios()\n+print(saludo)\n+print(nombre)\n+\n+# Con un número variable de argumentos\n+\n+def saludo_argumento_retorno_varios_variables(*nombres):\n+    for nombre in nombres:\n+        print(f\"Hola, {nombre}!\")\n+\n+saludo_argumento_retorno_varios_variables(\"Noxordev\", \"Juan\", \"Maria\", \"Victor\")\n+\n+# Con un número variable de argumentos y palabra clave\n+\n+def variable_key_arg_greet(**names):\n+    for key, value in names.items():\n+        print(f\"Hola, {value} ({key})!\")\n+\n+variable_key_arg_greet(\n+    language=\"Python\", \n+    Name=\"Brais\", \n+    Alias=\"MoureDev\", \n+    Age=\"36\"\n+    )\n+\n+\"\"\"\n+Funciones dentro de funciones\n+\"\"\"\n+\n+def outer_function():\n+    def inner_function():\n+        print(\"Hola, Python!\")\n+    inner_function()\n+\n+outer_function()\n+\n+\"\"\"\n+Funciones del lenguaje\n+\"\"\"\n+\n+print(len(\"Noxordev\"))\n+print(type(36))\n+print(\"Noxordev\".upper())\n+print(\"noxordev\".capitalize())\n+print(\"noxordev\".title())\n+print(\"noxordev\".swapcase())\n+print(\"noxordev\".lower())\n+print(\"noxordev\".upper())\n+print(\"noxordev\".capitalize())\n+print(\"noxordev\".title())\n+print(\"noxordev\".swapcase())\n+\n+\"\"\"\n+Variables locales y globales\n+\"\"\"\n+\n+global_variable = \"Python\"\n+print(global_variable)\n+\n+def hello_python():\n+    local_var = \"Hola\"\n+    print(f\"{local_var}, {global_variable}!\")\n+\n+print(global_variable)\n+hello_python()\n+\n+\"\"\"\n+Extra\n+\"\"\"\n+\n+def print_numbers(text_1, text_2)-> int:\n+    count = 0\n+    for number in range(1, 101):\n+        if number % 3 == 0 and number % 5 == 0:\n+            print(text_1 + text_2)\n+        elif number % 3 == 0:\n+            print(text_1)\n+        elif number % 5 == 0:\n+            print(text_2)\n+        else:\n+            print(number)\n+            count += 1\n+    return count\n+\n+print(print_numbers(\"Fizz\", \"Buzz\"))\n\\ No newline at end of file"
+    },
+    {
+      "sha": "770464bba7e45ca8eadb23ede12c8c5897abd100",
+      "filename": "Roadmap/03 - ESTRUCTURAS DE DATOS/python/noxordev.py",
+      "status": "added",
+      "additions": 149,
+      "deletions": 0,
+      "changes": 149,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/066b1dabc7c4ff717d5c5e83fc17053c94945806/Roadmap%2F03%20-%20ESTRUCTURAS%20DE%20DATOS%2Fpython%2Fnoxordev.py",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/066b1dabc7c4ff717d5c5e83fc17053c94945806/Roadmap%2F03%20-%20ESTRUCTURAS%20DE%20DATOS%2Fpython%2Fnoxordev.py",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F03%20-%20ESTRUCTURAS%20DE%20DATOS%2Fpython%2Fnoxordev.py?ref=066b1dabc7c4ff717d5c5e83fc17053c94945806",
+      "patch": "@@ -0,0 +1,149 @@\n+\"\"\"\n+Listas\n+\"\"\"\n+\n+from re import search\n+\n+\n+my_list = [\"Victor\", \"Juan\", \"Maria\", \"Pedro\", \"Ana\"] #Declaración de una lista\n+print(my_list)\n+\n+my_list.append(\"Luis\") #Inserción al final de la lista\n+print(my_list)\n+\n+my_list[2] = \"Andrea\" #Actualización de un elemento\n+print(my_list)\n+\n+my_list.remove(\"Juan\") #Eliminación de un elemento\n+print(my_list)\n+\n+my_list.insert(1, \"Carlos\") #Inserción en una posición específica\n+print(my_list)\n+\n+my_list.pop(2) #Eliminación de un elemento por índice\n+print(my_list)\n+\n+my_list.sort() #Ordenación de la lista\n+print(my_list)\n+print(my_list[1]) #Acceso a un elemento específico\n+print(my_list.count(\"Victor\")) #Contar el número de veces que aparece un elemento\n+print(my_list.index(\"Victor\")) #Buscar el índice de un elemento\n+print(my_list[1:3]) #Acceso a un rango de elementos\n+print(my_list[:3]) #Acceso a los primeros elementos\n+print(my_list[3:]) #Acceso a los últimos elementos\n+\n+# Tuplas (inmutables. Solo acceso)\n+\n+my_tuple = (\"Victor\", \"Juan\", \"Maria\", \"Pedro\", \"Ana\", \"11\") #Declaración de una tupla\n+print(my_tuple)\n+print(my_tuple[1]) #Acceso a un elemento específico\n+print(my_tuple.count(\"Victor\")) #Contar el número de veces que aparece un elemento\n+print(my_tuple.index(\"Victor\")) #Buscar el índice de un elemento\n+print(my_tuple[1:3]) #Acceso a un rango de elementos\n+print(my_tuple[:3]) #Acceso a los primeros elementos\n+print(my_tuple[3:]) #Acceso a los últimos elementos\n+\n+# Sets (conjunto sin orden y sin duplicados) (convvierte a hash table)\n+\n+my_set = {\"Victor\", \"Juan\", \"Maria\", \"Pedro\", \"@Ana\", \"11\"} #Declaración\n+print(my_set)\n+print((my_set))\n+my_set.add(\"Luis\")\n+print(my_set)\n+my_set.remove(\"Juan\")\n+print(my_set)\n+my_set.discard(\"Maria\")\n+print(my_set)\n+my_set.update([\"Carlos\", \"Ana\"])\n+print(my_set)\n+my_set.remove(\"Carlos\")\n+print(my_set)\n+my_set.discard(\"Ana\")\n+print(my_set)\n+my_set.clear()\n+print(my_set)\n+\n+# Diccionarios (clave-valor)\n+\n+my_dict: dict = {\n+    \"name\": \"Victor\",\n+    \"username\": \"noxordev\",\n+    \"age\": 32,\n+    \"email\": \"victor@gmail.com\"\n+} #Declaración de un diccionario\n+\n+my_dict[\"email\"] = \"victor@gmail.com\" #Inserción de un elemento\n+print(my_dict)\n+del my_dict[\"email\"] #Eliminación de un elemento\n+my_dict[\"age\"] = 33 #Actualización de un elemento\n+print(my_dict)\n+my_dict = dict(sorted(my_dict.items())) #Ordenación de un diccionario\n+print(my_dict)\n+\n+\"\"\"\n+Extra\n+\"\"\" \n+\n+def agenda():\n+\n+    agenda = {}\n+\n+    def search_contact():\n+        name = input(\"Introduce el nombre del contacto a buscar: \")\n+        if name in agenda:\n+            print(f\" -> Contacto encontrado. Nombre: {name} - Teléfono: {agenda[name]}\")\n+        else:\n+            print(\"El contacto no existe\")\n+    \n+    def add_contact():\n+        name = input(\"Introduce el nombre del contacto: \")\n+        phone = input(\"Introduce el teléfono del contacto: (máximo 11 dígitos) \")\n+        if phone.isdigit() and len(phone) > 0 and len(phone) <= 11:\n+            print(\"Formato de teléfono correcto\")\n+            agenda[name] = phone\n+            print(f\"Contacto {name} añadido correctamente\")\n+        else:\n+            print(\"Formato de teléfono incorrecto. Vuelve a introducir el teléfono del contacto.\")\n+    \n+    def update_contact():\n+        name = input(\"Introduce el nombre del contacto a actualizar: \")\n+        phone = input(\"Introduce el nuevo teléfono del contacto: (máximo 11 dígitos) \")\n+        if phone.isdigit() and len(phone) > 0 and len(phone) <= 11:\n+            print(\"Formato de teléfono correcto\")\n+            agenda[name] = phone\n+            print(f\"Contacto {name} actualizado correctamente\")\n+        else:\n+            print(\"Formato de teléfono incorrecto. Vuelve a introducir el teléfono del contacto.\")\n+    \n+    def delete_contact():\n+        name = input(\"Introduce el nombre del contacto a eliminar: \")\n+        if name in agenda:\n+            del agenda[name]\n+            print(f\"Contacto {name} eliminado correctamente\")\n+        else:\n+            print(\"El contacto no existe.\")\n+    \n+    while True:\n+    \n+        print(\"Introduce la operación que quieres realizar: \")\n+        print(\"1. Buscar contacto\")\n+        print(\"2. Añadir contacto\")\n+        print(\"3. Actualizar contacto\")\n+        print(\"4. Eliminar contacto\")\n+        print(\"5. Salir\")\n+        operation = input(\"Introduce la operación: \")\n+        if operation == \"1\":\n+            search_contact()\n+        elif operation == \"2\":\n+            add_contact()\n+        elif operation == \"3\":\n+            update_contact()\n+        elif operation == \"4\":\n+            delete_contact()\n+        elif operation == \"5\":\n+            print(\"Saliendo de la agenda...\")\n+            break\n+        else:\n+            print(\"Operación no válida. Escribe una operación del 1 al 5.\")\n+\n+agenda()"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "49281d0088796b4536f7a65bb48eb803b434c0c0",
+      "message": "Finalizado",
+      "parent_shas": [
+        "1efa929ecb14570ee812e082d8e7df73bdb67c94"
+      ]
+    },
+    {
+      "sha": "066b1dabc7c4ff717d5c5e83fc17053c94945806",
+      "message": "#03 - Python",
+      "parent_shas": [
+        "49281d0088796b4536f7a65bb48eb803b434c0c0"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_tests_detected"
+    ],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__mouredev__roadmap-retos-programacion__pr9311.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\mouredev__roadmap-retos-programacion__pr9311__python_java__mouredev__roadmap-retos-programacion__pr9311\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\mouredev__roadmap-retos-programacion__pr9311__python_java__mouredev__roadmap-retos-programacion__pr9311\\rn"
+  }
+}

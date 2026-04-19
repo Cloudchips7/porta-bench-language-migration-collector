@@ -1,0 +1,385 @@
+{
+  "instance_id": "java_python__CommunityToolkit__Aspire__pr945",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "CommunityToolkit/Aspire",
+  "pr_number": 945,
+  "pr_url": "https://github.com/CommunityToolkit/Aspire/pull/945",
+  "repo": {
+    "full_name": "CommunityToolkit/Aspire",
+    "clone_url": "https://github.com/CommunityToolkit/Aspire.git",
+    "default_branch": "main",
+    "created_at": "2024-07-04T18:06:28Z",
+    "stars": 598,
+    "license": "MIT",
+    "size_kb": 24601
+  },
+  "pull_request": {
+    "id": 2974897088,
+    "title": "Deprecate Python Extensions package - functionality moved to Aspire.Hosting.Python in v13",
+    "body": "Review Python Extensions relative to the new Python hosting integration in Aspire 13\n\n## Summary\n\nThis PR deprecates the CommunityToolkit.Aspire.Hosting.Python.Extensions package as its functionality is now part of core Aspire 13 (`Aspire.Hosting.Python`).\n\n### Background\n\nThe Aspire 13.0 release includes a complete rewrite of Python hosting integration with native support for:\n- **Uvicorn ASGI applications** via `AddUvicornApp()`\n- **UV package manager** via `WithUvEnvironment()`\n- **Virtual environment management**\n- **OpenTelemetry instrumentation**\n\nThese features were previously only available in the Community Toolkit extension package.\n\n### Changes Made\n\nAll public APIs have been marked as `[Obsolete]` with clear migration guidance:\n\n1. **`AddUvicornApp()`** - Now available in `Aspire.Hosting.Python.PythonAppResourceBuilderExtensions`\n2. **`AddUvApp()`** - Replaced by `AddPythonApp().WithUvEnvironment()`  \n3. **`UvicornAppResource`** - Now in `Aspire.Hosting.ApplicationModel` (core)\n4. **`UvAppResource`** - Superseded by core Python app functionality\n5. **`VirtualEnvironment`** (internal) - Now part of core internal implementation\n\nExtension methods are marked with `[EditorBrowsable(EditorBrowsableState.Never)]` to hide them from IntelliSense.\n\nTests and examples are retained for reference until the package is fully removed in a future release.\n\n### Migration Guide\n\n**Before (Community Toolkit):**\n```csharp\nusing CommunityToolkit.Aspire.Hosting.Python.Extensions;\n\nvar builder = DistributedApplication.CreateBuilder(args);\nbuilder.AddUvicornApp(\"myapp\", \"../myapp-api\", \"main:app\");\nbuilder.AddUvApp(\"uvapp\", \"../uv-app\", \"script\");\n```\n\n**After (Core Aspire 13):**\n```csharp\nusing Aspire.Hosting.Python;\n\nvar builder = DistributedApplication.CreateBuilder(args);\nbuilder.AddUvicornApp(\"myapp\", \"../myapp-api\", \"main:app\");\nbuilder.AddPythonApp(\"uvapp\", \"../uv-app\", \"script\").WithUvEnvironment();\n```\n\n### What's Next\n\n- APIs remain functional but show obsolete warnings\n- Methods hidden from IntelliSense with `EditorBrowsable(Never)`\n- Package will be removed in a future release\n- Users have time to migrate their applications\n- Documentation updated with deprecation notice\n- Tests and examples remain available for reference\n\nCloses #917\n\n<!-- START COPILOT CODING AGENT SUFFIX -->\n\n\n\n<details>\n\n<summary>Original prompt</summary>\n\n> \n> ----\n> \n> *This section details on the original issue you should resolve*\n> \n> <issue_title>Review the Python extensions relative to the new Python hosting integration</issue_title>\n> <issue_description>There is a large rewrite of the Python hosting integration coming in Aspire 13, including native support for uv, so we need to review what is in the Python Extensions package and deprecate anything that is now part of Aspire core.\n> \n> For the 13.0 release we'll mark the methods and such as obsolete but not remove them, giving people time to migrate their applications.</issue_description>\n> \n> <agent_instructions>Refer to the epic https://github.com/dotnet/aspire/issues/12161 for all the changes that have come through with the Python work. It's quite possible that there's no features in the Python extensions package that we will need to retain.</agent_instructions>\n> \n> ## Comments on the Issue (you are @copilot in this section)\n> \n> <comments>\n> </comments>\n> \n\n\n</details>\n\n- Fixes CommunityToolkit/Aspire#917\n\n<!-- START COPILOT CODING AGENT TIPS -->\n---\n\n💬 We'd love your input! Share your thoughts on Copilot coding agent in our [2 minute survey](https://gh.io/copilot-coding-agent-survey).\n",
+    "created_at": "2025-11-04T03:28:23Z",
+    "merged_at": "2025-11-10T00:04:52Z",
+    "base_sha": "7246c770b1694be379b36a2127d8938ff7fb9a5f",
+    "head_sha": "d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+    "merge_commit_sha": "d69466522a5f6263da52a2b7afbf5a36fe40fc57",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "0246511135a6eff89124ca62e92ecc1410a5a86c",
+  "final_sha": "d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+  "changed_files": [
+    {
+      "sha": "4347ec79786bde5742da981b9f8d7878d296038c",
+      "filename": ".github/workflows/tests.yaml",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/CommunityToolkit/Aspire/blob/d1731e826f53f8587a0eef9f232f0ea08b3dade4/.github%2Fworkflows%2Ftests.yaml",
+      "raw_url": "https://github.com/CommunityToolkit/Aspire/raw/d1731e826f53f8587a0eef9f232f0ea08b3dade4/.github%2Fworkflows%2Ftests.yaml",
+      "contents_url": "https://api.github.com/repos/CommunityToolkit/Aspire/contents/.github%2Fworkflows%2Ftests.yaml?ref=d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+      "patch": "@@ -33,13 +33,14 @@ jobs:\n             Hosting.GoFeatureFlag.Tests,\n             Hosting.Golang.Tests,\n             Hosting.Java.Tests,\n-            Hosting.Keycloak.Extensions.Tests,\n             Hosting.k6.Tests,\n+            Hosting.Keycloak.Extensions.Tests,\n             Hosting.KurrentDB.Tests,\n             Hosting.LavinMQ.Tests,\n             Hosting.MailPit.Tests,\n             Hosting.McpInspector.Tests,\n             Hosting.Meilisearch.Tests,\n+            Hosting.Minio.Tests,\n             Hosting.MongoDB.Extensions.Tests,\n             Hosting.MySql.Extensions.Tests,\n             Hosting.Ngrok.Tests,\n@@ -55,9 +56,8 @@ jobs:\n             Hosting.Rust.Tests,\n             Hosting.Solr.Tests,\n             Hosting.SqlDatabaseProjects.Tests,\n-            Hosting.SqlServer.Extensions.Tests,\n             Hosting.Sqlite.Tests,\n-            Hosting.Minio.Tests,\n+            Hosting.SqlServer.Extensions.Tests,\n             Hosting.SurrealDb.Tests,\n \n             # Client integration tests\n@@ -67,9 +67,9 @@ jobs:\n             Meilisearch.Tests,\n             Microsoft.Data.Sqlite.Tests,\n             Microsoft.EntityFrameworkCore.Sqlite.Tests,\n+            Minio.Client.Tests,\n             OllamaSharp.Tests,\n             RavenDB.Client.Tests,\n-            Minio.Client.Tests,\n             SurrealDb.Tests,\n           ]\n "
+    },
+    {
+      "sha": "c37a570026fdc22bfb9e09e3be186c9ffab36e53",
+      "filename": "CommunityToolkit.Aspire.slnx",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 10,
+      "changes": 16,
+      "blob_url": "https://github.com/CommunityToolkit/Aspire/blob/d1731e826f53f8587a0eef9f232f0ea08b3dade4/CommunityToolkit.Aspire.slnx",
+      "raw_url": "https://github.com/CommunityToolkit/Aspire/raw/d1731e826f53f8587a0eef9f232f0ea08b3dade4/CommunityToolkit.Aspire.slnx",
+      "contents_url": "https://api.github.com/repos/CommunityToolkit/Aspire/contents/CommunityToolkit.Aspire.slnx?ref=d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+      "patch": "@@ -59,10 +59,10 @@\n     <Project Path=\"examples/k6/CommunityToolkit.Aspire.Hosting.k6.ServiceDefaults/CommunityToolkit.Aspire.Hosting.k6.ServiceDefaults.csproj\" />\n   </Folder>\n   <Folder Name=\"/examples/keycloak-postgres/\">\n-    <Project Path=\"examples\\keycloak-postgres\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.AppHost\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.AppHost.csproj\" Type=\"C#\" />\n-    <Project Path=\"examples\\keycloak-postgres\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.Dev\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.Dev.csproj\" Type=\"C#\" />\n-    <Project Path=\"examples\\keycloak-postgres\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.Prod\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.Prod.csproj\" Type=\"C#\" />\n-    <Project Path=\"examples\\keycloak-postgres\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.ServiceDefaults\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.ServiceDefaults.csproj\" Type=\"C#\" />\n+    <Project Path=\"examples\\keycloak-postgres\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.AppHost\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.AppHost.csproj\" />\n+    <Project Path=\"examples\\keycloak-postgres\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.Dev\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.Dev.csproj\" />\n+    <Project Path=\"examples\\keycloak-postgres\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.Prod\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.Prod.csproj\" />\n+    <Project Path=\"examples\\keycloak-postgres\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.ServiceDefaults\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.ServiceDefaults.csproj\" />\n   </Folder>\n   <Folder Name=\"/examples/lavinmq/\">\n     <Project Path=\"examples/lavinmq/CommunityToolkit.Aspire.Hosting.LavinMQ.AppHost/CommunityToolkit.Aspire.Hosting.LavinMQ.AppHost.csproj\" />\n@@ -130,9 +130,6 @@\n   <Folder Name=\"/examples/powershell/\">\n     <Project Path=\"examples/powershell/CommunityToolkit.Aspire.PowerShell.AppHost/CommunityToolkit.Aspire.PowerShell.AppHost.csproj\" />\n   </Folder>\n-  <Folder Name=\"/examples/python/\">\n-    <Project Path=\"examples/python/CommunityToolkit.Aspire.Hosting.Python.Extensions.AppHost/CommunityToolkit.Aspire.Hosting.Python.Extensions.AppHost.csproj\" />\n-  </Folder>\n   <Folder Name=\"/examples/ravendb/\">\n     <Project Path=\"examples/ravendb/CommunityToolkit.Aspire.Hosting.RavenDB.ApiService/CommunityToolkit.Aspire.Hosting.RavenDB.ApiService.csproj\" />\n     <Project Path=\"examples/ravendb/CommunityToolkit.Aspire.Hosting.RavenDB.ServiceDefaults/CommunityToolkit.Aspire.Hosting.RavenDB.ServiceDefaults.csproj\" />\n@@ -211,7 +208,7 @@\n     <Project Path=\"src/CommunityToolkit.Aspire.OllamaSharp/CommunityToolkit.Aspire.OllamaSharp.csproj\" />\n     <Project Path=\"src/CommunityToolkit.Aspire.RavenDB.Client/CommunityToolkit.Aspire.RavenDB.Client.csproj\" />\n     <Project Path=\"src/CommunityToolkit.Aspire.SurrealDb/CommunityToolkit.Aspire.SurrealDb.csproj\" />\n-    <Project Path=\"src\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.csproj\" Type=\"C#\" />\n+    <Project Path=\"src\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions\\CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.csproj\" />\n   </Folder>\n   <Folder Name=\"/src/Dapr/\">\n     <Project Path=\"src/CommunityToolkit.Aspire.Hosting.Azure.Dapr.Redis/CommunityToolkit.Aspire.Hosting.Azure.Dapr.Redis.csproj\" />\n@@ -246,7 +243,6 @@\n     <Project Path=\"tests/CommunityToolkit.Aspire.Hosting.PapercutSmtp.Tests/CommunityToolkit.Aspire.Hosting.PapercutSmtp.Tests.csproj\" />\n     <Project Path=\"tests/CommunityToolkit.Aspire.Hosting.PostgreSQL.Extensions.Tests/CommunityToolkit.Aspire.Hosting.PostgreSQL.Extensions.Tests.csproj\" />\n     <Project Path=\"tests/CommunityToolkit.Aspire.Hosting.PowerShell.Tests/CommunityToolkit.Aspire.Hosting.PowerShell.Tests.csproj\" />\n-    <Project Path=\"tests/CommunityToolkit.Aspire.Hosting.Python.Extensions.Tests/CommunityToolkit.Aspire.Hosting.Python.Extensions.Tests.csproj\" />\n     <Project Path=\"tests/CommunityToolkit.Aspire.Hosting.RavenDB.Tests/CommunityToolkit.Aspire.Hosting.RavenDB.Tests.csproj\" />\n     <Project Path=\"tests/CommunityToolkit.Aspire.Hosting.Redis.Extensions.Tests/CommunityToolkit.Aspire.Hosting.Redis.Extensions.Tests.csproj\" />\n     <Project Path=\"tests/CommunityToolkit.Aspire.Hosting.Rust.Tests/CommunityToolkit.Aspire.Hosting.Rust.Tests.csproj\" />\n@@ -256,7 +252,7 @@\n     <Project Path=\"tests/CommunityToolkit.Aspire.Hosting.SqlServer.Extensions.Tests/CommunityToolkit.Aspire.Hosting.SqlServer.Extensions.Tests.csproj\" />\n     <Project Path=\"tests/CommunityToolkit.Aspire.Hosting.SurrealDb.Tests/CommunityToolkit.Aspire.Hosting.SurrealDb.Tests.csproj\" />\n     <Project Path=\"tests/CommunityToolkit.Aspire.KurrentDB.Tests/CommunityToolkit.Aspire.KurrentDB.Tests.csproj\" />\n-    <Project Path=\"tests/CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.Tests/CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.Tests.csproj\" Type=\"C#\" />\n+    <Project Path=\"tests/CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.Tests/CommunityToolkit.Aspire.Hosting.Keycloak.Extensions.Tests.csproj\" />\n     <Project Path=\"tests/CommunityToolkit.Aspire.MassTransit.RabbitMQ.Tests/CommunityToolkit.Aspire.MassTransit.RabbitMQ.Tests.csproj\" />\n     <Project Path=\"tests/CommunityToolkit.Aspire.Meilisearch.Tests/CommunityToolkit.Aspire.Meilisearch.Tests.csproj\" />\n     <Project Path=\"tests/CommunityToolkit.Aspire.Microsoft.Data.Sqlite.Tests/CommunityToolkit.Aspire.Microsoft.Data.Sqlite.Tests.csproj\" />"
+    },
+    {
+      "sha": "fd0fe3ad9c79d26712c017c09f20631996ca3dda",
+      "filename": "examples/python/CommunityToolkit.Aspire.Hosting.Python.Extensions.AppHost/Program.cs",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/CommunityToolkit/Aspire/blob/d1731e826f53f8587a0eef9f232f0ea08b3dade4/examples%2Fpython%2FCommunityToolkit.Aspire.Hosting.Python.Extensions.AppHost%2FProgram.cs",
+      "raw_url": "https://github.com/CommunityToolkit/Aspire/raw/d1731e826f53f8587a0eef9f232f0ea08b3dade4/examples%2Fpython%2FCommunityToolkit.Aspire.Hosting.Python.Extensions.AppHost%2FProgram.cs",
+      "contents_url": "https://api.github.com/repos/CommunityToolkit/Aspire/contents/examples%2Fpython%2FCommunityToolkit.Aspire.Hosting.Python.Extensions.AppHost%2FProgram.cs?ref=d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+      "patch": "@@ -1,4 +1,5 @@\n-#pragma warning disable CS0612\n+#pragma warning disable CS0612 // Type or member is obsolete\n+#pragma warning disable CS0618 // Type or member is obsolete\n var builder = DistributedApplication.CreateBuilder(args);\n \n builder.AddUvicornApp(\"uvicornapp\", \"../uvicornapp-api\", \"main:app\");"
+    },
+    {
+      "sha": "e9ff639fad0c1af2ac37089d8f837928041a098c",
+      "filename": "src/CommunityToolkit.Aspire.Hosting.Python.Extensions/README.md",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 0,
+      "changes": 10,
+      "blob_url": "https://github.com/CommunityToolkit/Aspire/blob/d1731e826f53f8587a0eef9f232f0ea08b3dade4/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FREADME.md",
+      "raw_url": "https://github.com/CommunityToolkit/Aspire/raw/d1731e826f53f8587a0eef9f232f0ea08b3dade4/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/CommunityToolkit/Aspire/contents/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FREADME.md?ref=d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+      "patch": "@@ -1,5 +1,15 @@\n # CommunityToolkit.Aspire.Hosting.Python.Extensions library\n \n+> **⚠️ DEPRECATION NOTICE**  \n+> This package is deprecated as of Aspire 13.0. The functionality provided by this package is now part of the core `Aspire.Hosting.Python` package.\n+>\n+> **Migration Guide:**\n+> - Replace `AddUvicornApp()` calls with `Aspire.Hosting.Python.PythonAppResourceBuilderExtensions.AddUvicornApp()`\n+> - Replace `AddUvApp()` calls with `AddPythonApp().WithUvEnvironment()`\n+> - Update resource type references from `CommunityToolkit.Aspire.Hosting.Python.Extensions.UvicornAppResource` to `Aspire.Hosting.ApplicationModel.UvicornAppResource`\n+>\n+> This package will be removed in a future release. Please migrate your applications to use the core `Aspire.Hosting.Python` package.\n+\n Provides extensions methods and resource definitions for the .NET Aspire AppHost to extend the support for Python applications. Current support includes:\n - Uvicorn\n - Uv"
+    },
+    {
+      "sha": "c17fe189af49d34309af9205a28277f47f6d526a",
+      "filename": "src/CommunityToolkit.Aspire.Hosting.Python.Extensions/UvAppHostingExtension.cs",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/CommunityToolkit/Aspire/blob/d1731e826f53f8587a0eef9f232f0ea08b3dade4/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FUvAppHostingExtension.cs",
+      "raw_url": "https://github.com/CommunityToolkit/Aspire/raw/d1731e826f53f8587a0eef9f232f0ea08b3dade4/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FUvAppHostingExtension.cs",
+      "contents_url": "https://api.github.com/repos/CommunityToolkit/Aspire/contents/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FUvAppHostingExtension.cs?ref=d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+      "patch": "@@ -1,3 +1,4 @@\n+using System.ComponentModel;\n using Aspire.Hosting.ApplicationModel;\n using CommunityToolkit.Aspire.Utils;\n \n@@ -18,6 +19,8 @@ public static class UvAppHostingExtension\n     /// <param name=\"scriptArgs\">Optional arguments to pass to the script.</param>\n     /// <returns>An <see cref=\"IResourceBuilder{UvAppResource}\"/> for the Uv application resource.</returns>\n     /// <exception cref=\"ArgumentNullException\">Thrown if <paramref name=\"builder\"/> is null.</exception>\n+    [Obsolete(\"AddUvApp is now part of Aspire.Hosting.Python. Use Aspire.Hosting.Python.PythonAppResourceBuilderExtensions.AddPythonApp with WithUvEnvironment instead. This method will be removed in a future release.\")]\n+    [EditorBrowsable(EditorBrowsableState.Never)]\n     public static IResourceBuilder<UvAppResource> AddUvApp(\n         this IDistributedApplicationBuilder builder,\n         string name,\n@@ -30,6 +33,7 @@ public static IResourceBuilder<UvAppResource> AddUvApp(\n         return builder.AddUvApp(name, scriptPath, projectDirectory, \".venv\", scriptArgs);\n     }\n \n+    [Obsolete]\n     private static IResourceBuilder<UvAppResource> AddUvApp(this IDistributedApplicationBuilder builder,\n         string name,\n         string scriptPath,"
+    },
+    {
+      "sha": "e4e2c583e8036aa634718a403ff11e38b5c1eab9",
+      "filename": "src/CommunityToolkit.Aspire.Hosting.Python.Extensions/UvAppResource.cs",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/CommunityToolkit/Aspire/blob/d1731e826f53f8587a0eef9f232f0ea08b3dade4/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FUvAppResource.cs",
+      "raw_url": "https://github.com/CommunityToolkit/Aspire/raw/d1731e826f53f8587a0eef9f232f0ea08b3dade4/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FUvAppResource.cs",
+      "contents_url": "https://api.github.com/repos/CommunityToolkit/Aspire/contents/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FUvAppResource.cs?ref=d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+      "patch": "@@ -8,6 +8,7 @@ namespace Aspire.Hosting.ApplicationModel;\n /// <param name=\"name\">The name of the resource.</param>\n /// <param name=\"executablePath\">The path to the executable used to run the python app.</param>\n /// <param name=\"workingDirectory\">The working directory for uv.</param>\n+[Obsolete(\"UvAppResource is now superseded by functionality in Aspire.Hosting.Python. Use Aspire.Hosting.Python.PythonAppResourceBuilderExtensions.AddPythonApp with WithUvEnvironment instead. This class will be removed in a future release.\")]\n public class UvAppResource(string name, string executablePath, string workingDirectory)\n     : PythonAppResource(name, executablePath, workingDirectory), IResourceWithServiceDiscovery\n {"
+    },
+    {
+      "sha": "b50187d27c90fdacf90d07437100beb1add6c4bb",
+      "filename": "src/CommunityToolkit.Aspire.Hosting.Python.Extensions/UvicornAppHostingExtension.cs",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 2,
+      "changes": 7,
+      "blob_url": "https://github.com/CommunityToolkit/Aspire/blob/d1731e826f53f8587a0eef9f232f0ea08b3dade4/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FUvicornAppHostingExtension.cs",
+      "raw_url": "https://github.com/CommunityToolkit/Aspire/raw/d1731e826f53f8587a0eef9f232f0ea08b3dade4/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FUvicornAppHostingExtension.cs",
+      "contents_url": "https://api.github.com/repos/CommunityToolkit/Aspire/contents/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FUvicornAppHostingExtension.cs?ref=d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+      "patch": "@@ -1,5 +1,5 @@\n-﻿using Aspire.Hosting.ApplicationModel;\n-using Aspire.Hosting.Python;\n+﻿using System.ComponentModel;\n+using Aspire.Hosting.ApplicationModel;\n using CommunityToolkit.Aspire.Utils;\n using UvicornAppResource = Aspire.Hosting.ApplicationModel.UvicornAppResource;\n \n@@ -20,6 +20,8 @@ public static class UvicornAppHostingExtension\n     /// <param name=\"args\">Optional arguments to pass to the script.</param>\n     /// <returns>An <see cref=\"IResourceBuilder{UvicornAppResource}\"/> for the Uvicorn application resource.</returns>\n     /// <exception cref=\"ArgumentNullException\">Thrown if <paramref name=\"builder\"/> is null.</exception>\n+    [Obsolete(\"AddUvicornApp is now part of Aspire.Hosting.Python. Use the Aspire.Hosting.Python.PythonAppResourceBuilderExtensions.AddUvicornApp method instead. This method will be removed in a future release.\")]\n+    [EditorBrowsable(EditorBrowsableState.Never)]\n     public static IResourceBuilder<UvicornAppResource> AddUvicornApp(\n         this IDistributedApplicationBuilder builder,\n         [ResourceName] string name,\n@@ -32,6 +34,7 @@ public static IResourceBuilder<UvicornAppResource> AddUvicornApp(\n         return builder.AddUvicornApp(name, projectDirectory, appName, \".venv\", args);\n     }\n \n+    [Obsolete]\n     private static IResourceBuilder<UvicornAppResource> AddUvicornApp(this IDistributedApplicationBuilder builder,\n         string name,\n         string projectDirectory,"
+    },
+    {
+      "sha": "8f52008598ba52ce37bdf49f0e3fde51cee555d9",
+      "filename": "src/CommunityToolkit.Aspire.Hosting.Python.Extensions/UvicornAppResource.cs",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/CommunityToolkit/Aspire/blob/d1731e826f53f8587a0eef9f232f0ea08b3dade4/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FUvicornAppResource.cs",
+      "raw_url": "https://github.com/CommunityToolkit/Aspire/raw/d1731e826f53f8587a0eef9f232f0ea08b3dade4/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FUvicornAppResource.cs",
+      "contents_url": "https://api.github.com/repos/CommunityToolkit/Aspire/contents/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FUvicornAppResource.cs?ref=d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+      "patch": "@@ -8,5 +8,6 @@ namespace Aspire.Hosting.ApplicationModel;\n /// <param name=\"name\">The name of the resource.</param>\n /// <param name=\"executablePath\">The path to the executable used to run the python app.</param>\n /// <param name=\"workingDirectory\">The working directory for uvicorn.</param>\n+[Obsolete(\"UvicornAppResource is now part of Aspire.Hosting.Python. Use Aspire.Hosting.ApplicationModel.UvicornAppResource instead. This class will be removed in a future release.\")]\n public class UvicornAppResource(string name, string executablePath, string workingDirectory)\n     : PythonAppResource(name, executablePath, workingDirectory), IResourceWithServiceDiscovery;\n\\ No newline at end of file"
+    },
+    {
+      "sha": "b6abaea147123ff5809ea31496273eb9d7611f86",
+      "filename": "src/CommunityToolkit.Aspire.Hosting.Python.Extensions/VirtualEnvironment.cs",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/CommunityToolkit/Aspire/blob/d1731e826f53f8587a0eef9f232f0ea08b3dade4/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FVirtualEnvironment.cs",
+      "raw_url": "https://github.com/CommunityToolkit/Aspire/raw/d1731e826f53f8587a0eef9f232f0ea08b3dade4/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FVirtualEnvironment.cs",
+      "contents_url": "https://api.github.com/repos/CommunityToolkit/Aspire/contents/src%2FCommunityToolkit.Aspire.Hosting.Python.Extensions%2FVirtualEnvironment.cs?ref=d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+      "patch": "@@ -2,6 +2,7 @@\n \n namespace Aspire.Hosting.ApplicationModel;\n \n+[Obsolete(\"VirtualEnvironment is now part of Aspire.Hosting.Python internal implementation. Use Aspire.Hosting.Python.PythonAppResourceBuilderExtensions.WithVirtualEnvironment or WithUvEnvironment instead. This class will be removed in a future release.\")]\n internal sealed class VirtualEnvironment(string virtualEnvironmentPath)\n {\n     /// <summary>"
+    },
+    {
+      "sha": "de0d94f198a761142b94c0ce52dc5b6b376b5ca2",
+      "filename": "tests/CommunityToolkit.Aspire.Hosting.Python.Extensions.Tests/AppHostTests.cs",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/CommunityToolkit/Aspire/blob/d1731e826f53f8587a0eef9f232f0ea08b3dade4/tests%2FCommunityToolkit.Aspire.Hosting.Python.Extensions.Tests%2FAppHostTests.cs",
+      "raw_url": "https://github.com/CommunityToolkit/Aspire/raw/d1731e826f53f8587a0eef9f232f0ea08b3dade4/tests%2FCommunityToolkit.Aspire.Hosting.Python.Extensions.Tests%2FAppHostTests.cs",
+      "contents_url": "https://api.github.com/repos/CommunityToolkit/Aspire/contents/tests%2FCommunityToolkit.Aspire.Hosting.Python.Extensions.Tests%2FAppHostTests.cs?ref=d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+      "patch": "@@ -3,6 +3,8 @@\n namespace CommunityToolkit.Aspire.Hosting.Python.Extensions.Tests;\n \n #pragma warning disable CTASPIRE001\n+#pragma warning disable CS0612 // Type or member is obsolete\n+#pragma warning disable CS0618 // Type or member is obsolete\n public class AppHostTests(AspireIntegrationTestFixture<Projects.CommunityToolkit_Aspire_Hosting_Python_Extensions_AppHost> fixture) : IClassFixture<AspireIntegrationTestFixture<Projects.CommunityToolkit_Aspire_Hosting_Python_Extensions_AppHost>>\n {\n     [Theory(Skip = \"To be reviewed with https://github.com/CommunityToolkit/Aspire/issues/917\")]"
+    },
+    {
+      "sha": "7e08a05387f9ffe7b9f2450f5a41003436e0fe8a",
+      "filename": "tests/CommunityToolkit.Aspire.Hosting.Python.Extensions.Tests/ResourceCreationTests.cs",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/CommunityToolkit/Aspire/blob/d1731e826f53f8587a0eef9f232f0ea08b3dade4/tests%2FCommunityToolkit.Aspire.Hosting.Python.Extensions.Tests%2FResourceCreationTests.cs",
+      "raw_url": "https://github.com/CommunityToolkit/Aspire/raw/d1731e826f53f8587a0eef9f232f0ea08b3dade4/tests%2FCommunityToolkit.Aspire.Hosting.Python.Extensions.Tests%2FResourceCreationTests.cs",
+      "contents_url": "https://api.github.com/repos/CommunityToolkit/Aspire/contents/tests%2FCommunityToolkit.Aspire.Hosting.Python.Extensions.Tests%2FResourceCreationTests.cs?ref=d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+      "patch": "@@ -2,7 +2,8 @@\n \n namespace CommunityToolkit.Aspire.Hosting.Python.Extensions.Tests;\n \n-#pragma warning disable CS0612\n+#pragma warning disable CS0612 // Type or member is obsolete\n+#pragma warning disable CS0618 // Type or member is obsolete\n public class ResourceCreationTests\n {\n     [Fact(Skip = \"Being removed with https://github.com/CommunityToolkit/Aspire/issues/917\")]"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "7efe0a9bd19dba698ad8c7b35c73d8930935e48e",
+      "message": "baseline branch for the next major release",
+      "parent_shas": [
+        "0246511135a6eff89124ca62e92ecc1410a5a86c"
+      ]
+    },
+    {
+      "sha": "2ebfea3531f60f7e496bb844bc8faa2df4e87d10",
+      "message": "Updating nightly",
+      "parent_shas": [
+        "7efe0a9bd19dba698ad8c7b35c73d8930935e48e"
+      ]
+    },
+    {
+      "sha": "06d598517e91518de3d803a89482dfa313202075",
+      "message": "Remove deprecated IDistributedApplicationLifecycleHook interface (#915)\n\n* Initial plan\n\n* Replace IDistributedApplicationLifecycleHook with event-based patterns\n\nCo-authored-by: aaronpowell <434140+aaronpowell@users.noreply.github.com>\n\n* Add tests for installer resources and update Dapr tests\n\nCo-authored-by: aaronpowell <434140+aaronpowell@users.noreply.github.com>\n\n* Refactor Dapr to use IDistributedApplicationEventingSubscriber\n\nCo-authored-by: aaronpowell <434140+aaronpowell@users.noreply.github.com>\n\n* Fixing build issue\n\n* Updating the endpoint port\n\n* Disabling some tests so we can move forward in other parts of the Aspire 13 update\n\n---------\n\nCo-authored-by: copilot-swe-agent[bot] <198982749+Copilot@users.noreply.github.com>\nCo-authored-by: aaronpowell <434140+aaronpowell@users.noreply.github.com>\nCo-authored-by: Aaron Powell <me@aaron-powell.com>",
+      "parent_shas": [
+        "2ebfea3531f60f7e496bb844bc8faa2df4e87d10"
+      ]
+    },
+    {
+      "sha": "39987148933e46fbea6fdb2b0008c7a264ec64dd",
+      "message": "Merge branch 'main' into aspire-13",
+      "parent_shas": [
+        "06d598517e91518de3d803a89482dfa313202075",
+        "c56414bc08eba3316996b3a0b59dbfa7bb78683c"
+      ]
+    },
+    {
+      "sha": "8854f05c349207912cbbb29c78cb1f05b9bb95c2",
+      "message": "Adjusting the version of keycloak",
+      "parent_shas": [
+        "39987148933e46fbea6fdb2b0008c7a264ec64dd"
+      ]
+    },
+    {
+      "sha": "8ed05c2baea115f5150427d78b9eeac3fbe37d6e",
+      "message": "Updating aspire nightly",
+      "parent_shas": [
+        "8854f05c349207912cbbb29c78cb1f05b9bb95c2"
+      ]
+    },
+    {
+      "sha": "021a7aea551599c6cb731365a7327b1bbd0cc7b6",
+      "message": "Merge branch 'main' into aspire-13",
+      "parent_shas": [
+        "8ed05c2baea115f5150427d78b9eeac3fbe37d6e",
+        "9e0f1a7692572752847eb040ac6551b1e70285a4"
+      ]
+    },
+    {
+      "sha": "573fa531a9f59519d1eba8eb7da85bea091fc346",
+      "message": "New nightly",
+      "parent_shas": [
+        "021a7aea551599c6cb731365a7327b1bbd0cc7b6"
+      ]
+    },
+    {
+      "sha": "18787c38d5b8267a2ed7254f2185ac14ecf6f262",
+      "message": "Remove npm functionality moved to Aspire 13 (#928)\n\n* Initial plan\n\n* Remove AddViteApp and npm-specific functionality (moved to Aspire 13)\n\nCo-authored-by: aaronpowell <434140+aaronpowell@users.noreply.github.com>\n\n* Update comments and tests to reflect npm removal\n\nCo-authored-by: aaronpowell <434140+aaronpowell@users.noreply.github.com>\n\n* Update MONOREPO.md to remove npm references\n\nCo-authored-by: aaronpowell <434140+aaronpowell@users.noreply.github.com>\n\n* Adding missing types\n\n* Bad copilot code\n\n* Fixing missing namespace\n\n* Handling port forwarding\n\n* removing more stuff that has been migrated to aspire core\n\n* Reworking how package installing is handled\n\n* daily update\n\n* Adding back the annotation that is no longer moving to core\n\n* Forgot to install packages\n\n* adding a bunch more annotations to provide enough metadata\n\n* Removing old demo apps\n\n* Disabling python tests\n\n* Removing a testing change\n\n* Updating to the latest nightly and dealing with type name changes\n\n* Removing type that was can repurpose from aspire core\n\n* breaking the tests down so they are easier to read\n\n* Removing legacy docs\n\n* Fixing failing tests\n\n---------\n\nCo-authored-by: copilot-swe-agent[bot] <198982749+Copilot@users.noreply.github.com>\nCo-authored-by: aaronpowell <434140+aaronpowell@users.noreply.github.com>\nCo-authored-by: Aaron Powell <me@aaron-powell.com>",
+      "parent_shas": [
+        "021a7aea551599c6cb731365a7327b1bbd0cc7b6"
+      ]
+    },
+    {
+      "sha": "eef3b5c1772bf2bcc0436c1a839404d41f890406",
+      "message": "Merge branch 'main' into aspire-13",
+      "parent_shas": [
+        "18787c38d5b8267a2ed7254f2185ac14ecf6f262",
+        "4ad68adc80c86c4856841f59c4c1254c638cfe34"
+      ]
+    },
+    {
+      "sha": "0be207f690d0b402ff62a538ceb2c9104ebe939d",
+      "message": "Initial plan",
+      "parent_shas": [
+        "eef3b5c1772bf2bcc0436c1a839404d41f890406"
+      ]
+    },
+    {
+      "sha": "8d2b44bd75756cbccbc5e5e43de436d6db4288c5",
+      "message": "Mark Python Extensions APIs as obsolete for Aspire 13\n\nCo-authored-by: aaronpowell <434140+aaronpowell@users.noreply.github.com>",
+      "parent_shas": [
+        "0be207f690d0b402ff62a538ceb2c9104ebe939d"
+      ]
+    },
+    {
+      "sha": "7c3b2aae0ce6a367a3de6bcd22f86ee31030c3a4",
+      "message": "Merge branch 'aspire-13' of https://github.com/CommunityToolkit/Aspire into aspire-13",
+      "parent_shas": [
+        "573fa531a9f59519d1eba8eb7da85bea091fc346",
+        "eef3b5c1772bf2bcc0436c1a839404d41f890406"
+      ]
+    },
+    {
+      "sha": "cbccc34643239a6cde80c7488ff239ab4caa3713",
+      "message": "Merge branch 'aspire-13' into copilot/review-python-extensions",
+      "parent_shas": [
+        "8d2b44bd75756cbccbc5e5e43de436d6db4288c5",
+        "7c3b2aae0ce6a367a3de6bcd22f86ee31030c3a4"
+      ]
+    },
+    {
+      "sha": "c0e0d7710b284610af55afd33f65ec300a7ffaa5",
+      "message": "Add EditorBrowsable(Never) to obsolete extension methods\n\nCo-authored-by: aaronpowell <434140+aaronpowell@users.noreply.github.com>",
+      "parent_shas": [
+        "cbccc34643239a6cde80c7488ff239ab4caa3713"
+      ]
+    },
+    {
+      "sha": "76cfd8edb94539fe272ff32e3b3deaf62a42489b",
+      "message": "Fixing failing test",
+      "parent_shas": [
+        "7c3b2aae0ce6a367a3de6bcd22f86ee31030c3a4"
+      ]
+    },
+    {
+      "sha": "b6801e6c532eead0daf51014a0fa9426372dafad",
+      "message": "Merge branch 'aspire-13' into copilot/review-python-extensions",
+      "parent_shas": [
+        "c0e0d7710b284610af55afd33f65ec300a7ffaa5",
+        "76cfd8edb94539fe272ff32e3b3deaf62a42489b"
+      ]
+    },
+    {
+      "sha": "4e1a79754cdee7cbaab7239839c7bb50f7d5d0e1",
+      "message": "Remove deprecated Python tests and examples\n\nCo-authored-by: aaronpowell <434140+aaronpowell@users.noreply.github.com>",
+      "parent_shas": [
+        "b6801e6c532eead0daf51014a0fa9426372dafad"
+      ]
+    },
+    {
+      "sha": "aae2060f4f4b33bf9f29034577388905de056e7b",
+      "message": "Fixing compiler issues",
+      "parent_shas": [
+        "4e1a79754cdee7cbaab7239839c7bb50f7d5d0e1"
+      ]
+    },
+    {
+      "sha": "0c31c45353f6fe1d786514c778153a22db10d13c",
+      "message": "Removing Python tests from the list",
+      "parent_shas": [
+        "aae2060f4f4b33bf9f29034577388905de056e7b"
+      ]
+    },
+    {
+      "sha": "ee45cff7faad8adf78fd040ed20833243fc3c3b0",
+      "message": "Dropping a namespace",
+      "parent_shas": [
+        "0c31c45353f6fe1d786514c778153a22db10d13c"
+      ]
+    },
+    {
+      "sha": "4380b16feada10a8fee280263d023acbc1a53208",
+      "message": "Merge branch 'main' into copilot/review-python-extensions",
+      "parent_shas": [
+        "ee45cff7faad8adf78fd040ed20833243fc3c3b0",
+        "a22d4f8fb5f0afba50db170f7f8c01f642e22c8e"
+      ]
+    },
+    {
+      "sha": "91875c64ddf859a66ab3778fd903052407fa4de4",
+      "message": "Revert deletion of Python examples and tests\n\nCo-authored-by: aaronpowell <434140+aaronpowell@users.noreply.github.com>",
+      "parent_shas": [
+        "ee45cff7faad8adf78fd040ed20833243fc3c3b0"
+      ]
+    },
+    {
+      "sha": "81a3b4bc23aa54b83d394514a6dab5e83c453ee4",
+      "message": "Merge branch 'copilot/review-python-extensions' of https://github.com/CommunityToolkit/Aspire into copilot/review-python-extensions",
+      "parent_shas": [
+        "4380b16feada10a8fee280263d023acbc1a53208",
+        "91875c64ddf859a66ab3778fd903052407fa4de4"
+      ]
+    },
+    {
+      "sha": "6c009123ebf4c98bbff278641f4723815ab476a2",
+      "message": "Merge branch 'main' into copilot/review-python-extensions",
+      "parent_shas": [
+        "81a3b4bc23aa54b83d394514a6dab5e83c453ee4",
+        "7246c770b1694be379b36a2127d8938ff7fb9a5f"
+      ]
+    },
+    {
+      "sha": "d1731e826f53f8587a0eef9f232f0ea08b3dade4",
+      "message": "Fixing test list",
+      "parent_shas": [
+        "6c009123ebf4c98bbff278641f4723815ab476a2"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "java_python_bridge_noise",
+      "no_code_changes",
+      "too_many_commits"
+    ],
+    "auto_signals": [
+      "java_python_bridge_noise",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__CommunityToolkit__Aspire__pr945.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\CommunityToolkit__Aspire__pr945__java_python__CommunityToolkit__Aspire__pr945\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\CommunityToolkit__Aspire__pr945__java_python__CommunityToolkit__Aspire__pr945\\rn"
+  }
+}

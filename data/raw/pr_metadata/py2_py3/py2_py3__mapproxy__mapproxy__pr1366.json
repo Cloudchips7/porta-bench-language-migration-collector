@@ -1,0 +1,110 @@
+{
+  "instance_id": "py2_py3__mapproxy__mapproxy__pr1366",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "mapproxy/mapproxy",
+  "pr_number": 1366,
+  "pr_url": "https://github.com/mapproxy/mapproxy/pull/1366",
+  "repo": {
+    "full_name": "mapproxy/mapproxy",
+    "clone_url": "https://github.com/mapproxy/mapproxy.git",
+    "default_branch": "master",
+    "created_at": "2012-04-23T07:36:34Z",
+    "stars": 649,
+    "license": "Apache-2.0",
+    "size_kb": 34934
+  },
+  "pull_request": {
+    "id": 3174022124,
+    "title": "Collections no case multi dict",
+    "body": "NoCaseMultiDict:\r\n\r\nDictionary with case-insensitive keys and support for multiple values per key. The first inserted key spelling is preserved.\r\n\r\ninherit from `MutableMapping[str, V], Generic[V]` to make it more typesafe - but why not `MutableMapping[str, list[V]]?\r\n\r\nBecause `__getitem__` (`[]` access) returns just the first value!\r\n\r\nThe special method `get_all` is used to get all values for one key.\r\n\r\nInheriting from `MutableMapping[str, V], Generic[V]` breaks the signature of the custom `update` method so a new `update_multi` method is introduced.\r\n\r\nIt als breaks the signature of `iteritems` (becoming `items`), in the old version it yielded `(str, list[V])`, but with `Mapping[str, V]` it is only allowed to yield `(str, V)`. So a new `items_multi` method is introduced.\r\n\r\nOverall this changes make the standard API behave more consistent (signatures of `__getitem__`, `update` and `items` fit together).\r\n\r\nAlso the `type_func` for the `get` method is also breaking the api. As it is very easy to replace `ncmd.get('x', type_func=int)` with `int(ncmd.get('x'))`, I just did that.\r\n\r\n<!--\r\n\r\nMapProxy is governed by a [Project Steering Committee (PSC)][1].\r\nThe PSC makes decisions on all aspects of the MapProxy project - both technical and non-technical.\r\nMost decisions require a vote by the PSC on the [mapproxy-dev mailing list][2].\r\n\r\nPlease contact the [mapproxy-dev list][2] with a Request For Change (RFC) proposal if your pull request matches any item below:\r\n\r\n- Changes to project infrastructure (e.g. tool, location or substantive configuration)\r\n- Anything that could cause backward compatibility issues.\r\n- Adding substantial amounts of new code.\r\n- Changing inter-subsystem APIs, or objects.\r\n- Anything that might be controversial.\r\n\r\nYou can read more about the voting process in the [PSC Guidelines][2].\r\n\r\n[1]: https://github.com/mapproxy/mapproxy/wiki/PSC-Guidelines\r\n[2]: https://lists.osgeo.org/mailman/listinfo/mapproxy-dev\r\n\r\n-->\r\n",
+    "created_at": "2026-01-14T15:46:58Z",
+    "merged_at": "2026-01-15T09:26:26Z",
+    "base_sha": "3d2f701e5ba2bf58c49d5315e9f01d24418cd87e",
+    "head_sha": "07317e3a04238fd06394c7cf979ec4ca8d220083",
+    "merge_commit_sha": "af25b3d7fe27234121393564987643bf5e2091a7",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "4f9b9453acdc24620c63932953aae258b1a6bed5",
+  "final_sha": "07317e3a04238fd06394c7cf979ec4ca8d220083",
+  "changed_files": [
+    {
+      "sha": "cee3d17fba2b718032a5e992cc1933d54c14725d",
+      "filename": "mapproxy/request/no_case_multi_dict.py",
+      "status": "modified",
+      "additions": 75,
+      "deletions": 123,
+      "changes": 198,
+      "blob_url": "https://github.com/mapproxy/mapproxy/blob/07317e3a04238fd06394c7cf979ec4ca8d220083/mapproxy%2Frequest%2Fno_case_multi_dict.py",
+      "raw_url": "https://github.com/mapproxy/mapproxy/raw/07317e3a04238fd06394c7cf979ec4ca8d220083/mapproxy%2Frequest%2Fno_case_multi_dict.py",
+      "contents_url": "https://api.github.com/repos/mapproxy/mapproxy/contents/mapproxy%2Frequest%2Fno_case_multi_dict.py?ref=07317e3a04238fd06394c7cf979ec4ca8d220083",
+      "patch": "@@ -1,6 +1,13 @@\n-class NoCaseMultiDict(dict):\n+from typing import TypeVar, Generic, Iterable, Iterator, MutableMapping\n+\n+V = TypeVar(\"V\")\n+T = TypeVar(\"T\")\n+\n+\n+class NoCaseMultiDict(MutableMapping[str, V], Generic[V]):\n     \"\"\"\n-    This is a dictionary that allows case insensitive access to values.\n+    Dictionary with case-insensitive keys and support for multiple values\n+    per key. The first inserted key spelling is preserved.\n \n     >>> d = NoCaseMultiDict([('A', 'b'), ('a', 'c'), ('B', 'f'), ('c', 'x'), ('c', 'y'), ('c', 'z')])\n     >>> d['a']\n@@ -11,131 +18,76 @@ class NoCaseMultiDict(dict):\n     True\n     \"\"\"\n \n-    def _gen_dict(self, mapping=()):\n-        \"\"\"A `NoCaseMultiDict` can be constructed from an iterable of\n-        ``(key, value)`` tuples or a dict.\n-        \"\"\"\n-        tmp = {}\n+    def __init__(self, mapping: Iterable[tuple[str, V]] | dict[str, V] | \"NoCaseMultiDict[V]\" = ()) -> None:\n+        self._data: dict[str, tuple[str, list[V]]] = {}\n+        self.update_multi(mapping, append=True)\n+\n+    def _key(self, key: str) -> str:\n+        return key.lower()\n+\n+    def update_multi(self, mapping: Iterable[tuple[str, V]] | dict[str, V] | \"NoCaseMultiDict[V]\",\n+                     append: bool = False) -> None:\n         if isinstance(mapping, NoCaseMultiDict):\n-            for key, value in mapping.iteritems():\n-                tmp.setdefault(key.lower(), (key, []))[1].extend(value)\n-        else:\n-            if isinstance(mapping, dict):\n-                itr = mapping.items()\n-            else:\n-                itr = iter(mapping)\n-            for key, value in itr:\n-                tmp.setdefault(key.lower(), (key, []))[1].append(value)\n-        return tmp\n-\n-    def __init__(self, mapping=()):\n-        \"\"\"A `NoCaseMultiDict` can be constructed from an iterable of\n-        ``(key, value)`` tuples or a dict.\n-        \"\"\"\n-        super().__init__(self._gen_dict(mapping))\n-\n-    def update(self, mapping=(), append=False):\n-        \"\"\"A `NoCaseMultiDict` can be updated from an iterable of\n-        ``(key, value)`` tuples or a dict.\n-        \"\"\"\n-        for _, (key, values) in self._gen_dict(mapping).items():\n-            self.set(key, values, append=append, unpack=True)\n-\n-    def __getitem__(self, key):\n-        \"\"\"\n-        Return the first data value for this key.\n-\n-        :raise KeyError: if the key does not exist\n-        \"\"\"\n-        if key in self:\n-            return dict.__getitem__(self, key.lower())[1][0]\n-        raise KeyError(key)\n-\n-    def __setitem__(self, key, value):\n-        dict.setdefault(self, key.lower(), (key, []))[1][:] = [value]\n-\n-    def __delitem__(self, key):\n-        dict.__delitem__(self, key.lower())\n-\n-    def __contains__(self, key):\n-        return dict.__contains__(self, key.lower())\n-\n-    def __getstate__(self):\n-        data = []\n-        for key, values in self.iteritems():\n-            for v in values:\n-                data.append((key, v))\n-        return data\n-\n-    def __setstate__(self, data):\n-        self.__init__(data)\n-\n-    def get(self, key, default=None, type_func=None):\n-        \"\"\"Return the default value if the requested data doesn't exist.\n-        If `type_func` is provided and is a callable it should convert the value,\n-        return it or raise a `ValueError` if that is not possible.  In this\n-        case the function will return the default as if the value was not\n-        found.\n-\n-        Example:\n-\n-        >>> d = NoCaseMultiDict(dict(foo='42', bar='blub'))\n-        >>> d.get('foo', type_func=int)\n-        42\n-        >>> d.get('bar', -1, type_func=int)\n-        -1\n-        \"\"\"\n-        try:\n-            rv = self[key]\n-            if type_func is not None:\n-                rv = type_func(rv)\n-        except (KeyError, ValueError):\n-            rv = default\n-        return rv\n-\n-    def get_all(self, key):\n-        \"\"\"\n-        Return all values for the key as a list. Returns an empty list, if\n-        the key doesn't exist.\n-        \"\"\"\n-        if key in self:\n-            return dict.__getitem__(self, key.lower())[1]\n+            for key, values in mapping.items_multi():\n+                self.set(key, values, append=append, unpack=True)\n+        elif isinstance(mapping, dict):\n+            for key2, value2 in mapping.items():\n+                self.set(key2, value2, append=append)\n         else:\n-            return []\n-\n-    def set(self, key, value, append=False, unpack=False):\n-        \"\"\"\n-        Set a `value` for the `key`. If `append` is ``True`` the value will be added\n-        to other values for this `key`.\n-\n-        If `unpack` is True, `value` will be unpacked and each item will be added.\n-        \"\"\"\n-        if key in self:\n-            if not append:\n-                dict.__getitem__(self, key.lower())[1][:] = []\n-        else:\n-            dict.__setitem__(self, key.lower(), (key, []))\n+            for key3, value3 in mapping:\n+                self.set(key3, value3, append=append)\n+\n+    def __getitem__(self, key: str) -> V:\n+        if not self._key(key) in self._data:\n+            raise KeyError(key) from None\n+\n+        return self._data[self._key(key)][1][0]\n+\n+    def __setitem__(self, key: str, value: V) -> None:\n+        self._data[self._key(key)] = (key, [value])\n+\n+    def __delitem__(self, key: str) -> None:\n+        del self._data[self._key(key)]\n+\n+    def __iter__(self) -> Iterator[str]:\n+        for original_key, _ in self._data.values():\n+            yield original_key\n+\n+    def __len__(self) -> int:\n+        return len(self._data)\n+\n+    def __getstate__(self) -> list[tuple[str, V]]:\n+        return [(k, v) for k, vs in self.items_multi() for v in vs]\n+\n+    def __setstate__(self, state: Iterable[tuple[str, V]]) -> None:\n+        self._data = {}\n+        self.update_multi(state)\n+\n+    def get_all(self, key: str) -> list[V]:\n+        return self._data.get(self._key(key), (\"\", []))[1]\n+\n+    def set(self, key: str, value: V | Iterable[V], *, append: bool = False, unpack: bool = False) -> None:\n+        key_l = self._key(key)\n+\n+        if key_l not in self._data:\n+            self._data[key_l] = (key, [])\n+\n+        _, values = self._data[key_l]\n+\n+        if not append:\n+            values.clear()\n+\n         if unpack:\n-            for v in value:\n-                dict.__getitem__(self, key.lower())[1].append(v)\n+            values.extend(value)  # type: ignore[arg-type]\n         else:\n-            dict.__getitem__(self, key.lower())[1].append(value)\n+            values.append(value)  # type: ignore[arg-type]\n \n-    def iteritems(self):\n-        \"\"\"\n-        Iterates over all keys and values.\n-        \"\"\"\n-        for _, (key, values) in dict.items(self):\n+    def items_multi(self) -> Iterator[tuple[str, list[V]]]:\n+        for key, values in self._data.values():\n             yield key, values\n \n-    def copy(self):\n-        \"\"\"\n-        Returns a copy of this object.\n-        \"\"\"\n-        return self.__class__(self)\n-\n-    def __repr__(self):\n-        tmp = []\n-        for key, values in self.iteritems():\n-            tmp.append((key, values))\n-        return '%s(%r)' % (self.__class__.__name__, tmp)\n+    def copy(self) -> \"NoCaseMultiDict[V]\":\n+        return NoCaseMultiDict(self)\n+\n+    def __repr__(self) -> str:\n+        return f\"{self.__class__.__name__}({list(self.items_multi())!r})\""
+    },
+    {
+      "sha": "e9f5200b797fc7e37806af2f0455fd7a3925d289",
+      "filename": "mapproxy/request/request_params.py",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 16,
+      "changes": 34,
+      "blob_url": "https://github.com/mapproxy/mapproxy/blob/07317e3a04238fd06394c7cf979ec4ca8d220083/mapproxy%2Frequest%2Frequest_params.py",
+      "raw_url": "https://github.com/mapproxy/mapproxy/raw/07317e3a04238fd06394c7cf979ec4ca8d220083/mapproxy%2Frequest%2Frequest_params.py",
+      "contents_url": "https://api.github.com/repos/mapproxy/mapproxy/contents/mapproxy%2Frequest%2Frequest_params.py?ref=07317e3a04238fd06394c7cf979ec4ca8d220083",
+      "patch": "@@ -1,9 +1,10 @@\n+from typing import Union\n from urllib.parse import quote\n \n from mapproxy.request.no_case_multi_dict import NoCaseMultiDict\n \n \n-class RequestParams(object):\n+class RequestParams:\n     \"\"\"\n     This class represents key-value request parameters. It allows case-insensitive\n     access to all keys. Multiple values for a single key will be concatenated\n@@ -13,25 +14,26 @@ class RequestParams(object):\n \n     :param param: A dict or ``NoCaseMultiDict``.\n     \"\"\"\n-    params = None\n+    params: NoCaseMultiDict = NoCaseMultiDict()\n \n-    def __init__(self, param=None):\n+    def __init__(self, param: 'Union[dict[str, str]|NoCaseMultiDict[str]|RequestParams|None]' = None):\n         self.delimiter = ','\n \n-        if param is None:\n-            self.params = NoCaseMultiDict()\n-        else:\n+        if isinstance(param, RequestParams):\n+            self.params = param.params.copy()\n+        elif isinstance(param, NoCaseMultiDict) or isinstance(param, dict):\n             self.params = NoCaseMultiDict(param)\n+        elif param is not None:\n+            raise ValueError('param has invalid value')\n \n     def __str__(self):\n         return self.query_string\n \n-    def get(self, key, default=None, type_func=None):\n+    def get(self, key, default=None):\n         \"\"\"\n-        Returns the value for `key` or the `default`. `type_func` is called on the\n-        value to alter the value (e.g. use ``type_func=int`` to get ints).\n+        Returns the value for `key` or the `default`.\n         \"\"\"\n-        return self.params.get(key, default, type_func)\n+        return self.params.get(key, default)\n \n     def set(self, key, value, append=False, unpack=False):\n         \"\"\"\n@@ -50,7 +52,7 @@ def update(self, mapping=(), append=False):\n         If `append` is ``True`` the value will be added to other values for\n         this `key`.\n         \"\"\"\n-        self.params.update(mapping, append=append)\n+        self.params.update_multi(mapping, append=append)\n \n     def __getattr__(self, name):\n         if name in self:\n@@ -73,7 +75,7 @@ def __delitem__(self, key):\n             del self.params[key]\n \n     def iteritems(self):\n-        for key, values in self.params.iteritems():\n+        for key, values in self.params.items_multi():\n             yield key, self.delimiter.join((str(x) for x in values))\n \n     def __contains__(self, key):\n@@ -92,7 +94,7 @@ def query_string(self):\n         ['bar=ham%25eggs', 'baz=100', 'foo=egg']\n         \"\"\"\n         kv_pairs = []\n-        for key, values in self.params.iteritems():\n+        for key, values in self.params.items_multi():\n             value = ','.join(str(v) for v in values)\n             kv_pairs.append(key + '=' + quote(value.encode('utf-8'), safe=','))\n         return '&'.join(kv_pairs)\n@@ -102,7 +104,7 @@ def with_defaults(self, defaults):\n         Return this MapRequest with all values from `defaults` overwritten.\n         \"\"\"\n         new = self.copy()\n-        for key, value in defaults.params.iteritems():\n-            if value != [None]:\n-                new.set(key, value, unpack=True)\n+        for key, values in defaults.params.items_multi():\n+            if values != [None]:\n+                new.set(key, values, unpack=True)\n         return new"
+    },
+    {
+      "sha": "5c0dc5a016239c94f831695ed12656cd8d2e85ab",
+      "filename": "mapproxy/test/unit/test_request.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/mapproxy/mapproxy/blob/07317e3a04238fd06394c7cf979ec4ca8d220083/mapproxy%2Ftest%2Funit%2Ftest_request.py",
+      "raw_url": "https://github.com/mapproxy/mapproxy/raw/07317e3a04238fd06394c7cf979ec4ca8d220083/mapproxy%2Ftest%2Funit%2Ftest_request.py",
+      "contents_url": "https://api.github.com/repos/mapproxy/mapproxy/contents/mapproxy%2Ftest%2Funit%2Ftest_request.py?ref=07317e3a04238fd06394c7cf979ec4ca8d220083",
+      "patch": "@@ -66,11 +66,11 @@ def test_from_dict(self):\n         assert nc_dict.get_all(\"layers\") == [\"foo,bar\", \"baz\"]\n         assert nc_dict.get_all(\"crs\") == [\"EPSG:4326\"]\n \n-    def test_iteritems(self):\n+    def test_items(self):\n         data = [(\"LAYERS\", \"foo,bar\"), (\"laYERs\", \"baz\"), (\"crs\", \"EPSG:4326\")]\n         nc_dict = NoCaseMultiDict(data)\n \n-        for key, values in nc_dict.iteritems():\n+        for key, values in nc_dict.items_multi():\n             if key in (\"LAYERS\", \"laYERs\"):\n                 assert values == [\"foo,bar\", \"baz\"]\n             elif key == \"crs\":\n@@ -98,7 +98,7 @@ def test_get(self):\n         assert nc_dict.get(\"bar\") is None\n         assert nc_dict.get(\"bar\", \"default_bar\") == \"default_bar\"\n         assert nc_dict.get(\"num\") == \"42\"\n-        assert nc_dict.get(\"num\", type_func=int) == 42\n+        assert int(nc_dict.get(\"num\")) == 42\n         assert nc_dict.get(\"foo\") == \"bar\"\n \n     def test_get_all(self):\n@@ -543,7 +543,7 @@ def test_query_string_encoding(self):\n \n     def test_get(self):\n         assert self.m.get(\"LAYERS\") == \"bar\"\n-        assert self.m.get(\"width\", type_func=int) == 100\n+        assert int(self.m.get(\"width\")) == 100\n \n     def test_set(self):\n         self.m.set(\"Layers\", \"baz\", append=True)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "491ca0078b870bb3a67728410a5d5ce97233c4b3",
+      "message": "feat: improve typing of NoCaseMultiDict",
+      "parent_shas": [
+        "4f9b9453acdc24620c63932953aae258b1a6bed5"
+      ]
+    },
+    {
+      "sha": "07317e3a04238fd06394c7cf979ec4ca8d220083",
+      "message": "fix: remove type_func from get for NoCaseMultiDict and RequestParams",
+      "parent_shas": [
+        "491ca0078b870bb3a67728410a5d5ce97233c4b3"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__mapproxy__mapproxy__pr1366.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\mapproxy__mapproxy__pr1366__py2_py3__mapproxy__mapproxy__pr1366\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\mapproxy__mapproxy__pr1366__py2_py3__mapproxy__mapproxy__pr1366\\rn"
+  }
+}

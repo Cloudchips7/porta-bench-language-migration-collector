@@ -1,0 +1,126 @@
+{
+  "instance_id": "py2_py3__pycontribs__jenkinsapi__pr1130",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "pycontribs/jenkinsapi",
+  "pr_number": 1130,
+  "pr_url": "https://github.com/pycontribs/jenkinsapi/pull/1130",
+  "repo": {
+    "full_name": "pycontribs/jenkinsapi",
+    "clone_url": "https://github.com/pycontribs/jenkinsapi.git",
+    "default_branch": "master",
+    "created_at": "2012-01-05T16:43:13Z",
+    "stars": 881,
+    "license": "MIT",
+    "size_kb": 8897
+  },
+  "pull_request": {
+    "id": 3495429709,
+    "title": "docs: fix Python 2 print statements and iteritems, remove unused pipe…",
+    "body": "…lint script",
+    "created_at": "2026-04-06T23:41:06Z",
+    "merged_at": "2026-04-06T23:46:56Z",
+    "base_sha": "4144d1ead275620fe762b3bb326df226c32778ff",
+    "head_sha": "57b112139a6839b11016f17bce162628e6425843",
+    "merge_commit_sha": "f0d093bf32de85624221b275fc02f9c469b106da",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "4144d1ead275620fe762b3bb326df226c32778ff",
+  "final_sha": "57b112139a6839b11016f17bce162628e6425843",
+  "changed_files": [
+    {
+      "sha": "bcff4452af6078173ccbd124284aa29c5422d16c",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/pycontribs/jenkinsapi/blob/57b112139a6839b11016f17bce162628e6425843/.gitignore",
+      "raw_url": "https://github.com/pycontribs/jenkinsapi/raw/57b112139a6839b11016f17bce162628e6425843/.gitignore",
+      "contents_url": "https://api.github.com/repos/pycontribs/jenkinsapi/contents/.gitignore?ref=57b112139a6839b11016f17bce162628e6425843",
+      "patch": "@@ -31,3 +31,4 @@ coverage.xml\n venv/\n tags\n .pytype/\n+.ruff_cache/"
+    },
+    {
+      "sha": "2d624019de118e740df7895a4a2b5b09616dbb64",
+      "filename": "README.rst",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/pycontribs/jenkinsapi/blob/57b112139a6839b11016f17bce162628e6425843/README.rst",
+      "raw_url": "https://github.com/pycontribs/jenkinsapi/raw/57b112139a6839b11016f17bce162628e6425843/README.rst",
+      "contents_url": "https://api.github.com/repos/pycontribs/jenkinsapi/contents/README.rst?ref=57b112139a6839b11016f17bce162628e6425843",
+      "patch": "@@ -74,10 +74,10 @@ Get details of jobs running on Jenkins server\n         # Refer Example #1 for definition of function 'get_server_instance'\n         server = get_server_instance()\n         for job_name, job_instance in server.get_jobs():\n-            print 'Job Name:%s' % (job_instance.name)\n-            print 'Job Description:%s' % (job_instance.get_description())\n-            print 'Is Job running:%s' % (job_instance.is_running())\n-            print 'Is Job enabled:%s' % (job_instance.is_enabled())\n+            print('Job Name:%s' % (job_instance.name))\n+            print('Job Description:%s' % (job_instance.get_description()))\n+            print('Is Job running:%s' % (job_instance.is_running()))\n+            print('Is Job enabled:%s' % (job_instance.is_enabled()))\n \n Disable/Enable a Jenkins Job\n ----------------------------\n@@ -92,7 +92,7 @@ Disable/Enable a Jenkins Job\n         if (server.has_job(job_name)):\n             job_instance = server.get_job(job_name)\n             job_instance.disable()\n-            print 'Name:%s,Is Job Enabled ?:%s' % (job_name,job_instance.is_enabled())\n+            print('Name:%s,Is Job Enabled ?:%s' % (job_name,job_instance.is_enabled()))\n \n Use the call ``job_instance.enable()`` to enable a Jenkins Job.\n "
+    },
+    {
+      "sha": "d4e19e0b56ffe6d2f79581af71f8cb186c74c578",
+      "filename": "bin/pipelint",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 22,
+      "changes": 22,
+      "blob_url": "https://github.com/pycontribs/jenkinsapi/blob/4144d1ead275620fe762b3bb326df226c32778ff/bin%2Fpipelint",
+      "raw_url": "https://github.com/pycontribs/jenkinsapi/raw/4144d1ead275620fe762b3bb326df226c32778ff/bin%2Fpipelint",
+      "contents_url": "https://api.github.com/repos/pycontribs/jenkinsapi/contents/bin%2Fpipelint?ref=4144d1ead275620fe762b3bb326df226c32778ff",
+      "patch": "@@ -1,22 +0,0 @@\n-#!/bin/bash\n-set -eo pipefail\n-\n-INPUT=/dev/stdin\n-if [ -t 0 ]; then\n-    if [ \"$#\" -ne 1 ]; then\n-        echo \"ERROR: Illegal number of parameters.\"\n-        echo \"INFO:  Use 'pipefail Jenkinsfile' or 'cat Jenkinsfile | pipefail'\"\n-        exit 1\n-    fi\n-    INPUT=$1\n-fi\n-# put credentials inside ~/.netrc\n-# define JENKINS_URL in your user profile\n-JENKINS_URL=${JENKINS_URL:-http://localhost:8080}\n-\n-# failure to get crumb is ignored as this may be diabled on the server side\n-CRUMB=\"-H `curl -nfs \"$JENKINS_URL/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,%22:%22,//crumb)\"`\" || CRUMB=''\n-\n-# The tee+grep trick assures that the exit code is 0 only if the server replied with \"successfully validated\"\n-curl -nfs -X POST $CRUMB -F \"jenkinsfile=<-\" $JENKINS_URL/pipeline-model-converter/validate <$INPUT \\\n-  | tee >(cat 1>&2) | grep 'successfully validated' >/dev/null"
+    },
+    {
+      "sha": "609a251224928c5d09bc918e68c327649d741f8a",
+      "filename": "doc/getting_started.rst",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 14,
+      "changes": 28,
+      "blob_url": "https://github.com/pycontribs/jenkinsapi/blob/57b112139a6839b11016f17bce162628e6425843/doc%2Fgetting_started.rst",
+      "raw_url": "https://github.com/pycontribs/jenkinsapi/raw/57b112139a6839b11016f17bce162628e6425843/doc%2Fgetting_started.rst",
+      "contents_url": "https://api.github.com/repos/pycontribs/jenkinsapi/contents/doc%2Fgetting_started.rst?ref=57b112139a6839b11016f17bce162628e6425843",
+      "patch": "@@ -57,7 +57,7 @@ Get version of Jenkins\n         return server\n \n     if __name__ == '__main__':\n-        print get_server_instance().version\n+        print(get_server_instance().version)\n \n The above code prints version of Jenkins running on the host *jenkins_host*.\n \n@@ -77,10 +77,10 @@ Get details of jobs running on Jenkins server\n         # Refer Example #1 for definition of function 'get_server_instance'\n         server = get_server_instance()\n         for job_name, job_instance in server.get_jobs():\n-            print 'Job Name:%s' % (job_instance.name)\n-            print 'Job Description:%s' % (job_instance.get_description())\n-            print 'Is Job running:%s' % (job_instance.is_running())\n-            print 'Is Job enabled:%s' % (job_instance.is_enabled())\n+            print('Job Name:%s' % (job_instance.name))\n+            print('Job Description:%s' % (job_instance.get_description()))\n+            print('Is Job running:%s' % (job_instance.is_running()))\n+            print('Is Job enabled:%s' % (job_instance.is_enabled()))\n \n Disable/Enable a Jenkins Job\n ----------------------------\n@@ -95,7 +95,7 @@ Disable/Enable a Jenkins Job\n         if (server.has_job(job_name)):\n             job_instance = server.get_job(job_name)\n             job_instance.disable()\n-            print 'Name:%s,Is Job Enabled ?:%s' % (job_name,job_instance.is_enabled())\n+            print('Name:%s,Is Job Enabled ?:%s' % (job_name,job_instance.is_enabled()))\n \n Use the call ``job_instance.enable()`` to enable a Jenkins Job.\n \n@@ -111,12 +111,12 @@ Jenkins instance.\n         # Refer Example #1 for definition of function 'get_server_instance'\n         server = get_server_instance()\n         for plugin in server.get_plugins().values():\n-            print \"Short Name:%s\" % (plugin.shortName)\n-            print \"Long Name:%s\" % (plugin.longName)\n-            print \"Version:%s\" % (plugin.version)\n-            print \"URL:%s\" % (plugin.url)\n-            print \"Active:%s\" % (plugin.active)\n-            print \"Enabled:%s\" % (plugin.enabled)\n+            print(\"Short Name:%s\" % (plugin.shortName))\n+            print(\"Long Name:%s\" % (plugin.longName))\n+            print(\"Version:%s\" % (plugin.version))\n+            print(\"URL:%s\" % (plugin.url))\n+            print(\"Active:%s\" % (plugin.active))\n+            print(\"Enabled:%s\" % (plugin.enabled))\n \n Getting version information from a completed build\n --------------------------------------------------\n@@ -129,13 +129,13 @@ In a continuous-integration environment you want to be able to programatically d\n \n     from jenkinsapi.jenkins import Jenkins\n \n-    def getSCMInfroFromLatestGoodBuild(url, jobName, username=None, password=None):\n+    def getSCMInfoFromLatestGoodBuild(url, jobName, username=None, password=None):\n         J = Jenkins(url, username, password)\n         job = J[jobName]\n         lgb = job.get_last_good_build()\n         return lgb.get_revision()\n \n     if __name__ == '__main__':\n-        print getSCMInfroFromLatestGoodBuild('http://localhost:8080', 'fooJob')\n+        print(getSCMInfoFromLatestGoodBuild('http://localhost:8080', 'fooJob'))\n \n When used with the Git source-control system line 20 will print out something like '8b4f4e6f6d0af609bb77f95d8fb82ff1ee2bba0d' - which looks suspiciously like a Git revision number."
+    },
+    {
+      "sha": "ddcaca5731870509e548fb8ca36d68c7c1e5e3a6",
+      "filename": "examples/how_to/delete_all_the_nodes_except_master.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pycontribs/jenkinsapi/blob/57b112139a6839b11016f17bce162628e6425843/examples%2Fhow_to%2Fdelete_all_the_nodes_except_master.py",
+      "raw_url": "https://github.com/pycontribs/jenkinsapi/raw/57b112139a6839b11016f17bce162628e6425843/examples%2Fhow_to%2Fdelete_all_the_nodes_except_master.py",
+      "contents_url": "https://api.github.com/repos/pycontribs/jenkinsapi/contents/examples%2Fhow_to%2Fdelete_all_the_nodes_except_master.py?ref=57b112139a6839b11016f17bce162628e6425843",
+      "patch": "@@ -10,7 +10,7 @@\n \n j = Jenkins(\"http://localhost:8080\")\n \n-for node_id, _ in j.get_nodes().iteritems():\n+for node_id, _ in j.get_nodes().items():\n     if node_id != \"master\":\n         print(node_id)\n         j.delete_node(node_id)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "57b112139a6839b11016f17bce162628e6425843",
+      "message": "docs: fix Python 2 print statements and iteritems, remove unused pipelint script",
+      "parent_shas": [
+        "4144d1ead275620fe762b3bb326df226c32778ff"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__pycontribs__jenkinsapi__pr1130.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\pycontribs__jenkinsapi__pr1130__py2_py3__pycontribs__jenkinsapi__pr1130\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\pycontribs__jenkinsapi__pr1130__py2_py3__pycontribs__jenkinsapi__pr1130\\rn"
+  }
+}

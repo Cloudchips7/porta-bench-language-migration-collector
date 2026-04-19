@@ -1,0 +1,76 @@
+{
+  "instance_id": "python_cpp__msys2__MINGW-packages__pr28823",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "msys2/MINGW-packages",
+  "pr_number": 28823,
+  "pr_url": "https://github.com/msys2/MINGW-packages/pull/28823",
+  "repo": {
+    "full_name": "msys2/MINGW-packages",
+    "clone_url": "https://github.com/msys2/MINGW-packages.git",
+    "default_branch": "master",
+    "created_at": "2013-11-16T13:47:02Z",
+    "stars": 2663,
+    "license": "BSD-3-Clause",
+    "size_kb": 131599
+  },
+  "pull_request": {
+    "id": 3491050986,
+    "title": "python-python-multipart: update to 0.0.24",
+    "body": "",
+    "created_at": "2026-04-05T22:14:28Z",
+    "merged_at": "2026-04-05T22:24:02Z",
+    "base_sha": "32d0f4e5b8b257e5c30273056b160d4c183945d0",
+    "head_sha": "a9976b0c2692bf6f3358b86081d027dcc2e537d5",
+    "merge_commit_sha": "4e410dd5e93639a6f6c397ce8f4b84a10c160c00",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "32d0f4e5b8b257e5c30273056b160d4c183945d0",
+  "final_sha": "a9976b0c2692bf6f3358b86081d027dcc2e537d5",
+  "changed_files": [
+    {
+      "sha": "e0fa24659a58e70410efce9a1add08e83dc930a6",
+      "filename": "mingw-w64-python-python-multipart/PKGBUILD",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 4,
+      "changes": 10,
+      "blob_url": "https://github.com/msys2/MINGW-packages/blob/a9976b0c2692bf6f3358b86081d027dcc2e537d5/mingw-w64-python-python-multipart%2FPKGBUILD",
+      "raw_url": "https://github.com/msys2/MINGW-packages/raw/a9976b0c2692bf6f3358b86081d027dcc2e537d5/mingw-w64-python-python-multipart%2FPKGBUILD",
+      "contents_url": "https://api.github.com/repos/msys2/MINGW-packages/contents/mingw-w64-python-python-multipart%2FPKGBUILD?ref=a9976b0c2692bf6f3358b86081d027dcc2e537d5",
+      "patch": "@@ -3,14 +3,16 @@\n _realname=python-multipart\n pkgbase=mingw-w64-python-${_realname}\n pkgname=(\"${MINGW_PACKAGE_PREFIX}-python-${_realname}\")\n-pkgver=0.0.22\n-pkgrel=2\n+pkgver=0.0.24\n+pkgrel=1\n pkgdesc='A streaming multipart parser for Python (mingw-w64)'\n arch=('any')\n mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')\n-url='https://github.com/Kludex/python-multipart'\n+url='https://multipart.fastapiexpert.com/'\n msys2_repository_url='https://github.com/Kludex/python-multipart'\n+msys2_changelog_url='https://multipart.fastapiexpert.com/changelog/'\n msys2_references=(\n+  'cpe: cpe:2.3:a:fastapiexpert:python-multipart'\n   'purl: pkg:pypi/python-multipart'\n )\n license=('spdx:Apache-2.0')\n@@ -19,7 +21,7 @@ makedepends=(\"${MINGW_PACKAGE_PREFIX}-python-build\"\n              \"${MINGW_PACKAGE_PREFIX}-python-installer\"\n              \"${MINGW_PACKAGE_PREFIX}-python-hatchling\")\n source=(\"https://pypi.org/packages/source/${_realname::1}/${_realname}/${_realname/-/_}-${pkgver}.tar.gz\")\n-sha256sums=('7340bef99a7e0032613f56dc36027b959fd3b30a787ed62d310e951f7c3a3a58')\n+sha256sums=('9574c97e1c026e00bc30340ef7c7d76739512ab4dfd428fec8c330fa6a5cc3c8')\n \n prepare() {\n   cp -r \"${_realname/-/_}-${pkgver}\" \"python-build-${MSYSTEM}\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "a9976b0c2692bf6f3358b86081d027dcc2e537d5",
+      "message": "python-python-multipart: update to 0.0.24",
+      "parent_shas": [
+        "32d0f4e5b8b257e5c30273056b160d4c183945d0"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__msys2__MINGW-packages__pr28823.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\msys2__MINGW-packages__pr28823__python_cpp__msys2__MINGW-packages__pr28823\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\msys2__MINGW-packages__pr28823__python_cpp__msys2__MINGW-packages__pr28823\\rn"
+  }
+}

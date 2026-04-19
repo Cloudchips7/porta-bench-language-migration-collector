@@ -1,0 +1,75 @@
+{
+  "instance_id": "python_cpp__docat-org__docat__pr935",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "docat-org/docat",
+  "pr_number": 935,
+  "pr_url": "https://github.com/docat-org/docat/pull/935",
+  "repo": {
+    "full_name": "docat-org/docat",
+    "clone_url": "https://github.com/docat-org/docat.git",
+    "default_branch": "main",
+    "created_at": "2019-11-08T13:38:54Z",
+    "stars": 894,
+    "license": "MIT",
+    "size_kb": 5222
+  },
+  "pull_request": {
+    "id": 3508432060,
+    "title": "chore(python): Update Python dependencies",
+    "body": "",
+    "created_at": "2026-04-09T12:01:00Z",
+    "merged_at": "2026-04-09T12:11:24Z",
+    "base_sha": "dc2a57e91697cf5b540f900e51d74505dff612d1",
+    "head_sha": "9a12791d243c21fde1a50fb604b9ab9bc7c070c0",
+    "merge_commit_sha": "fa082e494e5e828542467bfa6225931b5ec43caf",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "dc2a57e91697cf5b540f900e51d74505dff612d1",
+  "final_sha": "9a12791d243c21fde1a50fb604b9ab9bc7c070c0",
+  "changed_files": [
+    {
+      "sha": "260f8e3981cd2d700065b4f68bee1309c384176f",
+      "filename": "docat/uv.lock",
+      "status": "modified",
+      "additions": 479,
+      "deletions": 456,
+      "changes": 935,
+      "blob_url": "https://github.com/docat-org/docat/blob/9a12791d243c21fde1a50fb604b9ab9bc7c070c0/docat%2Fuv.lock",
+      "raw_url": "https://github.com/docat-org/docat/raw/9a12791d243c21fde1a50fb604b9ab9bc7c070c0/docat%2Fuv.lock",
+      "contents_url": "https://api.github.com/repos/docat-org/docat/contents/docat%2Fuv.lock?ref=9a12791d243c21fde1a50fb604b9ab9bc7c070c0"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "9a12791d243c21fde1a50fb604b9ab9bc7c070c0",
+      "message": "chore(python): Update Python dependencies",
+      "parent_shas": [
+        "dc2a57e91697cf5b540f900e51d74505dff612d1"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__docat-org__docat__pr935.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\docat-org__docat__pr935__python_cpp__docat-org__docat__pr935\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\docat-org__docat__pr935__python_cpp__docat-org__docat__pr935\\rn"
+  }
+}

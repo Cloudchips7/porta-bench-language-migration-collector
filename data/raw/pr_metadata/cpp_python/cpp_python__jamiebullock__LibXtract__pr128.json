@@ -1,0 +1,98 @@
+{
+  "instance_id": "cpp_python__jamiebullock__LibXtract__pr128",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "jamiebullock/LibXtract",
+  "pr_number": 128,
+  "pr_url": "https://github.com/jamiebullock/LibXtract/pull/128",
+  "repo": {
+    "full_name": "jamiebullock/LibXtract",
+    "clone_url": "https://github.com/jamiebullock/LibXtract.git",
+    "default_branch": "main",
+    "created_at": "2012-05-31T15:16:08Z",
+    "stars": 230,
+    "license": "MIT",
+    "size_kb": 1563
+  },
+  "pull_request": {
+    "id": 3496980754,
+    "title": "fix: verified bugs batch 3 — SWIG int helper, failsafe_f0 return code",
+    "body": "## Summary\n\n- Add `inta_to_voidp` helper to SWIG bindings so `intArray` can be passed as `void *argv` to functions like `xtract_subbands` that cast argv to `int *`\n- Fix `xtract_failsafe_f0` to return `XTRACT_NO_RESULT` (with `*result = 0.0`) when both `xtract_f0` and the spectrum-based fallback fail to detect pitch; add malloc NULL checks\n\n## Issues fixed\n\nFixes #67\nFixes #55\n\n## Test plan\n\n- [x] `make && make check` passes (347 assertions, 60 test cases)\n- [ ] Verify `xtract_subbands` works from Python using `intArray` + `inta_to_voidp`\n- [ ] Verify `xtract_failsafe_f0` returns `XTRACT_NO_RESULT` for silence/noise input",
+    "created_at": "2026-04-07T09:02:54Z",
+    "merged_at": "2026-04-07T09:14:03Z",
+    "base_sha": "ea0d8980c4c340f8058bdaef14bed5b011957f06",
+    "head_sha": "2eda7564b107d3c9e9e1ed579afed753907223f7",
+    "merge_commit_sha": "1dc7a228e897d7ce64b339e94535c449304af2f8",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "ea0d8980c4c340f8058bdaef14bed5b011957f06",
+  "final_sha": "2eda7564b107d3c9e9e1ed579afed753907223f7",
+  "changed_files": [
+    {
+      "sha": "bec44db0592b26999acc8cf31276248de64589d2",
+      "filename": "src/scalar.c",
+      "status": "modified",
+      "additions": 23,
+      "deletions": 9,
+      "changes": 32,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/2eda7564b107d3c9e9e1ed579afed753907223f7/src%2Fscalar.c",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/2eda7564b107d3c9e9e1ed579afed753907223f7/src%2Fscalar.c",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/src%2Fscalar.c?ref=2eda7564b107d3c9e9e1ed579afed753907223f7",
+      "patch": "@@ -1084,30 +1084,44 @@ int xtract_f0(const double *data, const int N, const void *argv, double *result)\n int xtract_failsafe_f0(const double *data, const int N, const void *argv, double *result)\n {\n \n-    double *spectrum = NULL, argf[4], *peaks = NULL, return_code, sr;\n+    double *spectrum, argf[4], *peaks, sr;\n+    int rv;\n \n-    return_code = xtract_f0(data, N, argv, result);\n+    rv = xtract_f0(data, N, argv, result);\n \n-    if(return_code == XTRACT_NO_RESULT)\n+    if(rv == XTRACT_NO_RESULT)\n     {\n         sr = *(double *)argv;\n         if(sr == 0)\n             sr = 44100.0;\n-        spectrum = (double *)malloc(N * sizeof(double));\n-        memset(spectrum, 0, N * sizeof(double));\n-        peaks = (double *)malloc(N * sizeof(double));\n+        spectrum = (double *)calloc(N, sizeof(double));\n+        peaks = (double *)calloc(N, sizeof(double));\n+\n+        if(spectrum == NULL || peaks == NULL)\n+        {\n+            free(spectrum);\n+            free(peaks);\n+            return XTRACT_MALLOC_FAILED;\n+        }\n+\n         argf[0] = sr / N;\n         argf[1] = XTRACT_MAGNITUDE_SPECTRUM;\n-        argf[2] = 0.0f;\n-        argf[3] = 0.0f;\n+        argf[2] = 0.0;\n+        argf[3] = 0.0;\n         xtract_spectrum(data, N, argf, spectrum);\n         argf[1] = 10.0;\n         xtract_peak_spectrum(spectrum, N >> 1, argf, peaks);\n         argf[0] = 0.0;\n-        xtract_lowest_value(peaks+(N >> 1), N >> 1, argf, result);\n+        rv = xtract_lowest_value(peaks + (N >> 1), N >> 1, argf, result);\n \n         free(spectrum);\n         free(peaks);\n+\n+        if(rv == XTRACT_NO_RESULT)\n+        {\n+            *result = 0.0;\n+            return XTRACT_NO_RESULT;\n+        }\n     }\n \n     return XTRACT_SUCCESS;"
+    },
+    {
+      "sha": "ae16a329cadd8b66ccd2d5a422639b24378ce230",
+      "filename": "swig/xtract.i",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/2eda7564b107d3c9e9e1ed579afed753907223f7/swig%2Fxtract.i",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/2eda7564b107d3c9e9e1ed579afed753907223f7/swig%2Fxtract.i",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2Fxtract.i?ref=2eda7564b107d3c9e9e1ed579afed753907223f7",
+      "patch": "@@ -24,6 +24,11 @@\n         return (void *)f;\n     }\n \n+    void *inta_to_voidp(int i[])\n+    {\n+        return (void *)i;\n+    }\n+\n     xtract_function_descriptor_t \n             *get_descriptor(xtract_function_descriptor_t *fd, int i){\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "82afc871059106a718a56d96f2409711b7996e15",
+      "message": "fix: add inta_to_voidp helper for int array arguments in SWIG\n\nxtract_subbands casts void *argv to int *, but SWIG bindings only\nexposed doublea_to_voidp. Passing doubles reinterpreted as ints\ngives garbage values and segfaults. Add inta_to_voidp so callers\ncan pass intArray arguments correctly via the existing intArray\nclass.\n\nFixes #67",
+      "parent_shas": [
+        "ea0d8980c4c340f8058bdaef14bed5b011957f06"
+      ]
+    },
+    {
+      "sha": "2eda7564b107d3c9e9e1ed579afed753907223f7",
+      "message": "fix: return XTRACT_NO_RESULT from failsafe_f0 when fallback fails\n\nPreviously always returned XTRACT_SUCCESS even when both xtract_f0\nand the spectrum-based fallback found no pitch. When the fallback\nfails, set *result to 0.0 and return XTRACT_NO_RESULT. Also add\nNULL checks on malloc and use calloc for zero-initialised buffers.\n\nFixes #55",
+      "parent_shas": [
+        "82afc871059106a718a56d96f2409711b7996e15"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__jamiebullock__LibXtract__pr128.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\jamiebullock__LibXtract__pr128__cpp_python__jamiebullock__LibXtract__pr128\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\jamiebullock__LibXtract__pr128__cpp_python__jamiebullock__LibXtract__pr128\\rn"
+  }
+}

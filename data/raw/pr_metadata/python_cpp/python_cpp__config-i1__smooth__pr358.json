@@ -1,0 +1,160 @@
+{
+  "instance_id": "python_cpp__config-i1__smooth__pr358",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "config-i1/smooth",
+  "pr_number": 358,
+  "pr_url": "https://github.com/config-i1/smooth/pull/358",
+  "repo": {
+    "full_name": "config-i1/smooth",
+    "clone_url": "https://github.com/config-i1/smooth.git",
+    "default_branch": "master",
+    "created_at": "2016-01-25T12:06:26Z",
+    "stars": 96,
+    "license": "LGPL-2.1",
+    "size_kb": 39788
+  },
+  "pull_request": {
+    "id": 3527554750,
+    "title": "Python",
+    "body": "## What issue does this PR fix?\r\n\r\nLinting, ruffing and fixing the constant=True\r\n\r\n## Language\r\n\r\n- [ ] R\r\n- [x] Python\r\n- [ ] Both\r\n",
+    "created_at": "2026-04-14T09:31:53Z",
+    "merged_at": "2026-04-14T09:33:58Z",
+    "base_sha": "747955b54752aefec3dd257bb90d6174b6e194a0",
+    "head_sha": "2f1e63159c97f25956700e2a25ff220c6f6e704c",
+    "merge_commit_sha": "86e6a457792a8c64f13b22a79d61c82fc58c8dab",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "fa92de3b65e5fd60820ec40fe73b6cf488188468",
+  "final_sha": "2f1e63159c97f25956700e2a25ff220c6f6e704c",
+  "changed_files": [
+    {
+      "sha": "72cd59ce7912fc8ccca2d8ce4073ab9678acc513",
+      "filename": "python/src/smooth/adam_general/core/adam.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 1,
+      "changes": 7,
+      "blob_url": "https://github.com/config-i1/smooth/blob/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fadam.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fadam.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fadam.py?ref=2f1e63159c97f25956700e2a25ff220c6f6e704c",
+      "patch": "@@ -951,6 +951,11 @@ def _set_fitted_attributes(self):\n             else:\n                 self.model = ets_str\n \n+            if self._constant and self._constant.get(\"constant_required\", False):\n+                i_orders = (self._arima or {}).get(\"i_orders\") or []\n+                has_drift = is_ets or any(d != 0 for d in i_orders)\n+                self.model += \" with \" + (\"drift\" if has_drift else \"constant\")\n+\n     # =========================================================================\n     # Extraction Properties - R-style accessors implemented as Python properties\n     # =========================================================================\n@@ -1440,7 +1445,7 @@ def constant_value(self) -> Optional[float]:\n         ...     print(f\"Constant: {model.constant_value:.4f}\")\n         \"\"\"\n         self._check_is_fitted()\n-        return self._prepared.get(\"constant_value\")\n+        return self._prepared.get(\"constant\")\n \n     @property\n     def distribution_(self) -> str:"
+    },
+    {
+      "sha": "a09550ee0c5879ee47a49f9430afe6c9a2170443",
+      "filename": "python/src/smooth/adam_general/core/checker/parameters_checker.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/config-i1/smooth/blob/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fchecker%2Fparameters_checker.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fchecker%2Fparameters_checker.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fchecker%2Fparameters_checker.py?ref=2f1e63159c97f25956700e2a25ff220c6f6e704c",
+      "patch": "@@ -575,7 +575,8 @@ def parameters_checker(\n     loss = dist_info[\"loss\"]\n     loss_function = dist_info.get(\"loss_function\", None)\n \n-    # If ETS is off (e.g. NNN), set error_type from distribution — mirrors R adamGeneral.R:1410\n+    # If ETS is off (e.g. NNN), set error_type from distribution\n+    # mirrors R adamGeneral.R:1410\n     if not ets_model:\n         _mult_dists = {\"dinvgauss\", \"dlnorm\", \"dllaplace\", \"dls\", \"dlgnorm\", \"dgamma\"}\n         ets_info[\"error_type\"] = \"M\" if distribution in _mult_dists else \"A\""
+    },
+    {
+      "sha": "3cbd2a7798418066bbc95464dba54170e054e020",
+      "filename": "python/src/smooth/adam_general/core/creator/architector.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 4,
+      "changes": 12,
+      "blob_url": "https://github.com/config-i1/smooth/blob/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Farchitector.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Farchitector.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Farchitector.py?ref=2f1e63159c97f25956700e2a25ff220c6f6e704c",
+      "patch": "@@ -224,6 +224,10 @@ def architector(\n     # Set up lags\n     lags_dict = _setup_lags(lags_dict, model_type_dict, components_dict)\n \n+    # Add constant lag=1 entry to lags_model_all (R: lagsModelAll <- c(lagsModelAll, 1))\n+    if constants_checked and constants_checked.get(\"constant_required\", False):\n+        lags_dict[\"lags_model_all\"] = lags_dict[\"lags_model_all\"] + [1]\n+\n     # Add xreg lag=1 entries to lags_model_all\n     # R: lagsModelAll <- c(lagsModelAll, rep(1, xregNumber))\n     xreg_number = (\n@@ -493,19 +497,19 @@ def adam_profile_creator(\n         # to cover 'obsAll' observations.\n         # '- 1' at the end adjusts these values to Python's zero-based indexing.\n         # Fix the array size mismatch - ensure we're using the correct range\n-        index_lookup_table[i, lags_model_max:(lags_model_max + obs_all)] = (\n+        index_lookup_table[i, lags_model_max : (lags_model_max + obs_all)] = (\n             np.tile(\n-                profile_indices[i, :lags_model_all[i]],\n+                profile_indices[i, : lags_model_all[i]],\n                 int(np.ceil(obs_all / lags_model_all[i])),\n             )[:obs_all]\n             - 1\n         )\n \n         # Fix the head: use order-preserving unique (like R's unique()),\n         # and use the full obs_all slice (not obs_all - 1)\n-        vals = index_lookup_table[i, lags_model_max:(lags_model_max + obs_all)]\n+        vals = index_lookup_table[i, lags_model_max : (lags_model_max + obs_all)]\n         unique_indices = np.array(list(dict.fromkeys(vals.tolist())))\n-        \n+\n         # Use [-lags_model_max:] to replicate R's tail() — take from the END\n         # not the beginning (Bug 3 fix).\n         index_lookup_table[i, :lags_model_max] = np.tile("
+    },
+    {
+      "sha": "5d445e8f45e81219e8e7c2ae0915ee20b1218ff1",
+      "filename": "python/src/smooth/adam_general/core/creator/initialiser.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 1,
+      "changes": 8,
+      "blob_url": "https://github.com/config-i1/smooth/blob/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Finitialiser.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Finitialiser.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Finitialiser.py?ref=2f1e63159c97f25956700e2a25ff220c6f6e704c",
+      "patch": "@@ -856,7 +856,13 @@ def initialiser(\n                 Bu[j - 1] = np.inf\n         else:\n             Bu[j - 1] = max(\n-                abs(observations_dict[\"y_in_sample\"][observations_dict[\"ot_logical\"]]),\n+                np.max(\n+                    np.abs(\n+                        observations_dict[\"y_in_sample\"][\n+                            observations_dict[\"ot_logical\"]\n+                        ]\n+                    )\n+                ),\n                 abs(B[j - 1]) * 1.01,\n             )\n             Bl[j - 1] = -Bu[j - 1]"
+    },
+    {
+      "sha": "e6a19990b498e87ababc1e03d0f323b7ebedfa51",
+      "filename": "python/src/smooth/adam_general/core/creator/initialization.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 6,
+      "changes": 11,
+      "blob_url": "https://github.com/config-i1/smooth/blob/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Finitialization.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Finitialization.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Fcreator%2Finitialization.py?ref=2f1e63159c97f25956700e2a25ff220c6f6e704c",
+      "patch": "@@ -546,8 +546,6 @@ def _initialize_arima_states(\n     components_number_ets = model_params[\"components_number_ets\"]\n     components_number_arima = model_params[\"components_number_arima\"]\n     e_type = model_params[\"e_type\"]\n-    lags = model_params[\"lags\"]\n-    lags_model_arima = model_params.get(\"lags_model_arima\", [1])\n     y_in_sample = model_params[\"y_in_sample\"]\n     ot_logical = model_params[\"ot_logical\"]\n \n@@ -562,7 +560,8 @@ def _initialize_arima_states(\n         lags_original = model_params.get(\"lags_original\", [1]) or [1]\n         obs_in_sample = model_params[\"obs_in_sample\"]\n \n-        if any(lag > 1 for lag in lags_original) and obs_in_sample > max(lags_original) * 2:\n+        has_seasonal = any(lag > 1 for lag in lags_original)\n+        if has_seasonal and obs_in_sample > max(lags_original) * 2:\n             # R uses the full time-varying seasonal series (T values) from msdecompose\n             # (adam.R lines 1092-1097: tail(msdecompose(...)$seasonal, 1)[[1]]).\n             # Using [\"initial\"][\"seasonal\"][-1] (12 values, static) instead of\n@@ -574,7 +573,7 @@ def _initialize_arima_states(\n                 type=\"additive\" if e_type == \"A\" else \"multiplicative\",\n                 smoother=model_params[\"smoother\"],\n             )[\"seasonal\"][-1]\n-        elif any(lag > 1 for lag in lags_original):\n+        elif has_seasonal:\n             y_decomposition = y_in_sample[ot_logical][:obs_in_sample]\n         else:\n             y_decomposition = (\n@@ -584,7 +583,7 @@ def _initialize_arima_states(\n             )\n \n         # Tile using max of original lags (R: ceiling(initialArimaNumber/max(lags)))\n-        max_arima_lag = max(lags_original) if any(lag > 1 for lag in lags_original) else 1\n+        max_arima_lag = max(lags_original) if has_seasonal else 1\n         mat_vt[\n             components_number_ets + components_number_arima - 1,\n             0 : initials_checked[\"initial_arima_number\"],\n@@ -687,7 +686,7 @@ def _initialize_constant(\n \n     if constants_checked[\"constant_estimate\"]:\n         # Add the mean of data\n-        if sum(arima_checked[\"i_orders\"]) == 0 and not ets_model:\n+        if sum(arima_checked[\"i_orders\"] or []) == 0 and not ets_model:\n             mat_vt[\n                 components_number_ets\n                 + components_number_arima"
+    },
+    {
+      "sha": "81e2d83222dff9d254509e4564c049de3352aea9",
+      "filename": "python/src/smooth/adam_general/core/utils/printing.py",
+      "status": "modified",
+      "additions": 32,
+      "deletions": 18,
+      "changes": 50,
+      "blob_url": "https://github.com/config-i1/smooth/blob/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Futils%2Fprinting.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Futils%2Fprinting.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Fsrc%2Fsmooth%2Fadam_general%2Fcore%2Futils%2Fprinting.py?ref=2f1e63159c97f25956700e2a25ff220c6f6e704c",
+      "patch": "@@ -276,11 +276,16 @@ def _format_arma_parameters(model: Any, digits: int = 4) -> str:\n     # Get lags from lags_original (the input lags, aligned with ar/ma orders)\n     lags = []\n     if hasattr(model, \"_lags_model\") and model._lags_model:\n-        lags = model._lags_model.get(\"lags_original\") or model._lags_model.get(\"lags\") or []\n+        lags = (\n+            model._lags_model.get(\"lags_original\")\n+            or model._lags_model.get(\"lags\")\n+            or []\n+        )\n     if not lags and hasattr(model, \"_config\"):\n         lags = model._config.get(\"lags\") or [1]\n \n-    # Get polynomial values from _prepared (arma[\"ar\"] = arPolynomial[1:], arma[\"ma\"] = maPolynomial[1:])\n+    # Get polynomial values from _prepared\n+    # arma[\"ar\"] = arPolynomial[1:], arma[\"ma\"] = maPolynomial[1:]\n     ar_poly = []\n     ma_poly = []\n     if hasattr(model, \"_prepared\") and model._prepared:\n@@ -306,26 +311,34 @@ def _get_ma_val(order_j, lag):\n \n     # AR block\n     if ar_poly and any(o > 0 for o in ar_orders):\n-        active = [(k, lags[k]) for k in range(min(len(ar_orders), len(lags))) if ar_orders[k] > 0]\n+        n = min(len(ar_orders), len(lags))\n+        active = [(k, lags[k]) for k in range(n) if ar_orders[k] > 0]\n         if active:\n             max_ar = max(ar_orders[k] for k, _ in active)\n             col_labels = [f\"Lag {lag}\" for _, lag in active]\n             row_labels = [f\"AR({j + 1})\" for j in range(max_ar)]\n             matrix = [\n-                [_get_ar_val(j + 1, lag) if j < ar_orders[k] else None for k, lag in active]\n+                [\n+                    _get_ar_val(j + 1, lag) if j < ar_orders[k] else None\n+                    for k, lag in active\n+                ]\n                 for j in range(max_ar)\n             ]\n             blocks.append(_format_param_matrix(row_labels, col_labels, matrix, digits))\n \n     # MA block\n     if ma_poly and any(o > 0 for o in ma_orders):\n-        active = [(k, lags[k]) for k in range(min(len(ma_orders), len(lags))) if ma_orders[k] > 0]\n+        n = min(len(ma_orders), len(lags))\n+        active = [(k, lags[k]) for k in range(n) if ma_orders[k] > 0]\n         if active:\n             max_ma = max(ma_orders[k] for k, _ in active)\n             col_labels = [f\"Lag {lag}\" for _, lag in active]\n             row_labels = [f\"MA({j + 1})\" for j in range(max_ma)]\n             matrix = [\n-                [_get_ma_val(j + 1, lag) if j < ma_orders[k] else None for k, lag in active]\n+                [\n+                    _get_ma_val(j + 1, lag) if j < ma_orders[k] else None\n+                    for k, lag in active\n+                ]\n                 for j in range(max_ma)\n             ]\n             blocks.append(_format_param_matrix(row_labels, col_labels, matrix, digits))\n@@ -632,7 +645,11 @@ def model_summary(model: Any, digits: int = 4) -> str:\n                 and bool(model._explanatory)\n                 and model._explanatory.get(\"xreg_model\", False)\n             )\n-            g_label = \"Persistence vector g (excluding xreg):\" if has_xreg else \"Persistence vector g:\"\n+            g_label = (\n+                \"Persistence vector g (excluding xreg):\"\n+                if has_xreg\n+                else \"Persistence vector g:\"\n+            )\n             lines.append(g_label)\n             lines.append(persistence_str)\n \n@@ -711,23 +728,20 @@ def _build_model_name(model: Any) -> str:\n         xstr = \"X\" if xreg_model else \"\"\n         name = f\"ETS{xstr}({model_str})\"\n         if n_ets_seasonal > 1:\n-            seasonal_lags = [str(l) for l in lags if l != 1]\n+            seasonal_lags = [str(lag) for lag in lags if lag != 1]\n             name += f\"[{', '.join(seasonal_lags)}]\"\n \n     # ARIMA part\n     if arima_model:\n         if ets_model:\n             name += \"+\"\n         # Non-seasonal: all lags == 1, or all seasonal-lag orders are zero\n-        seasonal_lags_idx = [k for k, l in enumerate(lags) if l > 1]\n-        is_nonseasonal = (\n-            all(l == 1 for l in lags)\n-            or all(\n-                (k >= len(ar_orders) or ar_orders[k] == 0)\n-                and (k >= len(i_orders) or i_orders[k] == 0)\n-                and (k >= len(ma_orders) or ma_orders[k] == 0)\n-                for k in seasonal_lags_idx\n-            )\n+        seasonal_lags_idx = [k for k, lag in enumerate(lags) if lag > 1]\n+        is_nonseasonal = all(lag == 1 for lag in lags) or all(\n+            (k >= len(ar_orders) or ar_orders[k] == 0)\n+            and (k >= len(i_orders) or i_orders[k] == 0)\n+            and (k >= len(ma_orders) or ma_orders[k] == 0)\n+            for k in seasonal_lags_idx\n         )\n         xstr = \"X\" if (xreg_model and not ets_model) else \"\"\n         if is_nonseasonal:\n@@ -828,7 +842,7 @@ def _format_constant(model: Any, digits: int) -> str:\n     \"\"\"Format constant/drift value if present.\"\"\"\n     if hasattr(model, \"_constant\") and model._constant:\n         if model._constant.get(\"constant_estimate\", False):\n-            constant_val = model._constant.get(\"constant_value\")\n+            constant_val = model.constant_value\n             if constant_val is not None:\n                 return f\"Intercept/Drift value: {constant_val:.{digits}f}\"\n     return \"\""
+    },
+    {
+      "sha": "8251fcaa9f5ae0019299279efe0bb20b4c39cc0c",
+      "filename": "python/tests/test_adam.py",
+      "status": "modified",
+      "additions": 40,
+      "deletions": 0,
+      "changes": 40,
+      "blob_url": "https://github.com/config-i1/smooth/blob/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Ftests%2Ftest_adam.py",
+      "raw_url": "https://github.com/config-i1/smooth/raw/2f1e63159c97f25956700e2a25ff220c6f6e704c/python%2Ftests%2Ftest_adam.py",
+      "contents_url": "https://api.github.com/repos/config-i1/smooth/contents/python%2Ftests%2Ftest_adam.py?ref=2f1e63159c97f25956700e2a25ff220c6f6e704c",
+      "patch": "@@ -294,6 +294,46 @@ def test_admissible_bounds_linear_series(self):\n         )\n \n \n+class TestADAMConstant:\n+    \"\"\"Tests for the constant/drift parameter.\"\"\"\n+\n+    @pytest.fixture\n+    def linear_series(self):\n+        np.random.seed(42)\n+        return np.arange(1, 61, dtype=float) + np.random.randn(60) * 0.1\n+\n+    def test_ets_constant_fits(self, linear_series):\n+        \"\"\"ETS(ANN) with constant=True fits without error.\"\"\"\n+        model = ADAM(\"ANN\", constant=True)\n+        model.fit(linear_series)\n+        assert np.isfinite(model.constant_value)\n+\n+    def test_ets_constant_improves_fit(self, linear_series):\n+        \"\"\"constant=True gives lower AICc than no constant on a linear-trend series.\"\"\"\n+        m0 = ADAM(\"ANN\").fit(linear_series)\n+        m1 = ADAM(\"ANN\", constant=True).fit(linear_series)\n+        assert m1.loss_value <= m0.loss_value\n+\n+    def test_arima_constant_fits(self, linear_series):\n+        \"\"\"ARIMA(1,1,1) with constant=True fits without error.\"\"\"\n+        model = ADAM(\"NNN\", ar_order=1, i_order=1, ma_order=1, constant=True)\n+        model.fit(linear_series)\n+        assert np.isfinite(model.constant_value)\n+\n+    def test_fixed_constant(self, linear_series):\n+        \"\"\"constant=0.5 (fixed value) is stored and accessible after fit.\"\"\"\n+        model = ADAM(\"ANN\", constant=0.5)\n+        model.fit(linear_series)\n+        assert model.constant_value == pytest.approx(0.5)\n+\n+    def test_constant_shown_in_summary(self, linear_series):\n+        \"\"\"Model summary includes the constant value when constant=True.\"\"\"\n+        model = ADAM(\"ANN\", constant=True)\n+        model.fit(linear_series)\n+        summary = str(model)\n+        assert \"Intercept\" in summary or \"constant\" in summary.lower()\n+\n+\n class TestADAMARIMAOrders:\n     \"\"\"Tests for ARIMA orders and lags interaction.\"\"\"\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "30aa91f08e0d0c89b371e658a699f910b4ebad6b",
+      "message": "Merge pull request #357 from config-i1/master\n\nBringing the branch up to speed",
+      "parent_shas": [
+        "fa92de3b65e5fd60820ec40fe73b6cf488188468",
+        "747955b54752aefec3dd257bb90d6174b6e194a0"
+      ]
+    },
+    {
+      "sha": "2f1e63159c97f25956700e2a25ff220c6f6e704c",
+      "message": "Fixes for constant=True and linting thingy",
+      "parent_shas": [
+        "30aa91f08e0d0c89b371e658a699f910b4ebad6b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "python_cpp_wrapper_noise"
+    ],
+    "auto_signals": [
+      "python_cpp_wrapper_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__config-i1__smooth__pr358.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\config-i1__smooth__pr358__python_cpp__config-i1__smooth__pr358\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\config-i1__smooth__pr358__python_cpp__config-i1__smooth__pr358\\rn"
+  }
+}

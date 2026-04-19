@@ -1,0 +1,422 @@
+{
+  "instance_id": "py2_py3__datalad__datalad-crawler__pr149",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "datalad/datalad-crawler",
+  "pr_number": 149,
+  "pr_url": "https://github.com/datalad/datalad-crawler/pull/149",
+  "repo": {
+    "full_name": "datalad/datalad-crawler",
+    "clone_url": "https://github.com/datalad/datalad-crawler.git",
+    "default_branch": "master",
+    "created_at": "2018-04-22T17:26:16Z",
+    "stars": 6,
+    "license": "NOASSERTION",
+    "size_kb": 588
+  },
+  "pull_request": {
+    "id": 3379989748,
+    "title": "BF: Address datalad DeprecationWarnings for compatibility with datalad PR #7793, make compatible with boto3 by use of datalad interfaces",
+    "body": "- Replace `assure_*` with `ensure_*` (assure_ variants emit DeprecationWarning)\r\n- Remove six dependency: iteritems→.items(), string_types→str, text_type→str, PY3 guard removed, add_metaclass→metaclass=, `from six import next` removed\r\n- Replace `from mock import` with `from unittest.mock import` (stdlib)\r\n- Replace subdatasets(fulfilled=True) with subdatasets(state='present')\r\n- Replace deprecated AnnexRepo.get_file_key() with get_file_annexinfo()\r\n- Fix finalize() return-without-yield bug: when aggregate_metadata is unavailable, bare `return` dropped pipeline data preventing tag/cleanup/yield\r\n- Replace distutils.version.LooseVersion with looseversion package\r\n- Remove mock from test dependencies, add looseversion to install_requires\r\n- Update tox.ini filterwarnings for datalad-deprecated internal warnings",
+    "created_at": "2026-03-10T17:59:35Z",
+    "merged_at": "2026-03-12T12:27:45Z",
+    "base_sha": "2b7ef420d0f281d88994e8d2d60e95b2a173fb23",
+    "head_sha": "1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+    "merge_commit_sha": "bf7c4c63356551660ab8d452ab986dcc07361393",
+    "labels": [
+      "minor",
+      "release"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "2b7ef420d0f281d88994e8d2d60e95b2a173fb23",
+  "final_sha": "1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+  "changed_files": [
+    {
+      "sha": "798c3b2fae14d3095550b62ab1b98009df3e84b8",
+      "filename": ".github/workflows/release.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/.github%2Fworkflows%2Frelease.yml",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/.github%2Fworkflows%2Frelease.yml",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/.github%2Fworkflows%2Frelease.yml?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -61,7 +61,7 @@ jobs:\n       - name: Set up Python\n         uses: actions/setup-python@v5\n         with:\n-          python-version: '3.11'\n+          python-version: '3.13'\n \n       - name: Install build & twine\n         run: python -m pip install build twine"
+    },
+    {
+      "sha": "9ac932e474174cd1869641f259a5b4cdc11e6e88",
+      "filename": ".github/workflows/test.yml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/.github%2Fworkflows%2Ftest.yml",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/.github%2Fworkflows%2Ftest.yml",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/.github%2Fworkflows%2Ftest.yml?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -26,11 +26,11 @@ jobs:\n       fail-fast: false\n       matrix:\n         python-version:\n-          - '3.7'\n-          - '3.8'\n           - '3.9'\n           - '3.10'\n           - '3.11'\n+          - '3.12'\n+          - '3.13'\n     steps:\n       - name: Check out repository\n         uses: actions/checkout@v4"
+    },
+    {
+      "sha": "74518a16d11646e917b176e5212596744b1fb0c9",
+      "filename": "cfgs/common.cfg",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/cfgs%2Fcommon.cfg",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/cfgs%2Fcommon.cfg",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/cfgs%2Fcommon.cfg?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -5,7 +5,7 @@\n #              linking or extracting into a public annex\n #  public   -- annex where we extract and possibly complement\n #              with manual additions/downloads.  But whatever gets\n-#              added automatically should be maintained in aggrement\n+#              added automatically should be maintained in agreement\n #              with .meta_info.json stored in incoming\n \n # By default incoming == public, but then we would track that things"
+    },
+    {
+      "sha": "f2c34c754f235936b3a6fa7a6f3c8292efebf87b",
+      "filename": "datalad_crawler/dbs/base.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fdbs%2Fbase.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fdbs%2Fbase.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fdbs%2Fbase.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -13,7 +13,6 @@\n import os\n import json\n from abc import ABCMeta, abstractmethod\n-from six import add_metaclass\n \n from os.path import join as opj, exists, lexists, realpath, basename, dirname\n from os.path import normpath\n@@ -30,8 +29,7 @@\n \n \n @auto_repr\n-@add_metaclass(ABCMeta)\n-class JsonBaseDB(object):\n+class JsonBaseDB(metaclass=ABCMeta):\n     \"\"\"\n     Base class for DBs which would store to JSON files\n     \"\"\""
+    },
+    {
+      "sha": "e80b1cf27eb8289432f2d0468a4d48b47048ccc0",
+      "filename": "datalad_crawler/dbs/versions.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fdbs%2Fversions.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fdbs%2Fversions.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fdbs%2Fversions.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -11,7 +11,6 @@\n \"\"\"\n \n from collections import OrderedDict\n-from six import iteritems\n \n from datalad.utils import auto_repr\n from datalad_crawler.consts import CRAWLER_META_VERSIONS_DIR\n@@ -84,12 +83,12 @@ def update_versions(self, new_versions):\n         \"\"\"Update known versions with new information\n         \"\"\"\n         versions = self._db['versions']\n-        for new_version, new_fpaths in iteritems(new_versions):\n+        for new_version, new_fpaths in new_versions.items():\n             if new_version not in versions:\n                 # TODO: check that it is newer!?\n                 versions[new_version] = {}\n             fpaths = versions[new_version]\n-            for new_fpath, entry in iteritems(new_fpaths):\n+            for new_fpath, entry in new_fpaths.items():\n                 if new_fpath not in fpaths:\n                     # new new_fpath\n                     fpaths[new_fpath] = {}"
+    },
+    {
+      "sha": "c1273a554feb9e5b1f34e81e837cbf06c6a82a9b",
+      "filename": "datalad_crawler/nodes/annex.py",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 17,
+      "changes": 32,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Fannex.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Fannex.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fnodes%2Fannex.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -21,9 +21,7 @@\n from os.path import relpath\n from os import unlink\n from humanize import naturalsize\n-from six import iteritems\n-from six import string_types\n-from distutils.version import LooseVersion\n+from looseversion import LooseVersion\n \n from datalad import __version__\n from datalad.api import add_archive_content\n@@ -33,7 +31,7 @@\n from datalad.utils import find_files\n from datalad.utils import auto_repr\n from datalad.utils import try_multiple\n-from datalad.utils import assure_list\n+from datalad.utils import ensure_list\n \n from datalad.downloaders.providers import Providers\n from datalad.api import (\n@@ -323,7 +321,7 @@ def __init__(self, path=None,\n                         init_datalad_remote(self.repo, remote, autoenable=True)\n \n         self.mode = mode\n-        self.options = assure_list(options, copy=True)\n+        self.options = ensure_list(options, copy=True)\n         self.auto_finalize = auto_finalize\n         self._states = set()\n         # TODO: may be should be a lazy centralized instance?\n@@ -430,7 +428,7 @@ def __call__(self, data):  # filename=None, get_disposition_filename=False):\n                                       })\n \n         if self.statusdb is not None and self._statusdb is None:\n-            if isinstance(self.statusdb, string_types):\n+            if isinstance(self.statusdb, str):\n                 # initiate the DB\n                 self._statusdb = {\n                     'json': JsonFileStatusesDB,\n@@ -1048,7 +1046,7 @@ def _commit_versions(data):\n \n             # unstage all versioned files from the index\n             nunstaged = 0\n-            for version, fpaths in iteritems(versions):\n+            for version, fpaths in versions.items():\n                 nfpaths = len(fpaths)\n                 lgr.debug(\"Unstaging %d files for version %s\", nfpaths, version)\n                 nunstaged += nfpaths\n@@ -1057,12 +1055,12 @@ def _commit_versions(data):\n             stats = data.get('datalad_stats', None)\n             stats_str = ('\\n\\n' + stats.as_str(mode='full')) if stats else ''\n \n-            for iversion, (version, fpaths) in enumerate(iteritems(new_versions)):  # for all versions past previous\n+            for iversion, (version, fpaths) in enumerate(new_versions.items()):  # for all versions past previous\n                 # stage/add files of that version to index\n                 if rename:\n                     # we need to rename and create a new vfpaths\n                     vfpaths = []\n-                    for fpath, vfpath in iteritems(fpaths):\n+                    for fpath, vfpath in fpaths.items():\n                         # ATM we do not allow unversioned -- should have failed earlier, if not HERE!\n                         # assert(not lexists(fpath))\n                         # nope!  it must be there from previous commit of a versioned file!\n@@ -1167,7 +1165,7 @@ def _remove_other_versions(data):\n             current_overlay_version = overlay_version_func(current_version)\n             prev_version = None\n             tracked_files = {}  # track files in case of overlaying\n-            for version, fpaths in iteritems(versions_db.versions):\n+            for version, fpaths in versions_db.versions.items():\n                 # sanity check since we now will have assumption that versions\n                 # are sorted\n                 if prev_version is not None:\n@@ -1347,19 +1345,19 @@ def _finalize(data):\n                         \"the `datalad-deprecated`-extension or \"\n                         \"`datalad-metalad < 0.3.0`.\"\n                     )\n-                    return\n-                datalad.api.aggregate_metadata(\n-                    dataset='^',\n-                    path=self.repo.path,\n-                    update_mode='all',\n-                    incremental=True)\n+                else:\n+                    datalad.api.aggregate_metadata(\n+                        dataset='^',\n+                        path=self.repo.path,\n+                        update_mode='all',\n+                        incremental=True)\n \n             if tag and stats:\n                 # versions survive only in total_stats\n                 total_stats = stats.get_total()\n                 if total_stats.versions:\n                     last_version = total_stats.versions[-1]\n-                    if isinstance(tag, string_types):\n+                    if isinstance(tag, str):\n                         tag_ = tag.format(stats=total_stats, data=data, last_version=last_version)\n                     else:\n                         tag_ = last_version"
+    },
+    {
+      "sha": "6c4ae24af2ca3e4e4ad0f12fdbce71a7a08a7715",
+      "filename": "datalad_crawler/nodes/matches.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Fmatches.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Fmatches.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fnodes%2Fmatches.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -13,7 +13,6 @@\n import re\n import types\n \n-from six import PY3\n \n from datalad.utils import updated\n from datalad.support.network import dlurljoin\n@@ -121,7 +120,7 @@ def _select_and_extract(self, selector, query, data):\n         # there must be some magic happening since originally\n         # (when just parsing the code) those are unbound (func)\n         # and then somehow become bound\n-        if PY3 and isinstance(self.EXTRACTOR, types.MethodType):\n+        if isinstance(self.EXTRACTOR, types.MethodType):\n             self.EXTRACTOR = self.EXTRACTOR.__func__\n         for extracted in self.EXTRACTOR(selector, query):\n             yield extracted, data"
+    },
+    {
+      "sha": "cf54f2ade7a74ed06b650f5b963f8a3b2e3732ec",
+      "filename": "datalad_crawler/nodes/misc.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Fmisc.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Fmisc.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fnodes%2Fmisc.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -17,7 +17,6 @@\n \n from stat import ST_MODE, S_IEXEC, S_IXOTH, S_IXGRP\n from os.path import curdir, isdir, isabs, exists, join as opj, split as ops\n-from six import iteritems, string_types\n \n from datalad.support.network import get_url_disposition_filename\n from datalad.support.network import get_url_straight_filename\n@@ -267,7 +266,7 @@ def __call__(self, data):\n         matched = True\n         # finds if all match\n         data_ = data.copy()\n-        for k, v in iteritems(self.values):\n+        for k, v in self.values.items():\n             res = k in data and comp(v, data[k])\n             if not res:\n                 # do nothing and pass the data further\n@@ -335,7 +334,7 @@ def __call__(self, data={}):\n \n \n def _string_as_list(x):\n-    if isinstance(x, string_types):\n+    if isinstance(x, str):\n         return [x]\n     return x\n "
+    },
+    {
+      "sha": "47aa9cdd2d22b60f6a149c3a2c420fa41e01c8a2",
+      "filename": "datalad_crawler/nodes/s3.py",
+      "status": "modified",
+      "additions": 168,
+      "deletions": 57,
+      "changes": 225,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Fs3.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Fs3.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fnodes%2Fs3.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -9,62 +9,135 @@\n \"\"\"Basic crawler for the web\n \"\"\"\n \n-import re\n+from __future__ import annotations\n \n-from boto.s3.key import Key\n-from boto.s3.prefix import Prefix\n-from boto.s3.deletemarker import DeleteMarker\n+import re\n import time\n+from datetime import datetime, timezone\n+from typing import Any, Iterator, Optional\n \n from datalad.utils import updated\n from datalad.dochelpers import exc_str\n-from datalad.support.network import iso8601_to_epoch\n from datalad.downloaders.providers import Providers\n from datalad.downloaders.s3 import S3Downloader\n from datalad.support.exceptions import TargetFileAbsent\n from datalad.support.network import urlquote\n+from datalad.support.status import FileStatus\n from ..dbs.versions import SingleVersionDB\n \n from logging import getLogger\n lgr = getLogger('datalad.crawl.s3')\n \n+# Sentinel for sorting entries that lack LastModified (e.g. prefixes)\n+_MIN_DATETIME = datetime.min.replace(tzinfo=timezone.utc)\n+\n+\n+def _list_bucket(\n+    client: Any,\n+    bucket_name: str,\n+    prefix: Optional[str],\n+    versioned: bool,\n+    recursive: bool,\n+) -> Iterator[dict[str, Any]]:\n+    \"\"\"Paginate an S3 bucket listing, yielding tagged dicts.\n+\n+    Each yielded dict has a '_type' key:\n+      'version'       - object version (from Versions in list_object_versions)\n+      'delete_marker' - deletion marker (from DeleteMarkers)\n+      'prefix'        - common prefix directory (from CommonPrefixes)\n+\n+    For non-versioned listing, objects from Contents are tagged 'version'.\n+    \"\"\"\n+    kwargs = {'Bucket': bucket_name}\n+    if prefix:\n+        kwargs['Prefix'] = prefix\n+    if not recursive:\n+        kwargs['Delimiter'] = '/'\n+\n+    if versioned:\n+        paginator = client.get_paginator('list_object_versions')\n+        for page in paginator.paginate(**kwargs):\n+            for v in page.get('Versions', []):\n+                v['_type'] = 'version'\n+                yield v\n+            for dm in page.get('DeleteMarkers', []):\n+                dm['_type'] = 'delete_marker'\n+                yield dm\n+            for cp in page.get('CommonPrefixes', []):\n+                yield {\n+                    '_type': 'prefix',\n+                    'Key': cp['Prefix'],\n+                    'VersionId': None,\n+                    'LastModified': None,\n+                    'IsLatest': None,\n+                }\n+    else:\n+        paginator = client.get_paginator('list_objects_v2')\n+        for page in paginator.paginate(**kwargs):\n+            for obj in page.get('Contents', []):\n+                obj['_type'] = 'version'\n+                yield obj\n+            for cp in page.get('CommonPrefixes', []):\n+                yield {\n+                    '_type': 'prefix',\n+                    'Key': cp['Prefix'],\n+                    'VersionId': None,\n+                    'LastModified': None,\n+                    'IsLatest': None,\n+                }\n+\n \n-def get_key_url(e, schema='http', versioned=True):\n-    \"\"\"Generate an s3:// or http:// url given a key\n-    if versioned url is requested but version_id is None, no versionId suffix\n-    will be added\n+def get_key_url(\n+    entry: dict[str, Any],\n+    bucket_name: str,\n+    schema: str = 'http',\n+    versioned: bool = True,\n+) -> str:\n+    \"\"\"Generate an s3:// or http:// url given an entry dict.\n+\n+    Parameters\n+    ----------\n+    entry : dict\n+        Must have 'Key' and optionally 'VersionId'.\n+    bucket_name : str\n+    schema : {'http', 's3'}\n+    versioned : bool\n+        If True and entry has a VersionId, append ?versionId=...\n     \"\"\"\n-\t# Copied from datalad.support.s3, which is removing support for boto\n-\t#\n-    # TODO: here we would need to encode the name since urlquote actually\n-    # can't do that on its own... but then we should get a copy of the thing\n-    # so we could still do the .format....\n-    # ... = e.name.encode('utf-8')  # unicode isn't advised in URLs\n-    e.name_urlquoted = urlquote(e.name)\n+    name_urlquoted = urlquote(entry['Key'])\n     if schema == 'http':\n-        fmt = \"http://{e.bucket.name}.s3.amazonaws.com/{e.name_urlquoted}\"\n+        url = \"http://{}.s3.amazonaws.com/{}\".format(bucket_name, name_urlquoted)\n     elif schema == 's3':\n-        fmt = \"s3://{e.bucket.name}/{e.name_urlquoted}\"\n+        url = \"s3://{}/{}\".format(bucket_name, name_urlquoted)\n     else:\n         raise ValueError(schema)\n-    if versioned and e.version_id is not None:\n-        fmt += \"?versionId={e.version_id}\"\n-    return fmt.format(e=e)\n+    version_id = entry.get('VersionId')\n+    if versioned and version_id is not None:\n+        url += \"?versionId={}\".format(version_id)\n+    return url\n \n \n-def get_version_for_key(k, fmt='0.0.%Y%m%d'):\n-    \"\"\"Given a key return a version it identifies to be used for tagging\n+def get_version_for_key(k: dict[str, Any], fmt: str = '0.0.%Y%m%d') -> Optional[str]:\n+    \"\"\"Given a key dict return a version string for tagging.\n \n-    Uses 0.0.YYYYMMDD by default\n+    Uses 0.0.YYYYMMDD by default.\n     \"\"\"\n-    if isinstance(k, Prefix):\n+    if k.get('_type') == 'prefix':\n+        return None\n+    last_modified = k.get('LastModified')\n+    if last_modified is None:\n         return None\n-    t = iso8601_to_epoch(k.last_modified)\n-    # format it\n+    # boto3 returns datetime objects\n+    if isinstance(last_modified, datetime):\n+        t = last_modified.timestamp()\n+    else:\n+        # fallback for string timestamps\n+        from datalad.support.network import iso8601_to_epoch\n+        t = iso8601_to_epoch(last_modified)\n     return time.strftime(fmt, time.gmtime(t))\n \n \n-def _strip_prefix(s, prefix):\n+def _strip_prefix(s: Optional[str], prefix: str) -> Optional[str]:\n     \"\"\"A helper to strip the prefix from the string if present\"\"\"\n     return s[len(prefix):] if s and s.startswith(prefix) else s\n \n@@ -135,22 +208,35 @@ def __init__(self,\n         self.exclude = exclude\n \n     def __call__(self, data):\n-\n         stats = data.get('datalad_stats', None)\n         url = \"s3://%s\" % self.bucket\n         if self.prefix:\n             url += \"/\" + self.prefix.lstrip('/')\n         providers = Providers.from_config_files()\n         downloader = providers.get_provider(url).get_downloader(url)\n \n-        # bucket = provider.authenticator.authenticate(bucket_name, provider.credential)\n+        # Authenticate and establish connection.\n+        # The URL may point at just the bucket (no key), so head_object\n+        # can fail with TargetFileAbsent (404) or ParamValidationError\n+        # (empty Key string).  Either way the client is now authenticated.\n         try:\n-            _ = downloader.get_status(url)  # just to authenticate and establish connection\n+            _ = downloader.get_status(url)\n         except TargetFileAbsent as exc:\n             lgr.debug(\"Initial URL %s lead to not something downloader could fetch: %s\", url, exc_str(exc))\n+        except Exception as exc:\n+            lgr.debug(\"Initial URL %s could not be fetched: %s\", url, exc_str(exc))\n             pass\n-        bucket = downloader.bucket\n-        assert(bucket is not None)\n+\n+        # boto3-based datalad exposes .client and ._bucket_name\n+        if not hasattr(downloader, 'client'):\n+            raise ImportError(\n+                \"Your datalad version uses the old boto-based S3Downloader. \"\n+                \"Please upgrade datalad to a version with boto3 support.\"\n+            )\n+        client = downloader.client\n+        bucket_name = downloader._bucket_name\n+        assert client is not None\n+        assert bucket_name is not None\n \n         if self.repo:\n             versions_db = SingleVersionDB(self.repo)\n@@ -165,37 +251,54 @@ def __call__(self, data):\n         else:\n             prev_version, versions_db = None, None\n \n-        # TODO:  we could probably use headers to limit from previously crawled last-modified\n-        # for now will be inefficient -- fetch all, sort, proceed\n-        kwargs = {} if self.recursive else {'delimiter': '/'}\n-        all_versions = (bucket.list_versions if self.versioned else bucket.list)(self.prefix, **kwargs)\n+        # Fetch all entries, sort, proceed\n+        all_versions = list(_list_bucket(\n+            client, bucket_name, self.prefix, self.versioned, self.recursive\n+        ))\n+\n         # Comparison becomes tricky whenever as if in our test bucket we have a collection\n         # of rapid changes within the same ms, so they couldn't be sorted by last_modified, so we resolve based\n         # on them being marked latest, or not being null (as could happen originally), and placing Delete after creation\n         # In real life last_modified should be enough, but life can be as tough as we made it for 'testing'\n-        def kf(k, f):\n-            \"\"\"Some elements, such as Prefix wouldn't have any of attributes to sort by\"\"\"\n-            return getattr(k, f, '')\n+        def kf(k: dict[str, Any], field: str) -> Any:\n+            \"\"\"Get field from dict, using appropriate defaults for sorting.\"\"\"\n+            val = k.get(field)\n+            if val is None:\n+                # For LastModified, use sentinel datetime for consistent sorting\n+                if field == 'LastModified':\n+                    return _MIN_DATETIME\n+                return ''\n+            return val\n+\n         # So ATM it would sort Prefixes first, but that is not necessarily correct...\n         # Theoretically the only way to sort Prefix'es with the rest is traverse that Prefix\n         # and take latest last_modified there but it is expensive, so -- big TODO if ever ;)\n         # ACTUALLY -- may be there is an API call to return sorted by last_modified, then we\n         # would need only a single entry in result to determine the last_modified for the Prefix, thus TODO\n         cmp = lambda k: (\n-            kf(k, 'last_modified'),\n-            k.name,\n-            kf(k, 'is_latest'),\n-            kf(k, 'version_id') != 'null',\n-            isinstance(k, DeleteMarker)\n+            kf(k, 'LastModified'),\n+            k['Key'],\n+            bool(k.get('IsLatest')),\n+            k.get('VersionId', 'null') != 'null',\n+            k['_type'] == 'delete_marker'\n         )\n \n-        versions_sorted = sorted(all_versions, key=cmp)  # attrgetter('last_modified'))\n-        # print '\\n'.join(map(str, [cmp(k) for k in versions_sorted]))\n+        versions_sorted = sorted(all_versions, key=cmp)\n \n         version_fields = ['last-modified', 'name', 'version-id']\n-        def get_version_cmp(k):\n+\n+        def _last_modified_for_cmp(k: dict[str, Any]) -> str:\n+            \"\"\"Return LastModified as iso8601 string for version DB comparison.\"\"\"\n+            lm = k.get('LastModified')\n+            if lm is None:\n+                return ''\n+            if isinstance(lm, datetime):\n+                return lm.strftime('%Y-%m-%dT%H:%M:%S.000Z')\n+            return lm\n+\n+        def get_version_cmp(k: dict[str, Any]) -> tuple[str, str, str]:\n             # this one will return action version_id so we could uniquely identify\n-            return kf(k, 'last_modified'), k.name, kf(k, 'version_id')\n+            return _last_modified_for_cmp(k), k['Key'], k.get('VersionId', '')\n \n         if prev_version:\n             last_modified_, name_, version_id_ = [prev_version[f] for f in version_fields]\n@@ -225,13 +328,13 @@ def get_version_cmp(k):\n \n         # adding None so we could deal with the last commit within the loop without duplicating\n         # logic later outside\n-        def update_versiondb(e, force=False):\n+        def update_versiondb(e: Optional[dict[str, Any]], force: bool = False) -> None:\n             # this way we could recover easier after a crash\n             # TODO: config crawl.crawl_s3.versiondb.saveaftereach=True\n             if e is not None and (force or True):\n                 versions_db.version = dict(zip(version_fields, get_version_cmp(e)))\n         for e in versions_sorted + [None]:\n-            filename = e.name if e is not None else None\n+            filename = e['Key'] if e is not None else None\n             if (self.strip_prefix and self.prefix):\n                 filename = _strip_prefix(filename, self.prefix)\n             if filename and self.exclude and re.search(self.exclude, filename):\n@@ -265,22 +368,30 @@ def update_versiondb(e, force=False):\n             if filename:\n                 # might be empty if e.g. it was the self.prefix directory removed\n                 staged.add(filename)\n-            if isinstance(e, Key):\n-                if e.name.endswith('/'):\n+            if e['_type'] == 'version':\n+                if e['Key'].endswith('/'):\n                     # signals a directory for which we don't care explicitly (git doesn't -- we don't! ;) )\n                     continue\n-                url = get_key_url(e, schema=self.url_schema, versioned=self.versioned)\n+                url = get_key_url(e, bucket_name, schema=self.url_schema, versioned=self.versioned)\n+                # Build FileStatus inline from the entry dict\n+                last_modified = e.get('LastModified')\n+                mtime = last_modified.timestamp() if isinstance(last_modified, datetime) else None\n+                url_status = FileStatus(\n+                    size=e.get('Size'),\n+                    mtime=mtime,\n+                    filename=e['Key'],\n+                )\n                 # generate and pass along the status right away since we can\n                 yield updated(\n                     data,\n                     {\n                         'url': url,\n-                        'url_status': S3Downloader.get_key_status(e, dateformat='iso8601'),\n+                        'url_status': url_status,\n                         'filename': filename,\n                         'datalad_action': 'annex',\n                     })\n                 update_versiondb(e)\n-            elif isinstance(e, DeleteMarker):\n+            elif e['_type'] == 'delete_marker':\n                 if strategy == 'commit-versions':\n                     # Since git doesn't care about empty directories for us makes sense only\n                     # in the case when DeleteMarker is not pointing to the subdirectory\n@@ -296,7 +407,7 @@ def update_versiondb(e, force=False):\n                         lgr.info(\"Ignoring DeleteMarker for %s\", filename)\n \n                 update_versiondb(e)\n-            elif isinstance(e, Prefix):\n+            elif e['_type'] == 'prefix':\n                 # so  we were provided a directory (in non-recursive traversal)\n                 assert(not self.recursive)\n                 yield updated("
+    },
+    {
+      "sha": "4702ac2710ce23adbc80e3bbf0d8e83f647634f3",
+      "filename": "datalad_crawler/nodes/tests/test_annex.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Ftests%2Ftest_annex.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Ftests%2Ftest_annex.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fnodes%2Ftests%2Ftest_annex.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -12,7 +12,7 @@\n from collections import OrderedDict\n from datalad.tests.utils_pytest import with_tempfile, eq_, ok_\n import logging\n-from mock import patch\n+from unittest.mock import patch\n \n from ..annex import initiate_dataset\n from ..annex import Annexificator"
+    },
+    {
+      "sha": "f58bdc0b0b889fd4b7e4281de32ca557ef323882",
+      "filename": "datalad_crawler/nodes/tests/test_misc.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Ftests%2Ftest_misc.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Ftests%2Ftest_misc.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fnodes%2Ftests%2Ftest_misc.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -12,7 +12,6 @@\n from os import chmod\n from os.path import join as opj\n from datalad.tests.utils_pytest import with_tempfile, eq_, ok_, assert_raises\n-from six import next\n from collections import OrderedDict\n \n from ..misc import get_disposition_filename\n@@ -47,7 +46,7 @@\n \n import logging\n \n-from mock import patch\n+from unittest.mock import patch\n \n import pytest\n "
+    },
+    {
+      "sha": "c1e45d58b59216b532c429a7382e1b4122f9eaf5",
+      "filename": "datalad_crawler/nodes/tests/test_s3.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 9,
+      "changes": 12,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Ftests%2Ftest_s3.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fnodes%2Ftests%2Ftest_s3.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fnodes%2Ftests%2Ftest_s3.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -225,12 +225,6 @@ def test_crawl_s3_prefix():\n \n \n def test_get_key_url():\n-    # Just to provide necessary structure\n-    class e:\n-        name = 'e'\n-        version_id = '123'\n-        class bucket:\n-            name = \"bucket\"\n-\n-    eq_(get_key_url(e), 'http://bucket.s3.amazonaws.com/e?versionId=123')\n-    eq_(get_key_url(e, versioned=False), 'http://bucket.s3.amazonaws.com/e')\n+    entry = {'Key': 'e', 'VersionId': '123'}\n+    eq_(get_key_url(entry, 'bucket'), 'http://bucket.s3.amazonaws.com/e?versionId=123')\n+    eq_(get_key_url(entry, 'bucket', versioned=False), 'http://bucket.s3.amazonaws.com/e')"
+    },
+    {
+      "sha": "2947498b564806684889ed448503239e592ba014",
+      "filename": "datalad_crawler/pipelines/balsa.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Fbalsa.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Fbalsa.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fpipelines%2Fbalsa.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -114,8 +114,8 @@ def verify_files(self, data):\n         for item_from_con in con_files:\n             item_compare = normpath(opj('_files', item_from_con))\n             if item_compare in files:\n-                key_item = self.repo.get_file_key(item_from_con)\n-                key_files_item = self.repo.get_file_key(item_compare)\n+                key_item = self.repo.get_file_annexinfo(item_from_con).get('key', '')\n+                key_files_item = self.repo.get_file_annexinfo(item_compare).get('key', '')\n                 if key_item == key_files_item:\n                     pass\n                 else:"
+    },
+    {
+      "sha": "dd3738d3ecd7051ddf11bdb3ceeddf6cdc636bfb",
+      "filename": "datalad_crawler/pipelines/crcns.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Fcrcns.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Fcrcns.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fpipelines%2Fcrcns.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -10,7 +10,6 @@\n \n # Import necessary nodes\n import os\n-from six import text_type\n from datalad.utils import auto_repr\n from datalad.utils import _path_\n from datalad.utils import updated\n@@ -72,7 +71,7 @@ def get_metadata(dataset=None):\n     records_with_empty_xmls = {}\n     for i, json_ in enumerate(rj['data']):\n         json_xml = json_['attributes']['xml']\n-        if isinstance(json_xml, text_type):\n+        if isinstance(json_xml, str):\n             json_xml = json_xml.encode()\n \n         if not json_xml:"
+    },
+    {
+      "sha": "5faa4bd45a12ce23fd17ef0aa359b2468b787907",
+      "filename": "datalad_crawler/pipelines/gh.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 6,
+      "changes": 12,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Fgh.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Fgh.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fpipelines%2Fgh.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -21,8 +21,8 @@\n from datalad.support import path as op\n from datalad.support.gitrepo import GitRepo\n from datalad.utils import (\n-    assure_bool,\n-    assure_list_from_str,\n+    ensure_bool,\n+    ensure_list_from_str,\n     rmtree,\n     updated\n )\n@@ -82,14 +82,14 @@ def pipeline(org=None,\n       pipeline\n     \"\"\"\n     assert org, \"Organization must be provided\"\n-    aggregate = assure_bool(aggregate)\n-    get_data = assure_bool(get_data)\n-    drop_data = assure_bool(drop_data)\n+    aggregate = ensure_bool(aggregate)\n+    get_data = ensure_bool(get_data)\n+    drop_data = ensure_bool(drop_data)\n \n     import github as gh\n     superds = Dataset('.')\n     if metadata_nativetypes:\n-        metadata_nativetypes = assure_list_from_str(metadata_nativetypes, sep=',')\n+        metadata_nativetypes = ensure_list_from_str(metadata_nativetypes, sep=',')\n \n     aggregate_later = []\n     def crawl_github_org(data):"
+    },
+    {
+      "sha": "7f155301d3984346197d8de0a37e8a39d8778c9f",
+      "filename": "datalad_crawler/pipelines/simple_s3.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 9,
+      "changes": 18,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Fsimple_s3.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Fsimple_s3.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fpipelines%2Fsimple_s3.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -18,7 +18,7 @@\n from datalad.support.strings import get_replacement_dict\n \n from .simple_with_archives import pipeline as swa_pipeline\n-from datalad.utils import assure_bool\n+from datalad.utils import ensure_bool\n \n # Possibly instantiate a logger if you would like to log\n # during pipeline creation\n@@ -94,14 +94,14 @@ def pipeline(bucket,\n \n     annex_kw = {}\n \n-    to_http = assure_bool(to_http)\n-    tag = assure_bool(tag)\n-    archives = assure_bool(archives)\n-    no_annex = assure_bool(no_annex)\n-    allow_dirty = assure_bool(allow_dirty)\n-    drop = assure_bool(drop)\n-    drop_force = assure_bool(drop_force)\n-    drop_immediately = assure_bool(drop_immediately)\n+    to_http = ensure_bool(to_http)\n+    tag = ensure_bool(tag)\n+    archives = ensure_bool(archives)\n+    no_annex = ensure_bool(no_annex)\n+    allow_dirty = ensure_bool(allow_dirty)\n+    drop = ensure_bool(drop)\n+    drop_force = ensure_bool(drop_force)\n+    drop_immediately = ensure_bool(drop_immediately)\n \n     if not to_http:\n         annex_kw['special_remotes'] = [DATALAD_SPECIAL_REMOTE]"
+    },
+    {
+      "sha": "fc9d884f4b25d1623e56b4a46b2ba8cb14120559",
+      "filename": "datalad_crawler/pipelines/tests/test_balsa.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Ftests%2Ftest_balsa.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Ftests%2Ftest_balsa.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fpipelines%2Ftests%2Ftest_balsa.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -14,7 +14,7 @@\n from os.path import exists\n from glob import glob\n from os.path import join as opj\n-from mock import patch\n+from unittest.mock import patch\n \n from ...nodes.crawl_url import crawl_url\n from ...nodes.matches import *"
+    },
+    {
+      "sha": "e3ecf4c30fe5d2a1a9345c3b816dec7b748059d7",
+      "filename": "datalad_crawler/pipelines/tests/test_gh.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Ftests%2Ftest_gh.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Ftests%2Ftest_gh.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fpipelines%2Ftests%2Ftest_gh.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -36,7 +36,7 @@ def test_crawl(tempd=None):\n             args={'org': 'datalad-collection-1', 'include': 'kaggle'}\n         )\n         crawl()\n-    subdss = ds.subdatasets(fulfilled=True, result_xfm='datasets')\n+    subdss = ds.subdatasets(state='present', result_xfm='datasets')\n     assert all('kaggle' in d.path for d in subdss)\n     assert_greater(len(subdss), 1)\n     assert_false(ds.repo.dirty)"
+    },
+    {
+      "sha": "9fa902726afb7ec6792ce05cc130a28e529c419b",
+      "filename": "datalad_crawler/pipelines/tests/test_openfmri.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Ftests%2Ftest_openfmri.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Ftests%2Ftest_openfmri.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fpipelines%2Ftests%2Ftest_openfmri.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -12,7 +12,7 @@\n import os.path as op\n from os.path import join as opj\n from os.path import exists\n-from mock import patch\n+from unittest.mock import patch\n \n from ...nodes.crawl_url import crawl_url\n from ...nodes.matches import *"
+    },
+    {
+      "sha": "90771b8e8aa5e41db47a20d39ba0f146bdf4eba8",
+      "filename": "datalad_crawler/pipelines/tests/test_openfmri_collection.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Ftests%2Ftest_openfmri_collection.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Ftests%2Ftest_openfmri_collection.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fpipelines%2Ftests%2Ftest_openfmri_collection.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -70,7 +70,7 @@ def test_openfmri_superdataset_pipeline1(ind=None, topurl=None, outd=None):\n \n     # TODO: replace below command with the one listing subdatasets\n     subdatasets = ['ds000001', 'ds000002']\n-    eq_(Dataset(outd).subdatasets(fulfilled=True, result_xfm='relpaths'),\n+    eq_(Dataset(outd).subdatasets(state='present', result_xfm='relpaths'),\n         subdatasets)\n \n     # Check that crawling configuration was created for every one of those"
+    },
+    {
+      "sha": "8101882156b4156070db874eee7651d57daa0ca5",
+      "filename": "datalad_crawler/pipelines/tests/test_xnat.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Ftests%2Ftest_xnat.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Ftests%2Ftest_xnat.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fpipelines%2Ftests%2Ftest_xnat.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -11,7 +11,7 @@\n from glob import glob\n from os.path import join as opj\n from os.path import exists\n-from mock import patch\n+from unittest.mock import patch\n from functools import wraps\n \n from ...nodes.crawl_url import crawl_url"
+    },
+    {
+      "sha": "f5a37affdd80570b3ea1a0dcfd7649bcd767cc33",
+      "filename": "datalad_crawler/pipelines/xnat.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Fxnat.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fpipelines%2Fxnat.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fpipelines%2Fxnat.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -27,7 +27,7 @@\n lgr = getLogger(\"datalad.crawler.pipelines.xnat\")\n \n from datalad.tests.utils_pytest import eq_\n-from datalad.utils import assure_list, assure_bool\n+from datalad.utils import ensure_list, ensure_bool\n \n \n def list_to_dict(l, field):\n@@ -138,7 +138,7 @@ def get_projects(self, limit=None, drop_empty=True, asdict=True):\n           'public'\n         \"\"\"\n \n-        limit = assure_list(limit)\n+        limit = ensure_list(limit)\n \n         if drop_empty:\n             # TODO: rework this logic/restriction\n@@ -286,8 +286,8 @@ def superdataset_pipeline(url, limit=None, drop_empty=True):\n \n     annex = Annexificator(no_annex=True, allow_dirty=False)\n     lgr.info(\"Creating a pipeline with url=%s limit=%s drop_empty=%s\", url, limit, drop_empty)\n-    limit = assure_list(limit)\n-    drop_empty = assure_bool(drop_empty)\n+    limit = ensure_list(limit)\n+    drop_empty = ensure_bool(drop_empty)\n \n     def get_projects(data):\n         xnat = XNATServer(url)\n@@ -318,7 +318,7 @@ def get_projects(data):\n \n def pipeline(url, project, project_access='public', subjects=None):\n     # TODO: Ben: Clarify parameters. In particular `project_access` is unclear to me\n-    subjects = assure_list(subjects)\n+    subjects = ensure_list(subjects)\n \n     xnat = XNATServer(url)\n "
+    },
+    {
+      "sha": "77a959e8ba39128255272aa9a4f6a1afa8b9ff37",
+      "filename": "datalad_crawler/support/versions.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fsupport%2Fversions.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Fsupport%2Fversions.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Fsupport%2Fversions.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -10,7 +10,7 @@\n \"\"\"\n \n import re\n-from distutils.version import LooseVersion\n+from looseversion import LooseVersion\n import time\n \n from os.path import basename"
+    },
+    {
+      "sha": "388134dfc10f2342692c160e06af25bcd1a63498",
+      "filename": "datalad_crawler/tests/test_crawl.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 5,
+      "changes": 7,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Ftests%2Ftest_crawl.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Ftests%2Ftest_crawl.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Ftests%2Ftest_crawl.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -12,10 +12,9 @@\n \n __docformat__ = 'restructuredtext'\n \n-from mock import patch\n-from mock import call\n+from unittest.mock import patch\n+from unittest.mock import call\n \n-from datalad.support.external_versions import external_versions\n \n from datalad.api import crawl\n \n@@ -78,8 +77,6 @@ def test_crawl_api_recursive(get_subdatasets_=None, run_pipeline_=None, load_pip\n     with chpwd(tdir):\n         output, stats = crawl(recursive=True)\n     assert_equal(pwd, getpwd())\n-    if external_versions['mock'] < '1.0.1':\n-        pytest.mark(\"needs a more recent mock which throws exceptions in side_effects\")\n     assert_equal(output, [[]]*4 + [None])  # for now output is just a list of outputs\n     assert_equal(stats, ActivityStats(datasets_crawled=5, datasets_crawl_failed=1))  # nothing was done but we got it crawled\n     chpwd_.assert_has_calls("
+    },
+    {
+      "sha": "986fb80c76d1a1642a1419b8ae6fe4fb6fb4ce5a",
+      "filename": "datalad_crawler/tests/test_crawl_init.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Ftests%2Ftest_crawl_init.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/datalad_crawler%2Ftests%2Ftest_crawl_init.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/datalad_crawler%2Ftests%2Ftest_crawl_init.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -9,7 +9,7 @@\n \n \n from datalad.tests.utils_pytest import known_failure_direct_mode, eq_, assert_raises, assert_in\n-from mock import patch\n+from unittest.mock import patch\n from datalad.api import crawl_init\n from collections import OrderedDict\n from os.path import exists"
+    },
+    {
+      "sha": "8fd8bb8de7b887cd25403c25f55527e295ed9b94",
+      "filename": "setup.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/setup.py",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/setup.py",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/setup.py?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -37,9 +37,10 @@ def findsome(subdir, extensions):\n \n requires = {\n     'core': [\n+        'boto3',\n         'datalad>=0.14.0',\n+        'looseversion',\n         'scrapy>=1.1.0',  # versioning is primarily for python3 support\n-        'boto',  # used directly by datalad_crawler/nodes/s3.py\n     ],\n     'devel-docs': [\n         # Documentation\n@@ -51,7 +52,6 @@ def findsome(subdir, extensions):\n         'datalad-deprecated>=0.2.6',\n         'pytest>=7.0',\n         'pytest-cov',\n-        'mock',\n     ],\n }\n requires['devel'] = sum(list(requires.values()), [])"
+    },
+    {
+      "sha": "a5641f66320ef7e1de056b859f8f03274e4e28f7",
+      "filename": "tox.ini",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/datalad/datalad-crawler/blob/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/tox.ini",
+      "raw_url": "https://github.com/datalad/datalad-crawler/raw/1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0/tox.ini",
+      "contents_url": "https://api.github.com/repos/datalad/datalad-crawler/contents/tox.ini?ref=1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "patch": "@@ -15,8 +15,7 @@ addopts =\n     --no-cov-on-fail\n filterwarnings =\n     #error\n-    ignore:distutils Version classes are deprecated:DeprecationWarning\n-    ignore:the imp module is deprecated\n+    ignore::DeprecationWarning:datalad_deprecated\n markers =\n     # From datalad:\n     fail_slow"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "56a37ee30a7f978438377986d174bb17ff9f28a5",
+      "message": "BF: Address datalad DeprecationWarnings for compatibility with datalad PR #7793\n\n- Replace assure_* with ensure_* (assure_ variants emit DeprecationWarning)\n- Remove six dependency: iteritems→.items(), string_types→str, text_type→str,\n  PY3 guard removed, add_metaclass→metaclass=, `from six import next` removed\n- Replace `from mock import` with `from unittest.mock import` (stdlib)\n- Replace subdatasets(fulfilled=True) with subdatasets(state='present')\n- Replace deprecated AnnexRepo.get_file_key() with get_file_annexinfo()\n- Fix finalize() return-without-yield bug: when aggregate_metadata is\n  unavailable, bare `return` dropped pipeline data preventing tag/cleanup/yield\n- Replace distutils.version.LooseVersion with looseversion package\n- Remove mock from test dependencies, add looseversion to install_requires\n- Update tox.ini filterwarnings for datalad-deprecated internal warnings\n\nCo-Authored-By: Claude Code 2.1.63 / Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "2b7ef420d0f281d88994e8d2d60e95b2a173fb23"
+      ]
+    },
+    {
+      "sha": "dc19a88e89d2dde4939d39d410810b5fc7b96ea6",
+      "message": "Update CI Python matrix to 3.9-3.13, fix codespell typo\n\n- Drop EOL Python 3.7 and 3.8 from test matrix\n- Add Python 3.12 and 3.13 to test matrix\n- Update release workflow to use Python 3.13\n- Fix typo: aggrement -> agreement in cfgs/common.cfg\n\nCo-Authored-By: Claude Code 2.1.63 / Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "56a37ee30a7f978438377986d174bb17ff9f28a5"
+      ]
+    },
+    {
+      "sha": "c8bb5f50a6ac6c2f03c62c7a52d4e15548bdaae6",
+      "message": "BF: Remove obsolete external_versions['mock'] check\n\nThe standalone mock package is no longer a dependency (unittest.mock\nis standard since Python 3.3), so external_versions['mock'] returns\nNone causing a TypeError on comparison.\n\nCo-Authored-By: Claude Code 2.1.63 / Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "dc19a88e89d2dde4939d39d410810b5fc7b96ea6"
+      ]
+    },
+    {
+      "sha": "aa11b6d6c03c0bcbca6e0c06ae4e113b23efd993",
+      "message": "BF: Make boto import graceful for Python 3.12+ compatibility\n\nboto (last release 2018) is broken on Python 3.12+ due to its vendored\nsix. Make the import conditional so the rest of the test suite and\nnon-S3 pipelines work on modern Python. S3 crawling will raise a clear\nImportError at runtime if boto is not available.\n\nAlso mark boto dependency as python_version<\"3.12\" in setup.py.\n\nCo-Authored-By: Claude Code 2.1.63 / Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "c8bb5f50a6ac6c2f03c62c7a52d4e15548bdaae6"
+      ]
+    },
+    {
+      "sha": "1b824b4f7e6d6d971a19fa5e1663b0c8a37411d0",
+      "message": "BF: Migrate nodes/s3.py from boto to boto3\n\nboto (last release 2018) is broken on Python 3.12+ due to its vendored\nsix.  Replace all boto usage with boto3 via datalad's new S3Downloader\nclient API:\n\n- Remove boto.s3.key.Key/Prefix/DeleteMarker imports\n- Add _list_bucket() helper that paginates list_object_versions /\n  list_objects_v2 and yields tagged dicts with '_type' key\n- Update get_key_url() to accept entry dict + bucket_name\n- Update get_version_for_key() to work with dicts and datetime objects\n- Update crawl_s3.__call__() to use downloader.client / ._bucket_name,\n  dict-based type checks, and inline FileStatus construction\n- Handle ParamValidationError when authenticating with bucket-only URL\n- Add boto3 as explicit core dependency in setup.py\n- Add type annotations to all new/modified functions\n\nCo-Authored-By: Claude Code 2.1.63 / Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "aa11b6d6c03c0bcbca6e0c06ae4e113b23efd993"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__datalad__datalad-crawler__pr149.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\datalad__datalad-crawler__pr149__py2_py3__datalad__datalad-crawler__pr149\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\datalad__datalad-crawler__pr149__py2_py3__datalad__datalad-crawler__pr149\\rn"
+  }
+}

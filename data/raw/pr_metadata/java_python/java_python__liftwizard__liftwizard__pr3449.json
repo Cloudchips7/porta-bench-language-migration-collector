@@ -1,0 +1,82 @@
+{
+  "instance_id": "java_python__liftwizard__liftwizard__pr3449",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "liftwizard/liftwizard",
+  "pr_number": 3449,
+  "pr_url": "https://github.com/liftwizard/liftwizard/pull/3449",
+  "repo": {
+    "full_name": "liftwizard/liftwizard",
+    "clone_url": "https://github.com/liftwizard/liftwizard.git",
+    "default_branch": "main",
+    "created_at": "2020-01-08T00:21:57Z",
+    "stars": 17,
+    "license": "Apache-2.0",
+    "size_kb": 12432
+  },
+  "pull_request": {
+    "id": 3262839414,
+    "title": "Bump org.openrewrite:rewrite-java-17 from 8.72.6 to 8.72.8",
+    "body": "Bumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.72.6 to 8.72.8.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/openrewrite/rewrite/releases\">org.openrewrite:rewrite-java-17's releases</a>.</em></p>\n<blockquote>\n<h2>8.72.8</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>Fix StackOverflowError in Validated.Both and redundant validation traversal by <a href=\"https://github.com/pstreef\"><code>@​pstreef</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6690\">openrewrite/rewrite#6690</a></li>\n<li>Changing <code>npx</code> to <code>npx.cmd</code> on Windows, normalizing paths for source file processing and fixing <code>spawn</code> and <code>spawnSync</code> on Windows. by <a href=\"https://github.com/steve-aom-elliott\"><code>@​steve-aom-elliott</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6662\">openrewrite/rewrite#6662</a></li>\n<li>Mark parent tag in DependencyInsight when dependency is inherited by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6693\">openrewrite/rewrite#6693</a></li>\n<li>Clean up the error message when a recipe cannot be found in the marketplace by <a href=\"https://github.com/shanman190\"><code>@​shanman190</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6688\">openrewrite/rewrite#6688</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.72.7...v8.72.8\">https://github.com/openrewrite/rewrite/compare/v8.72.7...v8.72.8</a></p>\n<h2>8.72.7</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>RPC - Remove mention of JavaScript for Python RPC server error message by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6673\">openrewrite/rewrite#6673</a></li>\n<li>Skip BOM download when version contains unresolved placeholders by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6674\">openrewrite/rewrite#6674</a></li>\n<li>Support multi-component literal dependency declarations by <a href=\"https://github.com/MBoegers\"><code>@​MBoegers</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6669\">openrewrite/rewrite#6669</a></li>\n<li>Improving <code>AddCommentToImport</code> when it comes to comments that get added at the beginning of the file by <a href=\"https://github.com/steve-aom-elliott\"><code>@​steve-aom-elliott</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6675\">openrewrite/rewrite#6675</a></li>\n<li>Fix DeleteProperty losing newlines when deleting entries with block scalars by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6670\">openrewrite/rewrite#6670</a></li>\n<li>Python: Add RPC infrastructure for calling Java recipes by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6677\">openrewrite/rewrite#6677</a></li>\n<li>Python: Add pip bootstrap support for openrewrite package by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6679\">openrewrite/rewrite#6679</a></li>\n<li>Python: Add data table support for recipes by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6680\">openrewrite/rewrite#6680</a></li>\n<li>Add Gradle FindRepositoryOrder recipe by <a href=\"https://github.com/kmccarp\"><code>@​kmccarp</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6676\">openrewrite/rewrite#6676</a></li>\n<li>Python: Add context-insensitive templating mechanism by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6681\">openrewrite/rewrite#6681</a></li>\n<li>Fix test for newer plugin versions by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6685\">openrewrite/rewrite#6685</a></li>\n<li>Catch Throwable instead of Exception in KotlinParser and PythonParser by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6633\">openrewrite/rewrite#6633</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.72.6...v8.72.7\">https://github.com/openrewrite/rewrite/compare/v8.72.6...v8.72.7</a></p>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/0e021e86bae13820abfc339f87679e1f90210650\"><code>0e021e8</code></a> Clean up the error message when a recipe cannot be found in the marketplace (...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/9fe1fb5c16b7904cc9a6838ce8d4030155893fbc\"><code>9fe1fb5</code></a> Mark parent tag in DependencyInsight when dependency is inherited (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6693\">#6693</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/8315c067c7edca7816b7fbe88c0fdab982122eaa\"><code>8315c06</code></a> Changing <code>npx</code> to <code>npx.cmd</code> on Windows, normalizing paths for source file pro...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/1790f4e9e70d5e6a2932756707811a56cc4c90a1\"><code>1790f4e</code></a> Fix StackOverflowError in Validated.Both.iterator() and redundant validation ...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/75e9711701f148287f7d1e0d4be7656fb550eba7\"><code>75e9711</code></a> Catch Throwable instead of Exception in KotlinParser and PythonParser (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6633\">#6633</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/ac001a47b6342d01f5ab8202c25b2271a24410c8\"><code>ac001a4</code></a> Fix test for newer plugin versions (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6685\">#6685</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/75467701d02522558862627d0fc06e20936fccdd\"><code>7546770</code></a> Python: Add context-insensitive templating mechanism (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6681\">#6681</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/dc11f7a1c5e9c153dab63d8d9934ab8e4cdf79b3\"><code>dc11f7a</code></a> Add Gradle FindRepositoryOrder recipe (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6676\">#6676</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/ff9d9148808f4bdc7b3c33f6a0b977f92445b524\"><code>ff9d914</code></a> Python: Add data table support for recipes (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6680\">#6680</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/acee7fb4a384f1315fdc19b8be0fe9d55098a4f7\"><code>acee7fb</code></a> Python: Add pip bootstrap support for openrewrite package (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6679\">#6679</a>)</li>\n<li>Additional commits viewable in <a href=\"https://github.com/openrewrite/rewrite/compare/v8.72.6...v8.72.8\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=org.openrewrite:rewrite-java-17&package-manager=maven&previous-version=8.72.6&new-version=8.72.8)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)\n\n\n</details>",
+    "created_at": "2026-02-09T13:16:07Z",
+    "merged_at": "2026-02-09T14:46:09Z",
+    "base_sha": "cdfb26c4b0a97936f3e1665c9d9c0051a6d5d74b",
+    "head_sha": "81e23d60b9665263d460d47f4e4fe0dbe7877042",
+    "merge_commit_sha": "f72ae4af24db67a289c6803bdc75985b5741e608",
+    "labels": [
+      "dependencies",
+      "java"
+    ]
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "cdfb26c4b0a97936f3e1665c9d9c0051a6d5d74b",
+  "final_sha": "81e23d60b9665263d460d47f4e4fe0dbe7877042",
+  "changed_files": [
+    {
+      "sha": "e5429042c86bd7b8029913682d30c3d07c25ef67",
+      "filename": "liftwizard-utility/liftwizard-rewrite/pom.xml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/liftwizard/liftwizard/blob/81e23d60b9665263d460d47f4e4fe0dbe7877042/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "raw_url": "https://github.com/liftwizard/liftwizard/raw/81e23d60b9665263d460d47f4e4fe0dbe7877042/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "contents_url": "https://api.github.com/repos/liftwizard/liftwizard/contents/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml?ref=81e23d60b9665263d460d47f4e4fe0dbe7877042",
+      "patch": "@@ -307,7 +307,7 @@\n                     <dependency>\n                         <groupId>org.openrewrite</groupId>\n                         <artifactId>rewrite-java-17</artifactId>\n-                        <version>8.72.6</version>\n+                        <version>8.72.8</version>\n                     </dependency>\n                 </dependencies>\n             </plugin>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "81e23d60b9665263d460d47f4e4fe0dbe7877042",
+      "message": "Bump org.openrewrite:rewrite-java-17 from 8.72.6 to 8.72.8\n\nBumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.72.6 to 8.72.8.\n- [Release notes](https://github.com/openrewrite/rewrite/releases)\n- [Commits](https://github.com/openrewrite/rewrite/compare/v8.72.6...v8.72.8)\n\n---\nupdated-dependencies:\n- dependency-name: org.openrewrite:rewrite-java-17\n  dependency-version: 8.72.8\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "cdfb26c4b0a97936f3e1665c9d9c0051a6d5d74b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__liftwizard__liftwizard__pr3449.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3449__java_python__liftwizard__liftwizard__pr3449\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3449__java_python__liftwizard__liftwizard__pr3449\\rn"
+  }
+}

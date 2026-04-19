@@ -1,0 +1,81 @@
+{
+  "instance_id": "cpp_python__google__crubit__pr693",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "google/crubit",
+  "pr_number": 693,
+  "pr_url": "https://github.com/google/crubit/pull/693",
+  "repo": {
+    "full_name": "google/crubit",
+    "clone_url": "https://github.com/google/crubit.git",
+    "default_branch": "main",
+    "created_at": "2022-03-02T09:13:13Z",
+    "stars": 996,
+    "license": "NOASSERTION",
+    "size_kb": 22140
+  },
+  "pull_request": {
+    "id": 3409679534,
+    "title": "Add CRUBIT_UNSAFE_IMPL to annotations.swig.",
+    "body": "Add CRUBIT_UNSAFE_IMPL to annotations.swig.\n",
+    "created_at": "2026-03-17T13:42:21Z",
+    "merged_at": "2026-03-17T18:22:28Z",
+    "base_sha": "aea969690c73e238e0e4c80c6309760e30217f29",
+    "head_sha": "dc53e2009c62770e17dd9a97ffef6bcf354a9a63",
+    "merge_commit_sha": "dc53e2009c62770e17dd9a97ffef6bcf354a9a63",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "aea969690c73e238e0e4c80c6309760e30217f29",
+  "final_sha": "dc53e2009c62770e17dd9a97ffef6bcf354a9a63",
+  "changed_files": [
+    {
+      "sha": "0eb9a6ddde51bf4db3b57ae3c1baa1ba10e1fba5",
+      "filename": "support/annotations.swig",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/google/crubit/blob/dc53e2009c62770e17dd9a97ffef6bcf354a9a63/support%2Fannotations.swig",
+      "raw_url": "https://github.com/google/crubit/raw/dc53e2009c62770e17dd9a97ffef6bcf354a9a63/support%2Fannotations.swig",
+      "contents_url": "https://api.github.com/repos/google/crubit/contents/support%2Fannotations.swig?ref=dc53e2009c62770e17dd9a97ffef6bcf354a9a63",
+      "patch": "@@ -6,6 +6,8 @@\n %enddef\n %define CRUBIT_UNSAFE\n %enddef\n+%define CRUBIT_UNSAFE_IMPL(...)\n+%enddef\n %define CRUBIT_UNSAFE_MARK_SAFE\n %enddef\n %define CRUBIT_OVERRIDE_UNSAFE(safety)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "dc53e2009c62770e17dd9a97ffef6bcf354a9a63",
+      "message": "Add CRUBIT_UNSAFE_IMPL to annotations.swig.\n\nPiperOrigin-RevId: 885119962",
+      "parent_shas": [
+        "aea969690c73e238e0e4c80c6309760e30217f29"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__google__crubit__pr693.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\google__crubit__pr693__cpp_python__google__crubit__pr693\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\google__crubit__pr693__cpp_python__google__crubit__pr693\\rn"
+  }
+}

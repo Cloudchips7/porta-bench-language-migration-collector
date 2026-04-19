@@ -1,0 +1,107 @@
+{
+  "instance_id": "python_java__nrfconnect__sdk-nrf__pr28118",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "nrfconnect/sdk-nrf",
+  "pr_number": 28118,
+  "pr_url": "https://github.com/nrfconnect/sdk-nrf/pull/28118",
+  "repo": {
+    "full_name": "nrfconnect/sdk-nrf",
+    "clone_url": "https://github.com/nrfconnect/sdk-nrf.git",
+    "default_branch": "main",
+    "created_at": "2018-02-14T13:50:55Z",
+    "stars": 1301,
+    "license": "NOASSERTION",
+    "size_kb": 213924
+  },
+  "pull_request": {
+    "id": 3527117317,
+    "title": "tools: Update python packages",
+    "body": "pillow==12.2.0 fixes CVE-2026-40192",
+    "created_at": "2026-04-14T07:50:09Z",
+    "merged_at": "2026-04-14T14:01:10Z",
+    "base_sha": "2716a26a6ea0224d662f8e8ebdbb50bb8534a36b",
+    "head_sha": "5c6f543fac105c910d59955d8e04358807512b4c",
+    "merge_commit_sha": "c2c9481f95be0f9e48fff3e07ae6aaefe12d6b43",
+    "labels": [
+      "no-changelog"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "2716a26a6ea0224d662f8e8ebdbb50bb8534a36b",
+  "final_sha": "5c6f543fac105c910d59955d8e04358807512b4c",
+  "changed_files": [
+    {
+      "sha": "f658010da5ef6f44dde9d2633766ed05e40d42c8",
+      "filename": "scripts/requirements-fixed.txt",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 6,
+      "changes": 12,
+      "blob_url": "https://github.com/nrfconnect/sdk-nrf/blob/5c6f543fac105c910d59955d8e04358807512b4c/scripts%2Frequirements-fixed.txt",
+      "raw_url": "https://github.com/nrfconnect/sdk-nrf/raw/5c6f543fac105c910d59955d8e04358807512b4c/scripts%2Frequirements-fixed.txt",
+      "contents_url": "https://api.github.com/repos/nrfconnect/sdk-nrf/contents/scripts%2Frequirements-fixed.txt?ref=5c6f543fac105c910d59955d8e04358807512b4c",
+      "patch": "@@ -40,11 +40,11 @@ colorlog==6.10.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n construct==2.10.70 ; python_version >= \"3.12\" and python_version < \"4.0\"\n coverage==7.13.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n crcmod==1.7 ; python_version >= \"3.12\" and python_version < \"4.0\"\n-cryptography==46.0.5 ; python_version >= \"3.12\" and python_version < \"4.0\"\n+cryptography==46.0.7 ; python_version >= \"3.12\" and python_version < \"4.0\"\n deepmerge==2.0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n dill==0.4.0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n docopt==0.6.2 ; python_version >= \"3.12\" and python_version < \"4.0\"\n-ecdsa==0.19.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n+ecdsa==0.19.2 ; python_version >= \"3.12\" and python_version < \"4.0\"\n editdistance==0.8.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n editor==1.6.6 ; python_version >= \"3.12\" and python_version < \"4.0\"\n fastjsonschema==2.21.2 ; python_version >= \"3.12\" and python_version < \"4.0\"\n@@ -101,7 +101,7 @@ oscrypto==1.3.0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n packaging==25.0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n pathspec==1.0.3 ; python_version >= \"3.12\" and python_version < \"4.0\"\n patool==4.0.3 ; python_version >= \"3.12\" and python_version < \"4.0\"\n-pillow==12.1.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n+pillow==12.2.0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n pkg-about==2.0.9 ; python_version >= \"3.12\" and python_version < \"4.0\"\n platformdirs==4.5.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n plotly==6.5.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n@@ -119,7 +119,7 @@ pycryptodome==3.21.0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n pyelftools==0.32 ; python_version >= \"3.12\" and python_version < \"4.0\"\n pygit2==1.18.2 ; python_version >= \"3.12\" and python_version < \"4.0\"\n pygithub==2.8.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n-pygments==2.19.2 ; python_version >= \"3.12\" and python_version < \"4.0\"\n+pygments==2.20.0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n pyjwt==2.12.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n pyjwt[crypto]==2.12.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n pykwalify==1.8.0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n@@ -131,7 +131,7 @@ pyocd==0.42.0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n pyparsing==3.3.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n pyreadline3==3.5.4 ; sys_platform == \"win32\" and python_version >= \"3.12\" and python_version < \"4.0\"\n pyserial==3.5 ; python_version >= \"3.12\" and python_version < \"4.0\"\n-pytest==9.0.2 ; python_version >= \"3.12\" and python_version < \"4.0\"\n+pytest==9.0.3 ; python_version >= \"3.12\" and python_version < \"4.0\"\n python-can==4.6.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n python-dateutil==2.9.0.post0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n python-debian==1.0.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n@@ -148,7 +148,7 @@ rdflib==7.5.0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n readchar==4.2.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n referencing==0.37.0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n regex==2025.11.3 ; python_version >= \"3.12\" and python_version < \"4.0\"\n-requests==2.32.5 ; python_version >= \"3.12\" and python_version < \"4.0\"\n+requests==2.33.1 ; python_version >= \"3.12\" and python_version < \"4.0\"\n reuse==6.2.0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n rpds-py==0.30.0 ; python_version >= \"3.12\" and python_version < \"4.0\"\n ruamel-yaml-clib==0.2.14 ; python_version >= \"3.12\" and python_version < \"4.0\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "93fa2226b145e02d36e0c07203840b3ad0e04d79",
+      "message": "tools: Update pillow to 12.2.0\n\npillow==12.2.0 fixes CVE-2026-40192\n\nSigned-off-by: Jan Gałda <jan.galda@nordicsemi.no>",
+      "parent_shas": [
+        "2716a26a6ea0224d662f8e8ebdbb50bb8534a36b"
+      ]
+    },
+    {
+      "sha": "1e8fa30ce10416618458f616ed236338ab5ad642",
+      "message": "tools: Update cryptography to 46.0.7\n\ncryptography==46.0.7 fixes CVE-2026-39892 and CVE-2026-34073\n\nSigned-off-by: Jan Gałda <jan.galda@nordicsemi.no>",
+      "parent_shas": [
+        "93fa2226b145e02d36e0c07203840b3ad0e04d79"
+      ]
+    },
+    {
+      "sha": "5efdc885b10a55cbcbc3b01dea6910ab1a206dbc",
+      "message": "tools: Update ecdsa to 0.19.2\n\necdsa==0.19.2 fixes CVE-2026-33936\n\nSigned-off-by: Jan Gałda <jan.galda@nordicsemi.no>",
+      "parent_shas": [
+        "1e8fa30ce10416618458f616ed236338ab5ad642"
+      ]
+    },
+    {
+      "sha": "c633c2532627e94db1ca768d12c33b18c0593fb6",
+      "message": "tools: Update pygments to 2.20.0\n\npygments==2.20.0 fixes CVE-2026-4539\n\nSigned-off-by: Jan Gałda <jan.galda@nordicsemi.no>",
+      "parent_shas": [
+        "5efdc885b10a55cbcbc3b01dea6910ab1a206dbc"
+      ]
+    },
+    {
+      "sha": "5c6f543fac105c910d59955d8e04358807512b4c",
+      "message": "tools: Update requests to 2.33.1\n\nrequests==2.33.1 fixes CVE-2026-25645\n\nSigned-off-by: Jan Gałda <jan.galda@nordicsemi.no>",
+      "parent_shas": [
+        "c633c2532627e94db1ca768d12c33b18c0593fb6"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__nrfconnect__sdk-nrf__pr28118.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\nrfconnect__sdk-nrf__pr28118__python_java__nrfconnect__sdk-nrf__pr28118\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\nrfconnect__sdk-nrf__pr28118__python_java__nrfconnect__sdk-nrf__pr28118\\rn"
+  }
+}

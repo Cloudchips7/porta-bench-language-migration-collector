@@ -1,0 +1,150 @@
+{
+  "instance_id": "python_java__openedx__openedx-filters__pr350",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "openedx/openedx-filters",
+  "pr_number": 350,
+  "pr_url": "https://github.com/openedx/openedx-filters/pull/350",
+  "repo": {
+    "full_name": "openedx/openedx-filters",
+    "clone_url": "https://github.com/openedx/openedx-filters.git",
+    "default_branch": "main",
+    "created_at": "2021-04-21T17:24:26Z",
+    "stars": 10,
+    "license": "AGPL-3.0",
+    "size_kb": 477
+  },
+  "pull_request": {
+    "id": 3520489380,
+    "title": "chore: Upgrade Python requirements",
+    "body": "Python requirements update. Please review the [changelogs](https://openedx.atlassian.net/wiki/spaces/TE/pages/1001521320/Python+Package+Changelogs) for the upgraded packages.",
+    "created_at": "2026-04-13T00:48:45Z",
+    "merged_at": "2026-04-14T13:17:24Z",
+    "base_sha": "4e0cfc042d72179bc52c57370d430e10ec026028",
+    "head_sha": "7d51f19ce0e9a416f6a68323bcf6f466f34337c3",
+    "merge_commit_sha": "dda4aeb46183c419e419a03bedc5758011e8c2c0",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "4e0cfc042d72179bc52c57370d430e10ec026028",
+  "final_sha": "7d51f19ce0e9a416f6a68323bcf6f466f34337c3",
+  "changed_files": [
+    {
+      "sha": "0a6e365aa1b78ab667b03deb4fcd64fbfd0ed1d2",
+      "filename": "requirements/base.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/openedx/openedx-filters/blob/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Fbase.txt",
+      "raw_url": "https://github.com/openedx/openedx-filters/raw/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Fbase.txt",
+      "contents_url": "https://api.github.com/repos/openedx/openedx-filters/contents/requirements%2Fbase.txt?ref=7d51f19ce0e9a416f6a68323bcf6f466f34337c3",
+      "patch": "@@ -6,7 +6,7 @@\n #\n asgiref==3.11.1\n     # via django\n-django==5.2.12\n+django==5.2.13\n     # via\n     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt\n     #   -r requirements/base.in"
+    },
+    {
+      "sha": "aeefd766a22d8d6d4c60a8da1ee64cb40439e83a",
+      "filename": "requirements/ci.txt",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/openedx/openedx-filters/blob/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Fci.txt",
+      "raw_url": "https://github.com/openedx/openedx-filters/raw/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Fci.txt",
+      "contents_url": "https://api.github.com/repos/openedx/openedx-filters/contents/requirements%2Fci.txt?ref=7d51f19ce0e9a416f6a68323bcf6f466f34337c3",
+      "patch": "@@ -19,7 +19,7 @@ packaging==26.0\n     # via\n     #   pyproject-api\n     #   tox\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   python-discovery\n     #   tox\n@@ -28,13 +28,13 @@ pluggy==1.6.0\n     # via tox\n pyproject-api==1.10.0\n     # via tox\n-python-discovery==1.2.1\n+python-discovery==1.2.2\n     # via\n     #   tox\n     #   virtualenv\n tomli-w==1.2.0\n     # via tox\n-tox==4.52.0\n+tox==4.52.1\n     # via -r requirements/ci.in\n-virtualenv==21.2.0\n+virtualenv==21.2.1\n     # via tox"
+    },
+    {
+      "sha": "c51615934f674a3b3a524e0f7f07055048ad2a51",
+      "filename": "requirements/dev.txt",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 14,
+      "changes": 28,
+      "blob_url": "https://github.com/openedx/openedx-filters/blob/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Fdev.txt",
+      "raw_url": "https://github.com/openedx/openedx-filters/raw/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Fdev.txt",
+      "contents_url": "https://api.github.com/repos/openedx/openedx-filters/contents/requirements%2Fdev.txt?ref=7d51f19ce0e9a416f6a68323bcf6f466f34337c3",
+      "patch": "@@ -15,7 +15,7 @@ astroid==4.0.4\n     #   pylint-celery\n attrs==26.1.0\n     # via scriv\n-build==1.4.2\n+build==1.4.3\n     # via\n     #   -r requirements/pip-tools.txt\n     #   pip-tools\n@@ -31,7 +31,7 @@ cffi==2.0.0\n     # via\n     #   -r requirements/quality.txt\n     #   cryptography\n-chardet==7.4.0.post2\n+chardet==7.4.1\n     # via diff-cover\n charset-normalizer==3.4.7\n     # via\n@@ -63,7 +63,7 @@ coverage[toml]==7.13.5\n     # via\n     #   -r requirements/quality.txt\n     #   pytest-cov\n-cryptography==46.0.6\n+cryptography==46.0.7\n     # via\n     #   -r requirements/quality.txt\n     #   secretstorage\n@@ -79,7 +79,7 @@ distlib==0.4.0\n     # via\n     #   -r requirements/ci.txt\n     #   virtualenv\n-django==5.2.12\n+django==5.2.13\n     # via\n     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt\n     #   -r requirements/quality.txt\n@@ -152,7 +152,7 @@ keyring==25.7.0\n     # via\n     #   -r requirements/quality.txt\n     #   twine\n-librt==0.8.1\n+librt==0.9.0\n     # via\n     #   -r requirements/quality.txt\n     #   mypy\n@@ -173,7 +173,7 @@ mdurl==0.1.2\n     # via\n     #   -r requirements/quality.txt\n     #   markdown-it-py\n-more-itertools==11.0.1\n+more-itertools==11.0.2\n     # via\n     #   -r requirements/quality.txt\n     #   jaraco-classes\n@@ -205,7 +205,7 @@ pathspec==1.0.4\n     #   mypy\n pip-tools==7.5.3\n     # via -r requirements/pip-tools.txt\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   -r requirements/ci.txt\n     #   -r requirements/quality.txt\n@@ -267,7 +267,7 @@ pyproject-hooks==1.2.0\n     #   -r requirements/pip-tools.txt\n     #   build\n     #   pip-tools\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   -r requirements/quality.txt\n     #   pytest-cov\n@@ -276,7 +276,7 @@ pytest-cov==7.1.0\n     # via -r requirements/quality.txt\n pytest-django==4.12.0\n     # via -r requirements/quality.txt\n-python-discovery==1.2.1\n+python-discovery==1.2.2\n     # via\n     #   -r requirements/ci.txt\n     #   tox\n@@ -307,11 +307,11 @@ rfc3986==2.0.0\n     # via\n     #   -r requirements/quality.txt\n     #   twine\n-rich==14.3.3\n+rich==15.0.0\n     # via\n     #   -r requirements/quality.txt\n     #   twine\n-ruff==0.15.9\n+ruff==0.15.10\n     # via -r requirements/quality.txt\n scriv==1.8.0\n     # via -r requirements/dev.in\n@@ -344,11 +344,11 @@ tomlkit==0.14.0\n     # via\n     #   -r requirements/quality.txt\n     #   pylint\n-tox==4.52.0\n+tox==4.52.1\n     # via -r requirements/ci.txt\n twine==6.2.0\n     # via -r requirements/quality.txt\n-types-pyyaml==6.0.12.20250915\n+types-pyyaml==6.0.12.20260408\n     # via\n     #   -r requirements/quality.txt\n     #   django-stubs\n@@ -365,7 +365,7 @@ urllib3==2.6.3\n     #   id\n     #   requests\n     #   twine\n-virtualenv==21.2.0\n+virtualenv==21.2.1\n     # via\n     #   -r requirements/ci.txt\n     #   tox"
+    },
+    {
+      "sha": "a3a9e569a519799832cbb3f99771e9fb15ac9365",
+      "filename": "requirements/doc.txt",
+      "status": "modified",
+      "additions": 19,
+      "deletions": 6,
+      "changes": 25,
+      "blob_url": "https://github.com/openedx/openedx-filters/blob/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Fdoc.txt",
+      "raw_url": "https://github.com/openedx/openedx-filters/raw/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Fdoc.txt",
+      "contents_url": "https://api.github.com/repos/openedx/openedx-filters/contents/requirements%2Fdoc.txt?ref=7d51f19ce0e9a416f6a68323bcf6f466f34337c3",
+      "patch": "@@ -22,10 +22,12 @@ babel==2.18.0\n     #   sphinx\n beautifulsoup4==4.14.3\n     # via pydata-sphinx-theme\n-build==1.4.2\n+build==1.4.3\n     # via -r requirements/doc.in\n certifi==2026.2.25\n     # via requests\n+cffi==2.0.0\n+    # via cryptography\n charset-normalizer==3.4.7\n     # via requests\n click==8.3.2\n@@ -41,11 +43,14 @@ coverage[toml]==7.13.5\n     # via\n     #   -r requirements/test.txt\n     #   pytest-cov\n+cryptography==46.0.7\n+    # via secretstorage\n ddt==1.7.2\n     # via -r requirements/test.txt\n django==5.2.13\n     # via\n     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt\n+    #   -r requirements/test.txt\n     #   django-stubs\n     #   django-stubs-ext\n django-stubs==6.0.2\n@@ -89,6 +94,10 @@ jaraco-context==6.1.2\n     # via keyring\n jaraco-functools==4.4.0\n     # via keyring\n+jeepney==0.9.0\n+    # via\n+    #   keyring\n+    #   secretstorage\n jinja2==3.1.6\n     # via\n     #   -r requirements/test.txt\n@@ -97,7 +106,7 @@ jinja2==3.1.6\n     #   sphinxcontrib-mermaid\n keyring==25.7.0\n     # via twine\n-librt==0.8.1\n+librt==0.9.0\n     # via\n     #   -r requirements/test.txt\n     #   mypy\n@@ -109,7 +118,7 @@ markupsafe==3.0.3\n     #   jinja2\n mdurl==0.1.2\n     # via markdown-it-py\n-more-itertools==11.0.1\n+more-itertools==11.0.2\n     # via\n     #   jaraco-classes\n     #   jaraco-functools\n@@ -137,6 +146,8 @@ pluggy==1.6.0\n     #   -r requirements/test.txt\n     #   pytest\n     #   pytest-cov\n+pycparser==3.0\n+    # via cffi\n pydata-sphinx-theme==0.16.1\n     # via sphinx-book-theme\n pygments==2.20.0\n@@ -155,7 +166,7 @@ pymongo==4.16.0\n     #   edx-opaque-keys\n pyproject-hooks==1.2.0\n     # via build\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   -r requirements/test.txt\n     #   pytest-cov\n@@ -186,10 +197,12 @@ restructuredtext-lint==2.0.2\n     # via doc8\n rfc3986==2.0.0\n     # via twine\n-rich==14.3.3\n+rich==15.0.0\n     # via twine\n roman-numerals==4.1.0\n     # via sphinx\n+secretstorage==3.5.0\n+    # via keyring\n snowballstemmer==3.0.1\n     # via sphinx\n soupsieve==2.8.3\n@@ -240,7 +253,7 @@ text-unidecode==1.3\n     #   python-slugify\n twine==6.2.0\n     # via -r requirements/doc.in\n-types-pyyaml==6.0.12.20250915\n+types-pyyaml==6.0.12.20260408\n     # via\n     #   -r requirements/test.txt\n     #   django-stubs"
+    },
+    {
+      "sha": "e7d1c474f00c8ad12ee7f22e1fe04cdeaef3d3f1",
+      "filename": "requirements/pip-tools.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/openedx/openedx-filters/blob/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Fpip-tools.txt",
+      "raw_url": "https://github.com/openedx/openedx-filters/raw/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Fpip-tools.txt",
+      "contents_url": "https://api.github.com/repos/openedx/openedx-filters/contents/requirements%2Fpip-tools.txt?ref=7d51f19ce0e9a416f6a68323bcf6f466f34337c3",
+      "patch": "@@ -4,7 +4,7 @@\n #\n #    make upgrade\n #\n-build==1.4.2\n+build==1.4.3\n     # via pip-tools\n click==8.3.2\n     # via pip-tools"
+    },
+    {
+      "sha": "4772fd95be6e47e6c6f4b4a6e425e963a395a260",
+      "filename": "requirements/quality.txt",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 9,
+      "changes": 18,
+      "blob_url": "https://github.com/openedx/openedx-filters/blob/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Fquality.txt",
+      "raw_url": "https://github.com/openedx/openedx-filters/raw/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Fquality.txt",
+      "contents_url": "https://api.github.com/repos/openedx/openedx-filters/contents/requirements%2Fquality.txt?ref=7d51f19ce0e9a416f6a68323bcf6f466f34337c3",
+      "patch": "@@ -34,13 +34,13 @@ coverage[toml]==7.13.5\n     # via\n     #   -r requirements/test.txt\n     #   pytest-cov\n-cryptography==46.0.6\n+cryptography==46.0.7\n     # via secretstorage\n ddt==1.7.2\n     # via -r requirements/test.txt\n dill==0.4.1\n     # via pylint\n-django==5.2.12\n+django==5.2.13\n     # via\n     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt\n     #   -r requirements/test.txt\n@@ -90,7 +90,7 @@ jinja2==3.1.6\n     #   code-annotations\n keyring==25.7.0\n     # via twine\n-librt==0.8.1\n+librt==0.9.0\n     # via\n     #   -r requirements/test.txt\n     #   mypy\n@@ -104,7 +104,7 @@ mccabe==0.7.0\n     # via pylint\n mdurl==0.1.2\n     # via markdown-it-py\n-more-itertools==11.0.1\n+more-itertools==11.0.2\n     # via\n     #   jaraco-classes\n     #   jaraco-functools\n@@ -127,7 +127,7 @@ pathspec==1.0.4\n     # via\n     #   -r requirements/test.txt\n     #   mypy\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via pylint\n pluggy==1.6.0\n     # via\n@@ -162,7 +162,7 @@ pymongo==4.16.0\n     # via\n     #   -r requirements/test.txt\n     #   edx-opaque-keys\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   -r requirements/test.txt\n     #   pytest-cov\n@@ -189,9 +189,9 @@ requests-toolbelt==1.0.0\n     # via twine\n rfc3986==2.0.0\n     # via twine\n-rich==14.3.3\n+rich==15.0.0\n     # via twine\n-ruff==0.15.9\n+ruff==0.15.10\n     # via -r requirements/quality.in\n secretstorage==3.5.0\n     # via keyring\n@@ -214,7 +214,7 @@ tomlkit==0.14.0\n     # via pylint\n twine==6.2.0\n     # via -r requirements/quality.in\n-types-pyyaml==6.0.12.20250915\n+types-pyyaml==6.0.12.20260408\n     # via\n     #   -r requirements/test.txt\n     #   django-stubs"
+    },
+    {
+      "sha": "d9d74852ed6bca9b7bb499e93deb37ca5055c1c7",
+      "filename": "requirements/test.txt",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/openedx/openedx-filters/blob/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Ftest.txt",
+      "raw_url": "https://github.com/openedx/openedx-filters/raw/7d51f19ce0e9a416f6a68323bcf6f466f34337c3/requirements%2Ftest.txt",
+      "contents_url": "https://api.github.com/repos/openedx/openedx-filters/contents/requirements%2Ftest.txt?ref=7d51f19ce0e9a416f6a68323bcf6f466f34337c3",
+      "patch": "@@ -35,7 +35,7 @@ iniconfig==2.3.0\n     # via pytest\n jinja2==3.1.6\n     # via code-annotations\n-librt==0.8.1\n+librt==0.9.0\n     # via mypy\n markupsafe==3.0.3\n     # via jinja2\n@@ -57,7 +57,7 @@ pymongo==4.16.0\n     # via\n     #   -r requirements/base.txt\n     #   edx-opaque-keys\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   pytest-cov\n     #   pytest-django\n@@ -80,7 +80,7 @@ stevedore==5.7.0\n     #   edx-opaque-keys\n text-unidecode==1.3\n     # via python-slugify\n-types-pyyaml==6.0.12.20250915\n+types-pyyaml==6.0.12.20260408\n     # via django-stubs\n typing-extensions==4.15.0\n     # via"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "7d51f19ce0e9a416f6a68323bcf6f466f34337c3",
+      "message": "chore: Upgrade Python requirements",
+      "parent_shas": [
+        "4e0cfc042d72179bc52c57370d430e10ec026028"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "dependency_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__openedx__openedx-filters__pr350.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\openedx__openedx-filters__pr350__python_java__openedx__openedx-filters__pr350\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\openedx__openedx-filters__pr350__python_java__openedx__openedx-filters__pr350\\rn"
+  }
+}

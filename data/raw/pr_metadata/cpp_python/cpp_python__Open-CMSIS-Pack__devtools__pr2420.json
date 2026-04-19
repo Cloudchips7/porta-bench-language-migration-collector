@@ -1,0 +1,166 @@
+{
+  "instance_id": "cpp_python__Open-CMSIS-Pack__devtools__pr2420",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "Open-CMSIS-Pack/devtools",
+  "pr_number": 2420,
+  "pr_url": "https://github.com/Open-CMSIS-Pack/devtools/pull/2420",
+  "repo": {
+    "full_name": "Open-CMSIS-Pack/devtools",
+    "clone_url": "https://github.com/Open-CMSIS-Pack/devtools.git",
+    "default_branch": "main",
+    "created_at": "2021-08-30T11:11:25Z",
+    "stars": 84,
+    "license": "Apache-2.0",
+    "size_kb": 13226
+  },
+  "pull_request": {
+    "id": 3476647796,
+    "title": "Use updated action to fix warnings",
+    "body": "Updated the version to fix warnings in [Nightly](https://github.com/Open-CMSIS-Pack/devtools/actions/runs/24057559428). The changes shall try to install the dependencies only when they are not available.\r\n\r\n```\r\nWarning: doxygen 1.16.1 is already installed and up-to-date.\r\nWarning: swig 4.4.1 is already installed and up-to-date.\r\n```",
+    "created_at": "2026-04-01T11:12:54Z",
+    "merged_at": "2026-04-07T07:36:17Z",
+    "base_sha": "dbefa34ec87eadac9534df97421f5ec48cb3690e",
+    "head_sha": "67e9a8a3418f90efae01370fa57cf4a0bfb2fa92",
+    "merge_commit_sha": "4d99e9697fb0ec84f8bcd868572142157b86be91",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "2b7a186d8b78625455381b06d045ac7175381154",
+  "final_sha": "67e9a8a3418f90efae01370fa57cf4a0bfb2fa92",
+  "changed_files": [
+    {
+      "sha": "1905e658d71c41aa89b87a6863863f92e1b00f55",
+      "filename": ".github/Brewfile",
+      "status": "added",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/Open-CMSIS-Pack/devtools/blob/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2FBrewfile",
+      "raw_url": "https://github.com/Open-CMSIS-Pack/devtools/raw/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2FBrewfile",
+      "contents_url": "https://api.github.com/repos/Open-CMSIS-Pack/devtools/contents/.github%2FBrewfile?ref=67e9a8a3418f90efae01370fa57cf4a0bfb2fa92",
+      "patch": "@@ -0,0 +1,3 @@\n+brew \"dos2unix\"\n+brew \"ninja\"\n+brew \"wget\""
+    },
+    {
+      "sha": "9c665fa7b401ce68bfaf04535f915a0edaa58639",
+      "filename": ".github/workflows/buildmgr.yml",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 13,
+      "changes": 23,
+      "blob_url": "https://github.com/Open-CMSIS-Pack/devtools/blob/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2Fworkflows%2Fbuildmgr.yml",
+      "raw_url": "https://github.com/Open-CMSIS-Pack/devtools/raw/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2Fworkflows%2Fbuildmgr.yml",
+      "contents_url": "https://api.github.com/repos/Open-CMSIS-Pack/devtools/contents/.github%2Fworkflows%2Fbuildmgr.yml?ref=67e9a8a3418f90efae01370fa57cf4a0bfb2fa92",
+      "patch": "@@ -73,7 +73,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         id: devtools-build\n         with:\n           target: cbuildgen\n@@ -329,7 +329,7 @@ jobs:\n           overwrite: true\n           asset_name: cbuild_install.sh\n \n-      - name: Attach debian installer to release\n+      - name: Attach Debian installer to release\n         if: ${{ github.event_name == 'release' }}\n         uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2\n         with:\n@@ -363,15 +363,7 @@ jobs:\n         with:\n           egress-policy: audit\n \n-      - name: Install macos deps\n-        if: ${{ startsWith(matrix.runs_on, 'macos') }}\n-        run: |\n-          brew install \\\n-            dos2unix \\\n-            ninja \\\n-            wget\n-\n-      - name: Install linux deps\n+      - name: Install Linux deps\n         if: ${{ startsWith(matrix.runs_on, 'ubuntu') }}\n         run: |\n           sudo apt-get update\n@@ -438,12 +430,17 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build CbuildUnitTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           target: CbuildUnitTests\n           build_type: Debug\n           arch: ${{ matrix.arch }}\n \n+      - name: Install macos deps\n+        if: ${{ startsWith(matrix.runs_on, 'macos') }}\n+        run: |\n+          brew bundle install --file=\"${{ github.workspace }}/.github/Brewfile\" --no-upgrade\n+\n       - name: Run CbuildUnitTests\n         if: matrix.arch != 'arm64'\n         run: ctest -V -R CbuildUnitTests\n@@ -460,7 +457,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build CbuildIntegTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           target: CbuildIntegTests\n           build_type: Debug"
+    },
+    {
+      "sha": "f3b389b1df1355216e43f3c6ec507495a1807ef8",
+      "filename": ".github/workflows/packchk.yml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/Open-CMSIS-Pack/devtools/blob/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2Fworkflows%2Fpackchk.yml",
+      "raw_url": "https://github.com/Open-CMSIS-Pack/devtools/raw/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2Fworkflows%2Fpackchk.yml",
+      "contents_url": "https://api.github.com/repos/Open-CMSIS-Pack/devtools/contents/.github%2Fworkflows%2Fpackchk.yml?ref=67e9a8a3418f90efae01370fa57cf4a0bfb2fa92",
+      "patch": "@@ -80,7 +80,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build packchk\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           target: packchkdist\n           arch: ${{ matrix.arch }}\n@@ -168,7 +168,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build PackChkUnitTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           arch: ${{ matrix.arch }}\n           build_type: Debug\n@@ -182,7 +182,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build PackChkIntegTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           arch: ${{ matrix.arch }}\n           build_type: Debug\n@@ -243,7 +243,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build PackChkUnitTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           add_cmake_variables: -DCOVERAGE=ON\n           arch: amd64\n@@ -252,7 +252,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build PackChkIntegTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           add_cmake_variables: -DCOVERAGE=ON\n           arch: amd64"
+    },
+    {
+      "sha": "cdaa61a22e658b29c7be7b072aed686872eba927",
+      "filename": ".github/workflows/packgen.yml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/Open-CMSIS-Pack/devtools/blob/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2Fworkflows%2Fpackgen.yml",
+      "raw_url": "https://github.com/Open-CMSIS-Pack/devtools/raw/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2Fworkflows%2Fpackgen.yml",
+      "contents_url": "https://api.github.com/repos/Open-CMSIS-Pack/devtools/contents/.github%2Fworkflows%2Fpackgen.yml?ref=67e9a8a3418f90efae01370fa57cf4a0bfb2fa92",
+      "patch": "@@ -73,7 +73,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         id: devtools-build\n         with:\n           target: packgen\n@@ -202,7 +202,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build PackGenUnitTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           target: PackGenUnitTests\n           build_type: Debug\n@@ -255,7 +255,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build PackGenUnitTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           add_cmake_variables: -DCOVERAGE=ON\n           arch: amd64"
+    },
+    {
+      "sha": "eb7dfee7516255c383e59543a4eb4e5de33f3624",
+      "filename": ".github/workflows/projmgr.yml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/Open-CMSIS-Pack/devtools/blob/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2Fworkflows%2Fprojmgr.yml",
+      "raw_url": "https://github.com/Open-CMSIS-Pack/devtools/raw/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2Fworkflows%2Fprojmgr.yml",
+      "contents_url": "https://api.github.com/repos/Open-CMSIS-Pack/devtools/contents/.github%2Fworkflows%2Fprojmgr.yml?ref=67e9a8a3418f90efae01370fa57cf4a0bfb2fa92",
+      "patch": "@@ -78,7 +78,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           target: projmgr\n           arch: ${{ matrix.arch }}\n@@ -160,7 +160,7 @@ jobs:\n \n       - name: Build swig python libs\n         if: matrix.pyswig\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           add_cmake_variables: -DSWIG_LIBS=ON\n           add_cmake_build_args: --config Release\n@@ -170,7 +170,7 @@ jobs:\n \n       - name: Build swig go libs\n         if: matrix.goswig\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           add_cmake_variables: -DSWIG_LIBS=ON\n           add_cmake_build_args: --config Release\n@@ -385,7 +385,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build ProjMgrUnitTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           arch: ${{ matrix.arch }}\n           build_type: Debug\n@@ -447,7 +447,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build ProjMgrUnitTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           add_cmake_variables: -DCOVERAGE=ON\n           arch: amd64"
+    },
+    {
+      "sha": "a057cad1605d1652d09e96bc0524b3a610f5067e",
+      "filename": ".github/workflows/svdconv.yml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/Open-CMSIS-Pack/devtools/blob/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2Fworkflows%2Fsvdconv.yml",
+      "raw_url": "https://github.com/Open-CMSIS-Pack/devtools/raw/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2Fworkflows%2Fsvdconv.yml",
+      "contents_url": "https://api.github.com/repos/Open-CMSIS-Pack/devtools/contents/.github%2Fworkflows%2Fsvdconv.yml?ref=67e9a8a3418f90efae01370fa57cf4a0bfb2fa92",
+      "patch": "@@ -71,7 +71,7 @@ jobs:\n           fetch-depth: 0\n \n       - name: Build svdconv\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           target: svdconvdist\n           arch: ${{ matrix.arch }}\n@@ -158,7 +158,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build SVDConvUnitTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           arch: ${{ matrix.arch }}\n           build_type: Debug\n@@ -172,7 +172,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build SvdConvIntegTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           arch: ${{ matrix.arch }}\n           build_type: Debug\n@@ -234,7 +234,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build SVDConvUnitTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           add_cmake_variables: -DCOVERAGE=ON\n           arch: amd64\n@@ -243,7 +243,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build SvdConvIntegTests\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         with:\n           add_cmake_variables: -DCOVERAGE=ON\n           arch: amd64"
+    },
+    {
+      "sha": "edeab1ddb51631b3872b60f93a729e418ccaf5f8",
+      "filename": ".github/workflows/test_libs.yml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 4,
+      "changes": 6,
+      "blob_url": "https://github.com/Open-CMSIS-Pack/devtools/blob/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2Fworkflows%2Ftest_libs.yml",
+      "raw_url": "https://github.com/Open-CMSIS-Pack/devtools/raw/67e9a8a3418f90efae01370fa57cf4a0bfb2fa92/.github%2Fworkflows%2Ftest_libs.yml",
+      "contents_url": "https://api.github.com/repos/Open-CMSIS-Pack/devtools/contents/.github%2Fworkflows%2Ftest_libs.yml?ref=67e9a8a3418f90efae01370fa57cf4a0bfb2fa92",
+      "patch": "@@ -56,7 +56,7 @@ jobs:\n \n       # https://github.com/Open-CMSIS-Pack/devtools-build-action\n       - name: Build all libs\n-        uses: Open-CMSIS-Pack/devtools-build-action@1f131b70796337c98d4f680632bb4135d90f17f0 # arm64\n+        uses: Open-CMSIS-Pack/devtools-build-action@5b24a2b5145eb406a664269b3704bb983c19242d # arm64\n         id: devtools-build\n         with:\n           add_cmake_variables: '-DLIBS_ONLY=ON'\n@@ -66,9 +66,7 @@ jobs:\n       - name: Install macos deps\n         if: ${{ startsWith(matrix.runs_on, 'macos') }}\n         run: |\n-          brew install \\\n-            dos2unix \\\n-            wget\n+          brew bundle install --file=\"${{ github.workspace }}/.github/Brewfile\" --no-upgrade\n \n       - name: Install linux deps\n         if: ${{ startsWith(matrix.runs_on, 'ubuntu') }}"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "f3be3df37233d69dbf80e0bbebbcf0766d6ad150",
+      "message": "Use updated action to fix warnings",
+      "parent_shas": [
+        "2b7a186d8b78625455381b06d045ac7175381154"
+      ]
+    },
+    {
+      "sha": "356f6c12b651afb600f1b43cf194359fae58574e",
+      "message": "Fix typos in workflow steps for consistency",
+      "parent_shas": [
+        "f3be3df37233d69dbf80e0bbebbcf0766d6ad150"
+      ]
+    },
+    {
+      "sha": "67e9a8a3418f90efae01370fa57cf4a0bfb2fa92",
+      "message": "Merge branch 'main' into fix-nightly-warnings",
+      "parent_shas": [
+        "356f6c12b651afb600f1b43cf194359fae58574e",
+        "dbefa34ec87eadac9534df97421f5ec48cb3690e"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__Open-CMSIS-Pack__devtools__pr2420.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\Open-CMSIS-Pack__devtools__pr2420__cpp_python__Open-CMSIS-Pack__devtools__pr2420\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\Open-CMSIS-Pack__devtools__pr2420__cpp_python__Open-CMSIS-Pack__devtools__pr2420\\rn"
+  }
+}

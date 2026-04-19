@@ -1,0 +1,77 @@
+{
+  "instance_id": "python_java__idaholab__civet__pr644",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "idaholab/civet",
+  "pr_number": 644,
+  "pr_url": "https://github.com/idaholab/civet/pull/644",
+  "repo": {
+    "full_name": "idaholab/civet",
+    "clone_url": "https://github.com/idaholab/civet.git",
+    "default_branch": "master",
+    "created_at": "2015-08-31T14:23:36Z",
+    "stars": 39,
+    "license": "Apache-2.0",
+    "size_kb": 5212
+  },
+  "pull_request": {
+    "id": 3528840933,
+    "title": "Update python packages",
+    "body": "Regular update of python packages.",
+    "created_at": "2026-04-14T14:18:54Z",
+    "merged_at": "2026-04-14T21:37:49Z",
+    "base_sha": "851570eb4c1da5ef538bba9e08c128b097cfdaad",
+    "head_sha": "fb139d994f92dba4210e5e439217359948307e7b",
+    "merge_commit_sha": "6e9f99740be312fe58bb409138291fc672643a54",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "851570eb4c1da5ef538bba9e08c128b097cfdaad",
+  "final_sha": "fb139d994f92dba4210e5e439217359948307e7b",
+  "changed_files": [
+    {
+      "sha": "d9bc55462b601acb01b300a127b22175a73858e9",
+      "filename": "requirements.txt",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 8,
+      "changes": 16,
+      "blob_url": "https://github.com/idaholab/civet/blob/fb139d994f92dba4210e5e439217359948307e7b/requirements.txt",
+      "raw_url": "https://github.com/idaholab/civet/raw/fb139d994f92dba4210e5e439217359948307e7b/requirements.txt",
+      "contents_url": "https://api.github.com/repos/idaholab/civet/contents/requirements.txt?ref=fb139d994f92dba4210e5e439217359948307e7b",
+      "patch": "@@ -1,12 +1,12 @@\n ansi2html==1.9.2\n-chardet==5.2.0\n+chardet==7.4.3\n chromedriver_autoinstaller==0.6.4\n-coverage==7.11.3\n-croniter==6.0.0\n+coverage==7.13.5\n+croniter==6.2.2\n DaemonLite==0.0.2\n Django==5.2.13\n django-cors-headers==4.9.0\n-django-debug-toolbar==6.1.0\n+django-debug-toolbar==6.3.0\n django-extensions==4.1\n django-sslserver==0.22\n funcsigs==1.0.2\n@@ -16,12 +16,12 @@ oauthlib==3.3.1\n pbr==7.0.3\n py-w3c==0.3.1\n pyflakes==3.4.0\n-pytz==2025.2\n-requests==2.33.0\n+pytz==2026.1.post1\n+requests==2.33.1\n requests-oauthlib==2.0.0\n-selenium==4.38.0\n+selenium==4.43.0\n six==1.17.0\n-sqlparse==0.5.4\n+sqlparse==0.5.5\n tblib==3.2.2\n typing==3.7.4.3\n urllib3==2.6.3"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "fb139d994f92dba4210e5e439217359948307e7b",
+      "message": "Update python packages\n\nrefs #644",
+      "parent_shas": [
+        "851570eb4c1da5ef538bba9e08c128b097cfdaad"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__idaholab__civet__pr644.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\idaholab__civet__pr644__python_java__idaholab__civet__pr644\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\idaholab__civet__pr644__python_java__idaholab__civet__pr644\\rn"
+  }
+}

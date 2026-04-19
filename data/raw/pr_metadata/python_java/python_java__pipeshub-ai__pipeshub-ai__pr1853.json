@@ -1,0 +1,78 @@
+{
+  "instance_id": "python_java__pipeshub-ai__pipeshub-ai__pr1853",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "pipeshub-ai/pipeshub-ai",
+  "pr_number": 1853,
+  "pr_url": "https://github.com/pipeshub-ai/pipeshub-ai/pull/1853",
+  "repo": {
+    "full_name": "pipeshub-ai/pipeshub-ai",
+    "clone_url": "https://github.com/pipeshub-ai/pipeshub-ai.git",
+    "default_branch": "main",
+    "created_at": "2025-03-06T18:51:10Z",
+    "stars": 2810,
+    "license": "Apache-2.0",
+    "size_kb": 39924
+  },
+  "pull_request": {
+    "id": 3502823089,
+    "title": "ut python",
+    "body": "\r\n- **fix(unit-test): support 3.12 for now**\r\n\r\n## Description\r\n\r\n[Provide a brief description of the changes in this PR]\r\n\r\n### Type of Change\r\n\r\n- [ ] Bug fix (non-breaking change which fixes an issue)\r\n- [ ] New feature (non-breaking change which adds functionality)\r\n- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)\r\n- [ ] Documentation update (Is there an addition/change in API Request, Response? If yes, documentation is required)\r\n- [ ] Performance improvement\r\n- [ ] Code refactoring\r\n- [ ] Security fix\r\n\r\n## Related Issues\r\n\r\n- Fixes #[issue number]\r\n- Closes #[issue number]\r\n- Related to #[issue number]\r\n\r\n## How Has This Been Tested?\r\n\r\n[Describe the tests you ran to verify your changes. Provide instructions so we can reproduce.]\r\n\r\n### Test Configuration\r\n\r\n- [ ] Unit tests pass\r\n- [ ] Integration tests pass\r\n- [ ] Manual testing completed\r\n- [ ] Cross-browser testing (if applicable)\r\n- [ ] Mobile responsiveness tested (if applicable)\r\n\r\n## Core Functionality Testing\r\n\r\nPlease confirm that the following core functionalities are working as expected:\r\n\r\n- [ ] **Search capabilities** are working correctly\r\n- [ ] **Knowledge search** is functioning properly\r\n- [ ] **Connector indexing** is working as expected\r\n- [ ] **Citations** are displaying and linking correctly\r\n- [ ] **Documentation** is updated at https://docs.pipeshub.com/introduction\r\n\r\n## What You Have Tested\r\n\r\nPlease describe what you have specifically tested:\r\n\r\n- [ ] Feature works in development environment\r\n- [ ] Feature works in staging environment\r\n- [ ] Error handling scenarios tested\r\n- [ ] Edge cases considered and tested\r\n- [ ] Performance impact assessed\r\n- [ ] Security implications reviewed\r\n\r\n### Test Results\r\n\r\n[Provide details of your test results here]\r\n\r\n## Screenshots/Videos\r\n\r\n**Before:**\r\n[Attach screenshots/videos showing the current behavior]\r\n\r\n**After:**\r\n[Attach screenshots/videos showing the new behavior]\r\n\r\n**Note:** Screenshots are required before merge for UI changes.\r\n\r\n## Code Quality Checklist\r\n\r\n- [ ] My code follows the project's coding standards\r\n- [ ] I have performed a self-review of my own code\r\n- [ ] I have commented my code, particularly in hard-to-understand areas\r\n- [ ] I have made corresponding changes to the documentation\r\n- [ ] My changes generate no new warnings\r\n- [ ] I have added tests that prove my fix is effective or that my feature works\r\n- [ ] New and existing unit tests pass locally with my changes\r\n\r\n## Documentation\r\n\r\n- [ ] Documentation has been updated (if applicable)\r\n- [ ] API documentation updated (if applicable)\r\n- [ ] README updated (if applicable)\r\n- [ ] Changelog updated (if applicable)\r\n\r\n## Security Considerations\r\n\r\n- [ ] No sensitive data is exposed\r\n- [ ] Input validation is implemented where necessary\r\n- [ ] Authentication/authorization is properly handled\r\n- [ ] No security vulnerabilities introduced\r\n\r\n## Breaking Changes\r\n\r\n- [ ] This PR introduces breaking changes\r\n- [ ] Migration guide provided (if applicable)\r\n- [ ] Version bump required\r\n\r\nIf breaking changes are introduced, please describe them here:\r\n\r\n[Describe any breaking changes and how users should adapt]\r\n\r\n## Performance Impact\r\n\r\n- [ ] No performance impact\r\n- [ ] Performance improved\r\n- [ ] Performance impact assessed and acceptable\r\n\r\n[Describe any performance implications]\r\n\r\n## Dependencies\r\n\r\n- [ ] No new dependencies added\r\n- [ ] New dependencies are necessary and approved\r\n- [ ] Dependencies updated and tested\r\n\r\nList any new dependencies:\r\n- [Dependency name and version]\r\n\r\n## Deployment Notes\r\n\r\n[Any special deployment considerations or steps]\r\n\r\n## Checklist Before Merge\r\n\r\n- [ ] All tests are passing\r\n- [ ] Code review completed and approved\r\n- [ ] Documentation updated and reviewed\r\n- [ ] Screenshots/videos attached for UI changes\r\n- [ ] Core functionality verified\r\n- [ ] Security review completed (if applicable)\r\n- [ ] Performance impact assessed\r\n- [ ] Ready for production deployment\r\n\r\n## Additional Notes\r\n\r\n[Any additional information that would be helpful for reviewers]\r\n\r\n---\r\n\r\n**For Reviewers:**\r\n\r\nPlease ensure all checklist items are completed before approving this PR. Pay special attention to:\r\n- Core functionality testing\r\n- Security implications\r\n- Performance impact\r\n- Documentation completeness\r\n",
+    "created_at": "2026-04-08T11:15:13Z",
+    "merged_at": "2026-04-08T11:28:25Z",
+    "base_sha": "cde37c77288ec3cc50094d3dbdf12d24d36c8de9",
+    "head_sha": "b1c0a25c2f38c3a4a034aa634c34225516a2f0cd",
+    "merge_commit_sha": "920f38d5cd4427a80bbfdfcb9fc559eaa25c35d9",
+    "labels": [
+      "skip-it"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "cde37c77288ec3cc50094d3dbdf12d24d36c8de9",
+  "final_sha": "b1c0a25c2f38c3a4a034aa634c34225516a2f0cd",
+  "changed_files": [
+    {
+      "sha": "fe3d56d857a77860c3bc606734502948add0f4b8",
+      "filename": ".github/workflows/unit-test.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pipeshub-ai/pipeshub-ai/blob/b1c0a25c2f38c3a4a034aa634c34225516a2f0cd/.github%2Fworkflows%2Funit-test.yml",
+      "raw_url": "https://github.com/pipeshub-ai/pipeshub-ai/raw/b1c0a25c2f38c3a4a034aa634c34225516a2f0cd/.github%2Fworkflows%2Funit-test.yml",
+      "contents_url": "https://api.github.com/repos/pipeshub-ai/pipeshub-ai/contents/.github%2Fworkflows%2Funit-test.yml?ref=b1c0a25c2f38c3a4a034aa634c34225516a2f0cd",
+      "patch": "@@ -102,7 +102,7 @@ jobs:\n       fail-fast: false\n       matrix:\n         os: [ubuntu-latest]\n-        python-version: ['3.10', '3.11', '3.12']\n+        python-version: ['3.12']\n \n     steps:\n       - name: Checkout code"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "b1c0a25c2f38c3a4a034aa634c34225516a2f0cd",
+      "message": "fix(unit-test): support 3.12 for now",
+      "parent_shas": [
+        "cde37c77288ec3cc50094d3dbdf12d24d36c8de9"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__pipeshub-ai__pipeshub-ai__pr1853.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\pipeshub-ai__pipeshub-ai__pr1853__python_java__pipeshub-ai__pipeshub-ai__pr1853\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\pipeshub-ai__pipeshub-ai__pr1853__python_java__pipeshub-ai__pipeshub-ai__pr1853\\rn"
+  }
+}

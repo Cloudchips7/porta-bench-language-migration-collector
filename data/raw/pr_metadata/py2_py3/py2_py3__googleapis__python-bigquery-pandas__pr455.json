@@ -1,0 +1,187 @@
+{
+  "instance_id": "py2_py3__googleapis__python-bigquery-pandas__pr455",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "googleapis/python-bigquery-pandas",
+  "pr_number": 455,
+  "pr_url": "https://github.com/googleapis/python-bigquery-pandas/pull/455",
+  "repo": {
+    "full_name": "googleapis/python-bigquery-pandas",
+    "clone_url": "https://github.com/googleapis/python-bigquery-pandas.git",
+    "default_branch": "main",
+    "created_at": "2017-02-08T13:07:19Z",
+    "stars": 490,
+    "license": "BSD-3-Clause",
+    "size_kb": 1730
+  },
+  "pull_request": {
+    "id": 815026227,
+    "title": "fix: use data project for destination in `to_gbq`",
+    "body": "Thank you for opening a Pull Request! Before submitting your PR, there are a few things you can do to make sure it goes smoothly:\r\n- [ ] Make sure to open an issue as a [bug/issue](https://github.com/googleapis/python-bigquery-pandas/issues/new/choose) before writing your code!  That way we can discuss the change, evaluate designs, and agree on the general idea\r\n- [ ] Ensure the tests and linter pass\r\n- [ ] Code coverage does not decrease (if any source code was changed)\r\n- [ ] Appropriate docs were updated (if necessary)\r\n\r\nFixes #377  🦕\r\n",
+    "created_at": "2022-01-05T20:38:21Z",
+    "merged_at": "2022-01-18T22:07:05Z",
+    "base_sha": "4beeb544cfb7d2ad72b7b924cd041acf36da2554",
+    "head_sha": "98178ff8be8bc98c5c61ca5d1296499d148a3653",
+    "merge_commit_sha": "891a00c8f202aa476ffb22b2fb92c01ffa84889a",
+    "labels": [
+      "api: bigquery"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "a63ea5d825fc103af8120b8d0b0a5724056d0740",
+  "final_sha": "98178ff8be8bc98c5c61ca5d1296499d148a3653",
+  "changed_files": [
+    {
+      "sha": "1157c37b4869e240d34ebc8c89815a3bb0b6f5a9",
+      "filename": "pandas_gbq/gbq.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 3,
+      "changes": 11,
+      "blob_url": "https://github.com/googleapis/python-bigquery-pandas/blob/98178ff8be8bc98c5c61ca5d1296499d148a3653/pandas_gbq%2Fgbq.py",
+      "raw_url": "https://github.com/googleapis/python-bigquery-pandas/raw/98178ff8be8bc98c5c61ca5d1296499d148a3653/pandas_gbq%2Fgbq.py",
+      "contents_url": "https://api.github.com/repos/googleapis/python-bigquery-pandas/contents/pandas_gbq%2Fgbq.py?ref=98178ff8be8bc98c5c61ca5d1296499d148a3653",
+      "patch": "@@ -549,6 +549,7 @@ def load_data(\n         schema=None,\n         progress_bar=True,\n         api_method: str = \"load_parquet\",\n+        billing_project: Optional[str] = None,\n     ):\n         from pandas_gbq import load\n \n@@ -563,6 +564,7 @@ def load_data(\n                 schema=schema,\n                 location=self.location,\n                 api_method=api_method,\n+                billing_project=billing_project,\n             )\n             if progress_bar and tqdm:\n                 chunks = tqdm.tqdm(chunks)\n@@ -575,8 +577,8 @@ def load_data(\n         except self.http_error as ex:\n             self.process_http_error(ex)\n \n-    def delete_and_recreate_table(self, dataset_id, table_id, table_schema):\n-        table = _Table(self.project_id, dataset_id, credentials=self.credentials)\n+    def delete_and_recreate_table(self, project_id, dataset_id, table_id, table_schema):\n+        table = _Table(project_id, dataset_id, credentials=self.credentials)\n         table.delete(table_id)\n         table.create(table_id, table_schema)\n \n@@ -1113,7 +1115,9 @@ def to_gbq(\n                 \"'append' or 'replace' data.\"\n             )\n         elif if_exists == \"replace\":\n-            connector.delete_and_recreate_table(dataset_id, table_id, table_schema)\n+            connector.delete_and_recreate_table(\n+                project_id_table, dataset_id, table_id, table_schema\n+            )\n         else:\n             if not pandas_gbq.schema.schema_is_subset(original_schema, table_schema):\n                 raise InvalidSchema(\n@@ -1142,6 +1146,7 @@ def to_gbq(\n         schema=table_schema,\n         progress_bar=progress_bar,\n         api_method=api_method,\n+        billing_project=project_id,\n     )\n \n "
+    },
+    {
+      "sha": "e52952f2501b779d31dfb9105d6428020be56145",
+      "filename": "pandas_gbq/load.py",
+      "status": "modified",
+      "additions": 37,
+      "deletions": 5,
+      "changes": 42,
+      "blob_url": "https://github.com/googleapis/python-bigquery-pandas/blob/98178ff8be8bc98c5c61ca5d1296499d148a3653/pandas_gbq%2Fload.py",
+      "raw_url": "https://github.com/googleapis/python-bigquery-pandas/raw/98178ff8be8bc98c5c61ca5d1296499d148a3653/pandas_gbq%2Fload.py",
+      "contents_url": "https://api.github.com/repos/googleapis/python-bigquery-pandas/contents/pandas_gbq%2Fload.py?ref=98178ff8be8bc98c5c61ca5d1296499d148a3653",
+      "patch": "@@ -114,6 +114,7 @@ def load_parquet(\n     destination_table_ref: bigquery.TableReference,\n     location: Optional[str],\n     schema: Optional[Dict[str, Any]],\n+    billing_project: Optional[str] = None,\n ):\n     job_config = bigquery.LoadJobConfig()\n     job_config.write_disposition = \"WRITE_APPEND\"\n@@ -126,7 +127,11 @@ def load_parquet(\n \n     try:\n         client.load_table_from_dataframe(\n-            dataframe, destination_table_ref, job_config=job_config, location=location,\n+            dataframe,\n+            destination_table_ref,\n+            job_config=job_config,\n+            location=location,\n+            project=billing_project,\n         ).result()\n     except pyarrow.lib.ArrowInvalid as exc:\n         raise exceptions.ConversionError(\n@@ -162,6 +167,7 @@ def load_csv_from_dataframe(\n     location: Optional[str],\n     chunksize: Optional[int],\n     schema: Optional[Dict[str, Any]],\n+    billing_project: Optional[str] = None,\n ):\n     bq_schema = None\n \n@@ -171,7 +177,11 @@ def load_csv_from_dataframe(\n \n     def load_chunk(chunk, job_config):\n         client.load_table_from_dataframe(\n-            chunk, destination_table_ref, job_config=job_config, location=location,\n+            chunk,\n+            destination_table_ref,\n+            job_config=job_config,\n+            location=location,\n+            project=billing_project,\n         ).result()\n \n     return load_csv(dataframe, chunksize, bq_schema, load_chunk)\n@@ -184,6 +194,7 @@ def load_csv_from_file(\n     location: Optional[str],\n     chunksize: Optional[int],\n     schema: Optional[Dict[str, Any]],\n+    billing_project: Optional[str] = None,\n ):\n     \"\"\"Manually encode a DataFrame to CSV and use the buffer in a load job.\n \n@@ -204,6 +215,7 @@ def load_chunk(chunk, job_config):\n                 destination_table_ref,\n                 job_config=job_config,\n                 location=location,\n+                project=billing_project,\n             ).result()\n         finally:\n             chunk_buffer.close()\n@@ -219,19 +231,39 @@ def load_chunks(\n     schema=None,\n     location=None,\n     api_method=\"load_parquet\",\n+    billing_project: Optional[str] = None,\n ):\n     if api_method == \"load_parquet\":\n-        load_parquet(client, dataframe, destination_table_ref, location, schema)\n+        load_parquet(\n+            client,\n+            dataframe,\n+            destination_table_ref,\n+            location,\n+            schema,\n+            billing_project=billing_project,\n+        )\n         # TODO: yield progress depending on result() with timeout\n         return [0]\n     elif api_method == \"load_csv\":\n         if FEATURES.bigquery_has_from_dataframe_with_csv:\n             return load_csv_from_dataframe(\n-                client, dataframe, destination_table_ref, location, chunksize, schema\n+                client,\n+                dataframe,\n+                destination_table_ref,\n+                location,\n+                chunksize,\n+                schema,\n+                billing_project=billing_project,\n             )\n         else:\n             return load_csv_from_file(\n-                client, dataframe, destination_table_ref, location, chunksize, schema\n+                client,\n+                dataframe,\n+                destination_table_ref,\n+                location,\n+                chunksize,\n+                schema,\n+                billing_project=billing_project,\n             )\n     else:\n         raise ValueError("
+    },
+    {
+      "sha": "a2fa800cc72831102d53974baeeac595dced0afa",
+      "filename": "tests/unit/test_to_gbq.py",
+      "status": "modified",
+      "additions": 40,
+      "deletions": 0,
+      "changes": 40,
+      "blob_url": "https://github.com/googleapis/python-bigquery-pandas/blob/98178ff8be8bc98c5c61ca5d1296499d148a3653/tests%2Funit%2Ftest_to_gbq.py",
+      "raw_url": "https://github.com/googleapis/python-bigquery-pandas/raw/98178ff8be8bc98c5c61ca5d1296499d148a3653/tests%2Funit%2Ftest_to_gbq.py",
+      "contents_url": "https://api.github.com/repos/googleapis/python-bigquery-pandas/contents/tests%2Funit%2Ftest_to_gbq.py?ref=98178ff8be8bc98c5c61ca5d1296499d148a3653",
+      "patch": "@@ -131,6 +131,46 @@ def test_to_gbq_with_if_exists_replace(mock_bigquery_client):\n     assert mock_bigquery_client.create_table.called\n \n \n+def test_to_gbq_with_if_exists_replace_cross_project(\n+    mock_bigquery_client, expected_load_method\n+):\n+    mock_bigquery_client.get_table.side_effect = (\n+        # Initial check\n+        google.cloud.bigquery.Table(\"data-project.my_dataset.my_table\"),\n+        # Recreate check\n+        google.api_core.exceptions.NotFound(\"my_table\"),\n+    )\n+    gbq.to_gbq(\n+        DataFrame([[1]]),\n+        \"data-project.my_dataset.my_table\",\n+        project_id=\"billing-project\",\n+        if_exists=\"replace\",\n+    )\n+    # TODO: We can avoid these API calls by using write disposition in the load\n+    # job. See: https://github.com/googleapis/python-bigquery-pandas/issues/118\n+    assert mock_bigquery_client.delete_table.called\n+    args, _ = mock_bigquery_client.delete_table.call_args\n+    table_delete: google.cloud.bigquery.TableReference = args[0]\n+    assert table_delete.project == \"data-project\"\n+    assert table_delete.dataset_id == \"my_dataset\"\n+    assert table_delete.table_id == \"my_table\"\n+    assert mock_bigquery_client.create_table.called\n+    args, _ = mock_bigquery_client.create_table.call_args\n+    table_create: google.cloud.bigquery.TableReference = args[0]\n+    assert table_create.project == \"data-project\"\n+    assert table_create.dataset_id == \"my_dataset\"\n+    assert table_create.table_id == \"my_table\"\n+\n+    # Check that billing project and destination table is set correctly.\n+    expected_load_method.assert_called_once()\n+    load_args, load_kwargs = expected_load_method.call_args\n+    table_destination = load_args[1]\n+    assert table_destination.project == \"data-project\"\n+    assert table_destination.dataset_id == \"my_dataset\"\n+    assert table_destination.table_id == \"my_table\"\n+    assert load_kwargs[\"project\"] == \"billing-project\"\n+\n+\n def test_to_gbq_with_if_exists_unknown():\n     with pytest.raises(ValueError):\n         gbq.to_gbq("
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "75a7cb819eb10060ecce46b65debb681392fdf2b",
+      "message": "fix: use data project for destination in `to_gbq`",
+      "parent_shas": [
+        "a63ea5d825fc103af8120b8d0b0a5724056d0740"
+      ]
+    },
+    {
+      "sha": "c5b1864c41b8ac982cff2e1bbb31708c7f2ec486",
+      "message": "bump coverage",
+      "parent_shas": [
+        "75a7cb819eb10060ecce46b65debb681392fdf2b"
+      ]
+    },
+    {
+      "sha": "c1561366f984a71de50ca236cce66e5c6bb99e8b",
+      "message": "🦉 Updates from OwlBot\n\nSee https://github.com/googleapis/repo-automation-bots/blob/main/packages/owl-bot/README.md",
+      "parent_shas": [
+        "c5b1864c41b8ac982cff2e1bbb31708c7f2ec486"
+      ]
+    },
+    {
+      "sha": "98832d07021a7ab6163ae7f4bf9b13468f3964cd",
+      "message": "🦉 Updates from OwlBot\n\nSee https://github.com/googleapis/repo-automation-bots/blob/main/packages/owl-bot/README.md",
+      "parent_shas": [
+        "c5b1864c41b8ac982cff2e1bbb31708c7f2ec486"
+      ]
+    },
+    {
+      "sha": "4a5d761a6f0e663af98b0f5f88f637ea7f7226df",
+      "message": "Merge branch 'issue377-to_gbq-cross-project' of https://github.com/googleapis/python-bigquery-pandas into issue377-to_gbq-cross-project",
+      "parent_shas": [
+        "98832d07021a7ab6163ae7f4bf9b13468f3964cd",
+        "c1561366f984a71de50ca236cce66e5c6bb99e8b"
+      ]
+    },
+    {
+      "sha": "fcff92ac990d4a9f1607d221e0b825ea08d553e7",
+      "message": "Merge remote-tracking branch 'upstream/main' into issue377-to_gbq-cross-project",
+      "parent_shas": [
+        "4a5d761a6f0e663af98b0f5f88f637ea7f7226df",
+        "d120f8fbdf4541a39ce8d87067523d48f21554bf"
+      ]
+    },
+    {
+      "sha": "402904f854a42c1a3bb052a989567e8ed28b5f8c",
+      "message": "improve test coverage",
+      "parent_shas": [
+        "fcff92ac990d4a9f1607d221e0b825ea08d553e7"
+      ]
+    },
+    {
+      "sha": "fba0bbf9fda9b61586cc3d34b7427afa17af4f91",
+      "message": "Merge branch 'main' into issue377-to_gbq-cross-project",
+      "parent_shas": [
+        "402904f854a42c1a3bb052a989567e8ed28b5f8c",
+        "8b03b58a9c4761e12a29c497fc1b8f4a2a7741cd"
+      ]
+    },
+    {
+      "sha": "56ff50514bc5d575ea2035c8a76e9041239fdfff",
+      "message": "Merge branch 'main' into issue377-to_gbq-cross-project",
+      "parent_shas": [
+        "fba0bbf9fda9b61586cc3d34b7427afa17af4f91",
+        "6e79d1f8b5e17bd3db67d53ff741ab6d38a051ba"
+      ]
+    },
+    {
+      "sha": "5215e88c771be893a420201b30a4034dab916da3",
+      "message": "Merge branch 'main' into issue377-to_gbq-cross-project",
+      "parent_shas": [
+        "56ff50514bc5d575ea2035c8a76e9041239fdfff",
+        "7996d5927f4cdcbb2c4bd13311ad2b984b841a57"
+      ]
+    },
+    {
+      "sha": "521dd4ad3864d906cd2d72dd89f3687b7b002404",
+      "message": "Merge branch 'main' into issue377-to_gbq-cross-project",
+      "parent_shas": [
+        "5215e88c771be893a420201b30a4034dab916da3",
+        "b2b3a9b4f7c3010e3b7340203250b3503273e6ad"
+      ]
+    },
+    {
+      "sha": "98178ff8be8bc98c5c61ca5d1296499d148a3653",
+      "message": "Merge branch 'main' into issue377-to_gbq-cross-project",
+      "parent_shas": [
+        "521dd4ad3864d906cd2d72dd89f3687b7b002404",
+        "4beeb544cfb7d2ad72b7b924cd041acf36da2554"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__googleapis__python-bigquery-pandas__pr455.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\googleapis__python-bigquery-pandas__pr455__py2_py3__googleapis__python-bigquery-pandas__pr455\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\googleapis__python-bigquery-pandas__pr455__py2_py3__googleapis__python-bigquery-pandas__pr455\\rn"
+  }
+}

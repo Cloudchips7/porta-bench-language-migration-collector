@@ -1,0 +1,356 @@
+{
+  "instance_id": "python_java__Farama-Foundation__Shimmy__pr139",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "Farama-Foundation/Shimmy",
+  "pr_number": 139,
+  "pr_url": "https://github.com/Farama-Foundation/Shimmy/pull/139",
+  "repo": {
+    "full_name": "Farama-Foundation/Shimmy",
+    "clone_url": "https://github.com/Farama-Foundation/Shimmy.git",
+    "default_branch": "main",
+    "created_at": "2022-10-06T21:24:05Z",
+    "stars": 208,
+    "license": "MIT",
+    "size_kb": 28905
+  },
+  "pull_request": {
+    "id": 3491042845,
+    "title": "Update python version",
+    "body": "# Description\r\n\r\nUpdate python versions for currently maintained versions and fix the CI as much as possible.",
+    "created_at": "2026-04-05T22:07:38Z",
+    "merged_at": "2026-04-07T09:59:16Z",
+    "base_sha": "0dd131e05f764e2a5ec9d9e235b5f461d45f2b8f",
+    "head_sha": "392dcee77deb2d0f48a355a40940830b0f6ade35",
+    "merge_commit_sha": "a333dc8b9fb6fbe42089eb2547df0ae0acd4e315",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "0dd131e05f764e2a5ec9d9e235b5f461d45f2b8f",
+  "final_sha": "392dcee77deb2d0f48a355a40940830b0f6ade35",
+  "changed_files": [
+    {
+      "sha": "bad8f544f59ab3e520e559e67fea68d23014f6ad",
+      "filename": ".github/workflows/build-test.yml",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 2,
+      "changes": 8,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Fbuild-test.yml",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Fbuild-test.yml",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/.github%2Fworkflows%2Fbuild-test.yml?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -1,5 +1,9 @@\n name: build\n-on: [pull_request, push]\n+on:\n+  push:\n+    branches: [main]\n+  pull_request:\n+    branches: [main]\n \n permissions:\n   contents: read # to fetch code (actions/checkout)\n@@ -9,7 +13,7 @@ jobs:\n     runs-on: ubuntu-latest\n     strategy:\n       matrix:\n-        python-version: ['3.8', '3.9', '3.10', '3.11']\n+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']\n     steps:\n       - uses: actions/checkout@v6\n       - run: |"
+    },
+    {
+      "sha": "c6e2ff65cb36c52545edf81c87581757ad687b72",
+      "filename": ".github/workflows/optional-test-bsuite.yml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 1,
+      "changes": 6,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Foptional-test-bsuite.yml",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Foptional-test-bsuite.yml",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/.github%2Fworkflows%2Foptional-test-bsuite.yml?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -1,5 +1,9 @@\n name: build\n-on: [pull_request, push]\n+on:\n+  push:\n+    branches: [main]\n+  pull_request:\n+    branches: [main]\n \n permissions:\n   contents: read # to fetch code (actions/checkout)"
+    },
+    {
+      "sha": "720b512db7ff0581d23e2f91df98e6fe4171ddd4",
+      "filename": ".github/workflows/optional-test-dm-control-multiagent.yml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 1,
+      "changes": 6,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Foptional-test-dm-control-multiagent.yml",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Foptional-test-dm-control-multiagent.yml",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/.github%2Fworkflows%2Foptional-test-dm-control-multiagent.yml?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -1,5 +1,9 @@\n name: build\n-on: [pull_request, push]\n+on:\n+  push:\n+    branches: [main]\n+  pull_request:\n+    branches: [main]\n \n permissions:\n   contents: read # to fetch code (actions/checkout)"
+    },
+    {
+      "sha": "143df8c6f2582adf9772c6994ba8311cb76df7a7",
+      "filename": ".github/workflows/optional-test-dm-control.yml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 1,
+      "changes": 6,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Foptional-test-dm-control.yml",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Foptional-test-dm-control.yml",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/.github%2Fworkflows%2Foptional-test-dm-control.yml?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -1,5 +1,9 @@\n name: build\n-on: [pull_request, push]\n+on:\n+  push:\n+    branches: [main]\n+  pull_request:\n+    branches: [main]\n \n permissions:\n   contents: read # to fetch code (actions/checkout)"
+    },
+    {
+      "sha": "0a132a3ad9165f523d19ba89359c981d5da054d4",
+      "filename": ".github/workflows/optional-test-dm-lab.yml",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 1,
+      "changes": 7,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Foptional-test-dm-lab.yml",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Foptional-test-dm-lab.yml",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/.github%2Fworkflows%2Foptional-test-dm-lab.yml?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -1,12 +1,17 @@\n name: build\n-on: [pull_request, push]\n+on:\n+  push:\n+    branches: [main]\n+  pull_request:\n+    branches: [main]\n \n permissions:\n   contents: read # to fetch code (actions/checkout)\n \n jobs:\n   optional-test-dm-lab:\n     runs-on: ubuntu-latest\n+    if: false # deepmind/lab build is broken due to unmaintained Bazel WORKSPACE deps\n     steps:\n       - uses: actions/checkout@v6\n "
+    },
+    {
+      "sha": "f5828d39e60082fc7929b6a44c8c7b2f0ca7c58c",
+      "filename": ".github/workflows/optional-test-meltingpot.yml",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 2,
+      "changes": 8,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Foptional-test-meltingpot.yml",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Foptional-test-meltingpot.yml",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/.github%2Fworkflows%2Foptional-test-meltingpot.yml?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -1,5 +1,9 @@\n name: build\n-on: [pull_request, push]\n+on:\n+  push:\n+    branches: [main]\n+  pull_request:\n+    branches: [main]\n \n permissions:\n   contents: read # to fetch code (actions/checkout)\n@@ -16,4 +20,4 @@ jobs:\n             --build-arg PYTHON_VERSION='3.11' \\\n             --tag shimmy-meltingpot-docker .\n       - name: Run meltingpot tests\n-        run: docker run shimmy-meltingpot-docker pytest tests/test_meltingpot.py\n+        run: docker run shimmy-meltingpot-docker pytest tests/test_meltingpot.py -v"
+    },
+    {
+      "sha": "34b6d2e261f3994e36625974804ff586437e8937",
+      "filename": ".github/workflows/optional-test-openspiel.yml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 1,
+      "changes": 6,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Foptional-test-openspiel.yml",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/.github%2Fworkflows%2Foptional-test-openspiel.yml",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/.github%2Fworkflows%2Foptional-test-openspiel.yml?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -1,5 +1,9 @@\n name: build\n-on: [pull_request, push]\n+on:\n+  push:\n+    branches: [main]\n+  pull_request:\n+    branches: [main]\n \n permissions:\n   contents: read # to fetch code (actions/checkout)"
+    },
+    {
+      "sha": "ace5af826a92b3b38585702290295b612adb126b",
+      "filename": ".pre-commit-config.yaml",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 6,
+      "changes": 12,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/.pre-commit-config.yaml",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/.pre-commit-config.yaml",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/.pre-commit-config.yaml?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -2,7 +2,7 @@\n # See https://pre-commit.com/hooks.html for more hooks\n repos:\n   - repo: https://github.com/pre-commit/pre-commit-hooks\n-    rev: v5.0.0\n+    rev: v6.0.0\n     hooks:\n       - id: check-symlinks\n       - id: destroyed-symlinks\n@@ -20,17 +20,17 @@ repos:\n       - id: mixed-line-ending\n         args: [ \"--fix=lf\" ]\n   - repo: https://github.com/python/black\n-    rev: 24.10.0\n+    rev: 26.3.1\n     hooks:\n       - id: black\n   - repo: https://github.com/codespell-project/codespell\n-    rev: v2.3.0\n+    rev: v2.4.2\n     hooks:\n       - id: codespell\n         args:\n           - --ignore-words-list=reacher\n   - repo: https://github.com/PyCQA/flake8\n-    rev: 7.1.1\n+    rev: 7.3.0\n     hooks:\n       - id: flake8\n         args:\n@@ -40,12 +40,12 @@ repos:\n           - --show-source\n           - --statistics\n   - repo: https://github.com/PyCQA/isort\n-    rev: 5.13.2\n+    rev: 8.0.1\n     hooks:\n       - id: isort\n         args: [\"--profile\", \"black\"]\n   - repo: https://github.com/asottile/pyupgrade\n-    rev: v3.19.1\n+    rev: v3.21.2\n     hooks:\n       - id: pyupgrade\n         args: [\"--py38-plus\"]"
+    },
+    {
+      "sha": "3a76eb5f74c1203aeba4d234ec83c7dc6bb46d79",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 3,
+      "changes": 3,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/README.md",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/README.md",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/README.md?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -13,9 +13,6 @@ The documentation website is at [shimmy.farama.org](https://shimmy.farama.org/)\n ### [OpenAI Gym](http://shimmy.farama.org/contents/gym/)\n - Bindings to convert [OpenAI Gym](https://github.com/openai/gym) environments to [Gymnasium](https://gymnasium.farama.org/).\n \n-### [Atari Environments for OpenAI Gym](http://shimmy.farama.org/contents/atari/)\n-- Bindings to convert [ALE-py](https://github.com/mgbellemare/Arcade-Learning-Environment) Atari environments to [Gymnasium](https://gymnasium.farama.org/).\n-\n ### [DeepMind Control](http://shimmy.farama.org/contents/dm_control/)\n - Bindings to convert [DM Control](https://github.com/deepmind/dm_control/) environments to [Gymnasium](https://gymnasium.farama.org/).\n "
+    },
+    {
+      "sha": "50518ab959e3fe2498f914227fe7673b4314e21f",
+      "filename": "bin/dm_lab.Dockerfile",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 3,
+      "changes": 8,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/bin%2Fdm_lab.Dockerfile",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/bin%2Fdm_lab.Dockerfile",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/bin%2Fdm_lab.Dockerfile?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -45,14 +45,16 @@ RUN apt-get -y update \\\n     build-essential curl freeglut3-dev gettext git libffi-dev libglu1-mesa \\\n     libglu1-mesa-dev libjpeg-dev liblua5.1-0-dev libosmesa6-dev \\\n     libsdl2-dev lua5.1 pkg-config python3-dev \\\n-    software-properties-common unzip zip zlib1g-dev g++\n+    unzip zip zlib1g-dev g++\n \n-# Install Bazel\n+# Install Bazel (pinned to 5.4.1: deepmind/lab is incompatible with Bazel 6+ due to\n+# sh_binary removal and rules_cc bzl path changes in newer versions)\n RUN apt-get install -y apt-transport-https curl gnupg  \\\n     && curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg  \\\n     && mv bazel.gpg /etc/apt/trusted.gpg.d/  \\\n     && echo \"deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8\" | tee /etc/apt/sources.list.d/bazel.list \\\n-    && apt-get update && apt-get install -y bazel\n+    && apt-get update && apt-get install -y bazel-5.4.1 \\\n+    && ln -s /usr/bin/bazel-5.4.1 /usr/local/bin/bazel\n \n # Build DM lab\n RUN git clone https://github.com/deepmind/lab.git \\"
+    },
+    {
+      "sha": "ac88b79aeaa345133a5b00d92a54bad06a299c1e",
+      "filename": "docs/environments/dm_lab.md",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 0,
+      "changes": 6,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/docs%2Fenvironments%2Fdm_lab.md",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/docs%2Fenvironments%2Fdm_lab.md",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/docs%2Fenvironments%2Fdm_lab.md?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -36,6 +36,12 @@ curl https://raw.githubusercontent.com/Farama-Foundation/Shimmy/main/bin/dm_lab.\n     DeepMind Lab does not currently support Windows or macOS operating systems.\n ```\n \n+```{eval-rst}\n+.. warning::\n+\n+    DeepMind Lab's build system is currently broken due to unmaintained Bazel WORKSPACE dependencies that have drifted out of compatibility. Installation from source is not expected to work until this is fixed upstream.\n+```\n+\n ## Usage\n Load a `deepmind_lab` environment:\n ```python"
+    },
+    {
+      "sha": "360eaca7ceb3bcd0da3e742573b3d7838c90d1d7",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/pyproject.toml",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/pyproject.toml?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -15,7 +15,7 @@ strict = [\n ]\n \n typeCheckingMode = \"basic\"\n-pythonVersion = \"3.8\"\n+pythonVersion = \"3.10\"\n pythonPlatform = \"All\"\n enableTypeIgnoreComments = true\n # This is required as the CI pre-commit does not download the module (i.e. numpy, pygame, box2d)"
+    },
+    {
+      "sha": "4207bc53cad671cbeb2917fbba8420e7ccd73c1a",
+      "filename": "setup.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 5,
+      "changes": 11,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/setup.py",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/setup.py",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/setup.py?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -43,14 +43,15 @@ def get_version():\n         \"imageio\",\n         \"h5py>=3.7.0\",\n         \"pettingzoo>=1.23\",\n+        \"protobuf<4\",\n     ],\n     \"dm-lab\": [\"dm-env>=1.6\"],\n     \"openspiel\": [\"open_spiel>=1.2\", \"pettingzoo>=1.23\"],\n     \"meltingpot\": [\n         \"pettingzoo>=1.23\",\n-        \"dm-meltingpot>=2.2.2; python_version > '3.10'\",\n+        \"dm-meltingpot>=2.2.2; python_version > '3.10' and python_version < '3.12'\",\n     ],\n-    \"bsuite\": [\"bsuite>=0.3.5\"],\n+    \"bsuite\": [\"bsuite>=0.3.5; python_version < '3.12'\"],\n }\n extras[\"all\"] = [\n     lib for key, libs in extras.items() if key != \"gym-v21\" for lib in libs\n@@ -71,17 +72,17 @@ def get_version():\n     long_description=long_description,\n     long_description_content_type=\"text/markdown\",\n     keywords=[\"Reinforcement Learning\", \"game\", \"RL\", \"AI\"],\n-    python_requires=\">=3.8\",\n+    python_requires=\">=3.10\",\n     packages=find_packages(),\n     install_requires=[\"numpy>=1.18.0\", \"gymnasium>=1.0.0\"],\n     tests_require=extras[\"testing\"],\n     extras_require=extras,\n     classifiers=[\n-        \"Programming Language :: Python :: 3.8\",\n-        \"Programming Language :: Python :: 3.9\",\n         \"Programming Language :: Python :: 3.10\",\n         \"Programming Language :: Python :: 3.11\",\n         \"Programming Language :: Python :: 3.12\",\n+        \"Programming Language :: Python :: 3.13\",\n+        \"Programming Language :: Python :: 3.14\",\n         \"License :: OSI Approved :: MIT License\",\n         \"Operating System :: OS Independent\",\n     ],"
+    },
+    {
+      "sha": "619c077e89ab991f3f4d7a5cd49af268975c3bc7",
+      "filename": "shimmy/__init__.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/shimmy%2F__init__.py",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/shimmy%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/shimmy%2F__init__.py?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -78,7 +78,7 @@ def __call__(self, *args: list[Any], **kwargs: Any):\n ]\n \n \n-__version__ = \"2.0.0\"\n+__version__ = \"2.0.1\"\n \n \n try:"
+    },
+    {
+      "sha": "9915d07595b761f770003410256300bec95cc434",
+      "filename": "shimmy/openspiel_compatibility.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/shimmy%2Fopenspiel_compatibility.py",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/shimmy%2Fopenspiel_compatibility.py",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/shimmy%2Fopenspiel_compatibility.py?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -1,5 +1,6 @@\n # pyright: reportGeneralTypeIssues=false\n \"\"\"Wrapper to convert an OpenSpiel environment into a pettingzoo compatible environment.\"\"\"\n+\n from __future__ import annotations\n \n import string"
+    },
+    {
+      "sha": "362224760afd612cb6e81322be273edc307ad26f",
+      "filename": "tests/test_bsuite.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/tests%2Ftest_bsuite.py",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/tests%2Ftest_bsuite.py",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/tests%2Ftest_bsuite.py?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -3,7 +3,6 @@\n import pickle\n import warnings\n \n-import bsuite\n import gymnasium as gym\n import pytest\n from gymnasium.envs.registration import registry\n@@ -12,6 +11,7 @@\n \n import shimmy\n \n+bsuite = pytest.importorskip(\"bsuite\")\n gym.register_envs(shimmy)\n \n BSUITE_ENV_IDS = ["
+    },
+    {
+      "sha": "dff710e984b102ed42619e47ff5f0dbce1b0cbe5",
+      "filename": "tests/test_dm_control.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/tests%2Ftest_dm_control.py",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/tests%2Ftest_dm_control.py",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/tests%2Ftest_dm_control.py?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -46,6 +46,7 @@ def test_dm_control_suite_envs():\n         \"For Box action spaces, we recommend using a symmetric and normalized space (range=[-1, 1] or [0, 1]). See https://stable-baselines3.readthedocs.io/en/master/guide/rl_tips.html for more information.\",\n         \"Calling `env.close()` on the closed environment should be allowed, but it raised an exception: _data\",\n         \"Calling `env.close()` on the closed environment should be allowed, but it raised an exception: 'Physics' object has no attribute '_data'\",\n+        \"Calling `env.close()` on the closed environment should be allowed, but it raised an exception: weakly-referenced object no longer exists\",\n     ]\n ]\n CHECK_ENV_IGNORE_WARNINGS.append(\"`in1d` is deprecated. Use `np.isin` instead.\")"
+    },
+    {
+      "sha": "6c253c30b55f967a6d4d22fc0d5bb59338102f3d",
+      "filename": "tests/test_meltingpot.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/tests%2Ftest_meltingpot.py",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/tests%2Ftest_meltingpot.py",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/tests%2Ftest_meltingpot.py?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -48,6 +48,7 @@ def test_existing_env(substrate_name):\n     env.close()\n \n \n+@pytest.mark.skip(reason=\"Requires a display; segfaults in headless CI environments.\")\n @pytest.mark.parametrize(\"substrate_name\", SUBSTRATES)\n def test_rendering(substrate_name):\n     \"\"\"Tests rendering for all Melting Pot substrates with MeltingPotCompatibility wrapper (using pygame).\"\"\""
+    },
+    {
+      "sha": "a058e425a7d6e698d06315dc49b14e52e2eff17e",
+      "filename": "tests/test_openspiel.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 5,
+      "changes": 14,
+      "blob_url": "https://github.com/Farama-Foundation/Shimmy/blob/392dcee77deb2d0f48a355a40940830b0f6ade35/tests%2Ftest_openspiel.py",
+      "raw_url": "https://github.com/Farama-Foundation/Shimmy/raw/392dcee77deb2d0f48a355a40940830b0f6ade35/tests%2Ftest_openspiel.py",
+      "contents_url": "https://api.github.com/repos/Farama-Foundation/Shimmy/contents/tests%2Ftest_openspiel.py?ref=392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "patch": "@@ -5,6 +5,7 @@\n \n import pyspiel\n import pytest\n+from gymnasium import spaces\n from gymnasium.utils.env_checker import data_equivalence\n from pettingzoo.test import api_test\n \n@@ -119,9 +120,10 @@ def test_passing_games(game_name):\n         env = pyspiel.load_game(game_name)\n         env = OpenSpielCompatibilityV0(env=env, render_mode=None)\n \n-        # api test the env (disabled because some environments fail the test)\n-        # TODO: fix this (fails play_test, not sure what the cause is)\n-        api_test(env)\n+        # Skip api_test for Text observation spaces: PettingZoo's api_test\n+        # assumes all leaf spaces have .dtype, but Text spaces return plain strings.\n+        if not isinstance(env.observation_space(env.possible_agents[0]), spaces.Text):\n+            api_test(env)\n \n         env.reset()\n         for agent in env.agent_iter():\n@@ -146,8 +148,10 @@ def test_loading_env(game_name):\n     \"\"\"Tests the loading of all OpenSpiel environments using the OpenSpielCompatibility wrapper.\"\"\"\n     env = OpenSpielCompatibilityV0(game_name=game_name, render_mode=None)\n \n-    # api test the env\n-    api_test(env)\n+    # Skip api_test for Text observation spaces: PettingZoo's api_test\n+    # assumes all leaf spaces have .dtype, but Text spaces return plain strings.\n+    if not isinstance(env.observation_space(env.possible_agents[0]), spaces.Text):\n+        api_test(env)\n \n     # run through the environment\n     env.reset()"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "f3516ad68eeee131f609593633c9090173dd9571",
+      "message": "Update python version",
+      "parent_shas": [
+        "0dd131e05f764e2a5ec9d9e235b5f461d45f2b8f"
+      ]
+    },
+    {
+      "sha": "ea89721e3b5553fe2625dcd1f597e2e763b8b601",
+      "message": "Update dependencies",
+      "parent_shas": [
+        "f3516ad68eeee131f609593633c9090173dd9571"
+      ]
+    },
+    {
+      "sha": "af572c2891b4229545c60b6c803401193c699e37",
+      "message": "Add python 3.14",
+      "parent_shas": [
+        "ea89721e3b5553fe2625dcd1f597e2e763b8b601"
+      ]
+    },
+    {
+      "sha": "d5dac7ce98ff632dd9956c54b3dd798942c0919a",
+      "message": "Try fixing the CI",
+      "parent_shas": [
+        "af572c2891b4229545c60b6c803401193c699e37"
+      ]
+    },
+    {
+      "sha": "f318492ab3986917e672ae0fc3164a1a871f2fb6",
+      "message": "Fix when to run CI actions",
+      "parent_shas": [
+        "d5dac7ce98ff632dd9956c54b3dd798942c0919a"
+      ]
+    },
+    {
+      "sha": "7499394c3fe76638fc31adc4c8e3ca8d1c7d61e1",
+      "message": "Update to use bazel-6.5.0",
+      "parent_shas": [
+        "f318492ab3986917e672ae0fc3164a1a871f2fb6"
+      ]
+    },
+    {
+      "sha": "3e48b16748177261ad189620dab92c3e131fc066",
+      "message": "Limit dm-meltingpot install to <3.12",
+      "parent_shas": [
+        "7499394c3fe76638fc31adc4c8e3ca8d1c7d61e1"
+      ]
+    },
+    {
+      "sha": "4161b68d512fb2e796a6d43a7e9915272c75e840",
+      "message": "Pin bazel to 5.4.1 in dm-lab",
+      "parent_shas": [
+        "3e48b16748177261ad189620dab92c3e131fc066"
+      ]
+    },
+    {
+      "sha": "67ca2cdc3223a865a27e4999e8c7187da6eab1c5",
+      "message": "Skip dm-lab as its broken",
+      "parent_shas": [
+        "4161b68d512fb2e796a6d43a7e9915272c75e840"
+      ]
+    },
+    {
+      "sha": "392dcee77deb2d0f48a355a40940830b0f6ade35",
+      "message": "Add importorskip for bsuite",
+      "parent_shas": [
+        "67ca2cdc3223a865a27e4999e8c7187da6eab1c5"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__Farama-Foundation__Shimmy__pr139.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\Farama-Foundation__Shimmy__pr139__python_java__Farama-Foundation__Shimmy__pr139\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\Farama-Foundation__Shimmy__pr139__python_java__Farama-Foundation__Shimmy__pr139\\rn"
+  }
+}

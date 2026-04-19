@@ -1,0 +1,195 @@
+{
+  "instance_id": "python_java__daisytuner__docc__pr629",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "daisytuner/docc",
+  "pr_number": 629,
+  "pr_url": "https://github.com/daisytuner/docc/pull/629",
+  "repo": {
+    "full_name": "daisytuner/docc",
+    "clone_url": "https://github.com/daisytuner/docc.git",
+    "default_branch": "main",
+    "created_at": "2025-03-13T01:07:26Z",
+    "stars": 20,
+    "license": "BSD-3-Clause",
+    "size_kb": 8206
+  },
+  "pull_request": {
+    "id": 3481248291,
+    "title": "Python inplace",
+    "body": "",
+    "created_at": "2026-04-02T09:12:18Z",
+    "merged_at": "2026-04-02T12:42:30Z",
+    "base_sha": "5350173d4916d204b4cf713287c741aa40a2571b",
+    "head_sha": "5d4ca819d19335255badb1713dcbb8f876fbd6b9",
+    "merge_commit_sha": "3125b927bdf31e21124bda781ddc562a8c735c1c",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "67c20fd5204643730d7ad34de34832f851d54140",
+  "final_sha": "5d4ca819d19335255badb1713dcbb8f876fbd6b9",
+  "changed_files": [
+    {
+      "sha": "9c9f3d14b034e7eb30bbd65f89f03b98443160d9",
+      "filename": ".github/workflows/unit_tests_linux.yml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 11,
+      "changes": 16,
+      "blob_url": "https://github.com/daisytuner/docc/blob/5d4ca819d19335255badb1713dcbb8f876fbd6b9/.github%2Fworkflows%2Funit_tests_linux.yml",
+      "raw_url": "https://github.com/daisytuner/docc/raw/5d4ca819d19335255badb1713dcbb8f876fbd6b9/.github%2Fworkflows%2Funit_tests_linux.yml",
+      "contents_url": "https://api.github.com/repos/daisytuner/docc/contents/.github%2Fworkflows%2Funit_tests_linux.yml?ref=5d4ca819d19335255badb1713dcbb8f876fbd6b9",
+      "patch": "@@ -201,7 +201,7 @@ jobs:\n     strategy:\n       fail-fast: false\n       matrix:\n-        python-version: [\"3.11\", \"3.12\", \"3.13\", \"3.14\"]\n+        python-version: [\"3.11\", \"3.12\"]\n \n     steps:\n       - uses: actions/checkout@v4\n@@ -217,6 +217,7 @@ jobs:\n         run: |\n           python -m venv .venv\n           echo \"$PWD/.venv/bin\" >> $GITHUB_PATH\n+          echo \"PYTHONPATH=$PWD/python:$PWD/mlir\" >> $GITHUB_ENV\n \n       - name: Mark GitHub Actions workdir as safe\n         run: git config --global --add safe.directory \"$GITHUB_WORKSPACE\"\n@@ -237,12 +238,13 @@ jobs:\n             -DCMAKE_C_COMPILER=clang-19 \\\n             -DCMAKE_CXX_COMPILER=clang++-19 \\\n             -DCMAKE_BUILD_TYPE=Debug \\\n+            -DPYTHON_BUILD_FRONTEND=ON \\\n+            -Dpybind11_DIR=$GITHUB_WORKSPACE/.venv/lib/python${{ matrix.python-version }}/site-packages/pybind11/share/cmake/pybind11 \\\n             -DMLIR_BUILD_FRONTEND=ON \\\n+            -DMLIR_BUILD_BINDINGS=ON \\\n             -DMLIR_BUILD_TESTS=ON \\\n             -DMLIR_DIR=/usr/lib/llvm-19/lib/cmake/mlir \\\n             -DLLVM_EXTERNAL_LIT=/usr/lib/llvm-19/build/utils/lit/lit.py \\\n-            -DWITH_SYMENGINE_THREAD_SAFE=ON \\\n-            -DWITH_SYMENGINE_RCP=ON \\\n             -DINSTALL_GTEST=OFF \\\n             -DBUILD_TESTS:BOOL=OFF \\\n             -DBUILD_BENCHMARKS:BOOL=OFF \\\n@@ -255,14 +257,6 @@ jobs:\n           cd build/\n           ninja check-docc-mlir\n \n-      - name: Build Python bindings\n-        run: |\n-          # Install docc-compiler package first\n-          pip install -Ccmake.build-type=Debug -e python/\n-\n-          # Then build mlir bindings\n-          pip install -Ccmake.build-type=Debug --no-build-isolation -e mlir/\n-\n       - name: Integration Tests\n         if: matrix.python-version == '3.11' || matrix.python-version == '3.12'\n         run: |"
+    },
+    {
+      "sha": "f8cdc5413d0c166b494e09bb1a578289adb8d271",
+      "filename": "c-compile/CMakeLists.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/daisytuner/docc/blob/5d4ca819d19335255badb1713dcbb8f876fbd6b9/c-compile%2FCMakeLists.txt",
+      "raw_url": "https://github.com/daisytuner/docc/raw/5d4ca819d19335255badb1713dcbb8f876fbd6b9/c-compile%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/daisytuner/docc/contents/c-compile%2FCMakeLists.txt?ref=5d4ca819d19335255badb1713dcbb8f876fbd6b9",
+      "patch": "@@ -1,6 +1,7 @@\n \n \n set(SOURCE_FILES\n+    src/util/docc_paths.cpp\n     src/util/offloading_instrumentation_plan.cpp\n     src/util/offloading_type_collector.cpp\n )"
+    },
+    {
+      "sha": "2d089c011284f6b60f36306223e9957d568eff22",
+      "filename": "c-compile/include/docc/util/docc_paths.h",
+      "status": "added",
+      "additions": 45,
+      "deletions": 0,
+      "changes": 45,
+      "blob_url": "https://github.com/daisytuner/docc/blob/5d4ca819d19335255badb1713dcbb8f876fbd6b9/c-compile%2Finclude%2Fdocc%2Futil%2Fdocc_paths.h",
+      "raw_url": "https://github.com/daisytuner/docc/raw/5d4ca819d19335255badb1713dcbb8f876fbd6b9/c-compile%2Finclude%2Fdocc%2Futil%2Fdocc_paths.h",
+      "contents_url": "https://api.github.com/repos/daisytuner/docc/contents/c-compile%2Finclude%2Fdocc%2Futil%2Fdocc_paths.h?ref=5d4ca819d19335255badb1713dcbb8f876fbd6b9",
+      "patch": "@@ -0,0 +1,45 @@\n+#pragma once\n+\n+#include <filesystem>\n+#include <optional>\n+#include <vector>\n+\n+namespace docc::util {\n+\n+std::optional<std::filesystem::path> find_lib_location();\n+\n+class DoccPaths {\n+public:\n+    virtual ~DoccPaths() = default;\n+\n+    [[nodiscard]] virtual std::vector<std::filesystem::path> get_default_include_paths() = 0;\n+    [[nodiscard]] virtual std::vector<std::filesystem::path> get_default_library_paths() = 0;\n+};\n+\n+class DefaultDoccPaths : public DoccPaths {\n+public:\n+    enum class DoccRootMode {\n+        None, // dont know\n+        CMake, // from source in git folder structure\n+        Pip, // installed as a python package\n+        GlobalDist // expect all relevant parts to be installed in globally available and searched paths\n+    };\n+\n+private:\n+    std::filesystem::path bin_root_;\n+    std::filesystem::path src_root_;\n+    DoccRootMode root_mode_;\n+\n+public:\n+    DefaultDoccPaths(std::filesystem::path bin_root, std::filesystem::path src_root, DoccRootMode root_mode);\n+\n+    const std::filesystem::path& bin_root() const { return bin_root_; }\n+\n+    static std::unique_ptr<DefaultDoccPaths> from_lib_location(std::optional<std::filesystem::path> lib_location);\n+\n+    std::vector<std::filesystem::path> get_default_include_paths() override;\n+    std::vector<std::filesystem::path> get_default_library_paths() override;\n+};\n+\n+\n+} // namespace docc::util"
+    },
+    {
+      "sha": "679990283d1151133900993aaf1add3bb4b41549",
+      "filename": "c-compile/src/util/docc_paths.cpp",
+      "status": "added",
+      "additions": 104,
+      "deletions": 0,
+      "changes": 104,
+      "blob_url": "https://github.com/daisytuner/docc/blob/5d4ca819d19335255badb1713dcbb8f876fbd6b9/c-compile%2Fsrc%2Futil%2Fdocc_paths.cpp",
+      "raw_url": "https://github.com/daisytuner/docc/raw/5d4ca819d19335255badb1713dcbb8f876fbd6b9/c-compile%2Fsrc%2Futil%2Fdocc_paths.cpp",
+      "contents_url": "https://api.github.com/repos/daisytuner/docc/contents/c-compile%2Fsrc%2Futil%2Fdocc_paths.cpp?ref=5d4ca819d19335255badb1713dcbb8f876fbd6b9",
+      "patch": "@@ -0,0 +1,104 @@\n+#include \"docc/util/docc_paths.h\"\n+\n+#include <dlfcn.h>\n+#include <regex>\n+#include <string>\n+#include <utility>\n+\n+namespace docc::util {\n+\n+namespace {\n+void _anchor() {}\n+} // namespace\n+\n+\n+std::optional<std::filesystem::path> find_lib_location() {\n+    Dl_info info;\n+    if (dladdr((void*) &_anchor, &info)) {\n+        return std::filesystem::canonical(info.dli_fname);\n+    } else {\n+        return std::nullopt;\n+    }\n+}\n+\n+DefaultDoccPaths::DefaultDoccPaths(std::filesystem::path bin_root, std::filesystem::path src_root, DoccRootMode root_mode)\n+    : bin_root_(std::move(bin_root)), src_root_(std::move(src_root)), root_mode_(root_mode) {}\n+\n+std::unique_ptr<DefaultDoccPaths> DefaultDoccPaths::from_lib_location(std::optional<std::filesystem::path> lib_location\n+) {\n+    if (lib_location) {\n+        auto str = lib_location->string();\n+        std::regex pip_matcher(\".*/python3\\\\.[0-9]+/site-packages/.*\");\n+        if (std::regex_match(str, pip_matcher)) {\n+            auto parent = lib_location->parent_path();\n+            while (!parent.empty() && parent.has_parent_path() && parent.stem().string() != \"docc\") {\n+                parent = parent.parent_path();\n+            }\n+            return std::make_unique<DefaultDoccPaths>(parent, \"\", DoccRootMode::Pip);\n+        }\n+        std::regex cmake_build_matcher(\".*/.*build.*/.*\");\n+        if (std::regex_match(str, cmake_build_matcher)) {\n+            std::filesystem::path parent = *lib_location;\n+            std::regex build_dir_matcher(\".*build.*\");\n+            bool is_build_dir;\n+            do {\n+                parent = parent.parent_path();\n+                is_build_dir = std::regex_match(parent.stem().string(), build_dir_matcher);\n+                if (is_build_dir) {\n+                    auto rel = std::filesystem::relative(*lib_location, parent);\n+                    if (!rel.empty()) {\n+                        auto outermost = *rel.begin();\n+                        std::string suffix = \"\";\n+                        std::optional<std::filesystem::path> test_path;\n+                        if (outermost.string() == \"docc\") {\n+                            test_path = parent / \"..\" / \"docc\" / \"sdfg\";\n+                            suffix = \"docc\";\n+                        } else {\n+                            test_path = parent / \"..\" / \"sdfg\";\n+                        }\n+\n+                        if (test_path && std::filesystem::exists(*test_path) &&\n+                            std::filesystem::is_directory(*test_path)) {\n+                            if (suffix.empty()) {\n+                                return std::make_unique<DefaultDoccPaths>(parent, parent / \"..\", DoccRootMode::CMake);\n+                            } else {\n+                                return std::make_unique<\n+                                    DefaultDoccPaths>(parent / suffix, parent / \"..\" / suffix, DoccRootMode::CMake);\n+                            }\n+                        }\n+                    }\n+                }\n+            } while (!is_build_dir && !parent.empty());\n+        }\n+    }\n+\n+    return std::make_unique<DefaultDoccPaths>(\"\", \"\", DoccRootMode::None);\n+}\n+\n+std::vector<std::filesystem::path> DefaultDoccPaths::get_default_include_paths() {\n+    switch (root_mode_) {\n+        case DoccRootMode::Pip:\n+            return {bin_root_ / \"include\"};\n+        case DoccRootMode::CMake: // src root must point to the root of docc.git\n+            return {src_root_ / \"rtl\" / \"include\", src_root_ / \"arg-capture-io\" / \"include\"};\n+        case DoccRootMode::None:\n+        case DoccRootMode::GlobalDist:\n+        default:\n+            return {};\n+    }\n+}\n+\n+std::vector<std::filesystem::path> DefaultDoccPaths::get_default_library_paths() {\n+    switch (root_mode_) {\n+        case DoccRootMode::Pip:\n+            return {bin_root_ / \"lib\"};\n+        case DoccRootMode::CMake: // bin root must point to the cmake build dir of docc\n+            return {bin_root_ / \"rtl\", bin_root_ / \"arg-capture-io\"};\n+        case DoccRootMode::None:\n+        case DoccRootMode::GlobalDist:\n+        default:\n+            return {};\n+    }\n+}\n+\n+} // namespace docc::util"
+    },
+    {
+      "sha": "e806a974867f758acbd1d919308ef410809e270b",
+      "filename": "mlir/bindings/CMakeLists.txt",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/daisytuner/docc/blob/5d4ca819d19335255badb1713dcbb8f876fbd6b9/mlir%2Fbindings%2FCMakeLists.txt",
+      "raw_url": "https://github.com/daisytuner/docc/raw/5d4ca819d19335255badb1713dcbb8f876fbd6b9/mlir%2Fbindings%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/daisytuner/docc/contents/mlir%2Fbindings%2FCMakeLists.txt?ref=5d4ca819d19335255badb1713dcbb8f876fbd6b9",
+      "patch": "@@ -45,5 +45,12 @@ target_include_directories(sdfg-mlir PRIVATE\n     ${PROJECT_BINARY_DIR}/include\n )\n \n+add_custom_command(TARGET sdfg-mlir POST_BUILD\n+        COMMAND ${CMAKE_COMMAND} -E create_symlink\n+        \"$<TARGET_FILE:sdfg-mlir>\"\n+        \"${CMAKE_CURRENT_SOURCE_DIR}/../docc/mlir/$<TARGET_FILE_NAME:sdfg-mlir>\"\n+        COMMENT \"Creating symlink to docc.mlir._sdfg_mlir in src dir\"\n+)\n+\n # Install the Python module to the docc/mlir package directory\n install(TARGETS sdfg-mlir DESTINATION docc/mlir COMPONENT docc_mlir)"
+    },
+    {
+      "sha": "c8f254e73511fc70421e6cefbd0aa97aeb3ebd82",
+      "filename": "python/CMakeLists.txt",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 1,
+      "changes": 10,
+      "blob_url": "https://github.com/daisytuner/docc/blob/5d4ca819d19335255badb1713dcbb8f876fbd6b9/python%2FCMakeLists.txt",
+      "raw_url": "https://github.com/daisytuner/docc/raw/5d4ca819d19335255badb1713dcbb8f876fbd6b9/python%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/daisytuner/docc/contents/python%2FCMakeLists.txt?ref=5d4ca819d19335255badb1713dcbb8f876fbd6b9",
+      "patch": "@@ -26,12 +26,20 @@ set_target_properties(sdfg-py PROPERTIES\n     CXX_STANDARD_REQUIRED ON\n     OUTPUT_NAME \"_sdfg\"\n )\n+\n+add_custom_command(TARGET sdfg-py POST_BUILD\n+        COMMAND ${CMAKE_COMMAND} -E create_symlink\n+        \"$<TARGET_FILE:sdfg-py>\"\n+        \"${CMAKE_CURRENT_SOURCE_DIR}/docc/sdfg/$<TARGET_FILE_NAME:sdfg-py>\"\n+        COMMENT \"Creating symlink to docc.sdfg._sdfg in src dir\"\n+)\n+\n target_include_directories(sdfg-py\n     PUBLIC\n         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/bindings>\n )\n \n-target_link_libraries(sdfg-py PRIVATE sdfg::sdfg sdfg::opt sdfg::rpc nlohmann_json::nlohmann_json ${CMAKE_DL_LIBS})\n+target_link_libraries(sdfg-py PRIVATE sdfg::sdfg sdfg::opt sdfg::rpc docc::c-compile nlohmann_json::nlohmann_json ${CMAKE_DL_LIBS})\n \n if(TARGET docc::target::et)\n     target_link_libraries(sdfg-py PRIVATE docc::target::et)"
+    },
+    {
+      "sha": "d44120a9b1084b8eb6ec38be0ecfa1cdb493a7b7",
+      "filename": "python/bindings/py_structured_sdfg.cpp",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 26,
+      "changes": 39,
+      "blob_url": "https://github.com/daisytuner/docc/blob/5d4ca819d19335255badb1713dcbb8f876fbd6b9/python%2Fbindings%2Fpy_structured_sdfg.cpp",
+      "raw_url": "https://github.com/daisytuner/docc/raw/5d4ca819d19335255badb1713dcbb8f876fbd6b9/python%2Fbindings%2Fpy_structured_sdfg.cpp",
+      "contents_url": "https://api.github.com/repos/daisytuner/docc/contents/python%2Fbindings%2Fpy_structured_sdfg.cpp?ref=5d4ca819d19335255badb1713dcbb8f876fbd6b9",
+      "patch": "@@ -49,6 +49,7 @@\n #include <sdfg/helpers/helpers.h>\n #include <sdfg/visualizer/dot_visualizer.h>\n \n+#include \"docc/util/docc_paths.h\"\n #include \"sdfg/passes/offloading/code_motion/block_hoisting.h\"\n #include \"sdfg/passes/rpc/daisytuner_rpc_context.h\"\n #include \"sdfg/passes/rpc/rpc_context.h\"\n@@ -122,10 +123,6 @@ pybind11::dict PyStructuredSDFG::containers() const {\n     return result;\n }\n \n-namespace {\n-void _anchor() {}\n-} // namespace\n-\n void PyStructuredSDFG::validate() { sdfg_->validate(); }\n \n void PyStructuredSDFG::expand() {\n@@ -448,18 +445,7 @@ std::string PyStructuredSDFG::compile(\n     }\n \n     // Find libraries relative to the module location\n-    Dl_info info;\n-    fs::path package_path;\n-    std::string package_path_str;\n-    std::string package_lib_path_str;\n-    std::string package_include_path_str;\n-    if (dladdr((void*) &_anchor, &info)) {\n-        fs::path lib_path = fs::canonical(info.dli_fname);\n-        package_path = lib_path.parent_path().parent_path();\n-        package_path_str = package_path.string();\n-        package_lib_path_str = (package_path / \"lib\").string();\n-        package_include_path_str = (package_path / \"include\").string();\n-    }\n+    auto paths = docc::util::DefaultDoccPaths::from_lib_location(docc::util::find_lib_location());\n \n     bool has_highway = false;\n     std::unordered_set<std::string> object_files;\n@@ -472,7 +458,7 @@ std::string PyStructuredSDFG::compile(\n \n #ifdef DOCC_HAS_TARGET_ET\n         if (extension == docc::target::et::ETSOC_KERNEL_FILE_EXT) {\n-            docc::target::et::EtBuildArgs args{.build_dir = build_path, .plugin_rt_dir = package_path};\n+            docc::target::et::EtBuildArgs args{.build_dir = build_path, .plugin_rt_dir = paths->bin_root()};\n             auto et_k_file = docc::target::et::et_build_kernel(*sdfg_, *snippet_factory, lib_file, args);\n             DEBUG_PRINTLN(\"Generated ET Kernel to: \" << et_k_file);\n             continue;\n@@ -486,10 +472,13 @@ std::string PyStructuredSDFG::compile(\n #else\n         cmd << DOCC_CXX_COMPILER << \" -c -fPIC -O3 -fopenmp -march=native -mtune=native -funroll-loops\";\n #endif\n-        if (!package_path_str.empty()) {\n-            cmd << \" -L\" << package_lib_path_str;\n-            cmd << \" -I\" << package_include_path_str;\n+        for (auto& inc_path : paths->get_default_include_paths()) {\n+            cmd << \" -I\" << inc_path;\n         }\n+        for (auto& ld_path : paths->get_default_library_paths()) {\n+            cmd << \" -L\" << ld_path;\n+        }\n+\n #if defined(__APPLE__)\n         cmd << \" -I/opt/homebrew/include\";\n #endif\n@@ -521,9 +510,8 @@ std::string PyStructuredSDFG::compile(\n #else\n         cmd << DOCC_CXX_COMPILER << \" -c -fPIC -O3 -fopenmp -march=native -mtune=native -funroll-loops\";\n #endif\n-        if (!package_path_str.empty()) {\n-            cmd << \" -L\" << package_lib_path_str;\n-            cmd << \" -I\" << package_include_path_str;\n+        for (auto& inc_path : paths->get_default_include_paths()) {\n+            cmd << \" -I\" << inc_path;\n         }\n         if (target == \"cuda\") {\n             cmd << \" -x cuda -lcuda\";\n@@ -555,9 +543,8 @@ std::string PyStructuredSDFG::compile(\n #else\n     cmd << DOCC_CXX_COMPILER << \" -shared -fopenmp -fPIC -O3\";\n #endif\n-    if (!package_path_str.empty()) {\n-        cmd << \" -L\" << package_lib_path_str;\n-        cmd << \" -I\" << package_include_path_str;\n+    for (auto& ld_path : paths->get_default_library_paths()) {\n+        cmd << \" -L\" << ld_path;\n     }\n     // cmd << \" \" << source_path.string();\n     for (const auto& object_file : object_files) {"
+    },
+    {
+      "sha": "c841e95664646eed23232aef9defd7c2847b3ba9",
+      "filename": "sdfg/src/offloading/data_offloading_node.cpp",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/daisytuner/docc/blob/5d4ca819d19335255badb1713dcbb8f876fbd6b9/sdfg%2Fsrc%2Foffloading%2Fdata_offloading_node.cpp",
+      "raw_url": "https://github.com/daisytuner/docc/raw/5d4ca819d19335255badb1713dcbb8f876fbd6b9/sdfg%2Fsrc%2Foffloading%2Fdata_offloading_node.cpp",
+      "contents_url": "https://api.github.com/repos/daisytuner/docc/contents/sdfg%2Fsrc%2Foffloading%2Fdata_offloading_node.cpp?ref=5d4ca819d19335255badb1713dcbb8f876fbd6b9",
+      "patch": "@@ -1,4 +1,4 @@\n-#include \"../../include/sdfg/targets/offloading/data_offloading_node.h\"\n+#include \"sdfg/targets/offloading/data_offloading_node.h\"\n \n #include <cstddef>\n #include <string>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "ac1a96c712165402bdb6085c6dba2de788806f88",
+      "message": "Symlink our python native bindings into a common folder structure matching the packages\n\nAllows using the native bindings build once with cmake with the python & mlir test suites. Towards considerably saving on compile time, because each python lib no longer needs to recompile the entire cmake project independently. But tests using that will be further away from the pip-install variant.",
+      "parent_shas": [
+        "67c20fd5204643730d7ad34de34832f851d54140"
+      ]
+    },
+    {
+      "sha": "cedf97392cb8c308dd6c023727bcececb191ce25",
+      "message": "Symlink python native bindings into the source folders & support finding internally needed paths in-place as well\n\n * moved runtime lib-path discovery into c-compile library and detect pip install vs. in-place / from git source directory runs and set the paths to our headers and libraries accordingly",
+      "parent_shas": [
+        "ac1a96c712165402bdb6085c6dba2de788806f88"
+      ]
+    },
+    {
+      "sha": "3f0524a6038e054570f81e02d83e468a92d5dad3",
+      "message": "Fixing include paths",
+      "parent_shas": [
+        "cedf97392cb8c308dd6c023727bcececb191ce25"
+      ]
+    },
+    {
+      "sha": "aebdb820ac2cebf962191743506a7cb287e7f721",
+      "message": "Fix: did not use correct paths-mode for standalone-docc in-place operation",
+      "parent_shas": [
+        "3f0524a6038e054570f81e02d83e468a92d5dad3"
+      ]
+    },
+    {
+      "sha": "868c51250d39a1f0c54d1b3d92a231fc725ab6c7",
+      "message": "Updated mlir tests to use in-place build",
+      "parent_shas": [
+        "aebdb820ac2cebf962191743506a7cb287e7f721"
+      ]
+    },
+    {
+      "sha": "5d4ca819d19335255badb1713dcbb8f876fbd6b9",
+      "message": "Move PYTHONPATH setting into a step, to have access to the proper paths",
+      "parent_shas": [
+        "868c51250d39a1f0c54d1b3d92a231fc725ab6c7"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__daisytuner__docc__pr629.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\daisytuner__docc__pr629__python_java__daisytuner__docc__pr629\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\daisytuner__docc__pr629__python_java__daisytuner__docc__pr629\\rn"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "instance_id": "java_python__liftwizard__liftwizard__pr3648",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "liftwizard/liftwizard",
+  "pr_number": 3648,
+  "pr_url": "https://github.com/liftwizard/liftwizard/pull/3648",
+  "repo": {
+    "full_name": "liftwizard/liftwizard",
+    "clone_url": "https://github.com/liftwizard/liftwizard.git",
+    "default_branch": "main",
+    "created_at": "2020-01-08T00:21:57Z",
+    "stars": 17,
+    "license": "Apache-2.0",
+    "size_kb": 12432
+  },
+  "pull_request": {
+    "id": 3492740043,
+    "title": "Bump org.openrewrite:rewrite-java-17 from 8.78.3 to 8.78.4",
+    "body": "Bumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.78.3 to 8.78.4.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/openrewrite/rewrite/releases\">org.openrewrite:rewrite-java-17's releases</a>.</em></p>\n<blockquote>\n<h2>8.78.4</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>Fix Javadoc <a href=\"https://github.com/see\"><code>@​see</code></a> field reference resolution by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7257\">openrewrite/rewrite#7257</a></li>\n<li>Go: load recipe modules as plugins for real execution by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7263\">openrewrite/rewrite#7263</a></li>\n<li>Go: automatically visit tree nodes in RPC queues with no onChange callback by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7264\">openrewrite/rewrite#7264</a></li>\n<li>Go: <code>StatementExpression</code> registered as a type by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7265\">openrewrite/rewrite#7265</a></li>\n<li>Go: Fix parsing of comments in empty argument list by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7267\">openrewrite/rewrite#7267</a></li>\n<li>Exclude the version txt file from the build cache by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7266\">openrewrite/rewrite#7266</a></li>\n<li>Go: Fix type cast in RPC, literals are not always primitive in Go by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7268\">openrewrite/rewrite#7268</a></li>\n<li>Go: Run go native tests as part of the build by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7270\">openrewrite/rewrite#7270</a></li>\n<li>Go: fix more cases of comments parsing in empty enumerations by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7269\">openrewrite/rewrite#7269</a></li>\n<li>Declare Gradle inputs to tasks for rewrite-csharp and rewrite-python by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7272\">openrewrite/rewrite#7272</a></li>\n<li>Go: Fix RPC serialization for varargs by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7271\">openrewrite/rewrite#7271</a></li>\n<li>Go: Fix parsing of a trailing comma in argument list by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7273\">openrewrite/rewrite#7273</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.78.3...v8.78.4\">https://github.com/openrewrite/rewrite/compare/v8.78.3...v8.78.4</a></p>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/d934b7bc48f0b6e9d404a7ef9551eab23b992299\"><code>d934b7b</code></a> Fix parsing of a trailing comma in argument list (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7273\">#7273</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/f6682ed7f07abdc16b0ea7a885eb11128fdf0d74\"><code>f6682ed</code></a> Scala parser: map This, InterpolatedString, ForEachLoop, and TypeAscription t...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/d51d23f9b29633d7892871237aa825b6856a075a\"><code>d51d23f</code></a> Go: Fix RPC serialization for varargs (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7271\">#7271</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/fbaf8747a4117fd3db296dfb3ee5ab466172b033\"><code>fbaf874</code></a> Declare Gradle inputs to tasks (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7272\">#7272</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/ab2af5d8a4f31fdb7f9da7c0cca00cfebc2b6693\"><code>ab2af5d</code></a> Fix more cases of comments in empty enumerations (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7269\">#7269</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/341d1aa06657d902b1fe2544c27af6a735c87b89\"><code>341d1aa</code></a> Run go native tests too (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7270\">#7270</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/2a229dda14a5af09e44c85586f36ca160a259a40\"><code>2a229dd</code></a> Fix type cast, literals are not always primitive in Go (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7268\">#7268</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/7265ee06e6f4e0ba6248d3d4b6ae89bf631e0c56\"><code>7265ee0</code></a> Exclude the version txt file from the build cache (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7266\">#7266</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/2edcb6f1fe1ebafbb70f1742aa5c1545428a3664\"><code>2edcb6f</code></a> Fix parsing of comments in empty arg list (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7267\">#7267</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/942105a016570bb8971c70de7b27e5678355fa4a\"><code>942105a</code></a> StatementExpression registered (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7265\">#7265</a>)</li>\n<li>Additional commits viewable in <a href=\"https://github.com/openrewrite/rewrite/compare/v8.78.3...v8.78.4\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=org.openrewrite:rewrite-java-17&package-manager=maven&previous-version=8.78.3&new-version=8.78.4)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)\n\n\n</details>",
+    "created_at": "2026-04-06T11:02:19Z",
+    "merged_at": "2026-04-06T11:22:17Z",
+    "base_sha": "9d6b2b5546b4f3b0de6d3d92f6c5e064d4dece7b",
+    "head_sha": "92440ef7b907ddb0c46a09a2f792790bf1381c2a",
+    "merge_commit_sha": "9b683f14a136982006bd8f3a5e875415a31ef918",
+    "labels": [
+      "dependencies",
+      "java"
+    ]
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "9d6b2b5546b4f3b0de6d3d92f6c5e064d4dece7b",
+  "final_sha": "92440ef7b907ddb0c46a09a2f792790bf1381c2a",
+  "changed_files": [
+    {
+      "sha": "acc48c12cd2e97db194c3c776759c2db91120dea",
+      "filename": "liftwizard-utility/liftwizard-rewrite/pom.xml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/liftwizard/liftwizard/blob/92440ef7b907ddb0c46a09a2f792790bf1381c2a/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "raw_url": "https://github.com/liftwizard/liftwizard/raw/92440ef7b907ddb0c46a09a2f792790bf1381c2a/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "contents_url": "https://api.github.com/repos/liftwizard/liftwizard/contents/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml?ref=92440ef7b907ddb0c46a09a2f792790bf1381c2a",
+      "patch": "@@ -313,7 +313,7 @@\n                     <dependency>\n                         <groupId>org.openrewrite</groupId>\n                         <artifactId>rewrite-java-17</artifactId>\n-                        <version>8.78.3</version>\n+                        <version>8.78.4</version>\n                     </dependency>\n                 </dependencies>\n             </plugin>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "92440ef7b907ddb0c46a09a2f792790bf1381c2a",
+      "message": "Bump org.openrewrite:rewrite-java-17 from 8.78.3 to 8.78.4\n\nBumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.78.3 to 8.78.4.\n- [Release notes](https://github.com/openrewrite/rewrite/releases)\n- [Commits](https://github.com/openrewrite/rewrite/compare/v8.78.3...v8.78.4)\n\n---\nupdated-dependencies:\n- dependency-name: org.openrewrite:rewrite-java-17\n  dependency-version: 8.78.4\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "9d6b2b5546b4f3b0de6d3d92f6c5e064d4dece7b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__liftwizard__liftwizard__pr3648.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3648__java_python__liftwizard__liftwizard__pr3648\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3648__java_python__liftwizard__liftwizard__pr3648\\rn"
+  }
+}

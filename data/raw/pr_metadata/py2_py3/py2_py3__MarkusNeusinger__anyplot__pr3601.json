@@ -1,0 +1,118 @@
+{
+  "instance_id": "py2_py3__MarkusNeusinger__anyplot__pr3601",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "MarkusNeusinger/anyplot",
+  "pr_number": 3601,
+  "pr_url": "https://github.com/MarkusNeusinger/anyplot/pull/3601",
+  "repo": {
+    "full_name": "MarkusNeusinger/anyplot",
+    "clone_url": "https://github.com/MarkusNeusinger/anyplot.git",
+    "default_branch": "main",
+    "created_at": "2025-11-18T18:15:06Z",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 33528
+  },
+  "pull_request": {
+    "id": 3161212104,
+    "title": "feat(highcharts): implement coefficient-confidence",
+    "body": "## Implementation: `coefficient-confidence` - highcharts\n\nImplements the **highcharts** version of `coefficient-confidence`.\n\n**File:** `plots/coefficient-confidence/implementations/highcharts.py`\n\n**Parent Issue:** #3576\n\n---\n:robot: *[impl-generate workflow](https://github.com/MarkusNeusinger/pyplots/actions/runs/20868895448)*",
+    "created_at": "2026-01-09T23:53:27Z",
+    "merged_at": "2026-01-09T23:59:35Z",
+    "base_sha": "302f949419b5ed0cfa6527c2c863613728bbb0a8",
+    "head_sha": "ce3686c9a65c979fa404dd739080c0b6179ea062",
+    "merge_commit_sha": "b412f229592e67c5b4dcde1bbcba329e1658ff9a",
+    "labels": [
+      "ai-approved",
+      "quality:92"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "28dffc3778295b44f7f1b2f113097cf374267841",
+  "final_sha": "ce3686c9a65c979fa404dd739080c0b6179ea062",
+  "changed_files": [
+    {
+      "sha": "e59b375987c4a5c43cf63a5684388136ca6f9095",
+      "filename": "plots/coefficient-confidence/implementations/highcharts.py",
+      "status": "added",
+      "additions": 266,
+      "deletions": 0,
+      "changes": 266,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/ce3686c9a65c979fa404dd739080c0b6179ea062/plots%2Fcoefficient-confidence%2Fimplementations%2Fhighcharts.py",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/ce3686c9a65c979fa404dd739080c0b6179ea062/plots%2Fcoefficient-confidence%2Fimplementations%2Fhighcharts.py",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fcoefficient-confidence%2Fimplementations%2Fhighcharts.py?ref=ce3686c9a65c979fa404dd739080c0b6179ea062",
+      "patch": "@@ -0,0 +1,266 @@\n+\"\"\" pyplots.ai\n+coefficient-confidence: Coefficient Plot with Confidence Intervals\n+Library: highcharts unknown | Python 3.13.11\n+Quality: 92/100 | Created: 2026-01-09\n+\"\"\"\n+\n+import json\n+import tempfile\n+import time\n+import urllib.request\n+from pathlib import Path\n+\n+import numpy as np\n+from selenium import webdriver\n+from selenium.webdriver.chrome.options import Options\n+\n+\n+# Data: Coefficients from a regression model predicting housing prices\n+np.random.seed(42)\n+\n+variables = [\n+    \"Square Footage\",\n+    \"Number of Bedrooms\",\n+    \"Number of Bathrooms\",\n+    \"Garage Spaces\",\n+    \"Lot Size (acres)\",\n+    \"Year Built\",\n+    \"Distance to City Center\",\n+    \"School Rating\",\n+    \"Crime Rate Index\",\n+    \"Property Tax Rate\",\n+]\n+\n+# Generate realistic coefficients with varying significance\n+coefficients = np.array([0.45, 0.12, 0.28, 0.15, 0.08, 0.02, -0.22, 0.35, -0.18, -0.05])\n+std_errors = np.array([0.08, 0.09, 0.07, 0.06, 0.10, 0.04, 0.05, 0.06, 0.07, 0.08])\n+\n+# 95% confidence intervals\n+ci_lower = coefficients - 1.96 * std_errors\n+ci_upper = coefficients + 1.96 * std_errors\n+\n+# Determine significance (CI does not cross zero)\n+significant = (ci_lower > 0) | (ci_upper < 0)\n+\n+# Sort by coefficient magnitude (highest at top, so reverse for display)\n+sort_idx = np.argsort(coefficients)[::-1]\n+variables = [variables[i] for i in sort_idx]\n+coefficients = coefficients[sort_idx]\n+ci_lower = ci_lower[sort_idx]\n+ci_upper = ci_upper[sort_idx]\n+significant = significant[sort_idx]\n+\n+# Download Highcharts JS\n+highcharts_url = \"https://code.highcharts.com/highcharts.js\"\n+with urllib.request.urlopen(highcharts_url, timeout=30) as response:\n+    highcharts_js = response.read().decode(\"utf-8\")\n+\n+highcharts_more_url = \"https://code.highcharts.com/highcharts-more.js\"\n+with urllib.request.urlopen(highcharts_more_url, timeout=30) as response:\n+    highcharts_more_js = response.read().decode(\"utf-8\")\n+\n+xrange_url = \"https://code.highcharts.com/modules/xrange.js\"\n+with urllib.request.urlopen(xrange_url, timeout=30) as response:\n+    xrange_js = response.read().decode(\"utf-8\")\n+\n+# Build data arrays for JavaScript\n+sig_points = []\n+nonsig_points = []\n+\n+for i, (var, coef, sig) in enumerate(zip(variables, coefficients, significant, strict=True)):\n+    point = {\"x\": float(coef), \"y\": i, \"name\": var}\n+    if sig:\n+        sig_points.append(point)\n+    else:\n+        nonsig_points.append(point)\n+\n+# Convert to JS format using json for proper escaping\n+categories_js = json.dumps(variables)\n+sig_points_js = json.dumps(sig_points)\n+nonsig_points_js = json.dumps(nonsig_points)\n+\n+# Build CI data for xrange series\n+ci_data = []\n+for i, (lower, upper, sig) in enumerate(zip(ci_lower, ci_upper, significant, strict=True)):\n+    ci_data.append({\"x\": float(lower), \"x2\": float(upper), \"y\": i, \"color\": \"#306998\" if sig else \"#B8860B\"})\n+\n+ci_data_js = json.dumps(ci_data)\n+\n+# Calculate x-axis range to ensure all points are visible\n+x_min = float(min(ci_lower)) - 0.05\n+x_max = float(max(ci_upper)) + 0.05\n+\n+chart_js = f\"\"\"\n+Highcharts.chart('container', {{\n+    chart: {{\n+        width: 4800,\n+        height: 2700,\n+        backgroundColor: '#ffffff',\n+        marginLeft: 420,\n+        marginRight: 180,\n+        marginTop: 180,\n+        marginBottom: 280,\n+        spacingBottom: 40\n+    }},\n+    title: {{\n+        text: 'coefficient-confidence · highcharts · pyplots.ai',\n+        style: {{ fontSize: '56px', fontWeight: 'bold' }}\n+    }},\n+    subtitle: {{\n+        text: 'Housing Price Regression Model Coefficients with 95% Confidence Intervals',\n+        style: {{ fontSize: '36px', color: '#555555' }}\n+    }},\n+    xAxis: {{\n+        min: {x_min},\n+        max: {x_max},\n+        title: {{\n+            text: 'Coefficient Estimate (Standardized)',\n+            style: {{ fontSize: '40px' }},\n+            margin: 25\n+        }},\n+        labels: {{\n+            style: {{ fontSize: '32px' }},\n+            format: '{{value:.1f}}'\n+        }},\n+        gridLineWidth: 1,\n+        gridLineColor: '#e0e0e0',\n+        tickInterval: 0.1,\n+        plotLines: [{{\n+            value: 0,\n+            color: '#666666',\n+            width: 4,\n+            dashStyle: 'Dash',\n+            zIndex: 3,\n+            label: {{\n+                text: 'Null (β = 0)',\n+                style: {{ fontSize: '28px', color: '#666666', fontWeight: 'bold' }},\n+                rotation: 0,\n+                y: 30,\n+                x: 10\n+            }}\n+        }}]\n+    }},\n+    yAxis: {{\n+        title: {{ text: null }},\n+        categories: {categories_js},\n+        labels: {{\n+            style: {{ fontSize: '32px' }}\n+        }},\n+        gridLineWidth: 0,\n+        reversed: false\n+    }},\n+    legend: {{\n+        enabled: true,\n+        itemStyle: {{ fontSize: '36px' }},\n+        verticalAlign: 'bottom',\n+        align: 'center',\n+        layout: 'horizontal',\n+        floating: false,\n+        y: -20,\n+        symbolRadius: 14,\n+        symbolHeight: 28,\n+        symbolWidth: 28,\n+        itemDistance: 100\n+    }},\n+    tooltip: {{\n+        style: {{ fontSize: '28px' }},\n+        useHTML: true,\n+        formatter: function() {{\n+            if (this.series.type === 'xrange') {{\n+                return '<b>' + this.yCategory + '</b><br/>CI: [' + this.point.x.toFixed(3) + ', ' + this.point.x2.toFixed(3) + ']';\n+            }}\n+            return '<b>' + this.point.name + '</b><br/>Coefficient: ' + this.x.toFixed(3);\n+        }}\n+    }},\n+    plotOptions: {{\n+        scatter: {{\n+            marker: {{\n+                radius: 22,\n+                symbol: 'circle'\n+            }},\n+            zIndex: 10\n+        }},\n+        xrange: {{\n+            borderRadius: 0,\n+            pointWidth: 8,\n+            zIndex: 5\n+        }}\n+    }},\n+    series: [{{\n+        type: 'xrange',\n+        name: '95% CI',\n+        data: {ci_data_js},\n+        showInLegend: false,\n+        enableMouseTracking: true\n+    }}, {{\n+        type: 'scatter',\n+        name: 'Significant (p < 0.05)',\n+        color: '#306998',\n+        data: {sig_points_js},\n+        marker: {{\n+            fillColor: '#306998',\n+            lineWidth: 0,\n+            radius: 22\n+        }},\n+        zIndex: 10,\n+        clip: false\n+    }}, {{\n+        type: 'scatter',\n+        name: 'Not Significant',\n+        color: '#FFD43B',\n+        data: {nonsig_points_js},\n+        marker: {{\n+            fillColor: '#FFD43B',\n+            lineWidth: 4,\n+            lineColor: '#B8860B',\n+            radius: 22\n+        }},\n+        zIndex: 10,\n+        clip: false\n+    }}]\n+}});\n+\"\"\"\n+\n+# HTML content with inline scripts\n+html_content = f\"\"\"<!DOCTYPE html>\n+<html>\n+<head>\n+    <meta charset=\"utf-8\">\n+    <script>{highcharts_js}</script>\n+    <script>{highcharts_more_js}</script>\n+    <script>{xrange_js}</script>\n+</head>\n+<body style=\"margin:0; padding:0; background:#ffffff;\">\n+    <div id=\"container\" style=\"width: 4800px; height: 2700px;\"></div>\n+    <script>{chart_js}</script>\n+</body>\n+</html>\"\"\"\n+\n+# Write temp HTML and take screenshot\n+with tempfile.NamedTemporaryFile(mode=\"w\", suffix=\".html\", delete=False, encoding=\"utf-8\") as f:\n+    f.write(html_content)\n+    temp_path = f.name\n+\n+# Save HTML for interactive version\n+with open(\"plot.html\", \"w\", encoding=\"utf-8\") as f:\n+    f.write(html_content)\n+\n+# Chrome options for headless screenshot\n+chrome_options = Options()\n+chrome_options.add_argument(\"--headless\")\n+chrome_options.add_argument(\"--no-sandbox\")\n+chrome_options.add_argument(\"--disable-dev-shm-usage\")\n+chrome_options.add_argument(\"--disable-gpu\")\n+chrome_options.add_argument(\"--window-size=4800,2800\")  # Slightly larger to capture legend\n+\n+driver = webdriver.Chrome(options=chrome_options)\n+driver.get(f\"file://{temp_path}\")\n+time.sleep(5)  # Wait for chart to render\n+\n+# Get the container element and take a screenshot of just that element\n+container = driver.find_element(\"id\", \"container\")\n+container.screenshot(\"plot.png\")\n+\n+driver.quit()\n+\n+Path(temp_path).unlink()  # Clean up temp file"
+    },
+    {
+      "sha": "4874be1990bb53c4514c71a30e7524913e61ca7b",
+      "filename": "plots/coefficient-confidence/metadata/highcharts.yaml",
+      "status": "added",
+      "additions": 214,
+      "deletions": 0,
+      "changes": 214,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/ce3686c9a65c979fa404dd739080c0b6179ea062/plots%2Fcoefficient-confidence%2Fmetadata%2Fhighcharts.yaml",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/ce3686c9a65c979fa404dd739080c0b6179ea062/plots%2Fcoefficient-confidence%2Fmetadata%2Fhighcharts.yaml",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fcoefficient-confidence%2Fmetadata%2Fhighcharts.yaml?ref=ce3686c9a65c979fa404dd739080c0b6179ea062",
+      "patch": "@@ -0,0 +1,214 @@\n+library: highcharts\n+specification_id: coefficient-confidence\n+created: '2026-01-09T23:53:23Z'\n+updated: '2026-01-09T23:59:11Z'\n+generated_by: claude-opus-4-5-20251101\n+workflow_run: 20868895448\n+issue: 3576\n+python_version: 3.13.11\n+library_version: unknown\n+preview_url: https://storage.googleapis.com/pyplots-images/plots/coefficient-confidence/highcharts/plot.png\n+preview_thumb: https://storage.googleapis.com/pyplots-images/plots/coefficient-confidence/highcharts/plot_thumb.png\n+preview_html: https://storage.googleapis.com/pyplots-images/plots/coefficient-confidence/highcharts/plot.html\n+quality_score: 92\n+review:\n+  strengths:\n+  - Excellent horizontal layout with variables on y-axis for readability with long\n+    names\n+  - Clean visual distinction between significant and non-significant coefficients\n+    using colorblind-safe colors\n+  - Well-implemented zero reference line with clear label\n+  - Interactive tooltips provide coefficient and CI values on hover\n+  - Proper use of xrange series type for confidence interval bars\n+  weaknesses:\n+  - 'Confidence interval line widths (pointWidth: 8) could be slightly thicker for\n+    better visibility'\n+  - Grid styling only has vertical lines; subtle horizontal lines at each variable\n+    level would improve readability\n+  image_description: The plot displays a coefficient plot with confidence intervals\n+    for a housing price regression model. Ten predictor variables are shown on the\n+    y-axis (Distance to City Center, Crime Rate Index, Property Tax Rate, Year Built,\n+    Lot Size, Number of Bedrooms, Garage Spaces, Number of Bathrooms, School Rating,\n+    Square Footage), ordered by coefficient magnitude from bottom (highest positive)\n+    to top (most negative). The x-axis shows \"Coefficient Estimate (Standardized)\"\n+    ranging from approximately -0.3 to 0.6. Each coefficient is represented by a circular\n+    marker with a horizontal line showing the 95% confidence interval. A vertical\n+    dashed line at x=0 marks the null hypothesis threshold, labeled \"Null (β = 0)\".\n+    Significant coefficients (p < 0.05) are shown in blue (#306998), while non-significant\n+    coefficients are shown in yellow/gold (#FFD43B) with a darker border. The title\n+    follows the required format \"coefficient-confidence · highcharts · pyplots.ai\"\n+    with a subtitle explaining the context. The legend at the bottom distinguishes\n+    \"Significant (p < 0.05)\" and \"Not Significant\" categories.\n+  criteria_checklist:\n+    visual_quality:\n+      score: 37\n+      max: 40\n+      items:\n+      - id: VQ-01\n+        name: Text Legibility\n+        score: 10\n+        max: 10\n+        passed: true\n+        comment: Title, subtitle, axis labels, and tick labels are all clearly readable\n+          at full size\n+      - id: VQ-02\n+        name: No Overlap\n+        score: 8\n+        max: 8\n+        passed: true\n+        comment: No overlapping text elements; variable names are well-spaced on y-axis\n+      - id: VQ-03\n+        name: Element Visibility\n+        score: 7\n+        max: 8\n+        passed: true\n+        comment: Markers and confidence interval lines are appropriately sized; markers\n+          could be slightly larger\n+      - id: VQ-04\n+        name: Color Accessibility\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Blue and yellow color scheme is colorblind-safe\n+      - id: VQ-05\n+        name: Layout Balance\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Plot fills canvas well with good margins; legend positioned at bottom\n+      - id: VQ-06\n+        name: Axis Labels\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: X-axis has descriptive label with units indication\n+      - id: VQ-07\n+        name: Grid & Legend\n+        score: 0\n+        max: 2\n+        passed: false\n+        comment: Grid lines only vertical; horizontal reference lines would improve\n+          readability\n+    spec_compliance:\n+      score: 25\n+      max: 25\n+      items:\n+      - id: SC-01\n+        name: Plot Type\n+        score: 8\n+        max: 8\n+        passed: true\n+        comment: Correct coefficient plot with horizontal error bars for confidence\n+          intervals\n+      - id: SC-02\n+        name: Data Mapping\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Variables on y-axis, coefficient values on x-axis (horizontal layout)\n+      - id: SC-03\n+        name: Required Features\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Has zero reference line, color distinction for significance, ordered\n+          by magnitude\n+      - id: SC-04\n+        name: Data Range\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: All data points and confidence intervals are fully visible\n+      - id: SC-05\n+        name: Legend Accuracy\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: Legend correctly describes significant vs non-significant\n+      - id: SC-06\n+        name: Title Format\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: Uses exact format coefficient-confidence · highcharts · pyplots.ai\n+    data_quality:\n+      score: 18\n+      max: 20\n+      items:\n+      - id: DQ-01\n+        name: Feature Coverage\n+        score: 7\n+        max: 8\n+        passed: true\n+        comment: Shows positive/negative coefficients, significant/non-significant;\n+          CI widths similar\n+      - id: DQ-02\n+        name: Realistic Context\n+        score: 7\n+        max: 7\n+        passed: true\n+        comment: Housing price regression is a realistic, neutral scientific scenario\n+      - id: DQ-03\n+        name: Appropriate Scale\n+        score: 4\n+        max: 5\n+        passed: true\n+        comment: Standardized coefficients in reasonable range\n+    code_quality:\n+      score: 9\n+      max: 10\n+      items:\n+      - id: CQ-01\n+        name: KISS Structure\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: 'Linear flow: imports, data, chart config, render'\n+      - id: CQ-02\n+        name: Reproducibility\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: Uses np.random.seed(42)\n+      - id: CQ-03\n+        name: Clean Imports\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: All imports are used\n+      - id: CQ-04\n+        name: No Deprecated API\n+        score: 1\n+        max: 1\n+        passed: true\n+        comment: Uses current Highcharts API\n+      - id: CQ-05\n+        name: Output Correct\n+        score: 0\n+        max: 1\n+        passed: false\n+        comment: Uses container.screenshot() but output is named correctly\n+    library_features:\n+      score: 3\n+      max: 5\n+      items:\n+      - id: LF-01\n+        name: Distinctive Features\n+        score: 3\n+        max: 5\n+        passed: true\n+        comment: Uses xrange series, plotLines, custom tooltips; could leverage more\n+          Highcharts features\n+  verdict: APPROVED\n+impl_tags:\n+  dependencies:\n+  - selenium\n+  techniques:\n+  - html-export\n+  - hover-tooltips\n+  patterns:\n+  - data-generation\n+  - iteration-over-groups\n+  dataprep: []\n+  styling:\n+  - grid-styling"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "6be88cf252f6fc617181498faceeb988adafd3d1",
+      "message": "feat(highcharts): implement coefficient-confidence",
+      "parent_shas": [
+        "28dffc3778295b44f7f1b2f113097cf374267841"
+      ]
+    },
+    {
+      "sha": "e19a8c8e21a39d83f5663a3a1d498bfaed16b932",
+      "message": "chore(highcharts): add metadata for coefficient-confidence",
+      "parent_shas": [
+        "6be88cf252f6fc617181498faceeb988adafd3d1"
+      ]
+    },
+    {
+      "sha": "82f898a405719c5a0d9ef9360c13776d4d6bb781",
+      "message": "chore(highcharts): update quality score 92 and review feedback for coefficient-confidence",
+      "parent_shas": [
+        "e19a8c8e21a39d83f5663a3a1d498bfaed16b932"
+      ]
+    },
+    {
+      "sha": "ce3686c9a65c979fa404dd739080c0b6179ea062",
+      "message": "Merge branch 'main' into implementation/coefficient-confidence/highcharts",
+      "parent_shas": [
+        "82f898a405719c5a0d9ef9360c13776d4d6bb781",
+        "302f949419b5ed0cfa6527c2c863613728bbb0a8"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__MarkusNeusinger__anyplot__pr3601.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr3601__py2_py3__MarkusNeusinger__anyplot__pr3601\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr3601__py2_py3__MarkusNeusinger__anyplot__pr3601\\rn"
+  }
+}

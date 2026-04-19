@@ -1,0 +1,98 @@
+{
+  "instance_id": "python_cpp__openRuyi-Project__openRuyi__pr106",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "openRuyi-Project/openRuyi",
+  "pr_number": 106,
+  "pr_url": "https://github.com/openRuyi-Project/openRuyi/pull/106",
+  "repo": {
+    "full_name": "openRuyi-Project/openRuyi",
+    "clone_url": "https://github.com/openRuyi-Project/openRuyi.git",
+    "default_branch": "main",
+    "created_at": "2026-03-24T04:51:48Z",
+    "stars": 41,
+    "license": "MulanPSL-2.0",
+    "size_kb": 8627
+  },
+  "pull_request": {
+    "id": 3509306304,
+    "title": "SPECS: python-jinja2 & python-hatch-vcs: Fix spec file formatting.",
+    "body": "This is the fourth step for https://github.com/openRuyi-Project/openRuyi/pull/18. Hope this will be the last one.",
+    "created_at": "2026-04-09T15:03:36Z",
+    "merged_at": "2026-04-09T15:23:49Z",
+    "base_sha": "688b250beabf74306b573bd65965c61d0810cc7f",
+    "head_sha": "b20888e34611aa3725dc02cd09b519280c71783f",
+    "merge_commit_sha": "c8b698f223418f3d55f29b2e80d261777bb024e5",
+    "labels": [
+      "Target: Rolling",
+      "BuildSystem: pyproject"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "688b250beabf74306b573bd65965c61d0810cc7f",
+  "final_sha": "b20888e34611aa3725dc02cd09b519280c71783f",
+  "changed_files": [
+    {
+      "sha": "11b28e11c7def40a11a1eb4cb924e004b4104661",
+      "filename": "SPECS/python-hatch-vcs/python-hatch-vcs.spec",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 16,
+      "changes": 28,
+      "blob_url": "https://github.com/openRuyi-Project/openRuyi/blob/b20888e34611aa3725dc02cd09b519280c71783f/SPECS%2Fpython-hatch-vcs%2Fpython-hatch-vcs.spec",
+      "raw_url": "https://github.com/openRuyi-Project/openRuyi/raw/b20888e34611aa3725dc02cd09b519280c71783f/SPECS%2Fpython-hatch-vcs%2Fpython-hatch-vcs.spec",
+      "contents_url": "https://api.github.com/repos/openRuyi-Project/openRuyi/contents/SPECS%2Fpython-hatch-vcs%2Fpython-hatch-vcs.spec?ref=b20888e34611aa3725dc02cd09b519280c71783f",
+      "patch": "@@ -15,35 +15,31 @@ License:        MIT\n URL:            https://github.com/ofek/hatch-vcs\n # TODO: Use %%{pypi_source %%{srcname} %%{version}} in the future - 251\n #       Otherwise https://files.pythonhosted.org/packages/source/a/abc/%%{srcname}-%%{version}.tar.gz\n-#!RemoteAsset\n+#!RemoteAsset:  sha256:0395fa126940340215090c344a2bf4e2a77bcbe7daab16f41b37b98c95809ff9\n Source0:        https://files.pythonhosted.org/packages/source/h/%{srcname}/%{srcname}-%{version}.tar.gz\n BuildArch:      noarch\n BuildSystem:    pyproject\n \n BuildOption(install):  -l hatch_vcs\n \n-BuildRequires:  python3-devel\n-BuildRequires:  python3-packaging\n-BuildRequires:  python3-pip\n-BuildRequires:  python3-hatchling\n-BuildRequires:  python3-pluggy\n-BuildRequires:  python3-setuptools_scm\n-BuildRequires:  expat\n+BuildRequires:  pyproject-rpm-macros\n+BuildRequires:  pkgconfig(python3)\n+BuildRequires:  python3dist(packaging)\n+BuildRequires:  python3dist(pip)\n+BuildRequires:  python3dist(hatchling)\n+BuildRequires:  python3dist(pluggy)\n+BuildRequires:  python3dist(setuptools-scm)\n \n %description\n This provides a plugin for Hatch that uses your preferred version control\n system (like Git) to determine project versions.\n \n-%package     -n python3-hatch-vcs\n-Summary:        %{summary}\n+Provides:       python3-hatch-vcs\n+%python_provide python3-hatch-vcs\n \n-%description -n python3-hatch-vcs\n-This provides a plugin for Hatch that uses your preferred version control\n-system (like Git) to determine project versions.\n-\n-%files -n python3-hatch-vcs -f %{pyproject_files}\n+%files -f %{pyproject_files}\n %doc README.md\n %doc HISTORY.md\n \n %changelog\n-%{?autochangelog}\n+%autochangelog"
+    },
+    {
+      "sha": "08f439d4b5cd348012d3b1b26ac2147f7160068f",
+      "filename": "SPECS/python-jinja2/python-jinja2.spec",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 28,
+      "changes": 39,
+      "blob_url": "https://github.com/openRuyi-Project/openRuyi/blob/b20888e34611aa3725dc02cd09b519280c71783f/SPECS%2Fpython-jinja2%2Fpython-jinja2.spec",
+      "raw_url": "https://github.com/openRuyi-Project/openRuyi/raw/b20888e34611aa3725dc02cd09b519280c71783f/SPECS%2Fpython-jinja2%2Fpython-jinja2.spec",
+      "contents_url": "https://api.github.com/repos/openRuyi-Project/openRuyi/contents/SPECS%2Fpython-jinja2%2Fpython-jinja2.spec?ref=b20888e34611aa3725dc02cd09b519280c71783f",
+      "patch": "@@ -15,28 +15,21 @@ License:        BSD-3-Clause\n URL:            https://palletsprojects.com/p/jinja/\n # TODO: Use %%{pypi_source %%{srcname} %%{version}} in the future - 251\n #       Otherwise https://files.pythonhosted.org/packages/source/a/abc/%%{srcname}-%%{version}.tar.gz\n-#!RemoteAsset\n+#!RemoteAsset:  sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d\n Source0:        https://files.pythonhosted.org/packages/source/j/%{srcname}/%{srcname}-%{version}.tar.gz\n BuildArch:      noarch\n+BuildSystem:    pyproject\n \n-%description\n-Jinja2 is a template engine written in pure Python. It provides a\n-Django inspired non-XML syntax but supports inline expressions and an\n-optional sandboxed environment.\n+BuildOption(install):  -l jinja2\n \n-If you have any exposure to other text-based template languages, such\n-as Smarty or Django, you should feel right at home with Jinja2. It's\n-both designer and developer friendly by sticking to Python's\n-principles and adding functionality useful for templating\n-environments.\n+BuildRequires:  pyproject-rpm-macros\n+BuildRequires:  pkgconfig(python3)\n+BuildRequires:  python3dist(pytest)\n \n-%package     -n python3-jinja2\n-Summary:        %{summary}\n-BuildRequires:  python3-devel\n-BuildRequires:  python3-pytest\n-BuildRequires:  expat\n+Provides:       python3-%{srcname}\n+%python_provide python3-%{srcname}\n \n-%description -n python3-jinja2\n+%description\n Jinja2 is a template engine written in pure Python. It provides a\n Django inspired non-XML syntax but supports inline expressions and an\n optional sandboxed environment.\n@@ -47,23 +40,13 @@ both designer and developer friendly by sticking to Python's\n principles and adding functionality useful for templating\n environments.\n \n-%prep\n-%autosetup -p1 -n %{srcname}-%{version}\n-\n %generate_buildrequires\n %pyproject_buildrequires\n \n-%build\n-%pyproject_wheel\n-\n-%install\n-%pyproject_install\n-%pyproject_save_files jinja2\n-\n-%files -n python3-jinja2 -f %{pyproject_files}\n+%files -f %{pyproject_files}\n %doc README.md\n %doc docs/examples\n %license LICENSE.txt\n \n %changelog\n-%{?autochangelog}\n+%autochangelog"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "b5c19c65d57bffeee10063a24c6f130a4ee058e5",
+      "message": "SPECS: python-hatch-vcs: Fix spec file formatting.\n\nSigned-off-by: misaka00251 <liuxin@iscas.ac.cn>",
+      "parent_shas": [
+        "688b250beabf74306b573bd65965c61d0810cc7f"
+      ]
+    },
+    {
+      "sha": "b20888e34611aa3725dc02cd09b519280c71783f",
+      "message": "SPECS: python-jinja2: Fix spec file formatting.\n\nSigned-off-by: misaka00251 <liuxin@iscas.ac.cn>",
+      "parent_shas": [
+        "b5c19c65d57bffeee10063a24c6f130a4ee058e5"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__openRuyi-Project__openRuyi__pr106.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\openRuyi-Project__openRuyi__pr106__python_cpp__openRuyi-Project__openRuyi__pr106\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\openRuyi-Project__openRuyi__pr106__python_cpp__openRuyi-Project__openRuyi__pr106\\rn"
+  }
+}

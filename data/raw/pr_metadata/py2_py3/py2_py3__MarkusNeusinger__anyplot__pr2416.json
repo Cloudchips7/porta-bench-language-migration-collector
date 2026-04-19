@@ -1,0 +1,118 @@
+{
+  "instance_id": "py2_py3__MarkusNeusinger__anyplot__pr2416",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "MarkusNeusinger/anyplot",
+  "pr_number": 2416,
+  "pr_url": "https://github.com/MarkusNeusinger/anyplot/pull/2416",
+  "repo": {
+    "full_name": "MarkusNeusinger/anyplot",
+    "clone_url": "https://github.com/MarkusNeusinger/anyplot.git",
+    "default_branch": "main",
+    "created_at": "2025-11-18T18:15:06Z",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 33528
+  },
+  "pull_request": {
+    "id": 3132462722,
+    "title": "feat(highcharts): implement gantt-basic",
+    "body": "## Implementation: `gantt-basic` - highcharts\n\nImplements the **highcharts** version of `gantt-basic`.\n\n**File:** `plots/gantt-basic/implementations/highcharts.py`\n\n---\n:robot: *[impl-generate workflow](https://github.com/MarkusNeusinger/pyplots/actions/runs/20543284236)*",
+    "created_at": "2025-12-27T19:24:25Z",
+    "merged_at": "2025-12-27T19:37:04Z",
+    "base_sha": "2d9884bf6789b01a0199e7fb49277160ef06fb28",
+    "head_sha": "512e2248703c23d1996822f6d756d462b91b2464",
+    "merge_commit_sha": "7e322815746c88782051882958dccc986ac258b3",
+    "labels": [
+      "ai-approved",
+      "quality:92"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "fdafa74cdfcee28e9cd9d4137f648341409d695d",
+  "final_sha": "512e2248703c23d1996822f6d756d462b91b2464",
+  "changed_files": [
+    {
+      "sha": "f3e50e1b69edcc4916a29ff8aa8f0feb48a83d66",
+      "filename": "plots/gantt-basic/implementations/highcharts.py",
+      "status": "added",
+      "additions": 215,
+      "deletions": 0,
+      "changes": 215,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/512e2248703c23d1996822f6d756d462b91b2464/plots%2Fgantt-basic%2Fimplementations%2Fhighcharts.py",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/512e2248703c23d1996822f6d756d462b91b2464/plots%2Fgantt-basic%2Fimplementations%2Fhighcharts.py",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fgantt-basic%2Fimplementations%2Fhighcharts.py?ref=512e2248703c23d1996822f6d756d462b91b2464",
+      "patch": "@@ -0,0 +1,215 @@\n+\"\"\" pyplots.ai\n+gantt-basic: Basic Gantt Chart\n+Library: highcharts unknown | Python 3.13.11\n+Quality: 92/100 | Created: 2025-12-27\n+\"\"\"\n+\n+import tempfile\n+import time\n+import urllib.request\n+from datetime import datetime\n+from pathlib import Path\n+\n+from highcharts_core.chart import Chart\n+from highcharts_core.options import HighchartsOptions\n+from selenium import webdriver\n+from selenium.webdriver.chrome.options import Options\n+\n+\n+# Data - Project tasks with start/end dates and categories\n+tasks = [\n+    {\n+        \"name\": \"Requirements Analysis\",\n+        \"start\": datetime(2025, 1, 6),\n+        \"end\": datetime(2025, 1, 17),\n+        \"category\": \"Planning\",\n+    },\n+    {\"name\": \"System Design\", \"start\": datetime(2025, 1, 13), \"end\": datetime(2025, 1, 31), \"category\": \"Planning\"},\n+    {\"name\": \"Database Schema\", \"start\": datetime(2025, 1, 27), \"end\": datetime(2025, 2, 7), \"category\": \"Development\"},\n+    {\"name\": \"Backend API\", \"start\": datetime(2025, 2, 3), \"end\": datetime(2025, 3, 7), \"category\": \"Development\"},\n+    {\"name\": \"Frontend UI\", \"start\": datetime(2025, 2, 10), \"end\": datetime(2025, 3, 14), \"category\": \"Development\"},\n+    {\"name\": \"Integration\", \"start\": datetime(2025, 3, 10), \"end\": datetime(2025, 3, 21), \"category\": \"Development\"},\n+    {\"name\": \"Unit Testing\", \"start\": datetime(2025, 2, 17), \"end\": datetime(2025, 3, 14), \"category\": \"Testing\"},\n+    {\"name\": \"System Testing\", \"start\": datetime(2025, 3, 17), \"end\": datetime(2025, 3, 28), \"category\": \"Testing\"},\n+    {\"name\": \"User Acceptance\", \"start\": datetime(2025, 3, 24), \"end\": datetime(2025, 4, 4), \"category\": \"Testing\"},\n+    {\"name\": \"Documentation\", \"start\": datetime(2025, 3, 3), \"end\": datetime(2025, 3, 28), \"category\": \"Deployment\"},\n+    {\"name\": \"Training\", \"start\": datetime(2025, 3, 31), \"end\": datetime(2025, 4, 11), \"category\": \"Deployment\"},\n+    {\"name\": \"Go Live\", \"start\": datetime(2025, 4, 14), \"end\": datetime(2025, 4, 18), \"category\": \"Deployment\"},\n+]\n+\n+# Colors for categories (colorblind-safe)\n+category_colors = {\n+    \"Planning\": \"#306998\",  # Python Blue\n+    \"Development\": \"#FFD43B\",  # Python Yellow\n+    \"Testing\": \"#9467BD\",  # Purple\n+    \"Deployment\": \"#17BECF\",  # Cyan\n+}\n+\n+# Create chart\n+chart = Chart(container=\"container\")\n+chart.options = HighchartsOptions()\n+\n+# Chart configuration\n+chart.options.chart = {\n+    \"type\": \"xrange\",\n+    \"width\": 4800,\n+    \"height\": 2700,\n+    \"backgroundColor\": \"#ffffff\",\n+    \"spacingBottom\": 120,\n+    \"marginLeft\": 420,\n+    \"marginTop\": 150,\n+}\n+\n+# Set colors at chart level\n+chart.options.colors = [\"#306998\", \"#FFD43B\", \"#9467BD\", \"#17BECF\"]\n+\n+# Title\n+chart.options.title = {\n+    \"text\": \"gantt-basic · highcharts · pyplots.ai\",\n+    \"style\": {\"fontSize\": \"48px\", \"fontWeight\": \"bold\"},\n+    \"y\": 60,\n+}\n+\n+# X-axis (time)\n+today_ts = int(datetime(2025, 2, 15).timestamp() * 1000)\n+chart.options.x_axis = {\n+    \"type\": \"datetime\",\n+    \"dateTimeLabelFormats\": {\"week\": \"%e %b\", \"month\": \"%b '%y\"},\n+    \"title\": {\"text\": \"Timeline\", \"style\": {\"fontSize\": \"32px\"}},\n+    \"labels\": {\"style\": {\"fontSize\": \"28px\"}},\n+    \"gridLineWidth\": 1,\n+    \"gridLineColor\": \"#e0e0e0\",\n+    \"plotLines\": [\n+        {\n+            \"value\": today_ts,\n+            \"color\": \"#E53935\",\n+            \"width\": 4,\n+            \"zIndex\": 10,\n+            \"label\": {\n+                \"text\": \"Today (Feb 15)\",\n+                \"style\": {\"fontSize\": \"26px\", \"color\": \"#E53935\", \"fontWeight\": \"bold\"},\n+                \"rotation\": 0,\n+                \"align\": \"center\",\n+                \"y\": -20,\n+            },\n+        }\n+    ],\n+}\n+\n+# Y-axis (tasks)\n+task_names = [t[\"name\"] for t in tasks]\n+chart.options.y_axis = {\n+    \"type\": \"category\",\n+    \"categories\": task_names,\n+    \"title\": {\"text\": \"Tasks\", \"style\": {\"fontSize\": \"32px\"}},\n+    \"labels\": {\"style\": {\"fontSize\": \"26px\"}},\n+    \"gridLineWidth\": 1,\n+    \"gridLineColor\": \"#f0f0f0\",\n+    \"reversed\": True,\n+}\n+\n+# Legend configuration - show categories\n+chart.options.legend = {\n+    \"enabled\": True,\n+    \"align\": \"center\",\n+    \"verticalAlign\": \"bottom\",\n+    \"layout\": \"horizontal\",\n+    \"itemStyle\": {\"fontSize\": \"32px\"},\n+    \"symbolRadius\": 4,\n+    \"symbolWidth\": 50,\n+    \"symbolHeight\": 30,\n+    \"floating\": False,\n+}\n+\n+# Tooltip configuration\n+chart.options.tooltip = {\n+    \"headerFormat\": '<span style=\"font-size: 24px; font-weight: bold;\">{point.key}</span><br/>',\n+    \"pointFormat\": '<span style=\"font-size: 22px\">{point.x:%b %e} - {point.x2:%b %e, %Y}</span>',\n+}\n+\n+# Create series for each category (for legend with color coding)\n+# Order categories to appear properly in legend\n+category_order = [\"Planning\", \"Development\", \"Testing\", \"Deployment\"]\n+series_list = []\n+\n+for category in category_order:\n+    color = category_colors[category]\n+    category_data = []\n+    for i, task in enumerate(tasks):\n+        if task[\"category\"] == category:\n+            category_data.append(\n+                {\n+                    \"x\": int(task[\"start\"].timestamp() * 1000),\n+                    \"x2\": int(task[\"end\"].timestamp() * 1000),\n+                    \"y\": i,\n+                    \"name\": task[\"name\"],\n+                    \"color\": color,\n+                }\n+            )\n+\n+    series_list.append(\n+        {\n+            \"type\": \"xrange\",\n+            \"name\": category,\n+            \"color\": color,\n+            \"pointWidth\": 55,\n+            \"data\": category_data,\n+            \"dataLabels\": {\"enabled\": False},\n+            \"borderRadius\": 6,\n+            \"borderWidth\": 2,\n+            \"borderColor\": \"#555555\",\n+        }\n+    )\n+\n+chart.options.series = series_list\n+\n+# Download Highcharts JS modules\n+highcharts_url = \"https://code.highcharts.com/highcharts.js\"\n+with urllib.request.urlopen(highcharts_url, timeout=30) as response:\n+    highcharts_js = response.read().decode(\"utf-8\")\n+\n+xrange_url = \"https://code.highcharts.com/modules/xrange.js\"\n+with urllib.request.urlopen(xrange_url, timeout=30) as response:\n+    xrange_js = response.read().decode(\"utf-8\")\n+\n+# Generate HTML with inline scripts\n+html_str = chart.to_js_literal()\n+html_content = f\"\"\"<!DOCTYPE html>\n+<html>\n+<head>\n+    <meta charset=\"utf-8\">\n+    <script>{highcharts_js}</script>\n+    <script>{xrange_js}</script>\n+</head>\n+<body style=\"margin:0; padding:0; background: #ffffff;\">\n+    <div id=\"container\" style=\"width: 4800px; height: 2700px;\"></div>\n+    <script>{html_str}</script>\n+</body>\n+</html>\"\"\"\n+\n+# Save HTML\n+with open(\"plot.html\", \"w\", encoding=\"utf-8\") as f:\n+    f.write(html_content)\n+\n+# Screenshot with Selenium - use element screenshot for exact dimensions\n+with tempfile.NamedTemporaryFile(mode=\"w\", suffix=\".html\", delete=False, encoding=\"utf-8\") as f:\n+    f.write(html_content)\n+    temp_path = f.name\n+\n+chrome_options = Options()\n+chrome_options.add_argument(\"--headless\")\n+chrome_options.add_argument(\"--no-sandbox\")\n+chrome_options.add_argument(\"--disable-dev-shm-usage\")\n+chrome_options.add_argument(\"--disable-gpu\")\n+chrome_options.add_argument(\"--window-size=5000,3000\")\n+\n+driver = webdriver.Chrome(options=chrome_options)\n+driver.get(f\"file://{temp_path}\")\n+time.sleep(5)\n+\n+# Take screenshot of the chart container element for exact dimensions\n+container = driver.find_element(\"id\", \"container\")\n+container.screenshot(\"plot.png\")\n+\n+driver.quit()\n+Path(temp_path).unlink()"
+    },
+    {
+      "sha": "251d4ad451c6a2e1a0fde38cc66388fdc4e92c26",
+      "filename": "plots/gantt-basic/metadata/highcharts.yaml",
+      "status": "added",
+      "additions": 25,
+      "deletions": 0,
+      "changes": 25,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/512e2248703c23d1996822f6d756d462b91b2464/plots%2Fgantt-basic%2Fmetadata%2Fhighcharts.yaml",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/512e2248703c23d1996822f6d756d462b91b2464/plots%2Fgantt-basic%2Fmetadata%2Fhighcharts.yaml",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fgantt-basic%2Fmetadata%2Fhighcharts.yaml?ref=512e2248703c23d1996822f6d756d462b91b2464",
+      "patch": "@@ -0,0 +1,25 @@\n+library: highcharts\n+specification_id: gantt-basic\n+created: '2025-12-27T19:24:21Z'\n+updated: '2025-12-27T19:33:37Z'\n+generated_by: claude-opus-4-5-20251101\n+workflow_run: 20543284236\n+issue: 0\n+python_version: 3.13.11\n+library_version: unknown\n+preview_url: https://storage.googleapis.com/pyplots-images/plots/gantt-basic/highcharts/plot.png\n+preview_thumb: https://storage.googleapis.com/pyplots-images/plots/gantt-basic/highcharts/plot_thumb.png\n+preview_html: https://storage.googleapis.com/pyplots-images/plots/gantt-basic/highcharts/plot.html\n+quality_score: 92\n+review:\n+  strengths:\n+  - Excellent use of Highcharts xrange series type for Gantt chart implementation\n+  - Clean colorblind-safe color palette with distinct category colors\n+  - Well-implemented Today marker with red plotLine and label\n+  - Professional project management scenario with realistic task names and durations\n+  - Good typography scaling for the 4800x2700 canvas\n+  - Proper category-based legend with series per category\n+  weaknesses:\n+  - Legend symbols are relatively small compared to the large canvas\n+  - Could add task duration in tooltip for enhanced interactivity\n+  - Left margin (420px) is slightly larger than necessary"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "fd457e7a3cef042288c11f8fea76723712fc1ac4",
+      "message": "feat(highcharts): implement gantt-basic",
+      "parent_shas": [
+        "fdafa74cdfcee28e9cd9d4137f648341409d695d"
+      ]
+    },
+    {
+      "sha": "46a6492c23ec96f87f5d2fe0a71776345d7ef08a",
+      "message": "chore(highcharts): add metadata for gantt-basic",
+      "parent_shas": [
+        "fd457e7a3cef042288c11f8fea76723712fc1ac4"
+      ]
+    },
+    {
+      "sha": "c2fb5ad1e6a3cfe7020d2fa921362ce724585402",
+      "message": "chore(highcharts): update quality score 92 and review feedback for gantt-basic",
+      "parent_shas": [
+        "46a6492c23ec96f87f5d2fe0a71776345d7ef08a"
+      ]
+    },
+    {
+      "sha": "512e2248703c23d1996822f6d756d462b91b2464",
+      "message": "Merge branch 'main' into implementation/gantt-basic/highcharts",
+      "parent_shas": [
+        "c2fb5ad1e6a3cfe7020d2fa921362ce724585402",
+        "2d9884bf6789b01a0199e7fb49277160ef06fb28"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__MarkusNeusinger__anyplot__pr2416.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr2416__py2_py3__MarkusNeusinger__anyplot__pr2416\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr2416__py2_py3__MarkusNeusinger__anyplot__pr2416\\rn"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "instance_id": "python_java__ninia__jep__pr632",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "ninia/jep",
+  "pr_number": 632,
+  "pr_url": "https://github.com/ninia/jep/pull/632",
+  "repo": {
+    "full_name": "ninia/jep",
+    "clone_url": "https://github.com/ninia/jep.git",
+    "default_branch": "master",
+    "created_at": "2011-02-18T01:30:05Z",
+    "stars": 1477,
+    "license": "NOASSERTION",
+    "size_kb": 7454
+  },
+  "pull_request": {
+    "id": 3489326886,
+    "title": "Add missing JNI frame pop when checking for functional interfaces.",
+    "body": "This fixes a memory leak when a Python callable object is converted to a Java object. The native code that is checking for functional interfaces was not popping the local JNI frame in an early return, which caused the frame to leak memory.\r\n\r\nThis problem was identified in #618",
+    "created_at": "2026-04-04T18:37:00Z",
+    "merged_at": "2026-04-12T22:14:04Z",
+    "base_sha": "247887de2be2ca06fee0eef5b90f941dd2250f58",
+    "head_sha": "9d9fe2ec73951718f15d5beb3725251a9044d446",
+    "merge_commit_sha": "9d3afc94a4d8d7e36ff857f121e5ba4afffaccff",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "247887de2be2ca06fee0eef5b90f941dd2250f58",
+  "final_sha": "9d9fe2ec73951718f15d5beb3725251a9044d446",
+  "changed_files": [
+    {
+      "sha": "48d48fa1e2d8f2f47318bf65fe61d5a5a07934b4",
+      "filename": "src/main/c/Jep/convert_p2j.c",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/ninia/jep/blob/9d9fe2ec73951718f15d5beb3725251a9044d446/src%2Fmain%2Fc%2FJep%2Fconvert_p2j.c",
+      "raw_url": "https://github.com/ninia/jep/raw/9d9fe2ec73951718f15d5beb3725251a9044d446/src%2Fmain%2Fc%2FJep%2Fconvert_p2j.c",
+      "contents_url": "https://api.github.com/repos/ninia/jep/contents/src%2Fmain%2Fc%2FJep%2Fconvert_p2j.c?ref=9d9fe2ec73951718f15d5beb3725251a9044d446",
+      "patch": "@@ -632,6 +632,7 @@ char isFunctionalInterfaceType(JNIEnv *env, jclass type)\n         return 0;\n     }\n     if (!isInterface) {\n+        (*env)->PopLocalFrame(env, NULL);\n         return 0; // It's not an interface, so it can't be functional\n     }\n     methods = java_lang_Class_getMethods(env, type);"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "9d9fe2ec73951718f15d5beb3725251a9044d446",
+      "message": "Add missing JNI frame pop when checking for functional interfaces.",
+      "parent_shas": [
+        "247887de2be2ca06fee0eef5b90f941dd2250f58"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "python_java_bridge_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__ninia__jep__pr632.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\ninia__jep__pr632__python_java__ninia__jep__pr632\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\ninia__jep__pr632__python_java__ninia__jep__pr632\\rn"
+  }
+}

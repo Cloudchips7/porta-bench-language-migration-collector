@@ -1,0 +1,116 @@
+{
+  "instance_id": "python_cpp__datagouv__csv-detective__pr233",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "datagouv/csv-detective",
+  "pr_number": 233,
+  "pr_url": "https://github.com/datagouv/csv-detective/pull/233",
+  "repo": {
+    "full_name": "datagouv/csv-detective",
+    "clone_url": "https://github.com/datagouv/csv-detective.git",
+    "default_branch": "main",
+    "created_at": "2017-06-20T16:07:38Z",
+    "stars": 51,
+    "license": "MIT",
+    "size_kb": 3489
+  },
+  "pull_request": {
+    "id": 3374194177,
+    "title": "Don't consider too long ints as `int` or `float`",
+    "body": "Fixes [these errors](https://errors.data.gouv.fr/organizations/sentry/issues/277841/?environment=hydra&project=21&query=is%3Aunresolved+issue.priority%3A%5Bhigh%2C+medium%5D&referrer=issue-stream&statsPeriod=2d&stream_index=1&utc=true) `Python int too large to convert to C long`, too long numbers should be handled as strings",
+    "created_at": "2026-03-09T16:02:56Z",
+    "merged_at": "2026-03-12T09:11:07Z",
+    "base_sha": "29d9d72626bc831afb5decc52f0f19d5c5bafc74",
+    "head_sha": "e30c83f6a92f69fb014908c38a13b54156321ae2",
+    "merge_commit_sha": "518c31ccb52f4058a572c3f6ec72949bf90cb630",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "29d9d72626bc831afb5decc52f0f19d5c5bafc74",
+  "final_sha": "e30c83f6a92f69fb014908c38a13b54156321ae2",
+  "changed_files": [
+    {
+      "sha": "dd828a38495105c88538525541872b767f29d076",
+      "filename": "csv_detective/formats/float.py",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 1,
+      "changes": 15,
+      "blob_url": "https://github.com/datagouv/csv-detective/blob/e30c83f6a92f69fb014908c38a13b54156321ae2/csv_detective%2Fformats%2Ffloat.py",
+      "raw_url": "https://github.com/datagouv/csv-detective/raw/e30c83f6a92f69fb014908c38a13b54156321ae2/csv_detective%2Fformats%2Ffloat.py",
+      "contents_url": "https://api.github.com/repos/datagouv/csv-detective/contents/csv_detective%2Fformats%2Ffloat.py?ref=e30c83f6a92f69fb014908c38a13b54156321ae2",
+      "patch": "@@ -19,6 +19,7 @@ def _is(val):\n             not isinstance(val, str)\r\n             or \"_\" in val\r\n             or (val.startswith(\"0\") and len(val) > 1 and val[1] not in [\".\", \",\"])\r\n+            or (\".\" not in val and \",\" not in val and len(val) >= 20)\r\n         ):\r\n             return False\r\n         elif any([k in val for k in [\"+\", \"e\", \"E\"]]) and not re.match(\r\n@@ -44,6 +45,18 @@ def _is(val):\n         \"1.9764E-1\",\r\n         \"19.01e-29\",\r\n         \"-9.1e-9\",\r\n+        \"1.4292405299487610865\",\r\n+        \"1,4292405299487610865\",\r\n+    ],\r\n+    False: [\r\n+        \"01053\",\r\n+        \"01053.89\",\r\n+        \"1e3\",\r\n+        \"-1e3\",\r\n+        \"123_456\",\r\n+        \"123_456.78\",\r\n+        \"+35\",\r\n+        \"+35.9\",\r\n+        \"14292405299487610865\",\r\n     ],\r\n-    False: [\"01053\", \"01053.89\", \"1e3\", \"-1e3\", \"123_456\", \"123_456.78\", \"+35\", \"+35.9\"],\r\n }\r"
+    },
+    {
+      "sha": "19794a8cc6c0fb9c2727f02918e192f9e4479119",
+      "filename": "csv_detective/formats/int.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/datagouv/csv-detective/blob/e30c83f6a92f69fb014908c38a13b54156321ae2/csv_detective%2Fformats%2Fint.py",
+      "raw_url": "https://github.com/datagouv/csv-detective/raw/e30c83f6a92f69fb014908c38a13b54156321ae2/csv_detective%2Fformats%2Fint.py",
+      "contents_url": "https://api.github.com/repos/datagouv/csv-detective/contents/csv_detective%2Fformats%2Fint.py?ref=e30c83f6a92f69fb014908c38a13b54156321ae2",
+      "patch": "@@ -9,6 +9,7 @@ def _is(val):\n         not isinstance(val, str)\r\n         or any([v in val for v in [\".\", \"_\", \"+\"]])\r\n         or (val.startswith(\"0\") and len(val) > 1)\r\n+        or len(val) >= 20\r\n     ):\r\n         return False\r\n     try:\r\n@@ -20,5 +21,5 @@ def _is(val):\n \r\n _test_values = {\r\n     True: [\"1\", \"0\", \"1764\", \"-24\"],\r\n-    False: [\"01053\", \"1.2\", \"123_456\", \"+35\"],\r\n+    False: [\"01053\", \"1.2\", \"123_456\", \"+35\", \"14292405299487610865\"],\r\n }\r"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "0c741fa7cca6248076934d2d3a7e0213621b9e4a",
+      "message": "fix: don't consider too long ints",
+      "parent_shas": [
+        "29d9d72626bc831afb5decc52f0f19d5c5bafc74"
+      ]
+    },
+    {
+      "sha": "0866d8deefb691cdcb3e7c8a097c2e54bf00275d",
+      "message": "chore: too long ints are not float either",
+      "parent_shas": [
+        "0c741fa7cca6248076934d2d3a7e0213621b9e4a"
+      ]
+    },
+    {
+      "sha": "6781341eaf3dcb30e44a20cc2daa6a0ad209fd59",
+      "message": "chore: lint",
+      "parent_shas": [
+        "0866d8deefb691cdcb3e7c8a097c2e54bf00275d"
+      ]
+    },
+    {
+      "sha": "7324d14bdaba316f362a4bd1dd8f2081155e59ae",
+      "message": "chore: add test",
+      "parent_shas": [
+        "6781341eaf3dcb30e44a20cc2daa6a0ad209fd59"
+      ]
+    },
+    {
+      "sha": "e30c83f6a92f69fb014908c38a13b54156321ae2",
+      "message": "fix: typo",
+      "parent_shas": [
+        "7324d14bdaba316f362a4bd1dd8f2081155e59ae"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__datagouv__csv-detective__pr233.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\datagouv__csv-detective__pr233__python_cpp__datagouv__csv-detective__pr233\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\datagouv__csv-detective__pr233__python_cpp__datagouv__csv-detective__pr233\\rn"
+  }
+}

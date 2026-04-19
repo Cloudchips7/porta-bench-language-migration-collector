@@ -1,0 +1,76 @@
+{
+  "instance_id": "java_python__jenkinsci__mail-watcher-plugin__pr203",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "jenkinsci/mail-watcher-plugin",
+  "pr_number": 203,
+  "pr_url": "https://github.com/jenkinsci/mail-watcher-plugin/pull/203",
+  "repo": {
+    "full_name": "jenkinsci/mail-watcher-plugin",
+    "clone_url": "https://github.com/jenkinsci/mail-watcher-plugin.git",
+    "default_branch": "master",
+    "created_at": "2012-08-02T09:45:45Z",
+    "stars": 8,
+    "license": "MIT",
+    "size_kb": 330
+  },
+  "pull_request": {
+    "id": 3517563827,
+    "title": "test with java 25",
+    "body": "<!-- Please describe your pull request here. -->\r\n\r\n### Testing done\r\n\r\n<!-- Comment:\r\nProvide a clear description of how this change was tested.\r\nAt minimum this should include proof that a computer has executed the changed lines.\r\nIdeally this should include an automated test or an explanation as to why this change has no tests.\r\nNote that automated test coverage is less than complete, so a successful PR build does not necessarily imply that a computer has executed the changed lines.\r\nIf automated test coverage does not exist for the lines you are changing, you must describe the scenario(s) in which you manually tested the change.\r\nFor frontend changes, include screenshots of the relevant page(s) before and after the change.\r\nFor refactoring and code cleanup changes, exercise the code before and after the change and verify the behavior remains the same.\r\n-->\r\n\r\n### Submitter checklist\r\n- [x] Make sure you are opening from a **topic/feature/bugfix branch** (right side) and not your main branch!\r\n- [x] Ensure that the pull request title represents the desired changelog entry\r\n- [x] Please describe what you did\r\n- [x] Link to relevant issues in GitHub or Jira\r\n- [ ] Link to relevant pull requests, esp. upstream and downstream changes\r\n- [ ] Ensure you have provided tests that demonstrate the feature works or the issue is fixed\r\n\r\n<!--\r\nPut an `x` into the [ ] to show you have filled the information.\r\nThe template comes from https://github.com/jenkinsci/.github/blob/master/.github/pull_request_template.md \r\nYou can override it by creating .github/pull_request_template.md in your own repository \r\n-->\r\n",
+    "created_at": "2026-04-11T12:57:07Z",
+    "merged_at": "2026-04-11T13:32:23Z",
+    "base_sha": "d46fd20880001525270ecf8a065398da2fdd36d9",
+    "head_sha": "2c02f1976dcd7f8e57c5891f82eda11e1eca9b0b",
+    "merge_commit_sha": "2eea4a940c7ebda4b479701110c75acc365f44ae",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "d46fd20880001525270ecf8a065398da2fdd36d9",
+  "final_sha": "2c02f1976dcd7f8e57c5891f82eda11e1eca9b0b",
+  "changed_files": [
+    {
+      "sha": "aa3dbedf333b7b3e94193e23eed9a8ce706a9018",
+      "filename": "Jenkinsfile",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/jenkinsci/mail-watcher-plugin/blob/2c02f1976dcd7f8e57c5891f82eda11e1eca9b0b/Jenkinsfile",
+      "raw_url": "https://github.com/jenkinsci/mail-watcher-plugin/raw/2c02f1976dcd7f8e57c5891f82eda11e1eca9b0b/Jenkinsfile",
+      "contents_url": "https://api.github.com/repos/jenkinsci/mail-watcher-plugin/contents/Jenkinsfile?ref=2c02f1976dcd7f8e57c5891f82eda11e1eca9b0b",
+      "patch": "@@ -2,6 +2,6 @@\n \n /* `buildPlugin` step provided by: https://github.com/jenkins-infra/pipeline-library */\n buildPlugin(useContainerAgent: true, configurations: [\n-  [platform: 'linux', jdk: 21],\n-  [platform: 'windows', jdk: 17],\n+  [platform: 'linux', jdk: 25],\n+  [platform: 'windows', jdk: 21],\n ])"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "2c02f1976dcd7f8e57c5891f82eda11e1eca9b0b",
+      "message": "test with java 25",
+      "parent_shas": [
+        "d46fd20880001525270ecf8a065398da2fdd36d9"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__jenkinsci__mail-watcher-plugin__pr203.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\jenkinsci__mail-watcher-plugin__pr203__java_python__jenkinsci__mail-watcher-plugin__pr203\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\jenkinsci__mail-watcher-plugin__pr203__java_python__jenkinsci__mail-watcher-plugin__pr203\\rn"
+  }
+}

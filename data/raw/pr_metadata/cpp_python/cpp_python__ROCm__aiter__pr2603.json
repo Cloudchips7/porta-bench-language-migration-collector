@@ -1,0 +1,105 @@
+{
+  "instance_id": "cpp_python__ROCm__aiter__pr2603",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "ROCm/aiter",
+  "pr_number": 2603,
+  "pr_url": "https://github.com/ROCm/aiter/pull/2603",
+  "repo": {
+    "full_name": "ROCm/aiter",
+    "clone_url": "https://github.com/ROCm/aiter.git",
+    "default_branch": "main",
+    "created_at": "2024-11-11T10:38:20Z",
+    "stars": 407,
+    "license": "MIT",
+    "size_kb": 197551
+  },
+  "pull_request": {
+    "id": 3484787207,
+    "title": "fix: split asm_topksoftmax into separate module to fix ctypes JIT build (#2548)",
+    "body": "## Summary\n\n- Split `asm_topksoftmax.cu` out of `module_moe_asm` into a new `module_moe_topksoftmax_asm` module\n- When `topk_softmax_asm` (`ffi_type=\"ctypes\"`) triggers JIT compilation, `torch_exclude=True` is forced, but other `.cu` files in `module_moe_asm` depend on torch, causing `undefined symbol` errors\n- The fix separates the ctypes ASM kernel into its own module so it compiles torch-free independently\n\n**Changes (2 files, ~10 lines):**\n- `aiter/jit/optCompilerConfig.json` — remove `asm_topksoftmax.cu` from `module_moe_asm`, add new `module_moe_topksoftmax_asm` entry\n- `aiter/ops/moe_op.py` — point `topk_softmax_asm` decorator to new module name\n\nNo `.cu` files modified.\n\nFixes #2548\n\n## Test plan\n- [x] Deleted stale `.so` files and ran `python op_tests/test_moeTopkSoftmax.py` — all tests pass\n- [x] Verified `module_moe_topksoftmax_asm.so` has zero torch dependencies (`ldd | grep torch` returns 0)\n- [x] Verified `module_moe_asm.so` builds and loads normally with pybind + torch\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "created_at": "2026-04-03T02:36:19Z",
+    "merged_at": "2026-04-03T11:40:46Z",
+    "base_sha": "6c2813ac13649d37de9bf0cd7eef9090834c03db",
+    "head_sha": "8e84e79d9b92b3827ad2711d35cc5ae4e028df55",
+    "merge_commit_sha": "45defe66869c0cdd44c46b60344546cf22a15e3f",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "6c2813ac13649d37de9bf0cd7eef9090834c03db",
+  "final_sha": "8e84e79d9b92b3827ad2711d35cc5ae4e028df55",
+  "changed_files": [
+    {
+      "sha": "abc15d36fbf1f3dba64666a1d8aa735e5c81ca4f",
+      "filename": "aiter/jit/optCompilerConfig.json",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 2,
+      "changes": 13,
+      "blob_url": "https://github.com/ROCm/aiter/blob/8e84e79d9b92b3827ad2711d35cc5ae4e028df55/aiter%2Fjit%2FoptCompilerConfig.json",
+      "raw_url": "https://github.com/ROCm/aiter/raw/8e84e79d9b92b3827ad2711d35cc5ae4e028df55/aiter%2Fjit%2FoptCompilerConfig.json",
+      "contents_url": "https://api.github.com/repos/ROCm/aiter/contents/aiter%2Fjit%2FoptCompilerConfig.json?ref=8e84e79d9b92b3827ad2711d35cc5ae4e028df55",
+      "patch": "@@ -445,15 +445,24 @@\n             \"f'{AITER_CSRC_DIR}/kernels/topk_softmax_kernels.cu'\",\n             \"f'{AITER_CSRC_DIR}/kernels/topk_softmax_kernels_group.cu'\",\n             \"f'{AITER_CSRC_DIR}/kernels/moe_fused_gate.cu'\",\n-            \"f'{AITER_CSRC_DIR}/kernels/moe_align_block_size_kernels.cu'\",\n-            \"f'{AITER_CSRC_DIR}/py_itfs_cu/asm_topksoftmax.cu'\"\n+            \"f'{AITER_CSRC_DIR}/kernels/moe_align_block_size_kernels.cu'\"\n         ],\n         \"flags_extra_cc\": [],\n         \"flags_extra_hip\": [],\n         \"extra_ldflags\": \"None\",\n         \"extra_include\": [\n             \"f'{AITER_CSRC_DIR}/include/ck_tile'\"\n         ],\n+        \"verbose\": \"False\"\n+    },\n+    \"module_moe_topksoftmax_asm\": {\n+        \"srcs\": [\n+            \"f'{AITER_CSRC_DIR}/py_itfs_cu/asm_topksoftmax.cu'\"\n+        ],\n+        \"flags_extra_cc\": [],\n+        \"flags_extra_hip\": [],\n+        \"extra_ldflags\": \"None\",\n+        \"extra_include\": [],\n         \"verbose\": \"False\",\n         \"blob_gen_cmd\": [\n             \"f'{AITER_META_DIR}/hsa/codegen.py -m topksoftmax --output_dir {{}}'\""
+    },
+    {
+      "sha": "8356ea12a686c9edc7e12f5378a2969808ad4554",
+      "filename": "aiter/ops/moe_op.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1,
+      "changes": 4,
+      "blob_url": "https://github.com/ROCm/aiter/blob/8e84e79d9b92b3827ad2711d35cc5ae4e028df55/aiter%2Fops%2Fmoe_op.py",
+      "raw_url": "https://github.com/ROCm/aiter/raw/8e84e79d9b92b3827ad2711d35cc5ae4e028df55/aiter%2Fops%2Fmoe_op.py",
+      "contents_url": "https://api.github.com/repos/ROCm/aiter/contents/aiter%2Fops%2Fmoe_op.py?ref=8e84e79d9b92b3827ad2711d35cc5ae4e028df55",
+      "patch": "@@ -24,7 +24,9 @@ def topk_softmax(\n ) -> None: ...\n \n \n-@compile_ops(\"module_moe_asm\", fc_name=\"topk_softmax_asm\", ffi_type=\"ctypes\")\n+@compile_ops(\n+    \"module_moe_topksoftmax_asm\", fc_name=\"topk_softmax_asm\", ffi_type=\"ctypes\"\n+)\n def topk_softmax_asm(\n     topk_weights: Tensor,\n     topk_indices: Tensor,"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "00c5c4730bc802debe21b4fef25686e5952c8274",
+      "message": "fix: split asm_topksoftmax into separate module to fix ctypes JIT build\n\nWhen topk_softmax_asm (ffi_type=\"ctypes\") triggers JIT compilation,\ntorch_exclude=True is forced. But module_moe_asm also contains pybind\n.cu files that depend on torch, causing undefined symbol errors.\n\nSplit asm_topksoftmax.cu into its own module_moe_topksoftmax_asm so it\ncompiles torch-free independently. No .cu files modified.\n\nFixes #2548",
+      "parent_shas": [
+        "6c2813ac13649d37de9bf0cd7eef9090834c03db"
+      ]
+    },
+    {
+      "sha": "be0c34cc4b09e27e22a7cfe08e54315bcd906c75",
+      "message": "style: black formatting for compile_ops decorator line",
+      "parent_shas": [
+        "00c5c4730bc802debe21b4fef25686e5952c8274"
+      ]
+    },
+    {
+      "sha": "8e84e79d9b92b3827ad2711d35cc5ae4e028df55",
+      "message": "fix: remove unnecessary ck_tile include from module_moe_topksoftmax_asm\n\nasm_topksoftmax.cu does not use ck_tile headers.",
+      "parent_shas": [
+        "be0c34cc4b09e27e22a7cfe08e54315bcd906c75"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__ROCm__aiter__pr2603.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\ROCm__aiter__pr2603__cpp_python__ROCm__aiter__pr2603\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\ROCm__aiter__pr2603__cpp_python__ROCm__aiter__pr2603\\rn"
+  }
+}

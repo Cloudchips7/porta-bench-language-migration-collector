@@ -1,0 +1,79 @@
+{
+  "instance_id": "cpp_python__facebook__bpfilter__pr496",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "facebook/bpfilter",
+  "pr_number": 496,
+  "pr_url": "https://github.com/facebook/bpfilter/pull/496",
+  "repo": {
+    "full_name": "facebook/bpfilter",
+    "clone_url": "https://github.com/facebook/bpfilter.git",
+    "default_branch": "main",
+    "created_at": "2023-02-20T10:15:23Z",
+    "stars": 323,
+    "license": "GPL-2.0",
+    "size_kb": 7122
+  },
+  "pull_request": {
+    "id": 3487081733,
+    "title": "tests: remove C++ <format> include",
+    "body": "Remove <format> include from test.hpp to prevent compilation failure on platform for which it's not yet available.",
+    "created_at": "2026-04-03T18:04:35Z",
+    "merged_at": "2026-04-03T18:27:51Z",
+    "base_sha": "976455a1bcc670d949eba4453aa35a2a95fcce92",
+    "head_sha": "4f671af9755c3db398a999c624351362fbd20521",
+    "merge_commit_sha": "cd3726954376f65b9a4165df81d0093c88ba2e81",
+    "labels": [
+      "cla signed"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "976455a1bcc670d949eba4453aa35a2a95fcce92",
+  "final_sha": "4f671af9755c3db398a999c624351362fbd20521",
+  "changed_files": [
+    {
+      "sha": "4d3bc2408169e82ade9b3a09f61c6da809fc94d8",
+      "filename": "tests/harness/test.hpp",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/facebook/bpfilter/blob/4f671af9755c3db398a999c624351362fbd20521/tests%2Fharness%2Ftest.hpp",
+      "raw_url": "https://github.com/facebook/bpfilter/raw/4f671af9755c3db398a999c624351362fbd20521/tests%2Fharness%2Ftest.hpp",
+      "contents_url": "https://api.github.com/repos/facebook/bpfilter/contents/tests%2Fharness%2Ftest.hpp?ref=4f671af9755c3db398a999c624351362fbd20521",
+      "patch": "@@ -8,7 +8,6 @@\n #include <algorithm>\n #include <climits>\n #include <cstring>\n-#include <format>\n #include <iostream>\n #include <iterator>\n #include <set>\n@@ -208,8 +207,8 @@ class MatcherTest\n \n     void genName()\n     {\n-        _name = std::format(\"{}.{}[{}]\", bf_matcher_type_to_str(_type),\n-                            bf_matcher_op_to_str(_op), bf_hook_to_str(_hook));\n+        _name = std::string(bf_matcher_type_to_str(_type)) + \".\" +\n+                bf_matcher_op_to_str(_op) + \"[\" + bf_hook_to_str(_hook) + \"]\";\n     }\n \n public:"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "4f671af9755c3db398a999c624351362fbd20521",
+      "message": "tests: e2e: remove C++ <format> include\n\nRemove <format> include from test.hpp to prevent compilation failure on\nplatform for which it's not yet available.",
+      "parent_shas": [
+        "976455a1bcc670d949eba4453aa35a2a95fcce92"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__facebook__bpfilter__pr496.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\facebook__bpfilter__pr496__cpp_python__facebook__bpfilter__pr496\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\facebook__bpfilter__pr496__cpp_python__facebook__bpfilter__pr496\\rn"
+  }
+}

@@ -1,0 +1,416 @@
+{
+  "instance_id": "py2_py3__jgliss__pyplis__pr81",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "jgliss/pyplis",
+  "pr_number": 81,
+  "pr_url": "https://github.com/jgliss/pyplis/pull/81",
+  "repo": {
+    "full_name": "jgliss/pyplis",
+    "clone_url": "https://github.com/jgliss/pyplis.git",
+    "default_branch": "master",
+    "created_at": "2017-01-03T11:13:52Z",
+    "stars": 8,
+    "license": "GPL-3.0",
+    "size_kb": 32339
+  },
+  "pull_request": {
+    "id": 2527102279,
+    "title": "Deprecate six usage",
+    "body": "Closes #59 ",
+    "created_at": "2025-05-18T18:20:43Z",
+    "merged_at": "2025-05-19T14:14:22Z",
+    "base_sha": "c118f3ea4f01e0ccc83d673bdbfde501e430413b",
+    "head_sha": "5da62dd9326f818b436eb59760d0445fc1285a58",
+    "merge_commit_sha": "92927d5c917e7515f0a6d44dab8b2615fb0bb93e",
+    "labels": [
+      "code-quality",
+      "WTD"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "c118f3ea4f01e0ccc83d673bdbfde501e430413b",
+  "final_sha": "5da62dd9326f818b436eb59760d0445fc1285a58",
+  "changed_files": [
+    {
+      "sha": "cc36b8d21444ec2aed227a82ab247a1038bb609a",
+      "filename": "pyplis/base_img_list.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 8,
+      "changes": 14,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fbase_img_list.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fbase_img_list.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fbase_img_list.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -7,8 +7,6 @@\n from pyplis.setupclasses import Camera\n from pyplis.utils import LineOnImage\n \n-\n-import six\n from matplotlib.pyplot import draw, figure\n from numpy import arange, argmin, asarray, float32, ndarray, zeros\n from numpy.ma import nomask\n@@ -108,7 +106,7 @@ def __init__(self, files=None, list_id=None, list_type=None,\n         self._always_reload = {}\n \n         # update image preparation settings (if applicable)\n-        for key, val in six.iteritems(img_prep_settings):\n+        for key, val in img_prep_settings.items():\n             if key in self.img_prep:\n                 self.img_prep[key] = val\n \n@@ -553,7 +551,7 @@ def init_filelist(self, at_index=0):\n \n         \"\"\"\n         self.iter_indices(to_index=at_index)\n-        for key, val in six.iteritems(self.loaded_images):\n+        for key in self.loaded_images:\n             self.loaded_images[key] = None\n \n         if self.nof > 0:\n@@ -708,7 +706,7 @@ def update_img_prep(self, **settings):\n             ``img_prep`` dictionary)\n \n         \"\"\"\n-        for key, val in six.iteritems(settings):\n+        for key, val in settings.items():\n             if key in self.img_prep and\\\n                     isinstance(val, type(self.img_prep[key])):\n                 self.img_prep[key] = val\n@@ -900,7 +898,7 @@ def same_preedit_settings(self, settings_dict):\n \n         \"\"\"\n         sd = self.img_prep\n-        for key, val in six.iteritems(settings_dict):\n+        for key, val in settings_dict.items():\n             if key in sd:\n                 if not sd[key] == val:\n                     return False\n@@ -1260,7 +1258,7 @@ def edit_info(self):\n         d = self.current_img().edit_log\n         print_log.info(\"\\nImgList %s, image edit info\\n----------------------------\"\n               % self.list_id)\n-        for key, val in six.iteritems(d):\n+        for key, val in d.items():\n             print_log.info(\"%s: %s\" % (key, val))\n \n     def add_gaussian_blurring(self, sigma=1):\n@@ -1566,7 +1564,7 @@ def __str__(self):\n         if not self.has_files():\n             return s\n         try:\n-            for k, v in six.iteritems(self.current_img().edit_log):\n+            for k, v in self.current_img().edit_log.items():\n                 s += \"%s: %s\\n\" % (k, v)\n             if self.crop is True:\n                 s += \"Cropped in ROI\\t[x0, y0, x1, y1]:\\n\""
+    },
+    {
+      "sha": "603dcee47d7b0664b5f1b2b11cf69d64040d737a",
+      "filename": "pyplis/cellcalib.py",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 17,
+      "changes": 30,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fcellcalib.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fcellcalib.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fcellcalib.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -16,7 +16,6 @@\n # You should have received a copy of the GNU General Public License\n # along with this program. If not, see <http://www.gnu.org/licenses/>.\n \"\"\"Pyplis module containing features related to cell calibration.\"\"\"\n-import six\n from pyplis import logger, print_log\n from matplotlib.pyplot import subplots\n \n@@ -305,7 +304,7 @@ def add_cell_search_result(self, filter_id, cell_info, bg_info,\n \n         \"\"\"\n         self.cell_info[filter_id] = od()\n-        for cell_id, res in six.iteritems(cell_info):\n+        for cell_id, res in cell_info.items():\n             if isinstance(res, CellSearchInfo):\n                 self.cell_info[filter_id][cell_id] = res\n         if isinstance(bg_info, CellSearchInfo):\n@@ -759,7 +758,7 @@ def find_cells(self, filter_id=\"on\", threshold=0.10,\n         bg_info.create_image_list(self.camera)\n         bg_info.img_list.update_cell_info(\"bg\", 0.0, 0.0)\n         self.assign_dark_offset_lists(into_list=bg_info.img_list)\n-        for cell_id, info in six.iteritems(cell_info):\n+        for cell_id, info in cell_info.items():\n             info.create_image_list(self.camera)\n             self.assign_dark_offset_lists(into_list=info.img_list)\n \n@@ -816,7 +815,7 @@ def _assign_calib_specs(self, filter_id=None):\n             offs_dict[val.add_id] = val.offs.mean()\n \n         # read the gas column amounts\n-        for key, val in six.iteritems(cell_info):\n+        for key, val in cell_info.items():\n             cell_cd_dict[key] = val[0]\n         # sort the dicionaries by column amount or intensity decrease\n         s0 = sorted(offs_dict, key=offs_dict.get)\n@@ -844,14 +843,13 @@ def add_search_results(self):\n \n         \"\"\"\n         # Add all cell image lists that were found for each filter\n-        for filter_id, cell_dict in six.iteritems(\n-                self.search_results.cell_info):\n-            for cell_id, cell in six.iteritems(cell_dict):\n+        for filter_id, cell_dict in self.search_results.cell_info.items():\n+            for cell_id, cell in cell_dict.items():\n                 lst = cell.img_list\n                 if lst.has_files() and lst.gas_cd > 0:\n                     self.add_cell_img_list(lst)\n         # Add all BG image lists found for each filter\n-        for filter_id, info in six.iteritems(self.search_results.bg_info):\n+        for filter_id, info in self.search_results.bg_info.items():\n             self.add_bg_img_list(info.img_list)\n         # set background images closest to first detected cell list for each\n         # filter\n@@ -871,7 +869,7 @@ def set_bg_closest(self, cell_id=None):\n             cell_id = list(\n                 self.cell_lists[self.filters.default_key_on].keys())[0]\n \n-        for filter_id, lst in six.iteritems(self.bg_lists):\n+        for filter_id, lst in self.bg_lists.items():\n             self.cell_lists[filter_id][cell_id].link_imglist(lst)\n \n     def find_and_assign_cells_all_filter_lists(self, threshold=0.10):\n@@ -994,9 +992,8 @@ def check_cell_info_dict_autosearch(self, cell_info_dict):\n             If any of the specs in ``cell_info_dict`` is invalid\n \n         \"\"\"\n-        for key, val in six.iteritems(cell_info_dict):\n-            if (not isinstance(key, str) and\n-                    not isinstance(key, six.string_types)):\n+        for key, val in cell_info_dict.items():\n+            if (not isinstance(key, str) and not isinstance(key, str)):\n                 raise KeyError(\"Invalid key: %s\" % key)\n             if not isinstance(val, list):\n                 raise ValueError(\"Invalid cell column specification, need \"\n@@ -1009,8 +1006,7 @@ def check_cell_info_dict_autosearch(self, cell_info_dict):\n                                      \"gas column with \"\n                                      \"id %s, got %s\" % (key, val))\n                 for k in range(len(val)):\n-                    if not isinstance(val[k],\n-                                      (six.integer_types, float, complex)):\n+                    if not isinstance(val[k], (int, float, complex)):\n                         raise ValueError(\"Invalid data type for cell gas \"\n                                          \"column specification %s\" % val)\n \n@@ -1072,7 +1068,7 @@ def _prep_tau_stack(self, filter_id=\"on\", darkcorr=True, blurring=2):\n             bg_mean_tseries = self.det_bg_mean_pix_timeseries(filter_id)\n         except BaseException:\n             pass\n-        for cell_id, lst in six.iteritems(self.cell_lists[filter_id]):\n+        for cell_id, lst in self.cell_lists[filter_id].items():\n             lst.update_img_prep(blurring=blurring)\n             lst.darkcorr_mode = darkcorr\n             cell_img = lst.current_img()\n@@ -1169,7 +1165,7 @@ def prepare_calib_data(self, pos_x_abs=None, pos_y_abs=None,\n         self.check_all_lists()\n         self.prep_tau_stacks(on_id, off_id, darkcorr, blurring)\n \n-        for calib_id, stack in six.iteritems(self.tau_stacks):\n+        for calib_id, stack in self.tau_stacks.items():\n             if any([x is None for x in [pos_x_abs, pos_y_abs]]):\n                 logger.warning(\"Using image center coordinates for retrieval of cell \"\n                                \"calibration polynomial\")\n@@ -1492,7 +1488,7 @@ def plot_all_calib_curves(self, ax=None, **kwargs):\n             fig, ax = subplots(1, 1)\n         tau_max = -10\n         y_min = 1e20\n-        for calib_id, calib in six.iteritems(self.calib_data):\n+        for calib_id, calib in self.calib_data.items():\n             tau = calib.tau_vec\n             gas_cd, gas_cd_errs = calib.cd_vec, calib.cd_vec_err\n             fun, coeffs = calib.calib_fun, calib.calib_coeffs"
+    },
+    {
+      "sha": "66457d846dbfecedbdb2962974806f86e699742c",
+      "filename": "pyplis/dataset.py",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 27,
+      "changes": 44,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fdataset.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fdataset.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fdataset.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -44,8 +44,6 @@\n from .helpers import shifted_color_map\n from .setupclasses import MeasSetup, Source, Camera\n from .exceptions import ImgMetaError\n-import six\n-\n \n class Dataset:\n     \"\"\"Class for data import management.\n@@ -226,7 +224,7 @@ def filters(self):\n     def filter_acronyms(self):\n         \"\"\"Make a dictionary of filter IDs and corresponding acronyms.\"\"\"\n         acros = {}\n-        for key, val in six.iteritems(self.filters.filters):\n+        for key, val in self.filters.filters.items():\n             # read the acronym from the filter object\n             acros[key] = val.acronym\n         return acros\n@@ -323,7 +321,7 @@ def init_image_lists(self):\n     def create_lists_default(self):\n         \"\"\"Initialize of default lists (if camera specs not available).\"\"\"\n         self._lists_intern = od()\n-        for key, f in six.iteritems(self.filters.filters):\n+        for key, f in self.filters.filters.items():\n             l = self.lst_type(list_id=key, list_type=f.type,\n                               camera=self.camera,\n                               geometry=self.meas_geometry)\n@@ -336,7 +334,7 @@ def create_lists_default(self):\n     def create_lists_cam(self):\n         \"\"\"Initialize of all image lists, old lists are deleted.\"\"\"\n         self._lists_intern = od()\n-        for key, f in six.iteritems(self.filters.filters):\n+        for key, f in self.filters.filters.items():\n             l = self.lst_type(list_id=key, list_type=f.type,\n                               camera=self.camera,\n                               geometry=self.meas_geometry)\n@@ -450,8 +448,8 @@ def fill_image_lists(self):\n                 except:\n                     logger.warning(\"File %s could not be added...\" % p)\n \n-            for meas_type, sub_dict in six.iteritems(self._lists_intern):\n-                for filter_id, lst in six.iteritems(sub_dict):\n+            for meas_type, sub_dict in self._lists_intern.items():\n+                for filter_id, lst in sub_dict.items():\n                     lst.init_filelist()\n             for lst in self.img_lists_with_data.values():\n                 lst.load()\n@@ -678,8 +676,8 @@ def all_lists(self):\n         Loops over ``self._lists_intern`` and the corresponding sub directories\n         \"\"\"\n         lists = []\n-        for meas_type, sub_dict in six.iteritems(self._lists_intern):\n-            for filter_id, lst in six.iteritems(sub_dict):\n+        for sub_dict in self._lists_intern.values():\n+            for lst in sub_dict.values():\n                 lists.append(lst)\n         return lists\n \n@@ -705,15 +703,8 @@ def assign_dark_offset_lists(self, into_list=None):\n             into_list.link_dark_offset_lists(\n                 *list(self.dark_lists_with_data.values()))\n             return True\n-\n-        # ==============================================================================\n-        #         no_dark_ids = self.check_dark_lists()\n-        #         if len(no_dark_ids) > 0:\n-        #             self.find_master_darks(no_dark_ids)\n-        # ==============================================================================\n-        # loop over all image lists ...\n-        for filter_id, lst in six.iteritems(self.img_lists):\n-            # ... that contain data\n+        \n+        for filter_id, lst in self.img_lists.items():\n             if lst.nof > 0:\n                 lists = od()\n                 if self.camera.meas_type_pos != self.camera.filter_id_pos:\n@@ -749,7 +740,7 @@ def assign_dark_offset_lists(self, into_list=None):\n                 if not lists:\n                     lists = self.dark_lists\n                 rm = []\n-                for key, dark_list in six.iteritems(lists):\n+                for key, dark_list in lists.items():\n                     if dark_list.nof < 1:\n                         try:\n                             self.find_master_dark(dark_list)\n@@ -787,7 +778,7 @@ def dark_lists(self):\n     def dark_lists_with_data(self):\n         \"\"\"Return all dark/offset lists that include image data.\"\"\"\n         lists = od()\n-        for dark_id, lst in six.iteritems(self.dark_lists):\n+        for dark_id, lst in self.dark_lists.items():\n             if lst.nof > 0:\n                 lists[dark_id] = lst\n         return lists\n@@ -814,15 +805,15 @@ def img_lists(self):\n     def img_lists_with_data(self):\n         \"\"\"Wrap :func:`get_all_image_lists`.\"\"\"\n         lists = od()\n-        for key, lst in six.iteritems(self.img_lists):\n+        for key, lst in self.img_lists.items():\n             if lst.nof > 0:\n                 lists[key] = lst\n         return lists\n \n     def check_dark_lists(self):\n         \"\"\"Check all dark lists whether they contain images or not.\"\"\"\n         no_data_ids = []\n-        for dark_id, lst in six.iteritems(self.dark_lists):\n+        for dark_id, lst in self.dark_lists.items():\n             if not lst.nof > 0:\n                 no_data_ids.append(lst.list_id)\n         return no_data_ids\n@@ -978,7 +969,7 @@ def load_images(self):\n \n     def update_image_prep_settings(self, **settings):\n         \"\"\"Update image preparation settings in all image lists.\"\"\"\n-        for list_id, lst in six.iteritems(self.img_lists):\n+        for list_id, lst in self.img_lists.items():\n             logger.info(\"Checking changes in list %s: \" % list_id)\n             val = lst.update_img_prep_settings(**settings)\n             logger.info(\"list %s updated (0 / 1): %s\" % (list_id, val))\n@@ -1028,11 +1019,11 @@ def show_current_img(self, filter_id, add_forms=False):\n         ax = self.current_image(filter_id).show_img()\n         if add_forms:\n             handles = []\n-            for k, v in six.iteritems(self.lines._forms):\n+            for k, v in self.lines._forms.items():\n                 l = Line2D([v[0], v[2]], [v[1], v[3]], color=\"#00ff00\", label=k)\n                 handles.append(l)\n                 ax.add_artist(l)\n-            for k, v in six.iteritems(self.rects._forms):\n+            for k, v in self.rects._forms.items():\n                 w, h = v[2] - v[0], v[3] - v[1]\n                 r = Rectangle((v[0], v[1]), w, h, ec=\"#00ff00\", fc=\"none\",\n                               label=k)\n@@ -1042,7 +1033,6 @@ def show_current_img(self, filter_id, add_forms=False):\n                       framealpha=0.5, fontsize=10).draggable()\n \n         return ax\n-        # ax.draw()\n \n     def plot_mean_value(self, filter_id, yerr=1, rect=None):\n         \"\"\"Plot the pixel mean value of specified filter.\n@@ -1141,7 +1131,7 @@ def fmt(num):\n         fig.colorbar(im, ax=axes[1, 1], format=FuncFormatter(fmt))\n         axes[1, 1].set_title(\"AA\")\n         tight_layout()\n-        for k, v in six.iteritems(tm):\n+        for k, v in tm.items():\n             lists[k].activate_tau_mode(v)\n         return axes\n "
+    },
+    {
+      "sha": "23c236e354a63b311eee656cc6f15b9d77358f49",
+      "filename": "pyplis/doascalib.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 6,
+      "changes": 10,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fdoascalib.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fdoascalib.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fdoascalib.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -28,8 +28,6 @@\n from astropy.io import fits\n from traceback import format_exc\n \n-import six\n-\n from pyplis import logger, print_log\n from matplotlib.pyplot import subplots\n from matplotlib.patches import Circle, Ellipse\n@@ -459,10 +457,10 @@ def save_as_fits(self, **kwargs):\n     def __str__(self):\n         s = \"DoasFOV information\\n------------------------\\n\"\n         s += \"\\nImg stack preparation settings\\n............................\\n\"\n-        for k, v in six.iteritems(self.img_prep):\n+        for k, v in self.img_prep.items():\n             s += \"%s: %s\\n\" % (k, v)\n         s += \"\\nFOV search settings\\n............................\\n\"\n-        for k, v in six.iteritems(self.search_settings):\n+        for k, v in self.search_settings.items():\n             s += \"%s: %s\\n\" % (k, v)\n         if self.method == \"ifr\":\n             s += \"\\nIFR search results \\n.........................\\n\"\n@@ -472,7 +470,7 @@ def __str__(self):\n                 s += \"%s: %.3f\\n\" % (GAUSS_2D_PARAM_INFO[k], popt[k])\n         elif self.method == \"pearson\":\n             s += \"\\nPearson search results \\n.......................\\n\"\n-            for k, v in six.iteritems(self.result_pearson):\n+            for k, v in self.result_pearson.items():\n                 if not k == \"corr_curve\":\n                     s += \"%s: %s\\n\" % (k, v)\n         return s\n@@ -686,7 +684,7 @@ def update_search_settings(self, **settings):\n         :param **settings: keyword args to be updated (only\n             valid keys will be updated)\n         \"\"\"\n-        for k, v in six.iteritems(settings):\n+        for k, v in settings.items():\n             if k in self._settings:\n                 logger.info(\"Updating FOV search setting %s, new value: %s\"\n                       % (k, v))"
+    },
+    {
+      "sha": "c9c755c8b8c8e5231b77519eaf67c3aec1f18aa2",
+      "filename": "pyplis/fluxcalc.py",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 51,
+      "changes": 65,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Ffluxcalc.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Ffluxcalc.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Ffluxcalc.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -32,50 +32,13 @@\n from .imagelists import ImgList\n from .plumespeed import LocalPlumeProperties\n from .helpers import check_roi, exponent, roi2rect, map_roi\n-import six\n+\n import pandas as pd\n from pandas import Series, DataFrame\n-try:\n-    from scipy.constants import N_A\n-except BaseException:\n-    N_A = 6.022140857e+23\n+from scipy.constants import N_A\n \n MOL_MASS_SO2 = 64.0638  # g/mol\n \n-\n-LABEL_SIZE = rcParams[\"font.size\"] + 2\n-\n-\n-class OutputERA(object):\n-    \"\"\"Class for specifying default output for emission rate analyses.\n-\n-    .. note::\n-        This class is under development and not intended to be used currently\n-\n-    \"\"\"\n-\n-    def __init__(self, out_dir=None, overlay_optflow=True, img_vmin=None,\n-                 img_vmax=None):\n-        raise NotImplementedError(\"Site under construction\")\n-        self.save_figs = False\n-        self.save_video = False\n-\n-        self.out_dir = None\n-\n-        # Visualisation options\n-        self.add_veff_histo = False\n-        self.add_flux = False\n-        self.overlay_optflow = True\n-\n-    def init_output(self):\n-        \"\"\"Create all relevant objects based on settings.\"\"\"\n-        pass\n-\n-    def init_axes(self):\n-        \"\"\"Init figure based on current settings.\"\"\"\n-        pass\n-\n-\n class EmissionRateSettings(object):\n     \"\"\"Class for management of settings for emission rate retrievals.\n \n@@ -165,7 +128,7 @@ def __init__(self, pcs_lines=None, velo_glob=nan, velo_glob_err=nan,\n         for line in pcs_lines:\n             self.add_pcs_line(line)\n \n-        for key, val in six.iteritems(settings):\n+        for key, val in settings.items():\n             self[key] = val\n \n         if self.velo_modes[\"glob\"]:\n@@ -353,7 +316,7 @@ def __str__(self):\n         else:\n             s += \"No PCS lines assigned yet ...\\n\"\n         s += \"\\nVelocity retrieval:\\n\"\n-        for k, v in six.iteritems(self.velo_modes):\n+        for k, v in self.velo_modes.items():\n             s += \"%s: %s\\n\" % (k, v)\n         s += \"\\nGlobal velocity: v = (%2f +/- %.2f) m/s\" % (self.velo_glob,\n                                                             self.velo_glob_err)\n@@ -548,7 +511,7 @@ def _fill_missing_data(self):\n         \"\"\"\n         d = self.to_dict()\n         num = len(self.start_acq)\n-        for k, v in six.iteritems(d):\n+        for k, v in d.items():\n             if not len(v) == num:\n                 self.__dict__[k] = [nan] * num\n \n@@ -1051,7 +1014,7 @@ def imglist_optflow(self, val):\n         if isinstance(val, ImgList) and val.nof == self.imglist.nof:\n             val.goto_img(self.imglist.cfn)\n             logger.info(\"Setting list for optflow retrieval, current mode status:\")\n-            for k, v in six.iteritems(val._list_modes):\n+            for k, v in val._list_modes.items():\n                 logger.info(\"%s: %s\" % (k, v))\n \n             self._imglist_optflow = val\n@@ -1174,7 +1137,7 @@ def get_pix_dist_info_all_lines(self):\n             pyrlevel=PYR)[0]\n         # init dicts\n         dists, dist_errs = {}, {}\n-        for line_id, line in six.iteritems(self.pcs_lines):\n+        for line_id, line in self.pcs_lines.items():\n             dists[line_id] = line.get_line_profile(dist_img)\n             col = line.center_pix[0]  # pixel column of center of PCS\n             dist_errs[line_id] = lst.meas_geometry.pix_dist_err(col, PYR)\n@@ -1201,9 +1164,9 @@ def init_results(self):\n                              \"dictionary.\")\n \n         res = od()\n-        for line_id, line in six.iteritems(self.pcs_lines):\n+        for line_id in self.pcs_lines:\n             res[line_id] = od()\n-            for mode, val in six.iteritems(self.settings.velo_modes):\n+            for mode, val in self.settings.velo_modes.items():\n                 if val:\n                     res[line_id][mode] = EmissionRates(line_id, mode)\n         self.results = res\n@@ -1230,7 +1193,7 @@ def check_pcs_plume_props(self):\n         lst = self.imglist\n         span = (lst.stop - lst.start).total_seconds()\n \n-        for key, line in six.iteritems(self.pcs_lines):\n+        for key, line in self.pcs_lines.items():\n             try:\n                 p = line.plume_props\n                 dt0 = (p.start - lst.start).total_seconds()\n@@ -1254,8 +1217,8 @@ def check_pcs_plume_props(self):\n \n     def _write_meta(self, dists, dist_errs, cd_err):\n         \"\"\"Write meta info in result classes.\"\"\"\n-        for line_id, mode_dict in six.iteritems(self.results):\n-            for mode, resultclass in six.iteritems(mode_dict):\n+        for line_id, mode_dict in self.results.items():\n+            for mode, resultclass in mode_dict.items():\n                 resultclass.pix_dist_mean = mean(dists[line_id])\n                 resultclass.pix_dist_mean_err = dist_errs[line_id]\n                 resultclass.cd_err = cd_err\n@@ -1361,7 +1324,7 @@ def run_retrieval(self, start_index=0, stop_index=None, check_list=True):\n                 if self.settings.ref_check_mode:\n                     ok = False\n             if ok:\n-                for pcs_id, pcs in six.iteritems(lines):\n+                for pcs_id, pcs in lines.items():\n                     res = results[pcs_id]\n                     n = pcs.normal_vector\n                     cds = pcs.get_line_profile(img)\n@@ -1602,7 +1565,7 @@ def plot_pcs_lines(self, ax=None, **kwargs):\n         # plot current image in list and draw line into it\n         if ax is None:\n             ax = self.imglist.show_current(**kwargs)\n-        for line_id, line in six.iteritems(self.pcs_lines):\n+        for line_id, line in self.pcs_lines.items():\n             line.plot_line_on_grid(ax=ax, include_normal=True, label=line_id)\n         ax.legend(loc='best', fancybox=True, framealpha=0.5)\n         return ax"
+    },
+    {
+      "sha": "61afa2e4232d01624452e2c28710d7ffd56bab4a",
+      "filename": "pyplis/forms.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 4,
+      "changes": 6,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fforms.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fforms.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fforms.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -17,8 +17,6 @@\n # along with this program. If not, see <http://www.gnu.org/licenses/>.\n from collections import OrderedDict as od\n from pyplis import logger\n-import six\n-\n \n class FormCollectionBase(object):\n     \"\"\"Abtract base class representing collection of geometrical forms.\n@@ -41,7 +39,7 @@ def __init__(self, forms_dict=None):\n \n         self.type = \"\"\n \n-        for key, val in six.iteritems(forms_dict):\n+        for key, val in forms_dict.items():\n             self[key] = val\n \n     def add(self, x0, y0, x1, y1, id=None):\n@@ -195,7 +193,7 @@ def __str__(self):\n         if not bool(self.keys()):\n             return s + \"No forms available\"\n \n-        for key, val in six.iteritems(self._forms):\n+        for key, val in self._forms.items():\n             s = (s + \"ID: %s\\nStart (x,y): %s, %s\\n\"\n                      \"Stop (x,y): %s, %s\\n\"\n                      % (key, val[0], val[1], val[2], val[3]))"
+    },
+    {
+      "sha": "3be675cd7c8039e62db6cd4743fc0c226b8a7837",
+      "filename": "pyplis/geometry.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 19,
+      "changes": 23,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fgeometry.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fgeometry.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fgeometry.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -25,7 +25,6 @@\n \n from matplotlib.pyplot import figure\n from copy import deepcopy\n-import six\n \n from pyplis import logger, print_log\n from pyplis.utils import LineOnImage\n@@ -1723,30 +1722,16 @@ def az_to_col(self, azim):\n             raise IndexError(\"Input azimuth is out of camera FOV\")\n         return argmin(abs(azs - azim))\n \n-# =============================================================================\n-#\n-#     def all_azimuths_camfov(self):\n-#         \"\"\"Returns array containing azimuth angles for all pixel columns\"\"\"\n-#         tot_num = self.cam[\"pixnum_x\"]\n-#         idx_cfov = tot_num / 2.0\n-#         az0 = self.cam[\"azim\"] - self.del_az(0, idx_cfov)\n-#         del_az = self.del_az(0, 1)\n-#         az_angles = zeros(tot_num)\n-#         for k in range(tot_num):\n-#             az_angles[k] = az0 + k * del_az\n-#         return az_angles\n-# =============================================================================\n-\n     def __str__(self):\n         s = \"pyplis MeasGeometry object\\n##################################\\n\"\n         s += \"\\nCamera specifications\\n-------------------\\n\"\n-        for k, v in six.iteritems(self._cam):\n+        for k, v in self._cam.items():\n             s += \"%s: %s\\n\" % (k, v)\n         s += \"\\nSource specifications\\n-------------------\\n\"\n-        for k, v in six.iteritems(self._source):\n+        for k, v in self._source.items():\n             s += \"%s: %s\\n\" % (k, v)\n         s += \"\\nWind specifications\\n-------------------\\n\"\n-        for k, v in six.iteritems(self._wind):\n+        for k, v in self._wind.items():\n             s += \"%s: %s\\n\" % (k, v)\n         return s\n \n@@ -1755,7 +1740,7 @@ def __call__(self, item):\n \n         :param item: name of attribute\n         \"\"\"\n-        for key, val in six.iteritems(self.__dict__):\n+        for key, val in self.__dict__.items():\n             try:\n                 if item in val:\n                     return val[item]"
+    },
+    {
+      "sha": "e73df5a47957a1d5cb0977bbe59c469447b21dd9",
+      "filename": "pyplis/helpers.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fhelpers.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fhelpers.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fhelpers.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -28,7 +28,6 @@\n                    isnan, argmin, sum, zeros, float32, ogrid, full_like)\n from scipy.ndimage import gaussian_filter\n from cv2 import pyrUp\n-import six\n from pyplis import logger\n \n time_delta_to_seconds = vectorize(lambda x: x.total_seconds())\n@@ -219,7 +218,7 @@ def isnum(val: Any) -> bool:\n     Returns:\n         True if input is number (int or float) and not nan, else False\n     \"\"\"\n-    if isinstance(val, (six.integer_types, float)) and not isnan(val):\n+    if isinstance(val, (int, float)) and not isnan(val):\n         return True\n     return False\n "
+    },
+    {
+      "sha": "16bedf35bb395430ec0b23673f6a94f12a85959b",
+      "filename": "pyplis/image.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 10,
+      "changes": 19,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fimage.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fimage.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fimage.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -29,7 +29,6 @@\n (where the optimal lag between a time-series of two plume intersection lines is\n searched, for details see :class:`pyplis.plumespeed.VeloCrossCorrEngine`).\n \"\"\"\n-import six\n from pathlib import Path\n from astropy.io import fits\n from matplotlib import gridspec\n@@ -227,9 +226,9 @@ def __init__(self, input=None, import_method=None, dtype=None,\n             # overwrite input with numpy data array\n             input = data\n \n-        for k, v in six.iteritems(meta_info):\n+        for k, v in meta_info.items():\n             k = k.lower()\n-            if k in self.meta:  # and isinstance(v, type(self.meta[k])):\n+            if k in self.meta:\n                 self.meta[k] = v\n             elif k in self.edit_log:\n                 self.edit_log[k] = v\n@@ -1023,7 +1022,7 @@ def is_8bit(self):\n \n     def print_meta(self):\n         \"\"\"Print current image meta information.\"\"\"\n-        for key, val in six.iteritems(self.meta):\n+        for key, val in self.meta.items():\n             logger.info(\"%s: %s\\n\" % (key, val))\n \n     def make_info_header_str(self):\n@@ -1166,7 +1165,7 @@ def load_fits(self, file_path):\n         # import valid meta information from header of first HDU\n         editkeys = self.edit_log.keys()\n         metakeys = self.meta.keys()\n-        for key, val in six.iteritems(head):\n+        for key, val in head.items():\n             k = key.lower()\n             if k in editkeys:\n                 self.edit_log[k] = val\n@@ -1191,7 +1190,7 @@ def load_fits(self, file_path):\n     def _prep_meta_dict_fits(self):\n         \"\"\"Prepare current meta-information for storage in FITS header.\"\"\"\n         d = od()\n-        for k, v in six.iteritems(self.meta):\n+        for k, v in self.meta.items():\n             try:\n                 d[k] = v.strftime(\"%Y%m%d%H%M%S%f\")\n             except BaseException:\n@@ -1372,10 +1371,10 @@ def __str__(self):\n         s += \"Shape: %s\\n\" % str(self.shape)\n         s += \"ROI (abs. coords): %s\\n\" % self.roi_abs\n         s += \"\\nMeta information\\n-------------------\\n\"\n-        for k, v in six.iteritems(self.meta):\n+        for k, v in self.meta.items():\n             s += \"%s: %s\\n\" % (k, v)\n         s += \"\\nEdit log\\n-----------\\n\"\n-        for k, v in six.iteritems(self.edit_log):\n+        for k, v in self.edit_log.items():\n             s += \"%s: %s\\n\" % (k, v)\n         return s\n \n@@ -1592,7 +1591,7 @@ def save_as_fits(self, save_dir=None, save_name=None,\n         hdu.data = self._img\n         hdu.header.update(self.edit_log)\n         hdu.header[\"img_id\"] = self.img_id\n-        for key, val in six.iteritems(self.profile_info):\n+        for key, val in self.profile_info.items():\n             if key == \"_roi_abs_def\":\n                 try:\n                     hdu.header[\"_roi_abs_def\"] = dumps(val)\n@@ -1638,7 +1637,7 @@ def load_fits(self, file_path, profile_type=\"LineOnImage\"):\n             profile_keys = []\n             logger.info(\"Failed to load profile info dictionary\")\n \n-        for key, val in six.iteritems(hdu[0].header):\n+        for key, val in hdu[0].header.items():\n             k = key.lower()\n             if k in prep.keys():\n                 self.edit_log[k] = val"
+    },
+    {
+      "sha": "33de50609aaf62cf2f78222e738c6570b37cd8bb",
+      "filename": "pyplis/imagelists.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 7,
+      "changes": 12,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fimagelists.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fimagelists.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fimagelists.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -52,8 +52,6 @@\n from pyplis.helpers import (_print_list, closest_index)\n from pyplis.calib_base import CalibData\n from pyplis.custom_image_import import _read_binary_timestamp\n-import six\n-\n \n class DarkImgList(BaseImgList):\n     \"\"\"A :class:`BaseImgList`object only extended by read_gain value.\n@@ -1237,7 +1235,7 @@ def set_closest_dark_offset(self):\n         updated = False\n         try:\n             num = self.index\n-            for read_gain, info in six.iteritems(self.dark_lists):\n+            for read_gain, info in self.dark_lists.items():\n                 darknum = info[\"idx\"][num]\n                 if darknum != info[\"list\"].index:\n                     updated = True\n@@ -1248,7 +1246,7 @@ def set_closest_dark_offset(self):\n                     info[\"list\"].goto_img(darknum)\n \n             if self.darkcorr_opt == 1 and updated:\n-                for read_gain, info in six.iteritems(self.offset_lists):\n+                for read_gain, info in self.offset_lists.items():\n                     offsnum = info[\"idx\"][num]\n                     if offsnum != info[\"list\"].index:\n                         logger.info(\"Offset image index (read_gain {}) was changed \"\n@@ -1376,9 +1374,9 @@ def link_dark_offset_lists(self, *lists):\n                 warnings.append(\"Obj of type %s could not be linked, need \"\n                                 \" DarkImgList \" % type(lst))\n \n-        for gain, value in six.iteritems(self.dark_lists):\n+        for gain, value in self.dark_lists.items():\n             value[\"idx\"] = self.assign_indices_linked_list(value[\"list\"])\n-        for gain, value in six.iteritems(self.offset_lists):\n+        for gain, value in self.offset_lists.items():\n             value[\"idx\"] = self.assign_indices_linked_list(value[\"list\"])\n         _print_list(warnings)\n         return dark_assigned, offset_assigned\n@@ -1387,7 +1385,7 @@ def link_dark_offset_lists(self, *lists):\n \n     def change_index_linked_lists(self):\n         \"\"\"Update current index in all linked lists based on ``cfn``.\"\"\"\n-        for key, lst in six.iteritems(self.linked_lists):\n+        for key, lst in self.linked_lists.items():\n             lst.goto_img(self._linked_indices[key][self.index],\n                          reload_here=self._always_reload[key])\n "
+    },
+    {
+      "sha": "c0aafccf6391af46017b68d7bfba88c447481434",
+      "filename": "pyplis/inout.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Finout.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Finout.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Finout.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -42,7 +42,6 @@\n from tempfile import mktemp, gettempdir\n from shutil import copy2\n from json import loads\n-import six\n \n \n def data_search_dirs():\n@@ -395,7 +394,7 @@ def save_new_default_camera(info_dict, cam_info_file: Optional[Path] = None):\n         cam_ids = [str(x) for x in cam_ids]\n         info_file.write(\",\".join(cam_ids))\n         info_file.write(\"\\n\")\n-        for k, v in six.iteritems(info_dict):\n+        for k, v in info_dict.items():\n             if k in keys:\n                 if k == \"default_filters\":\n                     for finfo in v:\n@@ -411,7 +410,7 @@ def save_new_default_camera(info_dict, cam_info_file: Optional[Path] = None):\n                         info_file.write(\"\\n\")\n                 elif k == \"io_opts\":\n                     s = \"io_opts:\"\n-                    for opt, val in six.iteritems(v):\n+                    for opt, val in v.items():\n                         s += \"%s=%d,\" % (opt, val)\n                     s = s[:-1] + \"\\n\"\n                     info_file.write(s)\n@@ -449,7 +448,7 @@ def save_default_source(info_dict):\n     source_file_temp = create_temporary_copy(path)\n     with open(source_file_temp, \"a\") as info_file:\n         info_file.write(\"\\n\\nsource_ids:%s\\n\" % info_dict[\"name\"])\n-        for k, v in six.iteritems(info_dict):\n+        for k, v in info_dict.items():\n             info_file.write(\"%s:%s\\n\" % (k, v))\n         info_file.write(\"END\")\n     info_file.close()"
+    },
+    {
+      "sha": "731845ca60389c61dd56c86cfb06743181bc4971",
+      "filename": "pyplis/model_functions.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fmodel_functions.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fmodel_functions.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fmodel_functions.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -18,7 +18,6 @@\n \"\"\"Pyplis module containing mathematical model functions.\"\"\"\n from numpy import exp, sin, cos\n from pyplis import logger\n-import six\n \n # Polynomial fit functions of different order, including versions that go\n # through the origin of the coordinate system\n@@ -84,7 +83,7 @@ def print_custom_funs_info(self):\n         logger.info(\"Available polyorders (with offset): %s\"\n               \"Available polyorders (without offset): %s\"\n               % (list(self.polys[0].keys()), list(self.polys[1].keys())))\n-        for k, v in six.iteritems(self._custom_funs_info):\n+        for k, v in self._custom_funs_info.items():\n             logger.info(\"%s : %s\" % (k, v))\n \n     def get_custom_fun(self, key=\"kern2015\"):"
+    },
+    {
+      "sha": "12bac2d38b25a6f6bd23d4d8d012d3f89bc3ee85",
+      "filename": "pyplis/plumebackground.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 7,
+      "changes": 12,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fplumebackground.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fplumebackground.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fplumebackground.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -24,8 +24,6 @@\n from collections import OrderedDict as od\n from scipy.ndimage import gaussian_filter\n \n-import six\n-\n from pyplis import logger, print_log\n from .image import Img\n from .utils import LineOnImage\n@@ -183,7 +181,7 @@ def update(self, **kwargs):\n \n         :param **kwargs:\n         \"\"\"\n-        for k, v in six.iteritems(kwargs):\n+        for k, v in kwargs.items():\n             self.__setitem__(k, v)\n \n     def set_missing_ref_areas(self, plume_img: Img):\n@@ -377,7 +375,7 @@ def get_tau_image(self, plume_img, bg_img=None,\n         if not isinstance(plume_img, Img):\n             raise TypeError(\"Invalid, input type: need Img object...\")\n         # update current settings\n-        for k, v in six.iteritems(kwargs):\n+        for k, v in kwargs.items():\n             self.__setitem__(k, v)\n \n         if not plume_img.is_darkcorr:\n@@ -449,7 +447,7 @@ def get_aa_image(self, plume_on, plume_off, bg_on=None, bg_off=None,\n         \"\"\"\n         if not isinstance(plume_on, Img) or not isinstance(plume_off, Img):\n             raise TypeError(\"Need Img objects for background modelling\")\n-        for k, v in six.iteritems(kwargs):\n+        for k, v in kwargs.items():\n             self.__setitem__(k, v)\n \n         if self.mode == 0:\n@@ -659,7 +657,7 @@ def plot_tau_result(self, tau_img=None, tau_min=None, tau_max=None,\n                    [0, h0], \"-b\", label=\"vert profile\")\n         ax[0].plot([0, w0], [self.xgrad_line_rownum, self.xgrad_line_rownum],\n                    \"-c\", label=\"hor profile\")\n-        for k, l in six.iteritems(add_lines):\n+        for k, l in add_lines.items():\n             try:\n                 x0, y0, x1, y1 = l.to_list()\n                 c = l.color\n@@ -822,7 +820,7 @@ def mode_info(self, mode_num):\n     def print_mode_info(self):\n         \"\"\"Print information about the different correction modes.\"\"\"\n         print_log.info(\"Available modes for automatic plume background retrieval\")\n-        for k, v in six.iteritems(self.mode_info_dict):\n+        for k, v in self.mode_info_dict.items():\n             print_log.info(\"Mode %s: %s\" % (k, v))\n \n     def _check_rect(self, rect, img):"
+    },
+    {
+      "sha": "fbe94225bf1794183e6e63241e65e75789cc6dd9",
+      "filename": "pyplis/plumespeed.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 9,
+      "changes": 17,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fplumespeed.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fplumespeed.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fplumespeed.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -34,7 +34,6 @@\n from scipy.stats import pearsonr\r\n from os.path import isdir, join, isfile\r\n from os import getcwd\r\n-import six\r\n \r\n import pandas as pd\r\n from pandas import Series, DataFrame\r\n@@ -1861,7 +1860,7 @@ def update(self, **settings):\n             considered, i.e. class attributes)\r\n \r\n         \"\"\"\r\n-        for k, v in six.iteritems(settings):\r\n+        for k, v in settings.items():\r\n             self[k] = v  # see __setitem__ method\r\n \r\n     @property\r\n@@ -2113,22 +2112,22 @@ def duplicate(self):\n \r\n     def __str__(self):\r\n         s = \"Image contrast settings (applied before flow calc):\\n\"\r\n-        for key, val in six.iteritems(self._contrast):\r\n+        for key, val in self._contrast.items():\r\n             s += \"%s: %s\\n\" % (key, val)\r\n         s += \"\\nOptical flow algo input (see OpenCV docs):\\n\"\r\n-        for key, val in six.iteritems(self._flow_algo):\r\n+        for key, val in self._flow_algo.items():\r\n             s += \"%s: %s\\n\" % (key, val)\r\n         s += \"\\nPost analysis settings:\\n\"\r\n-        for key, val in six.iteritems(self._analysis):\r\n+        for key, val in self._analysis.items():\r\n             s += \"%s: %s\\n\" % (key, val)\r\n         s += \"\\nDisplay settings:\\n\"\r\n-        for key, val in six.iteritems(self._display):\r\n+        for key, val in self._display.items():\r\n             s += \"%s: %s\\n\" % (key, val)\r\n         return s\r\n \r\n     def __setitem__(self, key, value):\r\n         \"\"\"Set item method.\"\"\"\r\n-        for k, v in six.iteritems(self.__dict__):\r\n+        for k, v in self.__dict__.items():\r\n             try:\r\n                 if key in v:\r\n                     v[key] = value\r\n@@ -2139,7 +2138,7 @@ def __getitem__(self, name):\n         \"\"\"Get item method.\"\"\"\r\n         if name in self.__dict__:\r\n             return self.__dict__[name]\r\n-        for k, v in six.iteritems(self.__dict__):\r\n+        for k, v in self.__dict__.items():\r\n             try:\r\n                 if name in v:\r\n                     return v[name]\r\n@@ -3567,7 +3566,7 @@ def __call__(self, item=None):\n             logger.info(\"Returning current optical flow field, settings: \")\r\n             logger.info(self.settings)\r\n             return self.flow\r\n-        for key, val in six.iteritems(self.__dict__):\r\n+        for key, val in self.__dict__.items():\r\n             try:\r\n                 if item in val:\r\n                     return val[item]\r"
+    },
+    {
+      "sha": "84b2bfa9827d6d2c0f64c3a0261ac9412f07a9ae",
+      "filename": "pyplis/processing.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fprocessing.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fprocessing.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fprocessing.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -37,7 +37,6 @@\n from cv2 import pyrDown, pyrUp\n from os.path import join, exists, abspath\n from astropy.io import fits\n-import six\n from pydoas.analysis import DoasResults\n from pyplis import logger\n from pyplis.image import Img\n@@ -1038,7 +1037,7 @@ def __init__(self, data, start_acq, std=None, texps=None, roi_abs=None,\n         self.img_prep = img_prep\n         self.roi_abs = roi_abs\n \n-        for key, val in six.iteritems(kwargs):\n+        for key, val in kwargs.items():\n             self[key] = val\n \n     @property"
+    },
+    {
+      "sha": "69218bb23d6f6c253ee8b0c2e7e884cefaf5123f",
+      "filename": "pyplis/setupclasses.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 10,
+      "changes": 18,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fsetupclasses.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Fsetupclasses.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Fsetupclasses.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -31,8 +31,6 @@\n from typing import Optional\n from numpy import nan, rad2deg, arctan, ndarray\n \n-import six\n-\n from pyplis import logger\n from .forms import LineCollection, RectCollection\n from .helpers import isnum, to_datetime\n@@ -99,7 +97,7 @@ def __init__(self, name=None, info_dict=None, **kwargs):\n                 info_dict.update(info)\n \n         self._import_from_dict(info_dict)\n-        for k, v in six.iteritems(kwargs):\n+        for k, v in kwargs.items():\n             self[k] = v\n \n     @property\n@@ -194,7 +192,7 @@ def _import_from_dict(self, info_dict):\n             raise TypeError(\n                 \"need dictionary like object for source info update\")\n         err = []\n-        for key, val in six.iteritems(info_dict):\n+        for key, val in info_dict.items():\n             if key in types:\n                 func = types[key]\n             else:\n@@ -727,7 +725,7 @@ def update(self, **settings):\n             ``self.geom_data``)\n \n         \"\"\"\n-        for key, val in six.iteritems(settings):\n+        for key, val in settings.items():\n             self[key] = val\n \n     def get_altitude_srtm(self):\n@@ -789,7 +787,7 @@ def to_dict(self):\n         \"\"\"Convert this object into a dictionary.\"\"\"\n         d = super(Camera, self).to_dict()\n         d[\"ser_no\"] = self.ser_no\n-        for key, val in six.iteritems(self.geom_data):\n+        for key, val in self.geom_data.items():\n             d[key] = val\n         return d\n \n@@ -870,7 +868,7 @@ def __str__(self):\n         s += str(self.filter_setup)\n \n         s += \"\\nGeometry info\\n----------------------\\n\"\n-        for key, val in six.iteritems(self.geom_data):\n+        for key, val in self.geom_data.items():\n             try:\n                 s += \"%s: %.3f\\n\" % (key, val)\n             except BaseException:\n@@ -892,7 +890,7 @@ def __getitem__(self, name):\n         \"\"\"Get class item.\"\"\"\n         if name in self.__dict__:\n             return self.__dict__[name]\n-        for k, v in six.iteritems(self.__dict__):\n+        for k, v in self.__dict__.items():\n             try:\n                 if name in v:\n                     return v[name]\n@@ -1173,7 +1171,7 @@ def __str__(self):\n              \"Options:\\n\"\n              % (self.base_dir, self.save_dir, self.start, self.stop))\n \n-        for key, val in six.iteritems(self.options):\n+        for key, val in self.options.items():\n             s = s + \"%s: %s\\n\" % (key, val)\n \n         return s\n@@ -1261,7 +1259,7 @@ def update_wind_info(self, info_dict):\n             dictionary containing wind information\n \n         \"\"\"\n-        for key, val in six.iteritems(info_dict):\n+        for key, val in info_dict.items():\n             if key in self.wind_info:\n                 self.wind_info[key] = val\n "
+    },
+    {
+      "sha": "fb57d7d24bd506cf89556615046a615761703283",
+      "filename": "pyplis/utils.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 4,
+      "changes": 5,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Futils.py",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis%2Futils.py",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis%2Futils.py?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -36,9 +36,6 @@\n from pyplis.inout import get_cam_ids\n from pyplis.glob import DEFAULT_ROI\n \n-import six\n-\n-\n def identify_camera_from_filename(filepath):\n     \"\"\"Identify camera based on image filepath convention.\n \n@@ -1046,7 +1043,7 @@ def from_dict(self, settings_dict):\n             dictionary containing line parameters (cf. :func:`to_dict`)\n \n         \"\"\"\n-        for k, v in six.iteritems(settings_dict):\n+        for k, v in settings_dict.items():\n             if k in self.__dict__:\n                 self.__dict__[k] = v\n "
+    },
+    {
+      "sha": "1d800cf848fd5fbbf6c2a3f0ae87ad70b411965e",
+      "filename": "pyplis_env.yml",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis_env.yml",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyplis_env.yml",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyplis_env.yml?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -12,7 +12,6 @@ dependencies:\n   - geonum>=1.6\n   - pydoas>=2.0.3\n   - progressbar\n-  - six\n   - pyproj\n   - setuptools_scm\n   - pytest"
+    },
+    {
+      "sha": "4afa1f21c6ff853c1f0ea6982d99a41b32b5eac4",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/jgliss/pyplis/blob/5da62dd9326f818b436eb59760d0445fc1285a58/pyproject.toml",
+      "raw_url": "https://github.com/jgliss/pyplis/raw/5da62dd9326f818b436eb59760d0445fc1285a58/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/jgliss/pyplis/contents/pyproject.toml?ref=5da62dd9326f818b436eb59760d0445fc1285a58",
+      "patch": "@@ -29,7 +29,6 @@ dependencies = [\n     \"geonum>=1.6\",\n     \"pydoas>=2.0.3\",\n     \"progressbar\",\n-    \"six\",\n     \"pyproj\",\n     \"setuptools_scm\"\n ]"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "a9136a6b4013901ae66c0b51a56b5c71337388f2",
+      "message": "deprecate six in base_img_list",
+      "parent_shas": [
+        "c118f3ea4f01e0ccc83d673bdbfde501e430413b"
+      ]
+    },
+    {
+      "sha": "c46eb713e366c236b186f7216044744370ddd0e4",
+      "message": "deprecate six in cellcalib.py",
+      "parent_shas": [
+        "a9136a6b4013901ae66c0b51a56b5c71337388f2"
+      ]
+    },
+    {
+      "sha": "f6fc8dc78766c2d12fecbec617fb4eaa44ef5fb3",
+      "message": "deprecate six in dataset.py",
+      "parent_shas": [
+        "c46eb713e366c236b186f7216044744370ddd0e4"
+      ]
+    },
+    {
+      "sha": "039485d09add02931de00c9ca180e19aa73c2207",
+      "message": "deprecate six in doascalib.py",
+      "parent_shas": [
+        "f6fc8dc78766c2d12fecbec617fb4eaa44ef5fb3"
+      ]
+    },
+    {
+      "sha": "48756cdd9626a3401af7b8b3563cc522b4b265fc",
+      "message": "deprecate six in doascalib.py; remove unused code",
+      "parent_shas": [
+        "039485d09add02931de00c9ca180e19aa73c2207"
+      ]
+    },
+    {
+      "sha": "3d4a473d0776f153fdf92a6e4ab3936e1684c21a",
+      "message": "deprecate six in forms.py",
+      "parent_shas": [
+        "48756cdd9626a3401af7b8b3563cc522b4b265fc"
+      ]
+    },
+    {
+      "sha": "0b052960b0bbaadb13cee825d5d611cb60cb6991",
+      "message": "deprecate six in geometry.py",
+      "parent_shas": [
+        "3d4a473d0776f153fdf92a6e4ab3936e1684c21a"
+      ]
+    },
+    {
+      "sha": "0fb97cfdeb455fc830ccc141c3e060e146da4c1c",
+      "message": "deprecate six in helpers.py",
+      "parent_shas": [
+        "0b052960b0bbaadb13cee825d5d611cb60cb6991"
+      ]
+    },
+    {
+      "sha": "64581d62a6a2d82e1a80e735930c1126c317bfb9",
+      "message": "deprecate six in image.py",
+      "parent_shas": [
+        "0fb97cfdeb455fc830ccc141c3e060e146da4c1c"
+      ]
+    },
+    {
+      "sha": "4961929bb9c933f1083dfe664f63a3373e82759d",
+      "message": "deprecate six in imagelists.py",
+      "parent_shas": [
+        "64581d62a6a2d82e1a80e735930c1126c317bfb9"
+      ]
+    },
+    {
+      "sha": "f1829100d2aaf61526d6ff773b0634ad4b57c3f5",
+      "message": "deprecate six in inout.py",
+      "parent_shas": [
+        "4961929bb9c933f1083dfe664f63a3373e82759d"
+      ]
+    },
+    {
+      "sha": "c1421c6891efce3a9d3cff129494ebe203f9e373",
+      "message": "deprecate six in model_functions.py",
+      "parent_shas": [
+        "f1829100d2aaf61526d6ff773b0634ad4b57c3f5"
+      ]
+    },
+    {
+      "sha": "47af4dd5d0f1e4acb328f982d134380e0b612cc2",
+      "message": "deprecate six in plumebackground.py",
+      "parent_shas": [
+        "c1421c6891efce3a9d3cff129494ebe203f9e373"
+      ]
+    },
+    {
+      "sha": "aaebb3b555bdd8bf69b5846f96f5f3dcccb873e7",
+      "message": "deprecate six in plumespeed.py",
+      "parent_shas": [
+        "47af4dd5d0f1e4acb328f982d134380e0b612cc2"
+      ]
+    },
+    {
+      "sha": "008c0bed90e4d9635140cfab25071be0cec35bae",
+      "message": "deprecate six in processing.py",
+      "parent_shas": [
+        "aaebb3b555bdd8bf69b5846f96f5f3dcccb873e7"
+      ]
+    },
+    {
+      "sha": "af1c9cbc5b06062081c316ee189f097ef5d2eb9e",
+      "message": "deprecate six in setupclasses.py",
+      "parent_shas": [
+        "008c0bed90e4d9635140cfab25071be0cec35bae"
+      ]
+    },
+    {
+      "sha": "1521bc63cff380bab6cefe6f4e28b76413077c6f",
+      "message": "deprecate six in utils.py",
+      "parent_shas": [
+        "af1c9cbc5b06062081c316ee189f097ef5d2eb9e"
+      ]
+    },
+    {
+      "sha": "5da62dd9326f818b436eb59760d0445fc1285a58",
+      "message": "remove six dependency",
+      "parent_shas": [
+        "1521bc63cff380bab6cefe6f4e28b76413077c6f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__jgliss__pyplis__pr81.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\jgliss__pyplis__pr81__py2_py3__jgliss__pyplis__pr81\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\jgliss__pyplis__pr81__py2_py3__jgliss__pyplis__pr81\\rn"
+  }
+}

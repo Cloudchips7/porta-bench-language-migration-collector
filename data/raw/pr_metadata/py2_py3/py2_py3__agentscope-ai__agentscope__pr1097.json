@@ -1,0 +1,273 @@
+{
+  "instance_id": "py2_py3__agentscope-ai__agentscope__pr1097",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "agentscope-ai/agentscope",
+  "pr_number": 1097,
+  "pr_url": "https://github.com/agentscope-ai/agentscope/pull/1097",
+  "repo": {
+    "full_name": "agentscope-ai/agentscope",
+    "clone_url": "https://github.com/agentscope-ai/agentscope.git",
+    "default_branch": "main",
+    "created_at": "2024-01-12T03:41:59Z",
+    "stars": 23963,
+    "license": "Apache-2.0",
+    "size_kb": 51237
+  },
+  "pull_request": {
+    "id": 3155454476,
+    "title": "feat(model): add intermediate_tool_parsing for chat model",
+    "body": "## AgentScope Version\r\n\r\n1.0.11\r\n\r\n## Description\r\n\r\nAdd a boolean parameter `intermediate_tool_parsing` in the chat model to enable JSON repair for intermediate tool use content, see #1058 \r\n\r\n## Checklist\r\n\r\nPlease check the following items before code is ready to be reviewed.\r\n\r\n- [x]  Code has been formatted with `pre-commit run --all-files` command\r\n- [x]  All tests are passing\r\n- [x]  Docstrings are in Google style\r\n- [x]  Related documentation has been updated (e.g. links, examples, etc.)\r\n- [x]  Code is ready for review",
+    "created_at": "2026-01-08T09:22:58Z",
+    "merged_at": "2026-01-30T15:35:42Z",
+    "base_sha": "f44b10fcf8d88b2be1cb4474598bf5875242d21d",
+    "head_sha": "912a9ed0951f86924302a2f68dca9409de6311cc",
+    "merge_commit_sha": "2d06af6a0bd4c9c873142d2de6dc1592a8b72b94",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "bae9d79f14bf6a2c3a01ccee473b9bc0a2cd9e2d",
+  "final_sha": "912a9ed0951f86924302a2f68dca9409de6311cc",
+  "changed_files": [
+    {
+      "sha": "e43afd13275a3c199903ca7c0ab66d3d10b172ab",
+      "filename": "src/agentscope/_utils/_common.py",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 16,
+      "changes": 27,
+      "blob_url": "https://github.com/agentscope-ai/agentscope/blob/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2F_utils%2F_common.py",
+      "raw_url": "https://github.com/agentscope-ai/agentscope/raw/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2F_utils%2F_common.py",
+      "contents_url": "https://api.github.com/repos/agentscope-ai/agentscope/contents/src%2Fagentscope%2F_utils%2F_common.py?ref=912a9ed0951f86924302a2f68dca9409de6311cc",
+      "patch": "@@ -48,28 +48,23 @@ def _json_loads_with_repair(\n             Returns an empty dict if all repair attempts fail.\n     \"\"\"\n     try:\n-        repaired = repair_json(json_str)\n+        repaired = repair_json(json_str, stream_stable=True)\n         result = json.loads(repaired)\n         if isinstance(result, dict):\n             return result\n+\n     except Exception:\n-        pass\n+        if len(json_str) > 100:\n+            log_str = json_str[:100] + \"...\"\n+        else:\n+            log_str = json_str\n \n-    for i in range(len(json_str) - 1, 0, -1):\n-        try:\n-            repaired = repair_json(json_str[:i])\n-            result = json.loads(repaired)\n-            if isinstance(result, dict):\n-                return result\n-        except Exception:\n-            continue\n+        logger.warning(\n+            \"Failed to load JSON dict from string: %s. Returning empty dict \"\n+            \"instead.\",\n+            log_str,\n+        )\n \n-    logger.warning(\n-        \"Failed to parse JSON string `%s`. \"\n-        \"All repair attempts (original + truncation) failed. \"\n-        \"Returning empty dict.\",\n-        json_str,\n-    )\n     return {}\n \n "
+    },
+    {
+      "sha": "2adb683eca69a9efd593fcb4b55e7acde9a04956",
+      "filename": "src/agentscope/message/_message_block.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/agentscope-ai/agentscope/blob/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2Fmessage%2F_message_block.py",
+      "raw_url": "https://github.com/agentscope-ai/agentscope/raw/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2Fmessage%2F_message_block.py",
+      "contents_url": "https://api.github.com/repos/agentscope-ai/agentscope/contents/src%2Fagentscope%2Fmessage%2F_message_block.py?ref=912a9ed0951f86924302a2f68dca9409de6311cc",
+      "patch": "@@ -87,6 +87,8 @@ class ToolUseBlock(TypedDict, total=False):\n     \"\"\"The name of the tool\"\"\"\n     input: Required[dict[str, object]]\n     \"\"\"The input of the tool\"\"\"\n+    raw_input: str\n+    \"\"\"The raw string input of the tool from the model API\"\"\"\n \n \n class ToolResultBlock(TypedDict, total=False):"
+    },
+    {
+      "sha": "ec4269c456a1abd0c7809556ab45947b5b27af5b",
+      "filename": "src/agentscope/model/_anthropic_model.py",
+      "status": "modified",
+      "additions": 57,
+      "deletions": 9,
+      "changes": 66,
+      "blob_url": "https://github.com/agentscope-ai/agentscope/blob/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2Fmodel%2F_anthropic_model.py",
+      "raw_url": "https://github.com/agentscope-ai/agentscope/raw/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2Fmodel%2F_anthropic_model.py",
+      "contents_url": "https://api.github.com/repos/agentscope-ai/agentscope/contents/src%2Fagentscope%2Fmodel%2F_anthropic_model.py?ref=912a9ed0951f86924302a2f68dca9409de6311cc",
+      "patch": "@@ -1,6 +1,8 @@\n # -*- coding: utf-8 -*-\n # pylint: disable=too-many-branches, too-many-statements\n \"\"\"The Anthropic API model classes.\"\"\"\n+import copy\n+import json\n import warnings\n from datetime import datetime\n from typing import (\n@@ -45,6 +47,7 @@ def __init__(\n         max_tokens: int = 2048,\n         stream: bool = True,\n         thinking: dict | None = None,\n+        stream_tool_parsing: bool = True,\n         client_kwargs: dict[str, JSONSerializableObject] | None = None,\n         generate_kwargs: dict[str, JSONSerializableObject] | None = None,\n         **kwargs: Any,\n@@ -71,6 +74,12 @@ def __init__(\n                         \"budget_tokens\": 1024\n                     }\n \n+            stream_tool_parsing (`bool`, default to `True`):\n+                Whether to parse incomplete tool use JSON during streaming\n+                with auto-repair. If True, partial JSON (e.g., `'{\"a\": \"x'`)\n+                is repaired to valid dicts ({\"a\": \"x\"}) in real-time for\n+                immediate tool function input. Otherwise, the input field\n+                remains {} until the final chunk arrives.\n             client_kwargs (`dict[str, JSONSerializableObject] | None`, \\\n              optional):\n                 The extra keyword arguments to initialize the Anthropic client.\n@@ -121,6 +130,7 @@ def __init__(\n         )\n         self.max_tokens = max_tokens\n         self.thinking = thinking\n+        self.stream_tool_parsing = stream_tool_parsing\n         self.generate_kwargs = generate_kwargs or {}\n \n     @trace_llm\n@@ -381,9 +391,13 @@ async def _parse_anthropic_stream_completion_response(\n         thinking_signature = \"\"\n         tool_calls = OrderedDict()\n         tool_call_buffers = {}\n+        last_input_objs = {}  # Store last input_obj for each tool_call\n         res = None\n         metadata = None\n \n+        # Record the last yielded content to parse the tools' input\n+        last_content = None\n+\n         async for event in response:\n             content_changed = False\n             thinking_changed = False\n@@ -457,31 +471,65 @@ async def _parse_anthropic_stream_completion_response(\n                     )\n                 for block_index, tool_call in tool_calls.items():\n                     input_str = tool_call[\"input\"]\n-                    try:\n-                        input_obj = _json_loads_with_repair(input_str or \"{}\")\n-                        if not isinstance(input_obj, dict):\n-                            input_obj = {}\n-\n-                    except Exception:\n-                        input_obj = {}\n+                    tool_id = tool_call[\"id\"]\n+\n+                    # If parsing the tool input in streaming mode\n+                    if self.stream_tool_parsing:\n+                        repaired_input = _json_loads_with_repair(\n+                            input_str or \"{}\",\n+                        )\n+                        # If the new repaired input is shorter than one in the\n+                        # last chunk, use the last one to avoid regression\n+                        last_input = last_input_objs.get(tool_id, {})\n+                        if len(json.dumps(last_input)) > len(\n+                            json.dumps(repaired_input),\n+                        ):\n+                            repaired_input = last_input\n+                        last_input_objs[tool_id] = repaired_input\n+\n+                    else:\n+                        repaired_input = {}\n \n                     contents.append(\n                         ToolUseBlock(\n                             type=tool_call[\"type\"],\n                             id=tool_call[\"id\"],\n                             name=tool_call[\"name\"],\n-                            input=input_obj,\n+                            input=repaired_input,\n+                            raw_input=input_str,\n                         ),\n                     )\n+\n                     if structured_model:\n-                        metadata = input_obj\n+                        metadata = repaired_input\n+\n                 if contents:\n                     res = ChatResponse(\n                         content=contents,\n                         usage=usage,\n                         metadata=metadata,\n                     )\n                     yield res\n+                    last_content = copy.deepcopy(contents)\n+\n+        # If stream_tool_parsing is False, yield last contents\n+        if not self.stream_tool_parsing and last_content and tool_calls:\n+            metadata = None\n+            # Update tool use blocks in last_contents inplace\n+            for block in last_content:\n+                if block.get(\"type\") == \"tool_use\":\n+                    block[\"input\"] = input_obj = _json_loads_with_repair(\n+                        block.get(\"raw_input\") or \"{}\",\n+                    )\n+\n+                    if structured_model:\n+                        metadata = input_obj\n+\n+            yield ChatResponse(\n+                content=last_content,\n+                usage=usage,\n+                metadata=metadata,\n+            )\n \n     def _format_tools_json_schemas(\n         self,"
+    },
+    {
+      "sha": "799e99d405c764a5b87ffa72089263f7ba096f2e",
+      "filename": "src/agentscope/model/_dashscope_model.py",
+      "status": "modified",
+      "additions": 63,
+      "deletions": 12,
+      "changes": 75,
+      "blob_url": "https://github.com/agentscope-ai/agentscope/blob/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2Fmodel%2F_dashscope_model.py",
+      "raw_url": "https://github.com/agentscope-ai/agentscope/raw/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2Fmodel%2F_dashscope_model.py",
+      "contents_url": "https://api.github.com/repos/agentscope-ai/agentscope/contents/src%2Fagentscope%2Fmodel%2F_dashscope_model.py?ref=912a9ed0951f86924302a2f68dca9409de6311cc",
+      "patch": "@@ -1,5 +1,6 @@\n # -*- coding: utf-8 -*-\n \"\"\"The dashscope API model classes.\"\"\"\n+import copy\n import collections\n import json\n import os\n@@ -58,6 +59,7 @@ def __init__(\n         enable_thinking: bool | None = None,\n         generate_kwargs: dict[str, JSONSerializableObject] | None = None,\n         base_http_api_url: str | None = None,\n+        stream_tool_parsing: bool = True,\n         **_kwargs: Any,\n     ) -> None:\n         \"\"\"Initialize the DashScope chat model.\n@@ -81,6 +83,12 @@ def __init__(\n             base_http_api_url (`str | None`, optional):\n                 The base URL for DashScope API requests. If not provided,\n                 the default base URL from the DashScope SDK will be used.\n+            stream_tool_parsing (`bool`, default to `True`):\n+                Whether to parse incomplete tool use JSON in streaming mode\n+                with auto-repair. If True, partial JSON (e.g., `'{\"a\": \"x'`)\n+                is repaired to valid dicts (`{\"a\": \"x\"}`) in real-time for\n+                immediate tool function input. Otherwise, the input field\n+                remains {} until the final chunk arrives.\n             **_kwargs (`Any`):\n                 Additional keyword arguments.\n         \"\"\"\n@@ -96,6 +104,7 @@ def __init__(\n         self.api_key = api_key\n         self.enable_thinking = enable_thinking\n         self.generate_kwargs = generate_kwargs or {}\n+        self.stream_tool_parsing = stream_tool_parsing\n \n         if base_http_api_url is not None:\n             import dashscope\n@@ -251,7 +260,7 @@ async def __call__(\n \n         return parsed_response\n \n-    # pylint: disable=too-many-branches\n+    # pylint: disable=too-many-branches, too-many-statements\n     async def _parse_dashscope_stream_response(\n         self,\n         start_datetime: datetime,\n@@ -289,7 +298,10 @@ async def _parse_dashscope_stream_response(\n         \"\"\"\n         acc_content, acc_thinking_content = \"\", \"\"\n         acc_tool_calls = collections.defaultdict(dict)\n+        last_input_objs = {}  # Store last input_obj for each tool_call\n         metadata = None\n+        last_content = None\n+        usage = None\n \n         async for chunk in giter(response):\n             if chunk.status_code != HTTPStatus.OK:\n@@ -336,8 +348,9 @@ async def _parse_dashscope_stream_response(\n                             + func[\"arguments\"]\n                         )\n \n-            # to content blocks\n+            # Build content blocks (always include thinking and text)\n             content_blocks: list[TextBlock | ToolUseBlock | ThinkingBlock] = []\n+\n             if acc_thinking_content:\n                 content_blocks.append(\n                     ThinkingBlock(\n@@ -355,26 +368,42 @@ async def _parse_dashscope_stream_response(\n                 )\n \n             for tool_call in acc_tool_calls.values():\n-                repaired_input = _json_loads_with_repair(\n-                    tool_call.get(\"arguments\", \"{}\") or \"{}\",\n-                )\n-\n-                if not isinstance(repaired_input, dict):\n+                # Only add intermediate tool use blocks if\n+                # stream_tool_parsing is True\n+                tool_id = tool_call.get(\"id\", \"\")\n+                input_str = tool_call.get(\"arguments\")\n+\n+                # If parsing the tool input in streaming mode\n+                if self.stream_tool_parsing:\n+                    repaired_input = _json_loads_with_repair(\n+                        input_str or \"{}\",\n+                    )\n+                    # If the new repaired input is shorter than one in the last\n+                    # chunk, use the last one to avoid regression\n+                    last_input = last_input_objs.get(tool_id, {})\n+                    if len(json.dumps(last_input)) > len(\n+                        json.dumps(repaired_input),\n+                    ):\n+                        repaired_input = last_input\n+                    last_input_objs[tool_id] = repaired_input\n+\n+                else:\n+                    # Otherwise, keep input as empty dict until the final chunk\n                     repaired_input = {}\n \n                 content_blocks.append(\n                     ToolUseBlock(\n                         type=\"tool_use\",\n-                        id=tool_call.get(\"id\", \"\"),\n+                        id=tool_id,\n                         name=tool_call.get(\"name\", \"\"),\n                         input=repaired_input,\n+                        raw_input=input_str,\n                     ),\n                 )\n \n                 if structured_model:\n                     metadata = repaired_input\n \n-            usage = None\n             if chunk.usage:\n                 usage = ChatUsage(\n                     input_tokens=chunk.usage.input_tokens,\n@@ -383,12 +412,34 @@ async def _parse_dashscope_stream_response(\n                     metadata=chunk.usage,\n                 )\n \n-            parsed_chunk = ChatResponse(\n-                content=content_blocks,\n+            if content_blocks:\n+                parsed_chunk = ChatResponse(\n+                    content=content_blocks,\n+                    usage=usage,\n+                    metadata=metadata,\n+                )\n+                yield parsed_chunk\n+                last_content = copy.deepcopy(content_blocks)\n+\n+        # If stream_tool_parsing is False, we need to parse the final tool\n+        # use inputs here\n+        if not self.stream_tool_parsing and last_content and acc_tool_calls:\n+            metadata = None\n+            # Update tool use blocks in last_contents inplace\n+            for block in last_content:\n+                if block.get(\"type\") == \"tool_use\":\n+                    block[\"input\"] = input_obj = _json_loads_with_repair(\n+                        str(block.get(\"raw_input\") or \"{}\"),\n+                    )\n+\n+                    if structured_model:\n+                        metadata = input_obj\n+\n+            yield ChatResponse(\n+                content=last_content,\n                 usage=usage,\n                 metadata=metadata,\n             )\n-            yield parsed_chunk\n \n     async def _parse_dashscope_generation_response(\n         self,"
+    },
+    {
+      "sha": "635232aa0cfd8f47d33517f7638d3505a522f3dc",
+      "filename": "src/agentscope/model/_gemini_model.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/agentscope-ai/agentscope/blob/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2Fmodel%2F_gemini_model.py",
+      "raw_url": "https://github.com/agentscope-ai/agentscope/raw/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2Fmodel%2F_gemini_model.py",
+      "contents_url": "https://api.github.com/repos/agentscope-ai/agentscope/contents/src%2Fagentscope%2Fmodel%2F_gemini_model.py?ref=912a9ed0951f86924302a2f68dca9409de6311cc",
+      "patch": "@@ -2,6 +2,7 @@\n # mypy: disable-error-code=\"dict-item\"\n \"\"\"The Google Gemini model in agentscope.\"\"\"\n import copy\n+import json\n import warnings\n from datetime import datetime\n from typing import (\n@@ -362,6 +363,7 @@ async def _parse_gemini_stream_generation_response(\n                             id=function_call.id,\n                             name=function_call.name,\n                             input=function_call.args or {},\n+                            raw_input=json.dumps(function_call.args or {}),\n                         ),\n                     )\n \n@@ -460,6 +462,7 @@ def _parse_gemini_generation_response(\n                         id=tool_call.id,\n                         name=tool_call.name,\n                         input=tool_call.args or {},\n+                        raw_input=json.dumps(tool_call.args or {}),\n                     ),\n                 )\n "
+    },
+    {
+      "sha": "d6606020084b910752acf7c430d36be7d5b050a3",
+      "filename": "src/agentscope/model/_ollama_model.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/agentscope-ai/agentscope/blob/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2Fmodel%2F_ollama_model.py",
+      "raw_url": "https://github.com/agentscope-ai/agentscope/raw/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2Fmodel%2F_ollama_model.py",
+      "contents_url": "https://api.github.com/repos/agentscope-ai/agentscope/contents/src%2Fagentscope%2Fmodel%2F_ollama_model.py?ref=912a9ed0951f86924302a2f68dca9409de6311cc",
+      "patch": "@@ -1,5 +1,6 @@\n # -*- coding: utf-8 -*-\n \"\"\"Model wrapper for Ollama models.\"\"\"\n+import json\n from datetime import datetime\n from typing import (\n     Any,\n@@ -219,6 +220,7 @@ async def _parse_ollama_stream_completion_response(\n                     \"id\": tool_id,\n                     \"name\": function.name,\n                     \"input\": function.arguments,\n+                    \"raw_input\": json.dumps(function.arguments),\n                 }\n             # Calculate usage statistics\n             current_time = (datetime.now() - start_datetime).total_seconds()\n@@ -325,6 +327,7 @@ async def _parse_ollama_completion_response(\n                     id=f\"{idx}_{tool_call.function.name}\",\n                     name=tool_call.function.name,\n                     input=tool_call.function.arguments,\n+                    raw_input=json.dumps(tool_call.function.arguments),\n                 ),\n             )\n "
+    },
+    {
+      "sha": "2ee9edcd364c1d214288155ad0c376bd827e8dbf",
+      "filename": "src/agentscope/model/_openai_model.py",
+      "status": "modified",
+      "additions": 64,
+      "deletions": 12,
+      "changes": 76,
+      "blob_url": "https://github.com/agentscope-ai/agentscope/blob/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2Fmodel%2F_openai_model.py",
+      "raw_url": "https://github.com/agentscope-ai/agentscope/raw/912a9ed0951f86924302a2f68dca9409de6311cc/src%2Fagentscope%2Fmodel%2F_openai_model.py",
+      "contents_url": "https://api.github.com/repos/agentscope-ai/agentscope/contents/src%2Fagentscope%2Fmodel%2F_openai_model.py?ref=912a9ed0951f86924302a2f68dca9409de6311cc",
+      "patch": "@@ -1,6 +1,8 @@\n # -*- coding: utf-8 -*-\n # pylint: disable=too-many-branches\n \"\"\"OpenAI Chat model class.\"\"\"\n+import copy\n+import json\n import warnings\n from datetime import datetime\n from typing import (\n@@ -73,6 +75,7 @@ def __init__(\n         stream: bool = True,\n         reasoning_effort: Literal[\"low\", \"medium\", \"high\"] | None = None,\n         organization: str = None,\n+        stream_tool_parsing: bool = True,\n         client_type: Literal[\"openai\", \"azure\"] = \"openai\",\n         client_kwargs: dict[str, JSONSerializableObject] | None = None,\n         generate_kwargs: dict[str, JSONSerializableObject] | None = None,\n@@ -97,6 +100,12 @@ def __init__(\n             organization (`str`, default `None`):\n                 The organization ID for OpenAI API. If not specified, it will\n                 be read from the environment variable `OPENAI_ORGANIZATION`.\n+            stream_tool_parsing (`bool`, default to `True`):\n+                Whether to parse incomplete tool use JSON during streaming\n+                with auto-repair. If True, partial JSON (e.g., `'{\"a\": \"x'`)\n+                is repaired to valid dicts ({\"a\": \"x\"}) in real-time for\n+                immediate tool function input. Otherwise, the input field\n+                remains {} until the final chunk arrives.\n             client_type (`Literal[\"openai\", \"azure\"]`, default `openai`):\n                 Selects which OpenAI-compatible client to initialize.\n             client_kwargs (`dict[str, JSONSerializableObject] | None`, \\\n@@ -156,6 +165,7 @@ def __init__(\n             )\n \n         self.reasoning_effort = reasoning_effort\n+        self.stream_tool_parsing = stream_tool_parsing\n         self.generate_kwargs = generate_kwargs or {}\n \n     @trace_llm\n@@ -294,6 +304,7 @@ async def __call__(\n \n         return parsed_response\n \n+    # pylint: disable=too-many-statements\n     async def _parse_openai_stream_response(\n         self,\n         start_datetime: datetime,\n@@ -327,10 +338,12 @@ async def _parse_openai_stream_response(\n         thinking = \"\"\n         audio = \"\"\n         tool_calls = OrderedDict()\n+        last_input_objs = {}  # Store last input_obj for each tool_call\n         metadata: dict | None = None\n         contents: List[\n             TextBlock | ToolUseBlock | ThinkingBlock | AudioBlock\n         ] = []\n+        last_contents = None\n \n         async with response as stream:\n             async for item in stream:\n@@ -432,26 +445,65 @@ async def _parse_openai_stream_response(\n                         metadata = _json_loads_with_repair(text)\n \n                 for tool_call in tool_calls.values():\n+                    input_str = tool_call[\"input\"]\n+                    tool_id = tool_call[\"id\"]\n+\n+                    # If parsing the tool input in streaming mode\n+                    if self.stream_tool_parsing:\n+                        repaired_input = _json_loads_with_repair(\n+                            input_str or \"{}\",\n+                        )\n+                        # If the new repaired input is shorter than one in the\n+                        # last chunk, use the last one to avoid regression\n+                        last_input = last_input_objs.get(tool_id, {})\n+                        if len(json.dumps(last_input)) > len(\n+                            json.dumps(repaired_input),\n+                        ):\n+                            repaired_input = last_input\n+                        last_input_objs[tool_id] = repaired_input\n+\n+                    else:\n+                        # Otherwise, keep input as empty dict until the final\n+                        # chunk\n+                        repaired_input = {}\n+\n                     contents.append(\n                         ToolUseBlock(\n                             type=tool_call[\"type\"],\n-                            id=tool_call[\"id\"],\n+                            id=tool_id,\n                             name=tool_call[\"name\"],\n-                            input=_json_loads_with_repair(\n-                                tool_call[\"input\"] or \"{}\",\n-                            ),\n+                            input=repaired_input,\n+                            raw_input=input_str,\n                         ),\n                     )\n \n-                if not contents:\n-                    continue\n+                if contents:\n+                    res = ChatResponse(\n+                        content=contents,\n+                        usage=usage,\n+                        metadata=metadata,\n+                    )\n+                    yield res\n+                    last_contents = copy.deepcopy(contents)\n+\n+        # If stream_tool_parsing is False, yield last contents\n+        if not self.stream_tool_parsing and tool_calls and last_contents:\n+            metadata = None\n+            # Update tool use blocks in last_contents inplace\n+            for block in last_contents:\n+                if block.get(\"type\") == \"tool_use\":\n+                    block[\"input\"] = input_obj = _json_loads_with_repair(\n+                        str(block.get(\"raw_input\") or \"{}\"),\n+                    )\n \n-                res = ChatResponse(\n-                    content=contents,\n-                    usage=usage,\n-                    metadata=metadata,\n-                )\n-                yield res\n+                    if structured_model:\n+                        metadata = input_obj\n+\n+            yield ChatResponse(\n+                content=last_contents,\n+                usage=usage,\n+                metadata=metadata,\n+            )\n \n     def _parse_openai_completion_response(\n         self,"
+    },
+    {
+      "sha": "39033bf380f8c62a283f6c940e4722ce93154edc",
+      "filename": "tests/model_dashscope_test.py",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 4,
+      "changes": 22,
+      "blob_url": "https://github.com/agentscope-ai/agentscope/blob/912a9ed0951f86924302a2f68dca9409de6311cc/tests%2Fmodel_dashscope_test.py",
+      "raw_url": "https://github.com/agentscope-ai/agentscope/raw/912a9ed0951f86924302a2f68dca9409de6311cc/tests%2Fmodel_dashscope_test.py",
+      "contents_url": "https://api.github.com/repos/agentscope-ai/agentscope/contents/tests%2Fmodel_dashscope_test.py?ref=912a9ed0951f86924302a2f68dca9409de6311cc",
+      "patch": "@@ -284,15 +284,28 @@ async def test_streaming_response_processing(self) -> None:\n                 tool_calls=[],\n             ),\n             self._create_mock_chunk(\n-                content=\" there!\",\n-                reasoning_content=\" the user\",\n+                content=\" there\",\n+                reasoning_content=\" the\",\n                 tool_calls=[\n                     {\n                         \"index\": 0,\n                         \"id\": \"call_123\",\n                         \"function\": {\n                             \"name\": \"greet\",\n-                            \"arguments\": '{\"name\": \"user\"}',\n+                            \"arguments\": '{\"name\": ',\n+                        },\n+                    },\n+                ],\n+            ),\n+            self._create_mock_chunk(\n+                content=\"!\",\n+                reasoning_content=\" user\",\n+                tool_calls=[\n+                    {\n+                        \"index\": 0,\n+                        \"id\": \"call_123\",\n+                        \"function\": {\n+                            \"arguments\": '\"user\"}',\n                         },\n                     },\n                 ],\n@@ -308,7 +321,7 @@ async def test_streaming_response_processing(self) -> None:\n             responses = []\n             async for response in result:\n                 responses.append(response)\n-            self.assertEqual(len(responses), 2)\n+            self.assertEqual(len(responses), 3)\n             final_response = responses[-1]\n \n             expected_content = [\n@@ -322,6 +335,7 @@ async def test_streaming_response_processing(self) -> None:\n                     name=\"greet\",\n                     input={\"name\": \"user\"},\n                     type=\"tool_use\",\n+                    raw_input='{\"name\": \"user\"}',\n                 ),\n             ]\n             self.assertEqual(final_response.content, expected_content)"
+    },
+    {
+      "sha": "f62d63ffd484a157c238b6f5f118a12a816221bb",
+      "filename": "tests/model_gemini_test.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/agentscope-ai/agentscope/blob/912a9ed0951f86924302a2f68dca9409de6311cc/tests%2Fmodel_gemini_test.py",
+      "raw_url": "https://github.com/agentscope-ai/agentscope/raw/912a9ed0951f86924302a2f68dca9409de6311cc/tests%2Fmodel_gemini_test.py",
+      "contents_url": "https://api.github.com/repos/agentscope-ai/agentscope/contents/tests%2Fmodel_gemini_test.py?ref=912a9ed0951f86924302a2f68dca9409de6311cc",
+      "patch": "@@ -1,5 +1,6 @@\n # -*- coding: utf-8 -*-\n \"\"\"Unit tests for Google Gemini API model class.\"\"\"\n+import json\n from typing import AsyncGenerator\n from unittest.async_case import IsolatedAsyncioTestCase\n from unittest.mock import Mock, patch, AsyncMock\n@@ -201,6 +202,7 @@ async def test_call_with_tools_integration(self) -> None:\n                     id=\"call_123\",\n                     name=\"get_weather\",\n                     input={\"location\": \"Beijing\"},\n+                    raw_input=json.dumps({\"location\": \"Beijing\"}),\n                 ),\n             ]\n             self.assertEqual(result.content, expected_content)"
+    },
+    {
+      "sha": "b092e4f1a88b72133bddd374f3fa0e6d6ae3dcd9",
+      "filename": "tests/model_ollama_test.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/agentscope-ai/agentscope/blob/912a9ed0951f86924302a2f68dca9409de6311cc/tests%2Fmodel_ollama_test.py",
+      "raw_url": "https://github.com/agentscope-ai/agentscope/raw/912a9ed0951f86924302a2f68dca9409de6311cc/tests%2Fmodel_ollama_test.py",
+      "contents_url": "https://api.github.com/repos/agentscope-ai/agentscope/contents/tests%2Fmodel_ollama_test.py?ref=912a9ed0951f86924302a2f68dca9409de6311cc",
+      "patch": "@@ -1,5 +1,6 @@\n # -*- coding: utf-8 -*-\n \"\"\"Unit tests for Ollama API model class.\"\"\"\n+import json\n from typing import AsyncGenerator, Any\n from unittest.async_case import IsolatedAsyncioTestCase\n from unittest.mock import patch, AsyncMock\n@@ -187,6 +188,7 @@ async def test_call_with_tools_integration(self) -> None:\n                     id=\"0_get_weather\",\n                     name=\"get_weather\",\n                     input={\"location\": \"Beijing\"},\n+                    raw_input=json.dumps({\"location\": \"Beijing\"}),\n                 ),\n             ]\n             self.assertEqual(result.content, expected_content)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "5909b9fba3d33537c09c753ad5de44ad81b4751a",
+      "message": "add intermediate_tool_parsing for chat model",
+      "parent_shas": [
+        "bae9d79f14bf6a2c3a01ccee473b9bc0a2cd9e2d"
+      ]
+    },
+    {
+      "sha": "8ad14abddbbcfb5b295a4e7b09439ce18b7f8c0e",
+      "message": "merge main and fix conflict",
+      "parent_shas": [
+        "5909b9fba3d33537c09c753ad5de44ad81b4751a",
+        "2bc3951a96afe4f4178bd35b7ffbcb3c3387e390"
+      ]
+    },
+    {
+      "sha": "fde51f245fc77d35233b65a03bfa4f3e66fda7d2",
+      "message": "add raw_input in tooluseblock",
+      "parent_shas": [
+        "8ad14abddbbcfb5b295a4e7b09439ce18b7f8c0e"
+      ]
+    },
+    {
+      "sha": "b5d30df5ea809a78fdbd03660f31a28570ab8ba4",
+      "message": "update",
+      "parent_shas": [
+        "fde51f245fc77d35233b65a03bfa4f3e66fda7d2"
+      ]
+    },
+    {
+      "sha": "b3ba1cf032e627ee220f0695b4072541a3ab43b2",
+      "message": "fix unittest",
+      "parent_shas": [
+        "b5d30df5ea809a78fdbd03660f31a28570ab8ba4"
+      ]
+    },
+    {
+      "sha": "b9f9a45af320c5a5c7491f3c492605779d87248d",
+      "message": "modify according to comments",
+      "parent_shas": [
+        "b3ba1cf032e627ee220f0695b4072541a3ab43b2"
+      ]
+    },
+    {
+      "sha": "389be7bb9c0f6495a90f3e7bac93588a1443dc61",
+      "message": "bug fix",
+      "parent_shas": [
+        "b9f9a45af320c5a5c7491f3c492605779d87248d"
+      ]
+    },
+    {
+      "sha": "241671c5b9c1332add375ca4e60b93908cdb904a",
+      "message": "update",
+      "parent_shas": [
+        "389be7bb9c0f6495a90f3e7bac93588a1443dc61"
+      ]
+    },
+    {
+      "sha": "66a54527e4d6787feed0ad6a73494392a3e45ec6",
+      "message": "Merge remote-tracking branch 'agentscope/main' into bc/enable_json_repair\n\n# Conflicts:\n#\tsrc/agentscope/model/_dashscope_model.py",
+      "parent_shas": [
+        "241671c5b9c1332add375ca4e60b93908cdb904a",
+        "f44b10fcf8d88b2be1cb4474598bf5875242d21d"
+      ]
+    },
+    {
+      "sha": "94b90270e6d5a3796301f703b5f3420c6048a58a",
+      "message": "Apply suggestion from @gemini-code-assist[bot]\n\nCo-authored-by: gemini-code-assist[bot] <176961590+gemini-code-assist[bot]@users.noreply.github.com>",
+      "parent_shas": [
+        "66a54527e4d6787feed0ad6a73494392a3e45ec6"
+      ]
+    },
+    {
+      "sha": "c8458828ac35af12b40fba5c6d130d7c37274d2b",
+      "message": "update",
+      "parent_shas": [
+        "94b90270e6d5a3796301f703b5f3420c6048a58a"
+      ]
+    },
+    {
+      "sha": "406de9a996a8549c2dadc9ecb014d4b7464b8690",
+      "message": "update",
+      "parent_shas": [
+        "c8458828ac35af12b40fba5c6d130d7c37274d2b"
+      ]
+    },
+    {
+      "sha": "912a9ed0951f86924302a2f68dca9409de6311cc",
+      "message": "update",
+      "parent_shas": [
+        "406de9a996a8549c2dadc9ecb014d4b7464b8690"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__agentscope-ai__agentscope__pr1097.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\agentscope-ai__agentscope__pr1097__py2_py3__agentscope-ai__agentscope__pr1097\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\agentscope-ai__agentscope__pr1097__py2_py3__agentscope-ai__agentscope__pr1097\\rn"
+  }
+}

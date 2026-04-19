@@ -1,0 +1,85 @@
+{
+  "instance_id": "py2_py3__claudevervoort__ltiautotest__pr37",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "claudevervoort/ltiautotest",
+  "pr_number": 37,
+  "pr_url": "https://github.com/claudevervoort/ltiautotest/pull/37",
+  "repo": {
+    "full_name": "claudevervoort/ltiautotest",
+    "clone_url": "https://github.com/claudevervoort/ltiautotest.git",
+    "default_branch": "master",
+    "created_at": "2019-09-30T22:04:05Z",
+    "stars": 13,
+    "license": "Apache-2.0",
+    "size_kb": 34149
+  },
+  "pull_request": {
+    "id": 2149253898,
+    "title": "Bump future from 0.17.1 to 0.18.3 in /lti",
+    "body": "Bumps [future](https://github.com/PythonCharmers/python-future) from 0.17.1 to 0.18.3.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/PythonCharmers/python-future/releases\">future's releases</a>.</em></p>\n<blockquote>\n<h2>v0.18.3</h2>\n<p>This is a minor bug-fix release containing a number of fixes:</p>\n<ul>\n<li>Backport fix for bpo-38804 (c91d70b)</li>\n<li>Fix bug in fix_print.py fixer (dffc579)</li>\n<li>Fix bug in fix_raise.py fixer (3401099)</li>\n<li>Fix newint bool in py3 (fe645ba)</li>\n<li>Fix bug in super() with metaclasses (6e27aac)</li>\n<li>docs: fix simple typo, reqest -&gt; request (974eb1f)</li>\n<li>Correct <strong>eq</strong> (c780bf5)</li>\n<li>Pass if lint fails (2abe00d)</li>\n<li>Update docker image and parcel out to constant variable.  Add comment to update version constant (45cf382)</li>\n<li>fix order (f96a219)</li>\n<li>Add flake8 to image (046ff18)</li>\n<li>Make lint.sh executable (58cc984)</li>\n<li>Add docker push to optimize CI (01e8440)</li>\n<li>Build System (42b3025)</li>\n<li>Add docs build status badge to README.md (3f40bd7)</li>\n<li>Use same docs requirements in tox (18ecc5a)</li>\n<li>Add docs/requirements.txt (5f9893f)</li>\n<li>Add PY37_PLUS, PY38_PLUS, and PY39_PLUS (bee0247)</li>\n<li>fix 2.6 test, better comment (ddedcb9)</li>\n<li>fix 2.6 test (3f1ff7e)</li>\n<li>remove nan test (4dbded1)</li>\n<li>include list test values (e3f1a12)</li>\n<li>fix other python2 test issues (c051026)</li>\n<li>fix missing subTest (f006cad)</li>\n<li>import from old imp library on older python versions (fc84fa8)</li>\n<li>replace fstrings with format for python 3.4,3.5 (4a687ea)</li>\n<li>minor style/spelling fixes (8302d8c)</li>\n<li>improve cmp function, add unittest (0d95a40)</li>\n<li>Pin typing==3.7.4.1 for Python 3.3 compatiblity (1a48f1b)</li>\n<li>Fix various py26 unit test failures (9ca5a14)</li>\n<li>Add initial contributing guide with docs build instruction (e55f915)</li>\n<li>Add docs building to tox.ini (3ee9e7f)</li>\n<li>Support NumPy's specialized int types in builtins.round (b4b54f0)</li>\n<li>Added r&quot;&quot;&quot; to the docstring to avoid warnings in python3 (5f94572)</li>\n<li>Add <strong>subclasscheck</strong> for past.types.basestring (c9bc0ff)</li>\n<li>Correct example in README (681e78c)</li>\n<li>Add simple documentation (6c6e3ae)</li>\n<li>Add pre-commit hooks (a9c6a37)</li>\n<li>Handling of <strong>next</strong> and next by future.utils.get_next was reversed (52b0ff9)</li>\n<li>Add a test for our fix (461d77e)</li>\n<li>Compare headers to correct definition of str (3eaa8fd)</li>\n<li><a href=\"https://redirect.github.com/PythonCharmers/python-future/issues/322\">#322</a> Add support for negative ndigits in round; additionally, fixing a bug so that it handles passing in Decimal properly (a4911b9)</li>\n<li>Add tkFileDialog to future.movers.tkinter (f6a6549)</li>\n<li>Sort before comparing dicts in TestChainMap (6126997)</li>\n<li>Fix typo (4dfa099)</li>\n<li>Fix formatting in &quot;What's new&quot; (1663dfa)</li>\n<li>Fix typo (4236061)</li>\n</ul>\n<!-- raw HTML omitted -->\n</blockquote>\n<p>... (truncated)</p>\n</details>\n<details>\n<summary>Changelog</summary>\n<p><em>Sourced from <a href=\"https://github.com/PythonCharmers/python-future/blob/master/docs/changelog.rst\">future's changelog</a>.</em></p>\n<blockquote>\n<h1>Changes in version 0.18.3 (2023-01-13)</h1>\n<p>This is a minor bug-fix release containing a number of fixes:</p>\n<ul>\n<li>Backport fix for bpo-38804 (c91d70b)</li>\n<li>Fix bug in fix_print.py fixer (dffc579)</li>\n<li>Fix bug in fix_raise.py fixer (3401099)</li>\n<li>Fix newint bool in py3 (fe645ba)</li>\n<li>Fix bug in super() with metaclasses (6e27aac)</li>\n<li>docs: fix simple typo, reqest -&gt; request (974eb1f)</li>\n<li>Correct <strong>eq</strong> (c780bf5)</li>\n<li>Pass if lint fails (2abe00d)</li>\n<li>Update docker image and parcel out to constant variable.  Add comment to update version constant (45cf382)</li>\n<li>fix order (f96a219)</li>\n<li>Add flake8 to image (046ff18)</li>\n<li>Make lint.sh executable (58cc984)</li>\n<li>Add docker push to optimize CI (01e8440)</li>\n<li>Build System (42b3025)</li>\n<li>Add docs build status badge to README.md (3f40bd7)</li>\n<li>Use same docs requirements in tox (18ecc5a)</li>\n<li>Add docs/requirements.txt (5f9893f)</li>\n<li>Add PY37_PLUS, PY38_PLUS, and PY39_PLUS (bee0247)</li>\n<li>fix 2.6 test, better comment (ddedcb9)</li>\n<li>fix 2.6 test (3f1ff7e)</li>\n<li>remove nan test (4dbded1)</li>\n<li>include list test values (e3f1a12)</li>\n<li>fix other python2 test issues (c051026)</li>\n<li>fix missing subTest (f006cad)</li>\n<li>import from old imp library on older python versions (fc84fa8)</li>\n<li>replace fstrings with format for python 3.4,3.5 (4a687ea)</li>\n<li>minor style/spelling fixes (8302d8c)</li>\n<li>improve cmp function, add unittest (0d95a40)</li>\n<li>Pin typing==3.7.4.1 for Python 3.3 compatiblity (1a48f1b)</li>\n<li>Fix various py26 unit test failures (9ca5a14)</li>\n<li>Add initial contributing guide with docs build instruction (e55f915)</li>\n<li>Add docs building to tox.ini (3ee9e7f)</li>\n<li>Support NumPy's specialized int types in builtins.round (b4b54f0)</li>\n<li>Added r&quot;&quot;&quot; to the docstring to avoid warnings in python3 (5f94572)</li>\n<li>Add <strong>subclasscheck</strong> for past.types.basestring (c9bc0ff)</li>\n<li>Correct example in README (681e78c)</li>\n<li>Add simple documentation (6c6e3ae)</li>\n<li>Add pre-commit hooks (a9c6a37)</li>\n<li>Handling of <strong>next</strong> and next by future.utils.get_next was reversed (52b0ff9)</li>\n<li>Add a test for our fix (461d77e)</li>\n<li>Compare headers to correct definition of str (3eaa8fd)</li>\n<li><a href=\"https://redirect.github.com/PythonCharmers/python-future/issues/322\">#322</a> Add support for negative ndigits in round; additionally, fixing a bug so that it handles passing in Decimal properly (a4911b9)</li>\n<li>Add tkFileDialog to future.movers.tkinter (f6a6549)</li>\n<li>Sort before comparing dicts in TestChainMap (6126997)</li>\n<li>Fix typo (4dfa099)</li>\n<li>Fix formatting in &quot;What's new&quot; (1663dfa)</li>\n</ul>\n<!-- raw HTML omitted -->\n</blockquote>\n<p>... (truncated)</p>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/PythonCharmers/python-future/commit/af1db970b0879b59e7aeb798c27a623144561cff\"><code>af1db97</code></a> Merge pull request <a href=\"https://redirect.github.com/PythonCharmers/python-future/issues/613\">#613</a> from PythonCharmers/lwan/0.18.3-release</li>\n<li><a href=\"https://github.com/PythonCharmers/python-future/commit/079ee9b75441d36447cec9981fa1b0032862f64d\"><code>079ee9b</code></a> Prepare for 0.18.3 release</li>\n<li><a href=\"https://github.com/PythonCharmers/python-future/commit/02f7a8143d5b68f50a1cca44d8f5a58c1925a515\"><code>02f7a81</code></a> Merge pull request <a href=\"https://redirect.github.com/PythonCharmers/python-future/issues/610\">#610</a> from wshanks/wshanks-patch-1</li>\n<li><a href=\"https://github.com/PythonCharmers/python-future/commit/c91d70b34ef0402aef3e9d04364ba98509dca76f\"><code>c91d70b</code></a> Backport fix for bpo-38804</li>\n<li><a href=\"https://github.com/PythonCharmers/python-future/commit/80523f383fbba1c6de0551e19d0277e73e69573c\"><code>80523f3</code></a> Merge pull request <a href=\"https://redirect.github.com/PythonCharmers/python-future/issues/569\">#569</a> from jmadler/master</li>\n<li><a href=\"https://github.com/PythonCharmers/python-future/commit/5e5af71549c7a7fa0e28f881046e081e231e455d\"><code>5e5af71</code></a> Merge pull request <a href=\"https://redirect.github.com/PythonCharmers/python-future/issues/582\">#582</a> from r3m0t/patch-6</li>\n<li><a href=\"https://github.com/PythonCharmers/python-future/commit/17e4bbd7c676a9a8efd20601e51675c95f74b330\"><code>17e4bbd</code></a> Merge pull request <a href=\"https://redirect.github.com/PythonCharmers/python-future/issues/596\">#596</a> from abjonnes/fix-print-trailing-comma</li>\n<li><a href=\"https://github.com/PythonCharmers/python-future/commit/1b427ba70191927706282840835e31ae0733ee7e\"><code>1b427ba</code></a> Merge branch 'xZise-official-count' into master</li>\n<li><a href=\"https://github.com/PythonCharmers/python-future/commit/c8eb497336c76d300c6753b47c7f5de505660d7a\"><code>c8eb497</code></a> Merge branch 'official-count' of <a href=\"https://github.com/xZise/python-future\">https://github.com/xZise/python-future</a> into ...</li>\n<li><a href=\"https://github.com/PythonCharmers/python-future/commit/dffc579dbb7c882fc01fa0c0dfa6b59acef7827d\"><code>dffc579</code></a> Fix bug in fix_print.py fixer</li>\n<li>Additional commits viewable in <a href=\"https://github.com/PythonCharmers/python-future/compare/v0.17.1...v0.18.3\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=future&package-manager=pip&previous-version=0.17.1&new-version=0.18.3)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nYou can trigger a rebase of this PR by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot merge` will merge this PR after your CI passes on it\n- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it\n- `@dependabot cancel merge` will cancel a previously requested merge and block automerging\n- `@dependabot reopen` will reopen this PR if it is closed\n- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)\nYou can disable automated security fix PRs for this repo from the [Security Alerts page](https://github.com/claudevervoort/ltiautotest/network/alerts).\n\n</details>\n\n> **Note**\n> Automatic rebases have been disabled on this pull request as it has been open for over 30 days.\n",
+    "created_at": "2024-10-28T13:57:27Z",
+    "merged_at": "2026-04-13T14:59:19Z",
+    "base_sha": "90107554f43ebf99410c72179da0d345fec0a020",
+    "head_sha": "5e165c786095a28698b9b3bcf1f4f48fd79c19db",
+    "merge_commit_sha": "37100f08d5041f1d517bd2dfe47a6113f3b0d43e",
+    "labels": [
+      "dependencies"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "90107554f43ebf99410c72179da0d345fec0a020",
+  "final_sha": "5e165c786095a28698b9b3bcf1f4f48fd79c19db",
+  "changed_files": [
+    {
+      "sha": "583dc4ac7e02af5d5e94faf40980f3e5bce8539b",
+      "filename": "lti/requirements.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/claudevervoort/ltiautotest/blob/5e165c786095a28698b9b3bcf1f4f48fd79c19db/lti%2Frequirements.txt",
+      "raw_url": "https://github.com/claudevervoort/ltiautotest/raw/5e165c786095a28698b9b3bcf1f4f48fd79c19db/lti%2Frequirements.txt",
+      "contents_url": "https://api.github.com/repos/claudevervoort/ltiautotest/contents/lti%2Frequirements.txt?ref=5e165c786095a28698b9b3bcf1f4f48fd79c19db",
+      "patch": "@@ -7,7 +7,7 @@ Click==7.0\n cryptography==43.0.1\n dataclasses==0.6\n ecdsa==0.13.3\n-future==0.17.1\n+future==0.18.3\n h11==0.8.1\n httptools==0.0.13\n idna==2.8"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "5e165c786095a28698b9b3bcf1f4f48fd79c19db",
+      "message": "Bump future from 0.17.1 to 0.18.3 in /lti\n\nBumps [future](https://github.com/PythonCharmers/python-future) from 0.17.1 to 0.18.3.\n- [Release notes](https://github.com/PythonCharmers/python-future/releases)\n- [Changelog](https://github.com/PythonCharmers/python-future/blob/master/docs/changelog.rst)\n- [Commits](https://github.com/PythonCharmers/python-future/compare/v0.17.1...v0.18.3)\n\n---\nupdated-dependencies:\n- dependency-name: future\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "90107554f43ebf99410c72179da0d345fec0a020"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "ci_only",
+      "dependency_only",
+      "doc_only"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match",
+      "strict_migration_signal"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__claudevervoort__ltiautotest__pr37.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\claudevervoort__ltiautotest__pr37__py2_py3__claudevervoort__ltiautotest__pr37\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\claudevervoort__ltiautotest__pr37__py2_py3__claudevervoort__ltiautotest__pr37\\rn"
+  }
+}

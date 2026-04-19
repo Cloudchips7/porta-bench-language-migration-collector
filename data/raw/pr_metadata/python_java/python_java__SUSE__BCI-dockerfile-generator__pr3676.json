@@ -1,0 +1,76 @@
+{
+  "instance_id": "python_java__SUSE__BCI-dockerfile-generator__pr3676",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "SUSE/BCI-dockerfile-generator",
+  "pr_number": 3676,
+  "pr_url": "https://github.com/SUSE/BCI-dockerfile-generator/pull/3676",
+  "repo": {
+    "full_name": "SUSE/BCI-dockerfile-generator",
+    "clone_url": "https://github.com/SUSE/BCI-dockerfile-generator.git",
+    "default_branch": "main",
+    "created_at": "2022-06-09T14:43:21Z",
+    "stars": 15,
+    "license": "GPL-3.0",
+    "size_kb": 19432
+  },
+  "pull_request": {
+    "id": 3530192196,
+    "title": "Mark python 3.14 containers as latest, remove from python 3.13",
+    "body": "",
+    "created_at": "2026-04-14T19:26:11Z",
+    "merged_at": "2026-04-14T19:48:00Z",
+    "base_sha": "845d2b3b09357b6646652ea9305d3f4285174cef",
+    "head_sha": "f5f3418b30370e8b9e13c057a0753daf4934db55",
+    "merge_commit_sha": "ac0bf3ff4af58466fe203e667e791c97a2615f41",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "845d2b3b09357b6646652ea9305d3f4285174cef",
+  "final_sha": "f5f3418b30370e8b9e13c057a0753daf4934db55",
+  "changed_files": [
+    {
+      "sha": "3f5ded701e7a92a2eac3884d8cd227ea2831c161",
+      "filename": "src/bci_build/package/python.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/SUSE/BCI-dockerfile-generator/blob/f5f3418b30370e8b9e13c057a0753daf4934db55/src%2Fbci_build%2Fpackage%2Fpython.py",
+      "raw_url": "https://github.com/SUSE/BCI-dockerfile-generator/raw/f5f3418b30370e8b9e13c057a0753daf4934db55/src%2Fbci_build%2Fpackage%2Fpython.py",
+      "contents_url": "https://api.github.com/repos/SUSE/BCI-dockerfile-generator/contents/src%2Fbci_build%2Fpackage%2Fpython.py?ref=f5f3418b30370e8b9e13c057a0753daf4934db55",
+      "patch": "@@ -153,15 +153,14 @@ def _get_python_kwargs(\n )\n \n \n-_PYTHON_TW_VERSIONS: tuple[_PYTHON_VERSIONS, ...] = (\"3.11\", \"3.13\")\n PYTHON_TW_CONTAINERS = (\n     PythonDevelopmentContainer(\n         **_get_python_kwargs(pyver, OsVersion.TUMBLEWEED),\n-        is_latest=pyver == _PYTHON_TW_VERSIONS[-1],\n+        is_latest=False,\n         package_name=f\"python-{pyver}-image\",\n         additional_versions=[\"3\"],\n     )\n-    for pyver in _PYTHON_TW_VERSIONS\n+    for pyver in (\"3.11\", \"3.13\")\n )\n \n PYTHON_3_11_CONTAINERS = ("
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "f5f3418b30370e8b9e13c057a0753daf4934db55",
+      "message": "Mark python 3.14 containers as latest, remove from python 3.13",
+      "parent_shas": [
+        "845d2b3b09357b6646652ea9305d3f4285174cef"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__SUSE__BCI-dockerfile-generator__pr3676.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\SUSE__BCI-dockerfile-generator__pr3676__python_java__SUSE__BCI-dockerfile-generator__pr3676\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\SUSE__BCI-dockerfile-generator__pr3676__python_java__SUSE__BCI-dockerfile-generator__pr3676\\rn"
+  }
+}

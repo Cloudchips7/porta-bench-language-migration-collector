@@ -1,0 +1,254 @@
+{
+  "instance_id": "py2_py3__python-trio__trio__pr3030",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "python-trio/trio",
+  "pr_number": 3030,
+  "pr_url": "https://github.com/python-trio/trio/pull/3030",
+  "repo": {
+    "full_name": "python-trio/trio",
+    "clone_url": "https://github.com/python-trio/trio.git",
+    "default_branch": "main",
+    "created_at": "2017-01-16T04:45:25Z",
+    "stars": 7241,
+    "license": "NOASSERTION",
+    "size_kb": 10271
+  },
+  "pull_request": {
+    "id": 1955735416,
+    "title": "Improve REPL KI",
+    "body": "This commit has a draft method to address #3007. I have 0 ideas on how to test this thing: not only does it use the `raw_input` that gets patched for testing, but the way it injects a newline is basically impossible for a test runner to pass in. Also, it feels fragile somehow to dip in and out of the trio loop patching the signal handler and peeking for `KeyboardInterrupt`.",
+    "created_at": "2024-07-05T23:07:48Z",
+    "merged_at": "2025-09-02T07:35:55Z",
+    "base_sha": "7168bfcd45ab8efea876132a73a81e2c66073116",
+    "head_sha": "8a07eb3b4a64a22ddfacd66f8c0f0a345790da07",
+    "merge_commit_sha": "5bfba27b23f9a1f1bac86880b341bcfab54e43f2",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "563f685f6c8106d0bc891c5e360094fea9ddade2",
+  "final_sha": "8a07eb3b4a64a22ddfacd66f8c0f0a345790da07",
+  "changed_files": [
+    {
+      "sha": "da6732395a22cdea02d443a8ebba48e40771bae1",
+      "filename": "newsfragments/3007.bugfix.rst",
+      "status": "added",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/python-trio/trio/blob/8a07eb3b4a64a22ddfacd66f8c0f0a345790da07/newsfragments%2F3007.bugfix.rst",
+      "raw_url": "https://github.com/python-trio/trio/raw/8a07eb3b4a64a22ddfacd66f8c0f0a345790da07/newsfragments%2F3007.bugfix.rst",
+      "contents_url": "https://api.github.com/repos/python-trio/trio/contents/newsfragments%2F3007.bugfix.rst?ref=8a07eb3b4a64a22ddfacd66f8c0f0a345790da07",
+      "patch": "@@ -0,0 +1 @@\n+Make ctrl+c work in more situations in the Trio REPL (``python -m trio``)."
+    },
+    {
+      "sha": "5a96e68789894b6dbf6e7bd05ab0e83715082776",
+      "filename": "src/trio/_repl.py",
+      "status": "modified",
+      "additions": 72,
+      "deletions": 3,
+      "changes": 75,
+      "blob_url": "https://github.com/python-trio/trio/blob/8a07eb3b4a64a22ddfacd66f8c0f0a345790da07/src%2Ftrio%2F_repl.py",
+      "raw_url": "https://github.com/python-trio/trio/raw/8a07eb3b4a64a22ddfacd66f8c0f0a345790da07/src%2Ftrio%2F_repl.py",
+      "contents_url": "https://api.github.com/repos/python-trio/trio/contents/src%2Ftrio%2F_repl.py?ref=8a07eb3b4a64a22ddfacd66f8c0f0a345790da07",
+      "patch": "@@ -4,9 +4,10 @@\n import contextlib\n import inspect\n import sys\n-import types\n import warnings\n from code import InteractiveConsole\n+from types import CodeType, FrameType, FunctionType\n+from typing import Callable\n \n import outcome\n \n@@ -15,14 +16,33 @@\n from trio._util import final\n \n \n+class SuppressDecorator(contextlib.ContextDecorator, contextlib.suppress):\n+    pass\n+\n+\n+@SuppressDecorator(KeyboardInterrupt)\n+@trio.lowlevel.disable_ki_protection\n+def terminal_newline() -> None:  # TODO: test this line\n+    import fcntl\n+    import termios\n+\n+    # Fake up a newline char as if user had typed it at the terminal\n+    try:\n+        fcntl.ioctl(sys.stdin, termios.TIOCSTI, b\"\\n\")  # type: ignore[attr-defined, unused-ignore]\n+    except OSError as e:\n+        print(f\"\\nPress enter! Newline injection failed: {e}\", end=\"\", flush=True)\n+\n+\n @final\n class TrioInteractiveConsole(InteractiveConsole):\n     def __init__(self, repl_locals: dict[str, object] | None = None) -> None:\n         super().__init__(locals=repl_locals)\n+        self.token: trio.lowlevel.TrioToken | None = None\n         self.compile.compiler.flags |= ast.PyCF_ALLOW_TOP_LEVEL_AWAIT\n+        self.interrupted = False\n \n-    def runcode(self, code: types.CodeType) -> None:\n-        func = types.FunctionType(code, self.locals)\n+    def runcode(self, code: CodeType) -> None:\n+        func = FunctionType(code, self.locals)\n         if inspect.iscoroutinefunction(func):\n             result = trio.from_thread.run(outcome.acapture, func)\n         else:\n@@ -48,6 +68,55 @@ def runcode(self, code: types.CodeType) -> None:\n                 # We always use sys.excepthook, unlike other implementations.\n                 # This means that overriding self.write also does nothing to tbs.\n                 sys.excepthook(sys.last_type, sys.last_value, sys.last_traceback)\n+        # clear any residual KI\n+        trio.from_thread.run(trio.lowlevel.checkpoint_if_cancelled)\n+        # trio.from_thread.check_cancelled() has too long of a memory\n+\n+    if sys.platform == \"win32\":  # TODO: test this line\n+\n+        def raw_input(self, prompt: str = \"\") -> str:\n+            try:\n+                return input(prompt)\n+            except EOFError:\n+                # check if trio has a pending KI\n+                trio.from_thread.run(trio.lowlevel.checkpoint_if_cancelled)\n+                raise\n+\n+    else:\n+\n+        def raw_input(self, prompt: str = \"\") -> str:\n+            from signal import SIGINT, signal\n+\n+            assert not self.interrupted\n+\n+            def install_handler() -> (\n+                Callable[[int, FrameType | None], None] | int | None\n+            ):\n+                def handler(\n+                    sig: int, frame: FrameType | None\n+                ) -> None:  # TODO: test this line\n+                    self.interrupted = True\n+                    token.run_sync_soon(terminal_newline, idempotent=True)\n+\n+                token = trio.lowlevel.current_trio_token()\n+\n+                return signal(SIGINT, handler)\n+\n+            prev_handler = trio.from_thread.run_sync(install_handler)\n+            try:\n+                return input(prompt)\n+            finally:\n+                trio.from_thread.run_sync(signal, SIGINT, prev_handler)\n+                if self.interrupted:  # TODO: test this line\n+                    raise KeyboardInterrupt\n+\n+        def write(self, output: str) -> None:\n+            if self.interrupted:  # TODO: test this line\n+                assert output == \"\\nKeyboardInterrupt\\n\"\n+                sys.stderr.write(output[1:])\n+                self.interrupted = False\n+            else:\n+                sys.stderr.write(output)\n \n \n async def run_repl(console: TrioInteractiveConsole) -> None:"
+    },
+    {
+      "sha": "ae125d9ab026f1fff18b903fbc6b80978a8121c0",
+      "filename": "src/trio/_tests/test_repl.py",
+      "status": "modified",
+      "additions": 194,
+      "deletions": 0,
+      "changes": 194,
+      "blob_url": "https://github.com/python-trio/trio/blob/8a07eb3b4a64a22ddfacd66f8c0f0a345790da07/src%2Ftrio%2F_tests%2Ftest_repl.py",
+      "raw_url": "https://github.com/python-trio/trio/raw/8a07eb3b4a64a22ddfacd66f8c0f0a345790da07/src%2Ftrio%2F_tests%2Ftest_repl.py",
+      "contents_url": "https://api.github.com/repos/python-trio/trio/contents/src%2Ftrio%2F_tests%2Ftest_repl.py?ref=8a07eb3b4a64a22ddfacd66f8c0f0a345790da07",
+      "patch": "@@ -1,7 +1,11 @@\n from __future__ import annotations\n \n+import os\n+import pathlib\n+import signal\n import subprocess\n import sys\n+from functools import partial\n from typing import Protocol\n \n import pytest\n@@ -239,3 +243,193 @@ def test_main_entrypoint() -> None:\n     \"\"\"\n     repl = subprocess.run([sys.executable, \"-m\", \"trio\"], input=b\"exit()\")\n     assert repl.returncode == 0\n+\n+\n+def should_try_newline_injection() -> bool:\n+    if sys.platform != \"linux\":\n+        return False\n+\n+    sysctl = pathlib.Path(\"/proc/sys/dev/tty/legacy_tiocsti\")\n+    if not sysctl.exists():  # pragma: no cover\n+        return True\n+\n+    else:\n+        return sysctl.read_text() == \"1\"\n+\n+\n+@pytest.mark.skipif(\n+    not should_try_newline_injection(),\n+    reason=\"the ioctl we use is disabled in CI\",\n+)\n+def test_ki_newline_injection() -> None:  # TODO: test this line\n+    # TODO: we want to remove this functionality, eg by using vendored\n+    #       pyrepls.\n+    assert sys.platform != \"win32\"\n+\n+    import pty\n+\n+    # NOTE: this cannot be subprocess.Popen because pty.fork\n+    #       does some magic to set the controlling terminal.\n+    # (which I don't know how to replicate... so I copied this\n+    # structure from pty.spawn...)\n+    pid, pty_fd = pty.fork()  # type: ignore[attr-defined,unused-ignore]\n+    if pid == 0:\n+        os.execlp(sys.executable, *[sys.executable, \"-u\", \"-m\", \"trio\"])\n+\n+    # setup:\n+    buffer = b\"\"\n+    while not buffer.endswith(b\"import trio\\r\\n>>> \"):\n+        buffer += os.read(pty_fd, 4096)\n+\n+    # sanity check:\n+    print(buffer.decode())\n+    buffer = b\"\"\n+    os.write(pty_fd, b'print(\"hello!\")\\n')\n+    while not buffer.endswith(b\">>> \"):\n+        buffer += os.read(pty_fd, 4096)\n+\n+    assert buffer.count(b\"hello!\") == 2\n+\n+    # press ctrl+c\n+    print(buffer.decode())\n+    buffer = b\"\"\n+    os.kill(pid, signal.SIGINT)\n+    while not buffer.endswith(b\">>> \"):\n+        buffer += os.read(pty_fd, 4096)\n+\n+    assert b\"KeyboardInterrupt\" in buffer\n+\n+    # press ctrl+c later\n+    print(buffer.decode())\n+    buffer = b\"\"\n+    os.write(pty_fd, b'print(\"hello!\")')\n+    os.kill(pid, signal.SIGINT)\n+    while not buffer.endswith(b\">>> \"):\n+        buffer += os.read(pty_fd, 4096)\n+\n+    assert b\"KeyboardInterrupt\" in buffer\n+    print(buffer.decode())\n+    os.close(pty_fd)\n+    os.waitpid(pid, 0)[1]\n+\n+\n+async def test_ki_in_repl() -> None:\n+    async with trio.open_nursery() as nursery:\n+        proc = await nursery.start(\n+            partial(\n+                trio.run_process,\n+                [sys.executable, \"-u\", \"-m\", \"trio\"],\n+                stdout=subprocess.PIPE,\n+                stderr=subprocess.STDOUT,\n+                stdin=subprocess.PIPE,\n+                creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if sys.platform == \"win32\" else 0,  # type: ignore[attr-defined,unused-ignore]\n+            )\n+        )\n+\n+        async with proc.stdout:\n+            # setup\n+            buffer = b\"\"\n+            async for part in proc.stdout:  # pragma: no branch\n+                buffer += part\n+                # TODO: consider making run_process stdout have some universal newlines thing\n+                if buffer.replace(b\"\\r\\n\", b\"\\n\").endswith(b\"import trio\\n>>> \"):\n+                    break\n+\n+            # ensure things work\n+            print(buffer.decode())\n+            buffer = b\"\"\n+            await proc.stdin.send_all(b'print(\"hello!\")\\n')\n+            async for part in proc.stdout:  # pragma: no branch\n+                buffer += part\n+                if buffer.endswith(b\">>> \"):\n+                    break\n+\n+            assert b\"hello!\" in buffer\n+            print(buffer.decode())\n+\n+            # this seems to be necessary on Windows for reasons\n+            # (the parents of process groups ignore ctrl+c by default...)\n+            if sys.platform == \"win32\":\n+                buffer = b\"\"\n+                await proc.stdin.send_all(\n+                    b\"import ctypes; ctypes.windll.kernel32.SetConsoleCtrlHandler(None, False)\\n\"\n+                )\n+                async for part in proc.stdout:  # pragma: no branch\n+                    buffer += part\n+                    if buffer.endswith(b\">>> \"):\n+                        break\n+\n+                print(buffer.decode())\n+\n+            # try to decrease flakiness...\n+            buffer = b\"\"\n+            await proc.stdin.send_all(\n+                b\"import coverage; trio.lowlevel.enable_ki_protection(coverage.pytracer.PyTracer._trace)\\n\"\n+            )\n+            async for part in proc.stdout:  # pragma: no branch\n+                buffer += part\n+                if buffer.endswith(b\">>> \"):\n+                    break\n+\n+            print(buffer.decode())\n+\n+            # ensure that ctrl+c on a prompt works\n+            # NOTE: for some reason, signal.SIGINT doesn't work for this test.\n+            # Using CTRL_C_EVENT is also why we need subprocess.CREATE_NEW_PROCESS_GROUP\n+            signal_sent = signal.CTRL_C_EVENT if sys.platform == \"win32\" else signal.SIGINT  # type: ignore[attr-defined,unused-ignore]\n+            os.kill(proc.pid, signal_sent)\n+            if sys.platform == \"win32\":\n+                # we rely on EOFError which... doesn't happen with pipes.\n+                # I'm not sure how to fix it...\n+                await proc.stdin.send_all(b\"\\n\")\n+            else:\n+                # we test injection separately\n+                await proc.stdin.send_all(b\"\\n\")\n+\n+            buffer = b\"\"\n+            async for part in proc.stdout:  # pragma: no branch\n+                buffer += part\n+                if buffer.endswith(b\">>> \"):\n+                    break\n+\n+            assert b\"KeyboardInterrupt\" in buffer\n+\n+            # ensure ctrl+c while a command runs works\n+            print(buffer.decode())\n+            await proc.stdin.send_all(b'print(\"READY\"); await trio.sleep_forever()\\n')\n+            killed = False\n+            buffer = b\"\"\n+            async for part in proc.stdout:  # pragma: no branch\n+                buffer += part\n+                if buffer.replace(b\"\\r\\n\", b\"\\n\").endswith(b\"READY\\n\") and not killed:\n+                    os.kill(proc.pid, signal_sent)\n+                    killed = True\n+                if buffer.endswith(b\">>> \"):\n+                    break\n+\n+            assert b\"trio\" in buffer\n+            assert b\"KeyboardInterrupt\" in buffer\n+\n+            # make sure it works for sync commands too\n+            # (though this would be hard to break)\n+            print(buffer.decode())\n+            await proc.stdin.send_all(\n+                b'import time; print(\"READY\"); time.sleep(99999)\\n'\n+            )\n+            killed = False\n+            buffer = b\"\"\n+            async for part in proc.stdout:  # pragma: no branch\n+                buffer += part\n+                if buffer.replace(b\"\\r\\n\", b\"\\n\").endswith(b\"READY\\n\") and not killed:\n+                    os.kill(proc.pid, signal_sent)\n+                    killed = True\n+                if buffer.endswith(b\">>> \"):\n+                    break\n+\n+            assert b\"Traceback\" in buffer\n+            assert b\"KeyboardInterrupt\" in buffer\n+\n+            print(buffer.decode())\n+\n+        # kill the process\n+        nursery.cancel_scope.cancel()"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "39d0ca2686a6c4eae3d54022f44e520cc2500bca",
+      "message": "improve repl KI",
+      "parent_shas": [
+        "563f685f6c8106d0bc891c5e360094fea9ddade2"
+      ]
+    },
+    {
+      "sha": "46a3f0200018a14fa895033eb1905b17a39d9950",
+      "message": "Merge branch 'main' into repl_ki",
+      "parent_shas": [
+        "39d0ca2686a6c4eae3d54022f44e520cc2500bca",
+        "d63f3a96f0869eda798c6597cdada6751e56863b"
+      ]
+    },
+    {
+      "sha": "a5dcdbfa0528554d0138667f5860c0c7c6233451",
+      "message": "apply suggestion from review, ensure calls in handler are safe",
+      "parent_shas": [
+        "46a3f0200018a14fa895033eb1905b17a39d9950"
+      ]
+    },
+    {
+      "sha": "039bad1dc01bedf06493622ab1c1b9cd34dc79b5",
+      "message": "grab token and install handler in one go",
+      "parent_shas": [
+        "a5dcdbfa0528554d0138667f5860c0c7c6233451"
+      ]
+    },
+    {
+      "sha": "240f9ff5b689e9ab055b1e5291e60f37ae2394d2",
+      "message": "[pre-commit.ci] auto fixes from pre-commit.com hooks\n\nfor more information, see https://pre-commit.ci",
+      "parent_shas": [
+        "039bad1dc01bedf06493622ab1c1b9cd34dc79b5"
+      ]
+    },
+    {
+      "sha": "611a89d01c0819f7dbaea0012d9e778d64a830fe",
+      "message": "Merge branch 'main' into repl_ki",
+      "parent_shas": [
+        "240f9ff5b689e9ab055b1e5291e60f37ae2394d2",
+        "4f54774716a65ed75d584c561133c31663525c6b"
+      ]
+    },
+    {
+      "sha": "301f361c842f96b080464aace384fbb88f7f0117",
+      "message": "Don't add extra newlines on KI",
+      "parent_shas": [
+        "611a89d01c0819f7dbaea0012d9e778d64a830fe"
+      ]
+    },
+    {
+      "sha": "95f0d33a862ddddae8c474cfd82ed814fab8f75d",
+      "message": "Add some tests",
+      "parent_shas": [
+        "301f361c842f96b080464aace384fbb88f7f0117"
+      ]
+    },
+    {
+      "sha": "b71a1b8ea0ebae7e0d710ba9df55bde015c1a7fb",
+      "message": "First pass at CI failures",
+      "parent_shas": [
+        "95f0d33a862ddddae8c474cfd82ed814fab8f75d"
+      ]
+    },
+    {
+      "sha": "919cc8b0b1407b9d004a7b442e6f7093ce236ac2",
+      "message": "The CI runners have `dev.tty.legacy_tiocsti` set to `0`\n\nThis means that we cannot test our usage of `TIOCSTI`. This ctrl+c\nsupport was dead on arrival!",
+      "parent_shas": [
+        "b71a1b8ea0ebae7e0d710ba9df55bde015c1a7fb"
+      ]
+    },
+    {
+      "sha": "6c8d1e405cf80eb1d732056aea45fd1f9cc59fe7",
+      "message": "Hacky fixes for Windows",
+      "parent_shas": [
+        "919cc8b0b1407b9d004a7b442e6f7093ce236ac2"
+      ]
+    },
+    {
+      "sha": "04abe8d96dc618961b2fc160e42317e5a7c9c45b",
+      "message": "Try to avoid flakiness",
+      "parent_shas": [
+        "6c8d1e405cf80eb1d732056aea45fd1f9cc59fe7"
+      ]
+    },
+    {
+      "sha": "7f135cc494791254c0e255e6888aa9e391b64ada",
+      "message": "Address PR review and first pass at codecov",
+      "parent_shas": [
+        "04abe8d96dc618961b2fc160e42317e5a7c9c45b"
+      ]
+    },
+    {
+      "sha": "607879946dbf822dbe038ee338d4eb68766ab695",
+      "message": "Start checking sysctls for `test_ki_newline_injection`",
+      "parent_shas": [
+        "7f135cc494791254c0e255e6888aa9e391b64ada"
+      ]
+    },
+    {
+      "sha": "86eb25006981ca5259b8adfcd33a2848c47124af",
+      "message": "Try enabling the sysctl",
+      "parent_shas": [
+        "607879946dbf822dbe038ee338d4eb68766ab695"
+      ]
+    },
+    {
+      "sha": "bcccd9229a611f336b0530cc7be4131d7334cdc3",
+      "message": "Merge branch 'main' into repl_ki",
+      "parent_shas": [
+        "86eb25006981ca5259b8adfcd33a2848c47124af",
+        "7168bfcd45ab8efea876132a73a81e2c66073116"
+      ]
+    },
+    {
+      "sha": "d9b407eb5c7626ab027630f79cf6e173a2eac97d",
+      "message": "[pre-commit.ci] auto fixes from pre-commit.com hooks\n\nfor more information, see https://pre-commit.ci",
+      "parent_shas": [
+        "bcccd9229a611f336b0530cc7be4131d7334cdc3"
+      ]
+    },
+    {
+      "sha": "2d7add22c45dabf36f06b18ee46fb2d10b2dee16",
+      "message": "Fix pre-commit",
+      "parent_shas": [
+        "d9b407eb5c7626ab027630f79cf6e173a2eac97d"
+      ]
+    },
+    {
+      "sha": "b60e1ae2bcb78cd5b93b2b4441456010fbe423b7",
+      "message": "Give up on TIOCSTI in CI",
+      "parent_shas": [
+        "2d7add22c45dabf36f06b18ee46fb2d10b2dee16"
+      ]
+    },
+    {
+      "sha": "16b65e3c938ea7683c7785031c1a86e5605e758d",
+      "message": "Actually skip newline injection on Windows",
+      "parent_shas": [
+        "b60e1ae2bcb78cd5b93b2b4441456010fbe423b7"
+      ]
+    },
+    {
+      "sha": "d25d9d124b464d000a4b28983e7ae2f8e62bbda9",
+      "message": "Actually skip newline injection tests on MacOS",
+      "parent_shas": [
+        "16b65e3c938ea7683c7785031c1a86e5605e758d"
+      ]
+    },
+    {
+      "sha": "8a07eb3b4a64a22ddfacd66f8c0f0a345790da07",
+      "message": "Codecov annoyances",
+      "parent_shas": [
+        "d25d9d124b464d000a4b28983e7ae2f8e62bbda9"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "too_many_commits"
+    ],
+    "auto_signals": [
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__python-trio__trio__pr3030.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\python-trio__trio__pr3030__py2_py3__python-trio__trio__pr3030\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\python-trio__trio__pr3030__py2_py3__python-trio__trio__pr3030\\rn"
+  }
+}

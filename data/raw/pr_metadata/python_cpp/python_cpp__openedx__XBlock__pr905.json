@@ -1,0 +1,150 @@
+{
+  "instance_id": "python_cpp__openedx__XBlock__pr905",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "openedx/XBlock",
+  "pr_number": 905,
+  "pr_url": "https://github.com/openedx/XBlock/pull/905",
+  "repo": {
+    "full_name": "openedx/XBlock",
+    "clone_url": "https://github.com/openedx/XBlock.git",
+    "default_branch": "master",
+    "created_at": "2013-03-11T18:35:36Z",
+    "stars": 468,
+    "license": "Apache-2.0",
+    "size_kb": 3681
+  },
+  "pull_request": {
+    "id": 3518454109,
+    "title": "chore: Upgrade Python requirements",
+    "body": "Python requirements update. Please review the [changelogs](https://openedx.atlassian.net/wiki/spaces/TE/pages/1001521320/Python+Package+Changelogs) for the upgraded packages.",
+    "created_at": "2026-04-12T00:24:41Z",
+    "merged_at": "2026-04-13T05:51:19Z",
+    "base_sha": "cd9e452fc703ffb3691aac733824f9aa83d22da9",
+    "head_sha": "fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0",
+    "merge_commit_sha": "4cb801ab1f3194c49d25026d959778d418d0d299",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "cd9e452fc703ffb3691aac733824f9aa83d22da9",
+  "final_sha": "fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0",
+  "changed_files": [
+    {
+      "sha": "03e55f3eb0ab04e2c862641c8fd54cad51454964",
+      "filename": "requirements/base.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/openedx/XBlock/blob/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Fbase.txt",
+      "raw_url": "https://github.com/openedx/XBlock/raw/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Fbase.txt",
+      "contents_url": "https://api.github.com/repos/openedx/XBlock/contents/requirements%2Fbase.txt?ref=fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0",
+      "patch": "@@ -12,7 +12,7 @@ edx-opaque-keys==4.0.0\n     # via -r requirements/base.in\n fs==2.4.16\n     # via -r requirements/base.in\n-lxml==6.0.2\n+lxml==6.0.3\n     # via -r requirements/base.in\n mako==1.3.10\n     # via -r requirements/base.in"
+    },
+    {
+      "sha": "128b3aeea9f4245c897940cc3102a0fb6677b7a6",
+      "filename": "requirements/ci.txt",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/openedx/XBlock/blob/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Fci.txt",
+      "raw_url": "https://github.com/openedx/XBlock/raw/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Fci.txt",
+      "contents_url": "https://api.github.com/repos/openedx/XBlock/contents/requirements%2Fci.txt?ref=fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0",
+      "patch": "@@ -21,7 +21,7 @@ packaging==26.0\n     # via\n     #   pyproject-api\n     #   tox\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   python-discovery\n     #   tox\n@@ -30,13 +30,13 @@ pluggy==1.6.0\n     # via tox\n pyproject-api==1.10.0\n     # via tox\n-python-discovery==1.2.1\n+python-discovery==1.2.2\n     # via\n     #   tox\n     #   virtualenv\n tomli-w==1.2.0\n     # via tox\n-tox==4.52.0\n+tox==4.52.1\n     # via -r requirements/ci.in\n-virtualenv==21.2.0\n+virtualenv==21.2.1\n     # via tox"
+    },
+    {
+      "sha": "2a54e5f1ec38e91269c3d09fdea7e678ae94ebf8",
+      "filename": "requirements/dev.txt",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 12,
+      "changes": 24,
+      "blob_url": "https://github.com/openedx/XBlock/blob/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Fdev.txt",
+      "raw_url": "https://github.com/openedx/XBlock/raw/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Fdev.txt",
+      "contents_url": "https://api.github.com/repos/openedx/XBlock/contents/requirements%2Fdev.txt?ref=fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0",
+      "patch": "@@ -17,16 +17,16 @@ astroid==4.0.4\n     #   -r requirements/test.txt\n     #   pylint\n     #   pylint-celery\n-boto3==1.42.83\n+boto3==1.42.88\n     # via\n     #   -r requirements/test.txt\n     #   fs-s3fs\n-botocore==1.42.83\n+botocore==1.42.88\n     # via\n     #   -r requirements/test.txt\n     #   boto3\n     #   s3transfer\n-build==1.4.2\n+build==1.4.3\n     # via\n     #   -r requirements/pip-tools.txt\n     #   pip-tools\n@@ -35,7 +35,7 @@ cachetools==7.0.5\n     #   -r requirements/ci.txt\n     #   -r requirements/test.txt\n     #   tox\n-chardet==7.4.0.post2\n+chardet==7.4.1\n     # via\n     #   -r requirements/test.txt\n     #   diff-cover\n@@ -78,7 +78,7 @@ distlib==0.4.0\n     #   -r requirements/ci.txt\n     #   -r requirements/test.txt\n     #   virtualenv\n-django==5.2.12\n+django==5.2.13\n     # via\n     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt\n     #   -r requirements/test.txt\n@@ -107,7 +107,7 @@ fs-s3fs==1.1.1\n     # via\n     #   -r requirements/test.txt\n     #   openedx-django-pyfs\n-hypothesis==6.151.10\n+hypothesis==6.151.12\n     # via -r requirements/test.txt\n iniconfig==2.3.0\n     # via\n@@ -129,7 +129,7 @@ jmespath==1.1.0\n     #   botocore\n lazy==1.6\n     # via -r requirements/test.txt\n-lxml==6.0.2\n+lxml==6.0.3\n     # via -r requirements/test.txt\n mako==1.3.10\n     # via -r requirements/test.txt\n@@ -160,7 +160,7 @@ path==17.1.1\n     # via -r requirements/test.txt\n pip-tools==7.5.3\n     # via -r requirements/pip-tools.txt\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   -r requirements/ci.txt\n     #   -r requirements/test.txt\n@@ -217,7 +217,7 @@ pyproject-hooks==1.2.0\n     #   -r requirements/pip-tools.txt\n     #   build\n     #   pip-tools\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   -r requirements/test.txt\n     #   pytest-cov\n@@ -230,7 +230,7 @@ python-dateutil==2.9.0.post0\n     # via\n     #   -r requirements/test.txt\n     #   botocore\n-python-discovery==1.2.1\n+python-discovery==1.2.2\n     # via\n     #   -r requirements/ci.txt\n     #   -r requirements/test.txt\n@@ -285,7 +285,7 @@ tomlkit==0.14.0\n     # via\n     #   -r requirements/test.txt\n     #   pylint\n-tox==4.52.0\n+tox==4.52.1\n     # via\n     #   -r requirements/ci.txt\n     #   -r requirements/test.txt\n@@ -297,7 +297,7 @@ urllib3==2.6.3\n     # via\n     #   -r requirements/test.txt\n     #   botocore\n-virtualenv==21.2.0\n+virtualenv==21.2.1\n     # via\n     #   -r requirements/ci.txt\n     #   -r requirements/test.txt"
+    },
+    {
+      "sha": "8086e2537455cbb51318721a2092d9fb205edb4a",
+      "filename": "requirements/django.txt",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/openedx/XBlock/blob/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Fdjango.txt",
+      "raw_url": "https://github.com/openedx/XBlock/raw/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Fdjango.txt",
+      "contents_url": "https://api.github.com/repos/openedx/XBlock/contents/requirements%2Fdjango.txt?ref=fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0",
+      "patch": "@@ -10,13 +10,13 @@ appdirs==1.4.4\n     #   fs\n asgiref==3.11.1\n     # via django\n-boto3==1.42.83\n+boto3==1.42.88\n     # via fs-s3fs\n-botocore==1.42.83\n+botocore==1.42.88\n     # via\n     #   boto3\n     #   s3transfer\n-django==5.2.12\n+django==5.2.13\n     # via\n     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt\n     #   -r requirements/django.in\n@@ -40,7 +40,7 @@ jmespath==1.1.0\n     #   botocore\n lazy==1.6\n     # via -r requirements/django.in\n-lxml==6.0.2\n+lxml==6.0.3\n     # via -r requirements/base.txt\n mako==1.3.10\n     # via -r requirements/base.txt"
+    },
+    {
+      "sha": "13f2534b265529a1184c3a9da00006cc76bd81bf",
+      "filename": "requirements/doc.txt",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/openedx/XBlock/blob/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Fdoc.txt",
+      "raw_url": "https://github.com/openedx/XBlock/raw/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Fdoc.txt",
+      "contents_url": "https://api.github.com/repos/openedx/XBlock/contents/requirements%2Fdoc.txt?ref=fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0",
+      "patch": "@@ -22,11 +22,11 @@ babel==2.18.0\n     #   sphinx\n beautifulsoup4==4.14.3\n     # via pydata-sphinx-theme\n-boto3==1.42.83\n+boto3==1.42.88\n     # via\n     #   -r requirements/django.txt\n     #   fs-s3fs\n-botocore==1.42.83\n+botocore==1.42.88\n     # via\n     #   -r requirements/django.txt\n     #   boto3\n@@ -35,7 +35,7 @@ certifi==2026.2.25\n     # via requests\n charset-normalizer==3.4.7\n     # via requests\n-django==5.2.12\n+django==5.2.13\n     # via\n     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt\n     #   -r requirements/django.txt\n@@ -72,7 +72,7 @@ jmespath==1.1.0\n     #   botocore\n lazy==1.6\n     # via -r requirements/django.txt\n-lxml==6.0.2\n+lxml==6.0.3\n     # via -r requirements/django.txt\n mako==1.3.10\n     # via -r requirements/django.txt"
+    },
+    {
+      "sha": "e7d1c474f00c8ad12ee7f22e1fe04cdeaef3d3f1",
+      "filename": "requirements/pip-tools.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/openedx/XBlock/blob/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Fpip-tools.txt",
+      "raw_url": "https://github.com/openedx/XBlock/raw/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Fpip-tools.txt",
+      "contents_url": "https://api.github.com/repos/openedx/XBlock/contents/requirements%2Fpip-tools.txt?ref=fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0",
+      "patch": "@@ -4,7 +4,7 @@\n #\n #    make upgrade\n #\n-build==1.4.2\n+build==1.4.3\n     # via pip-tools\n click==8.3.2\n     # via pip-tools"
+    },
+    {
+      "sha": "583f82750fefc39af6c61be998bdfef5d9de1bd8",
+      "filename": "requirements/test.txt",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 10,
+      "changes": 20,
+      "blob_url": "https://github.com/openedx/XBlock/blob/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Ftest.txt",
+      "raw_url": "https://github.com/openedx/XBlock/raw/fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0/requirements%2Ftest.txt",
+      "contents_url": "https://api.github.com/repos/openedx/XBlock/contents/requirements%2Ftest.txt?ref=fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0",
+      "patch": "@@ -17,18 +17,18 @@ astroid==4.0.4\n     #   -r requirements/test.in\n     #   pylint\n     #   pylint-celery\n-boto3==1.42.83\n+boto3==1.42.88\n     # via\n     #   -r requirements/django.txt\n     #   fs-s3fs\n-botocore==1.42.83\n+botocore==1.42.88\n     # via\n     #   -r requirements/django.txt\n     #   boto3\n     #   s3transfer\n cachetools==7.0.5\n     # via tox\n-chardet==7.4.0.post2\n+chardet==7.4.1\n     # via diff-cover\n click==8.3.2\n     # via\n@@ -79,7 +79,7 @@ fs-s3fs==1.1.1\n     # via\n     #   -r requirements/django.txt\n     #   openedx-django-pyfs\n-hypothesis==6.151.10\n+hypothesis==6.151.12\n     # via -r requirements/test.in\n iniconfig==2.3.0\n     # via pytest\n@@ -96,7 +96,7 @@ jmespath==1.1.0\n     #   botocore\n lazy==1.6\n     # via -r requirements/django.txt\n-lxml==6.0.2\n+lxml==6.0.3\n     # via -r requirements/django.txt\n mako==1.3.10\n     # via -r requirements/django.txt\n@@ -118,7 +118,7 @@ packaging==26.0\n     #   tox\n path==17.1.1\n     # via -r requirements/test.in\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   pylint\n     #   python-discovery\n@@ -157,7 +157,7 @@ pymongo==4.16.0\n     #   edx-opaque-keys\n pyproject-api==1.10.0\n     # via tox\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   -r requirements/test.in\n     #   pytest-cov\n@@ -170,7 +170,7 @@ python-dateutil==2.9.0.post0\n     # via\n     #   -r requirements/django.txt\n     #   botocore\n-python-discovery==1.2.1\n+python-discovery==1.2.2\n     # via\n     #   tox\n     #   virtualenv\n@@ -212,7 +212,7 @@ tomli-w==1.2.0\n     # via tox\n tomlkit==0.14.0\n     # via pylint\n-tox==4.52.0\n+tox==4.52.1\n     # via -r requirements/test.in\n typing-extensions==4.15.0\n     # via\n@@ -222,7 +222,7 @@ urllib3==2.6.3\n     # via\n     #   -r requirements/django.txt\n     #   botocore\n-virtualenv==21.2.0\n+virtualenv==21.2.1\n     # via tox\n web-fragments==4.0.0\n     # via -r requirements/django.txt"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "fb412bc8c7dc0eb0238814688b5e8d57f4c1d2b0",
+      "message": "chore: Upgrade Python requirements",
+      "parent_shas": [
+        "cd9e452fc703ffb3691aac733824f9aa83d22da9"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "dependency_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__openedx__XBlock__pr905.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\openedx__XBlock__pr905__python_cpp__openedx__XBlock__pr905\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\openedx__XBlock__pr905__python_cpp__openedx__XBlock__pr905\\rn"
+  }
+}

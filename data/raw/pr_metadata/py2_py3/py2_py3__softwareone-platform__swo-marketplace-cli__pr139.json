@@ -1,0 +1,102 @@
+{
+  "instance_id": "py2_py3__softwareone-platform__swo-marketplace-cli__pr139",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "softwareone-platform/swo-marketplace-cli",
+  "pr_number": 139,
+  "pr_url": "https://github.com/softwareone-platform/swo-marketplace-cli/pull/139",
+  "repo": {
+    "full_name": "softwareone-platform/swo-marketplace-cli",
+    "clone_url": "https://github.com/softwareone-platform/swo-marketplace-cli.git",
+    "default_branch": "main",
+    "created_at": "2024-04-11T14:09:28Z",
+    "stars": 10,
+    "license": "Apache-2.0",
+    "size_kb": 1765
+  },
+  "pull_request": {
+    "id": 3299743015,
+    "title": "MPT-17825: resolve WPS120 trailing underscore violations",
+    "body": "🤖 **Codex-generated PR** — Please review carefully.\n\n## Summary\n- remove `WPS120` from flake8 `per-file-ignores` in `pyproject.toml`\n- replace `ItemAction._missing_` usage with explicit `ItemAction.from_raw(...)`\n- update `ItemData.from_dict` and related tests to use the new parsing method\n\n## Validation\n- `uv run flake8 . --select WPS120 --per-file-ignores=''`\n- `make check`\n- `make test`\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\nCloses [MPT-17825](https://softwareone.atlassian.net/browse/MPT-17825)\n\n## Changes\n\n- Removed WPS120 (trailing underscore violations) from flake8 per-file-ignores in pyproject.toml to re-enable linting enforcement\n- Replaced `ItemAction._missing_` with a public `ItemAction.from_raw(raw_input)` method that normalizes `None` to `SKIP` and returns the corresponding enum value\n- Updated `ItemData.from_dict` to use the new `ItemAction.from_raw(...)` parsing method instead of direct constructor call\n- Updated tests to use the new `ItemAction.from_raw()` API\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->\n\n[MPT-17825]: https://softwareone.atlassian.net/browse/MPT-17825?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ",
+    "created_at": "2026-02-18T17:42:13Z",
+    "merged_at": "2026-02-18T18:02:49Z",
+    "base_sha": "618a54404c6214b996d7a47d2146eb279c5d43bb",
+    "head_sha": "85d40789d04f6f42aa158d637fb43e3fdc2e165c",
+    "merge_commit_sha": "f6f7f7d2e2711f2196da3bb90975bfd88cfc7fc1",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "618a54404c6214b996d7a47d2146eb279c5d43bb",
+  "final_sha": "85d40789d04f6f42aa158d637fb43e3fdc2e165c",
+  "changed_files": [
+    {
+      "sha": "08efe6d4744262d885434e08f7c58919b58b388f",
+      "filename": "cli/core/price_lists/models/item.py",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 3,
+      "changes": 15,
+      "blob_url": "https://github.com/softwareone-platform/swo-marketplace-cli/blob/85d40789d04f6f42aa158d637fb43e3fdc2e165c/cli%2Fcore%2Fprice_lists%2Fmodels%2Fitem.py",
+      "raw_url": "https://github.com/softwareone-platform/swo-marketplace-cli/raw/85d40789d04f6f42aa158d637fb43e3fdc2e165c/cli%2Fcore%2Fprice_lists%2Fmodels%2Fitem.py",
+      "contents_url": "https://api.github.com/repos/softwareone-platform/swo-marketplace-cli/contents/cli%2Fcore%2Fprice_lists%2Fmodels%2Fitem.py?ref=85d40789d04f6f42aa158d637fb43e3fdc2e165c",
+      "patch": "@@ -15,10 +15,19 @@ class ItemAction(StrEnum):\n     UPDATE = \"update\"\n \n     @classmethod\n-    def _missing_(cls, raw_input: object) -> \"ItemAction\":\n+    def from_raw(cls, raw_input: str | None) -> \"ItemAction\":\n+        \"\"\"Build an ItemAction enum from a raw value.\n+\n+        Args:\n+            raw_input: Raw action value from parsed data.\n+\n+        Returns:\n+            The normalized item action.\n+\n+        \"\"\"\n         if raw_input is None:\n             return cls.SKIP\n-        return super()._missing_(raw_input)\n+        return cls(raw_input)\n \n \n class ItemStatus(StrEnum):\n@@ -91,7 +100,7 @@ def from_dict(cls, row_data: dict[str, Any]) -> Self:\n             unit_pp=row_data[constants.PRICELIST_ITEMS_UNIT_PP][\"value\"],\n             unit_sp=row_data.get(constants.PRICELIST_ITEMS_UNIT_SP, {}).get(\"value\"),\n             vendor_id=row_data[constants.PRICELIST_ITEMS_ITEM_VENDOR_ID][\"value\"],\n-            action=ItemAction(row_data[constants.PRICELIST_ITEMS_ACTION][\"value\"]),\n+            action=ItemAction.from_raw(row_data[constants.PRICELIST_ITEMS_ACTION][\"value\"]),\n             type=row_data.get(\"type\"),\n         )\n "
+    },
+    {
+      "sha": "27fb71f7d8ff39c02ac43b8914df0ca4c0e9e6fd",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/softwareone-platform/swo-marketplace-cli/blob/85d40789d04f6f42aa158d637fb43e3fdc2e165c/pyproject.toml",
+      "raw_url": "https://github.com/softwareone-platform/swo-marketplace-cli/raw/85d40789d04f6f42aa158d637fb43e3fdc2e165c/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/softwareone-platform/swo-marketplace-cli/contents/pyproject.toml?ref=85d40789d04f6f42aa158d637fb43e3fdc2e165c",
+      "patch": "@@ -121,7 +121,7 @@ select = [\"AAA\", \"E999\", \"WPS\"]\n show-source = true\n statistics = false\n per-file-ignores = [\n-  \"*.py:WPS120,WPS122,WPS202,WPS203,WPS204,WPS210,WPS211,WPS213,WPS214,WPS218,WPS221,WPS229,WPS231,WPS232,WPS234,WPS235,WPS237,WPS300,WPS322,WPS327,WPS332,WPS335,WPS336,WPS338,WPS339,WPS342,WPS347,WPS349,WPS400,WPS402,WPS404,WPS407,WPS410,WPS412,WPS420,WPS430,WPS432,WPS441,WPS458,WPS459,WPS462,WPS471,WPS478,WPS504,WPS518,WPS519,WPS529,WPS601,WPS602,WPS604\",\n+  \"*.py:WPS122,WPS202,WPS203,WPS204,WPS210,WPS211,WPS213,WPS214,WPS218,WPS221,WPS229,WPS231,WPS232,WPS234,WPS235,WPS237,WPS300,WPS322,WPS327,WPS332,WPS335,WPS336,WPS338,WPS339,WPS342,WPS347,WPS349,WPS400,WPS402,WPS404,WPS407,WPS410,WPS412,WPS420,WPS430,WPS432,WPS441,WPS458,WPS459,WPS462,WPS471,WPS478,WPS504,WPS518,WPS519,WPS529,WPS601,WPS602,WPS604\",\n ]\n \n [tool.ruff]"
+    },
+    {
+      "sha": "dbaf0febe1f4d5b335fdca60d274f960b562ba40",
+      "filename": "tests/cli/core/price_lists/models/test_item.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/softwareone-platform/swo-marketplace-cli/blob/85d40789d04f6f42aa158d637fb43e3fdc2e165c/tests%2Fcli%2Fcore%2Fprice_lists%2Fmodels%2Ftest_item.py",
+      "raw_url": "https://github.com/softwareone-platform/swo-marketplace-cli/raw/85d40789d04f6f42aa158d637fb43e3fdc2e165c/tests%2Fcli%2Fcore%2Fprice_lists%2Fmodels%2Ftest_item.py",
+      "contents_url": "https://api.github.com/repos/softwareone-platform/swo-marketplace-cli/contents/tests%2Fcli%2Fcore%2Fprice_lists%2Fmodels%2Ftest_item.py?ref=85d40789d04f6f42aa158d637fb43e3fdc2e165c",
+      "patch": "@@ -1,8 +1,8 @@\n from cli.core.price_lists.models.item import ItemAction, ItemData, ItemStatus\n \n \n-def test_item_action_missing():\n-    result = ItemAction(None)\n+def test_item_action_from_raw_none():\n+    result = ItemAction.from_raw(None)\n \n     assert result == ItemAction.SKIP\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "85d40789d04f6f42aa158d637fb43e3fdc2e165c",
+      "message": "refactor: Resolve WPS120 trailing underscore violations",
+      "parent_shas": [
+        "618a54404c6214b996d7a47d2146eb279c5d43bb"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__softwareone-platform__swo-marketplace-cli__pr139.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\softwareone-platform__swo-marketplace-cli__pr139__py2_py3__softwareone-platform__swo-marketplace-cli__pr139\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\softwareone-platform__swo-marketplace-cli__pr139__py2_py3__softwareone-platform__swo-marketplace-cli__pr139\\rn"
+  }
+}

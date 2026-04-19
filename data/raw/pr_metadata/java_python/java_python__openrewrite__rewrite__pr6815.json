@@ -1,0 +1,150 @@
+{
+  "instance_id": "java_python__openrewrite__rewrite__pr6815",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "openrewrite/rewrite",
+  "pr_number": 6815,
+  "pr_url": "https://github.com/openrewrite/rewrite/pull/6815",
+  "repo": {
+    "full_name": "openrewrite/rewrite",
+    "clone_url": "https://github.com/openrewrite/rewrite.git",
+    "default_branch": "main",
+    "created_at": "2020-05-12T20:16:14Z",
+    "stars": 3407,
+    "license": "Apache-2.0",
+    "size_kb": 126345
+  },
+  "pull_request": {
+    "id": 3325082636,
+    "title": "Python: register all existing recipes",
+    "body": "## What's changed?\r\n\r\nAdding all existing recipes under rewrite-python to the modules `activate()` function.\r\n\r\n## What's your motivation?\r\n\r\nSo that these recipes are installed.\r\nSome recipe libraries already started depending on them and if they are not activated, then the execution might fail with:\r\n```\r\nCaused by io.moderne.jsonrpc.JsonRpcException: {code=-32603, message='Recipe not found: org.openrewrite.python.ChangeImport'}\r\n  io.moderne.jsonrpc.JsonRpc$1.compute(JsonRpc.java:78)\r\n  java.base/java.util.concurrent.RecursiveAction.exec(RecursiveAction.java:194)\r\n```",
+    "created_at": "2026-02-25T10:53:55Z",
+    "merged_at": "2026-02-25T11:27:31Z",
+    "base_sha": "94163415950f7394f967340c85c57e7bdce796fb",
+    "head_sha": "8d6bc972c4571a9679f1acb6b428ad097f897aac",
+    "merge_commit_sha": "602ec884f76a351e9c93759316c88610255782a6",
+    "labels": [
+      "python"
+    ]
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "e7f87109acf35350967e04b5343a22bb6c65fb67",
+  "final_sha": "8d6bc972c4571a9679f1acb6b428ad097f897aac",
+  "changed_files": [
+    {
+      "sha": "7526a49e72c7a9edf42bab7eb3fde583b05b3d11",
+      "filename": "rewrite-python/rewrite/src/rewrite/__init__.py",
+      "status": "modified",
+      "additions": 26,
+      "deletions": 6,
+      "changes": 32,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2F__init__.py",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2F__init__.py?ref=8d6bc972c4571a9679f1acb6b428ad097f897aac",
+      "patch": "@@ -108,9 +108,29 @@ def activate(marketplace: RecipeMarketplace) -> None:\n         marketplace: The RecipeMarketplace to install recipes into\n     \"\"\"\n     from rewrite.decorators import get_recipe_category\n-    from rewrite.python.recipes import RemovePass\n-\n-    # Install all Python recipes with their categories\n-    category = get_recipe_category(RemovePass)\n-    if category is not None:\n-        marketplace.install(RemovePass, category)\n+    from rewrite.python.recipes import (\n+        RemovePass,\n+        ChangeImport,\n+        ChangeType,\n+        ChangeMethodName,\n+        ChangePackage,\n+        DeleteMethodArgument,\n+        ReorderMethodArguments,\n+        AddLiteralMethodArgument,\n+    )\n+\n+    for recipe_class in [\n+        RemovePass,\n+        ChangeImport,\n+        ChangeType,\n+        ChangeMethodName,\n+        ChangePackage,\n+        DeleteMethodArgument,\n+        ReorderMethodArguments,\n+        AddLiteralMethodArgument,\n+    ]:\n+        category = get_recipe_category(recipe_class)\n+        if category is not None:\n+            marketplace.install(recipe_class, category)\n+        else:\n+            marketplace.install(recipe_class, Python)"
+    },
+    {
+      "sha": "ab6e49c760b8449e1d161cc551bad1144857dcd8",
+      "filename": "rewrite-python/rewrite/src/rewrite/python/recipes/add_literal_method_argument.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 3,
+      "changes": 9,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fadd_literal_method_argument.py",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fadd_literal_method_argument.py",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fadd_literal_method_argument.py?ref=8d6bc972c4571a9679f1acb6b428ad097f897aac",
+      "patch": "@@ -21,9 +21,12 @@\n from typing import Any, Optional\n \n from rewrite import ExecutionContext, Recipe, TreeVisitor, option\n+from rewrite.decorators import categorize\n+from rewrite.marketplace import Python\n from rewrite.rpc.java_recipe import prepare_java_recipe, JavaRecipeVisitor, PreparedJavaRecipe\n \n \n+@categorize(Python)\n class AddLiteralMethodArgument(Recipe):\n     \"\"\"\n     Add a literal argument to method invocations matching a pattern.\n@@ -58,9 +61,9 @@ class AddLiteralMethodArgument(Recipe):\n \n     def __init__(\n         self,\n-        method_pattern: str,\n-        argument_index: int,\n-        literal: str\n+        method_pattern: str = \"\",\n+        argument_index: int = 0,\n+        literal: str = \"\"\n     ):\n         self.method_pattern = method_pattern\n         self.argument_index = argument_index"
+    },
+    {
+      "sha": "59571c40e1f197c219de973fb97fa0729918a548",
+      "filename": "rewrite-python/rewrite/src/rewrite/python/recipes/change_method_name.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 2,
+      "changes": 7,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fchange_method_name.py",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fchange_method_name.py",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fchange_method_name.py?ref=8d6bc972c4571a9679f1acb6b428ad097f897aac",
+      "patch": "@@ -21,9 +21,12 @@\n from typing import Any, Optional\n \n from rewrite import ExecutionContext, Recipe, TreeVisitor, option\n+from rewrite.decorators import categorize\n+from rewrite.marketplace import Python\n from rewrite.rpc.java_recipe import prepare_java_recipe, JavaRecipeVisitor, PreparedJavaRecipe\n \n \n+@categorize(Python)\n class ChangeMethodName(Recipe):\n     \"\"\"\n     Rename method invocations matching a pattern.\n@@ -65,8 +68,8 @@ class ChangeMethodName(Recipe):\n \n     def __init__(\n         self,\n-        method_pattern: str,\n-        new_method_name: str,\n+        method_pattern: str = \"\",\n+        new_method_name: str = \"\",\n         match_overrides: bool = False,\n         ignore_definition: bool = False\n     ):"
+    },
+    {
+      "sha": "ce8ef15a8951e20d081a00893135fb3f2b8c588e",
+      "filename": "rewrite-python/rewrite/src/rewrite/python/recipes/change_package.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 2,
+      "changes": 7,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fchange_package.py",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fchange_package.py",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fchange_package.py?ref=8d6bc972c4571a9679f1acb6b428ad097f897aac",
+      "patch": "@@ -21,9 +21,12 @@\n from typing import Any, Optional\n \n from rewrite import ExecutionContext, Recipe, TreeVisitor, option\n+from rewrite.decorators import categorize\n+from rewrite.marketplace import Python\n from rewrite.rpc.java_recipe import prepare_java_recipe, JavaRecipeVisitor, PreparedJavaRecipe\n \n \n+@categorize(Python)\n class ChangePackage(Recipe):\n     \"\"\"\n     Change package/module references from one name to another.\n@@ -58,8 +61,8 @@ class ChangePackage(Recipe):\n \n     def __init__(\n         self,\n-        old_package_name: str,\n-        new_package_name: str,\n+        old_package_name: str = \"\",\n+        new_package_name: str = \"\",\n         recursive: bool = True\n     ):\n         self.old_package_name = old_package_name"
+    },
+    {
+      "sha": "cfb0fac79baf7fb380ab4129bbfc5e3d4b669bea",
+      "filename": "rewrite-python/rewrite/src/rewrite/python/recipes/change_type.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 2,
+      "changes": 7,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fchange_type.py",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fchange_type.py",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fchange_type.py?ref=8d6bc972c4571a9679f1acb6b428ad097f897aac",
+      "patch": "@@ -22,9 +22,12 @@\n from typing import Any, Optional\n \n from rewrite import ExecutionContext, Recipe, TreeVisitor, option\n+from rewrite.decorators import categorize\n+from rewrite.marketplace import Python\n from rewrite.rpc.java_recipe import prepare_java_recipe, JavaRecipeVisitor, PreparedJavaRecipe\n \n \n+@categorize(Python)\n class ChangeType(Recipe):\n     \"\"\"\n     Change a type reference from one fully qualified name to another.\n@@ -63,8 +66,8 @@ class ChangeType(Recipe):\n \n     def __init__(\n         self,\n-        old_fully_qualified_type_name: str,\n-        new_fully_qualified_type_name: str,\n+        old_fully_qualified_type_name: str = \"\",\n+        new_fully_qualified_type_name: str = \"\",\n         ignore_definition: bool = False\n     ):\n         self.old_fully_qualified_type_name = old_fully_qualified_type_name"
+    },
+    {
+      "sha": "cfcb5190ee90776cd01f7e2097639d01f6aae127",
+      "filename": "rewrite-python/rewrite/src/rewrite/python/recipes/delete_method_argument.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 2,
+      "changes": 7,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fdelete_method_argument.py",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fdelete_method_argument.py",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Fdelete_method_argument.py?ref=8d6bc972c4571a9679f1acb6b428ad097f897aac",
+      "patch": "@@ -21,9 +21,12 @@\n from typing import Any, Optional\n \n from rewrite import ExecutionContext, Recipe, TreeVisitor, option\n+from rewrite.decorators import categorize\n+from rewrite.marketplace import Python\n from rewrite.rpc.java_recipe import prepare_java_recipe, JavaRecipeVisitor, PreparedJavaRecipe\n \n \n+@categorize(Python)\n class DeleteMethodArgument(Recipe):\n     \"\"\"\n     Remove an argument from method invocations matching a pattern.\n@@ -51,8 +54,8 @@ class DeleteMethodArgument(Recipe):\n \n     def __init__(\n         self,\n-        method_pattern: str,\n-        argument_index: int\n+        method_pattern: str = \"\",\n+        argument_index: int = 0\n     ):\n         self.method_pattern = method_pattern\n         self.argument_index = argument_index"
+    },
+    {
+      "sha": "ce341bc961e4bb12d100c1eb9b37a6c22e0b9f20",
+      "filename": "rewrite-python/rewrite/src/rewrite/python/recipes/reorder_method_arguments.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 2,
+      "changes": 7,
+      "blob_url": "https://github.com/openrewrite/rewrite/blob/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Freorder_method_arguments.py",
+      "raw_url": "https://github.com/openrewrite/rewrite/raw/8d6bc972c4571a9679f1acb6b428ad097f897aac/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Freorder_method_arguments.py",
+      "contents_url": "https://api.github.com/repos/openrewrite/rewrite/contents/rewrite-python%2Frewrite%2Fsrc%2Frewrite%2Fpython%2Frecipes%2Freorder_method_arguments.py?ref=8d6bc972c4571a9679f1acb6b428ad097f897aac",
+      "patch": "@@ -22,9 +22,12 @@\n from typing import Any, List, Optional\n \n from rewrite import ExecutionContext, Recipe, TreeVisitor, option\n+from rewrite.decorators import categorize\n+from rewrite.marketplace import Python\n from rewrite.rpc.java_recipe import prepare_java_recipe, JavaRecipeVisitor, PreparedJavaRecipe\n \n \n+@categorize(Python)\n class ReorderMethodArguments(Recipe):\n     \"\"\"\n     Reorder arguments in method invocations matching a pattern.\n@@ -59,8 +62,8 @@ class ReorderMethodArguments(Recipe):\n \n     def __init__(\n             self,\n-            method_pattern: str,\n-            new_parameter_names: List[str],\n+            method_pattern: str = \"\",\n+            new_parameter_names: Optional[List[str]] = None,\n             old_parameter_names: Optional[List[str]] = None\n     ):\n         self.method_pattern = method_pattern"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8d6bc972c4571a9679f1acb6b428ad097f897aac",
+      "message": "Register all existing recipes",
+      "parent_shas": [
+        "e7f87109acf35350967e04b5343a22bb6c65fb67"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__openrewrite__rewrite__pr6815.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\openrewrite__rewrite__pr6815__java_python__openrewrite__rewrite__pr6815\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\openrewrite__rewrite__pr6815__java_python__openrewrite__rewrite__pr6815\\rn"
+  }
+}

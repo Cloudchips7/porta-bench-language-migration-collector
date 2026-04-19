@@ -1,0 +1,180 @@
+{
+  "instance_id": "python_java__relf__EGObox__pr410",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "relf/EGObox",
+  "pr_number": 410,
+  "pr_url": "https://github.com/relf/EGObox/pull/410",
+  "repo": {
+    "full_name": "relf/EGObox",
+    "clone_url": "https://github.com/relf/EGObox.git",
+    "default_branch": "master",
+    "created_at": "2020-08-27T08:07:45Z",
+    "stars": 172,
+    "license": "Apache-2.0",
+    "size_kb": 18057
+  },
+  "pull_request": {
+    "id": 3502505293,
+    "title": "Fix Python examples ",
+    "body": "This PR fixes Python examples which now handles minimize optim result properly.\r\nBtw `hot_start` can be a boolean equivalent to previously `hot_start=0`",
+    "created_at": "2026-04-08T09:58:06Z",
+    "merged_at": "2026-04-08T11:50:59Z",
+    "base_sha": "6e3f100f3d3e9c56ee1497d39ffb671be12832a8",
+    "head_sha": "0a018e0075117fa75ab67880b7e5b101c3c4cc0b",
+    "merge_commit_sha": "733b891f7fc434389734d5eb62b58c356d7d74f8",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "6e3f100f3d3e9c56ee1497d39ffb671be12832a8",
+  "final_sha": "0a018e0075117fa75ab67880b7e5b101c3c4cc0b",
+  "changed_files": [
+    {
+      "sha": "2e376296648914408ce7772cbc23ced366742dce",
+      "filename": "python/egobox/egobox.pyi",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 4,
+      "changes": 10,
+      "blob_url": "https://github.com/relf/EGObox/blob/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fegobox.pyi",
+      "raw_url": "https://github.com/relf/EGObox/raw/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fegobox.pyi",
+      "contents_url": "https://api.github.com/repos/relf/EGObox/contents/python%2Fegobox%2Fegobox.pyi?ref=0a018e0075117fa75ab67880b7e5b101c3c4cc0b",
+      "patch": "@@ -149,8 +149,9 @@ class Egor:\n             Deprecated: use warm_start argument in minimize() instead.\n             Start by loading initial doe from <outdir> directory.\n     \n-        hot_start (int >= 0 or None):\n+        hot_start (bool, int >= 0 or None):\n             Deprecated: use hot_start argument in minimize() instead.\n+            When True, hot_start behaves like hot_start=0 with no iteration extension.\n             When hot_start>=0 saves optimizer state at each iteration and starts from a previous checkpoint.\n     \n         verbose (int, Verbose enum, or None):\n@@ -161,8 +162,8 @@ class Egor:\n     \n         Egor object which can be used to optimize a function using the minimize method.\n     \"\"\"\n-    def __new__(cls, xspecs: typing.Any, gp_config: GpConfig = ..., n_cstr: builtins.int = 0, cstr_tol: typing.Optional[typing.Sequence[builtins.float]] = None, n_start: builtins.int = 20, n_doe: builtins.int = 0, doe: typing.Optional[numpy.typing.NDArray[numpy.float64]] = None, infill_strategy: InfillStrategy = InfillStrategy.LOG_EI, cstr_infill: builtins.bool = False, cstr_strategy: ConstraintStrategy = ConstraintStrategy.MC, qei_config: QEiConfig = ..., infill_optimizer: InfillOptimizer = InfillOptimizer.COBYLA, trego: typing.Optional[typing.Any] = None, coego_n_coop: builtins.int = 0, target: builtins.float = -1.7976931348623157e+308, failsafe_strategy: FailsafeStrategy = FailsafeStrategy.REJECTION, seed: typing.Optional[builtins.int] = None, outdir: typing.Optional[builtins.str] = None, warm_start: builtins.bool = False, hot_start: typing.Optional[builtins.int] = None, verbose: typing.Optional[typing.Any] = None) -> Egor: ...\n-    def minimize(self, fun: typing.Any, fcstrs: typing.Sequence[typing.Any] = [], max_iters: builtins.int = 20, run_info: typing.Optional[typing.Any] = None, outdir: typing.Optional[builtins.str] = None, warm_start: builtins.bool = False, hot_start: typing.Optional[builtins.int] = None, seed: typing.Optional[builtins.int] = None, verbose: typing.Optional[typing.Any] = None) -> EgorOptim:\n+    def __new__(cls, xspecs: typing.Any, gp_config: GpConfig = ..., n_cstr: builtins.int = 0, cstr_tol: typing.Optional[typing.Sequence[builtins.float]] = None, n_start: builtins.int = 20, n_doe: builtins.int = 0, doe: typing.Optional[numpy.typing.NDArray[numpy.float64]] = None, infill_strategy: InfillStrategy = InfillStrategy.LOG_EI, cstr_infill: builtins.bool = False, cstr_strategy: ConstraintStrategy = ConstraintStrategy.MC, qei_config: QEiConfig = ..., infill_optimizer: InfillOptimizer = InfillOptimizer.COBYLA, trego: typing.Optional[typing.Any] = None, coego_n_coop: builtins.int = 0, target: builtins.float = -1.7976931348623157e+308, failsafe_strategy: FailsafeStrategy = FailsafeStrategy.REJECTION, seed: typing.Optional[builtins.int] = None, outdir: typing.Optional[builtins.str] = None, warm_start: builtins.bool = False, hot_start: typing.Optional[typing.Any] = None, verbose: typing.Optional[typing.Any] = None) -> Egor: ...\n+    def minimize(self, fun: typing.Any, fcstrs: typing.Sequence[typing.Any] = [], max_iters: builtins.int = 20, run_info: typing.Optional[typing.Any] = None, outdir: typing.Optional[builtins.str] = None, warm_start: builtins.bool = False, hot_start: typing.Optional[typing.Any] = None, seed: typing.Optional[builtins.int] = None, verbose: typing.Optional[typing.Any] = None) -> EgorOptim:\n         r\"\"\"\n         This function finds the minimum of a given function \"fun\"\n         \n@@ -201,7 +202,8 @@ class Egor:\n             warm_start (bool):\n                 Start by loading initial doe from <outdir> directory\n         \n-            hot_start (int >= 0 or None):\n+            hot_start (bool, int >= 0 or None):\n+                When True, hot_start behaves like hot_start=0 with no iteration extension.\n                 When hot_start>=0 saves optimizer state at each iteration and starts from a previous checkpoint\n                 if any for the given hot_start number of iterations beyond the max_iters nb of iterations.\n                 In an unstable environment were there can be crashes it allows to restart the optimization"
+    },
+    {
+      "sha": "c61968b47f9b8c1e8646859b7aa325167ffe434d",
+      "filename": "python/egobox/examples/branin_fcstr.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1,
+      "changes": 4,
+      "blob_url": "https://github.com/relf/EGObox/blob/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fexamples%2Fbranin_fcstr.py",
+      "raw_url": "https://github.com/relf/EGObox/raw/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fexamples%2Fbranin_fcstr.py",
+      "contents_url": "https://api.github.com/repos/relf/EGObox/contents/python%2Fegobox%2Fexamples%2Fbranin_fcstr.py?ref=0a018e0075117fa75ab67880b7e5b101c3c4cc0b",
+      "patch": "@@ -222,13 +222,15 @@ def main():\n     print()\n \n     # Run optimization\n-    res = egor.minimize(\n+    optim = egor.minimize(\n         branin_forrester,\n         fcstrs=[constraint_branin],\n         max_iters=20,\n         seed=42,  # For reproducibility\n     )\n \n+    res = optim.result\n+\n     # Display results\n     print()\n     print(\"=\" * 70)"
+    },
+    {
+      "sha": "d71427f6da7c4ee1b7cafd220e5b846a401266f4",
+      "filename": "python/egobox/examples/branin_nans.py",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 10,
+      "changes": 22,
+      "blob_url": "https://github.com/relf/EGObox/blob/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fexamples%2Fbranin_nans.py",
+      "raw_url": "https://github.com/relf/EGObox/raw/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fexamples%2Fbranin_nans.py",
+      "contents_url": "https://api.github.com/repos/relf/EGObox/contents/python%2Fegobox%2Fexamples%2Fbranin_nans.py?ref=0a018e0075117fa75ab67880b7e5b101c3c4cc0b",
+      "patch": "@@ -297,7 +297,7 @@ def main():\n     print()\n \n     # Run optimization\n-    res = egor.minimize(\n+    optim = egor.minimize(\n         # branin_forrester,\n         branin_constrained_with_nans,\n         max_iters=MAX_ITERS,\n@@ -309,19 +309,21 @@ def main():\n     print(\"=\" * 70)\n     print(\"Optimization Results\")\n     print(\"=\" * 70)\n-    print(f\"Optimum found at: x = [{res.x_opt[0]:.5f}, {res.x_opt[1]:.5f}]\")\n-    print(f\"Objective value: f(x*) = {res.y_opt[0]:.6f}\")\n     print(\n-        f\"Constraint value: g(x*) = {constraint_branin(res.x_opt):.6f} (should be ≤ 0)\"\n+        f\"Optimum found at: x = [{optim.result.x_opt[0]:.5f}, {optim.result.x_opt[1]:.5f}]\"\n+    )\n+    print(f\"Objective value: f(x*) = {optim.result.y_opt[0]:.6f}\")\n+    print(\n+        f\"Constraint value: g(x*) = {constraint_branin(optim.result.x_opt):.6f} (should be ≤ 0)\"\n     )\n     print()\n \n     # Transform to original domain for comparison\n-    x1_original = res.x_opt[0] * 15 - 5\n-    x2_original = res.x_opt[1] * 15\n+    x1_original = optim.result.x_opt[0] * 15 - 5\n+    x2_original = optim.result.x_opt[1] * 15\n     print(f\"In original domain: x = [{x1_original:.5f}, {x2_original:.5f}]\")\n     print(\n-        f\"Product x₁·x₂ = {res.x_opt[0] * res.x_opt[1]:.6f} (should be ≥ {BRANIN_CSTR_CONST})\"\n+        f\"Product x₁·x₂ = {optim.result.x_opt[0] * optim.result.x_opt[1]:.6f} (should be ≥ {BRANIN_CSTR_CONST})\"\n     )\n     print()\n \n@@ -334,8 +336,8 @@ def main():\n     print()\n \n     # Error from known optimum\n-    error_x = np.linalg.norm(res.x_opt - x_known)\n-    error_y = abs(res.y_opt[0] - y_known)\n+    error_x = np.linalg.norm(optim.result.x_opt - x_known)\n+    error_y = abs(optim.result.y_opt[0] - y_known)\n     print(f\"Distance from known optimum: {error_x:.6f}\")\n     print(f\"Objective error: {error_y:.6f}\")\n     print(\"=\" * 70)\n@@ -344,7 +346,7 @@ def main():\n     print(\"\\nGenerating visualization...\")\n     gif_path = os.path.join(os.getcwd(), \"branin_nans_animation.gif\")\n     _fig, _anim = plot_constrained_branin(\n-        res,\n+        optim.result,\n         initial_doe,\n         animate=True,\n         save_gif=False,"
+    },
+    {
+      "sha": "bcc60f9efd9905497ee83cfbf99c5743c4fdbeee",
+      "filename": "python/egobox/examples/g24.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/relf/EGObox/blob/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fexamples%2Fg24.py",
+      "raw_url": "https://github.com/relf/EGObox/raw/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fexamples%2Fg24.py",
+      "contents_url": "https://api.github.com/repos/relf/EGObox/contents/python%2Fegobox%2Fexamples%2Fg24.py?ref=0a018e0075117fa75ab67880b7e5b101c3c4cc0b",
+      "patch": "@@ -60,5 +60,5 @@ def g24(point):\n     target=-5.50,  # known reference objective value\n )\n \n-res = egor.minimize(g24, max_iters=30)\n-print(f\"Optimization f={res.y_opt} at {res.x_opt}\")\n+optim = egor.minimize(g24, max_iters=30)\n+print(f\"Optimization f={optim.result.y_opt} at {optim.result.x_opt}\")"
+    },
+    {
+      "sha": "c1a696bf3cf5a82b4d7d6a8eb9df97d6ee3db86a",
+      "filename": "python/egobox/examples/g24_fcstr.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/relf/EGObox/blob/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fexamples%2Fg24_fcstr.py",
+      "raw_url": "https://github.com/relf/EGObox/raw/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fexamples%2Fg24_fcstr.py",
+      "contents_url": "https://api.github.com/repos/relf/EGObox/contents/python%2Fegobox%2Fexamples%2Fg24_fcstr.py?ref=0a018e0075117fa75ab67880b7e5b101c3c4cc0b",
+      "patch": "@@ -67,5 +67,5 @@ def g24(point):\n     target=-5.50,  # known reference objective value\n )\n \n-res = egor.minimize(g24, max_iters=30, fcstrs=fcstrs)\n-print(f\"Optimization f={res.y_opt} at {res.x_opt}\")\n+optim = egor.minimize(g24, max_iters=30, fcstrs=fcstrs)\n+print(f\"Optimization f={optim.result.y_opt} at {optim.result.x_opt}\")"
+    },
+    {
+      "sha": "d9b56ce19deda61b174b18b5a2d6518cf03556a2",
+      "filename": "python/egobox/examples/rastrigin.py",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 5,
+      "changes": 15,
+      "blob_url": "https://github.com/relf/EGObox/blob/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fexamples%2Frastrigin.py",
+      "raw_url": "https://github.com/relf/EGObox/raw/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fexamples%2Frastrigin.py",
+      "contents_url": "https://api.github.com/repos/relf/EGObox/contents/python%2Fegobox%2Fexamples%2Frastrigin.py?ref=0a018e0075117fa75ab67880b7e5b101c3c4cc0b",
+      "patch": "@@ -40,11 +40,11 @@ def rastrigin(x: np.ndarray) -> np.ndarray:\n # -----------------------------------------------------\n # Run optimization\n # -----------------------------------------------------\n-res = opt.minimize(rastrigin, max_iters=80, seed=42)\n+optim = opt.minimize(rastrigin, max_iters=80, seed=42)\n \n print(\"\\n===== Optimization Result =====\")\n-print(\"Best value (y*):\", res.y_opt)\n-print(\"Best point (x*):\", res.x_opt)\n+print(\"Best value (y*):\", optim.result.y_opt)\n+print(\"Best point (x*):\", optim.result.x_opt)\n \n # -----------------------------------------------------\n # Plot Rastrigin function and sample points\n@@ -60,11 +60,16 @@ def rastrigin(x: np.ndarray) -> np.ndarray:\n plt.colorbar(label=\"Rastrigin value\")\n \n # Plot training samples\n-X_data = np.array(res.x_doe)\n+X_data = np.array(optim.result.x_doe)\n plt.scatter(X_data[:, 0], X_data[:, 1], c=\"red\", s=30, label=\"Sampled points\")\n \n plt.scatter(\n-    res.x_opt[0], res.x_opt[1], c=\"white\", s=100, edgecolors=\"black\", label=\"Best point\"\n+    optim.result.x_opt[0],\n+    optim.result.x_opt[1],\n+    c=\"white\",\n+    s=100,\n+    edgecolors=\"black\",\n+    label=\"Best point\",\n )\n plt.title(\"Rastrigin Function + Sampled Points\")\n plt.xlabel(\"x₁\")"
+    },
+    {
+      "sha": "4db1cf39749b9b4bc5b2b807852230514bfef12c",
+      "filename": "python/egobox/examples/rosenbrock_2d_trego.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 6,
+      "changes": 12,
+      "blob_url": "https://github.com/relf/EGObox/blob/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fexamples%2Frosenbrock_2d_trego.py",
+      "raw_url": "https://github.com/relf/EGObox/raw/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Fexamples%2Frosenbrock_2d_trego.py",
+      "contents_url": "https://api.github.com/repos/relf/EGObox/contents/python%2Fegobox%2Fexamples%2Frosenbrock_2d_trego.py?ref=0a018e0075117fa75ab67880b7e5b101c3c4cc0b",
+      "patch": "@@ -57,11 +57,11 @@ def rosenbrock(x: np.ndarray) -> np.ndarray:\n # -----------------------------------------------------\n # Run optimization\n # -----------------------------------------------------\n-res = opt.minimize(rosenbrock, max_iters=20, outdir=outdir, seed=42)\n+optim = opt.minimize(rosenbrock, max_iters=20, outdir=outdir, seed=42)\n \n print(\"\\n===== Optimization Result =====\")\n-print(\"Best value (y*):\", res.y_opt)\n-print(\"Best point (x*):\", res.x_opt)\n+print(\"Best value (y*):\", optim.result.y_opt)\n+print(\"Best point (x*):\", optim.result.x_opt)\n print(\"Known optimum: f(1, 1) = 0\")\n \n \n@@ -136,7 +136,7 @@ def extract_trust_region_bounds(state, xlimits, delta_scale):\n plt.colorbar(contour, label=\"log(Rosenbrock value)\")\n \n # Plot all sampled points (distinguish DOE from iterative points)\n-X_data = np.array(res.x_doe)\n+X_data = np.array(optim.result.x_doe)\n \n # Plot initial DOE points\n plt.scatter(\n@@ -177,8 +177,8 @@ def extract_trust_region_bounds(state, xlimits, delta_scale):\n \n # Plot best found\n plt.scatter(\n-    res.x_opt[0],\n-    res.x_opt[1],\n+    optim.result.x_opt[0],\n+    optim.result.x_opt[1],\n     c=\"lime\",\n     s=150,\n     marker=\"^\","
+    },
+    {
+      "sha": "94bd6b644cdde14f7aeb8d65bc6fd0a7eb279ec3",
+      "filename": "python/egobox/tests/test_egor.py",
+      "status": "modified",
+      "additions": 31,
+      "deletions": 0,
+      "changes": 31,
+      "blob_url": "https://github.com/relf/EGObox/blob/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Ftests%2Ftest_egor.py",
+      "raw_url": "https://github.com/relf/EGObox/raw/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fegobox%2Ftests%2Ftest_egor.py",
+      "contents_url": "https://api.github.com/repos/relf/EGObox/contents/python%2Fegobox%2Ftests%2Ftest_egor.py?ref=0a018e0075117fa75ab67880b7e5b101c3c4cc0b",
+      "patch": "@@ -4,6 +4,7 @@\n import egobox as egx\n import time\n import logging\n+import tempfile\n \n logging.basicConfig(level=logging.INFO)\n \n@@ -219,6 +220,36 @@ def test_xsinx_with_warmstart(self):\n         self.assertTrue(os.path.exists(\"./test_dir/egor_doe.npy\"))\n         os.remove(\"./test_dir/egor_doe.npy\")\n \n+    def test_xsinx_with_hotstart_bool(self):\n+        xlimits = [[0.0, 25.0]]\n+\n+        with tempfile.TemporaryDirectory() as outdir:\n+            egor = egx.Egor(xlimits)\n+            first = egor.minimize(\n+                xsinx, max_iters=1, outdir=outdir, hot_start=True, seed=42\n+            )\n+            second = egor.minimize(\n+                xsinx, max_iters=1, outdir=outdir, hot_start=True, seed=42\n+            )\n+\n+            self.assertTrue(\n+                os.path.exists(os.path.join(outdir, \"egor_checkpoint.json\"))\n+            )\n+            self.assertEqual(first.result.x_doe.shape[0], second.result.x_doe.shape[0])\n+\n+    def test_minimize_hotstart_false_overrides_constructor_hotstart(self):\n+        xlimits = [[0.0, 25.0]]\n+\n+        with tempfile.TemporaryDirectory() as outdir:\n+            egor = egx.Egor(xlimits, hot_start=True)\n+            _ = egor.minimize(\n+                xsinx, max_iters=1, outdir=outdir, hot_start=False, seed=42\n+            )\n+\n+            self.assertFalse(\n+                os.path.exists(os.path.join(outdir, \"egor_checkpoint.json\"))\n+            )\n+\n     def test_g24(self):\n         n_doe = 5\n         max_iters = 30"
+    },
+    {
+      "sha": "9537d69aaf03c1c8c5ef0c4057257c70fc259feb",
+      "filename": "python/src/egor.rs",
+      "status": "modified",
+      "additions": 34,
+      "deletions": 5,
+      "changes": 39,
+      "blob_url": "https://github.com/relf/EGObox/blob/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fsrc%2Fegor.rs",
+      "raw_url": "https://github.com/relf/EGObox/raw/0a018e0075117fa75ab67880b7e5b101c3c4cc0b/python%2Fsrc%2Fegor.rs",
+      "contents_url": "https://api.github.com/repos/relf/EGObox/contents/python%2Fsrc%2Fegor.rs?ref=0a018e0075117fa75ab67880b7e5b101c3c4cc0b",
+      "patch": "@@ -24,7 +24,9 @@ use egobox_gp::ThetaTuning;\n use egobox_moe::NbClusters;\n use ndarray::{Array1, Array2, ArrayView2, Axis, array, concatenate};\n use numpy::{IntoPyArray, PyArray1, PyArray2, PyArrayMethods, PyReadonlyArray2, ToPyArray};\n+use pyo3::exceptions::PyTypeError;\n use pyo3::prelude::*;\n+use pyo3::types::PyBool;\n use pyo3_stub_gen::derive::{gen_stub_pyclass, gen_stub_pymethods};\n use std::cmp::Ordering;\n \n@@ -126,8 +128,9 @@ use std::cmp::Ordering;\n ///         Deprecated: use warm_start argument in minimize() instead.\n ///         Start by loading initial doe from <outdir> directory.\n ///\n-///     hot_start (int >= 0 or None):\n+///     hot_start (bool, int >= 0 or None):\n ///         Deprecated: use hot_start argument in minimize() instead.\n+///         When True, hot_start behaves like hot_start=0 with no iteration extension.\n ///         When hot_start>=0 saves optimizer state at each iteration and starts from a previous checkpoint.\n ///\n ///     verbose (int, Verbose enum, or None):\n@@ -213,7 +216,7 @@ impl Egor {\n         seed: Option<u64>,\n         outdir: Option<String>,\n         warm_start: bool,\n-        hot_start: Option<u64>,\n+        hot_start: Option<Py<PyAny>>,\n         verbose: Option<Py<PyAny>>,\n     ) -> Self {\n         // Emit deprecation warnings for parameters that moved to minimize()/suggest()\n@@ -254,6 +257,8 @@ impl Egor {\n             );\n         }\n \n+        let hot_start = normalize_hot_start(py, hot_start).expect(\"Bad hot_start value\");\n+\n         let doe = doe.map(|x| x.to_owned_array());\n         let xtypes = parse(py, xspecs.clone_ref(py));\n \n@@ -341,7 +346,8 @@ impl Egor {\n     ///     warm_start (bool):\n     ///         Start by loading initial doe from <outdir> directory\n     ///\n-    ///     hot_start (int >= 0 or None):\n+    ///     hot_start (bool, int >= 0 or None):\n+    ///         When True, hot_start behaves like hot_start=0 with no iteration extension.\n     ///         When hot_start>=0 saves optimizer state at each iteration and starts from a previous checkpoint\n     ///         if any for the given hot_start number of iterations beyond the max_iters nb of iterations.\n     ///         In an unstable environment were there can be crashes it allows to restart the optimization\n@@ -378,7 +384,7 @@ impl Egor {\n         run_info: Option<Py<PyAny>>,\n         outdir: Option<String>,\n         warm_start: bool,\n-        hot_start: Option<u64>,\n+        hot_start: Option<Py<PyAny>>,\n         seed: Option<u64>,\n         verbose: Option<Py<PyAny>>,\n     ) -> PyResult<EgorOptim> {\n@@ -388,7 +394,10 @@ impl Egor {\n         let seed = seed.or(self.seed);\n         let outdir = outdir.or_else(|| self.outdir.clone());\n         let warm_start = if warm_start { true } else { self.warm_start };\n-        let hot_start = hot_start.or(self.hot_start);\n+        let hot_start = match hot_start {\n+            Some(hot_start) => normalize_hot_start(py, Some(hot_start))?,\n+            None => self.hot_start,\n+        };\n \n         let obj = |x: &ArrayView2<f64>| -> Result<Array2<f64>> {\n             Python::attach(|py| {\n@@ -768,3 +777,23 @@ impl Egor {\n         config\n     }\n }\n+\n+fn normalize_hot_start(py: Python, hot_start: Option<Py<PyAny>>) -> PyResult<Option<u64>> {\n+    match hot_start {\n+        Some(hot_start) => {\n+            let hot_start = hot_start.bind(py);\n+            if hot_start.is_none() {\n+                Ok(None)\n+            } else if hot_start.is_instance_of::<PyBool>() {\n+                Ok(hot_start.extract::<bool>()?.then_some(0))\n+            } else if let Ok(ext_iters) = hot_start.extract::<u64>() {\n+                Ok(Some(ext_iters))\n+            } else {\n+                Err(PyTypeError::new_err(\n+                    \"hot_start must be a bool, a non-negative integer, or None\",\n+                ))\n+            }\n+        }\n+        None => Ok(None),\n+    }\n+}"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "fa39e337b97150586d0381b7f239e5dea0fff398",
+      "message": "Fix minimize returned value handling in Python examples",
+      "parent_shas": [
+        "6e3f100f3d3e9c56ee1497d39ffb671be12832a8"
+      ]
+    },
+    {
+      "sha": "0a018e0075117fa75ab67880b7e5b101c3c4cc0b",
+      "message": "Accept hot_start being a boolean",
+      "parent_shas": [
+        "fa39e337b97150586d0381b7f239e5dea0fff398"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__relf__EGObox__pr410.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\relf__EGObox__pr410__python_java__relf__EGObox__pr410\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\relf__EGObox__pr410__python_java__relf__EGObox__pr410\\rn"
+  }
+}

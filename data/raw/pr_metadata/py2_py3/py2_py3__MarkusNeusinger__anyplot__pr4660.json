@@ -1,0 +1,165 @@
+{
+  "instance_id": "py2_py3__MarkusNeusinger__anyplot__pr4660",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "MarkusNeusinger/anyplot",
+  "pr_number": 4660,
+  "pr_url": "https://github.com/MarkusNeusinger/anyplot/pull/4660",
+  "repo": {
+    "full_name": "MarkusNeusinger/anyplot",
+    "clone_url": "https://github.com/MarkusNeusinger/anyplot.git",
+    "default_branch": "main",
+    "created_at": "2025-11-18T18:15:06Z",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 33528
+  },
+  "pull_request": {
+    "id": 3368186229,
+    "title": "feat(highcharts): implement piano-roll-midi",
+    "body": "## Implementation: `piano-roll-midi` - highcharts\n\nImplements the **highcharts** version of `piano-roll-midi`.\n\n**File:** `plots/piano-roll-midi/implementations/highcharts.py`\n\n**Parent Issue:** #4565\n\n---\n:robot: *[impl-generate workflow](https://github.com/MarkusNeusinger/pyplots/actions/runs/22805912217)*",
+    "created_at": "2026-03-07T19:49:45Z",
+    "merged_at": "2026-03-07T20:22:22Z",
+    "base_sha": "635cb42c5cd18c266912044f2df60d6e97076ee9",
+    "head_sha": "e3dc9d920cea986ecbf0b6b170d1b63e4fc94147",
+    "merge_commit_sha": "41d16c40af78d94eb4c489a9de7e6c596ba0e39d",
+    "labels": [
+      "ai-attempt-1",
+      "ai-attempt-2",
+      "ai-attempt-3",
+      "ai-approved",
+      "quality:92",
+      "quality:88",
+      "quality:85",
+      "quality:80"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "09a9741fa5f176cbecf6b884d01d0c449a3ff7c1",
+  "final_sha": "e3dc9d920cea986ecbf0b6b170d1b63e4fc94147",
+  "changed_files": [
+    {
+      "sha": "11bedc75ff9c58c2e68eff4b30c032c04dd334c1",
+      "filename": "plots/piano-roll-midi/implementations/highcharts.py",
+      "status": "added",
+      "additions": 405,
+      "deletions": 0,
+      "changes": 405,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/e3dc9d920cea986ecbf0b6b170d1b63e4fc94147/plots%2Fpiano-roll-midi%2Fimplementations%2Fhighcharts.py",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/e3dc9d920cea986ecbf0b6b170d1b63e4fc94147/plots%2Fpiano-roll-midi%2Fimplementations%2Fhighcharts.py",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fpiano-roll-midi%2Fimplementations%2Fhighcharts.py?ref=e3dc9d920cea986ecbf0b6b170d1b63e4fc94147",
+      "patch": "@@ -0,0 +1,405 @@\n+\"\"\" pyplots.ai\n+piano-roll-midi: MIDI Piano Roll Visualization\n+Library: highcharts unknown | Python 3.14.3\n+Quality: 92/100 | Created: 2026-03-07\n+\"\"\"\n+\n+import tempfile\n+import time\n+import urllib.request\n+from pathlib import Path\n+\n+import numpy as np\n+from highcharts_core.chart import Chart\n+from highcharts_core.options import HighchartsOptions\n+from selenium import webdriver\n+from selenium.webdriver.chrome.options import Options\n+\n+\n+np.random.seed(42)\n+\n+# MIDI helpers\n+NOTE_NAMES = [\"C\", \"C#\", \"D\", \"D#\", \"E\", \"F\", \"F#\", \"G\", \"G#\", \"A\", \"A#\", \"B\"]\n+BLACK_KEY_INDICES = {1, 3, 6, 8, 10}\n+\n+# Data - A chord progression with melody (C-Am-F-G, 8 measures of 4/4)\n+# Each note: (start_beat, duration_beats, midi_pitch, velocity, role)\n+# role: \"bass\", \"harmony\", \"melody\"\n+notes = [\n+    # Measure 1-2: C major chord + melody\n+    (0.0, 4.0, 48, 90, \"bass\"),\n+    (0.0, 2.0, 52, 75, \"harmony\"),\n+    (0.0, 2.0, 55, 75, \"harmony\"),\n+    (2.0, 2.0, 52, 70, \"harmony\"),\n+    (2.0, 2.0, 55, 70, \"harmony\"),\n+    (0.0, 1.0, 64, 100, \"melody\"),\n+    (1.0, 1.0, 67, 105, \"melody\"),\n+    (2.0, 1.5, 72, 110, \"melody\"),\n+    (3.5, 0.5, 71, 80, \"melody\"),\n+    (4.0, 4.0, 48, 85, \"bass\"),\n+    (4.0, 2.0, 52, 72, \"harmony\"),\n+    (4.0, 2.0, 55, 72, \"harmony\"),\n+    (6.0, 2.0, 52, 68, \"harmony\"),\n+    (6.0, 2.0, 55, 68, \"harmony\"),\n+    (4.0, 1.0, 72, 108, \"melody\"),\n+    (5.0, 0.5, 71, 85, \"melody\"),\n+    (5.5, 0.5, 69, 82, \"melody\"),\n+    (6.0, 2.0, 67, 95, \"melody\"),\n+    # Measure 3-4: A minor chord + melody\n+    (8.0, 4.0, 57, 88, \"bass\"),\n+    (8.0, 2.0, 48, 72, \"harmony\"),\n+    (8.0, 2.0, 52, 72, \"harmony\"),\n+    (10.0, 2.0, 48, 68, \"harmony\"),\n+    (10.0, 2.0, 52, 68, \"harmony\"),\n+    (8.0, 1.0, 69, 102, \"melody\"),\n+    (9.0, 1.0, 67, 95, \"melody\"),\n+    (10.0, 1.5, 64, 100, \"melody\"),\n+    (11.5, 0.5, 62, 78, \"melody\"),\n+    (12.0, 4.0, 57, 85, \"bass\"),\n+    (12.0, 2.0, 48, 70, \"harmony\"),\n+    (12.0, 2.0, 52, 70, \"harmony\"),\n+    (14.0, 2.0, 48, 65, \"harmony\"),\n+    (14.0, 2.0, 52, 65, \"harmony\"),\n+    (12.0, 1.0, 60, 98, \"melody\"),\n+    (13.0, 1.0, 62, 90, \"melody\"),\n+    (14.0, 2.0, 64, 105, \"melody\"),\n+    # Measure 5-6: F major chord + melody\n+    (16.0, 4.0, 53, 92, \"bass\"),\n+    (16.0, 2.0, 57, 74, \"harmony\"),\n+    (16.0, 2.0, 60, 74, \"harmony\"),\n+    (18.0, 2.0, 57, 70, \"harmony\"),\n+    (18.0, 2.0, 60, 70, \"harmony\"),\n+    (16.0, 1.0, 65, 100, \"melody\"),\n+    (17.0, 1.0, 67, 106, \"melody\"),\n+    (18.0, 1.5, 69, 112, \"melody\"),\n+    (19.5, 0.5, 67, 82, \"melody\"),\n+    (20.0, 4.0, 53, 88, \"bass\"),\n+    (20.0, 2.0, 57, 72, \"harmony\"),\n+    (20.0, 2.0, 60, 72, \"harmony\"),\n+    (22.0, 2.0, 57, 66, \"harmony\"),\n+    (22.0, 2.0, 60, 66, \"harmony\"),\n+    (20.0, 1.0, 69, 108, \"melody\"),\n+    (21.0, 0.5, 67, 84, \"melody\"),\n+    (21.5, 0.5, 65, 80, \"melody\"),\n+    (22.0, 2.0, 64, 96, \"melody\"),\n+    # Measure 7-8: G major chord + melody (building to end)\n+    (24.0, 4.0, 55, 95, \"bass\"),\n+    (24.0, 2.0, 59, 76, \"harmony\"),\n+    (24.0, 2.0, 62, 76, \"harmony\"),\n+    (26.0, 2.0, 59, 72, \"harmony\"),\n+    (26.0, 2.0, 62, 72, \"harmony\"),\n+    (24.0, 1.0, 67, 105, \"melody\"),\n+    (25.0, 1.0, 69, 110, \"melody\"),\n+    (26.0, 1.5, 71, 118, \"melody\"),\n+    (27.5, 0.5, 69, 85, \"melody\"),\n+    (28.0, 4.0, 55, 90, \"bass\"),\n+    (28.0, 2.0, 59, 74, \"harmony\"),\n+    (28.0, 2.0, 62, 74, \"harmony\"),\n+    (30.0, 2.0, 59, 70, \"harmony\"),\n+    (30.0, 2.0, 62, 70, \"harmony\"),\n+    (28.0, 1.0, 71, 115, \"melody\"),\n+    (29.0, 1.0, 72, 120, \"melody\"),\n+    (30.0, 2.0, 72, 125, \"melody\"),\n+]\n+\n+# Determine pitch range - only include pitches that have notes (no empty rows)\n+used_pitches = sorted({n[2] for n in notes})\n+min_pitch = min(used_pitches)\n+max_pitch = max(used_pitches)\n+\n+# Build category list for only the used range\n+all_midi_range = list(range(min_pitch, max_pitch + 1))\n+categories = []\n+for midi in all_midi_range:\n+    octave = midi // 12 - 1\n+    name = NOTE_NAMES[midi % 12]\n+    categories.append(f\"{name}{octave}\")\n+\n+pitch_to_index = {midi: i for i, midi in enumerate(all_midi_range)}\n+\n+# Velocity color mapping: teal (soft) -> amber (medium) -> crimson (loud)\n+# Using brighter amber midpoint for crisper transitions\n+vel_min, vel_max = 60, 127\n+color_stops_rgb = [\n+    (20, 130, 150),  # deep teal (soft/piano)\n+    (255, 165, 0),  # bright amber (medium/mezzo)\n+    (185, 25, 40),  # crimson (loud/forte)\n+]\n+\n+\n+def vel_to_rgb(t, stops=color_stops_rgb):\n+    \"\"\"Interpolate velocity 0..1 through three color stops.\"\"\"\n+    if t < 0.5:\n+        s = t / 0.5\n+        c0, c1 = stops[0], stops[1]\n+    else:\n+        s = (t - 0.5) / 0.5\n+        c0, c1 = stops[1], stops[2]\n+    return tuple(int(c0[i] * (1 - s) + c1[i] * s) for i in range(3))\n+\n+\n+# Pre-compute colorbar gradient segments (shared by Python→JS)\n+N_COLORBAR_SEGS = 80\n+colorbar_colors = []\n+for i in range(N_COLORBAR_SEGS):\n+    t = 1 - i / (N_COLORBAR_SEGS - 1)\n+    r, g, b = vel_to_rgb(t)\n+    colorbar_colors.append(f\"rgb({r},{g},{b})\")\n+\n+# Role-specific styling\n+role_config = {\n+    \"melody\": {\"borderWidth\": 2, \"borderColor\": \"rgba(255, 255, 255, 0.7)\", \"pointWidth\": 56, \"opacity\": 1.0},\n+    \"harmony\": {\"borderWidth\": 1, \"borderColor\": \"rgba(0, 0, 0, 0.08)\", \"pointWidth\": 48, \"opacity\": 0.72},\n+    \"bass\": {\"borderWidth\": 1, \"borderColor\": \"rgba(0, 0, 0, 0.12)\", \"pointWidth\": 64, \"opacity\": 0.85},\n+}\n+\n+# Build xrange data points grouped by role\n+series_data = {\"melody\": [], \"harmony\": [], \"bass\": []}\n+for start, dur, pitch, vel, role in notes:\n+    t = float(np.clip((vel - vel_min) / (vel_max - vel_min), 0.0, 1.0))\n+    r, g, b = vel_to_rgb(t)\n+    alpha = role_config[role][\"opacity\"]\n+    color = f\"rgba({r},{g},{b},{alpha})\"\n+    series_data[role].append(\n+        {\n+            \"x\": start,\n+            \"x2\": start + dur,\n+            \"y\": pitch_to_index[pitch],\n+            \"color\": color,\n+            \"custom\": {\"pitch\": pitch, \"velocity\": vel, \"noteName\": categories[pitch_to_index[pitch]], \"role\": role},\n+        }\n+    )\n+\n+# Plot bands for black keys (subtle darker background rows)\n+plot_bands = []\n+for midi in all_midi_range:\n+    if (midi % 12) in BLACK_KEY_INDICES:\n+        idx = pitch_to_index[midi]\n+        plot_bands.append({\"from\": idx - 0.5, \"to\": idx + 0.5, \"color\": \"rgba(0, 0, 0, 0.06)\"})\n+\n+# Beat grid lines for x-axis (stronger at measure boundaries)\n+total_beats = 32\n+beat_lines = []\n+for beat in range(total_beats + 1):\n+    is_measure = beat % 4 == 0\n+    beat_lines.append(\n+        {\"value\": beat, \"color\": \"#999999\" if is_measure else \"#dddddd\", \"width\": 2 if is_measure else 1, \"zIndex\": 3}\n+    )\n+\n+# Chart\n+chart = Chart(container=\"container\")\n+chart.options = HighchartsOptions()\n+\n+chart.options.chart = {\n+    \"type\": \"xrange\",\n+    \"width\": 4800,\n+    \"height\": 2700,\n+    \"backgroundColor\": \"#fafafa\",\n+    \"marginLeft\": 200,\n+    \"marginTop\": 180,\n+    \"marginBottom\": 200,\n+    \"marginRight\": 360,\n+    \"style\": {\"fontFamily\": \"'Segoe UI', 'Helvetica Neue', Arial, sans-serif\"},\n+}\n+\n+chart.options.title = {\n+    \"text\": \"piano-roll-midi \\u00b7 highcharts \\u00b7 pyplots.ai\",\n+    \"style\": {\"fontSize\": \"44px\", \"fontWeight\": \"600\", \"color\": \"#2c2c2c\"},\n+    \"y\": 55,\n+}\n+\n+chart.options.subtitle = {\n+    \"text\": \"C \\u2013 Am \\u2013 F \\u2013 G chord progression \\u00b7 8 measures \\u00b7 velocity-colored dynamics\",\n+    \"style\": {\"fontSize\": \"26px\", \"color\": \"#666666\", \"fontWeight\": \"400\"},\n+    \"y\": 100,\n+}\n+\n+chart.options.x_axis = {\n+    \"title\": {\"text\": \"Beats (quarter notes)\", \"style\": {\"fontSize\": \"28px\", \"color\": \"#444444\"}},\n+    \"labels\": {\"style\": {\"fontSize\": \"22px\", \"color\": \"#555555\"}, \"step\": 1},\n+    \"min\": 0,\n+    \"max\": 32,\n+    \"tickInterval\": 4,\n+    \"gridLineWidth\": 0,\n+    \"plotLines\": beat_lines,\n+    \"lineWidth\": 0,\n+}\n+\n+chart.options.y_axis = {\n+    \"type\": \"category\",\n+    \"categories\": categories,\n+    \"title\": {\"text\": \"Pitch (note name)\", \"style\": {\"fontSize\": \"28px\", \"color\": \"#444444\"}},\n+    \"labels\": {\"style\": {\"fontSize\": \"22px\", \"color\": \"#555555\"}},\n+    \"gridLineWidth\": 1,\n+    \"gridLineColor\": \"rgba(0, 0, 0, 0.04)\",\n+    \"plotBands\": plot_bands,\n+    \"reversed\": False,\n+    \"lineWidth\": 0,\n+}\n+\n+chart.options.legend = {\n+    \"enabled\": True,\n+    \"align\": \"left\",\n+    \"verticalAlign\": \"top\",\n+    \"x\": 220,\n+    \"y\": 110,\n+    \"floating\": True,\n+    \"itemStyle\": {\"fontSize\": \"22px\", \"fontWeight\": \"500\", \"color\": \"#444\"},\n+    \"itemDistance\": 40,\n+    \"symbolWidth\": 28,\n+    \"symbolHeight\": 16,\n+    \"symbolRadius\": 4,\n+    \"backgroundColor\": \"rgba(255,255,255,0.8)\",\n+    \"borderWidth\": 0,\n+}\n+\n+chart.options.tooltip = {\n+    \"headerFormat\": \"\",\n+    \"pointFormat\": '<span style=\"font-size:22px\"><b>{point.custom.noteName}</b> (MIDI {point.custom.pitch})<br/>'\n+    \"Beat {point.x} \\u2013 {point.x2}<br/>\"\n+    \"Velocity: {point.custom.velocity}<br/>\"\n+    \"Role: {point.custom.role}</span>\",\n+    \"backgroundColor\": \"rgba(255,255,255,0.95)\",\n+    \"borderColor\": \"#cccccc\",\n+    \"borderRadius\": 8,\n+    \"shadow\": {\"color\": \"rgba(0,0,0,0.15)\", \"offsetX\": 2, \"offsetY\": 2, \"width\": 4},\n+}\n+\n+# Three series for visual hierarchy: melody (prominent), bass (solid), harmony (subtle)\n+series_configs = [(\"Melody\", \"melody\", \"#d94040\"), (\"Bass\", \"bass\", \"#2a7a8a\"), (\"Harmony\", \"harmony\", \"#c0a030\")]\n+\n+series_list = []\n+for label, role, legend_color in series_configs:\n+    cfg = role_config[role]\n+    series_list.append(\n+        {\n+            \"type\": \"xrange\",\n+            \"name\": label,\n+            \"data\": series_data[role],\n+            \"color\": legend_color,\n+            \"pointWidth\": cfg[\"pointWidth\"],\n+            \"borderRadius\": 5,\n+            \"borderWidth\": cfg[\"borderWidth\"],\n+            \"borderColor\": cfg[\"borderColor\"],\n+            \"dataLabels\": {\"enabled\": False},\n+        }\n+    )\n+chart.options.series = series_list\n+\n+chart.options.credits = {\"enabled\": False}\n+\n+# Download Highcharts JS modules\n+cache_dir = Path(\"/tmp\")\n+cdn_urls = {\n+    \"highcharts\": (\"https://cdn.jsdelivr.net/npm/highcharts@11.4.8/highcharts.js\", cache_dir / \"highcharts.js\"),\n+    \"xrange\": (\"https://cdn.jsdelivr.net/npm/highcharts@11.4.8/modules/xrange.js\", cache_dir / \"hc_xrange.js\"),\n+    \"annotations\": (\n+        \"https://cdn.jsdelivr.net/npm/highcharts@11.4.8/modules/annotations.js\",\n+        cache_dir / \"hc_annotations.js\",\n+    ),\n+}\n+js_scripts = {}\n+for name, (url, cache_path) in cdn_urls.items():\n+    if cache_path.exists() and cache_path.stat().st_size > 1000:\n+        js_scripts[name] = cache_path.read_text(encoding=\"utf-8\")\n+    else:\n+        with urllib.request.urlopen(url, timeout=30) as resp:\n+            content = resp.read().decode(\"utf-8\")\n+        cache_path.write_text(content, encoding=\"utf-8\")\n+        js_scripts[name] = content\n+highcharts_js = js_scripts[\"highcharts\"]\n+xrange_js = js_scripts[\"xrange\"]\n+annotations_js = js_scripts[\"annotations\"]\n+\n+# Generate HTML with inline scripts and velocity colorbar via Highcharts renderer callback\n+html_str = chart.to_js_literal()\n+\n+# Chord labels positioned above the chart area\n+chord_labels = [\n+    {\"text\": \"C\", \"beat\": 2},\n+    {\"text\": \"C\", \"beat\": 6},\n+    {\"text\": \"Am\", \"beat\": 10},\n+    {\"text\": \"Am\", \"beat\": 14},\n+    {\"text\": \"F\", \"beat\": 18},\n+    {\"text\": \"F\", \"beat\": 22},\n+    {\"text\": \"G\", \"beat\": 26},\n+    {\"text\": \"G\", \"beat\": 30},\n+]\n+\n+# JavaScript for chord labels and velocity colorbar\n+chord_labels_js = \"\"\n+for cl in chord_labels:\n+    chord_labels_js += f\"\"\"\n+    r.text('{cl[\"text\"]}', chart.xAxis[0].toPixels({cl[\"beat\"]}), 155)\n+      .attr({{'text-anchor':'middle'}})\n+      .css({{fontSize:'26px', color:'#888', fontWeight:'600', fontStyle:'italic'}}).add();\"\"\"\n+\n+# Build JS array of pre-computed colors (eliminates duplicated interpolation in JS)\n+colors_js_array = \"[\" + \",\".join(f\"'{c}'\" for c in colorbar_colors) + \"]\"\n+\n+colorbar_js = f\"\"\"\n+<script>\n+(function() {{\n+  var checkChart = setInterval(function() {{\n+    var chart = Highcharts.charts[0];\n+    if (!chart) return;\n+    clearInterval(checkChart);\n+    var r = chart.renderer;\n+    var x = 4470, y = 220, w = 34, totalH = 2200;\n+    var colors = {colors_js_array};\n+    var nSegs = colors.length;\n+    var segH = totalH / nSegs;\n+    for (var i = 0; i < nSegs; i++) {{\n+      r.rect(x, y + i*segH, w, segH+1, 0).attr({{fill:colors[i], 'stroke-width':0}}).add();\n+    }}\n+    r.rect(x, y, w, totalH, 6).attr({{fill:'none', stroke:'#bbb', 'stroke-width':1}}).add();\n+    r.text('Velocity', x + w/2, y - 15).attr({{'text-anchor':'middle'}}).css({{fontSize:'24px', color:'#444', fontWeight:'600'}}).add();\n+    r.text('127 (forte)', x + w + 14, y + 18).css({{fontSize:'20px', color:'#666'}}).add();\n+    r.text('93 (mezzo)', x + w + 14, y + totalH/2 + 6).css({{fontSize:'20px', color:'#666'}}).add();\n+    r.text('60 (piano)', x + w + 14, y + totalH - 4).css({{fontSize:'20px', color:'#666'}}).add();\n+    {chord_labels_js}\n+  }}, 100);\n+}})();\n+</script>\n+\"\"\"\n+\n+html_content = f\"\"\"<!DOCTYPE html>\n+<html>\n+<head>\n+    <meta charset=\"utf-8\">\n+    <script>{highcharts_js}</script>\n+    <script>{xrange_js}</script>\n+    <script>{annotations_js}</script>\n+</head>\n+<body style=\"margin:0; padding:0; background: #fafafa;\">\n+    <div id=\"container\" style=\"width: 4800px; height: 2700px;\"></div>\n+    <script>{html_str}</script>\n+    {colorbar_js}\n+</body>\n+</html>\"\"\"\n+\n+# Save HTML\n+with open(\"plot.html\", \"w\", encoding=\"utf-8\") as f:\n+    f.write(html_content)\n+\n+# Screenshot with Selenium\n+with tempfile.NamedTemporaryFile(mode=\"w\", suffix=\".html\", delete=False, encoding=\"utf-8\") as f:\n+    f.write(html_content)\n+    temp_path = f.name\n+\n+chrome_options = Options()\n+chrome_options.add_argument(\"--headless\")\n+chrome_options.add_argument(\"--no-sandbox\")\n+chrome_options.add_argument(\"--disable-dev-shm-usage\")\n+chrome_options.add_argument(\"--disable-gpu\")\n+chrome_options.add_argument(\"--window-size=5000,3000\")\n+\n+driver = webdriver.Chrome(options=chrome_options)\n+driver.get(f\"file://{temp_path}\")\n+time.sleep(5)\n+\n+container = driver.find_element(\"id\", \"container\")\n+container.screenshot(\"plot.png\")\n+\n+driver.quit()\n+Path(temp_path).unlink()"
+    },
+    {
+      "sha": "de7dde6dae0aabac0b7d9794f1d121236cc278cd",
+      "filename": "plots/piano-roll-midi/metadata/highcharts.yaml",
+      "status": "added",
+      "additions": 236,
+      "deletions": 0,
+      "changes": 236,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/e3dc9d920cea986ecbf0b6b170d1b63e4fc94147/plots%2Fpiano-roll-midi%2Fmetadata%2Fhighcharts.yaml",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/e3dc9d920cea986ecbf0b6b170d1b63e4fc94147/plots%2Fpiano-roll-midi%2Fmetadata%2Fhighcharts.yaml",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fpiano-roll-midi%2Fmetadata%2Fhighcharts.yaml?ref=e3dc9d920cea986ecbf0b6b170d1b63e4fc94147",
+      "patch": "@@ -0,0 +1,236 @@\n+library: highcharts\n+specification_id: piano-roll-midi\n+created: '2026-03-07T19:49:41Z'\n+updated: '2026-03-07T20:22:03Z'\n+generated_by: claude-opus-4-5-20251101\n+workflow_run: 22805912217\n+issue: 4565\n+python_version: 3.14.3\n+library_version: unknown\n+preview_url: https://storage.googleapis.com/pyplots-images/plots/piano-roll-midi/highcharts/plot.png\n+preview_thumb: https://storage.googleapis.com/pyplots-images/plots/piano-roll-midi/highcharts/plot_thumb.png\n+preview_html: https://storage.googleapis.com/pyplots-images/plots/piano-roll-midi/highcharts/plot.html\n+quality_score: 92\n+review:\n+  strengths:\n+  - Excellent musical data with realistic C-Am-F-G chord progression, three distinct\n+    roles, and varied dynamics\n+  - Professional velocity colorbar with teal-amber-crimson gradient and labeled intensity\n+    levels\n+  - Strong visual hierarchy through role-based opacity, border styling, and bar width\n+    differentiation\n+  - Chord labels above the chart provide musical context and narrative\n+  - Black key row shading faithfully mirrors piano keyboard layout\n+  weaknesses:\n+  - Unused annotations module downloaded and embedded in HTML (minor code bloat)\n+  - vel_to_rgb helper function breaks strict KISS structure (minor)\n+  - Harmony and bass colors may blend at certain velocity ranges for colorblind viewers\n+  image_description: 'The plot displays a MIDI piano roll visualization as horizontal\n+    rectangles on a grid. The y-axis shows pitch names from C3 to C5, and the x-axis\n+    shows beats from 0 to 32 (quarter notes). Notes are colored by velocity using\n+    a teal (soft/piano) to amber (mezzo) to crimson (forte) gradient, with a vertical\n+    colorbar on the right labeled \"Velocity\" with annotations for 127 (forte), 93\n+    (mezzo), and 60 (piano). Three series are distinguished: Melody (orange/red tones,\n+    white borders, prominent), Bass (teal/green tones, wider bars), and Harmony (olive/amber\n+    tones, more transparent). Chord labels (C, C, Am, Am, F, F, G, G) appear above\n+    the plot area in italic gray text. Black key rows (C#, D#, F#, G#, A#) have subtle\n+    gray shading to distinguish from white keys. Beat grid lines are visible with\n+    stronger lines at measure boundaries (every 4 beats). The title reads \"piano-roll-midi\n+    · highcharts · pyplots.ai\" with a subtitle \"C – Am – F – G chord progression ·\n+    8 measures · velocity-colored dynamics\". The background is a light off-white.\n+    A legend in the top-left shows Melody, Bass, and Harmony series.'\n+  criteria_checklist:\n+    visual_quality:\n+      score: 29\n+      max: 30\n+      items:\n+      - id: VQ-01\n+        name: Text Legibility\n+        score: 8\n+        max: 8\n+        passed: true\n+        comment: 'All font sizes explicitly set: title 44px, axis titles 28px, tick\n+          labels 22px, legend 22px, subtitle 26px'\n+      - id: VQ-02\n+        name: No Overlap\n+        score: 6\n+        max: 6\n+        passed: true\n+        comment: No text overlap anywhere. Chord labels, axis labels, legend, and\n+          title all well-spaced\n+      - id: VQ-03\n+        name: Element Visibility\n+        score: 6\n+        max: 6\n+        passed: true\n+        comment: Note rectangles well-sized with role-based widths (melody 56px, harmony\n+          48px, bass 64px)\n+      - id: VQ-04\n+        name: Color Accessibility\n+        score: 3\n+        max: 4\n+        passed: true\n+        comment: Teal-amber-crimson avoids red-green conflicts but harmony and bass\n+          may blend at certain velocities for colorblind viewers\n+      - id: VQ-05\n+        name: Layout & Canvas\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: Plot fills ~70% of canvas with balanced margins and well-placed colorbar\n+      - id: VQ-06\n+        name: Axis Labels & Title\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: 'Descriptive labels: Beats (quarter notes) and Pitch (note name)'\n+    design_excellence:\n+      score: 17\n+      max: 20\n+      items:\n+      - id: DE-01\n+        name: Aesthetic Sophistication\n+        score: 7\n+        max: 8\n+        passed: true\n+        comment: Custom velocity palette, role-based opacity/sizing, white melody\n+          borders, chord labels, hand-drawn colorbar. Professional design.\n+      - id: DE-02\n+        name: Visual Refinement\n+        score: 5\n+        max: 6\n+        passed: true\n+        comment: Off-white background, subtle grid, axis lines removed, plot bands\n+          for black keys, rounded corners. Very polished.\n+      - id: DE-03\n+        name: Data Storytelling\n+        score: 5\n+        max: 6\n+        passed: true\n+        comment: Three roles create visual hierarchy; chord labels add musical narrative;\n+          velocity gradient tells dynamics story\n+    spec_compliance:\n+      score: 15\n+      max: 15\n+      items:\n+      - id: SC-01\n+        name: Plot Type\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Correct xrange chart type for horizontal note rectangles\n+      - id: SC-02\n+        name: Required Features\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: 'All spec features present: note names, black/white key shading,\n+          beat grid, velocity colors, auto-fit pitch range'\n+      - id: SC-03\n+        name: Data Mapping\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: X=time in beats, Y=pitch. Correct mapping with full data range\n+      - id: SC-04\n+        name: Title & Legend\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: Correct title format and clear legend labels for Melody, Bass, Harmony\n+    data_quality:\n+      score: 15\n+      max: 15\n+      items:\n+      - id: DQ-01\n+        name: Feature Coverage\n+        score: 6\n+        max: 6\n+        passed: true\n+        comment: Varying durations, velocities, three roles, chord progression, rhythmic\n+          variation\n+      - id: DQ-02\n+        name: Realistic Context\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Real C-Am-F-G chord progression with melody, harmony, and bass. Authentic\n+          to DAW workflows\n+      - id: DQ-03\n+        name: Appropriate Scale\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: MIDI pitches 48-72 (C3-C5), velocities 60-125, 8 measures of 4/4\n+          time. All sensible\n+    code_quality:\n+      score: 8\n+      max: 10\n+      items:\n+      - id: CQ-01\n+        name: KISS Structure\n+        score: 2\n+        max: 3\n+        passed: true\n+        comment: Mostly linear but contains vel_to_rgb function definition\n+      - id: CQ-02\n+        name: Reproducibility\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: np.random.seed(42) set and all data is hardcoded/deterministic\n+      - id: CQ-03\n+        name: Clean Imports\n+        score: 1\n+        max: 2\n+        passed: false\n+        comment: Annotations Highcharts module downloaded and embedded but never used\n+      - id: CQ-04\n+        name: Code Elegance\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: Clean, well-organized code with pre-computed colorbar gradient and\n+          role-based config\n+      - id: CQ-05\n+        name: Output & API\n+        score: 1\n+        max: 1\n+        passed: true\n+        comment: Saves as plot.png via Selenium screenshot. Current Highcharts API\n+    library_mastery:\n+      score: 8\n+      max: 10\n+      items:\n+      - id: LM-01\n+        name: Idiomatic Usage\n+        score: 4\n+        max: 5\n+        passed: true\n+        comment: Good use of xrange series, HighchartsOptions, plotBands, plotLines,\n+          tooltip formatting, to_js_literal()\n+      - id: LM-02\n+        name: Distinctive Features\n+        score: 4\n+        max: 5\n+        passed: true\n+        comment: xrange chart type, renderer API for colorbar and chord labels, plotBands\n+          for black keys, rich tooltips\n+  verdict: APPROVED\n+impl_tags:\n+  dependencies:\n+  - selenium\n+  techniques:\n+  - hover-tooltips\n+  - html-export\n+  - custom-legend\n+  - colorbar\n+  patterns:\n+  - data-generation\n+  - iteration-over-groups\n+  dataprep: []\n+  styling:\n+  - custom-colormap\n+  - alpha-blending\n+  - grid-styling\n+  - edge-highlighting"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d2c4651234734bcc3b55d5eafc2d7c1cdcfdf1f7",
+      "message": "feat(highcharts): implement piano-roll-midi",
+      "parent_shas": [
+        "09a9741fa5f176cbecf6b884d01d0c449a3ff7c1"
+      ]
+    },
+    {
+      "sha": "25d599f16edd87bc14d34c864b0166dc87565f43",
+      "message": "chore(highcharts): add metadata for piano-roll-midi",
+      "parent_shas": [
+        "d2c4651234734bcc3b55d5eafc2d7c1cdcfdf1f7"
+      ]
+    },
+    {
+      "sha": "158b9e81985606275397c3789e1ea088400a3ef3",
+      "message": "chore(highcharts): update quality score 80 and review feedback for piano-roll-midi",
+      "parent_shas": [
+        "25d599f16edd87bc14d34c864b0166dc87565f43"
+      ]
+    },
+    {
+      "sha": "c19bbc2d33bc35134c62f2e93fae6915fbeae00f",
+      "message": "fix(highcharts): address review feedback for piano-roll-midi\n\nAttempt 1/3 - fixes based on AI review",
+      "parent_shas": [
+        "158b9e81985606275397c3789e1ea088400a3ef3"
+      ]
+    },
+    {
+      "sha": "ed3d3309ac90e90b21533809b1b7d43d8f770236",
+      "message": "chore(highcharts): update quality score 85 and review feedback for piano-roll-midi",
+      "parent_shas": [
+        "c19bbc2d33bc35134c62f2e93fae6915fbeae00f"
+      ]
+    },
+    {
+      "sha": "47b5eddba41a429365361894a6c46c653a94693a",
+      "message": "fix(highcharts): address review feedback for piano-roll-midi\n\nAttempt 2/3 - fixes based on AI review",
+      "parent_shas": [
+        "ed3d3309ac90e90b21533809b1b7d43d8f770236"
+      ]
+    },
+    {
+      "sha": "4a1d0fa4f1c926e86996d2a8b82a493d0cdd0a4b",
+      "message": "chore(highcharts): update quality score 88 and review feedback for piano-roll-midi",
+      "parent_shas": [
+        "47b5eddba41a429365361894a6c46c653a94693a"
+      ]
+    },
+    {
+      "sha": "6c2aebf0592b234fd5c620613dec72b5eefdf57d",
+      "message": "fix(highcharts): address review feedback for piano-roll-midi\n\nAttempt 3/3 - fixes based on AI review",
+      "parent_shas": [
+        "4a1d0fa4f1c926e86996d2a8b82a493d0cdd0a4b"
+      ]
+    },
+    {
+      "sha": "742ab51157b53fc4f008690ed74a4268f008fff3",
+      "message": "chore(highcharts): update quality score 92 and review feedback for piano-roll-midi",
+      "parent_shas": [
+        "6c2aebf0592b234fd5c620613dec72b5eefdf57d"
+      ]
+    },
+    {
+      "sha": "e3dc9d920cea986ecbf0b6b170d1b63e4fc94147",
+      "message": "Merge branch 'main' into implementation/piano-roll-midi/highcharts",
+      "parent_shas": [
+        "742ab51157b53fc4f008690ed74a4268f008fff3",
+        "635cb42c5cd18c266912044f2df60d6e97076ee9"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__MarkusNeusinger__anyplot__pr4660.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4660__py2_py3__MarkusNeusinger__anyplot__pr4660\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4660__py2_py3__MarkusNeusinger__anyplot__pr4660\\rn"
+  }
+}

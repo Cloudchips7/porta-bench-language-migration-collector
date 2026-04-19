@@ -1,0 +1,144 @@
+{
+  "instance_id": "python_java__Jij-Inc__Qamomile__pr335",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "Jij-Inc/Qamomile",
+  "pr_number": 335,
+  "pr_url": "https://github.com/Jij-Inc/Qamomile/pull/335",
+  "repo": {
+    "full_name": "Jij-Inc/Qamomile",
+    "clone_url": "https://github.com/Jij-Inc/Qamomile.git",
+    "default_branch": "main",
+    "created_at": "2023-06-18T22:39:56Z",
+    "stars": 15,
+    "license": "Apache-2.0",
+    "size_kb": 28960
+  },
+  "pull_request": {
+    "id": 3526622982,
+    "title": "Support Python 3.11",
+    "body": "## Description\r\nSupporting Python 3.11 version as well.",
+    "created_at": "2026-04-14T05:28:02Z",
+    "merged_at": "2026-04-14T05:42:40Z",
+    "base_sha": "b615cb7c8d21ba52107d1b10304204c7df42533c",
+    "head_sha": "ba1373afbd1598c1a87f0ecc8207c43203cf4313",
+    "merge_commit_sha": "4f03ab884c8634a5afaa6f21819cac40762a5f72",
+    "labels": [
+      "dependencies"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "fc7c4372de3c032ed4238ce0e10245f397a68190",
+  "final_sha": "ba1373afbd1598c1a87f0ecc8207c43203cf4313",
+  "changed_files": [
+    {
+      "sha": "05c7e4a156c06787cb8af411ab959040733a732b",
+      "filename": ".github/workflows/python-test.yml",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/Jij-Inc/Qamomile/blob/ba1373afbd1598c1a87f0ecc8207c43203cf4313/.github%2Fworkflows%2Fpython-test.yml",
+      "raw_url": "https://github.com/Jij-Inc/Qamomile/raw/ba1373afbd1598c1a87f0ecc8207c43203cf4313/.github%2Fworkflows%2Fpython-test.yml",
+      "contents_url": "https://api.github.com/repos/Jij-Inc/Qamomile/contents/.github%2Fworkflows%2Fpython-test.yml?ref=ba1373afbd1598c1a87f0ecc8207c43203cf4313",
+      "patch": "@@ -20,7 +20,7 @@ jobs:\n     strategy:\n       fail-fast: false\n       matrix:\n-        python-version: ['3.12', '3.13']\n+        python-version: &python_versions ['3.11', '3.12', '3.13']\n         os: [ubuntu-latest, macos-latest]\n     runs-on: ${{ matrix.os }}\n     env:\n@@ -63,7 +63,7 @@ jobs:\n     strategy:\n       fail-fast: false\n       matrix:\n-        python-version: ['3.12', '3.13']\n+        python-version: *python_versions\n         os: [ubuntu-latest, macos-latest]\n     runs-on: ${{ matrix.os }}\n     env:\n@@ -98,7 +98,7 @@ jobs:\n     strategy:\n       fail-fast: false\n       matrix:\n-        python-version: ['3.12', '3.13']\n+        python-version: *python_versions\n         cudaq-extra: ['cudaq-cu13']\n     runs-on: macos-latest\n     env:\n@@ -139,7 +139,7 @@ jobs:\n     strategy:\n       fail-fast: false\n       matrix:\n-        python-version: ['3.12', '3.13']\n+        python-version: *python_versions\n         cudaq-extra: ['cudaq-cu12', 'cudaq-cu13']\n     runs-on: ubuntu-latest\n     env:"
+    },
+    {
+      "sha": "97b60ce67005c9b59da623b289ed5e437bd97c9a",
+      "filename": ".github/workflows/ruff.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Jij-Inc/Qamomile/blob/ba1373afbd1598c1a87f0ecc8207c43203cf4313/.github%2Fworkflows%2Fruff.yml",
+      "raw_url": "https://github.com/Jij-Inc/Qamomile/raw/ba1373afbd1598c1a87f0ecc8207c43203cf4313/.github%2Fworkflows%2Fruff.yml",
+      "contents_url": "https://api.github.com/repos/Jij-Inc/Qamomile/contents/.github%2Fworkflows%2Fruff.yml?ref=ba1373afbd1598c1a87f0ecc8207c43203cf4313",
+      "patch": "@@ -23,7 +23,7 @@ jobs:\n       - name: Set up Python\n         uses: actions/setup-python@v5\n         with:\n-          python-version: '3.12'\n+          python-version: '3.11'\n \n       - name: Install uv\n         uses: astral-sh/setup-uv@v5"
+    },
+    {
+      "sha": "2c0733315e415bfb5e5b353f9996ecd964d395b2",
+      "filename": ".python-version",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Jij-Inc/Qamomile/blob/ba1373afbd1598c1a87f0ecc8207c43203cf4313/.python-version",
+      "raw_url": "https://github.com/Jij-Inc/Qamomile/raw/ba1373afbd1598c1a87f0ecc8207c43203cf4313/.python-version",
+      "contents_url": "https://api.github.com/repos/Jij-Inc/Qamomile/contents/.python-version?ref=ba1373afbd1598c1a87f0ecc8207c43203cf4313",
+      "patch": "@@ -1 +1 @@\n-3.12\n+3.11"
+    },
+    {
+      "sha": "ad40d613352c23f8aff14f51794acb1ff633e896",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Jij-Inc/Qamomile/blob/ba1373afbd1598c1a87f0ecc8207c43203cf4313/README.md",
+      "raw_url": "https://github.com/Jij-Inc/Qamomile/raw/ba1373afbd1598c1a87f0ecc8207c43203cf4313/README.md",
+      "contents_url": "https://api.github.com/repos/Jij-Inc/Qamomile/contents/README.md?ref=ba1373afbd1598c1a87f0ecc8207c43203cf4313",
+      "patch": "@@ -33,7 +33,7 @@ If you want this version, install from source.\n \n Requirements:\n \n-- Python 3.12+\n+- Python 3.11+\n - `uv`\n \n Clone the repository:"
+    },
+    {
+      "sha": "32889371bcf42ff61f859fa2fdbbf13d56c3d83e",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Jij-Inc/Qamomile/blob/ba1373afbd1598c1a87f0ecc8207c43203cf4313/pyproject.toml",
+      "raw_url": "https://github.com/Jij-Inc/Qamomile/raw/ba1373afbd1598c1a87f0ecc8207c43203cf4313/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/Jij-Inc/Qamomile/contents/pyproject.toml?ref=ba1373afbd1598c1a87f0ecc8207c43203cf4313",
+      "patch": "@@ -7,7 +7,7 @@ name = \"qamomile\"\n dynamic = [\"version\"]\n description = \"\"\n readme = \"README.md\"\n-requires-python = \">=3.12\"\n+requires-python = \">=3.11\"\n dependencies = [\n     \"jijmodeling>=2.1.0\",\n     \"ommx>=2.3.3\","
+    },
+    {
+      "sha": "f6d29ff87bfe00f5a8177458d4bebe7e7e68832a",
+      "filename": "uv.lock",
+      "status": "modified",
+      "additions": 897,
+      "deletions": 541,
+      "changes": 1438,
+      "blob_url": "https://github.com/Jij-Inc/Qamomile/blob/ba1373afbd1598c1a87f0ecc8207c43203cf4313/uv.lock",
+      "raw_url": "https://github.com/Jij-Inc/Qamomile/raw/ba1373afbd1598c1a87f0ecc8207c43203cf4313/uv.lock",
+      "contents_url": "https://api.github.com/repos/Jij-Inc/Qamomile/contents/uv.lock?ref=ba1373afbd1598c1a87f0ecc8207c43203cf4313"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "a3a7b001b70d54d233d3bf1dcf1305b26a684e59",
+      "message": "Support Python 3.11 and add test for Python 3.14",
+      "parent_shas": [
+        "fc7c4372de3c032ed4238ce0e10245f397a68190"
+      ]
+    },
+    {
+      "sha": "ba1373afbd1598c1a87f0ecc8207c43203cf4313",
+      "message": "Remove test for 3.14",
+      "parent_shas": [
+        "a3a7b001b70d54d233d3bf1dcf1305b26a684e59"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__Jij-Inc__Qamomile__pr335.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\Jij-Inc__Qamomile__pr335__python_java__Jij-Inc__Qamomile__pr335\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\Jij-Inc__Qamomile__pr335__python_java__Jij-Inc__Qamomile__pr335\\rn"
+  }
+}

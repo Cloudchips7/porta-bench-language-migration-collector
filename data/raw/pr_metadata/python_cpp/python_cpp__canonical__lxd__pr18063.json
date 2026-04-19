@@ -1,0 +1,152 @@
+{
+  "instance_id": "python_cpp__canonical__lxd__pr18063",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "canonical/lxd",
+  "pr_number": 18063,
+  "pr_url": "https://github.com/canonical/lxd/pull/18063",
+  "repo": {
+    "full_name": "canonical/lxd",
+    "clone_url": "https://github.com/canonical/lxd.git",
+    "default_branch": "main",
+    "created_at": "2014-11-04T22:40:52Z",
+    "stars": 4726,
+    "license": "AGPL-3.0",
+    "size_kb": 198923
+  },
+  "pull_request": {
+    "id": 3500307064,
+    "title": "Python improvements",
+    "body": "",
+    "created_at": "2026-04-07T22:07:32Z",
+    "merged_at": "2026-04-09T07:07:14Z",
+    "base_sha": "cf25ef82a2ebcea7a5fca900aff1952be1522ae6",
+    "head_sha": "5723e3f6dc6628c9e33207591f986baef0e7a939",
+    "merge_commit_sha": "270b9812154d6942355feeff8d8c502585c9f03a",
+    "labels": [
+      "Documentation"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "f70cc5301658f231b55401bca3cb7c14c200598a",
+  "final_sha": "5723e3f6dc6628c9e33207591f986baef0e7a939",
+  "changed_files": [
+    {
+      "sha": "aaf961c35fcd60a190372889e14a10c065b78625",
+      "filename": "doc/conf.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 8,
+      "changes": 17,
+      "blob_url": "https://github.com/canonical/lxd/blob/5723e3f6dc6628c9e33207591f986baef0e7a939/doc%2Fconf.py",
+      "raw_url": "https://github.com/canonical/lxd/raw/5723e3f6dc6628c9e33207591f986baef0e7a939/doc%2Fconf.py",
+      "contents_url": "https://api.github.com/repos/canonical/lxd/contents/doc%2Fconf.py?ref=5723e3f6dc6628c9e33207591f986baef0e7a939",
+      "patch": "@@ -8,13 +8,14 @@\n \n import sys\n import subprocess\n-from git import Repo, InvalidGitRepositoryError\n+from git import Repo\n import filecmp\n import ast\n import re\n+import shutil\n \n sys.path.insert(0, os.path.abspath('.'))\n-from redirects import redirects\n+from redirects import redirects  # noqa: F401 (used by sphinx_reredirects via conf.py namespace)\n \n sys.path.append('.sphinx/')\n \n@@ -305,9 +306,10 @@\n # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#auto-generated-header-anchors\n myst_heading_anchors = 7\n \n+myst_substitutions = {}\n if os.path.exists('./substitutions.yaml'):\n     with open('./substitutions.yaml', 'r') as fd:\n-        myst_substitutions = yaml.safe_load(fd.read())\n+        myst_substitutions.update(yaml.safe_load(fd.read()))\n if os.path.exists('./related_topics.yaml'):\n     with open('./related_topics.yaml', 'r') as fd:\n         myst_substitutions.update(yaml.safe_load(fd.read()))\n@@ -349,22 +351,21 @@\n \n # Find path to lxc client (different for local builds and on RTD)\n \n-if ('LOCAL_SPHINX_BUILD' in os.environ and\n-    os.environ['LOCAL_SPHINX_BUILD'] == 'True'):\n+if os.environ.get('LOCAL_SPHINX_BUILD') == 'True':\n     path = str(subprocess.check_output(['go', 'env', 'GOPATH'], encoding='utf-8').strip())\n     lxc = os.path.join(path, 'bin', 'lxc')\n     if os.path.isfile(lxc):\n         print('Using ' + lxc + ' to generate man pages.')\n     else:\n         print('Cannot find lxc in ' + lxc)\n-        exit(2)\n+        sys.exit(2)\n else:\n     lxc = '../lxc.bin'\n \n # Generate man pages content\n \n os.makedirs('.sphinx/deps/manpages', exist_ok=True)\n-if (os.path.isfile(lxc)):\n+if os.path.isfile(lxc):\n     subprocess.run([lxc, 'manpage', '.sphinx/deps/manpages/', '--format=md'],\n                    check=True)\n else:\n@@ -435,7 +436,7 @@\n             not filecmp.cmp(sourcefile, targetfile, shallow=False)):\n \n             os.makedirs(os.path.dirname(targetfile), exist_ok=True)\n-            os.system('cp ' + sourcefile + ' ' + targetfile)\n+            shutil.copy2(sourcefile, targetfile)\n \n ### End MAN PAGES ###\n "
+    },
+    {
+      "sha": "32c15e1d8e2eb2d8d460d70d8dd3c8e2809ebaab",
+      "filename": "scripts/check-snap.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/canonical/lxd/blob/5723e3f6dc6628c9e33207591f986baef0e7a939/scripts%2Fcheck-snap.py",
+      "raw_url": "https://github.com/canonical/lxd/raw/5723e3f6dc6628c9e33207591f986baef0e7a939/scripts%2Fcheck-snap.py",
+      "contents_url": "https://api.github.com/repos/canonical/lxd/contents/scripts%2Fcheck-snap.py?ref=5723e3f6dc6628c9e33207591f986baef0e7a939",
+      "patch": "@@ -14,8 +14,7 @@\n import urllib.parse\n import urllib.request\n \n-ResolvedFormat = Literal[\"terminal\", \"markdown\", \"plain\"]\n-Format = Literal[\"auto\"] | ResolvedFormat\n+Format = Literal[\"auto\", \"terminal\", \"markdown\", \"plain\"]\n \n \n def _make_link(text: str, url: str, fmt: Format = \"terminal\") -> str:\n@@ -95,9 +94,9 @@ def check_snap(snap_name: str, track: str, risk: str, github_repo: Optional[str]\n     \"\"\"\n     # Resolve \"auto\" format based on TTY detection\n     if fmt == \"auto\":\n-        resolved_fmt: ResolvedFormat = \"terminal\" if sys.stdout.isatty() else \"plain\"\n+        resolved_fmt: str = \"terminal\" if sys.stdout.isatty() else \"plain\"\n     else:\n-        resolved_fmt = fmt  # type: ignore[assignment]\n+        resolved_fmt = fmt\n     snap_name_encoded = urllib.parse.quote(snap_name, safe='')\n     url = f\"https://api.snapcraft.io/v2/snaps/info/{snap_name_encoded}\"\n "
+    },
+    {
+      "sha": "8c51343735ef9713c07017cae1d16825845532c2",
+      "filename": "test/deps/import-busybox",
+      "status": "modified",
+      "additions": 24,
+      "deletions": 23,
+      "changes": 47,
+      "blob_url": "https://github.com/canonical/lxd/blob/5723e3f6dc6628c9e33207591f986baef0e7a939/test%2Fdeps%2Fimport-busybox",
+      "raw_url": "https://github.com/canonical/lxd/raw/5723e3f6dc6628c9e33207591f986baef0e7a939/test%2Fdeps%2Fimport-busybox",
+      "contents_url": "https://api.github.com/repos/canonical/lxd/contents/test%2Fdeps%2Fimport-busybox?ref=5723e3f6dc6628c9e33207591f986baef0e7a939",
+      "patch": "@@ -101,9 +101,10 @@ class LXD:\n         if isinstance(path, str):\n             headers[\"Content-Type\"] = \"application/octet-stream\"\n \n-            status, data = self.rest_call(\n-                \"/1.0/images\", open(path, \"rb\"), \"POST\", headers\n-            )\n+            with open(path, \"rb\") as f:\n+                status, data = self.rest_call(\n+                    \"/1.0/images\", f, \"POST\", headers\n+                )\n         else:\n             meta_path, rootfs_path = path\n             boundary = str(uuid.uuid1())\n@@ -112,31 +113,31 @@ class LXD:\n             if not isinstance(self.workdir, str) or not self.workdir:\n                 raise RuntimeError(\"Temporary working directory is not available\")\n             upload_path = os.path.join(self.workdir, \"upload\")\n-            body = open(upload_path, \"wb+\")\n-            for name, path in [(\"metadata\", meta_path), (\"rootfs\", rootfs_path)]:\n-                body.write(bytes(\"--%s\\r\\n\" % boundary, \"utf-8\"))\n-                body.write(\n-                    bytes(\n-                        \"Content-Disposition: form-data; \"\n-                        \"name=%s;%s\\r\\n\" % (name, filename_entry),\n-                        \"utf-8\",\n+            with open(upload_path, \"wb+\") as body:\n+                for name, path in [(\"metadata\", meta_path), (\"rootfs\", rootfs_path)]:\n+                    body.write(bytes(\"--%s\\r\\n\" % boundary, \"utf-8\"))\n+                    body.write(\n+                        bytes(\n+                            \"Content-Disposition: form-data; \"\n+                            \"name=%s;%s\\r\\n\" % (name, filename_entry),\n+                            \"utf-8\",\n+                        )\n                     )\n-                )\n-                body.write(b\"Content-Type: application/octet-stream\\r\\n\")\n-                body.write(b\"\\r\\n\")\n-                with open(path, \"rb\") as fd:\n-                    shutil.copyfileobj(fd, body)\n-                body.write(b\"\\r\\n\")\n+                    body.write(b\"Content-Type: application/octet-stream\\r\\n\")\n+                    body.write(b\"\\r\\n\")\n+                    with open(path, \"rb\") as fd:\n+                        shutil.copyfileobj(fd, body)\n+                    body.write(b\"\\r\\n\")\n \n-            body.write(bytes(\"--%s--\\r\\n\" % boundary, \"utf-8\"))\n-            body.write(b\"\\r\\n\")\n-            body.close()\n+                body.write(bytes(\"--%s--\\r\\n\" % boundary, \"utf-8\"))\n+                body.write(b\"\\r\\n\")\n \n             headers[\"Content-Type\"] = \"multipart/form-data; boundary=%s\" % boundary\n \n-            status, data = self.rest_call(\n-                \"/1.0/images\", open(upload_path, \"rb\"), \"POST\", headers\n-            )\n+            with open(upload_path, \"rb\") as f:\n+                status, data = self.rest_call(\n+                    \"/1.0/images\", f, \"POST\", headers\n+                )\n \n         if status != 202:\n             raise Exception(\"Failed to upload the image: %s\" % status)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "14eed630f9a64adc58f39d894868e0a1b86a5e38",
+      "message": "test/deps/import-busybox: use `with open()` pattern\n\nSigned-off-by: Simon Deziel <simon.deziel@canonical.com>",
+      "parent_shas": [
+        "f70cc5301658f231b55401bca3cb7c14c200598a"
+      ]
+    },
+    {
+      "sha": "b462c1e27da4af37539f30934a8089c70b6ab3b9",
+      "message": "doc/conf: remove unused import\n\nAnd silence the false positive for `redirects`.\n\nSigned-off-by: Simon Deziel <simon.deziel@canonical.com>",
+      "parent_shas": [
+        "14eed630f9a64adc58f39d894868e0a1b86a5e38"
+      ]
+    },
+    {
+      "sha": "ff47a3149fad64f28685ec0726f8e11e45584483",
+      "message": "doc/conf: avoid unint variable\n\nSigned-off-by: Simon Deziel <simon.deziel@canonical.com>",
+      "parent_shas": [
+        "b462c1e27da4af37539f30934a8089c70b6ab3b9"
+      ]
+    },
+    {
+      "sha": "9de637a0cdca8938006ee76db769e55c51fbee69",
+      "message": "doc/conf: `sys.exit` is recommended over plain `exit`\n\nSigned-off-by: Simon Deziel <simon.deziel@canonical.com>",
+      "parent_shas": [
+        "ff47a3149fad64f28685ec0726f8e11e45584483"
+      ]
+    },
+    {
+      "sha": "b910768cc62a166a6e1fed4a2e4f0a6be04273b0",
+      "message": "doc/conf: simplify env lookup\n\nSigned-off-by: Simon Deziel <simon.deziel@canonical.com>",
+      "parent_shas": [
+        "9de637a0cdca8938006ee76db769e55c51fbee69"
+      ]
+    },
+    {
+      "sha": "2cacc57582f2deb52ca40dd7845f32938b8407ad",
+      "message": "doc/conf: drop unneeded parenthesys\n\nSigned-off-by: Simon Deziel <simon.deziel@canonical.com>",
+      "parent_shas": [
+        "b910768cc62a166a6e1fed4a2e4f0a6be04273b0"
+      ]
+    },
+    {
+      "sha": "debe938c34587d5ac4794c9382ddf789164dff88",
+      "message": "doc/conf: avoid `os.system` which is prone to command injections\n\nSigned-off-by: Simon Deziel <simon.deziel@canonical.com>",
+      "parent_shas": [
+        "2cacc57582f2deb52ca40dd7845f32938b8407ad"
+      ]
+    },
+    {
+      "sha": "5723e3f6dc6628c9e33207591f986baef0e7a939",
+      "message": "scripts/check-snap: fix `--format` handling\n\nSigned-off-by: Simon Deziel <simon.deziel@canonical.com>",
+      "parent_shas": [
+        "debe938c34587d5ac4794c9382ddf789164dff88"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__canonical__lxd__pr18063.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\canonical__lxd__pr18063__python_cpp__canonical__lxd__pr18063\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\canonical__lxd__pr18063__python_cpp__canonical__lxd__pr18063\\rn"
+  }
+}

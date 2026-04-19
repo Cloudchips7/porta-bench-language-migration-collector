@@ -1,0 +1,77 @@
+{
+  "instance_id": "python_java__tenxyte__tenxyte__pr116",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "tenxyte/tenxyte",
+  "pr_number": 116,
+  "pr_url": "https://github.com/tenxyte/tenxyte/pull/116",
+  "repo": {
+    "full_name": "tenxyte/tenxyte",
+    "clone_url": "https://github.com/tenxyte/tenxyte.git",
+    "default_branch": "main",
+    "created_at": "2026-03-05T06:40:57Z",
+    "stars": 42,
+    "license": "MIT",
+    "size_kb": 3218
+  },
+  "pull_request": {
+    "id": 3498145801,
+    "title": "Ugraded mkdocstrings[python] to mkdocstrings[python]",
+    "body": "",
+    "created_at": "2026-04-07T13:37:47Z",
+    "merged_at": "2026-04-07T13:37:56Z",
+    "base_sha": "1bdf50868ef9c8219a5190db10e32345a34c9754",
+    "head_sha": "a4b9cc47f7340e34f33e6c448261ff2b8c676e5d",
+    "merge_commit_sha": "8006ee801e8ea110f2b49b27b4e7a92e5f761ab8",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "d97b5eb78347c6b7fe8b9a2420dcab91b634ad4f",
+  "final_sha": "a4b9cc47f7340e34f33e6c448261ff2b8c676e5d",
+  "changed_files": [
+    {
+      "sha": "6c229f90dec01e54f18282548cba7a5b5dad861f",
+      "filename": "docs/fr/requirements.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/tenxyte/tenxyte/blob/a4b9cc47f7340e34f33e6c448261ff2b8c676e5d/docs%2Ffr%2Frequirements.txt",
+      "raw_url": "https://github.com/tenxyte/tenxyte/raw/a4b9cc47f7340e34f33e6c448261ff2b8c676e5d/docs%2Ffr%2Frequirements.txt",
+      "contents_url": "https://api.github.com/repos/tenxyte/tenxyte/contents/docs%2Ffr%2Frequirements.txt?ref=a4b9cc47f7340e34f33e6c448261ff2b8c676e5d",
+      "patch": "@@ -1,2 +1,2 @@\n mkdocs-material==9.7.5\n-mkdocstrings[python]==0.24.1\n+mkdocstrings[python]>=0.27.0\n\\ No newline at end of file"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "a4b9cc47f7340e34f33e6c448261ff2b8c676e5d",
+      "message": "Ugraded mkdocstrings[python] to mkdocstrings[python]",
+      "parent_shas": [
+        "d97b5eb78347c6b7fe8b9a2420dcab91b634ad4f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__tenxyte__tenxyte__pr116.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\tenxyte__tenxyte__pr116__python_java__tenxyte__tenxyte__pr116\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\tenxyte__tenxyte__pr116__python_java__tenxyte__tenxyte__pr116\\rn"
+  }
+}

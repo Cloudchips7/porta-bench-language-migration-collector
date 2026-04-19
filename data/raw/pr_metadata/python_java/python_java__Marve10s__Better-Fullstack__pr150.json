@@ -1,0 +1,275 @@
+{
+  "instance_id": "python_java__Marve10s__Better-Fullstack__pr150",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "Marve10s/Better-Fullstack",
+  "pr_number": 150,
+  "pr_url": "https://github.com/Marve10s/Better-Fullstack/pull/150",
+  "repo": {
+    "full_name": "Marve10s/Better-Fullstack",
+    "clone_url": "https://github.com/Marve10s/Better-Fullstack.git",
+    "default_branch": "main",
+    "created_at": "2026-01-14T11:49:58Z",
+    "stars": 380,
+    "license": "MIT",
+    "size_kb": 24629
+  },
+  "pull_request": {
+    "id": 3520160562,
+    "title": "feat(python): add tortoise-orm to Python ORM category",
+    "body": "## Summary\n- Adds `tortoise-orm` as a new option in `PythonOrmSchema` alongside `sqlalchemy` and `sqlmodel`\n- Tortoise ORM is an async-first Python ORM with a Django-like API, using `aerich` for migrations (not alembic)\n- Full template support: database.py, models.py, crud.py, test_database.py, and FastAPI endpoint integration\n- All 4 web framework combos verified: fastapi+tortoise, flask+tortoise, litestar+tortoise, django+tortoise\n\n## Files changed (17 files, Scenario A non-TS checklist)\n1. `packages/types/src/schemas.ts` -- add `\"tortoise-orm\"` to PythonOrmSchema enum\n2. `packages/types/src/option-metadata.ts` -- add label override `\"Tortoise ORM\"`\n3. `packages/template-generator/templates/python-base/pyproject.toml.hbs` -- tortoise-orm + aerich deps\n4. `packages/template-generator/templates/python-base/src/app/database.py.hbs` -- Tortoise init/close\n5. `packages/template-generator/templates/python-base/src/app/models.py.hbs` -- Tortoise models (User, Post)\n6. `packages/template-generator/templates/python-base/src/app/crud.py.hbs` -- async CRUD operations\n7. `packages/template-generator/templates/python-base/src/app/main.py.hbs` -- FastAPI lifespan + routes\n8. `packages/template-generator/templates/python-base/src/app/settings.py.hbs` -- widen database_url gate\n9. `packages/template-generator/templates/python-base/tests/test_database.py.hbs` -- Tortoise test suite\n10. `apps/cli/src/prompts/python-ecosystem.ts` -- CLI prompt option\n11. `apps/web/src/lib/constant.ts` -- web builder entry\n12. `apps/web/src/lib/tech-resource-links.ts` -- docs/github links\n13. `packages/template-generator/src/processors/readme-generator.ts` -- README features + structure + scripts\n14. `apps/cli/src/helpers/core/post-installation.ts` -- post-install display name\n15. `apps/cli/test/python-language.test.ts` -- 9 new tests for Tortoise ORM\n16. `apps/cli/test/template-snapshots.test.ts` -- snapshot combo\n17. `apps/cli/test/__snapshots__/template-snapshots.test.ts.snap` -- snapshot data\n\n## Test plan\n- [x] `bun test apps/cli/test/cli-builder-sync.test.ts` -- 361 pass, 0 fail\n- [x] `bun test apps/cli/test/python-language.test.ts` -- 120 pass, 0 fail\n- [x] `bun test apps/cli/test/template-snapshots.test.ts -u` -- 68 pass, 0 fail\n- [x] Scaffold fastapi+tortoise -- `python3 -m compileall` passes\n- [x] Scaffold flask+tortoise -- `python3 -m compileall` passes\n- [x] Scaffold litestar+tortoise -- `python3 -m compileall` passes\n- [x] Scaffold django+tortoise -- `python3 -m compileall` passes\n- [x] `bun run --cwd apps/web validate:tech-links` -- no errors",
+    "created_at": "2026-04-12T20:49:38Z",
+    "merged_at": "2026-04-12T21:20:15Z",
+    "base_sha": "afa1c876e0f9e1c5897bc99b889d29125d84d2c8",
+    "head_sha": "8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+    "merge_commit_sha": "d7cd2e94c04d58d0fe961f8758f8697c3169ee00",
+    "labels": [
+      "vouch:trusted",
+      "size:L"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "afa1c876e0f9e1c5897bc99b889d29125d84d2c8",
+  "final_sha": "8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+  "changed_files": [
+    {
+      "sha": "ff2c527c415d8a007465a435772c37037bedd373",
+      "filename": "apps/cli/src/helpers/core/post-installation.ts",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fcli%2Fsrc%2Fhelpers%2Fcore%2Fpost-installation.ts",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fcli%2Fsrc%2Fhelpers%2Fcore%2Fpost-installation.ts",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/apps%2Fcli%2Fsrc%2Fhelpers%2Fcore%2Fpost-installation.ts?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -900,6 +900,7 @@ function displayPythonInstructions(config: ProjectConfig & { depsInstalled: bool\n     const ormNames: Record<string, string> = {\n       sqlalchemy: \"SQLAlchemy\",\n       sqlmodel: \"SQLModel\",\n+      \"tortoise-orm\": \"Tortoise ORM\",\n     };\n     output += `${pc.cyan(\"•\")} ORM: ${ormNames[pythonOrm] || pythonOrm}\\n`;\n   }"
+    },
+    {
+      "sha": "4cc561c09b5858fd5e9fc1ec945e56febbec26f8",
+      "filename": "apps/cli/src/prompts/python-ecosystem.ts",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fcli%2Fsrc%2Fprompts%2Fpython-ecosystem.ts",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fcli%2Fsrc%2Fprompts%2Fpython-ecosystem.ts",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/apps%2Fcli%2Fsrc%2Fprompts%2Fpython-ecosystem.ts?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -68,6 +68,11 @@ export async function getPythonOrmChoice(pythonOrm?: PythonOrm) {\n       label: \"SQLModel\",\n       hint: \"SQL databases in Python with Pydantic and SQLAlchemy\",\n     },\n+    {\n+      value: \"tortoise-orm\" as const,\n+      label: \"Tortoise ORM\",\n+      hint: \"Async-first ORM with Django-like API\",\n+    },\n     {\n       value: \"none\" as const,\n       label: \"None\","
+    },
+    {
+      "sha": "b55a456345d1568368ee2e17aabda7914380e919",
+      "filename": "apps/cli/test/__snapshots__/template-snapshots.test.ts.snap",
+      "status": "modified",
+      "additions": 95,
+      "deletions": 0,
+      "changes": 95,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fcli%2Ftest%2F__snapshots__%2Ftemplate-snapshots.test.ts.snap",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fcli%2Ftest%2F__snapshots__%2Ftemplate-snapshots.test.ts.snap",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/apps%2Fcli%2Ftest%2F__snapshots__%2Ftemplate-snapshots.test.ts.snap?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -13704,6 +13704,23 @@ exports[`Template Snapshots - Python Ecosystem Python File Structure Snapshots f\n ]\n `;\n \n+exports[`Template Snapshots - Python Ecosystem Python File Structure Snapshots file structure: fastapi-tortoise-orm 1`] = `\n+[\n+  \".env.example\",\n+  \"CLAUDE.md\",\n+  \"README.md\",\n+  \"pyproject.toml\",\n+  \"src/app/__init__.py\",\n+  \"src/app/crud.py\",\n+  \"src/app/database.py\",\n+  \"src/app/main.py\",\n+  \"src/app/models.py\",\n+  \"tests/__init__.py\",\n+  \"tests/test_database.py\",\n+  \"tests/test_main.py\",\n+]\n+`;\n+\n exports[`Template Snapshots - Python Ecosystem Python Key File Content Snapshots key files: fastapi-sqlalchemy-celery 1`] = `\n {\n   \"fileCount\": 21,\n@@ -14141,3 +14158,81 @@ CELERY_RESULT_BACKEND=redis://localhost:6379/0\n   ],\n }\n `;\n+\n+exports[`Template Snapshots - Python Ecosystem Python Key File Content Snapshots key files: fastapi-tortoise-orm 1`] = `\n+{\n+  \"fileCount\": 13,\n+  \"files\": [\n+    {\n+      \"content\": \n+\"# Environment Configuration\n+# Copy this file to .env and update the values\n+\n+# Application\n+DEBUG=true\n+HOST=0.0.0.0\n+PORT=8000\n+\n+# Database (if using SQLAlchemy/SQLModel)\n+DATABASE_URL=sqlite:///./app.db\n+\n+# OpenAI (if using AI frameworks)\n+OPENAI_API_KEY=your-openai-api-key\n+\n+# Anthropic (if using Anthropic SDK)\n+ANTHROPIC_API_KEY=your-anthropic-api-key\n+\n+# Celery (if using task queue)\n+CELERY_BROKER_URL=redis://localhost:6379/0\n+CELERY_RESULT_BACKEND=redis://localhost:6379/0\n+\"\n+,\n+      \"path\": \".env.example\",\n+    },\n+    {\n+      \"content\": \"[exists]\",\n+      \"path\": \"CLAUDE.md\",\n+    },\n+    {\n+      \"content\": \"[exists]\",\n+      \"path\": \"pyproject.toml\",\n+    },\n+    {\n+      \"content\": \"[exists]\",\n+      \"path\": \"README.md\",\n+    },\n+    {\n+      \"content\": \"[exists]\",\n+      \"path\": \"src/app/__init__.py\",\n+    },\n+    {\n+      \"content\": \"[exists]\",\n+      \"path\": \"src/app/crud.py\",\n+    },\n+    {\n+      \"content\": \"[exists]\",\n+      \"path\": \"src/app/database.py\",\n+    },\n+    {\n+      \"content\": \"[exists]\",\n+      \"path\": \"src/app/main.py\",\n+    },\n+    {\n+      \"content\": \"[exists]\",\n+      \"path\": \"src/app/models.py\",\n+    },\n+    {\n+      \"content\": \"[exists]\",\n+      \"path\": \"tests/__init__.py\",\n+    },\n+    {\n+      \"content\": \"[exists]\",\n+      \"path\": \"tests/test_database.py\",\n+    },\n+    {\n+      \"content\": \"[exists]\",\n+      \"path\": \"tests/test_main.py\",\n+    },\n+  ],\n+}\n+`;"
+    },
+    {
+      "sha": "ed90ed1b2d55c996dc1c004736d8e2b5c3abe5db",
+      "filename": "apps/cli/test/python-language.test.ts",
+      "status": "modified",
+      "additions": 187,
+      "deletions": 0,
+      "changes": 187,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fcli%2Ftest%2Fpython-language.test.ts",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fcli%2Ftest%2Fpython-language.test.ts",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/apps%2Fcli%2Ftest%2Fpython-language.test.ts?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -85,6 +85,7 @@ describe(\"Python Language Support\", () => {\n     it(\"should have python ORM options\", () => {\n       expect(PYTHON_ORMS).toContain(\"sqlalchemy\");\n       expect(PYTHON_ORMS).toContain(\"sqlmodel\");\n+      expect(PYTHON_ORMS).toContain(\"tortoise-orm\");\n       expect(PYTHON_ORMS).toContain(\"none\");\n     });\n \n@@ -925,6 +926,192 @@ describe(\"Python Language Support\", () => {\n     });\n   });\n \n+  describe(\"Tortoise ORM\", () => {\n+    it(\"should include Tortoise ORM dependencies in pyproject.toml\", async () => {\n+      const result = await createVirtual({\n+        projectName: \"python-tortoise-deps\",\n+        ecosystem: \"python\",\n+        pythonWebFramework: \"fastapi\",\n+        pythonOrm: \"tortoise-orm\",\n+        pythonValidation: \"none\",\n+        pythonAi: [],\n+        pythonTaskQueue: \"none\",\n+        pythonQuality: \"none\",\n+      });\n+\n+      expect(result.success).toBe(true);\n+      const root = result.tree!.root;\n+\n+      const pyprojectContent = getFileContent(root, \"pyproject.toml\");\n+      expect(pyprojectContent).toBeDefined();\n+      expect(pyprojectContent).toContain(\"tortoise-orm\");\n+      expect(pyprojectContent).toContain(\"aerich\");\n+    });\n+\n+    it(\"should create Tortoise ORM database module\", async () => {\n+      const result = await createVirtual({\n+        projectName: \"python-tortoise-database\",\n+        ecosystem: \"python\",\n+        pythonWebFramework: \"fastapi\",\n+        pythonOrm: \"tortoise-orm\",\n+        pythonValidation: \"none\",\n+        pythonAi: [],\n+        pythonTaskQueue: \"none\",\n+        pythonQuality: \"none\",\n+      });\n+\n+      expect(result.success).toBe(true);\n+      const root = result.tree!.root;\n+\n+      expect(hasFile(root, \"src/app/database.py\")).toBe(true);\n+      const databaseContent = getFileContent(root, \"src/app/database.py\");\n+      expect(databaseContent).toBeDefined();\n+      expect(databaseContent).toContain(\"from tortoise import Tortoise\");\n+      expect(databaseContent).toContain(\"TORTOISE_ORM\");\n+      expect(databaseContent).toContain(\"init_db\");\n+      expect(databaseContent).toContain(\"close_db\");\n+    });\n+\n+    it(\"should create Tortoise ORM models module\", async () => {\n+      const result = await createVirtual({\n+        projectName: \"python-tortoise-models\",\n+        ecosystem: \"python\",\n+        pythonWebFramework: \"fastapi\",\n+        pythonOrm: \"tortoise-orm\",\n+        pythonValidation: \"none\",\n+        pythonAi: [],\n+        pythonTaskQueue: \"none\",\n+        pythonQuality: \"none\",\n+      });\n+\n+      expect(result.success).toBe(true);\n+      const root = result.tree!.root;\n+\n+      expect(hasFile(root, \"src/app/models.py\")).toBe(true);\n+      const modelsContent = getFileContent(root, \"src/app/models.py\");\n+      expect(modelsContent).toBeDefined();\n+      expect(modelsContent).toContain(\"from tortoise import fields, models\");\n+      expect(modelsContent).toContain(\"class User(models.Model)\");\n+      expect(modelsContent).toContain(\"class Post(models.Model)\");\n+    });\n+\n+    it(\"should create Tortoise ORM CRUD module\", async () => {\n+      const result = await createVirtual({\n+        projectName: \"python-tortoise-crud\",\n+        ecosystem: \"python\",\n+        pythonWebFramework: \"fastapi\",\n+        pythonOrm: \"tortoise-orm\",\n+        pythonValidation: \"none\",\n+        pythonAi: [],\n+        pythonTaskQueue: \"none\",\n+        pythonQuality: \"none\",\n+      });\n+\n+      expect(result.success).toBe(true);\n+      const root = result.tree!.root;\n+\n+      expect(hasFile(root, \"src/app/crud.py\")).toBe(true);\n+      const crudContent = getFileContent(root, \"src/app/crud.py\");\n+      expect(crudContent).toBeDefined();\n+      expect(crudContent).toContain(\"from app.models import Post, User\");\n+      expect(crudContent).toContain(\"async def get_user\");\n+      expect(crudContent).toContain(\"async def create_user\");\n+      expect(crudContent).toContain(\"async def get_post\");\n+      expect(crudContent).toContain(\"async def create_post\");\n+    });\n+\n+    it(\"should create database test file\", async () => {\n+      const result = await createVirtual({\n+        projectName: \"python-tortoise-tests\",\n+        ecosystem: \"python\",\n+        pythonWebFramework: \"fastapi\",\n+        pythonOrm: \"tortoise-orm\",\n+        pythonValidation: \"none\",\n+        pythonAi: [],\n+        pythonTaskQueue: \"none\",\n+        pythonQuality: \"none\",\n+      });\n+\n+      expect(result.success).toBe(true);\n+      const root = result.tree!.root;\n+\n+      expect(hasFile(root, \"tests/test_database.py\")).toBe(true);\n+      const testContent = getFileContent(root, \"tests/test_database.py\");\n+      expect(testContent).toBeDefined();\n+      expect(testContent).toContain(\"from app.models import Post, User\");\n+      expect(testContent).toContain(\"from app import crud\");\n+    });\n+\n+    it(\"should integrate Tortoise ORM with FastAPI endpoints\", async () => {\n+      const result = await createVirtual({\n+        projectName: \"python-tortoise-fastapi\",\n+        ecosystem: \"python\",\n+        pythonWebFramework: \"fastapi\",\n+        pythonOrm: \"tortoise-orm\",\n+        pythonValidation: \"none\",\n+        pythonAi: [],\n+        pythonTaskQueue: \"none\",\n+        pythonQuality: \"none\",\n+      });\n+\n+      expect(result.success).toBe(true);\n+      const root = result.tree!.root;\n+\n+      const mainContent = getFileContent(root, \"src/app/main.py\");\n+      expect(mainContent).toBeDefined();\n+      expect(mainContent).toContain(\"from app import crud\");\n+      expect(mainContent).toContain(\"from app.database import close_db, init_db\");\n+      expect(mainContent).toContain(\"await init_db()\");\n+      expect(mainContent).toContain(\"await close_db()\");\n+      expect(mainContent).toContain(\"/users\");\n+      expect(mainContent).toContain(\"/posts\");\n+    });\n+\n+    it(\"should generate README with Tortoise ORM instructions\", async () => {\n+      const result = await createVirtual({\n+        projectName: \"python-tortoise-readme\",\n+        ecosystem: \"python\",\n+        pythonWebFramework: \"fastapi\",\n+        pythonOrm: \"tortoise-orm\",\n+        pythonValidation: \"none\",\n+        pythonAi: [],\n+        pythonTaskQueue: \"none\",\n+        pythonQuality: \"none\",\n+      });\n+\n+      expect(result.success).toBe(true);\n+      const root = result.tree!.root;\n+\n+      const readmeContent = getFileContent(root, \"README.md\");\n+      expect(readmeContent).toBeDefined();\n+      expect(readmeContent).toContain(\"Tortoise ORM\");\n+      expect(readmeContent).toContain(\"Aerich\");\n+    });\n+\n+    it(\"should NOT use Alembic with Tortoise ORM\", async () => {\n+      const result = await createVirtual({\n+        projectName: \"python-tortoise-migrations\",\n+        ecosystem: \"python\",\n+        pythonWebFramework: \"fastapi\",\n+        pythonOrm: \"tortoise-orm\",\n+        pythonValidation: \"none\",\n+        pythonAi: [],\n+        pythonTaskQueue: \"none\",\n+        pythonQuality: \"none\",\n+      });\n+\n+      expect(result.success).toBe(true);\n+      const root = result.tree!.root;\n+\n+      // Alembic should not be present with Tortoise ORM (uses aerich instead)\n+      expect(hasFile(root, \"alembic.ini\")).toBe(false);\n+      expect(hasFile(root, \"migrations/env.py\")).toBe(false);\n+\n+      const pyprojectContent = getFileContent(root, \"pyproject.toml\");\n+      expect(pyprojectContent).not.toContain(\"alembic\");\n+    });\n+  });\n+\n   describe(\"Pydantic Validation\", () => {\n     it(\"should include Pydantic dependencies in pyproject.toml\", async () => {\n       const result = await createVirtual({"
+    },
+    {
+      "sha": "e0ef7d7c137b61deb0beedbdd830a3048280c742",
+      "filename": "apps/cli/test/template-snapshots.test.ts",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 0,
+      "changes": 13,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fcli%2Ftest%2Ftemplate-snapshots.test.ts",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fcli%2Ftest%2Ftemplate-snapshots.test.ts",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/apps%2Fcli%2Ftest%2Ftemplate-snapshots.test.ts?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -559,6 +559,19 @@ describe(\"Template Snapshots - Python Ecosystem\", () => {\n         pythonQuality: \"ruff\" as const,\n       },\n     },\n+    {\n+      name: \"fastapi-tortoise-orm\",\n+      config: {\n+        ecosystem: \"python\" as const,\n+        pythonWebFramework: \"fastapi\" as const,\n+        pythonOrm: \"tortoise-orm\" as const,\n+        pythonValidation: \"none\" as const,\n+        pythonAi: [] as const,\n+        pythonTaskQueue: \"none\" as const,\n+        pythonGraphql: \"none\" as const,\n+        pythonQuality: \"none\" as const,\n+      },\n+    },\n   ];\n \n   describe(\"Python File Structure Snapshots\", () => {"
+    },
+    {
+      "sha": "b62151a4e23843922b6f723331a7efbcd0624c5a",
+      "filename": "apps/web/src/lib/constant.ts",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fweb%2Fsrc%2Flib%2Fconstant.ts",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fweb%2Fsrc%2Flib%2Fconstant.ts",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/apps%2Fweb%2Fsrc%2Flib%2Fconstant.ts?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -2900,6 +2900,14 @@ export const TECH_OPTIONS: Record<\n       color: \"from-teal-500 to-cyan-600\",\n       default: false,\n     },\n+    {\n+      id: \"tortoise-orm\",\n+      name: \"Tortoise ORM\",\n+      description: \"Async-first Python ORM with Django-like API, inspired by Django ORM\",\n+      icon: \"\",\n+      color: \"from-green-500 to-emerald-600\",\n+      default: false,\n+    },\n     {\n       id: \"none\",\n       name: \"No ORM\","
+    },
+    {
+      "sha": "f948a16a6d0c5d19b012614944b36091a205aa6f",
+      "filename": "apps/web/src/lib/tech-resource-links.ts",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fweb%2Fsrc%2Flib%2Ftech-resource-links.ts",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/apps%2Fweb%2Fsrc%2Flib%2Ftech-resource-links.ts",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/apps%2Fweb%2Fsrc%2Flib%2Ftech-resource-links.ts?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -743,6 +743,10 @@ const BASE_LINKS: LinkMap = {\n     docsUrl: \"https://sqlmodel.tiangolo.com/\",\n     githubUrl: \"https://github.com/fastapi/sqlmodel\",\n   },\n+  \"tortoise-orm\": {\n+    docsUrl: \"https://tortoise.github.io/\",\n+    githubUrl: \"https://github.com/tortoise/tortoise-orm\",\n+  },\n   pydantic: {\n     docsUrl: \"https://docs.pydantic.dev/\",\n     githubUrl: \"https://github.com/pydantic/pydantic\","
+    },
+    {
+      "sha": "99f860736b7d5d5b7f111dd4d4e94e383f97e070",
+      "filename": "packages/template-generator/src/processors/readme-generator.ts",
+      "status": "modified",
+      "additions": 19,
+      "deletions": 1,
+      "changes": 20,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Fsrc%2Fprocessors%2Freadme-generator.ts",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Fsrc%2Fprocessors%2Freadme-generator.ts",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/packages%2Ftemplate-generator%2Fsrc%2Fprocessors%2Freadme-generator.ts?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -989,6 +989,9 @@ function generatePythonReadmeContent(config: ProjectConfig): string {\n   } else if (pythonOrm === \"sqlmodel\") {\n     features.push(\"- **SQLModel** - SQL databases with Pydantic and SQLAlchemy\");\n     features.push(\"- **Alembic** - Database migrations\");\n+  } else if (pythonOrm === \"tortoise-orm\") {\n+    features.push(\"- **Tortoise ORM** - Async-first Python ORM with Django-like API\");\n+    features.push(\"- **Aerich** - Database migrations for Tortoise ORM\");\n   }\n \n   // Validation\n@@ -1069,6 +1072,13 @@ function generatePythonReadmeContent(config: ProjectConfig): string {\n     structure.push(\"│       └── crud.py       # CRUD operations\");\n   }\n \n+  // Add Tortoise ORM files\n+  if (pythonOrm === \"tortoise-orm\") {\n+    structure.push(\"│       ├── database.py   # Database configuration\");\n+    structure.push(\"│       ├── models.py     # Tortoise ORM models\");\n+    structure.push(\"│       └── crud.py       # CRUD operations\");\n+  }\n+\n   // Add standalone Pydantic schemas (no ORM)\n   if (pythonOrm === \"none\" && pythonValidation === \"pydantic\") {\n     structure.push(\"│       └── schemas.py    # Pydantic validation schemas\");\n@@ -1114,7 +1124,7 @@ function generatePythonReadmeContent(config: ProjectConfig): string {\n   structure.push(\"│   ├── __init__.py\");\n   structure.push(\"│   └── test_main.py      # Test suite\");\n \n-  if (pythonOrm === \"sqlalchemy\" || pythonOrm === \"sqlmodel\") {\n+  if (pythonOrm === \"sqlalchemy\" || pythonOrm === \"sqlmodel\" || pythonOrm === \"tortoise-orm\") {\n     structure.push(\"│   └── test_database.py  # Database tests\");\n   }\n \n@@ -1150,6 +1160,14 @@ function generatePythonReadmeContent(config: ProjectConfig): string {\n - \\`uv run alembic downgrade -1\\`: Rollback last migration`;\n   }\n \n+  if (pythonOrm === \"tortoise-orm\") {\n+    scripts += `\n+- \\`uv run aerich init -t app.database.TORTOISE_ORM\\`: Initialize Aerich\n+- \\`uv run aerich init-db\\`: Create initial migration\n+- \\`uv run aerich migrate\\`: Generate migration\n+- \\`uv run aerich upgrade\\`: Apply migrations`;\n+  }\n+\n   return `# ${projectName}\n \n This project was created with [Better Fullstack](https://github.com/Marve10s/Better-Fullstack), a high-performance Python stack."
+    },
+    {
+      "sha": "68925205119462c87c27367267e1419dbb0aa1d0",
+      "filename": "packages/template-generator/templates/python-base/pyproject.toml.hbs",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fpyproject.toml.hbs",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fpyproject.toml.hbs",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fpyproject.toml.hbs?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -34,6 +34,10 @@ dependencies = [\n     \"sqlmodel>=0.0.38\",\n     \"alembic>=1.14.0\",\n {{/if}}\n+{{#if (eq pythonOrm \"tortoise-orm\")}}\n+    \"tortoise-orm[aiosqlite]>=0.25.0\",\n+    \"aerich>=0.8.0\",\n+{{/if}}\n {{#if (eq pythonValidation \"pydantic\")}}\n     \"pydantic>=2.12.5\",\n     \"pydantic-settings>=2.13.1\","
+    },
+    {
+      "sha": "22e68de3f4145853f14fce5b71b5c2ff6703920c",
+      "filename": "packages/template-generator/templates/python-base/src/app/crud.py.hbs",
+      "status": "modified",
+      "additions": 97,
+      "deletions": 0,
+      "changes": 97,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fcrud.py.hbs",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fcrud.py.hbs",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fcrud.py.hbs?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -287,4 +287,101 @@ def delete_post(db: Session, post_id: int) -> bool:\n     db.commit()\n     return True\n {{/if}}\n+{{#if (eq pythonOrm \"tortoise-orm\")}}\n+\"\"\"CRUD operations for Tortoise ORM models.\"\"\"\n+\n+from app.models import Post, User\n+\n+\n+# User CRUD operations\n+async def get_user(user_id: int) -> User | None:\n+    \"\"\"Get a user by ID.\"\"\"\n+    return await User.filter(id=user_id).first()\n+\n+\n+async def get_user_by_email(email: str) -> User | None:\n+    \"\"\"Get a user by email.\"\"\"\n+    return await User.filter(email=email).first()\n+\n+\n+async def get_users(skip: int = 0, limit: int = 100) -> list[User]:\n+    \"\"\"Get a list of users with pagination.\"\"\"\n+    return await User.all().offset(skip).limit(limit)\n+\n+\n+async def create_user(email: str, name: str | None = None) -> User:\n+    \"\"\"Create a new user.\"\"\"\n+    return await User.create(email=email, name=name)\n+\n+\n+async def update_user(user_id: int, email: str | None = None, name: str | None = None) -> User | None:\n+    \"\"\"Update a user.\"\"\"\n+    user = await get_user(user_id)\n+    if user is None:\n+        return None\n+\n+    if email is not None:\n+        user.email = email\n+    if name is not None:\n+        user.name = name\n+\n+    await user.save()\n+    return user\n+\n+\n+async def delete_user(user_id: int) -> bool:\n+    \"\"\"Delete a user.\"\"\"\n+    user = await get_user(user_id)\n+    if user is None:\n+        return False\n+\n+    await user.delete()\n+    return True\n+\n+\n+# Post CRUD operations\n+async def get_post(post_id: int) -> Post | None:\n+    \"\"\"Get a post by ID.\"\"\"\n+    return await Post.filter(id=post_id).first()\n+\n+\n+async def get_posts(skip: int = 0, limit: int = 100) -> list[Post]:\n+    \"\"\"Get a list of posts with pagination.\"\"\"\n+    return await Post.all().offset(skip).limit(limit)\n+\n+\n+async def get_posts_by_author(author_id: int) -> list[Post]:\n+    \"\"\"Get all posts by an author.\"\"\"\n+    return await Post.filter(author_id=author_id).all()\n+\n+\n+async def create_post(title: str, author_id: int, content: str | None = None) -> Post:\n+    \"\"\"Create a new post.\"\"\"\n+    return await Post.create(title=title, content=content, author_id=author_id)\n+\n+\n+async def update_post(post_id: int, title: str | None = None, content: str | None = None) -> Post | None:\n+    \"\"\"Update a post.\"\"\"\n+    post = await get_post(post_id)\n+    if post is None:\n+        return None\n+\n+    if title is not None:\n+        post.title = title\n+    if content is not None:\n+        post.content = content\n+\n+    await post.save()\n+    return post\n+\n+\n+async def delete_post(post_id: int) -> bool:\n+    \"\"\"Delete a post.\"\"\"\n+    post = await get_post(post_id)\n+    if post is None:\n+        return False\n+\n+    await post.delete()\n+    return True\n+{{/if}}\n {{/if}}"
+    },
+    {
+      "sha": "2ee32d7dd399bd79ab759ea7ac6412ac561bda65",
+      "filename": "packages/template-generator/templates/python-base/src/app/database.py.hbs",
+      "status": "modified",
+      "additions": 30,
+      "deletions": 0,
+      "changes": 30,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fdatabase.py.hbs",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fdatabase.py.hbs",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fdatabase.py.hbs?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -62,4 +62,34 @@ def init_db() -> None:\n \n     SQLModel.metadata.create_all(engine)\n {{/if}}\n+{{#if (eq pythonOrm \"tortoise-orm\")}}\n+\"\"\"Database configuration for Tortoise ORM.\"\"\"\n+\n+import os\n+\n+from tortoise import Tortoise\n+\n+DATABASE_URL = os.getenv(\"DATABASE_URL\", \"sqlite://app.db\")\n+\n+TORTOISE_ORM = {\n+    \"connections\": {\"default\": DATABASE_URL},\n+    \"apps\": {\n+        \"models\": {\n+            \"models\": [\"app.models\", \"aerich.models\"],\n+            \"default_connection\": \"default\",\n+        },\n+    },\n+}\n+\n+\n+async def init_db() -> None:\n+    \"\"\"Initialize Tortoise ORM.\"\"\"\n+    await Tortoise.init(config=TORTOISE_ORM)\n+    await Tortoise.generate_schemas()\n+\n+\n+async def close_db() -> None:\n+    \"\"\"Close Tortoise ORM connections.\"\"\"\n+    await Tortoise.close_connections()\n+{{/if}}\n {{/if}}"
+    },
+    {
+      "sha": "75457b66ef5b90bb7e0be35d22ea6b4e105ca839",
+      "filename": "packages/template-generator/templates/python-base/src/app/main.py.hbs",
+      "status": "modified",
+      "additions": 99,
+      "deletions": 1,
+      "changes": 100,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fmain.py.hbs",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fmain.py.hbs",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fmain.py.hbs?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -7,7 +7,7 @@ from dotenv import load_dotenv\n {{#if (eq pythonWebFramework \"fastapi\")}}\n from contextlib import asynccontextmanager\n \n-from fastapi import FastAPI{{#if (or (eq pythonOrm \"sqlalchemy\") (eq pythonOrm \"sqlmodel\"))}}, Depends, HTTPException{{/if}}{{#if (and (eq pythonOrm \"none\") (or (eq pythonValidation \"pydantic\") (ne pythonAuth \"none\")))}}, HTTPException{{/if}}\n+from fastapi import FastAPI{{#if (or (eq pythonOrm \"sqlalchemy\") (eq pythonOrm \"sqlmodel\"))}}, Depends, HTTPException{{/if}}{{#if (eq pythonOrm \"tortoise-orm\")}}, HTTPException{{/if}}{{#if (and (eq pythonOrm \"none\") (or (eq pythonValidation \"pydantic\") (ne pythonAuth \"none\")))}}, HTTPException{{/if}}\n from fastapi.middleware.cors import CORSMiddleware\n {{#if (eq pythonValidation \"pydantic\")}}\n from app.settings import get_settings\n@@ -38,6 +38,10 @@ from app.models import (\n     UserUpdate,\n )\n {{/if}}\n+{{#if (eq pythonOrm \"tortoise-orm\")}}\n+from app import crud\n+from app.database import close_db, init_db\n+{{/if}}\n {{#if (includes pythonAi \"langchain\")}}\n from fastapi.responses import StreamingResponse\n \n@@ -167,8 +171,16 @@ async def lifespan(app: FastAPI):\n {{#if (or (eq pythonOrm \"sqlalchemy\") (eq pythonOrm \"sqlmodel\"))}}\n     # Initialize database tables on startup\n     init_db()\n+{{/if}}\n+{{#if (eq pythonOrm \"tortoise-orm\")}}\n+    # Initialize Tortoise ORM on startup\n+    await init_db()\n {{/if}}\n     yield\n+{{#if (eq pythonOrm \"tortoise-orm\")}}\n+    # Close Tortoise ORM connections on shutdown\n+    await close_db()\n+{{/if}}\n \n \n {{#if (eq pythonValidation \"pydantic\")}}\n@@ -911,6 +923,92 @@ async def delete_post(post_id: int, db: Session = Depends(get_db)):\n     if not crud.delete_post(db, post_id):\n         raise HTTPException(status_code=404, detail=\"Post not found\")\n {{/if}}\n+{{#if (eq pythonOrm \"tortoise-orm\")}}\n+\n+# User endpoints\n+@app.post(\"/users\", status_code=201)\n+async def create_user(email: str, name: str | None = None):\n+    \"\"\"Create a new user.\"\"\"\n+    existing = await crud.get_user_by_email(email)\n+    if existing:\n+        raise HTTPException(status_code=400, detail=\"Email already registered\")\n+    user = await crud.create_user(email=email, name=name)\n+    return {\"id\": user.id, \"email\": user.email, \"name\": user.name}\n+\n+\n+@app.get(\"/users\")\n+async def list_users(skip: int = 0, limit: int = 100):\n+    \"\"\"List all users.\"\"\"\n+    users = await crud.get_users(skip=skip, limit=limit)\n+    return [{\"id\": u.id, \"email\": u.email, \"name\": u.name} for u in users]\n+\n+\n+@app.get(\"/users/{user_id}\")\n+async def get_user(user_id: int):\n+    \"\"\"Get a user by ID.\"\"\"\n+    user = await crud.get_user(user_id)\n+    if user is None:\n+        raise HTTPException(status_code=404, detail=\"User not found\")\n+    return {\"id\": user.id, \"email\": user.email, \"name\": user.name}\n+\n+\n+@app.patch(\"/users/{user_id}\")\n+async def update_user(user_id: int, email: str | None = None, name: str | None = None):\n+    \"\"\"Update a user.\"\"\"\n+    updated = await crud.update_user(user_id, email=email, name=name)\n+    if updated is None:\n+        raise HTTPException(status_code=404, detail=\"User not found\")\n+    return {\"id\": updated.id, \"email\": updated.email, \"name\": updated.name}\n+\n+\n+@app.delete(\"/users/{user_id}\", status_code=204)\n+async def delete_user(user_id: int):\n+    \"\"\"Delete a user.\"\"\"\n+    if not await crud.delete_user(user_id):\n+        raise HTTPException(status_code=404, detail=\"User not found\")\n+\n+\n+# Post endpoints\n+@app.post(\"/posts\", status_code=201)\n+async def create_post(title: str, author_id: int, content: str | None = None):\n+    \"\"\"Create a new post.\"\"\"\n+    if await crud.get_user(author_id) is None:\n+        raise HTTPException(status_code=400, detail=\"Author not found\")\n+    post = await crud.create_post(title=title, author_id=author_id, content=content)\n+    return {\"id\": post.id, \"title\": post.title, \"content\": post.content, \"author_id\": post.author_id}\n+\n+\n+@app.get(\"/posts\")\n+async def list_posts(skip: int = 0, limit: int = 100):\n+    \"\"\"List all posts.\"\"\"\n+    posts = await crud.get_posts(skip=skip, limit=limit)\n+    return [{\"id\": p.id, \"title\": p.title, \"content\": p.content, \"author_id\": p.author_id} for p in posts]\n+\n+\n+@app.get(\"/posts/{post_id}\")\n+async def get_post(post_id: int):\n+    \"\"\"Get a post by ID.\"\"\"\n+    post = await crud.get_post(post_id)\n+    if post is None:\n+        raise HTTPException(status_code=404, detail=\"Post not found\")\n+    return {\"id\": post.id, \"title\": post.title, \"content\": post.content, \"author_id\": post.author_id}\n+\n+\n+@app.patch(\"/posts/{post_id}\")\n+async def update_post(post_id: int, title: str | None = None, content: str | None = None):\n+    \"\"\"Update a post.\"\"\"\n+    updated = await crud.update_post(post_id, title=title, content=content)\n+    if updated is None:\n+        raise HTTPException(status_code=404, detail=\"Post not found\")\n+    return {\"id\": updated.id, \"title\": updated.title, \"content\": updated.content, \"author_id\": updated.author_id}\n+\n+\n+@app.delete(\"/posts/{post_id}\", status_code=204)\n+async def delete_post(post_id: int):\n+    \"\"\"Delete a post.\"\"\"\n+    if not await crud.delete_post(post_id):\n+        raise HTTPException(status_code=404, detail=\"Post not found\")\n+{{/if}}\n \n \n if __name__ == \"__main__\":"
+    },
+    {
+      "sha": "231fff929a767d99efb9c96bc8db9067b7015859",
+      "filename": "packages/template-generator/templates/python-base/src/app/models.py.hbs",
+      "status": "modified",
+      "additions": 38,
+      "deletions": 0,
+      "changes": 38,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fmodels.py.hbs",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fmodels.py.hbs",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fmodels.py.hbs?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -142,4 +142,42 @@ class PostResponse(PostBase):\n     created_at: datetime\n     updated_at: datetime\n {{/if}}\n+{{#if (eq pythonOrm \"tortoise-orm\")}}\n+\"\"\"Tortoise ORM models.\"\"\"\n+\n+from tortoise import fields, models\n+\n+\n+class User(models.Model):\n+    \"\"\"User model.\"\"\"\n+\n+    id = fields.IntField(primary_key=True)\n+    email = fields.CharField(max_length=255, unique=True, index=True)\n+    name = fields.CharField(max_length=255, null=True)\n+    created_at = fields.DatetimeField(auto_now_add=True)\n+    updated_at = fields.DatetimeField(auto_now=True)\n+\n+    class Meta:\n+        table = \"users\"\n+\n+    def __repr__(self) -> str:\n+        return f\"<User(id={self.id}, email={self.email})>\"\n+\n+\n+class Post(models.Model):\n+    \"\"\"Post model - example model for reference.\"\"\"\n+\n+    id = fields.IntField(primary_key=True)\n+    title = fields.CharField(max_length=255)\n+    content = fields.TextField(null=True)\n+    author_id = fields.IntField(index=True)\n+    created_at = fields.DatetimeField(auto_now_add=True)\n+    updated_at = fields.DatetimeField(auto_now=True)\n+\n+    class Meta:\n+        table = \"posts\"\n+\n+    def __repr__(self) -> str:\n+        return f\"<Post(id={self.id}, title={self.title})>\"\n+{{/if}}\n {{/if}}"
+    },
+    {
+      "sha": "0fb4d12cf5993c7d068496eb32afe6ab090c7d85",
+      "filename": "packages/template-generator/templates/python-base/src/app/settings.py.hbs",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fsettings.py.hbs",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fsettings.py.hbs",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Fsrc%2Fapp%2Fsettings.py.hbs?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -25,7 +25,7 @@ class Settings(BaseSettings):\n     api_prefix: str = \"/api\"\n     api_version: str = \"v1\"\n \n-{{#if (or (eq pythonOrm \"sqlalchemy\") (eq pythonOrm \"sqlmodel\"))}}\n+{{#if (or (eq pythonOrm \"sqlalchemy\") (eq pythonOrm \"sqlmodel\") (eq pythonOrm \"tortoise-orm\"))}}\n     # Database settings\n     database_url: str = \"sqlite:///./app.db\"\n {{/if}}"
+    },
+    {
+      "sha": "297642112370a7a2cc2a0aaab77e44dd7a1bc58a",
+      "filename": "packages/template-generator/templates/python-base/tests/test_database.py.hbs",
+      "status": "modified",
+      "additions": 157,
+      "deletions": 0,
+      "changes": 157,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Ftests%2Ftest_database.py.hbs",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Ftests%2Ftest_database.py.hbs",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/packages%2Ftemplate-generator%2Ftemplates%2Fpython-base%2Ftests%2Ftest_database.py.hbs?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -535,4 +535,161 @@ class TestPostCrud:\n         assert result is True\n         assert crud.get_post(db_session, post.id) is None\n {{/if}}\n+{{#if (eq pythonOrm \"tortoise-orm\")}}\n+\"\"\"Tests for Tortoise ORM models and CRUD operations.\"\"\"\n+\n+import pytest\n+from tortoise.contrib.test import finalizer, initializer\n+\n+from app import crud\n+from app.models import Post, User\n+\n+\n+@pytest.fixture(scope=\"module\", autouse=True)\n+def initialize_tests():\n+    \"\"\"Initialize Tortoise ORM for testing.\"\"\"\n+    initializer([\"app.models\"], db_url=\"sqlite://:memory:\")\n+    yield\n+    finalizer()\n+\n+\n+@pytest.fixture(autouse=True)\n+async def cleanup():\n+    \"\"\"Clean up database between tests.\"\"\"\n+    yield\n+    await User.all().delete()\n+    await Post.all().delete()\n+\n+\n+class TestUserModel:\n+    \"\"\"Tests for User model.\"\"\"\n+\n+    async def test_create_user(self):\n+        \"\"\"Test creating a user.\"\"\"\n+        user = await User.create(email=\"test@example.com\", name=\"Test User\")\n+\n+        assert user.id is not None\n+        assert user.email == \"test@example.com\"\n+        assert user.name == \"Test User\"\n+        assert user.created_at is not None\n+        assert user.updated_at is not None\n+\n+    async def test_user_repr(self):\n+        \"\"\"Test User string representation.\"\"\"\n+        user = await User.create(email=\"repr@example.com\")\n+        assert \"repr@example.com\" in repr(user)\n+\n+\n+class TestPostModel:\n+    \"\"\"Tests for Post model.\"\"\"\n+\n+    async def test_create_post(self):\n+        \"\"\"Test creating a post.\"\"\"\n+        user = await User.create(email=\"author@example.com\")\n+        post = await Post.create(title=\"Test Post\", content=\"Test content\", author_id=user.id)\n+\n+        assert post.id is not None\n+        assert post.title == \"Test Post\"\n+        assert post.content == \"Test content\"\n+        assert post.author_id == user.id\n+        assert post.created_at is not None\n+        assert post.updated_at is not None\n+\n+    async def test_post_repr(self):\n+        \"\"\"Test Post string representation.\"\"\"\n+        post = await Post.create(title=\"Test Title\", author_id=1)\n+        assert \"Test Title\" in repr(post)\n+\n+\n+class TestUserCrud:\n+    \"\"\"Tests for User CRUD operations.\"\"\"\n+\n+    async def test_create_user(self):\n+        \"\"\"Test creating a user via CRUD.\"\"\"\n+        user = await crud.create_user(email=\"crud@example.com\", name=\"CRUD User\")\n+\n+        assert user.id is not None\n+        assert user.email == \"crud@example.com\"\n+        assert user.name == \"CRUD User\"\n+\n+    async def test_get_user(self):\n+        \"\"\"Test getting a user by ID.\"\"\"\n+        user = await User.create(email=\"get@example.com\")\n+        result = await crud.get_user(user.id)\n+        assert result is not None\n+        assert result.email == \"get@example.com\"\n+\n+    async def test_get_user_not_found(self):\n+        \"\"\"Test getting a non-existent user.\"\"\"\n+        result = await crud.get_user(999)\n+        assert result is None\n+\n+    async def test_get_user_by_email(self):\n+        \"\"\"Test getting a user by email.\"\"\"\n+        user = await User.create(email=\"email@example.com\")\n+        result = await crud.get_user_by_email(\"email@example.com\")\n+        assert result is not None\n+        assert result.id == user.id\n+\n+    async def test_get_users(self):\n+        \"\"\"Test listing users with pagination.\"\"\"\n+        for i in range(5):\n+            await User.create(email=f\"user{i}@example.com\")\n+\n+        users = await crud.get_users()\n+        assert len(users) == 5\n+\n+        users = await crud.get_users(limit=2)\n+        assert len(users) == 2\n+\n+    async def test_delete_user(self):\n+        \"\"\"Test deleting a user.\"\"\"\n+        user = await User.create(email=\"delete@example.com\")\n+        result = await crud.delete_user(user.id)\n+        assert result is True\n+        assert await crud.get_user(user.id) is None\n+\n+    async def test_delete_user_not_found(self):\n+        \"\"\"Test deleting a non-existent user.\"\"\"\n+        result = await crud.delete_user(999)\n+        assert result is False\n+\n+\n+class TestPostCrud:\n+    \"\"\"Tests for Post CRUD operations.\"\"\"\n+\n+    async def test_create_post(self):\n+        \"\"\"Test creating a post via CRUD.\"\"\"\n+        user = await User.create(email=\"postauthor@example.com\")\n+        post = await crud.create_post(title=\"CRUD Post\", author_id=user.id, content=\"Content\")\n+\n+        assert post.id is not None\n+        assert post.title == \"CRUD Post\"\n+        assert post.author_id == user.id\n+\n+    async def test_get_post(self):\n+        \"\"\"Test getting a post by ID.\"\"\"\n+        post = await Post.create(title=\"Get Post\", author_id=1)\n+        result = await crud.get_post(post.id)\n+        assert result is not None\n+        assert result.title == \"Get Post\"\n+\n+    async def test_get_posts(self):\n+        \"\"\"Test listing posts with pagination.\"\"\"\n+        for i in range(5):\n+            await Post.create(title=f\"Post {i}\", author_id=1)\n+\n+        posts = await crud.get_posts()\n+        assert len(posts) == 5\n+\n+        posts = await crud.get_posts(limit=2)\n+        assert len(posts) == 2\n+\n+    async def test_delete_post(self):\n+        \"\"\"Test deleting a post.\"\"\"\n+        post = await Post.create(title=\"Delete Post\", author_id=1)\n+        result = await crud.delete_post(post.id)\n+        assert result is True\n+        assert await crud.get_post(post.id) is None\n+{{/if}}\n {{/if}}"
+    },
+    {
+      "sha": "83b01ca86c038daafc7394790a0e3d84514070e2",
+      "filename": "packages/types/src/option-metadata.ts",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftypes%2Fsrc%2Foption-metadata.ts",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftypes%2Fsrc%2Foption-metadata.ts",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/packages%2Ftypes%2Fsrc%2Foption-metadata.ts?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -586,6 +586,7 @@ const EXACT_LABEL_OVERRIDES: Partial<Record<OptionCategory, Partial<Record<strin\n   pythonOrm: {\n     sqlalchemy: \"SQLAlchemy\",\n     sqlmodel: \"SQLModel\",\n+    \"tortoise-orm\": \"Tortoise ORM\",\n   },\n   pythonValidation: {\n     pydantic: \"Pydantic\","
+    },
+    {
+      "sha": "6c27665cfd9a09ef162bbadfc8e835377724b520",
+      "filename": "packages/types/src/schemas.ts",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Marve10s/Better-Fullstack/blob/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftypes%2Fsrc%2Fschemas.ts",
+      "raw_url": "https://github.com/Marve10s/Better-Fullstack/raw/8a92caecc9e781a6708c7bd0ab47fea5410e18df/packages%2Ftypes%2Fsrc%2Fschemas.ts",
+      "contents_url": "https://api.github.com/repos/Marve10s/Better-Fullstack/contents/packages%2Ftypes%2Fsrc%2Fschemas.ts?ref=8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "patch": "@@ -312,7 +312,7 @@ export const PythonWebFrameworkSchema = z\n   .describe(\"Python web framework\");\n \n export const PythonOrmSchema = z\n-  .enum([\"sqlalchemy\", \"sqlmodel\", \"none\"])\n+  .enum([\"sqlalchemy\", \"sqlmodel\", \"tortoise-orm\", \"none\"])\n   .describe(\"Python ORM/database layer\");\n \n export const PythonValidationSchema = z"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8a92caecc9e781a6708c7bd0ab47fea5410e18df",
+      "message": "feat(python): add tortoise-orm to Python ORM category\n\nAdd Tortoise ORM as a new option alongside SQLAlchemy and SQLModel in\nthe Python ecosystem. Tortoise ORM is an async-first ORM with a\nDjango-like API, using aerich for migrations instead of alembic.",
+      "parent_shas": [
+        "afa1c876e0f9e1c5897bc99b889d29125d84d2c8"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes",
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "python_java_bridge_noise",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__Marve10s__Better-Fullstack__pr150.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\Marve10s__Better-Fullstack__pr150__python_java__Marve10s__Better-Fullstack__pr150\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\Marve10s__Better-Fullstack__pr150__python_java__Marve10s__Better-Fullstack__pr150\\rn"
+  }
+}

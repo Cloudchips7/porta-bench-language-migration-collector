@@ -1,0 +1,94 @@
+{
+  "instance_id": "python_cpp__bennettoxford__openprescribing__pr5500",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "bennettoxford/openprescribing",
+  "pr_number": 5500,
+  "pr_url": "https://github.com/bennettoxford/openprescribing/pull/5500",
+  "repo": {
+    "full_name": "bennettoxford/openprescribing",
+    "clone_url": "https://github.com/bennettoxford/openprescribing.git",
+    "default_branch": "main",
+    "created_at": "2015-09-02T21:38:15Z",
+    "stars": 112,
+    "license": "MIT",
+    "size_kb": 255943
+  },
+  "pull_request": {
+    "id": 3501211673,
+    "title": "Update python dependencies",
+    "body": "Automated changes by [update-dependencies-action](https://github.com/bennettoxford/update-dependencies-action)",
+    "created_at": "2026-04-08T04:03:52Z",
+    "merged_at": "2026-04-08T05:24:56Z",
+    "base_sha": "4e4ed82ee65c85b1265225ad0e22b509cb16ec82",
+    "head_sha": "cb80ce2f0b593914e77686f8b4a3a1fdfac43bbf",
+    "merge_commit_sha": "7df210fae604a9adc9621d232f446270aa6689e4",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "4e4ed82ee65c85b1265225ad0e22b509cb16ec82",
+  "final_sha": "cb80ce2f0b593914e77686f8b4a3a1fdfac43bbf",
+  "changed_files": [
+    {
+      "sha": "cf5f2d05a060dc2d683b918a196134e4de04f536",
+      "filename": "requirements.dev.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/bennettoxford/openprescribing/blob/cb80ce2f0b593914e77686f8b4a3a1fdfac43bbf/requirements.dev.txt",
+      "raw_url": "https://github.com/bennettoxford/openprescribing/raw/cb80ce2f0b593914e77686f8b4a3a1fdfac43bbf/requirements.dev.txt",
+      "contents_url": "https://api.github.com/repos/bennettoxford/openprescribing/contents/requirements.dev.txt?ref=cb80ce2f0b593914e77686f8b4a3a1fdfac43bbf",
+      "patch": "@@ -6,7 +6,7 @@\n #\n black==26.3.1\n     # via -r requirements.dev.in\n-click==8.3.1\n+click==8.3.2\n     # via black\n flake8==7.3.0\n     # via -r requirements.dev.in"
+    },
+    {
+      "sha": "4301c5a6e11587caedef0c99c4d5d46c2dac2805",
+      "filename": "requirements.txt",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 11,
+      "changes": 22,
+      "blob_url": "https://github.com/bennettoxford/openprescribing/blob/cb80ce2f0b593914e77686f8b4a3a1fdfac43bbf/requirements.txt",
+      "raw_url": "https://github.com/bennettoxford/openprescribing/raw/cb80ce2f0b593914e77686f8b4a3a1fdfac43bbf/requirements.txt",
+      "contents_url": "https://api.github.com/repos/bennettoxford/openprescribing/contents/requirements.txt?ref=cb80ce2f0b593914e77686f8b4a3a1fdfac43bbf",
+      "patch": "@@ -30,17 +30,17 @@ cffi==2.0.0\n     # via\n     #   cryptography\n     #   pynacl\n-charset-normalizer==3.4.6\n+charset-normalizer==3.4.7\n     # via requests\n-click==8.3.1\n+click==8.3.2\n     # via pip-tools\n contourpy==1.3.3\n     # via matplotlib\n coverage==7.13.5\n     # via -r requirements.in\n crispy-bootstrap3==2024.1\n     # via -r requirements.in\n-cryptography==46.0.6\n+cryptography==46.0.7\n     # via\n     #   google-auth\n     #   paramiko\n@@ -56,7 +56,7 @@ db-dtypes==1.5.1\n     # via pandas-gbq\n diskcache==5.6.3\n     # via -r requirements.in\n-django==4.2.29\n+django==4.2.30\n     # via\n     #   -r requirements.in\n     #   crispy-bootstrap3\n@@ -75,7 +75,7 @@ django-crispy-forms==2.5\n     # via\n     #   -r requirements.in\n     #   crispy-bootstrap3\n-django-debug-toolbar==6.2.0\n+django-debug-toolbar==6.3.0\n     # via\n     #   -r requirements.in\n     #   django-debug-toolbar-template-timings\n@@ -99,7 +99,7 @@ flake8==7.3.0\n     # via -r requirements.in\n fonttools==4.62.1\n     # via matplotlib\n-google-api-core[grpc]==2.30.1\n+google-api-core[grpc]==2.30.2\n     # via\n     #   google-api-python-client\n     #   google-cloud-bigquery\n@@ -147,7 +147,7 @@ google-resumable-media==2.8.2\n     # via\n     #   google-cloud-bigquery\n     #   google-cloud-storage\n-googleapis-common-protos==1.73.1\n+googleapis-common-protos==1.74.0\n     # via\n     #   google-api-core\n     #   grpcio-status\n@@ -177,7 +177,7 @@ idna==3.11\n     #   django-anymail\n     #   requests\n     #   trio\n-invoke==2.2.1\n+invoke==3.0.3\n     # via paramiko\n jinja2==3.1.6\n     # via -r requirements.in\n@@ -200,7 +200,7 @@ mccabe==0.7.0\n     # via flake8\n mock==5.2.0\n     # via -r requirements.in\n-more-itertools==10.8.0\n+more-itertools==11.0.1\n     # via cssutils\n networkx==3.6.1\n     # via -r requirements.in\n@@ -241,7 +241,7 @@ pandas-gbq==0.34.1\n     # via -r requirements.in\n paramiko==4.0.0\n     # via fab-classic\n-pillow==12.1.1\n+pillow==12.2.0\n     # via matplotlib\n pip-tools==7.5.3\n     # via -r requirements.in\n@@ -355,7 +355,7 @@ typing-extensions==4.15.0\n     #   beautifulsoup4\n     #   grpcio\n     #   selenium\n-tzdata==2025.3\n+tzdata==2026.1\n     # via pandas\n uritemplate==4.2.0\n     # via google-api-python-client"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "cb80ce2f0b593914e77686f8b4a3a1fdfac43bbf",
+      "message": "chore: update-dependencies",
+      "parent_shas": [
+        "4e4ed82ee65c85b1265225ad0e22b509cb16ec82"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "ci_only",
+      "doc_only",
+      "python_cpp_wrapper_noise"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "python_cpp_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__bennettoxford__openprescribing__pr5500.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\bennettoxford__openprescribing__pr5500__python_cpp__bennettoxford__openprescribing__pr5500\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\bennettoxford__openprescribing__pr5500__python_cpp__bennettoxford__openprescribing__pr5500\\rn"
+  }
+}

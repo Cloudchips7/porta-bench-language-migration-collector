@@ -1,0 +1,198 @@
+{
+  "instance_id": "python_java__melihbirim__csvql__pr41",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "melihbirim/csvql",
+  "pr_number": 41,
+  "pr_url": "https://github.com/melihbirim/csvql/pull/41",
+  "repo": {
+    "full_name": "melihbirim/csvql",
+    "clone_url": "https://github.com/melihbirim/csvql.git",
+    "default_branch": "main",
+    "created_at": "2026-02-23T10:37:50Z",
+    "stars": 10,
+    "license": "MIT",
+    "size_kb": 10726
+  },
+  "pull_request": {
+    "id": 3529504066,
+    "title": "Feat/python lib",
+    "body": "Python lib added",
+    "created_at": "2026-04-14T16:31:28Z",
+    "merged_at": "2026-04-14T16:34:41Z",
+    "base_sha": "cb304fef0e094c0f0590ba38f93b0e34bbc065db",
+    "head_sha": "2657f29f5e02266fbe33d5db4d76393709aa760f",
+    "merge_commit_sha": "6f1acefe0990759b1af5840ecd8c4c4508cb06bc",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "cb304fef0e094c0f0590ba38f93b0e34bbc065db",
+  "final_sha": "2657f29f5e02266fbe33d5db4d76393709aa760f",
+  "changed_files": [
+    {
+      "sha": "599a0853514a5141caa32b3736019a84c276ef14",
+      "filename": ".github/workflows/release.yml",
+      "status": "modified",
+      "additions": 82,
+      "deletions": 0,
+      "changes": 82,
+      "blob_url": "https://github.com/melihbirim/csvql/blob/2657f29f5e02266fbe33d5db4d76393709aa760f/.github%2Fworkflows%2Frelease.yml",
+      "raw_url": "https://github.com/melihbirim/csvql/raw/2657f29f5e02266fbe33d5db4d76393709aa760f/.github%2Fworkflows%2Frelease.yml",
+      "contents_url": "https://api.github.com/repos/melihbirim/csvql/contents/.github%2Fworkflows%2Frelease.yml?ref=2657f29f5e02266fbe33d5db4d76393709aa760f",
+      "patch": "@@ -149,3 +149,85 @@ jobs:\n               content: Buffer.from(formula).toString(\"base64\"),\n               sha:     current.sha,\n             });\n+\n+  publish-pypi:\n+    name: Publish Python wheels to PyPI\n+    needs: release\n+    runs-on: ${{ matrix.os }}\n+    if: startsWith(github.ref, 'refs/tags/')\n+    strategy:\n+      matrix:\n+        include:\n+          - os: ubuntu-latest\n+            plat: manylinux_2_17_x86_64\n+          - os: macos-latest\n+            arch: x86_64\n+            plat: macosx_12_0_x86_64\n+          - os: macos-latest\n+            arch: arm64\n+            plat: macosx_12_0_arm64\n+\n+    steps:\n+      - uses: actions/checkout@v4\n+\n+      - name: Setup Zig\n+        uses: goto-bus-stop/setup-zig@v2\n+        with:\n+          version: 0.15.2\n+\n+      - name: Setup Python\n+        uses: actions/setup-python@v5\n+        with:\n+          python-version: \"3.11\"\n+\n+      - name: Build Zig shared library\n+        run: zig build -Doptimize=ReleaseFast\n+\n+      - name: Copy library into package\n+        shell: bash\n+        run: |\n+          if [[ \"$RUNNER_OS\" == \"macOS\" ]]; then\n+            cp zig-out/lib/libcsvql.dylib python/csvql/libcsvql.dylib\n+          else\n+            cp zig-out/lib/libcsvql.so python/csvql/libcsvql.so\n+          fi\n+\n+      - name: Build wheel\n+        working-directory: python\n+        run: |\n+          pip install build wheel\n+          python -m build --wheel --no-isolation\n+          # Rename wheel to correct platform tag\n+          cd dist\n+          for f in *.whl; do\n+            newname=$(echo \"$f\" | sed 's/py3-none-any/${{ matrix.plat }}/; s/py3-none-any/py3-none-${{ matrix.plat }}/')\n+            mv \"$f\" \"${f/py3-none-any/py3-none-${{ matrix.plat }}}\" 2>/dev/null || true\n+          done\n+\n+      - name: Upload wheel artifact\n+        uses: actions/upload-artifact@v4\n+        with:\n+          name: wheel-${{ matrix.plat }}\n+          path: python/dist/*.whl\n+\n+  pypi-upload:\n+    name: Upload all wheels to PyPI\n+    needs: publish-pypi\n+    runs-on: ubuntu-latest\n+    if: startsWith(github.ref, 'refs/tags/')\n+    environment:\n+      name: pypi\n+      url: https://pypi.org/p/csvql-query\n+\n+    steps:\n+      - name: Download all wheels\n+        uses: actions/download-artifact@v4\n+        with:\n+          pattern: wheel-*\n+          merge-multiple: true\n+          path: dist/\n+\n+      - name: Publish to PyPI\n+        uses: pypa/gh-action-pypi-publish@release/v1\n+        with:\n+          password: ${{ secrets.PYPI_API_TOKEN }}"
+    },
+    {
+      "sha": "1a14b568fa826b16e8456873b10c69b3575d2da5",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/melihbirim/csvql/blob/2657f29f5e02266fbe33d5db4d76393709aa760f/.gitignore",
+      "raw_url": "https://github.com/melihbirim/csvql/raw/2657f29f5e02266fbe33d5db4d76393709aa760f/.gitignore",
+      "contents_url": "https://api.github.com/repos/melihbirim/csvql/contents/.gitignore?ref=2657f29f5e02266fbe33d5db4d76393709aa760f",
+      "patch": "@@ -30,4 +30,4 @@ csvq\n # Local release helper\n release.sh\n \n-DATETIME_PLAN.md\n\\ No newline at end of file\n+DATETIME_PLAN.md__pycache__/"
+    },
+    {
+      "sha": "66b43dc3410ff96e5ff669c190e394421a91d5c2",
+      "filename": "build.zig",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 0,
+      "changes": 18,
+      "blob_url": "https://github.com/melihbirim/csvql/blob/2657f29f5e02266fbe33d5db4d76393709aa760f/build.zig",
+      "raw_url": "https://github.com/melihbirim/csvql/raw/2657f29f5e02266fbe33d5db4d76393709aa760f/build.zig",
+      "contents_url": "https://api.github.com/repos/melihbirim/csvql/contents/build.zig?ref=2657f29f5e02266fbe33d5db4d76393709aa760f",
+      "patch": "@@ -23,6 +23,24 @@ pub fn build(b: *std.Build) void {\n \n     b.installArtifact(exe);\n \n+    // Shared library — C ABI for Python ctypes and other FFI callers.\n+    // Build: zig build lib -Doptimize=ReleaseFast\n+    // Output: zig-out/lib/libcsvql.dylib (macOS) or libcsvql.so (Linux)\n+    const lib = b.addLibrary(.{\n+        .name = \"csvql\",\n+        .linkage = .dynamic,\n+        .root_module = b.createModule(.{\n+            .target = target,\n+            .optimize = optimize,\n+            .root_source_file = b.path(\"src/lib.zig\"),\n+        }),\n+    });\n+    lib.linkLibC();\n+    b.installArtifact(lib);\n+\n+    const lib_step = b.step(\"lib\", \"Build shared library (libcsvql)\");\n+    lib_step.dependOn(&lib.step);\n+\n     // Run command\n     const run_cmd = b.addRunArtifact(exe);\n     run_cmd.step.dependOn(b.getInstallStep());"
+    },
+    {
+      "sha": "37a32d06ef7092b58361dee284eebf79daba8782",
+      "filename": "python/csvql/__init__.py",
+      "status": "added",
+      "additions": 146,
+      "deletions": 0,
+      "changes": 146,
+      "blob_url": "https://github.com/melihbirim/csvql/blob/2657f29f5e02266fbe33d5db4d76393709aa760f/python%2Fcsvql%2F__init__.py",
+      "raw_url": "https://github.com/melihbirim/csvql/raw/2657f29f5e02266fbe33d5db4d76393709aa760f/python%2Fcsvql%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/melihbirim/csvql/contents/python%2Fcsvql%2F__init__.py?ref=2657f29f5e02266fbe33d5db4d76393709aa760f",
+      "patch": "@@ -0,0 +1,146 @@\n+\"\"\"\n+csvql — fast CSV querying from Python.\n+\n+Usage::\n+\n+    import csvql\n+\n+    # Returns a list of dicts\n+    rows = csvql.query(\"SELECT category, COUNT(*) FROM 'sales.csv' GROUP BY category\")\n+    # [{\"category\": \"Electronics\", \"COUNT(*)\": \"42\"}, ...]\n+\n+    # Returns raw CSV string (header + rows)\n+    csv_text = csvql.query_csv(\"SELECT * FROM 'data.csv' WHERE amount > 100\")\n+\n+    # Optional pandas integration (pandas not required)\n+    df = csvql.query_df(\"SELECT region, SUM(revenue) FROM 'data.csv' GROUP BY region\")\n+\"\"\"\n+\n+import ctypes\n+import csv\n+import io\n+import json\n+from typing import Any\n+\n+from ._loader import load\n+\n+\n+def query(sql: str) -> list[dict[str, Any]]:\n+    \"\"\"Run a SQL query and return results as a list of dicts.\n+\n+    Args:\n+        sql: SQL string, e.g. ``\"SELECT * FROM 'data.csv' WHERE age > 30\"``\n+\n+    Returns:\n+        List of row dicts, e.g. ``[{\"name\": \"Alice\", \"age\": \"31\"}, ...]``\n+        All values are strings (CSV has no type information).\n+\n+    Raises:\n+        RuntimeError: if the query fails (bad SQL, file not found, etc.)\n+    \"\"\"\n+    lib = load()\n+    out = ctypes.c_void_p(None)\n+    rc = lib.csvql_query_json(sql.encode(), ctypes.byref(out))\n+    addr = out.value\n+    if rc != 0:\n+        raw = ctypes.string_at(addr) if addr else b\"unknown error\"\n+        if addr:\n+            lib.csvql_free(addr)\n+        raise RuntimeError(raw.decode(errors=\"replace\"))\n+    if not addr:\n+        return []\n+    raw = ctypes.string_at(addr)\n+    lib.csvql_free(addr)\n+    return json.loads(raw.decode())\n+\n+\n+def query_csv(sql: str) -> str:\n+    \"\"\"Run a SQL query and return results as a CSV string (header + rows).\n+\n+    Args:\n+        sql: SQL string.\n+\n+    Returns:\n+        CSV text with a header row, e.g. ``\"name,age\\\\nAlice,31\\\\n\"``\n+\n+    Raises:\n+        RuntimeError: if the query fails.\n+    \"\"\"\n+    lib = load()\n+    out = ctypes.c_void_p(None)\n+    rc = lib.csvql_query_csv(sql.encode(), ctypes.byref(out))\n+    addr = out.value\n+    if rc != 0:\n+        raw = ctypes.string_at(addr) if addr else b\"unknown error\"\n+        if addr:\n+            lib.csvql_free(addr)\n+        raise RuntimeError(raw.decode(errors=\"replace\"))\n+    if not addr:\n+        return \"\"\n+    raw = ctypes.string_at(addr)\n+    lib.csvql_free(addr)\n+    return raw.decode()\n+\n+\n+def query_df(sql: str):\n+    \"\"\"Run a SQL query and return a pandas DataFrame.\n+\n+    Requires pandas to be installed. All columns will be ``object`` dtype\n+    (strings) — cast as needed after calling this function.\n+\n+    Args:\n+        sql: SQL string.\n+\n+    Returns:\n+        ``pandas.DataFrame``\n+\n+    Raises:\n+        ImportError: if pandas is not installed.\n+        RuntimeError: if the query fails.\n+    \"\"\"\n+    try:\n+        import pandas as pd\n+    except ImportError as e:\n+        raise ImportError(\"pandas is required for query_df(). Install it with: pip install pandas\") from e\n+\n+    csv_text = query_csv(sql)\n+    return pd.read_csv(io.StringIO(csv_text))\n+\n+\n+def query_tuples(sql: str) -> tuple[list[str], list[tuple[str, ...]]]:\n+    \"\"\"Run a SQL query and return (headers, rows) as plain tuples.\n+\n+    Useful when you want array-of-arrays access (``row[0]``) instead of\n+    dicts, or when memory overhead of dicts matters.\n+\n+    Args:\n+        sql: SQL string.\n+\n+    Returns:\n+        A ``(headers, rows)`` tuple where ``headers`` is a list of column\n+        name strings and ``rows`` is a list of string tuples — one per row.\n+\n+    Raises:\n+        RuntimeError: if the query fails.\n+\n+    Example::\n+\n+        headers, rows = csvql.query_tuples(\"SELECT name, age FROM 'data.csv'\")\n+        # headers: ['name', 'age']\n+        # rows:    [('Alice', '30'), ('Bob', '25'), ...]\n+        for row in rows:\n+            print(row[0], row[1])\n+    \"\"\"\n+    csv_text = query_csv(sql)\n+    if not csv_text:\n+        return [], []\n+    reader = csv.reader(io.StringIO(csv_text))\n+    all_rows = list(reader)\n+    if not all_rows:\n+        return [], []\n+    headers = all_rows[0]\n+    data = [tuple(r) for r in all_rows[1:] if r]\n+    return headers, data\n+\n+\n+__all__ = [\"query\", \"query_csv\", \"query_df\", \"query_tuples\"]"
+    },
+    {
+      "sha": "8967739bc94db09ee533a9ffc1c6813bd3f4be12",
+      "filename": "python/csvql/_loader.py",
+      "status": "added",
+      "additions": 82,
+      "deletions": 0,
+      "changes": 82,
+      "blob_url": "https://github.com/melihbirim/csvql/blob/2657f29f5e02266fbe33d5db4d76393709aa760f/python%2Fcsvql%2F_loader.py",
+      "raw_url": "https://github.com/melihbirim/csvql/raw/2657f29f5e02266fbe33d5db4d76393709aa760f/python%2Fcsvql%2F_loader.py",
+      "contents_url": "https://api.github.com/repos/melihbirim/csvql/contents/python%2Fcsvql%2F_loader.py?ref=2657f29f5e02266fbe33d5db4d76393709aa760f",
+      "patch": "@@ -0,0 +1,82 @@\n+\"\"\"\n+Locates and loads libcsvql (.dylib on macOS, .so on Linux).\n+\n+Search order:\n+  1. Same directory as this file (installed wheel — lib bundled alongside .py)\n+  2. zig-out/lib/ relative to the repo root (development build)\n+  3. Directories listed in CSVQL_LIB_PATH environment variable\n+\"\"\"\n+\n+import ctypes\n+import os\n+import sys\n+from pathlib import Path\n+\n+_lib_cache: ctypes.CDLL | None = None\n+\n+\n+def _lib_name() -> str:\n+    if sys.platform == \"darwin\":\n+        return \"libcsvql.dylib\"\n+    return \"libcsvql.so\"\n+\n+\n+def _candidate_dirs() -> list[Path]:\n+    dirs: list[Path] = []\n+\n+    # 1. Next to this .py file (wheel install)\n+    dirs.append(Path(__file__).parent)\n+\n+    # 2. zig-out/lib/ — walk up from this file looking for build.zig\n+    here = Path(__file__).resolve()\n+    for parent in here.parents:\n+        if (parent / \"build.zig\").exists():\n+            dirs.append(parent / \"zig-out\" / \"lib\")\n+            break\n+\n+    # 3. CSVQL_LIB_PATH env override\n+    env_path = os.environ.get(\"CSVQL_LIB_PATH\")\n+    if env_path:\n+        dirs.append(Path(env_path))\n+\n+    return dirs\n+\n+\n+def load() -> ctypes.CDLL:\n+    global _lib_cache\n+    if _lib_cache is not None:\n+        return _lib_cache\n+\n+    name = _lib_name()\n+    for d in _candidate_dirs():\n+        candidate = d / name\n+        if candidate.exists():\n+            lib = ctypes.CDLL(str(candidate))\n+            _setup_signatures(lib)\n+            _lib_cache = lib\n+            return lib\n+\n+    searched = \"\\n  \".join(str(d / name) for d in _candidate_dirs())\n+    raise FileNotFoundError(\n+        f\"Could not find {name}. Searched:\\n  {searched}\\n\"\n+        \"Run `zig build lib -Doptimize=ReleaseFast` to build it, \"\n+        \"or set CSVQL_LIB_PATH to its directory.\"\n+    )\n+\n+\n+def _setup_signatures(lib: ctypes.CDLL) -> None:\n+    \"\"\"Declare argument and return types for all exported functions.\"\"\"\n+    lib.csvql_query_json.argtypes = [\n+        ctypes.c_char_p,\n+        ctypes.POINTER(ctypes.c_void_p),\n+    ]\n+    lib.csvql_query_json.restype = ctypes.c_int\n+\n+    lib.csvql_query_csv.argtypes = [\n+        ctypes.c_char_p,\n+        ctypes.POINTER(ctypes.c_void_p),\n+    ]\n+    lib.csvql_query_csv.restype = ctypes.c_int\n+\n+    lib.csvql_free.argtypes = [ctypes.c_void_p]\n+    lib.csvql_free.restype = None"
+    },
+    {
+      "sha": "e7742636ccefd8f41b1bb5f52a5578c6c26542cc",
+      "filename": "python/examples/basic.py",
+      "status": "added",
+      "additions": 59,
+      "deletions": 0,
+      "changes": 59,
+      "blob_url": "https://github.com/melihbirim/csvql/blob/2657f29f5e02266fbe33d5db4d76393709aa760f/python%2Fexamples%2Fbasic.py",
+      "raw_url": "https://github.com/melihbirim/csvql/raw/2657f29f5e02266fbe33d5db4d76393709aa760f/python%2Fexamples%2Fbasic.py",
+      "contents_url": "https://api.github.com/repos/melihbirim/csvql/contents/python%2Fexamples%2Fbasic.py?ref=2657f29f5e02266fbe33d5db4d76393709aa760f",
+      "patch": "@@ -0,0 +1,59 @@\n+\"\"\"\n+Basic csvql usage examples.\n+\n+Run from the repo root:\n+    python3 python/examples/basic.py\n+\"\"\"\n+\n+import sys\n+import os\n+\n+# Allow running from repo root without installing the package\n+sys.path.insert(0, os.path.join(os.path.dirname(__file__), \"..\"))\n+\n+import csvql\n+\n+# ── 1. SELECT * with LIMIT ────────────────────────────────────────────────────\n+print(\"=== SELECT * LIMIT 3 ===\")\n+rows = csvql.query(\"SELECT * FROM 'test.csv' LIMIT 3\")\n+for row in rows:\n+    print(row)\n+# {'name': 'Alice', 'age': 30, 'city': 'NYC'}\n+# {'name': 'Bob',   'age': 25, 'city': 'SF'}\n+# ...\n+\n+# ── 2. WHERE filter ───────────────────────────────────────────────────────────\n+print(\"\\n=== WHERE age > 28 ===\")\n+rows = csvql.query(\"SELECT name, age FROM 'test.csv' WHERE age > 28\")\n+for row in rows:\n+    print(row)\n+\n+# ── 3. GROUP BY + aggregate ───────────────────────────────────────────────────\n+print(\"\\n=== GROUP BY city ===\")\n+rows = csvql.query(\"SELECT city, COUNT(*) FROM 'test.csv' GROUP BY city\")\n+for row in rows:\n+    print(f\"{row['city']}: {row['COUNT(*)']} people\")\n+\n+# ── 4. ORDER BY ───────────────────────────────────────────────────────────────\n+print(\"\\n=== ORDER BY age DESC ===\")\n+rows = csvql.query(\"SELECT name, age FROM 'test.csv' ORDER BY age DESC\")\n+for row in rows:\n+    print(row)\n+\n+# ── 5. Raw CSV output ─────────────────────────────────────────────────────────\n+print(\"\\n=== query_csv() ===\")\n+csv_text = csvql.query_csv(\"SELECT name, city FROM 'test.csv' LIMIT 2\")\n+print(repr(csv_text))\n+\n+# ── 6. Accessing values ───────────────────────────────────────────────────────\n+print(\"\\n=== dict access ===\")\n+rows = csvql.query(\"SELECT * FROM 'test.csv'\")\n+names = [row[\"name\"] for row in rows]\n+print(\"names:\", names)\n+\n+# ── 7. Error handling ─────────────────────────────────────────────────────────\n+print(\"\\n=== error handling ===\")\n+try:\n+    csvql.query(\"SELECT * FROM 'nonexistent.csv'\")\n+except RuntimeError as e:\n+    print(f\"caught error: {e}\")"
+    },
+    {
+      "sha": "e0e629fe3139e6bbf938dec1434dc42663b61988",
+      "filename": "python/examples/pandas_example.py",
+      "status": "added",
+      "additions": 43,
+      "deletions": 0,
+      "changes": 43,
+      "blob_url": "https://github.com/melihbirim/csvql/blob/2657f29f5e02266fbe33d5db4d76393709aa760f/python%2Fexamples%2Fpandas_example.py",
+      "raw_url": "https://github.com/melihbirim/csvql/raw/2657f29f5e02266fbe33d5db4d76393709aa760f/python%2Fexamples%2Fpandas_example.py",
+      "contents_url": "https://api.github.com/repos/melihbirim/csvql/contents/python%2Fexamples%2Fpandas_example.py?ref=2657f29f5e02266fbe33d5db4d76393709aa760f",
+      "patch": "@@ -0,0 +1,43 @@\n+\"\"\"\n+Pandas integration example.\n+\n+Install pandas first: pip install pandas\n+\n+Run from the repo root:\n+    python3 python/examples/pandas_example.py\n+\"\"\"\n+\n+import sys\n+import os\n+\n+sys.path.insert(0, os.path.join(os.path.dirname(__file__), \"..\"))\n+\n+import csvql\n+\n+# ── query_df() returns a pandas DataFrame ────────────────────────────────────\n+df = csvql.query_df(\"SELECT city, COUNT(*) AS total FROM 'test.csv' GROUP BY city\")\n+print(df)\n+print(df.dtypes)\n+\n+# ── Pre-filter a large CSV before loading into pandas ─────────────────────────\n+# Instead of:\n+#   df = pd.read_csv(\"large_test.csv\")   # loads EVERYTHING into RAM\n+#   df = df[df[\"quantity\"] > 5]\n+#\n+# Do this — csvql reads only matching rows via mmap, pandas never sees the rest:\n+df_filtered = csvql.query_df(\n+    \"SELECT * FROM 'large_test.csv' WHERE quantity > 5 LIMIT 100\"\n+)\n+print(f\"\\nFiltered rows: {len(df_filtered)}\")\n+print(df_filtered.head())\n+\n+# ── Aggregate first, then plot ────────────────────────────────────────────────\n+summary = csvql.query_df(\n+    \"SELECT category, SUM(price) AS revenue FROM 'large_test.csv' GROUP BY category\"\n+)\n+print(\"\\nRevenue by category:\")\n+print(summary)\n+\n+# Cast numeric columns after querying (CSV has no type info)\n+summary[\"revenue\"] = summary[\"revenue\"].astype(float)\n+print(summary.sort_values(\"revenue\", ascending=False))"
+    },
+    {
+      "sha": "99dee52eb86d4ee768f3193f2cd375701527d9bb",
+      "filename": "python/pyproject.toml",
+      "status": "added",
+      "additions": 38,
+      "deletions": 0,
+      "changes": 38,
+      "blob_url": "https://github.com/melihbirim/csvql/blob/2657f29f5e02266fbe33d5db4d76393709aa760f/python%2Fpyproject.toml",
+      "raw_url": "https://github.com/melihbirim/csvql/raw/2657f29f5e02266fbe33d5db4d76393709aa760f/python%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/melihbirim/csvql/contents/python%2Fpyproject.toml?ref=2657f29f5e02266fbe33d5db4d76393709aa760f",
+      "patch": "@@ -0,0 +1,38 @@\n+[build-system]\n+requires = [\"setuptools>=68\"]\n+build-backend = \"setuptools.backends.legacy:build\"\n+\n+[project]\n+name = \"csvql-query\"\n+version = \"1.1.1\"\n+description = \"Fast CSV querying from Python — powered by a Zig/SIMD engine\"\n+readme = \"README.md\"\n+license = { text = \"MIT\" }\n+requires-python = \">=3.10\"\n+keywords = [\"csv\", \"query\", \"sql\", \"fast\", \"simd\"]\n+classifiers = [\n+    \"Development Status :: 4 - Beta\",\n+    \"Intended Audience :: Developers\",\n+    \"Intended Audience :: Science/Research\",\n+    \"License :: OSI Approved :: MIT License\",\n+    \"Programming Language :: Python :: 3\",\n+    \"Programming Language :: Python :: 3.10\",\n+    \"Programming Language :: Python :: 3.11\",\n+    \"Programming Language :: Python :: 3.12\",\n+    \"Topic :: Database\",\n+    \"Topic :: Scientific/Engineering\",\n+]\n+\n+[project.optional-dependencies]\n+pandas = [\"pandas>=1.5\"]\n+\n+[project.urls]\n+Homepage = \"https://github.com/melihbirim/csvql\"\n+Repository = \"https://github.com/melihbirim/csvql\"\n+\n+[tool.setuptools.packages.find]\n+where = [\".\"]\n+include = [\"csvql*\"]\n+\n+[tool.setuptools.package-data]\n+csvql = [\"*.so\", \"*.dylib\"]"
+    },
+    {
+      "sha": "ead4f4cc9d9079a5bd15bfe297defaf195856da7",
+      "filename": "python/setup.py",
+      "status": "added",
+      "additions": 49,
+      "deletions": 0,
+      "changes": 49,
+      "blob_url": "https://github.com/melihbirim/csvql/blob/2657f29f5e02266fbe33d5db4d76393709aa760f/python%2Fsetup.py",
+      "raw_url": "https://github.com/melihbirim/csvql/raw/2657f29f5e02266fbe33d5db4d76393709aa760f/python%2Fsetup.py",
+      "contents_url": "https://api.github.com/repos/melihbirim/csvql/contents/python%2Fsetup.py?ref=2657f29f5e02266fbe33d5db4d76393709aa760f",
+      "patch": "@@ -0,0 +1,49 @@\n+\"\"\"\n+Build script: invokes `zig build -Doptimize=ReleaseFast` to compile\n+libcsvql.dylib/.so, then copies it into the package directory so it's\n+included in the wheel.\n+\"\"\"\n+\n+import os\n+import shutil\n+import subprocess\n+import sys\n+import sysconfig\n+from pathlib import Path\n+\n+from setuptools import setup\n+from setuptools.command.build_py import build_py\n+\n+\n+REPO_ROOT = Path(__file__).parent.parent  # python/ → repo root\n+LIB_SRC = REPO_ROOT / \"zig-out\" / \"lib\"\n+PKG_DIR = Path(__file__).parent / \"csvql\"\n+\n+\n+def _lib_name() -> str:\n+    if sys.platform == \"darwin\":\n+        return \"libcsvql.dylib\"\n+    return \"libcsvql.so\"\n+\n+\n+class BuildZigLib(build_py):\n+    def run(self):\n+        # Build the Zig shared library\n+        subprocess.check_call(\n+            [\"zig\", \"build\", \"-Doptimize=ReleaseFast\"],\n+            cwd=str(REPO_ROOT),\n+        )\n+        # Copy library into package directory so it's included in the wheel\n+        src = LIB_SRC / _lib_name()\n+        dst = PKG_DIR / _lib_name()\n+        if not src.exists():\n+            raise FileNotFoundError(\n+                f\"Expected {src} after `zig build`. Is Zig installed and on PATH?\"\n+            )\n+        shutil.copy2(src, dst)\n+        super().run()\n+\n+\n+setup(\n+    cmdclass={\"build_py\": BuildZigLib},\n+)"
+    },
+    {
+      "sha": "ae6a5dc09e557e6d30c3b6334b56a28eb00fb7f7",
+      "filename": "src/lib.zig",
+      "status": "added",
+      "additions": 148,
+      "deletions": 0,
+      "changes": 148,
+      "blob_url": "https://github.com/melihbirim/csvql/blob/2657f29f5e02266fbe33d5db4d76393709aa760f/src%2Flib.zig",
+      "raw_url": "https://github.com/melihbirim/csvql/raw/2657f29f5e02266fbe33d5db4d76393709aa760f/src%2Flib.zig",
+      "contents_url": "https://api.github.com/repos/melihbirim/csvql/contents/src%2Flib.zig?ref=2657f29f5e02266fbe33d5db4d76393709aa760f",
+      "patch": "@@ -0,0 +1,148 @@\n+/// csvql C ABI — shared library entry points for Python (ctypes) and other FFI callers.\n+///\n+/// Exported functions:\n+///   csvql_query_json  — run SQL, return JSON array of objects\n+///   csvql_query_csv   — run SQL, return CSV (header + rows)\n+///   csvql_free        — release memory returned by the above\n+///\n+/// Caller contract:\n+///   - The returned pointer is null-terminated and heap-allocated by the Zig GPA.\n+///   - Always call csvql_free() on a non-null result, even after an error.\n+///   - Return code 0 = success, non-zero = error (message in *out_ptr).\n+const std = @import(\"std\");\n+const parser = @import(\"parser.zig\");\n+const engine = @import(\"engine.zig\");\n+const options_mod = @import(\"options.zig\");\n+\n+/// Thread-safe GPA for all lib allocations.\n+/// A single instance is fine — each call is independent and frees everything\n+/// before returning via the arena trick below.\n+var gpa = std.heap.GeneralPurposeAllocator(.{}){};\n+\n+/// Internal: run SQL and write output to an ArrayList, then return a\n+/// heap-allocated null-terminated copy the caller must free via csvql_free.\n+fn runQuery(sql: []const u8, format: options_mod.OutputFormat) ![*:0]u8 {\n+    const allocator = gpa.allocator();\n+\n+    // Parse the SQL string.\n+    var query = try parser.parse(allocator, sql);\n+    defer query.deinit();\n+\n+    // Capture engine output into a buffer instead of a real file.\n+    var buf = std.ArrayList(u8){};\n+    defer buf.deinit(allocator);\n+\n+    // The engine writes to a std.fs.File. We create a pipe: engine writes to\n+    // the write end; we read from the read end into buf.\n+    // Simpler alternative: write to a temp file. Simplest: use a pipe fd pair.\n+    //\n+    // Actually the cleanest approach for our engine is to give it a writable\n+    // file descriptor backed by an in-memory pipe.\n+    var pipe_fds: [2]std.posix.fd_t = undefined;\n+    pipe_fds = try std.posix.pipe();\n+\n+    const read_fd = pipe_fds[0];\n+    const write_fd = pipe_fds[1];\n+\n+    const write_file = std.fs.File{ .handle = write_fd };\n+\n+    const opts = options_mod.Options{\n+        .format = format,\n+        .table_mode = .off, // never table-format in lib mode\n+    };\n+\n+    // Spawn a thread to drain the pipe while the engine writes, to avoid\n+    // deadlock on large outputs that exceed the pipe buffer (typically 64 KB).\n+    const DrainCtx = struct {\n+        rfd: std.posix.fd_t,\n+        out: *std.ArrayList(u8),\n+        alloc: std.mem.Allocator,\n+        err: ?anyerror = null,\n+\n+        fn run(ctx: *@This()) void {\n+            var tmp: [4096]u8 = undefined;\n+            while (true) {\n+                const n = std.posix.read(ctx.rfd, &tmp) catch |e| {\n+                    ctx.err = e;\n+                    return;\n+                };\n+                if (n == 0) return; // EOF\n+                ctx.out.appendSlice(ctx.alloc, tmp[0..n]) catch |e| {\n+                    ctx.err = e;\n+                    return;\n+                };\n+            }\n+        }\n+    };\n+\n+    var drain_ctx = DrainCtx{ .rfd = read_fd, .out = &buf, .alloc = allocator };\n+    const drain_thread = try std.Thread.spawn(.{}, DrainCtx.run, .{&drain_ctx});\n+\n+    // Run the engine — writes to write_file (the pipe write end).\n+    const engine_result = engine.execute(allocator, query, write_file, opts);\n+\n+    // Close the write end first so the drain thread sees EOF.\n+    std.posix.close(write_fd);\n+    drain_thread.join();\n+    std.posix.close(read_fd);\n+\n+    // Propagate errors after cleanup.\n+    try engine_result;\n+    if (drain_ctx.err) |e| return e;\n+\n+    // Return a heap-allocated null-terminated copy.\n+    const result = try allocator.allocSentinel(u8, buf.items.len, 0);\n+    @memcpy(result, buf.items);\n+    return result;\n+}\n+\n+/// Execute a SQL query and return results as a JSON array of objects.\n+///\n+/// @param sql      Null-terminated SQL string, e.g. \"SELECT * FROM 'data.csv'\"\n+/// @param out_ptr  Set to the result buffer on success, or an error message on failure.\n+/// @return         0 on success, non-zero on error.\n+export fn csvql_query_json(sql: [*:0]const u8, out_ptr: *[*:0]u8) c_int {\n+    const sql_slice = std.mem.sliceTo(sql, 0);\n+    const result = runQuery(sql_slice, .json) catch |err| {\n+        const allocator = gpa.allocator();\n+        const plain = std.fmt.allocPrint(allocator, \"error: {s}\", .{@errorName(err)}) catch\n+            return 2;\n+        const msg = allocator.dupeZ(u8, plain) catch return 2;\n+        allocator.free(plain);\n+        out_ptr.* = msg;\n+        return 1;\n+    };\n+    out_ptr.* = result;\n+    return 0;\n+}\n+\n+/// Execute a SQL query and return results as CSV (header row + data rows).\n+///\n+/// @param sql      Null-terminated SQL string.\n+/// @param out_ptr  Set to the result buffer on success, or an error message on failure.\n+/// @return         0 on success, non-zero on error.\n+export fn csvql_query_csv(sql: [*:0]const u8, out_ptr: *[*:0]u8) c_int {\n+    const sql_slice = std.mem.sliceTo(sql, 0);\n+    const result = runQuery(sql_slice, .csv) catch |err| {\n+        const allocator = gpa.allocator();\n+        const plain = std.fmt.allocPrint(allocator, \"error: {s}\", .{@errorName(err)}) catch\n+            return 2;\n+        const msg = allocator.dupeZ(u8, plain) catch return 2;\n+        allocator.free(plain);\n+        out_ptr.* = msg;\n+        return 1;\n+    };\n+    out_ptr.* = result;\n+    return 0;\n+}\n+\n+/// Free a buffer returned by csvql_query_json or csvql_query_csv.\n+/// Safe to call with a null pointer.\n+export fn csvql_free(ptr: ?*anyopaque) void {\n+    if (ptr) |p| {\n+        const allocator = gpa.allocator();\n+        const typed: [*:0]u8 = @ptrCast(p);\n+        const len = std.mem.len(typed);\n+        allocator.free(typed[0 .. len + 1]);\n+    }\n+}"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d86822ee0bd0a73a0c7b885e1c34a34183b2e309",
+      "message": "feat: add Python library (csvql-query) with ctypes",
+      "parent_shas": [
+        "cb304fef0e094c0f0590ba38f93b0e34bbc065db"
+      ]
+    },
+    {
+      "sha": "10762c3cd0d349f3e38d7d33c02557f9b170b8c5",
+      "message": "chore: remove __pycache__ from tracking, add to .gitignore",
+      "parent_shas": [
+        "d86822ee0bd0a73a0c7b885e1c34a34183b2e309"
+      ]
+    },
+    {
+      "sha": "2657f29f5e02266fbe33d5db4d76393709aa760f",
+      "message": "ci: add PyPI wheel build and publish jobs to release workflow",
+      "parent_shas": [
+        "10762c3cd0d349f3e38d7d33c02557f9b170b8c5"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__melihbirim__csvql__pr41.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\melihbirim__csvql__pr41__python_java__melihbirim__csvql__pr41\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\melihbirim__csvql__pr41__python_java__melihbirim__csvql__pr41\\rn"
+  }
+}

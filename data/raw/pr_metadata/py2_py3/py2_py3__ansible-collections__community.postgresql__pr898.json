@@ -1,0 +1,218 @@
+{
+  "instance_id": "py2_py3__ansible-collections__community.postgresql__pr898",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "ansible-collections/community.postgresql",
+  "pr_number": 898,
+  "pr_url": "https://github.com/ansible-collections/community.postgresql/pull/898",
+  "repo": {
+    "full_name": "ansible-collections/community.postgresql",
+    "clone_url": "https://github.com/ansible-collections/community.postgresql.git",
+    "default_branch": "main",
+    "created_at": "2020-10-22T09:23:33Z",
+    "stars": 138,
+    "license": "NOASSERTION",
+    "size_kb": 1869
+  },
+  "pull_request": {
+    "id": 3063091255,
+    "title": "Fix ansible 2.20.xx deprecation warnings",
+    "body": "##### SUMMARY\r\nansible 2.20 deprecates importing from `ansible.module_utils._text`. This displays warnings to users of the modules.\r\n\r\nFor instance, this tasks:\r\n```\r\n- name: 'Create a postgres user for Debian-exim'\r\n  community.postgresql.postgresql_user:\r\n    name: 'Debian-exim'\r\n  become: true\r\n  become_user: 'postgres'\r\n```\r\n\r\nyields these warnings:\r\n> TASK [postgresql : Create a postgres user for Debian-exim] *********************                                                                                 \r\n> [WARNING]: Deprecation warnings can be disabled by setting `deprecation_warnings=False` in ansible.cfg.                                                          \r\n> [DEPRECATION WARNING]: Importing 'to_bytes' from 'ansible.module_utils._text' is deprecated. This feature will be removed from ansible-core version 2.24. Use ansible.module_utils.common.text.converters instead.                                                                                                                \r\n> [DEPRECATION WARNING]: Importing 'to_native' from 'ansible.module_utils._text' is deprecated. This feature will be removed from ansible-core version 2.24. Use ansible.module_utils.common.text.converters instead.                                                                                                               \r\n> [DEPRECATION WARNING]: Importing 'to_text' from 'ansible.module_utils._text' is deprecated. This feature will be removed from ansible-core version 2.24. Use ansible.module_utils.common.text.converters instead.                                                                                                                 \r\n> ok: [instance]\r\n\r\nThis commit fixes all related warning by using `ansible.module_utils.common.text.converters` as requested by ansible.\r\n\r\n##### ISSUE TYPE\r\n- Bugfix Pull Request\r\n\r\n##### COMPONENT NAME\r\nHappens in various places\r\n\r\n",
+    "created_at": "2025-12-02T11:06:56Z",
+    "merged_at": "2025-12-02T21:14:10Z",
+    "base_sha": "7817e2a27b25f7dfad28c292f49f77502e3b001b",
+    "head_sha": "faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+    "merge_commit_sha": "9f1898cab08b26c38fbef34c5ff2fbf03db96da9",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "a90cbc7c8de0cc8ded5384ffacca08c54f3afbc7",
+  "final_sha": "faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+  "changed_files": [
+    {
+      "sha": "757bdfc2c9f3e4812c675b519be38af79aef7c79",
+      "filename": "plugins/module_utils/database.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/ansible-collections/community.postgresql/blob/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodule_utils%2Fdatabase.py",
+      "raw_url": "https://github.com/ansible-collections/community.postgresql/raw/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodule_utils%2Fdatabase.py",
+      "contents_url": "https://api.github.com/repos/ansible-collections/community.postgresql/contents/plugins%2Fmodule_utils%2Fdatabase.py?ref=faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+      "patch": "@@ -14,7 +14,7 @@\n \n import re\n \n-from ansible.module_utils._text import to_native\n+from ansible.module_utils.common.text.converters import to_native\n \n # Input patterns for is_input_dangerous function:\n #"
+    },
+    {
+      "sha": "5de4126bee001379bcf6f2e633f2cf80eb669d1b",
+      "filename": "plugins/module_utils/postgres.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/ansible-collections/community.postgresql/blob/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodule_utils%2Fpostgres.py",
+      "raw_url": "https://github.com/ansible-collections/community.postgresql/raw/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodule_utils%2Fpostgres.py",
+      "contents_url": "https://api.github.com/repos/ansible-collections/community.postgresql/contents/plugins%2Fmodule_utils%2Fpostgres.py?ref=faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+      "patch": "@@ -17,7 +17,7 @@\n from decimal import Decimal\n from os import environ\n \n-from ansible.module_utils._text import to_native\n+from ansible.module_utils.common.text.converters import to_native\n from ansible.module_utils.basic import missing_required_lib\n from ansible.module_utils.six import iteritems\n from ansible_collections.community.postgresql.plugins.module_utils.version import \\"
+    },
+    {
+      "sha": "7b75fa58652f6d7ebb2f40c7c7b88cae7423946f",
+      "filename": "plugins/modules/postgresql_alter_system.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/ansible-collections/community.postgresql/blob/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_alter_system.py",
+      "raw_url": "https://github.com/ansible-collections/community.postgresql/raw/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_alter_system.py",
+      "contents_url": "https://api.github.com/repos/ansible-collections/community.postgresql/contents/plugins%2Fmodules%2Fpostgresql_alter_system.py?ref=faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+      "patch": "@@ -157,7 +157,7 @@\n '''\n \n from ansible.module_utils.basic import AnsibleModule\n-from ansible.module_utils._text import to_native\n+from ansible.module_utils.common.text.converters import to_native\n from ansible_collections.community.postgresql.plugins.module_utils.database import \\\n     check_input\n from ansible_collections.community.postgresql.plugins.module_utils.postgres import ("
+    },
+    {
+      "sha": "01168223caf395530200de26e6413877eaca7949",
+      "filename": "plugins/modules/postgresql_db.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/ansible-collections/community.postgresql/blob/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_db.py",
+      "raw_url": "https://github.com/ansible-collections/community.postgresql/raw/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_db.py",
+      "contents_url": "https://api.github.com/repos/ansible-collections/community.postgresql/contents/plugins%2Fmodules%2Fpostgresql_db.py?ref=faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+      "patch": "@@ -278,7 +278,7 @@\n import subprocess\n import traceback\n \n-from ansible.module_utils._text import to_native\n+from ansible.module_utils.common.text.converters import to_native\n from ansible.module_utils.basic import AnsibleModule\n from ansible.module_utils.six.moves import shlex_quote\n from ansible_collections.community.postgresql.plugins.module_utils.database import ("
+    },
+    {
+      "sha": "4ca5a5c50c81a79180a771cdc88fc6cd6d530978",
+      "filename": "plugins/modules/postgresql_ext.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/ansible-collections/community.postgresql/blob/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_ext.py",
+      "raw_url": "https://github.com/ansible-collections/community.postgresql/raw/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_ext.py",
+      "contents_url": "https://api.github.com/repos/ansible-collections/community.postgresql/contents/plugins%2Fmodules%2Fpostgresql_ext.py?ref=faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+      "patch": "@@ -193,7 +193,7 @@\n \n import traceback\n \n-from ansible.module_utils._text import to_native\n+from ansible.module_utils.common.text.converters import to_native\n from ansible.module_utils.basic import AnsibleModule\n from ansible_collections.community.postgresql.plugins.module_utils.database import \\\n     check_input"
+    },
+    {
+      "sha": "295cb0230d3a7c5bd76dffccece7c2d419938764",
+      "filename": "plugins/modules/postgresql_info.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/ansible-collections/community.postgresql/blob/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_info.py",
+      "raw_url": "https://github.com/ansible-collections/community.postgresql/raw/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_info.py",
+      "contents_url": "https://api.github.com/repos/ansible-collections/community.postgresql/contents/plugins%2Fmodules%2Fpostgresql_info.py?ref=faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+      "patch": "@@ -154,7 +154,7 @@\n import re\n from fnmatch import fnmatch\n \n-from ansible.module_utils._text import to_native\n+from ansible.module_utils.common.text.converters import to_native\n from ansible.module_utils.basic import AnsibleModule\n from ansible.module_utils.six import iteritems\n from ansible_collections.community.postgresql.plugins.module_utils.database import \\"
+    },
+    {
+      "sha": "76bfc7ebe12270527abd3660006a39f14826de37",
+      "filename": "plugins/modules/postgresql_privs.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/ansible-collections/community.postgresql/blob/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_privs.py",
+      "raw_url": "https://github.com/ansible-collections/community.postgresql/raw/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_privs.py",
+      "contents_url": "https://api.github.com/repos/ansible-collections/community.postgresql/contents/plugins%2Fmodules%2Fpostgresql_privs.py?ref=faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+      "patch": "@@ -417,7 +417,7 @@\n \n import traceback\n \n-from ansible.module_utils._text import to_native\n+from ansible.module_utils.common.text.converters import to_native\n # import module snippets\n from ansible.module_utils.basic import AnsibleModule\n from ansible_collections.community.postgresql.plugins.module_utils.database import ("
+    },
+    {
+      "sha": "f7b70c21a52a6116866f43a3727d028272f7a0ac",
+      "filename": "plugins/modules/postgresql_query.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/ansible-collections/community.postgresql/blob/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_query.py",
+      "raw_url": "https://github.com/ansible-collections/community.postgresql/raw/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_query.py",
+      "contents_url": "https://api.github.com/repos/ansible-collections/community.postgresql/contents/plugins%2Fmodules%2Fpostgresql_query.py?ref=faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+      "patch": "@@ -264,7 +264,7 @@\n import re\n import time\n \n-from ansible.module_utils._text import to_native\n+from ansible.module_utils.common.text.converters import to_native\n from ansible.module_utils.basic import AnsibleModule\n from ansible.module_utils.six import iteritems\n from ansible_collections.community.postgresql.plugins.module_utils.database import \\"
+    },
+    {
+      "sha": "bf96969f7155312f31222ca94a857cb3f3306632",
+      "filename": "plugins/modules/postgresql_schema.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/ansible-collections/community.postgresql/blob/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_schema.py",
+      "raw_url": "https://github.com/ansible-collections/community.postgresql/raw/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_schema.py",
+      "contents_url": "https://api.github.com/repos/ansible-collections/community.postgresql/contents/plugins%2Fmodules%2Fpostgresql_schema.py?ref=faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+      "patch": "@@ -127,7 +127,7 @@\n \n import traceback\n \n-from ansible.module_utils._text import to_native\n+from ansible.module_utils.common.text.converters import to_native\n from ansible.module_utils.basic import AnsibleModule\n from ansible_collections.community.postgresql.plugins.module_utils.database import (\n     SQLParseError,"
+    },
+    {
+      "sha": "7a69349a82d40c9e37a88c2ef962af522ec992f8",
+      "filename": "plugins/modules/postgresql_script.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/ansible-collections/community.postgresql/blob/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_script.py",
+      "raw_url": "https://github.com/ansible-collections/community.postgresql/raw/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_script.py",
+      "contents_url": "https://api.github.com/repos/ansible-collections/community.postgresql/contents/plugins%2Fmodules%2Fpostgresql_script.py?ref=faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+      "patch": "@@ -214,7 +214,7 @@\n     sample: 5\n '''\n \n-from ansible.module_utils._text import to_native\n+from ansible.module_utils.common.text.converters import to_native\n from ansible.module_utils.basic import AnsibleModule\n from ansible.module_utils.six import iteritems\n from ansible_collections.community.postgresql.plugins.module_utils.database import \\"
+    },
+    {
+      "sha": "82facb07e166d9c52d40f23d32555485dc95968c",
+      "filename": "plugins/modules/postgresql_set.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/ansible-collections/community.postgresql/blob/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_set.py",
+      "raw_url": "https://github.com/ansible-collections/community.postgresql/raw/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_set.py",
+      "contents_url": "https://api.github.com/repos/ansible-collections/community.postgresql/contents/plugins%2Fmodules%2Fpostgresql_set.py?ref=faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+      "patch": "@@ -192,7 +192,7 @@\n \n from copy import deepcopy\n \n-from ansible.module_utils._text import to_native\n+from ansible.module_utils.common.text.converters import to_native\n from ansible.module_utils.basic import AnsibleModule\n from ansible_collections.community.postgresql.plugins.module_utils.database import \\\n     check_input"
+    },
+    {
+      "sha": "990074a562d304608dafa7ae7cb3d929f7e327d8",
+      "filename": "plugins/modules/postgresql_user.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/ansible-collections/community.postgresql/blob/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_user.py",
+      "raw_url": "https://github.com/ansible-collections/community.postgresql/raw/faa1a09004dcec5a30ad7b4dd6187c09f05df219/plugins%2Fmodules%2Fpostgresql_user.py",
+      "contents_url": "https://api.github.com/repos/ansible-collections/community.postgresql/contents/plugins%2Fmodules%2Fpostgresql_user.py?ref=faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+      "patch": "@@ -305,7 +305,7 @@\n from base64 import b64decode\n from hashlib import md5, sha256\n \n-from ansible.module_utils._text import to_bytes, to_native, to_text\n+from ansible.module_utils.common.text.converters import to_bytes, to_native, to_text\n from ansible.module_utils.basic import AnsibleModule\n from ansible_collections.community.postgresql.plugins.module_utils import \\\n     saslprep"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8835ba4418bdc3efa78c235423300ce46e6825c8",
+      "message": "Fix ansible 2.20.xx deprecation warnings",
+      "parent_shas": [
+        "a90cbc7c8de0cc8ded5384ffacca08c54f3afbc7"
+      ]
+    },
+    {
+      "sha": "faa1a09004dcec5a30ad7b4dd6187c09f05df219",
+      "message": "Merge branch 'main' into deprecation_warnings",
+      "parent_shas": [
+        "8835ba4418bdc3efa78c235423300ce46e6825c8",
+        "7817e2a27b25f7dfad28c292f49f77502e3b001b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__ansible-collections__community.postgresql__pr898.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\ansible-collections__community.postgresql__pr898__py2_py3__ansible-collections__community.postgresql__pr898\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\ansible-collections__community.postgresql__pr898__py2_py3__ansible-collections__community.postgresql__pr898\\rn"
+  }
+}

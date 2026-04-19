@@ -1,0 +1,79 @@
+{
+  "instance_id": "cpp_python__chezou__Mykytea-python__pr38",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "chezou/Mykytea-python",
+  "pr_number": 38,
+  "pr_url": "https://github.com/chezou/Mykytea-python/pull/38",
+  "repo": {
+    "full_name": "chezou/Mykytea-python",
+    "clone_url": "https://github.com/chezou/Mykytea-python.git",
+    "default_branch": "master",
+    "created_at": "2011-07-15T08:34:12Z",
+    "stars": 36,
+    "license": "MIT",
+    "size_kb": 285
+  },
+  "pull_request": {
+    "id": 3463721777,
+    "title": "Fix Windows wheel dev version with SETUPTOOLS_SCM_PRETEND_VERSION",
+    "body": "## Summary\n- Capture clean SCM version before swig dirties the git tree on Windows\n- Pass it via `CIBW_ENVIRONMENT_WINDOWS: SETUPTOOLS_SCM_PRETEND_VERSION` so setuptools-scm uses the tag version\n- Windows cibuildwheel has no container isolation, so swig regenerating `mykytea_wrap.cxx` (tracked file, different swig version) makes the tree dirty, causing `0.1.12.dev0` instead of `0.1.11`\n\n## Test plan\n- [ ] Verify Windows wheels have correct version (e.g. `kytea-0.1.11-cp310-cp310-win_amd64.whl`)\n- [ ] Verify Linux/macOS wheels still build correctly\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "created_at": "2026-03-30T01:43:03Z",
+    "merged_at": "2026-03-30T01:50:24Z",
+    "base_sha": "5c9107a606187da377488bcb1c070d832c7168a1",
+    "head_sha": "46e72ff8eaa08bdd16f9e38371b751544fccfd6a",
+    "merge_commit_sha": "aa4396c01ad44d637fe94b3f402fa49137bfcf21",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "5c9107a606187da377488bcb1c070d832c7168a1",
+  "final_sha": "46e72ff8eaa08bdd16f9e38371b751544fccfd6a",
+  "changed_files": [
+    {
+      "sha": "2a053d3539dad50de1da8dc7246add3e9d63e3d3",
+      "filename": ".github/workflows/wheels.yml",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/chezou/Mykytea-python/blob/46e72ff8eaa08bdd16f9e38371b751544fccfd6a/.github%2Fworkflows%2Fwheels.yml",
+      "raw_url": "https://github.com/chezou/Mykytea-python/raw/46e72ff8eaa08bdd16f9e38371b751544fccfd6a/.github%2Fworkflows%2Fwheels.yml",
+      "contents_url": "https://api.github.com/repos/chezou/Mykytea-python/contents/.github%2Fworkflows%2Fwheels.yml?ref=46e72ff8eaa08bdd16f9e38371b751544fccfd6a",
+      "patch": "@@ -54,6 +54,13 @@ jobs:\n       - name: Install cibuildwheel\n         run: pip install cibuildwheel==3.4.0\n \n+      - name: Get SCM version\n+        id: scm_version\n+        run: |\n+          pip install setuptools-scm\n+          echo \"version=$(python -m setuptools_scm)\" >> \"$GITHUB_OUTPUT\"\n+        shell: bash\n+\n       - name: Prepare for Windows\n         if: runner.os == 'Windows'\n         run: |\n@@ -74,6 +81,7 @@ jobs:\n           CIBW_BUILD_VERBOSITY: 3\n           CIBW_BEFORE_ALL_LINUX: bash {project}/.github/workflows/linux-before-all.sh\n           CIBW_BEFORE_BUILD_WINDOWS: swig -Wall -c++ -python -shadow -Iinclude lib\\kytea\\mykytea.i\n+          CIBW_ENVIRONMENT_WINDOWS: SETUPTOOLS_SCM_PRETEND_VERSION=${{ steps.scm_version.outputs.version }}\n           CIBW_TEST_COMMAND: python {project}/.github/workflows/test-wheel.py\n           CIBW_TEST_COMMAND_WINDOWS: python {project}/.github/workflows/test-wheel.py --model {project}/model.bin\n         run: python -m cibuildwheel --output-dir wheelhouse"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "46e72ff8eaa08bdd16f9e38371b751544fccfd6a",
+      "message": "Fix Windows wheel version with SETUPTOOLS_SCM_PRETEND_VERSION\n\nCIBW_BEFORE_BUILD_WINDOWS runs in the project directory (no container\nisolation), so swig still dirties the git tree. Capture the clean\nversion before swig runs and pass it via SETUPTOOLS_SCM_PRETEND_VERSION\nso setuptools-scm skips git describe entirely.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "5c9107a606187da377488bcb1c070d832c7168a1"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "ci_only"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__chezou__Mykytea-python__pr38.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\chezou__Mykytea-python__pr38__cpp_python__chezou__Mykytea-python__pr38\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\chezou__Mykytea-python__pr38__cpp_python__chezou__Mykytea-python__pr38\\rn"
+  }
+}

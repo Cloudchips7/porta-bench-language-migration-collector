@@ -1,0 +1,75 @@
+{
+  "instance_id": "python_cpp__openhwgroup__cvw__pr1738",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "openhwgroup/cvw",
+  "pr_number": 1738,
+  "pr_url": "https://github.com/openhwgroup/cvw/pull/1738",
+  "repo": {
+    "full_name": "openhwgroup/cvw",
+    "clone_url": "https://github.com/openhwgroup/cvw.git",
+    "default_branch": "main",
+    "created_at": "2021-01-15T04:16:46Z",
+    "stars": 519,
+    "license": "NOASSERTION",
+    "size_kb": 50457
+  },
+  "pull_request": {
+    "id": 3528899650,
+    "title": "Update Python package versions",
+    "body": "",
+    "created_at": "2026-04-14T14:29:07Z",
+    "merged_at": "2026-04-14T15:08:48Z",
+    "base_sha": "f06de7e0c506fbe53c47e980a39fb68803d1243b",
+    "head_sha": "3eeb2fe03d29153cc9732779059e991d8767c9ae",
+    "merge_commit_sha": "ffb2f04c13409466c688745bc3fc3967aa697bbd",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "f06de7e0c506fbe53c47e980a39fb68803d1243b",
+  "final_sha": "3eeb2fe03d29153cc9732779059e991d8767c9ae",
+  "changed_files": [
+    {
+      "sha": "781d20f350306bc50ea6c1d8a69fb33b74eea1ef",
+      "filename": "uv.lock",
+      "status": "modified",
+      "additions": 1182,
+      "deletions": 847,
+      "changes": 2029,
+      "blob_url": "https://github.com/openhwgroup/cvw/blob/3eeb2fe03d29153cc9732779059e991d8767c9ae/uv.lock",
+      "raw_url": "https://github.com/openhwgroup/cvw/raw/3eeb2fe03d29153cc9732779059e991d8767c9ae/uv.lock",
+      "contents_url": "https://api.github.com/repos/openhwgroup/cvw/contents/uv.lock?ref=3eeb2fe03d29153cc9732779059e991d8767c9ae"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "3eeb2fe03d29153cc9732779059e991d8767c9ae",
+      "message": "Update Python package versions",
+      "parent_shas": [
+        "f06de7e0c506fbe53c47e980a39fb68803d1243b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__openhwgroup__cvw__pr1738.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\openhwgroup__cvw__pr1738__python_cpp__openhwgroup__cvw__pr1738\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\openhwgroup__cvw__pr1738__python_cpp__openhwgroup__cvw__pr1738\\rn"
+  }
+}

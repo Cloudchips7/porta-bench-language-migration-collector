@@ -1,0 +1,817 @@
+{
+  "instance_id": "java_python__rtuszik__photon-docker__pr96",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "rtuszik/photon-docker",
+  "pr_number": 96,
+  "pr_url": "https://github.com/rtuszik/photon-docker/pull/96",
+  "repo": {
+    "full_name": "rtuszik/photon-docker",
+    "clone_url": "https://github.com/rtuszik/photon-docker.git",
+    "default_branch": "main",
+    "created_at": "2024-09-04T16:24:33Z",
+    "stars": 227,
+    "license": "Apache-2.0",
+    "size_kb": 528
+  },
+  "pull_request": {
+    "id": 2643829176,
+    "title": "python rewrite",
+    "body": "",
+    "created_at": "2025-07-05T20:41:20Z",
+    "merged_at": "2025-07-27T01:33:02Z",
+    "base_sha": "06ca0b2db307b254d726d91a14f870301140c84a",
+    "head_sha": "41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+    "merge_commit_sha": "a0ce66e2dcacabb28a07fe2caea8a787d973bd60",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "06ca0b2db307b254d726d91a14f870301140c84a",
+  "final_sha": "41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+  "changed_files": [
+    {
+      "sha": "752372be9a28760992b70e566e4585b5bb248b23",
+      "filename": ".github/workflows/lint.yml",
+      "status": "modified",
+      "additions": 22,
+      "deletions": 10,
+      "changes": 32,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/.github%2Fworkflows%2Flint.yml",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/.github%2Fworkflows%2Flint.yml",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/.github%2Fworkflows%2Flint.yml?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -1,4 +1,4 @@\n-name: Lint\n+name: Lint-Format-Check\n on:\n     pull_request:\n     workflow_dispatch:\n@@ -20,12 +20,24 @@ jobs:\n               with:\n                   fetch-depth: 0\n \n-            - name: Lint Code Base\n-              uses: github/super-linter/slim@v7\n-              env:\n-                  VALIDATE_ALL_CODEBASE: true\n-                  FIX_MARKDOWN_PRETTIER: true\n-                  VALIDATE_MARKDOWN_PRETTIER: true\n-                  VALIDATE_GITLEAKS: true\n-                  VALIDATE_GITHUB_ACTIONS: true\n-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n+            - name: \"Set up Python\"\n+              uses: actions/setup-python@v5\n+              with:\n+                  python-version-file: \".python-version\"\n+\n+            - name: Install uv\n+              uses: astral-sh/setup-uv@v6\n+\n+            - name: install project\n+              run: uv sync --locked\n+            - name:\n+              run: uv add ruff ty\n+\n+            - name: ruff Check\n+              run: uv run ruff check --fix --output-format=github\n+\n+            - name: ruff format\n+              run: uv run ruff format\n+\n+            - name: ty check\n+              run: uv run ty check"
+    },
+    {
+      "sha": "0c28182b4a225e05d22129e9e9ccacf71f3c8082",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 65,
+      "deletions": 0,
+      "changes": 65,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/.gitignore",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/.gitignore",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/.gitignore?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -2,3 +2,68 @@\n .env\n \n dev_cmd.md\n+\n+# Created by https://www.toptal.com/developers/gitignore/api/python\n+# Edit at https://www.toptal.com/developers/gitignore?templates=python\n+\n+### Python ###\n+# Byte-compiled / optimized / DLL files\n+__pycache__/\n+*.py[cod]\n+*$py.class\n+\n+# Distribution / packaging\n+.Python\n+build/\n+develop-eggs/\n+dist/\n+downloads/\n+eggs/\n+.eggs/\n+lib/\n+lib64/\n+parts/\n+sdist/\n+var/\n+wheels/\n+share/python-wheels/\n+*.egg-info/\n+.installed.cfg\n+*.egg\n+MANIFEST\n+\n+\n+# Unit test / coverage reports\n+htmlcov/\n+.tox/\n+.nox/\n+.coverage\n+.coverage.*\n+.cache\n+nosetests.xml\n+coverage.xml\n+*.cover\n+*.py,cover\n+.hypothesis/\n+.pytest_cache/\n+cover/\n+\n+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm\n+__pypackages__/\n+\n+# Environments\n+.env\n+.venv\n+env/\n+venv/\n+ENV/\n+env.bak/\n+venv.bak/\n+\n+# ruff\n+.ruff_cache/\n+\n+# LSP config files\n+pyrightconfig.json\n+\n+"
+    },
+    {
+      "sha": "24ee5b1be9961e38a503c8e764b7385dbb6ba124",
+      "filename": ".python-version",
+      "status": "added",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/.python-version",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/.python-version",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/.python-version?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1 @@\n+3.13"
+    },
+    {
+      "sha": "28056cf759401887f24ddcf5aca7585bb905f7ad",
+      "filename": "Dockerfile",
+      "status": "modified",
+      "additions": 22,
+      "deletions": 14,
+      "changes": 36,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/Dockerfile",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/Dockerfile",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/Dockerfile?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -1,38 +1,46 @@\n FROM eclipse-temurin:21.0.5_11-jre-noble\n \n+# install astral uv\n+COPY --from=ghcr.io/astral-sh/uv:0.8 /uv /usr/local/bin/\n+\n ARG DEBIAN_FRONTEND=noninteractive\n ARG PHOTON_VERSION\n ARG PUID=9011\n ARG PGID=9011\n \n-RUN apt-get update \\  \n+RUN apt-get update \\\n   && apt-get -y install --no-install-recommends \\\n-  pbzip2 \\\n-  wget \\\n-  procps \\\n-  coreutils \\\n-  tree \\\n+  lbzip2 \\\n   gosu \\\n+  python3.12 \\\n+  curl \\\n   && rm -rf /var/lib/apt/lists/*\n \n RUN groupadd -g ${PGID} -o photon && \\\n-    useradd -u ${PUID} -g photon -o -s /bin/false -m -d /photon photon\n+    useradd -l -u ${PUID} -g photon -o -s /bin/false -m -d /photon photon\n \n WORKDIR /photon\n \n-\n-RUN mkdir -p /photon/photon_data\n+RUN mkdir -p /photon/data/\n \n ADD https://github.com/komoot/photon/releases/download/${PHOTON_VERSION}/photon-opensearch-${PHOTON_VERSION}.jar /photon/photon.jar\n \n-COPY start-photon.sh ./start-photon.sh\n COPY src/ ./src/\n-RUN chmod +x start-photon.sh src/*.sh && \\\n-    chmod 644 /photon/photon.jar && \\\n+COPY entrypoint.sh .\n+COPY pyproject.toml .\n+COPY uv.lock .\n+RUN gosu photon uv sync --locked\n+\n+\n+RUN chmod 644 /photon/photon.jar && \\\n     chown -R photon:photon /photon\n \n+RUN gosu photon uv sync --locked\n \n-VOLUME /photon/photon_data\n EXPOSE 2322\n \n-ENTRYPOINT [\"/photon/start-photon.sh\"]\n+HEALTHCHECK --interval=30s --timeout=10s --start-period=240s --retries=3 \\\n+  CMD curl -f http://localhost:2322/status || exit 1\n+\n+ENTRYPOINT [\"/bin/sh\", \"entrypoint.sh\"]\n+CMD [\"uv\", \"run\", \"-m\", \"src.process_manager\"]"
+    },
+    {
+      "sha": "d8d4d64bdc759485eb804e921e9d19c008ede49a",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1,
+      "changes": 4,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/README.md",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/README.md",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/README.md?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -40,8 +40,9 @@ services:\n             - UPDATE_STRATEGY=PARALLEL\n             - UPDATE_INTERVAL=720h # Check for updates every 30 days\n             # - COUNTRY_CODE=zw  # Optional: country-specific index\n+            # - APPRISE_URLS=pover://user@token  # Optional: notifications\n         volumes:\n-            - photon_data:/photon/photon_data\n+            - photon_data:/photon/data\n         restart: unless-stopped\n         ports:\n             - \"2322:2322\"\n@@ -68,6 +69,7 @@ The container can be configured using the following environment variables:\n | `SKIP_MD5_CHECK`  | `TRUE`, `FALSE`                      | `FALSE`                                       | Optionally skip MD5 verification of downloaded index files.                                                                                                                                                                                                                                                                                                          |\n | `FILE_URL`        | URL to a .tar.bz2 file               | -                                             | Set a custom URL for the index file to be downloaded (e.g., \"https://download1.graphhopper.com/public/experimental/photon-db-latest.tar.bz2\"). This must be a tar.bz2 format. Make sure to set the `UPDATE_STRATEGY` to `DISABLED` when using this option.                                                                                                           |\n | `PHOTON_PARAMS`   | Photon executable parameters         | -                                             | See `https://github.com/komoot/photon#running-photon.`                                                                                                                                                                                                                                                                                                               |\n+| `APPRISE_URLS`    | Comma-separated Apprise URLs         | -                                             | Optional notification URLs for [Apprise](https://github.com/caronc/apprise) to send status updates (e.g., download completion, errors). Supports multiple services like Pushover, Slack, email, etc. Example: `pover://user@token,mailto://user:pass@gmail.com`                                                                                                      |\n | `PUID`            | User ID                              | 9011                                          | The User ID for the photon process. Set this to your host user's ID (`id -u`) to prevent permission errors when using bind mounts.                                                                                                                                                                                                                                   |\n | `PGID`            | Group ID                             | 9011                                          | The Group ID for the photon process. Set this to your host group's ID (`id -g`) to prevent permission errors when using bind mounts.                                                                                                                                                                                                                                 |\n "
+    },
+    {
+      "sha": "dfd402e10a7d4fb62a8ebc0a3d622f3d65f9b99a",
+      "filename": "docker-compose.build.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/docker-compose.build.yml",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/docker-compose.build.yml",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/docker-compose.build.yml?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -14,7 +14,7 @@ services:\n             # - BASE_URL=https://r2.koalasec.org/public\n             # - SKIP_MD5_CHECK=TRUE\n         volumes:\n-            - photon_data:/photon/photon_data\n+            - photon_data:/photon/data\n         restart: unless-stopped\n         ports:\n             - \"2322:2322\""
+    },
+    {
+      "sha": "a3316ba17ce6ec699dc8a6571cdcd91acdfc283d",
+      "filename": "docker-compose.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/docker-compose.yml",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/docker-compose.yml",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/docker-compose.yml?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -9,7 +9,7 @@ services:\n             # - BASE_URL=https://r2.koalasec.org/public\n             # - COUNTRY_CODE=zw\n         volumes:\n-            - photon_data:/photon/photon_data\n+            - photon_data:/photon/data\n         restart: unless-stopped\n         ports:\n             - \"2322:2322\""
+    },
+    {
+      "sha": "ba0c1683e9215e9c5b388a1c718c692b6c342e3f",
+      "filename": "entrypoint.sh",
+      "status": "added",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/entrypoint.sh",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/entrypoint.sh",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/entrypoint.sh?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1,5 @@\n+#!/bin/sh\n+\n+chown -R photon:photon /photon\n+\n+exec gosu photon \"$@\""
+    },
+    {
+      "sha": "b3a0d93320b9138be57e0a1628496ee9160a9668",
+      "filename": "pyproject.toml",
+      "status": "added",
+      "additions": 14,
+      "deletions": 0,
+      "changes": 14,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/pyproject.toml",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/pyproject.toml?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1,14 @@\n+[project]\n+name = \"photon-docker\"\n+version = \"1.0.0-beta\"\n+description = \"Unofficial docker image for the Photon Geocoder\"\n+readme = \"README.md\"\n+requires-python = \">=3.12\"\n+dependencies = [\n+    \"apprise>=1.9.3\",\n+    \"psutil>=5.9.0\",\n+    \"python-dateutil>=2.9.0.post0\",\n+    \"requests==2.32.4\",\n+    \"schedule>=1.2.2\",\n+    \"tqdm==4.67.1\",\n+]"
+    },
+    {
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "filename": "src/__init__.py",
+      "status": "added",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2F__init__.py",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2F__init__.py?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945"
+    },
+    {
+      "sha": "6fdb042529fcfd5e3a76a0bc4317b2b7a58822e3",
+      "filename": "src/check_remote.py",
+      "status": "added",
+      "additions": 90,
+      "deletions": 0,
+      "changes": 90,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Fcheck_remote.py",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Fcheck_remote.py",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Fcheck_remote.py?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1,90 @@\n+import datetime\n+import os\n+\n+import requests\n+from requests.exceptions import RequestException\n+from dateutil.parser import parse as parsedate\n+\n+from src.utils import config\n+from src.utils.logger import get_logger\n+\n+logging = get_logger()\n+\n+\n+def get_remote_file_size(url: str) -> int:\n+    try:\n+        response = requests.head(url, allow_redirects=True)\n+        response.raise_for_status()\n+\n+        content_length = response.headers.get(\"content-length\")\n+        if content_length:\n+            return int(content_length)\n+\n+        response = requests.get(url, headers={\"Range\": \"bytes=0-0\"}, stream=True)\n+        response.raise_for_status()\n+\n+        content_range = response.headers.get(\"content-range\")\n+        if content_range and \"/\" in content_range:\n+            total_size = content_range.split(\"/\")[-1]\n+            if total_size.isdigit():\n+                return int(total_size)\n+\n+    except Exception as e:\n+        logging.warning(f\"Could not determine remote file size for {url}: {e}\")\n+\n+    return 0\n+\n+\n+def get_remote_time(remote_url: str):\n+    try:\n+        r = requests.head(remote_url, timeout=10)\n+        r.raise_for_status()\n+        urltime = r.headers.get(\"last-modified\")\n+        if urltime:\n+            return parsedate(urltime)\n+    except RequestException as e:\n+        logging.error(f\"Error fetching remote URL: {e}\")\n+    return None\n+\n+\n+def get_local_time(local_path: str):\n+    if not os.path.exists(local_path):\n+        return 0.0\n+    return os.path.getmtime(local_path)\n+\n+\n+def compare_mtime() -> bool:\n+    if config.COUNTRY_CODE:\n+        index_file = (\n+            \"/extracts/by-country-code/\"\n+            + config.COUNTRY_CODE\n+            + \"/photon-db-\"\n+            + config.COUNTRY_CODE\n+            + \"-latest.tar.bz2\"\n+        )\n+\n+    else:\n+        index_file = \"/photon-db-latest.tar.bz2\"\n+\n+    remote_url = config.BASE_URL.rstrip(\"/\") + index_file\n+\n+    remote_dt = get_remote_time(remote_url)\n+\n+    if remote_dt is None:\n+        logging.warning(\n+            \"Could not determine remote time. Assuming no update is needed.\"\n+        )\n+        return False\n+\n+    local_timestamp = get_local_time(config.OS_NODE_DIR)\n+\n+    local_dt = datetime.datetime.fromtimestamp(\n+        local_timestamp, tz=datetime.timezone.utc\n+    )\n+\n+    grace_period = datetime.timedelta(hours=144)\n+\n+    logging.debug(f\"Remote index time: {remote_dt}\")\n+    logging.debug(f\"Local index time:  {local_dt}\")\n+\n+    return remote_dt > (local_dt + grace_period)"
+    },
+    {
+      "sha": "f7b7f74f6d130f223fea89a8a67ec4643716bfb1",
+      "filename": "src/config.sh",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 34,
+      "changes": 34,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/06ca0b2db307b254d726d91a14f870301140c84a/src%2Fconfig.sh",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/06ca0b2db307b254d726d91a14f870301140c84a/src%2Fconfig.sh",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Fconfig.sh?ref=06ca0b2db307b254d726d91a14f870301140c84a",
+      "patch": "@@ -1,34 +0,0 @@\n-#!/bin/bash\n-\n-# Fixed paths\n-PHOTON_DIR=\"/photon\"\n-PHOTON_DATA_DIR=\"${PHOTON_DIR}/photon_data\"\n-PHOTON_JAR=\"${PHOTON_DIR}/photon.jar\"\n-OS_DATA_DIR=\"${PHOTON_DATA_DIR}/node_1\"\n-INDEX_DIR=\"${OS_DATA_DIR}\"\n-ES_DATA_DIR=\"${PHOTON_DATA_DIR}/elasticsearch\"\n-TEMP_DIR=\"${PHOTON_DATA_DIR}/temp\"\n-PID_FILE=\"${PHOTON_DIR}/photon.pid\"\n-FILE_URL=\"$FILE_URL\"\n-PHOTON_PARAMS=\"${PHOTON_PARAMS}\"\n-JAVA_PARAMS=\"${JAVA_PARAMS}\"\n-\n-\n-# Environment variables with defaults\n-UPDATE_STRATEGY=${UPDATE_STRATEGY:-SEQUENTIAL}\n-UPDATE_INTERVAL=${UPDATE_INTERVAL:-30d}\n-LOG_LEVEL=${LOG_LEVEL:-INFO}\n-BASE_URL=${BASE_URL:-https://r2.koalasec.org/public/experimental}\n-BASE_URL=${BASE_URL%/}\n-FORCE_UPDATE=${FORCE_UPDATE:-FALSE}\n-SKIP_MD5_CHECK=${SKIP_MD5_CHECK:-FALSE}\n-\n-# Validate UPDATE_STRATEGY\n-if [[ ! \"${UPDATE_STRATEGY}\" =~ ^(SEQUENTIAL|PARALLEL|DISABLED)$ ]]; then\n-    echo \"ERROR: Invalid UPDATE_STRATEGY: ${UPDATE_STRATEGY}\"\n-    echo \"Valid options are: SEQUENTIAL, PARALLEL, DISABLED\"\n-    exit 1\n-fi\n-\n-log_info \"Ensuring correct permissions for /photon directory...\"\n-chown -R -v photon:photon /photon"
+    },
+    {
+      "sha": "2aaed2f2844eab117fd8251c3c2039dc371d5695",
+      "filename": "src/downloader.py",
+      "status": "added",
+      "additions": 441,
+      "deletions": 0,
+      "changes": 441,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Fdownloader.py",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Fdownloader.py",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Fdownloader.py?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1,441 @@\n+import json\n+import os\n+import shutil\n+import sys\n+import time\n+\n+import requests\n+from requests.exceptions import RequestException\n+from tqdm import tqdm\n+\n+from src.filesystem import clear_temp_dir, extract_index, move_index, verify_checksum\n+from src.check_remote import get_local_time, get_remote_file_size\n+from src.utils import config\n+from src.utils.logger import get_logger\n+\n+logging = get_logger()\n+\n+\n+def get_available_space(path: str) -> int:\n+    try:\n+        statvfs = os.statvfs(path)\n+        return statvfs.f_frsize * statvfs.f_bavail\n+    except (OSError, AttributeError):\n+        return 0\n+\n+\n+def get_directory_size(path: str) -> int:\n+    if not os.path.exists(path):\n+        return 0\n+\n+    total_size = 0\n+    try:\n+        for dirpath, dirnames, filenames in os.walk(path):\n+            for filename in filenames:\n+                file_path = os.path.join(dirpath, filename)\n+                try:\n+                    total_size += os.path.getsize(file_path)\n+                except (OSError, FileNotFoundError):\n+                    continue\n+    except (OSError, PermissionError):\n+        pass\n+\n+    return total_size\n+\n+\n+def check_disk_space_requirements(download_size: int, is_parallel: bool = True) -> bool:\n+    temp_available = get_available_space(\n+        config.TEMP_DIR if os.path.exists(config.TEMP_DIR) else config.DATA_DIR\n+    )\n+    data_available = get_available_space(\n+        config.PHOTON_DATA_DIR\n+        if os.path.exists(config.PHOTON_DATA_DIR)\n+        else config.DATA_DIR\n+    )\n+\n+    compressed_size = download_size\n+    extracted_size = int(download_size * 1.65)\n+\n+    if is_parallel:\n+        temp_needed = compressed_size + extracted_size\n+        data_needed = extracted_size\n+        total_needed = int(download_size * 1.7)\n+\n+        logging.info(\"Parallel update space requirements:\")\n+        logging.info(f\"  Download size: {compressed_size / (1024**3):.2f} GB\")\n+        logging.info(f\"  Estimated extracted size: {extracted_size / (1024**3):.2f} GB\")\n+        logging.info(f\"  Total space needed: {total_needed / (1024**3):.2f} GB\")\n+        logging.info(f\"  Temp space available: {temp_available / (1024**3):.2f} GB\")\n+        logging.info(f\"  Data space available: {data_available / (1024**3):.2f} GB\")\n+\n+        if temp_available < temp_needed:\n+            logging.error(\n+                f\"Insufficient temp space: need {temp_needed / (1024**3):.2f} GB, have {temp_available / (1024**3):.2f} GB\"\n+            )\n+            return False\n+\n+        if data_available < data_needed:\n+            logging.error(\n+                f\"Insufficient data space: need {data_needed / (1024**3):.2f} GB, have {data_available / (1024**3):.2f} GB\"\n+            )\n+            return False\n+\n+    else:\n+        temp_needed = compressed_size + extracted_size\n+\n+        logging.info(\"Sequential update space requirements:\")\n+        logging.info(f\"  Download size: {compressed_size / (1024**3):.2f} GB\")\n+        logging.info(f\"  Estimated extracted size: {extracted_size / (1024**3):.2f} GB\")\n+        logging.info(f\"  Temp space needed: {temp_needed / (1024**3):.2f} GB\")\n+        logging.info(f\"  Temp space available: {temp_available / (1024**3):.2f} GB\")\n+\n+        if temp_available < temp_needed:\n+            logging.error(\n+                f\"Insufficient temp space: need {temp_needed / (1024**3):.2f} GB, have {temp_available / (1024**3):.2f} GB\"\n+            )\n+            return False\n+\n+    logging.info(\"Sufficient disk space available for update\")\n+    return True\n+\n+\n+def get_download_state_file(destination: str) -> str:\n+    return destination + \".download_state\"\n+\n+\n+def save_download_state(\n+    destination: str, url: str, downloaded_bytes: int, total_size: int\n+):\n+    state_file = get_download_state_file(destination)\n+    state = {\n+        \"url\": url,\n+        \"destination\": destination,\n+        \"downloaded_bytes\": downloaded_bytes,\n+        \"total_size\": total_size,\n+        \"file_size\": os.path.getsize(destination) if os.path.exists(destination) else 0,\n+    }\n+    try:\n+        with open(state_file, \"w\") as f:\n+            json.dump(state, f)\n+    except Exception as e:\n+        logging.warning(f\"Failed to save download state: {e}\")\n+\n+\n+def load_download_state(destination: str) -> dict:\n+    state_file = get_download_state_file(destination)\n+    if not os.path.exists(state_file):\n+        return {}\n+\n+    try:\n+        with open(state_file, \"r\") as f:\n+            state = json.load(f)\n+\n+        if os.path.exists(destination):\n+            actual_size = os.path.getsize(destination)\n+            if state.get(\"file_size\", 0) == actual_size:\n+                return state\n+            else:\n+                logging.warning(\"File size mismatch, starting fresh download\")\n+                cleanup_download_state(destination)\n+\n+    except Exception as e:\n+        logging.warning(f\"Failed to load download state: {e}\")\n+        cleanup_download_state(destination)\n+\n+    return {}\n+\n+\n+def cleanup_download_state(destination: str):\n+    state_file = get_download_state_file(destination)\n+    try:\n+        if os.path.exists(state_file):\n+            os.remove(state_file)\n+    except Exception as e:\n+        logging.warning(f\"Failed to cleanup download state: {e}\")\n+\n+\n+def supports_range_requests(url: str) -> bool:\n+    try:\n+        response = requests.head(url, allow_redirects=True)\n+        response.raise_for_status()\n+        return response.headers.get(\"accept-ranges\", \"\").lower() == \"bytes\"\n+    except Exception as e:\n+        logging.warning(f\"Could not determine range support for {url}: {e}\")\n+        return False\n+\n+\n+def get_download_url() -> str:\n+    if config.COUNTRY_CODE:\n+        index_file = \"photon-db-\" + config.COUNTRY_CODE + \"-latest.tar.bz2\"\n+        index_url = (\n+            \"/extracts/by-country-code/\" + config.COUNTRY_CODE + \"/\" + index_file\n+        )\n+    else:\n+        index_file = \"photon-db-latest.tar.bz2\"\n+        index_url = \"/photon-db-latest.tar.bz2\"\n+\n+    return config.BASE_URL + index_url\n+\n+\n+def parallel_update():\n+    logging.info(\"Starting parallel update process...\")\n+\n+    try:\n+        if os.path.isdir(config.TEMP_DIR):\n+            logging.debug(\n+                f\"Temporary directory {config.TEMP_DIR} exists. Attempting to remove it.\"\n+            )\n+            try:\n+                shutil.rmtree(config.TEMP_DIR)\n+                logging.debug(f\"Successfully removed directory: {config.TEMP_DIR}\")\n+            except Exception as e:\n+                logging.error(f\"Failed to remove existing TEMP_DIR: {e}\")\n+                raise\n+\n+        logging.debug(f\"Creating temporary directory: {config.TEMP_DIR}\")\n+        os.makedirs(config.TEMP_DIR, exist_ok=True)\n+\n+        download_url = get_download_url()\n+        file_size = get_remote_file_size(download_url)\n+\n+        if file_size > 0:\n+            if not check_disk_space_requirements(file_size, is_parallel=True):\n+                logging.error(\"Insufficient disk space for parallel update\")\n+                sys.exit(1)\n+        else:\n+            logging.warning(\n+                \"Could not determine download size, proceeding without space check\"\n+            )\n+\n+        logging.info(\"Downloading index\")\n+\n+        index_file = download_index()\n+\n+        extract_index(index_file)\n+\n+        if not config.SKIP_MD5_CHECK:\n+            md5_file = download_md5()\n+\n+            logging.info(\"Verifying checksum...\")\n+            verify_checksum(md5_file, index_file)\n+\n+            logging.debug(\"Checksum verification successful.\")\n+\n+        logging.info(\"Moving Index\")\n+        move_index()\n+        clear_temp_dir()\n+\n+        logging.info(\"Parallel update process completed successfully.\")\n+\n+    except Exception as e:\n+        logging.error(f\"FATAL: Update process failed with an error: {e}\")\n+        logging.error(\"Aborting script.\")\n+        sys.exit(1)\n+\n+\n+def sequential_update():\n+    logging.info(\"Starting sequential download process...\")\n+\n+    try:\n+        logging.info(\"Deleting old index...\")\n+\n+        if os.path.isdir(config.TEMP_DIR):\n+            logging.debug(\n+                f\"Temporary directory {config.TEMP_DIR} exists. Attempting to remove it.\"\n+            )\n+            try:\n+                shutil.rmtree(config.TEMP_DIR)\n+                logging.debug(f\"Successfully removed directory: {config.TEMP_DIR}\")\n+            except Exception as e:\n+                logging.error(f\"Failed to remove existing TEMP_DIR: {e}\")\n+                raise\n+\n+        logging.debug(f\"Creating temporary directory: {config.TEMP_DIR}\")\n+        os.makedirs(config.TEMP_DIR, exist_ok=True)\n+\n+        download_url = get_download_url()\n+        file_size = get_remote_file_size(download_url)\n+\n+        if file_size > 0:\n+            if not check_disk_space_requirements(file_size, is_parallel=False):\n+                logging.error(\"Insufficient disk space for sequential update\")\n+                sys.exit(1)\n+        else:\n+            logging.warning(\n+                \"Could not determine download size, proceeding without space check\"\n+            )\n+\n+        logging.info(\"Downloading new index and MD5 checksum...\")\n+        index_file = download_index()\n+        extract_index(index_file)\n+\n+        if not config.SKIP_MD5_CHECK:\n+            md5_file = download_md5()\n+\n+            logging.info(\"Verifying checksum...\")\n+            verify_checksum(md5_file, index_file)\n+\n+            logging.debug(\"Checksum verification successful.\")\n+\n+        logging.info(\"Moving new index into place...\")\n+        move_index()\n+\n+        clear_temp_dir()\n+\n+        logging.info(\"Sequential download process completed successfully.\")\n+\n+    except Exception as e:\n+        logging.critical(f\"FATAL: Update process failed with an error: {e}\")\n+        logging.critical(\"Aborting script.\")\n+        sys.exit(1)\n+\n+\n+def download_index() -> str:\n+    if config.COUNTRY_CODE:\n+        index_file = \"photon-db-\" + config.COUNTRY_CODE + \"-latest.tar.bz2\"\n+        index_url = (\n+            \"/extracts/by-country-code/\" + config.COUNTRY_CODE + \"/\" + index_file\n+        )\n+    else:\n+        index_file = \"photon-db-latest.tar.bz2\"\n+        index_url = \"/photon-db-latest.tar.bz2\"\n+\n+    output_file = \"photon-db-latest.tar.bz2\"\n+    download_url = config.BASE_URL + index_url\n+\n+    output = os.path.join(config.TEMP_DIR, output_file)\n+\n+    download_file(download_url, output)\n+\n+    local_timestamp = get_local_time(config.OS_NODE_DIR)\n+\n+    logging.debug(f\"New index timestamp: {local_timestamp}\")\n+    return output\n+\n+\n+def download_md5():\n+    if config.COUNTRY_CODE:\n+        md5_file = \"photon-db-\" + config.COUNTRY_CODE + \"-latest.tar.bz2.md5\"\n+        md5_url = \"/extracts/by-country-code/\" + config.COUNTRY_CODE + \"/\" + md5_file\n+    else:\n+        md5_file = \"photon-db-latest.tar.bz2.md5\"\n+        md5_url = \"/photon-db-latest.tar.bz2.md5\"\n+\n+    download_url = config.BASE_URL + md5_url\n+\n+    output_file = \"photon-db-latest.tar.bz2.md5\"\n+    output = os.path.join(config.TEMP_DIR, output_file)\n+\n+    download_file(download_url, output)\n+\n+    return output\n+\n+\n+def download_file(url, destination, max_retries=3):\n+    state = load_download_state(destination)\n+    resume_byte_pos = 0\n+    mode = \"wb\"\n+\n+    if state and state.get(\"url\") == url:\n+        resume_byte_pos = state.get(\"downloaded_bytes\", 0)\n+        if resume_byte_pos > 0 and os.path.exists(destination):\n+            mode = \"ab\"\n+            logging.info(f\"Resuming download from byte {resume_byte_pos}\")\n+\n+    start_time = time.time()\n+    for attempt in range(max_retries):\n+        try:\n+            headers = {}\n+            if resume_byte_pos > 0 and supports_range_requests(url):\n+                headers[\"Range\"] = f\"bytes={resume_byte_pos}-\"\n+\n+            with requests.get(url, stream=True, headers=headers) as r:\n+                r.raise_for_status()\n+\n+                if headers and r.status_code == 206:\n+                    content_range = r.headers.get(\"content-range\", \"\")\n+                    if content_range:\n+                        total_size = int(content_range.split(\"/\")[-1])\n+                    else:\n+                        total_size = resume_byte_pos + int(\n+                            r.headers.get(\"content-length\", 0)\n+                        )\n+                else:\n+                    total_size = int(r.headers.get(\"content-length\", 0))\n+                    if resume_byte_pos > 0:\n+                        logging.warning(\n+                            \"Server doesn't support range requests, restarting download\"\n+                        )\n+                        resume_byte_pos = 0\n+                        mode = \"wb\"\n+                        if os.path.exists(destination):\n+                            os.remove(destination)\n+\n+                progress_bar = None\n+                if total_size > 0:\n+                    progress_bar = tqdm(\n+                        desc=f\"Downloading {os.path.basename(destination)}\",\n+                        total=total_size,\n+                        initial=resume_byte_pos,\n+                        unit=\"B\",\n+                        unit_scale=True,\n+                        unit_divisor=1024,\n+                        leave=True,\n+                    )\n+\n+                downloaded = resume_byte_pos\n+                chunk_size = 8192\n+                save_interval = 1024 * 1024  # Save state every 1MB\n+                last_save = downloaded\n+\n+                with open(destination, mode) as f:\n+                    for chunk in r.iter_content(chunk_size=chunk_size):\n+                        if chunk:\n+                            size = f.write(chunk)\n+                            downloaded += size\n+                            if progress_bar:\n+                                progress_bar.update(size)\n+\n+                            if downloaded - last_save >= save_interval:\n+                                save_download_state(\n+                                    destination, url, downloaded, total_size\n+                                )\n+                                last_save = downloaded\n+\n+                    if progress_bar:\n+                        progress_bar.close()\n+\n+                save_download_state(destination, url, downloaded, total_size)\n+\n+                if total_size > 0 and downloaded < total_size:\n+                    raise Exception(\n+                        f\"Download incomplete: {downloaded}/{total_size} bytes\"\n+                    )\n+\n+                cleanup_download_state(destination)\n+                \n+                # Add simple metrics logging\n+                if total_size > 0:\n+                    speed_mbps = (total_size * 8) / ((time.time() - start_time) * 1_000_000)\n+                    size_gb = total_size / (1024**3)\n+                    duration = time.time() - start_time\n+                    logging.info(f\"Download completed: {size_gb:.2f}GB in {duration:.1f}s ({speed_mbps:.1f} Mbps)\")\n+                else:\n+                    logging.info(f\"Downloaded {destination} successfully.\")\n+                return True\n+\n+        except RequestException as e:\n+            logging.error(f\"Download attempt {attempt + 1} failed: {e}\")\n+            if attempt < max_retries - 1:\n+                logging.info(\n+                    f\"Retrying download (attempt {attempt + 2}/{max_retries})...\"\n+                )\n+                continue\n+            else:\n+                logging.error(f\"Download failed after {max_retries} attempts\")\n+                return False\n+        except Exception as e:\n+            logging.error(f\"Download failed: {e}\")\n+            return False\n+\n+    return False"
+    },
+    {
+      "sha": "cb0952dc630df93b8568920c6fcce653718ab33e",
+      "filename": "src/entrypoint.py",
+      "status": "added",
+      "additions": 54,
+      "deletions": 0,
+      "changes": 54,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Fentrypoint.py",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Fentrypoint.py",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Fentrypoint.py?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1,54 @@\n+import sys\n+import os\n+from .utils import config\n+from .utils.validate_config import validate_config\n+from .utils.logger import get_logger\n+from .downloader import sequential_update, parallel_update\n+from .utils.notify import send_notification\n+\n+logger = get_logger()\n+\n+\n+def main():\n+    send_notification(\"Photon-Docker Initializing\")\n+\n+    logger.debug(\"Entrypoint setup called\")\n+    logger.debug(\"=== CONFIG VARIABLES ===\")\n+    logger.debug(f\"UPDATE_STRATEGY: {config.UPDATE_STRATEGY}\")\n+    logger.debug(f\"UPDATE_INTERVAL: {config.UPDATE_INTERVAL}\")\n+    logger.debug(f\"COUNTRY_CODE: {config.COUNTRY_CODE}\")\n+    logger.debug(f\"FORCE_UPDATE: {config.FORCE_UPDATE}\")\n+    logger.debug(f\"FILE_URL: {config.FILE_URL}\")\n+    logger.debug(f\"PHOTON_PARAMS: {config.PHOTON_PARAMS}\")\n+    logger.debug(f\"JAVA_PARAMS: {config.JAVA_PARAMS}\")\n+    logger.debug(f\"LOG_LEVEL: {config.LOG_LEVEL}\")\n+    logger.debug(f\"BASE_URL: {config.BASE_URL}\")\n+    logger.debug(f\"SKIP_MD5_CHECK: {config.SKIP_MD5_CHECK}\")\n+\n+    logger.debug(\"=== END CONFIG VARIABLES ===\")\n+\n+    try:\n+        validate_config()\n+    except ValueError as e:\n+        logger.error(f\"Stopping due to invalid configuration.\\n{e}\")\n+        sys.exit(1)\n+\n+    if config.FORCE_UPDATE:\n+        logger.info(\"Starting forced update\")\n+        try:\n+            if config.UPDATE_STRATEGY == \"PARALLEL\":\n+                parallel_update()\n+            else:\n+                sequential_update()\n+        except Exception:\n+            logger.error(\"Force update failed\")\n+            raise\n+    elif not os.path.isdir(config.OS_NODE_DIR):\n+        logger.info(\"Starting initial download\")\n+        sequential_update()\n+    else:\n+        logger.info(\"Existing index found, skipping download\")\n+\n+\n+if __name__ == \"__main__\":\n+    main()"
+    },
+    {
+      "sha": "a8f3061fc55a374cd01d49cc5bc94b71bf7b58a6",
+      "filename": "src/filesystem.py",
+      "status": "added",
+      "additions": 208,
+      "deletions": 0,
+      "changes": 208,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Ffilesystem.py",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Ffilesystem.py",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Ffilesystem.py?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1,208 @@\n+import hashlib\n+import os\n+import shutil\n+import subprocess\n+\n+from src.utils import config\n+from src.utils.logger import get_logger\n+\n+logging = get_logger()\n+\n+\n+def extract_index(index_file: str):\n+    logging.info(\"Extracting Index\")\n+    logging.debug(f\"Index file: {index_file}\")\n+    logging.debug(f\"Index file exists: {os.path.exists(index_file)}\")\n+    logging.debug(\n+        f\"Index file size: {os.path.getsize(index_file) if os.path.exists(index_file) else 'N/A'}\"\n+    )\n+    logging.debug(f\"Temp directory: {config.TEMP_DIR}\")\n+    logging.debug(f\"Temp directory exists: {os.path.exists(config.TEMP_DIR)}\")\n+\n+    if not os.path.exists(config.TEMP_DIR):\n+        logging.debug(f\"Creating temp directory: {config.TEMP_DIR}\")\n+        os.makedirs(config.TEMP_DIR, exist_ok=True)\n+\n+    \n+    install_command = f\"lbzip2 -d -c {index_file} | tar x -C {config.TEMP_DIR}\"\n+    logging.debug(f\"Extraction command: {install_command}\")\n+\n+    try:\n+        logging.debug(\"Starting extraction process...\")\n+        result = subprocess.run(\n+            install_command, shell=True, capture_output=True, text=True, check=True\n+        )\n+        logging.debug(\"Extraction process completed successfully\")\n+\n+        if result.stdout:\n+            logging.debug(f\"Extraction stdout: {result.stdout}\")\n+        if result.stderr:\n+            logging.debug(f\"Extraction stderr: {result.stderr}\")\n+\n+        logging.debug(f\"Contents of {config.TEMP_DIR} after extraction:\")\n+        try:\n+            for item in os.listdir(config.TEMP_DIR):\n+                item_path = os.path.join(config.TEMP_DIR, item)\n+                if os.path.isdir(item_path):\n+                    logging.debug(f\"  DIR: {item}\")\n+                    try:\n+                        sub_items = os.listdir(item_path)\n+                        logging.debug(f\"    Contains {len(sub_items)} items\")\n+                        for sub_item in sub_items[:5]:  \n+                            logging.debug(f\"      {sub_item}\")\n+                        if len(sub_items) > 5:\n+                            logging.debug(\n+                                f\"      ... and {len(sub_items) - 5} more items\"\n+                            )\n+                    except Exception as e:\n+                        logging.debug(f\"    Could not list subdirectory contents: {e}\")\n+                else:\n+                    logging.debug(\n+                        f\"  FILE: {item} ({os.path.getsize(item_path)} bytes)\"\n+                    )\n+        except Exception as e:\n+            logging.debug(f\"Could not list contents of {config.TEMP_DIR}: {e}\")\n+\n+    except subprocess.CalledProcessError as e:\n+        logging.error(f\"Index extraction failed with return code {e.returncode}\")\n+        logging.error(f\"Command: {e.cmd}\")\n+        logging.error(f\"Stdout: {e.stdout}\")\n+        logging.error(f\"Stderr: {e.stderr}\")\n+        raise\n+    except Exception as e:\n+        logging.error(f\"Index extraction failed: {e}\")\n+        raise\n+\n+\n+def move_index():\n+    temp_photon_dir = os.path.join(config.TEMP_DIR, \"photon_data/node_1\")\n+    target_node_dir = os.path.join(config.PHOTON_DATA_DIR, \"node_1\")\n+\n+    logging.info(f\"Moving index from {temp_photon_dir} to {target_node_dir}\")\n+    return move_index_atomic(temp_photon_dir, target_node_dir)\n+\n+\n+def move_index_atomic(source_dir: str, target_dir: str) -> bool:\n+    try:\n+        logging.info(\"Starting atomic index move operation\")\n+\n+        os.makedirs(os.path.dirname(target_dir), exist_ok=True)\n+\n+        staging_dir = target_dir + \".staging\"\n+        backup_dir = target_dir + \".backup\"\n+\n+        cleanup_staging_and_temp_backup(staging_dir, backup_dir)\n+\n+        shutil.move(source_dir, staging_dir)\n+\n+        if os.path.exists(target_dir):\n+            os.rename(target_dir, backup_dir)\n+\n+        os.rename(staging_dir, target_dir)\n+        logging.info(\"Atomic index move completed successfully\")\n+\n+        return True\n+\n+    except Exception as e:\n+        logging.error(f\"Atomic move failed: {e}\")\n+        rollback_atomic_move(source_dir, target_dir, staging_dir, backup_dir)\n+        raise\n+\n+\n+def rollback_atomic_move(\n+    original_source: str, target_dir: str, staging_dir: str, backup_dir: str\n+):\n+    logging.error(\"Rolling back atomic move operation\")\n+\n+    try:\n+        if os.path.exists(target_dir) and not os.path.exists(backup_dir):\n+            logging.debug(\"New index was successfully moved, keeping it\")\n+            return\n+\n+        if os.path.exists(target_dir):\n+            shutil.rmtree(target_dir)\n+\n+        if os.path.exists(backup_dir):\n+            logging.info(\"Restoring backup after failed atomic move\")\n+            os.rename(backup_dir, target_dir)\n+\n+        if os.path.exists(staging_dir):\n+            shutil.move(staging_dir, original_source)\n+\n+        logging.info(\"Rollback completed successfully\")\n+\n+    except Exception as rollback_error:\n+        logging.critical(f\"Rollback failed: {rollback_error}\")\n+        logging.critical(\"Manual intervention may be required\")\n+\n+\n+def cleanup_staging_and_temp_backup(staging_dir: str, backup_dir: str):\n+    for dir_path in [staging_dir, backup_dir]:\n+        if os.path.exists(dir_path):\n+            try:\n+                shutil.rmtree(dir_path)\n+            except Exception as e:\n+                logging.warning(f\"Failed to cleanup {dir_path}: {e}\")\n+\n+\n+def cleanup_backup_after_verification(target_dir: str) -> bool:\n+    backup_dir = target_dir + \".backup\"\n+    if os.path.exists(backup_dir):\n+        try:\n+            logging.info(\"Removing backup after successful verification\")\n+            shutil.rmtree(backup_dir)\n+            return True\n+        except Exception as e:\n+            logging.warning(f\"Failed to cleanup backup: {e}\")\n+            return False\n+    return True\n+\n+\n+def verify_checksum(md5_file, index_file):\n+    hash_md5 = hashlib.md5()\n+    try:\n+        with open(index_file, \"rb\") as f:\n+            for chunk in iter(lambda: f.read(4096), b\"\"):\n+                hash_md5.update(chunk)\n+        dl_sum = hash_md5.hexdigest()\n+    except FileNotFoundError:\n+        logging.error(f\"Index file not found for checksum generation: {index_file}\")\n+        raise\n+\n+    try:\n+        with open(md5_file, \"r\") as f:\n+            md5_sum = f.read().split()[0].strip()\n+    except FileNotFoundError:\n+        logging.error(f\"MD5 file not found: {md5_file}\")\n+        raise\n+    except IndexError:\n+        logging.error(f\"MD5 file is empty or malformed: {md5_file}\")\n+        raise\n+\n+    if dl_sum == md5_sum:\n+        logging.info(\"Checksum verified successfully.\")\n+        return True\n+\n+    raise Exception(\n+        f\"Checksum mismatch for {index_file}. Expected: {md5_sum}, Got: {dl_sum}\"\n+    )\n+\n+\n+def clear_temp_dir():\n+    logging.info(\"Removing TEMP dir\")\n+    if os.path.exists(config.TEMP_DIR):\n+        logging.debug(f\"Contents of TEMP directory {config.TEMP_DIR}:\")\n+        try:\n+            for item in os.listdir(config.TEMP_DIR):\n+                item_path = os.path.join(config.TEMP_DIR, item)\n+                if os.path.isdir(item_path):\n+                    logging.debug(f\"  DIR: {item}\")\n+                else:\n+                    logging.debug(f\"  FILE: {item}\")\n+        except Exception as e:\n+            logging.debug(f\"Could not list contents of {config.TEMP_DIR}: {e}\")\n+\n+    try:\n+        shutil.rmtree(config.TEMP_DIR)\n+    except Exception:\n+        logging.error(\"Failed to Remove TEMP_DIR\")"
+    },
+    {
+      "sha": "03270cc39ca637e7668a3745565ee48d96f66013",
+      "filename": "src/logging.sh",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 23,
+      "changes": 23,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/06ca0b2db307b254d726d91a14f870301140c84a/src%2Flogging.sh",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/06ca0b2db307b254d726d91a14f870301140c84a/src%2Flogging.sh",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Flogging.sh?ref=06ca0b2db307b254d726d91a14f870301140c84a",
+      "patch": "@@ -1,23 +0,0 @@\n-#!/bin/bash\n-\n-# ANSI color codes\n-GREEN='\\033[0;32m'\n-RED='\\033[0;31m'\n-BLUE='\\033[0;34m'\n-NC='\\033[0m'\n-\n-log_info() { \n-    if [[ \"${LOG_LEVEL:-INFO}\" != \"ERROR\" ]]; then\n-        echo -e \"${GREEN}[INFO]${NC} $(date '+%Y-%m-%d %H:%M:%S') - $*\"\n-    fi\n-}\n-\n-log_error() { \n-    echo -e \"${RED}[ERROR]${NC} $(date '+%Y-%m-%d %H:%M:%S') - $*\" >&2\n-}\n-\n-log_debug() { \n-    if [[ \"${LOG_LEVEL:-INFO}\" == \"DEBUG\" ]]; then\n-        echo -e \"${BLUE}[DEBUG]${NC} $(date '+%Y-%m-%d %H:%M:%S') - $*\"\n-    fi\n-}"
+    },
+    {
+      "sha": "2b15ced609fca57460e0435c85844bcce3b34636",
+      "filename": "src/process.sh",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 63,
+      "changes": 63,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/06ca0b2db307b254d726d91a14f870301140c84a/src%2Fprocess.sh",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/06ca0b2db307b254d726d91a14f870301140c84a/src%2Fprocess.sh",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Fprocess.sh?ref=06ca0b2db307b254d726d91a14f870301140c84a",
+      "patch": "@@ -1,63 +0,0 @@\n-#!/bin/bash\n-\n-source \"src/config.sh\"\n-source \"src/logging.sh\"\n-\n-stop_photon() {\n-    if [ -f \"$PID_FILE\" ]; then\n-        local pid\n-        pid=$(cat \"$PID_FILE\")\n-        \n-        if ps -p \"$pid\" > /dev/null; then\n-            log_info \"Stopping Photon service (PID: $pid)\"\n-            if ! kill -15 \"$pid\"; then\n-                log_error \"Failed to stop Photon service gracefully, attempting force kill\"\n-                kill -9 \"$pid\" || true\n-            fi\n-            \n-            # Wait for process to stop\n-            local count=0\n-            while ps -p \"$pid\" > /dev/null && [ $count -lt 10 ]; do\n-                sleep 1\n-                ((count++))\n-            done\n-            \n-            if ps -p \"$pid\" > /dev/null; then\n-                log_error \"Failed to stop Photon service\"\n-                return 1\n-            fi\n-        else\n-            log_info \"Photon service not running\"\n-        fi\n-        rm -f \"$PID_FILE\"\n-    fi\n-    return 0\n-}\n-\n-start_photon() {\n-    if [ -f \"$PID_FILE\" ]; then\n-        local pid\n-        pid=$(cat \"$PID_FILE\")\n-        if ps -p \"$pid\" > /dev/null; then\n-            log_info \"Photon service already running with PID: $pid\"\n-            return 0\n-        else\n-            log_info \"Removing stale PID file\"\n-            rm -f \"$PID_FILE\"\n-        fi\n-    fi\n-\n-    if [ -n \"${JAVA_PARAMS:-}\" ]; then\n-        local clean_params=\"${JAVA_PARAMS#\\\"}\"\n-        clean_params=\"${clean_params%\\\"}\"\n-        read -a java_args <<< \"$clean_params\"\n-        gosu photon java \"${java_args[@]}\" -jar \"$PHOTON_JAR\" -data-dir \"$PHOTON_DIR\" ${PHOTON_PARAMS} &\n-    else\n-        gosu photon java -jar \"$PHOTON_JAR\" -data-dir \"$PHOTON_DIR\" ${PHOTON_PARAMS} &\n-    fi\n-    local new_pid=$!\n-    echo $new_pid > \"$PID_FILE\"\n-    \n-    log_info \"Photon service started successfully with PID: $new_pid\"\n-    return 0\n-}"
+    },
+    {
+      "sha": "084d483b7c16569d23c260f8bac81e0e89d42eb5",
+      "filename": "src/process_manager.py",
+      "status": "added",
+      "additions": 314,
+      "deletions": 0,
+      "changes": 314,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Fprocess_manager.py",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Fprocess_manager.py",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Fprocess_manager.py?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1,314 @@\n+#!/usr/bin/env python3\n+\n+import os\n+import signal\n+import subprocess\n+import sys\n+import threading\n+import time\n+from enum import Enum\n+import shlex\n+import psutil\n+\n+import requests\n+from requests.exceptions import RequestException\n+import schedule\n+\n+from .utils import config\n+from .utils.logger import get_logger\n+from .filesystem import cleanup_backup_after_verification\n+\n+logger = get_logger()\n+\n+\n+def check_photon_health(timeout=30, max_retries=10) -> bool:\n+    url = \"http://localhost:2322/status\"\n+\n+    for attempt in range(max_retries):\n+        try:\n+            response = requests.get(url, timeout=timeout)\n+            if response.status_code == 200:\n+                logger.info(\"Photon health check passed\")\n+                return True\n+            else:\n+                logger.warning(\n+                    f\"Photon health check failed with status {response.status_code}\"\n+                )\n+        except RequestException as e:\n+            logger.debug(f\"Health check attempt {attempt + 1} failed: {e}\")\n+\n+        if attempt < max_retries - 1:\n+            time.sleep(3)\n+\n+    logger.error(f\"Photon health check failed after {max_retries} attempts\")\n+    return False\n+\n+\n+def wait_for_photon_ready(timeout=120) -> bool:\n+    start_time = time.time()\n+    logger.info(\"Waiting for Photon to become ready...\")\n+\n+    while time.time() - start_time < timeout:\n+        if check_photon_health(timeout=5, max_retries=1):\n+            elapsed = time.time() - start_time\n+            logger.info(f\"Photon ready after {elapsed:.1f} seconds\")\n+            return True\n+        time.sleep(5)\n+\n+    logger.error(f\"Photon failed to become ready within {timeout} seconds\")\n+    return False\n+\n+\n+class AppState(Enum):\n+    INITIALIZING = 1\n+    RUNNING = 2\n+    UPDATING = 3\n+    SHUTTING_DOWN = 4\n+\n+\n+class PhotonManager:\n+    def __init__(self):\n+        self.state = AppState.INITIALIZING\n+        self.photon_process = None\n+        self.should_exit = False\n+\n+        signal.signal(signal.SIGTERM, self.handle_shutdown)\n+        signal.signal(signal.SIGINT, self.handle_shutdown)\n+\n+    def handle_shutdown(self, signum, frame):\n+        logger.info(f\"Received shutdown signal {signum}\")\n+        self.should_exit = True\n+        self.shutdown()\n+\n+    def run_initial_setup(self):\n+        logger.info(\"Running initial setup...\")\n+        result = subprocess.run(\n+            [\"uv\", \"run\", \"-m\", \"src.entrypoint\", \"setup\"], cwd=\"/photon\"\n+        )\n+\n+        if result.returncode != 0:\n+            logger.error(\"Setup failed!\")\n+            sys.exit(1)\n+\n+    def start_photon(self, max_startup_retries=3):\n+        for attempt in range(max_startup_retries):\n+            logger.info(\n+                f\"Starting Photon (attempt {attempt + 1}/{max_startup_retries})...\"\n+            )\n+            self.state = AppState.RUNNING\n+\n+            java_params = config.JAVA_PARAMS or \"\"\n+            photon_params = config.PHOTON_PARAMS or \"\"\n+\n+            cmd = [\n+                \"java\",\n+                \"--add-modules\",\n+                \"jdk.incubator.vector\",\n+                \"--enable-native-access=ALL-UNNAMED\",\n+                \"-Des.gateway.auto_import_dangling_indices=true\",\n+                \"-Des.cluster.routing.allocation.batch_mode=true\",\n+                \"-Dlog4j2.disable.jmx=true\",\n+            ]\n+\n+            if java_params:\n+                cmd.extend(shlex.split(java_params))\n+\n+            cmd.extend([\"-jar\", \"/photon/photon.jar\", \"-data-dir\", config.DATA_DIR])\n+\n+            if photon_params:\n+                cmd.extend(shlex.split(photon_params))\n+\n+            self.photon_process = subprocess.Popen(\n+                cmd, cwd=\"/photon\", preexec_fn=os.setsid\n+            )\n+\n+            logger.info(f\"Photon started with PID: {self.photon_process.pid}\")\n+\n+            if wait_for_photon_ready():\n+                logger.info(\"Photon startup successful\")\n+                return True\n+            else:\n+                logger.error(f\"Photon health check failed on attempt {attempt + 1}\")\n+                self.stop_photon()\n+\n+                if attempt < max_startup_retries - 1:\n+                    logger.info(\"Retrying Photon startup...\")\n+                    time.sleep(5)\n+\n+        logger.error(\n+            f\"Photon failed to start successfully after {max_startup_retries} attempts\"\n+        )\n+        return False\n+\n+    def stop_photon(self):\n+        if self.photon_process:\n+            logger.info(\"Stopping Photon...\")\n+\n+            try:\n+                os.killpg(os.getpgid(self.photon_process.pid), signal.SIGTERM)\n+                self.photon_process.wait(timeout=30)\n+            except subprocess.TimeoutExpired:\n+                logger.warning(\"Photon didn't stop gracefully, force killing...\")\n+                # Force kill\n+                try:\n+                    os.killpg(os.getpgid(self.photon_process.pid), signal.SIGKILL)\n+                except ProcessLookupError:\n+                    pass  # Process dead\n+                self.photon_process.wait()\n+            except ProcessLookupError:\n+                # Process dead\n+                pass\n+\n+            self.photon_process = None\n+\n+            self._cleanup_orphaned_photon_processes()\n+\n+            self._cleanup_lock_files()\n+\n+            time.sleep(2)\n+\n+    def _cleanup_orphaned_photon_processes(self):\n+        try:\n+            for proc in psutil.process_iter([\"pid\", \"name\", \"cmdline\"]):\n+                if proc.info[\"name\"] == \"java\" and proc.info[\"cmdline\"]:\n+                    if any(\"photon.jar\" in arg for arg in proc.info[\"cmdline\"]):\n+                        logger.warning(\n+                            f\"Found orphaned Photon process PID {proc.info['pid']}, terminating...\"\n+                        )\n+                        proc.terminate()\n+                        try:\n+                            proc.wait(timeout=5)\n+                        except psutil.TimeoutExpired:\n+                            proc.kill()\n+        except Exception as e:\n+            logger.debug(f\"Error checking for orphaned processes: {e}\")\n+\n+    def _cleanup_lock_files(self):\n+        lock_files = [\n+            os.path.join(config.OS_NODE_DIR, \"node.lock\"),\n+            os.path.join(config.OS_NODE_DIR, \"data\", \"node.lock\"),\n+        ]\n+\n+        for lock_file in lock_files:\n+            if os.path.exists(lock_file):\n+                try:\n+                    os.remove(lock_file)\n+                    logger.debug(f\"Removed lock file: {lock_file}\")\n+                except Exception as e:\n+                    logger.debug(f\"Could not remove lock file {lock_file}: {e}\")\n+\n+    def run_update(self):\n+        if config.UPDATE_STRATEGY == \"DISABLED\":\n+            logger.info(\"Updates disabled, skipping\")\n+            return\n+\n+        self.state = AppState.UPDATING\n+        logger.info(f\"Running {config.UPDATE_STRATEGY.lower()} update...\")\n+        update_start = time.time()\n+\n+        if config.UPDATE_STRATEGY == \"SEQUENTIAL\":\n+            self.stop_photon()\n+\n+        result = subprocess.run([\"uv\", \"run\", \"-m\", \"src.updater\"], cwd=\"/photon\")\n+\n+        if result.returncode == 0:\n+            logger.info(\"Update process completed, verifying Photon health...\")\n+            \n+            if config.UPDATE_STRATEGY == \"PARALLEL\":\n+                self.stop_photon()\n+                if self.start_photon():\n+                    update_duration = time.time() - update_start\n+                    logger.info(f\"Update completed successfully - Photon healthy ({update_duration:.1f}s)\")\n+                    target_node_dir = os.path.join(config.PHOTON_DATA_DIR, \"node_1\")\n+                    cleanup_backup_after_verification(target_node_dir)\n+                else:\n+                    update_duration = time.time() - update_start\n+                    logger.error(f\"Update failed - Photon health check failed after restart ({update_duration:.1f}s)\")\n+            elif config.UPDATE_STRATEGY == \"SEQUENTIAL\":\n+                if self.start_photon():\n+                    update_duration = time.time() - update_start\n+                    logger.info(f\"Update completed successfully - Photon healthy ({update_duration:.1f}s)\")\n+                    target_node_dir = os.path.join(config.PHOTON_DATA_DIR, \"node_1\")\n+                    cleanup_backup_after_verification(target_node_dir)\n+                else:\n+                    update_duration = time.time() - update_start\n+                    logger.error(f\"Update failed - Photon health check failed after restart ({update_duration:.1f}s)\")\n+        else:\n+            update_duration = time.time() - update_start\n+            logger.error(f\"Update process failed with code {result.returncode} ({update_duration:.1f}s)\")\n+            if config.UPDATE_STRATEGY == \"SEQUENTIAL\" and not self.photon_process:\n+                logger.info(\"Attempting to restart Photon after failed update\")\n+                if not self.start_photon():\n+                    logger.error(\"Failed to restart Photon after update failure\")\n+\n+        self.state = AppState.RUNNING\n+\n+    def schedule_updates(self):\n+        if config.UPDATE_STRATEGY == \"DISABLED\":\n+            logger.info(\"Updates disabled, not scheduling\")\n+            return\n+\n+        interval = config.UPDATE_INTERVAL.lower()\n+\n+        if interval.endswith(\"d\"):\n+            days = int(interval[:-1])\n+            schedule.every(days).days.do(self.run_update)\n+            logger.info(f\"Scheduling updates every {days} days\")\n+        elif interval.endswith(\"h\"):\n+            hours = int(interval[:-1])\n+            schedule.every(hours).hours.do(self.run_update)\n+            logger.info(f\"Scheduling updates every {hours} hours\")\n+        elif interval.endswith(\"m\"):\n+            minutes = int(interval[:-1])\n+            schedule.every(minutes).minutes.do(self.run_update)\n+            logger.info(f\"Scheduling updates every {minutes} minutes\")\n+        else:\n+            logger.warning(\n+                f\"Invalid UPDATE_INTERVAL format: {interval}, defaulting to daily\"\n+            )\n+            schedule.every().day.do(self.run_update)\n+\n+        def scheduler_loop():\n+            while not self.should_exit:\n+                schedule.run_pending()\n+                time.sleep(1)\n+\n+        thread = threading.Thread(target=scheduler_loop, daemon=True)\n+        thread.start()\n+\n+    def monitor_photon(self):\n+        while not self.should_exit:\n+            if self.photon_process and self.state == AppState.RUNNING:\n+                ret = self.photon_process.poll()\n+                if ret is not None:\n+                    logger.warning(f\"Photon exited with code {ret}, restarting...\")\n+                    if not self.start_photon():\n+                        logger.error(\"Failed to restart Photon after unexpected exit\")\n+            time.sleep(5)\n+\n+    def shutdown(self):\n+        logger.info(\"Shutting down...\")\n+        self.state = AppState.SHUTTING_DOWN\n+        self.stop_photon()\n+        sys.exit(0)\n+\n+    def run(self):\n+        logger.info(\"Photon Manager starting...\")\n+\n+        if not config.FORCE_UPDATE and os.path.isdir(config.OS_NODE_DIR):\n+            logger.info(\"Existing index found, skipping initial setup\")\n+        else:\n+            self.run_initial_setup()\n+\n+        if not self.start_photon():\n+            logger.error(\"Failed to start Photon during initial startup\")\n+            sys.exit(1)\n+\n+        self.schedule_updates()\n+\n+        self.monitor_photon()\n+\n+\n+if __name__ == \"__main__\":\n+    manager = PhotonManager()\n+    manager.run()"
+    },
+    {
+      "sha": "16e23dae71c070e112917ca0397814b5be03806b",
+      "filename": "src/updater.py",
+      "status": "added",
+      "additions": 42,
+      "deletions": 0,
+      "changes": 42,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Fupdater.py",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Fupdater.py",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Fupdater.py?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1,42 @@\n+import sys\n+\n+from .check_remote import compare_mtime\n+from .downloader import parallel_update, sequential_update\n+from .utils import config\n+from .utils.logger import get_logger\n+from .utils.notify import send_notification\n+\n+logger = get_logger()\n+\n+\n+def main():\n+    \"\"\"Main updater function - handles both parallel and sequential updates\"\"\"\n+    logger.info(\"Starting update process...\")\n+\n+    try:\n+        if not compare_mtime():\n+            logger.info(\"Index already up to date\")\n+            return\n+\n+        if config.UPDATE_STRATEGY == \"PARALLEL\":\n+            logger.info(\"Running parallel update...\")\n+            parallel_update()\n+        elif config.UPDATE_STRATEGY == \"SEQUENTIAL\":\n+            logger.info(\"Running sequential update...\")\n+            sequential_update()\n+        else:\n+            logger.error(f\"Unknown update strategy: {config.UPDATE_STRATEGY}\")\n+            sys.exit(1)\n+\n+        logger.info(\"Update completed successfully\")\n+        send_notification(\"Photon Index Updated Successfully\")\n+\n+    except Exception as e:\n+        error_msg = f\"Update failed: {str(e)}\"\n+        logger.error(error_msg)\n+        send_notification(f\"Photon Update Failed - {error_msg}\")\n+        sys.exit(1)\n+\n+\n+if __name__ == \"__main__\":\n+    main()"
+    },
+    {
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "filename": "src/utils/__init__.py",
+      "status": "added",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Futils%2F__init__.py",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Futils%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Futils%2F__init__.py?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945"
+    },
+    {
+      "sha": "882d43d7bc9aa3dcc6e87b4e8d7504b4e1eaa74c",
+      "filename": "src/utils/config.py",
+      "status": "added",
+      "additions": 22,
+      "deletions": 0,
+      "changes": 22,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Futils%2Fconfig.py",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Futils%2Fconfig.py",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Futils%2Fconfig.py?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1,22 @@\n+import os\n+\n+# USER CONFIG\n+UPDATE_STRATEGY = os.getenv(\"UPDATE_STRATEGY\", \"SEQUENTIAL\")\n+UPDATE_INTERVAL = os.getenv(\"UPDATE_INTERVAL\", \"30d\")\n+COUNTRY_CODE = os.getenv(\"COUNTRY_CODE\")\n+FORCE_UPDATE = os.getenv(\"FORCE_UPDATE\", \"False\").lower() in (\"true\", \"1\", \"t\")\n+FILE_URL = os.getenv(\"FILE_URL\")\n+PHOTON_PARAMS = os.getenv(\"PHOTON_PARAMS\")\n+JAVA_PARAMS = os.getenv(\"JAVA_PARAMS\")\n+LOG_LEVEL = os.getenv(\"LOG_LEVEL\", \"INFO\")\n+BASE_URL = os.getenv(\"BASE_URL\", \"https://r2.koalasec.org/public/experimental\")\n+SKIP_MD5_CHECK = os.getenv(\"SKIP_MD5_CHECK\", \"False\").lower() in (\"true\", \"1\", \"t\")\n+APPRISE_URLS = os.getenv(\"APPRISE_URLS\")\n+\n+# APP CONFIG\n+PHOTON_DIR = \"/photon\"\n+DATA_DIR = \"/photon/data\"\n+PHOTON_DATA_DIR = os.path.join(DATA_DIR, \"photon_data\")\n+TEMP_DIR = os.path.join(DATA_DIR, \"temp\")\n+OS_NODE_DIR = os.path.join(PHOTON_DATA_DIR, \"node_1\")\n+PID_FILE = os.path.join(PHOTON_DIR, \"photon.pid\")"
+    },
+    {
+      "sha": "f2319c76c808825a7c5caa6b8b442f0a567c7156",
+      "filename": "src/utils/logger.py",
+      "status": "added",
+      "additions": 109,
+      "deletions": 0,
+      "changes": 109,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Futils%2Flogger.py",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Futils%2Flogger.py",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Futils%2Flogger.py?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1,109 @@\n+import logging\n+import logging.handlers\n+import json\n+import sys\n+from pathlib import Path\n+from typing import Optional, Dict, Any\n+\n+from . import config\n+\n+DEFAULT_FORMAT = \"%(asctime)s - %(name)s - %(levelname)s - %(message)s\"\n+\n+_logger: Optional[logging.Logger] = None\n+\n+\n+class StructuredFormatter(logging.Formatter):\n+    def format(self, record):\n+        log_entry = {\n+            \"timestamp\": self.formatTime(record, self.datefmt),\n+            \"level\": record.levelname,\n+            \"component\": record.name,\n+            \"message\": record.getMessage(),\n+        }\n+\n+        if hasattr(record, \"context\"):\n+            log_entry[\"context\"] = record.context\n+\n+        if record.exc_info:\n+            log_entry[\"exception\"] = self.formatException(record.exc_info)\n+\n+        return json.dumps(log_entry)\n+\n+\n+class ContextFilter(logging.Filter):\n+    def __init__(self, context: Optional[Dict[str, Any]] = None):\n+        super().__init__()\n+        self.context = context or {}\n+\n+    def filter(self, record):\n+        if self.context:\n+            record.context = self.context\n+        return True\n+\n+\n+def setup_logging() -> logging.Logger:\n+    global _logger\n+    if _logger is not None:\n+        return _logger\n+\n+    logger = logging.getLogger(\"app\")\n+    logger.setLevel(config.LOG_LEVEL)\n+    logger.handlers.clear()\n+\n+    console_handler = logging.StreamHandler(sys.stdout)\n+    console_handler.setLevel(config.LOG_LEVEL)\n+    console_formatter = logging.Formatter(DEFAULT_FORMAT)\n+    console_handler.setFormatter(console_formatter)\n+    logger.addHandler(console_handler)\n+\n+    try:\n+        log_dir = Path(config.DATA_DIR) / \"logs\"\n+        log_dir.mkdir(exist_ok=True)\n+\n+        file_handler = logging.handlers.RotatingFileHandler(\n+            log_dir / \"photon.log\",\n+            maxBytes=50 * 1024 * 1024,  # 50MB\n+            backupCount=5,\n+        )\n+        file_handler.setLevel(logging.INFO)\n+\n+        if config.LOG_LEVEL == \"DEBUG\":\n+            file_handler.setFormatter(console_formatter)\n+        else:\n+            file_handler.setFormatter(StructuredFormatter())\n+\n+        logger.addHandler(file_handler)\n+    except (OSError, PermissionError):\n+        pass\n+\n+    logging.getLogger(\"urllib3\").setLevel(logging.WARNING)\n+    logging.getLogger(\"requests\").setLevel(logging.WARNING)\n+\n+    logger.propagate = False\n+    _logger = logger\n+    return logger\n+\n+\n+def get_logger(\n+    name: str = \"app\", context: Optional[Dict[str, Any]] = None\n+) -> logging.Logger:\n+    if name == \"app\":\n+        global _logger\n+        if _logger is None:\n+            _logger = setup_logging()\n+        return _logger\n+\n+    logger = logging.getLogger(f\"app.{name}\")\n+    if context:\n+        for handler in logger.handlers:\n+            handler.addFilter(ContextFilter(context))\n+    return logger\n+\n+\n+def get_component_logger(\n+    component_name: str, context: Optional[Dict[str, Any]] = None\n+) -> logging.Logger:\n+    base_context = {\"component\": component_name}\n+    if context:\n+        base_context.update(context)\n+    return get_logger(component_name, base_context)"
+    },
+    {
+      "sha": "0fae8274404e6580a84fb27dd001dfa607bac102",
+      "filename": "src/utils/notify.py",
+      "status": "added",
+      "additions": 32,
+      "deletions": 0,
+      "changes": 32,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Futils%2Fnotify.py",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Futils%2Fnotify.py",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Futils%2Fnotify.py?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1,32 @@\n+# notification module for apprise notifications\n+\n+import apprise\n+\n+from . import config\n+from .logger import get_logger\n+\n+logging = get_logger()\n+\n+\n+def send_notification(message: str, title: str = \"Photon Status\"):\n+    apprise_urls = config.APPRISE_URLS\n+    if not apprise_urls:\n+        logging.info(\"No APPRISE_URLS set, skipping notification.\")\n+        return\n+\n+    apobj = apprise.Apprise()\n+\n+    for url in apprise_urls.split(\",\"):\n+        if url.strip():\n+            apobj.add(url.strip())\n+\n+    if len(apobj) == 0:\n+        logging.warning(\n+            \"No valid Apprise URLs were found after processing the APPRISE_URLS variable.\"\n+        )\n+        return\n+\n+    if not apobj.notify(body=message, title=title):\n+        logging.error(\"Failed to send notification to one or more Apprise targets.\")\n+    else:\n+        logging.info(\"Successfully sent notification.\")"
+    },
+    {
+      "sha": "c6e5cd2b260717f02cc5034f7c28089ed9847998",
+      "filename": "src/utils/validate_config.py",
+      "status": "added",
+      "additions": 30,
+      "deletions": 0,
+      "changes": 30,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Futils%2Fvalidate_config.py",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/src%2Futils%2Fvalidate_config.py",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/src%2Futils%2Fvalidate_config.py?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1,30 @@\n+import re\n+\n+from . import config\n+from .logger import get_logger\n+\n+logging = get_logger()\n+\n+\n+def validate_config():\n+    logging.info(\"Validating environment variables...\")\n+    error_messages = []\n+\n+    valid_strategies = [\"SEQUENTIAL\", \"PARALLEL\", \"DISABLED\"]\n+    if config.UPDATE_STRATEGY not in valid_strategies:\n+        error_messages.append(\n+            f\"Invalid UPDATE_STRATEGY: '{config.UPDATE_STRATEGY}'. Must be one of {valid_strategies}.\"\n+        )\n+\n+    if not re.match(r\"^\\d+[dhm]$\", config.UPDATE_INTERVAL):\n+        error_messages.append(\n+            f\"Invalid UPDATE_INTERVAL format: '{config.UPDATE_INTERVAL}'. Expected format like '30d', '12h', or '30m'.\"\n+        )\n+\n+    if error_messages:\n+        full_error_message = \"Configuration validation failed:\\n\" + \"\\n\".join(\n+            error_messages\n+        )\n+        raise ValueError(full_error_message)\n+\n+    logging.info(\"Environment variables are valid.\")"
+    },
+    {
+      "sha": "a852d302d5bafbfb511c97bba93d3e16d278ad3b",
+      "filename": "start-photon.sh",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 618,
+      "changes": 618,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/06ca0b2db307b254d726d91a14f870301140c84a/start-photon.sh",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/06ca0b2db307b254d726d91a14f870301140c84a/start-photon.sh",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/start-photon.sh?ref=06ca0b2db307b254d726d91a14f870301140c84a",
+      "patch": "@@ -1,618 +0,0 @@\n-#!/bin/bash\n-\n-source \"src/logging.sh\"\n-source \"src/config.sh\"\n-source \"src/process.sh\"\n-\n-log_info \"Environment variables:\"\n-log_info \"PUID=${PUID:-9011}\"\n-log_info \"PGID=${PGID:-9011}\"\n-log_info \"UPDATE_STRATEGY=$UPDATE_STRATEGY\"\n-log_info \"UPDATE_INTERVAL=$UPDATE_INTERVAL\"\n-log_info \"LOG_LEVEL=$LOG_LEVEL\"\n-log_info \"BASE_URL=$BASE_URL\"\n-log_info \"FORCE_UPDATE=$FORCE_UPDATE\"\n-log_info \"SKIP_MD5_CHECK=$SKIP_MD5_CHECK\"\n-log_info \"COUNTRY_CODE=${COUNTRY_CODE:-not set}\"\n-log_info \"FILE_URL=${FILE_URL}\"\n-\n-DATA_DIR=\"$PHOTON_DIR\"\n-\n-set -euo pipefail\n-trap 'handle_error $? $LINENO \"$BASH_COMMAND\" $(printf \"::%s\" ${FUNCNAME[@]:-})' ERR\n-\n-setup_user() {\n-    local target_puid=\"${PUID:-9011}\"\n-    local target_gid=\"${PGID:-9011}\"\n-\n-    log_info \"Ensuring user and group IDs are set correctly...\"\n-    log_info \"Target PUID: ${target_puid}, Target PGID: ${target_gid}\"\n-\n-    local current_gid\n-    current_gid=$(getent group photon | cut -d: -f3)\n-\n-    if [ \"$current_gid\" != \"$target_gid\" ]; then\n-        log_info \"Updating photon group GID from ${current_gid} to ${target_gid}...\"\n-        groupmod -o -g \"$target_gid\" photon\n-    fi\n-\n-    local current_puid\n-    current_puid=$(getent passwd photon | cut -d: -f3)\n-\n-    if [ \"$current_puid\" != \"$target_puid\" ]; then\n-        log_info \"Updating photon user UID from ${current_puid} to ${target_puid}...\"\n-        usermod -o -u \"$target_puid\" photon\n-    fi\n-}\n-\n-handle_error() {\n-    local exit_code=$1\n-    local line_no=$2\n-    local last_command=$4\n-    local func_trace=$5\n-    log_error \"Error $exit_code occurred on line $line_no: $last_command\"\n-    log_error \"Function trace: $func_trace\"\n-    cleanup_and_exit\n-}\n-\n-cleanup_and_exit() {\n-    log_info \"Cleaning up temporary files...\"\n-    stop_photon\n-    if [ -d \"$TEMP_DIR\" ]; then\n-        if ! rm -rf \"${TEMP_DIR:?}\"/*; then\n-            log_error \"Failed to clean up temporary directory\"\n-        fi\n-    fi\n-    rm -f /photon/photon.pid\n-    exit 1\n-}\n-\n-check_disk_space() {\n-    local url=$1\n-    local available\n-    local full_url=\"${url}.tar.bz2\"\n-\n-    log_debug \"Checking disk space for URL: $full_url\"\n-    log_debug \"URL components - Protocol: ${full_url%%://*}, Host: ${full_url#*://}, Path: ${full_url#*://*/}\"\n-    \n-    log_debug \"Executing wget spider command: wget --spider --server-response \\\"$full_url\\\"\"\n-    local wget_output\n-    wget_output=$(wget --spider --server-response \"$full_url\" 2>&1)\n-    local wget_status=$?\n-    log_debug \"wget spider command output: $(echo \"$wget_output\" | head -20)\"\n-    \n-    local remote_size\n-    if ! remote_size=$(echo \"$wget_output\" | grep \"Content-Length\" | awk '{print $2}' | tail -1); then\n-        log_error \"Failed to execute wget spider command\"\n-        log_debug \"wget spider command failed with status: $wget_status\"\n-        log_debug \"Full wget output: $wget_output\"\n-        return 1\n-    fi\n-    \n-    if [ -z \"$remote_size\" ]; then\n-        log_error \"Failed to get remote file size\"\n-        log_debug \"No Content-Length found in wget output\"\n-        return 1\n-    fi\n-    \n-    log_debug \"Remote file size detected: $remote_size bytes\"\n-    \n-    log_debug \"Creating data directory structure at $DATA_DIR/photon_data\"\n-    mkdir -p \"$DATA_DIR/photon_data\"\n-    log_debug \"Directory created. Contents: $(ls -l $DATA_DIR/photon_data 2>/dev/null || echo '<none>')\"\n-    available=$(df -B1 \"$DATA_DIR/photon_data\" | awk 'NR==2 {print $4}')\n-    log_debug \"Available disk space: $available bytes\"\n-    \n-    if [ \"$available\" -lt \"$remote_size\" ]; then\n-        log_error \"Insufficient disk space. Required: ${remote_size}B , Available: ${available}B\"\n-        return 1\n-    fi\n-    \n-    log_info \"Sufficient disk space available. Required: ${remote_size}B, Available: ${available}B\"\n-}\n-\n-verify_structure() {\n-    local dir=$1\n-    log_debug \"Verifying directory structure at: $dir/photon_data\"\n-    if [ ! -d \"$dir/photon_data/node_1\" ]; then\n-        log_error \"Directory structure failed verification. Existing paths: $(find \"$dir\" -maxdepth 3 -type d | tr '\\n' ' ')\"\n-        log_error \"Invalid structure: missing index directory\"\n-        return 1\n-    fi\n-    \n-    \n-    return 0\n-}\n-\n-set_permissions() {\n-    local dir=$1\n-    log_info \"Ensuring correct ownership and permissions for $dir...\"\n-\n-    local current_owner\n-    current_owner=$(stat -c '%u:%g' \"$dir\" 2>/dev/null || echo \"notfound\")\n-    log_debug \"Current Owner is $current_owner\"\n-    local target_owner\n-    target_owner=\"$(id -u photon):$(id -g photon)\"\n-\n-    if [ \"$current_owner\" != \"$target_owner\" ]; then\n-        log_info \"Updating ownership of $dir to photon:photon (${target_owner})\"\n-        if ! chown -R photon:photon \"$dir\"; then\n-            log_info \"WARNING: Failed to chown $dir to photon:photon. This might be due to host volume restrictions. The application may encounter permission issues.\"\n-        else\n-            log_debug \"Successfully changed ownership of $dir.\"\n-        fi\n-    else\n-        log_debug \"Ownership of $dir is already correct.\"\n-    fi\n-}\n-\n-\n-check_remote_index() {\n-    local url=$1\n-    local full_url=\"${url}.tar.bz2\"\n-\n-    log_debug \"Checking if remote index is newer than local\"\n-    log_debug \"Remote URL: $full_url\"\n-\n-    if [ \"${FORCE_UPDATE}\" = \"TRUE\" ]; then\n-        log_info \"Force update requested, skipping timestamp check\"\n-        return 0\n-    fi\n-\n-    local remote_time\n-    local wget_output\n-\n-    log_debug \"Executing: wget --spider -S \\\"$full_url\\\"\"\n-    if ! wget_output=$(wget --spider -S \"$full_url\" 2>&1); then\n-        log_error \"Failed to check remote index timestamp\"\n-        log_debug \"Full wget output:\\n$wget_output\"\n-        return 2\n-    fi\n-    \n-    log_debug \"Full wget spider response:\\n$wget_output\"\n-    \n-    remote_time=$(echo \"$wget_output\" | grep -i \"Last-Modified:\" | cut -d' ' -f4-)\n-    if [ -z \"$remote_time\" ]; then\n-        log_error \"Failed to get remote index timestamp\"\n-        log_debug \"No Last-Modified header found in wget output\"\n-        return 2\n-    fi\n-    \n-    log_debug \"Remote timestamp: $remote_time\"\n-    \n-    remote_epoch=$(date -d \"$remote_time\" +%s 2>/dev/null)\n-    \n-    if [ -d \"$INDEX_DIR\" ]; then\n-        local_epoch=$(stat -c %Y \"$INDEX_DIR\" 2>/dev/null)\n-        \n-        log_debug \"Remote index timestamp: $remote_time (${remote_epoch})\"\n-        log_debug \"Local index timestamp: $(date -d \"@$local_epoch\" 2>/dev/null) (${local_epoch})\"\n-        \n-        local time_diff=$((remote_epoch - local_epoch))\n-        if [ \"${time_diff#-}\" -lt 86400 ]; then\n-            log_info \"Local index is up to date (within 1 day tolerance)\"\n-            return 1\n-        elif [ \"$remote_epoch\" -gt \"$local_epoch\" ]; then\n-            log_info \"Remote index is newer than local index\"\n-            return 0\n-        else\n-            log_info \"Local index is up to date\"\n-            return 1\n-        fi\n-    else\n-        log_info \"No local index found\"\n-        return 0\n-    fi\n-}\n-\n-download_file() {\n-    local url=$1\n-    local output_file=$2\n-    \n-    log_info \"Downloading from $url\"\n-    if ! wget --progress=bar:force:noscroll:giga -O \"$output_file\" \"$url\"; then\n-        log_error \"Failed to download file from $url\"\n-        return 1\n-    fi\n-    log_info \"Index file downloaded successfully\"\n-    return 0\n-}\n-\n-verify_checksum() {\n-    local file=$1\n-    local md5_file=$2\n-    local dir\n-    dir=$(dirname \"$file\")\n-    \n-    log_info \"Verifying MD5 checksum\"\n-    if ! gosu photon bash -c \"cd '$dir' && md5sum -c <(echo \\\"\\$(cut -d' ' -f1 '$(basename \"$md5_file\")')  $(basename \"$file\")\\\")\"; then\n-        log_error \"MD5 verification failed\"\n-        return 1\n-    fi\n-    log_info \"Checksum verification successful\"\n-    return 0\n-}\n-\n-extract_archive() {\n-    local archive=$1\n-    local extract_dir=$2\n-    \n-    log_debug \"Creating extraction directory $extract_dir\"\n-    mkdir -p \"$extract_dir\"\n-    \n-    log_info \"Extracting $archive to $extract_dir\"\n-    if ! pbzip2 -dc \"$archive\" | gosu photon tar x -C \"$extract_dir\"; then\n-        log_error \"Failed to extract files\"\n-        return 1\n-    fi\n-    log_info \"Extraction completed successfully\"\n-    return 0\n-}\n-\n-move_index() {\n-    local source_dir=$1\n-    local target_dir=$2\n-    \n-    log_info \"Searching for opensearch directory in: $source_dir\"\n-    local es_dir\n-    es_dir=$(find \"$source_dir\" -type d -name \"node_1\" | head -n 1)\n-    log_info \"Found opensearch candidates: $(find \"$source_dir\" -type d -name \"node_1\" | tr '\\n' ' ')\"\n-    \n-    if [ -n \"$es_dir\" ]; then\n-        log_info \"Found opensearch directory at $es_dir\"\n-        log_debug \"Moving opensearch from $es_dir to $target_dir\"\n-        log_info \"Current target directory state: $(ls -ld \"$target_dir\" 2>/dev/null || echo '<not exists>')\"\n-        mkdir -p \"$(dirname \"$target_dir\")\"\n-        log_info \"Parent directory prepared. New state: $(ls -ld \"$(dirname \"$target_dir\")\" 2>/dev/null || echo '<not exists>')\"\n-        log_info \"Executing mv command: mv $es_dir $target_dir\"\n-        mv -v \"$es_dir\" \"$target_dir\" | while read -r line; do log_debug \"mv: $line\"; done\n-        log_debug \"Move completed. Target directory now contains: $(ls -l \"$target_dir\" | wc -l) items\"\n-        return 0\n-    else\n-        log_error \"Could not find opensearch directory in extracted files\"\n-        return 1\n-    fi\n-}\n-\n-cleanup_temp() {\n-    log_info \"Cleaning up temporary directory\"\n-    log_debug \"Pre-cleanup temporary directory contents: $(tree -a $TEMP_DIR 2>/dev/null || echo '<empty>')\"\n-    log_debug \"Executing: rm -rf ${TEMP_DIR:?}\"\n-    rm -rfv \"${TEMP_DIR:?}\" | while read -r line; do log_debug \"rm: $line\"; done\n-    log_info \"Final photon_data directory structure:\\n$(tree -L 2 $PHOTON_DATA_DIR 2>/dev/null || echo '<empty>')\"\n-}\n-\n-cleanup_stale_es() {\n-    if [ -d \"$ES_DATA_DIR\" ]; then\n-        log_info \"Removing old elasticsearch directory at $ES_DATA_DIR\"\n-        rm -rf \"$ES_DATA_DIR\" || log_error \"Failed to remove old elasticsearch index\"\n-    fi\n-}\n-\n-prepare_download_url() {\n-    local base_url=\"${BASE_URL%/}\"\n-    local result_url\n-    \n-    if [[ -n \"${COUNTRY_CODE:-}\" ]]; then\n-        result_url=\"${base_url}/extracts/by-country-code/${COUNTRY_CODE}/photon-db-${COUNTRY_CODE}-latest\"\n-    else\n-        result_url=\"${base_url}/photon-db-latest\"\n-    fi\n-    \n-    echo \"$result_url\"\n-}\n-\n-download_index() {\n-    local url\n-    url=$(prepare_download_url)\n-    log_debug \"Download URL: $url\"\n-    log_debug \"Full tar.bz2 URL: ${url}.tar.bz2\"\n-    log_debug \"Full MD5 URL: ${url}.tar.bz2.md5\"\n-    \n-    mkdir -p \"$TEMP_DIR\"\n-    log_debug \"Created temp directory: $TEMP_DIR\"\n-    chown photon:photon \"$TEMP_DIR\" \n-    log_debug \"Checking disk space for download\"\n-    if ! check_disk_space \"$url\"; then\n-        log_error \"Disk space check failed\"\n-        cleanup_temp\n-        return 1\n-    fi\n-    local download_url\n-    if [[ -n \"$FILE_URL\" ]]; then\n-        download_url=\"$FILE_URL\"\n-        log_info \"FILE_URL is set to: $FILE_URL\"\n-    else\n-        download_url=\"${url}.tar.bz2\"\n-    fi\n-    if ! download_file \"${download_url}\" \"$TEMP_DIR/photon-db.tar.bz2\"; then\n-        cleanup_temp\n-        return 1\n-    fi\n-    \n-    log_debug \"Index download successful. File size: $(du -h \"$TEMP_DIR/photon-db.tar.bz2\" | awk '{print $1}')\"\n-    \n-    if [ \"${SKIP_MD5_CHECK}\" != \"TRUE\" ]; then\n-        log_debug \"Downloading MD5 from ${url}.tar.bz2.md5\"\n-        log_debug \"Executing: wget -O \\\"$TEMP_DIR/photon-db.md5\\\" \\\"${url}.tar.bz2.md5\\\"\"\n-        \n-        local md5_output\n-        md5_output=$(wget -O \"$TEMP_DIR/photon-db.md5\" \"${url}.tar.bz2.md5\" 2>&1)\n-        local md5_status=$?\n-        \n-        if [ $md5_status -ne 0 ]; then\n-            log_error \"Failed to download MD5 file from ${url}.tar.bz2.md5\"\n-            log_debug \"wget exit status: $md5_status\"\n-            log_debug \"wget output: $(echo \"$md5_output\" | head -20)\"\n-            cleanup_temp\n-            return 1\n-        fi\n-        \n-        log_debug \"MD5 download successful. MD5 content: $(cat \"$TEMP_DIR/photon-db.md5\" | head -1)\"\n-        log_debug \"Starting MD5 verification\"\n-        if ! verify_checksum \"$TEMP_DIR/photon-db.tar.bz2\" \"$TEMP_DIR/photon-db.md5\"; then\n-            cleanup_temp\n-            return 1\n-        fi\n-        log_info \"MD5 verification successful\"\n-        log_debug \"MD5 verification completed\"\n-    \n-        log_info \"Extracting archive, this may take some time...\"\n-    else\n-        log_info \"Skipping MD5 verification as requested\"\n-    fi\n-    \n-    log_info \"Extracting archive to $TEMP_DIR\"\n-    if ! extract_archive \"$TEMP_DIR/photon-db.tar.bz2\" \"$TEMP_DIR\"; then\n-        log_error \"Failed to extract files\"\n-        cleanup_temp\n-        return 1\n-    fi\n-    \n-    log_info \"Extraction completed successfully\"\n-    return 0\n-}\n-\n-parallel_update() {\n-    log_info \"Starting parallel update process\"\n-    \n-    log_debug \"Downloading new index while current service is running\"\n-    if ! download_index; then\n-        log_error \"Failed to download index\"\n-        return 1\n-    fi\n-    \n-    log_info \"Verifying downloaded index structure\"\n-    if ! verify_structure \"$TEMP_DIR\"; then\n-        log_error \"Downloaded index verification failed\"\n-        cleanup_temp\n-        return 1\n-    fi\n-\n-    \n-    log_info \"Stopping Photon service before swapping indexes\"\n-    if ! stop_photon; then\n-        log_error \"Failed to stop Photon service cleanly\"\n-        cleanup_temp\n-        return 1\n-    fi\n-    \n-    sleep 5\n-    \n-    if [ -d \"$INDEX_DIR\" ]; then\n-        log_debug \"Backing up current index to $INDEX_DIR.old\"\n-        if ! mv \"$INDEX_DIR\" \"$INDEX_DIR.old\"; then\n-            log_error \"Failed to backup current index\"\n-            cleanup_temp\n-            return 1\n-        fi\n-    fi\n-    \n-    log_debug \"Moving new index from $TEMP_DIR to $INDEX_DIR\"\n-    if ! move_index \"$TEMP_DIR\" \"$INDEX_DIR\"; then\n-        log_error \"Failed to move index, attempting to restore backup\"\n-        if [ -d \"$INDEX_DIR.old\" ]; then\n-            if ! mv \"$INDEX_DIR.old\" \"$INDEX_DIR\"; then\n-                log_error \"Failed to restore backup index\"\n-            fi\n-        fi\n-        cleanup_temp\n-        return 1\n-    fi\n-    \n-    set_permissions \"$INDEX_DIR\" \n-\n-    log_debug \"Removing old index backup\"\n-\n-\n-    rm -rf \"$INDEX_DIR.old\" 2>/dev/null || true\n-\n-\n-    cleanup_stale_es\n-\n-    log_info \"Parallel update completed successfully\"\n-\n-    cleanup_temp\n-    return 0\n-}\n-\n-sequential_update() {\n-    log_info \"Starting sequential update process\"\n-    \n-    log_info \"Stopping Photon service before update\"\n-    if ! stop_photon; then\n-        log_error \"Failed to stop Photon service cleanly\"\n-        return 1\n-    fi\n-    \n-    sleep 2\n-    \n-    if [ -d \"$INDEX_DIR\" ]; then\n-        log_info \"Removing existing opensearch directory at $INDEX_DIR\"\n-        log_debug \"Executing: rm -rf $INDEX_DIR\"\n-        if ! rm -rf \"$INDEX_DIR\"; then\n-            log_error \"Failed to remove existing index\"\n-            return 1\n-        fi\n-    fi\n-\n-    cleanup_stale_es\n-    \n-    log_info \"Downloading new index\"\n-    if ! download_index; then\n-        log_error \"Failed to download index\"\n-        return 1\n-    fi\n-    \n-    log_info \"Moving index from $TEMP_DIR to $INDEX_DIR\"\n-    if ! move_index \"$TEMP_DIR\" \"$INDEX_DIR\"; then\n-        log_error \"Failed to move index\"\n-        cleanup_temp\n-        return 1\n-    fi\n-    \n-    set_permissions \"$INDEX_DIR\" \n-\n-    log_info \"Verifying new index structure\"\n-    if ! verify_structure \"$DATA_DIR\"; then \n-        log_error \"Failed to verify new index structure\"\n-        cleanup_temp\n-        return 1\n-    fi\n-    \n-    log_info \"Sequential update completed successfully\"\n-    cleanup_temp\n-    return 0\n-}\n-\n-update_index() {\n-    case \"$UPDATE_STRATEGY\" in\n-        PARALLEL)\n-            parallel_update\n-            ;;\n-        SEQUENTIAL)\n-            sequential_update\n-            ;;\n-        DISABLED)\n-            log_info \"Index updates are disabled\"\n-            ;;\n-        *)\n-            log_error \"Invalid UPDATE_STRATEGY: $UPDATE_STRATEGY\"\n-            return 1\n-            ;;\n-    esac\n-}\n-\n-force_update() {\n-    case \"$UPDATE_STRATEGY\" in\n-        PARALLEL)\n-            parallel_update\n-            ;;\n-        SEQUENTIAL)\n-            sequential_update\n-            ;;\n-        *)\n-            log_info \"Defaulting to sequential update for forced updates\"\n-            sequential_update\n-            ;;\n-    esac\n-}\n-\n-interval_to_seconds() {\n-    local interval=$1\n-    local value=${interval%[smhd]}\n-    local unit=${interval##*[0-9]}\n-    \n-    case $unit in\n-        s) echo $((value)) ;;\n-        m) echo $((value * 60)) ;;\n-        h) echo $((value * 3600)) ;;\n-        d) echo $((value * 86400)) ;;\n-        *) echo $((value * 3600)) ;;  # Default to hours\n-    esac\n-}\n-\n-setup_index() {\n-    mkdir -p \"$DATA_DIR\" \"$TEMP_DIR\"\n-    \n-    if [ -d \"$INDEX_DIR\" ]; then\n-        if verify_structure \"$DATA_DIR\"; then \n-            log_info \"Found existing valid opensearch index\"\n-            set_permissions \"$INDEX_DIR\" \n-            return 0\n-        else\n-            log_error \"Found invalid index structure, downloading fresh index\"\n-            rm -rf \"$INDEX_DIR\"\n-        fi\n-    else\n-        log_info \"No opensearch index found, performing initial download\"\n-    fi\n-    \n-    if ! sequential_update; then\n-        log_error \"Failed to setup initial index\"\n-        return 1\n-    fi\n-    \n-    return 0\n-}\n-\n-main() {\n-    setup_user\n-\n-    if ! setup_index; then\n-        exit 1\n-    fi\n-\n-    local initial_force_update=\"${FORCE_UPDATE}\"\n-    \n-    export FORCE_UPDATE=\"FALSE\"\n-    \n-    if [ \"$initial_force_update\" = \"TRUE\" ]; then\n-        log_info \"Performing forced update on startup\"\n-        if ! force_update; then\n-            log_error \"Forced update failed\"\n-            exit 1\n-        fi\n-        log_info \"Force update completed\"\n-    fi\n-    if ! start_photon; then\n-        log_error \"Failed to start Photon service\"\n-        exit 1\n-    fi\n-\n-    if [ \"$UPDATE_STRATEGY\" != \"DISABLED\" ]; then\n-        local update_seconds\n-        update_seconds=$(interval_to_seconds \"$UPDATE_INTERVAL\")\n-        log_info \"Update strategy: $UPDATE_STRATEGY\"\n-        log_info \"Update interval: $UPDATE_INTERVAL (${update_seconds} seconds)\"\n-        \n-        while true; do\n-            log_info \"Sleeping for ${update_seconds} seconds until next update\"\n-            sleep \"$update_seconds\"\n-            log_info \"Checking for index updates\"\n-            \n-            local url\n-            if [[ -n \"$FILE_URL\" ]]; then\n-                url=\"$FILE_URL\"\n-                log_info \"FILE_URL is set to: $FILE_URL\"\n-            else\n-                url=\"$(prepare_download_url)\"\n-            fi\n-\n-            if check_remote_index \"$url\"; then\n-                log_info \"Performing scheduled index update\"\n-                update_index\n-                if ! start_photon; then\n-                    log_error \"Failed to restart Photon service after update\"\n-                    exit 1\n-                fi\n-            fi\n-        done\n-    else\n-        log_info \"Update strategy is disabled, skipping update loop\"\n-    fi\n-\n-    wait\n-}\n-\n-main \"$@\""
+    },
+    {
+      "sha": "6732e93757d680ff37af01797d973db380e5f492",
+      "filename": "uv.lock",
+      "status": "added",
+      "additions": 255,
+      "deletions": 0,
+      "changes": 255,
+      "blob_url": "https://github.com/rtuszik/photon-docker/blob/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/uv.lock",
+      "raw_url": "https://github.com/rtuszik/photon-docker/raw/41cc2ff5eba8c8e21acb21ec148fe734d2ccc945/uv.lock",
+      "contents_url": "https://api.github.com/repos/rtuszik/photon-docker/contents/uv.lock?ref=41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "patch": "@@ -0,0 +1,255 @@\n+version = 1\n+revision = 2\n+requires-python = \">=3.12\"\n+\n+[[package]]\n+name = \"apprise\"\n+version = \"1.9.3\"\n+source = { registry = \"https://pypi.org/simple\" }\n+dependencies = [\n+    { name = \"certifi\" },\n+    { name = \"click\" },\n+    { name = \"markdown\" },\n+    { name = \"pyyaml\" },\n+    { name = \"requests\" },\n+    { name = \"requests-oauthlib\" },\n+]\n+sdist = { url = \"https://files.pythonhosted.org/packages/f8/1e/fe19c88c3e1ff96f4ea757bae9f6350060ac28be523507053347aa5d67db/apprise-1.9.3.tar.gz\", hash = \"sha256:f583667ea35b8899cd46318c6cb26f0faf6a4605b119174c2523a012590c65a6\", size = 1795515, upload-time = \"2025-03-30T19:51:01.218Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/3f/88/25a6459e3a8ec9ceb7af2a103e0b2a3efbc3ffd16cb15ea024b0008c678d/apprise-1.9.3-py3-none-any.whl\", hash = \"sha256:e9b5abb73244c21a30ee493860f8d4ae80665d225b1b436179d48db4f6fc5b9e\", size = 1352539, upload-time = \"2025-03-30T19:50:59.416Z\" },\n+]\n+\n+[[package]]\n+name = \"certifi\"\n+version = \"2025.6.15\"\n+source = { registry = \"https://pypi.org/simple\" }\n+sdist = { url = \"https://files.pythonhosted.org/packages/73/f7/f14b46d4bcd21092d7d3ccef689615220d8a08fb25e564b65d20738e672e/certifi-2025.6.15.tar.gz\", hash = \"sha256:d747aa5a8b9bbbb1bb8c22bb13e22bd1f18e9796defa16bab421f7f7a317323b\", size = 158753, upload-time = \"2025-06-15T02:45:51.329Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/84/ae/320161bd181fc06471eed047ecce67b693fd7515b16d495d8932db763426/certifi-2025.6.15-py3-none-any.whl\", hash = \"sha256:2e0c7ce7cb5d8f8634ca55d2ba7e6ec2689a2fd6537d8dec1296a477a4910057\", size = 157650, upload-time = \"2025-06-15T02:45:49.977Z\" },\n+]\n+\n+[[package]]\n+name = \"charset-normalizer\"\n+version = \"3.4.2\"\n+source = { registry = \"https://pypi.org/simple\" }\n+sdist = { url = \"https://files.pythonhosted.org/packages/e4/33/89c2ced2b67d1c2a61c19c6751aa8902d46ce3dacb23600a283619f5a12d/charset_normalizer-3.4.2.tar.gz\", hash = \"sha256:5baececa9ecba31eff645232d59845c07aa030f0c81ee70184a90d35099a0e63\", size = 126367, upload-time = \"2025-05-02T08:34:42.01Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/d7/a4/37f4d6035c89cac7930395a35cc0f1b872e652eaafb76a6075943754f095/charset_normalizer-3.4.2-cp312-cp312-macosx_10_13_universal2.whl\", hash = \"sha256:0c29de6a1a95f24b9a1aa7aefd27d2487263f00dfd55a77719b530788f75cff7\", size = 199936, upload-time = \"2025-05-02T08:32:33.712Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/ee/8a/1a5e33b73e0d9287274f899d967907cd0bf9c343e651755d9307e0dbf2b3/charset_normalizer-3.4.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl\", hash = \"sha256:cddf7bd982eaa998934a91f69d182aec997c6c468898efe6679af88283b498d3\", size = 143790, upload-time = \"2025-05-02T08:32:35.768Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/66/52/59521f1d8e6ab1482164fa21409c5ef44da3e9f653c13ba71becdd98dec3/charset_normalizer-3.4.2-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl\", hash = \"sha256:fcbe676a55d7445b22c10967bceaaf0ee69407fbe0ece4d032b6eb8d4565982a\", size = 153924, upload-time = \"2025-05-02T08:32:37.284Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/86/2d/fb55fdf41964ec782febbf33cb64be480a6b8f16ded2dbe8db27a405c09f/charset_normalizer-3.4.2-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl\", hash = \"sha256:d41c4d287cfc69060fa91cae9683eacffad989f1a10811995fa309df656ec214\", size = 146626, upload-time = \"2025-05-02T08:32:38.803Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/8c/73/6ede2ec59bce19b3edf4209d70004253ec5f4e319f9a2e3f2f15601ed5f7/charset_normalizer-3.4.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\", hash = \"sha256:4e594135de17ab3866138f496755f302b72157d115086d100c3f19370839dd3a\", size = 148567, upload-time = \"2025-05-02T08:32:40.251Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/09/14/957d03c6dc343c04904530b6bef4e5efae5ec7d7990a7cbb868e4595ee30/charset_normalizer-3.4.2-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl\", hash = \"sha256:cf713fe9a71ef6fd5adf7a79670135081cd4431c2943864757f0fa3a65b1fafd\", size = 150957, upload-time = \"2025-05-02T08:32:41.705Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/0d/c8/8174d0e5c10ccebdcb1b53cc959591c4c722a3ad92461a273e86b9f5a302/charset_normalizer-3.4.2-cp312-cp312-musllinux_1_2_aarch64.whl\", hash = \"sha256:a370b3e078e418187da8c3674eddb9d983ec09445c99a3a263c2011993522981\", size = 145408, upload-time = \"2025-05-02T08:32:43.709Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/58/aa/8904b84bc8084ac19dc52feb4f5952c6df03ffb460a887b42615ee1382e8/charset_normalizer-3.4.2-cp312-cp312-musllinux_1_2_i686.whl\", hash = \"sha256:a955b438e62efdf7e0b7b52a64dc5c3396e2634baa62471768a64bc2adb73d5c\", size = 153399, upload-time = \"2025-05-02T08:32:46.197Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/c2/26/89ee1f0e264d201cb65cf054aca6038c03b1a0c6b4ae998070392a3ce605/charset_normalizer-3.4.2-cp312-cp312-musllinux_1_2_ppc64le.whl\", hash = \"sha256:7222ffd5e4de8e57e03ce2cef95a4c43c98fcb72ad86909abdfc2c17d227fc1b\", size = 156815, upload-time = \"2025-05-02T08:32:48.105Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/fd/07/68e95b4b345bad3dbbd3a8681737b4338ff2c9df29856a6d6d23ac4c73cb/charset_normalizer-3.4.2-cp312-cp312-musllinux_1_2_s390x.whl\", hash = \"sha256:bee093bf902e1d8fc0ac143c88902c3dfc8941f7ea1d6a8dd2bcb786d33db03d\", size = 154537, upload-time = \"2025-05-02T08:32:49.719Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/77/1a/5eefc0ce04affb98af07bc05f3bac9094513c0e23b0562d64af46a06aae4/charset_normalizer-3.4.2-cp312-cp312-musllinux_1_2_x86_64.whl\", hash = \"sha256:dedb8adb91d11846ee08bec4c8236c8549ac721c245678282dcb06b221aab59f\", size = 149565, upload-time = \"2025-05-02T08:32:51.404Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/37/a0/2410e5e6032a174c95e0806b1a6585eb21e12f445ebe239fac441995226a/charset_normalizer-3.4.2-cp312-cp312-win32.whl\", hash = \"sha256:db4c7bf0e07fc3b7d89ac2a5880a6a8062056801b83ff56d8464b70f65482b6c\", size = 98357, upload-time = \"2025-05-02T08:32:53.079Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/6c/4f/c02d5c493967af3eda9c771ad4d2bbc8df6f99ddbeb37ceea6e8716a32bc/charset_normalizer-3.4.2-cp312-cp312-win_amd64.whl\", hash = \"sha256:5a9979887252a82fefd3d3ed2a8e3b937a7a809f65dcb1e068b090e165bbe99e\", size = 105776, upload-time = \"2025-05-02T08:32:54.573Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/ea/12/a93df3366ed32db1d907d7593a94f1fe6293903e3e92967bebd6950ed12c/charset_normalizer-3.4.2-cp313-cp313-macosx_10_13_universal2.whl\", hash = \"sha256:926ca93accd5d36ccdabd803392ddc3e03e6d4cd1cf17deff3b989ab8e9dbcf0\", size = 199622, upload-time = \"2025-05-02T08:32:56.363Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/04/93/bf204e6f344c39d9937d3c13c8cd5bbfc266472e51fc8c07cb7f64fcd2de/charset_normalizer-3.4.2-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl\", hash = \"sha256:eba9904b0f38a143592d9fc0e19e2df0fa2e41c3c3745554761c5f6447eedabf\", size = 143435, upload-time = \"2025-05-02T08:32:58.551Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/22/2a/ea8a2095b0bafa6c5b5a55ffdc2f924455233ee7b91c69b7edfcc9e02284/charset_normalizer-3.4.2-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl\", hash = \"sha256:3fddb7e2c84ac87ac3a947cb4e66d143ca5863ef48e4a5ecb83bd48619e4634e\", size = 153653, upload-time = \"2025-05-02T08:33:00.342Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/b6/57/1b090ff183d13cef485dfbe272e2fe57622a76694061353c59da52c9a659/charset_normalizer-3.4.2-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl\", hash = \"sha256:98f862da73774290f251b9df8d11161b6cf25b599a66baf087c1ffe340e9bfd1\", size = 146231, upload-time = \"2025-05-02T08:33:02.081Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/e2/28/ffc026b26f441fc67bd21ab7f03b313ab3fe46714a14b516f931abe1a2d8/charset_normalizer-3.4.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\", hash = \"sha256:6c9379d65defcab82d07b2a9dfbfc2e95bc8fe0ebb1b176a3190230a3ef0e07c\", size = 148243, upload-time = \"2025-05-02T08:33:04.063Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/c0/0f/9abe9bd191629c33e69e47c6ef45ef99773320e9ad8e9cb08b8ab4a8d4cb/charset_normalizer-3.4.2-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl\", hash = \"sha256:e635b87f01ebc977342e2697d05b56632f5f879a4f15955dfe8cef2448b51691\", size = 150442, upload-time = \"2025-05-02T08:33:06.418Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/67/7c/a123bbcedca91d5916c056407f89a7f5e8fdfce12ba825d7d6b9954a1a3c/charset_normalizer-3.4.2-cp313-cp313-musllinux_1_2_aarch64.whl\", hash = \"sha256:1c95a1e2902a8b722868587c0e1184ad5c55631de5afc0eb96bc4b0d738092c0\", size = 145147, upload-time = \"2025-05-02T08:33:08.183Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/ec/fe/1ac556fa4899d967b83e9893788e86b6af4d83e4726511eaaad035e36595/charset_normalizer-3.4.2-cp313-cp313-musllinux_1_2_i686.whl\", hash = \"sha256:ef8de666d6179b009dce7bcb2ad4c4a779f113f12caf8dc77f0162c29d20490b\", size = 153057, upload-time = \"2025-05-02T08:33:09.986Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/2b/ff/acfc0b0a70b19e3e54febdd5301a98b72fa07635e56f24f60502e954c461/charset_normalizer-3.4.2-cp313-cp313-musllinux_1_2_ppc64le.whl\", hash = \"sha256:32fc0341d72e0f73f80acb0a2c94216bd704f4f0bce10aedea38f30502b271ff\", size = 156454, upload-time = \"2025-05-02T08:33:11.814Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/92/08/95b458ce9c740d0645feb0e96cea1f5ec946ea9c580a94adfe0b617f3573/charset_normalizer-3.4.2-cp313-cp313-musllinux_1_2_s390x.whl\", hash = \"sha256:289200a18fa698949d2b39c671c2cc7a24d44096784e76614899a7ccf2574b7b\", size = 154174, upload-time = \"2025-05-02T08:33:13.707Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/78/be/8392efc43487ac051eee6c36d5fbd63032d78f7728cb37aebcc98191f1ff/charset_normalizer-3.4.2-cp313-cp313-musllinux_1_2_x86_64.whl\", hash = \"sha256:4a476b06fbcf359ad25d34a057b7219281286ae2477cc5ff5e3f70a246971148\", size = 149166, upload-time = \"2025-05-02T08:33:15.458Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/44/96/392abd49b094d30b91d9fbda6a69519e95802250b777841cf3bda8fe136c/charset_normalizer-3.4.2-cp313-cp313-win32.whl\", hash = \"sha256:aaeeb6a479c7667fbe1099af9617c83aaca22182d6cf8c53966491a0f1b7ffb7\", size = 98064, upload-time = \"2025-05-02T08:33:17.06Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/e9/b0/0200da600134e001d91851ddc797809e2fe0ea72de90e09bec5a2fbdaccb/charset_normalizer-3.4.2-cp313-cp313-win_amd64.whl\", hash = \"sha256:aa6af9e7d59f9c12b33ae4e9450619cf2488e2bbe9b44030905877f0b2324980\", size = 105641, upload-time = \"2025-05-02T08:33:18.753Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/20/94/c5790835a017658cbfabd07f3bfb549140c3ac458cfc196323996b10095a/charset_normalizer-3.4.2-py3-none-any.whl\", hash = \"sha256:7f56930ab0abd1c45cd15be65cc741c28b1c9a34876ce8c17a2fa107810c0af0\", size = 52626, upload-time = \"2025-05-02T08:34:40.053Z\" },\n+]\n+\n+[[package]]\n+name = \"click\"\n+version = \"8.2.1\"\n+source = { registry = \"https://pypi.org/simple\" }\n+dependencies = [\n+    { name = \"colorama\", marker = \"sys_platform == 'win32'\" },\n+]\n+sdist = { url = \"https://files.pythonhosted.org/packages/60/6c/8ca2efa64cf75a977a0d7fac081354553ebe483345c734fb6b6515d96bbc/click-8.2.1.tar.gz\", hash = \"sha256:27c491cc05d968d271d5a1db13e3b5a184636d9d930f148c50b038f0d0646202\", size = 286342, upload-time = \"2025-05-20T23:19:49.832Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/85/32/10bb5764d90a8eee674e9dc6f4db6a0ab47c8c4d0d83c27f7c39ac415a4d/click-8.2.1-py3-none-any.whl\", hash = \"sha256:61a3265b914e850b85317d0b3109c7f8cd35a670f963866005d6ef1d5175a12b\", size = 102215, upload-time = \"2025-05-20T23:19:47.796Z\" },\n+]\n+\n+[[package]]\n+name = \"colorama\"\n+version = \"0.4.6\"\n+source = { registry = \"https://pypi.org/simple\" }\n+sdist = { url = \"https://files.pythonhosted.org/packages/d8/53/6f443c9a4a8358a93a6792e2acffb9d9d5cb0a5cfd8802644b7b1c9a02e4/colorama-0.4.6.tar.gz\", hash = \"sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44\", size = 27697, upload-time = \"2022-10-25T02:36:22.414Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl\", hash = \"sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6\", size = 25335, upload-time = \"2022-10-25T02:36:20.889Z\" },\n+]\n+\n+[[package]]\n+name = \"idna\"\n+version = \"3.10\"\n+source = { registry = \"https://pypi.org/simple\" }\n+sdist = { url = \"https://files.pythonhosted.org/packages/f1/70/7703c29685631f5a7590aa73f1f1d3fa9a380e654b86af429e0934a32f7d/idna-3.10.tar.gz\", hash = \"sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9\", size = 190490, upload-time = \"2024-09-15T18:07:39.745Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/76/c6/c88e154df9c4e1a2a66ccf0005a88dfb2650c1dffb6f5ce603dfbd452ce3/idna-3.10-py3-none-any.whl\", hash = \"sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3\", size = 70442, upload-time = \"2024-09-15T18:07:37.964Z\" },\n+]\n+\n+[[package]]\n+name = \"markdown\"\n+version = \"3.8.2\"\n+source = { registry = \"https://pypi.org/simple\" }\n+sdist = { url = \"https://files.pythonhosted.org/packages/d7/c2/4ab49206c17f75cb08d6311171f2d65798988db4360c4d1485bd0eedd67c/markdown-3.8.2.tar.gz\", hash = \"sha256:247b9a70dd12e27f67431ce62523e675b866d254f900c4fe75ce3dda62237c45\", size = 362071, upload-time = \"2025-06-19T17:12:44.483Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/96/2b/34cc11786bc00d0f04d0f5fdc3a2b1ae0b6239eef72d3d345805f9ad92a1/markdown-3.8.2-py3-none-any.whl\", hash = \"sha256:5c83764dbd4e00bdd94d85a19b8d55ccca20fe35b2e678a1422b380324dd5f24\", size = 106827, upload-time = \"2025-06-19T17:12:42.994Z\" },\n+]\n+\n+[[package]]\n+name = \"oauthlib\"\n+version = \"3.3.1\"\n+source = { registry = \"https://pypi.org/simple\" }\n+sdist = { url = \"https://files.pythonhosted.org/packages/0b/5f/19930f824ffeb0ad4372da4812c50edbd1434f678c90c2733e1188edfc63/oauthlib-3.3.1.tar.gz\", hash = \"sha256:0f0f8aa759826a193cf66c12ea1af1637f87b9b4622d46e866952bb022e538c9\", size = 185918, upload-time = \"2025-06-19T22:48:08.269Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/be/9c/92789c596b8df838baa98fa71844d84283302f7604ed565dafe5a6b5041a/oauthlib-3.3.1-py3-none-any.whl\", hash = \"sha256:88119c938d2b8fb88561af5f6ee0eec8cc8d552b7bb1f712743136eb7523b7a1\", size = 160065, upload-time = \"2025-06-19T22:48:06.508Z\" },\n+]\n+\n+[[package]]\n+name = \"photon-docker\"\n+version = \"1.0.0b0\"\n+source = { virtual = \".\" }\n+dependencies = [\n+    { name = \"apprise\" },\n+    { name = \"psutil\" },\n+    { name = \"python-dateutil\" },\n+    { name = \"requests\" },\n+    { name = \"schedule\" },\n+    { name = \"tqdm\" },\n+]\n+\n+[package.metadata]\n+requires-dist = [\n+    { name = \"apprise\", specifier = \">=1.9.3\" },\n+    { name = \"psutil\", specifier = \">=5.9.0\" },\n+    { name = \"python-dateutil\", specifier = \">=2.9.0.post0\" },\n+    { name = \"requests\", specifier = \"==2.32.4\" },\n+    { name = \"schedule\", specifier = \">=1.2.2\" },\n+    { name = \"tqdm\", specifier = \"==4.67.1\" },\n+]\n+\n+[[package]]\n+name = \"psutil\"\n+version = \"7.0.0\"\n+source = { registry = \"https://pypi.org/simple\" }\n+sdist = { url = \"https://files.pythonhosted.org/packages/2a/80/336820c1ad9286a4ded7e845b2eccfcb27851ab8ac6abece774a6ff4d3de/psutil-7.0.0.tar.gz\", hash = \"sha256:7be9c3eba38beccb6495ea33afd982a44074b78f28c434a1f51cc07fd315c456\", size = 497003, upload-time = \"2025-02-13T21:54:07.946Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/ed/e6/2d26234410f8b8abdbf891c9da62bee396583f713fb9f3325a4760875d22/psutil-7.0.0-cp36-abi3-macosx_10_9_x86_64.whl\", hash = \"sha256:101d71dc322e3cffd7cea0650b09b3d08b8e7c4109dd6809fe452dfd00e58b25\", size = 238051, upload-time = \"2025-02-13T21:54:12.36Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/04/8b/30f930733afe425e3cbfc0e1468a30a18942350c1a8816acfade80c005c4/psutil-7.0.0-cp36-abi3-macosx_11_0_arm64.whl\", hash = \"sha256:39db632f6bb862eeccf56660871433e111b6ea58f2caea825571951d4b6aa3da\", size = 239535, upload-time = \"2025-02-13T21:54:16.07Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/2a/ed/d362e84620dd22876b55389248e522338ed1bf134a5edd3b8231d7207f6d/psutil-7.0.0-cp36-abi3-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl\", hash = \"sha256:1fcee592b4c6f146991ca55919ea3d1f8926497a713ed7faaf8225e174581e91\", size = 275004, upload-time = \"2025-02-13T21:54:18.662Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/bf/b9/b0eb3f3cbcb734d930fdf839431606844a825b23eaf9a6ab371edac8162c/psutil-7.0.0-cp36-abi3-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl\", hash = \"sha256:4b1388a4f6875d7e2aff5c4ca1cc16c545ed41dd8bb596cefea80111db353a34\", size = 277986, upload-time = \"2025-02-13T21:54:21.811Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/eb/a2/709e0fe2f093556c17fbafda93ac032257242cabcc7ff3369e2cb76a97aa/psutil-7.0.0-cp36-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl\", hash = \"sha256:a5f098451abc2828f7dc6b58d44b532b22f2088f4999a937557b603ce72b1993\", size = 279544, upload-time = \"2025-02-13T21:54:24.68Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/50/e6/eecf58810b9d12e6427369784efe814a1eec0f492084ce8eb8f4d89d6d61/psutil-7.0.0-cp37-abi3-win32.whl\", hash = \"sha256:ba3fcef7523064a6c9da440fc4d6bd07da93ac726b5733c29027d7dc95b39d99\", size = 241053, upload-time = \"2025-02-13T21:54:34.31Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/50/1b/6921afe68c74868b4c9fa424dad3be35b095e16687989ebbb50ce4fceb7c/psutil-7.0.0-cp37-abi3-win_amd64.whl\", hash = \"sha256:4cf3d4eb1aa9b348dec30105c55cd9b7d4629285735a102beb4441e38db90553\", size = 244885, upload-time = \"2025-02-13T21:54:37.486Z\" },\n+]\n+\n+[[package]]\n+name = \"python-dateutil\"\n+version = \"2.9.0.post0\"\n+source = { registry = \"https://pypi.org/simple\" }\n+dependencies = [\n+    { name = \"six\" },\n+]\n+sdist = { url = \"https://files.pythonhosted.org/packages/66/c0/0c8b6ad9f17a802ee498c46e004a0eb49bc148f2fd230864601a86dcf6db/python-dateutil-2.9.0.post0.tar.gz\", hash = \"sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3\", size = 342432, upload-time = \"2024-03-01T18:36:20.211Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl\", hash = \"sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427\", size = 229892, upload-time = \"2024-03-01T18:36:18.57Z\" },\n+]\n+\n+[[package]]\n+name = \"pyyaml\"\n+version = \"6.0.2\"\n+source = { registry = \"https://pypi.org/simple\" }\n+sdist = { url = \"https://files.pythonhosted.org/packages/54/ed/79a089b6be93607fa5cdaedf301d7dfb23af5f25c398d5ead2525b063e17/pyyaml-6.0.2.tar.gz\", hash = \"sha256:d584d9ec91ad65861cc08d42e834324ef890a082e591037abe114850ff7bbc3e\", size = 130631, upload-time = \"2024-08-06T20:33:50.674Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/86/0c/c581167fc46d6d6d7ddcfb8c843a4de25bdd27e4466938109ca68492292c/PyYAML-6.0.2-cp312-cp312-macosx_10_9_x86_64.whl\", hash = \"sha256:c70c95198c015b85feafc136515252a261a84561b7b1d51e3384e0655ddf25ab\", size = 183873, upload-time = \"2024-08-06T20:32:25.131Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/a8/0c/38374f5bb272c051e2a69281d71cba6fdb983413e6758b84482905e29a5d/PyYAML-6.0.2-cp312-cp312-macosx_11_0_arm64.whl\", hash = \"sha256:ce826d6ef20b1bc864f0a68340c8b3287705cae2f8b4b1d932177dcc76721725\", size = 173302, upload-time = \"2024-08-06T20:32:26.511Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/c3/93/9916574aa8c00aa06bbac729972eb1071d002b8e158bd0e83a3b9a20a1f7/PyYAML-6.0.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl\", hash = \"sha256:1f71ea527786de97d1a0cc0eacd1defc0985dcf6b3f17bb77dcfc8c34bec4dc5\", size = 739154, upload-time = \"2024-08-06T20:32:28.363Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/95/0f/b8938f1cbd09739c6da569d172531567dbcc9789e0029aa070856f123984/PyYAML-6.0.2-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl\", hash = \"sha256:9b22676e8097e9e22e36d6b7bda33190d0d400f345f23d4065d48f4ca7ae0425\", size = 766223, upload-time = \"2024-08-06T20:32:30.058Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/b9/2b/614b4752f2e127db5cc206abc23a8c19678e92b23c3db30fc86ab731d3bd/PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\", hash = \"sha256:80bab7bfc629882493af4aa31a4cfa43a4c57c83813253626916b8c7ada83476\", size = 767542, upload-time = \"2024-08-06T20:32:31.881Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/d4/00/dd137d5bcc7efea1836d6264f049359861cf548469d18da90cd8216cf05f/PyYAML-6.0.2-cp312-cp312-musllinux_1_1_aarch64.whl\", hash = \"sha256:0833f8694549e586547b576dcfaba4a6b55b9e96098b36cdc7ebefe667dfed48\", size = 731164, upload-time = \"2024-08-06T20:32:37.083Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/c9/1f/4f998c900485e5c0ef43838363ba4a9723ac0ad73a9dc42068b12aaba4e4/PyYAML-6.0.2-cp312-cp312-musllinux_1_1_x86_64.whl\", hash = \"sha256:8b9c7197f7cb2738065c481a0461e50ad02f18c78cd75775628afb4d7137fb3b\", size = 756611, upload-time = \"2024-08-06T20:32:38.898Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/df/d1/f5a275fdb252768b7a11ec63585bc38d0e87c9e05668a139fea92b80634c/PyYAML-6.0.2-cp312-cp312-win32.whl\", hash = \"sha256:ef6107725bd54b262d6dedcc2af448a266975032bc85ef0172c5f059da6325b4\", size = 140591, upload-time = \"2024-08-06T20:32:40.241Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/0c/e8/4f648c598b17c3d06e8753d7d13d57542b30d56e6c2dedf9c331ae56312e/PyYAML-6.0.2-cp312-cp312-win_amd64.whl\", hash = \"sha256:7e7401d0de89a9a855c839bc697c079a4af81cf878373abd7dc625847d25cbd8\", size = 156338, upload-time = \"2024-08-06T20:32:41.93Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/ef/e3/3af305b830494fa85d95f6d95ef7fa73f2ee1cc8ef5b495c7c3269fb835f/PyYAML-6.0.2-cp313-cp313-macosx_10_13_x86_64.whl\", hash = \"sha256:efdca5630322a10774e8e98e1af481aad470dd62c3170801852d752aa7a783ba\", size = 181309, upload-time = \"2024-08-06T20:32:43.4Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/45/9f/3b1c20a0b7a3200524eb0076cc027a970d320bd3a6592873c85c92a08731/PyYAML-6.0.2-cp313-cp313-macosx_11_0_arm64.whl\", hash = \"sha256:50187695423ffe49e2deacb8cd10510bc361faac997de9efef88badc3bb9e2d1\", size = 171679, upload-time = \"2024-08-06T20:32:44.801Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/7c/9a/337322f27005c33bcb656c655fa78325b730324c78620e8328ae28b64d0c/PyYAML-6.0.2-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl\", hash = \"sha256:0ffe8360bab4910ef1b9e87fb812d8bc0a308b0d0eef8c8f44e0254ab3b07133\", size = 733428, upload-time = \"2024-08-06T20:32:46.432Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/a3/69/864fbe19e6c18ea3cc196cbe5d392175b4cf3d5d0ac1403ec3f2d237ebb5/PyYAML-6.0.2-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl\", hash = \"sha256:17e311b6c678207928d649faa7cb0d7b4c26a0ba73d41e99c4fff6b6c3276484\", size = 763361, upload-time = \"2024-08-06T20:32:51.188Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/04/24/b7721e4845c2f162d26f50521b825fb061bc0a5afcf9a386840f23ea19fa/PyYAML-6.0.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\", hash = \"sha256:70b189594dbe54f75ab3a1acec5f1e3faa7e8cf2f1e08d9b561cb41b845f69d5\", size = 759523, upload-time = \"2024-08-06T20:32:53.019Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/2b/b2/e3234f59ba06559c6ff63c4e10baea10e5e7df868092bf9ab40e5b9c56b6/PyYAML-6.0.2-cp313-cp313-musllinux_1_1_aarch64.whl\", hash = \"sha256:41e4e3953a79407c794916fa277a82531dd93aad34e29c2a514c2c0c5fe971cc\", size = 726660, upload-time = \"2024-08-06T20:32:54.708Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/fe/0f/25911a9f080464c59fab9027482f822b86bf0608957a5fcc6eaac85aa515/PyYAML-6.0.2-cp313-cp313-musllinux_1_1_x86_64.whl\", hash = \"sha256:68ccc6023a3400877818152ad9a1033e3db8625d899c72eacb5a668902e4d652\", size = 751597, upload-time = \"2024-08-06T20:32:56.985Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/14/0d/e2c3b43bbce3cf6bd97c840b46088a3031085179e596d4929729d8d68270/PyYAML-6.0.2-cp313-cp313-win32.whl\", hash = \"sha256:bc2fa7c6b47d6bc618dd7fb02ef6fdedb1090ec036abab80d4681424b84c1183\", size = 140527, upload-time = \"2024-08-06T20:33:03.001Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/fa/de/02b54f42487e3d3c6efb3f89428677074ca7bf43aae402517bc7cca949f3/PyYAML-6.0.2-cp313-cp313-win_amd64.whl\", hash = \"sha256:8388ee1976c416731879ac16da0aff3f63b286ffdd57cdeb95f3f2e085687563\", size = 156446, upload-time = \"2024-08-06T20:33:04.33Z\" },\n+]\n+\n+[[package]]\n+name = \"requests\"\n+version = \"2.32.4\"\n+source = { registry = \"https://pypi.org/simple\" }\n+dependencies = [\n+    { name = \"certifi\" },\n+    { name = \"charset-normalizer\" },\n+    { name = \"idna\" },\n+    { name = \"urllib3\" },\n+]\n+sdist = { url = \"https://files.pythonhosted.org/packages/e1/0a/929373653770d8a0d7ea76c37de6e41f11eb07559b103b1c02cafb3f7cf8/requests-2.32.4.tar.gz\", hash = \"sha256:27d0316682c8a29834d3264820024b62a36942083d52caf2f14c0591336d3422\", size = 135258, upload-time = \"2025-06-09T16:43:07.34Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/7c/e4/56027c4a6b4ae70ca9de302488c5ca95ad4a39e190093d6c1a8ace08341b/requests-2.32.4-py3-none-any.whl\", hash = \"sha256:27babd3cda2a6d50b30443204ee89830707d396671944c998b5975b031ac2b2c\", size = 64847, upload-time = \"2025-06-09T16:43:05.728Z\" },\n+]\n+\n+[[package]]\n+name = \"requests-oauthlib\"\n+version = \"2.0.0\"\n+source = { registry = \"https://pypi.org/simple\" }\n+dependencies = [\n+    { name = \"oauthlib\" },\n+    { name = \"requests\" },\n+]\n+sdist = { url = \"https://files.pythonhosted.org/packages/42/f2/05f29bc3913aea15eb670be136045bf5c5bbf4b99ecb839da9b422bb2c85/requests-oauthlib-2.0.0.tar.gz\", hash = \"sha256:b3dffaebd884d8cd778494369603a9e7b58d29111bf6b41bdc2dcd87203af4e9\", size = 55650, upload-time = \"2024-03-22T20:32:29.939Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/3b/5d/63d4ae3b9daea098d5d6f5da83984853c1bbacd5dc826764b249fe119d24/requests_oauthlib-2.0.0-py2.py3-none-any.whl\", hash = \"sha256:7dd8a5c40426b779b0868c404bdef9768deccf22749cde15852df527e6269b36\", size = 24179, upload-time = \"2024-03-22T20:32:28.055Z\" },\n+]\n+\n+[[package]]\n+name = \"schedule\"\n+version = \"1.2.2\"\n+source = { registry = \"https://pypi.org/simple\" }\n+sdist = { url = \"https://files.pythonhosted.org/packages/0c/91/b525790063015759f34447d4cf9d2ccb52cdee0f1dd6ff8764e863bcb74c/schedule-1.2.2.tar.gz\", hash = \"sha256:15fe9c75fe5fd9b9627f3f19cc0ef1420508f9f9a46f45cd0769ef75ede5f0b7\", size = 26452, upload-time = \"2024-06-18T20:03:14.633Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/20/a7/84c96b61fd13205f2cafbe263cdb2745965974bdf3e0078f121dfeca5f02/schedule-1.2.2-py3-none-any.whl\", hash = \"sha256:5bef4a2a0183abf44046ae0d164cadcac21b1db011bdd8102e4a0c1e91e06a7d\", size = 12220, upload-time = \"2024-05-25T18:41:59.121Z\" },\n+]\n+\n+[[package]]\n+name = \"six\"\n+version = \"1.17.0\"\n+source = { registry = \"https://pypi.org/simple\" }\n+sdist = { url = \"https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz\", hash = \"sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81\", size = 34031, upload-time = \"2024-12-04T17:35:28.174Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl\", hash = \"sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274\", size = 11050, upload-time = \"2024-12-04T17:35:26.475Z\" },\n+]\n+\n+[[package]]\n+name = \"tqdm\"\n+version = \"4.67.1\"\n+source = { registry = \"https://pypi.org/simple\" }\n+dependencies = [\n+    { name = \"colorama\", marker = \"sys_platform == 'win32'\" },\n+]\n+sdist = { url = \"https://files.pythonhosted.org/packages/a8/4b/29b4ef32e036bb34e4ab51796dd745cdba7ed47ad142a9f4a1eb8e0c744d/tqdm-4.67.1.tar.gz\", hash = \"sha256:f8aef9c52c08c13a65f30ea34f4e5aac3fd1a34959879d7e59e63027286627f2\", size = 169737, upload-time = \"2024-11-24T20:12:22.481Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/d0/30/dc54f88dd4a2b5dc8a0279bdd7270e735851848b762aeb1c1184ed1f6b14/tqdm-4.67.1-py3-none-any.whl\", hash = \"sha256:26445eca388f82e72884e0d580d5464cd801a3ea01e63e5601bdff9ba6a48de2\", size = 78540, upload-time = \"2024-11-24T20:12:19.698Z\" },\n+]\n+\n+[[package]]\n+name = \"urllib3\"\n+version = \"2.5.0\"\n+source = { registry = \"https://pypi.org/simple\" }\n+sdist = { url = \"https://files.pythonhosted.org/packages/15/22/9ee70a2574a4f4599c47dd506532914ce044817c7752a79b6a51286319bc/urllib3-2.5.0.tar.gz\", hash = \"sha256:3fc47733c7e419d4bc3f6b3dc2b4f890bb743906a30d56ba4a5bfa4bbff92760\", size = 393185, upload-time = \"2025-06-18T14:07:41.644Z\" }\n+wheels = [\n+    { url = \"https://files.pythonhosted.org/packages/a7/c2/fe1e52489ae3122415c51f387e221dd0773709bad6c6cdaa599e8a2c5185/urllib3-2.5.0-py3-none-any.whl\", hash = \"sha256:e6b01673c0fa6a13e374b50871808eb3bf7046c4b125b216f6bf1cc604cff0dc\", size = 129795, upload-time = \"2025-06-18T14:07:40.39Z\" },\n+]"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d889b316764a1e9068870b091b30fa50ca3a7174",
+      "message": "initial python project structure draft",
+      "parent_shas": [
+        "06ca0b2db307b254d726d91a14f870301140c84a"
+      ]
+    },
+    {
+      "sha": "d5fc18a7d7ecf504ca3b34747adb6592317d0e03",
+      "message": "initialize astral-uv",
+      "parent_shas": [
+        "d889b316764a1e9068870b091b30fa50ca3a7174"
+      ]
+    },
+    {
+      "sha": "e0dfb04ccbf56ef0c937cfd2417284ba96a53b00",
+      "message": "add logger module",
+      "parent_shas": [
+        "d5fc18a7d7ecf504ca3b34747adb6592317d0e03"
+      ]
+    },
+    {
+      "sha": "cfd208709cbd98d43d842f25e14d2ad4cd15ebc3",
+      "message": "refactor(Dockerfile): remove unnecessary package installations\nfeat(Dockerfile): add python3.12 and uv to the image\nrefactor(Dockerfile): change entrypoint to use uv run main.py",
+      "parent_shas": [
+        "e0dfb04ccbf56ef0c937cfd2417284ba96a53b00"
+      ]
+    },
+    {
+      "sha": "c65fa365cb06a4de04cf9bc6168f983dd91dea4a",
+      "message": "add config.py",
+      "parent_shas": [
+        "cfd208709cbd98d43d842f25e14d2ad4cd15ebc3"
+      ]
+    },
+    {
+      "sha": "0ad711d1d468c2f9f26f0ebd9f6fb53f8d882b12",
+      "message": "update pyproject.toml",
+      "parent_shas": [
+        "c65fa365cb06a4de04cf9bc6168f983dd91dea4a"
+      ]
+    },
+    {
+      "sha": "5619a76dcfd13ace6fa1f0dd81d5ea99c6cf7ea3",
+      "message": "update .gitignore for python",
+      "parent_shas": [
+        "0ad711d1d468c2f9f26f0ebd9f6fb53f8d882b12"
+      ]
+    },
+    {
+      "sha": "3a32cfe30a89bc01b7cf775ff7d77de87b6dd366",
+      "message": "remove bash files",
+      "parent_shas": [
+        "5619a76dcfd13ace6fa1f0dd81d5ea99c6cf7ea3"
+      ]
+    },
+    {
+      "sha": "c84f18bb9bc7fc84374a11359a542e6609708da2",
+      "message": "draft of config module",
+      "parent_shas": [
+        "3a32cfe30a89bc01b7cf775ff7d77de87b6dd366"
+      ]
+    },
+    {
+      "sha": "8aeb391e9dcebe9a9bf63c03a88f4c33445aaf16",
+      "message": "draft of mtime checker",
+      "parent_shas": [
+        "c84f18bb9bc7fc84374a11359a542e6609708da2"
+      ]
+    },
+    {
+      "sha": "0107f23cd9c120e6c4daaba2952153c0703e6947",
+      "message": "draft of download module",
+      "parent_shas": [
+        "8aeb391e9dcebe9a9bf63c03a88f4c33445aaf16"
+      ]
+    },
+    {
+      "sha": "3c3bb3654af78c7cca035cf843c6c04ef41ed265",
+      "message": "draft of fiilesystem module",
+      "parent_shas": [
+        "0107f23cd9c120e6c4daaba2952153c0703e6947"
+      ]
+    },
+    {
+      "sha": "acc1c69f1ec2b4503294c46111a5a2170b1842b3",
+      "message": "draft of process management",
+      "parent_shas": [
+        "3c3bb3654af78c7cca035cf843c6c04ef41ed265"
+      ]
+    },
+    {
+      "sha": "ba9dbd4b8de8c9151324d588fe44fb12c2f3fd24",
+      "message": "draft of entypoint script",
+      "parent_shas": [
+        "acc1c69f1ec2b4503294c46111a5a2170b1842b3"
+      ]
+    },
+    {
+      "sha": "31037f8523df843b9690ab8cfb23403171a25f3e",
+      "message": "remove main.py, replaced by entrypoints",
+      "parent_shas": [
+        "ba9dbd4b8de8c9151324d588fe44fb12c2f3fd24"
+      ]
+    },
+    {
+      "sha": "5d8b33c44ee436f7a5b29ce50ab307cb8929a6cf",
+      "message": "updater entrypoint",
+      "parent_shas": [
+        "31037f8523df843b9690ab8cfb23403171a25f3e"
+      ]
+    },
+    {
+      "sha": "a7f1f7c79db9e34ce7724781d7239e3afc81fac9",
+      "message": "create utils module",
+      "parent_shas": [
+        "5d8b33c44ee436f7a5b29ce50ab307cb8929a6cf"
+      ]
+    },
+    {
+      "sha": "675a2502eae49f3f1528e405bbcc9716a731379e",
+      "message": "feat(config): add SKIP_MD5_CHECK environment variable to allow skipping MD5 checks",
+      "parent_shas": [
+        "a7f1f7c79db9e34ce7724781d7239e3afc81fac9"
+      ]
+    },
+    {
+      "sha": "2da267b0fa365a6484ce56d399e0ac8f82ed4e67",
+      "message": "refactor(logger): remove file logging to simplify logging configuration\nrefactor(logger): remove unused os import\nrefactor(logger): remove RotatingFileHandler import\nrefactor(logger): remove log_file parameter from setup_logging\nrefactor(logger): remove redundant docstrings from setup_logging and get_logger\nfeat(logger): use config.LOG_LEVEL for logger and console handler levels",
+      "parent_shas": [
+        "675a2502eae49f3f1528e405bbcc9716a731379e"
+      ]
+    },
+    {
+      "sha": "377c91c6eb33a6382215feaa96b7c3735df6c260",
+      "message": "refactor(config.py): reorder environment variables for better readability and grouping",
+      "parent_shas": [
+        "2da267b0fa365a6484ce56d399e0ac8f82ed4e67"
+      ]
+    },
+    {
+      "sha": "f1e6f18d30825c3f037203fff7ddd8bfc599b797",
+      "message": "add crontab setup",
+      "parent_shas": [
+        "377c91c6eb33a6382215feaa96b7c3735df6c260"
+      ]
+    },
+    {
+      "sha": "d5f83dd579f51081ce9ad6665993d5fade7f5cce",
+      "message": "fix import in updater",
+      "parent_shas": [
+        "f1e6f18d30825c3f037203fff7ddd8bfc599b797"
+      ]
+    },
+    {
+      "sha": "0eab5b6deedeeddde712e656ccaef2b6e968b5a0",
+      "message": "add crontab dependency",
+      "parent_shas": [
+        "d5f83dd579f51081ce9ad6665993d5fade7f5cce"
+      ]
+    },
+    {
+      "sha": "b2ae75376682d3eaf36e00d8e876e1e0251922b0",
+      "message": "refactor(entrypoint): remove unused function `check_for_index`\nrefactor(entrypoint): remove comments that are no longer relevant\nfeat(entrypoint): add configuration validation at startup to ensure correct settings\nfeat(entrypoint): add support for parallel updates based on `UPDATESTRATEGY`\nfix(entrypoint): ensure cron job is set up before starting photon",
+      "parent_shas": [
+        "0eab5b6deedeeddde712e656ccaef2b6e968b5a0"
+      ]
+    },
+    {
+      "sha": "770835c332d7e1868ed52018a1ee448598e1f1d0",
+      "message": "feat(cron_setup.py): add conditional cronjob setup based on UPDATE_STRATEGY\nrefactor(cron_setup.py): update updater.py path to /photon/updater.py",
+      "parent_shas": [
+        "b2ae75376682d3eaf36e00d8e876e1e0251922b0"
+      ]
+    },
+    {
+      "sha": "b52f38ffd9da662125a467a511e82441d0ae155e",
+      "message": "refactor(check_remote.py): improve error handling and robustness in `get_remote_time`\nfeat(check_remote.py): implement `get_local_time` to retrieve local file modification time\nfeat(check_remote.py): enhance `compare_mtime` to compare remote and local file modification times with a grace period\nrefactor(check_remote.py): update imports to use `utils.config` and `utils.logger`",
+      "parent_shas": [
+        "770835c332d7e1868ed52018a1ee448598e1f1d0"
+      ]
+    },
+    {
+      "sha": "a442801505f298ad0127d46ee33a1ee3cb560087",
+      "message": "refactor(filesystem.py): move config and logger imports to utils package\nrefactor(filesystem.py): replace os.isdir with shutil.move for directory operations\nfeat(filesystem.py): add logging for move_index function\nfix(filesystem.py): remove unused os.isdir call\nrefactor(config.py): remove .lower() from COUNTRY_CODE environment variable\nrefactor(logger.py): change logger config import to relative import",
+      "parent_shas": [
+        "b52f38ffd9da662125a467a511e82441d0ae155e"
+      ]
+    },
+    {
+      "sha": "2dc323825892c84085c31dcf9f2020c6ee3772b8",
+      "message": "feat(Dockerfile): add supervisor to manage processes\nfeat(Dockerfile): install supervisor and configure it to manage cron and photon processes\nfeat(Dockerfile): copy supervisord.conf, docker-entrypoint.sh, main.py, entrypoint.py, pyproject.toml, uv.lock to the image\nfeat(Dockerfile): change uv installation path to /usr/local/bin/\nfeat(Dockerfile): change entrypoint to docker-entrypoint.sh and cmd to supervisord\nfeat(pyproject.toml): add supervisor to dependencies\nfeat(src/supervisor.py): add supervisor client to start and stop photon process\nfeat(supervisord.conf): add supervisord configuration file",
+      "parent_shas": [
+        "a442801505f298ad0127d46ee33a1ee3cb560087"
+      ]
+    },
+    {
+      "sha": "515e61ff1b151ca9a5c331c615099a7b72909173",
+      "message": "feat(docker): add docker-entrypoint.sh to initialize Python setup and hand over to supervisord",
+      "parent_shas": [
+        "2dc323825892c84085c31dcf9f2020c6ee3772b8"
+      ]
+    },
+    {
+      "sha": "78dfbaa4898b2424282ec8d73799ce1c2c85ebc4",
+      "message": "feat(validation): add new module to validate environment variables",
+      "parent_shas": [
+        "515e61ff1b151ca9a5c331c615099a7b72909173"
+      ]
+    },
+    {
+      "sha": "bcc3276457854fcc35fe73cec89eb2e237ec38a8",
+      "message": "refactor: reorder imports and remove unnecessary comments",
+      "parent_shas": [
+        "78dfbaa4898b2424282ec8d73799ce1c2c85ebc4"
+      ]
+    },
+    {
+      "sha": "d32b6605eec9ed79a0db49977c73c6b7766400ef",
+      "message": "refactor: remove unused process.py and dead code from updater.py",
+      "parent_shas": [
+        "bcc3276457854fcc35fe73cec89eb2e237ec38a8"
+      ]
+    },
+    {
+      "sha": "4a8dd946494158d6509a669c072860c18b764fcb",
+      "message": "refactor(cron): improve cron job logging and update interval parsing",
+      "parent_shas": [
+        "d32b6605eec9ed79a0db49977c73c6b7766400ef"
+      ]
+    },
+    {
+      "sha": "9256e2f0c2873a917a9c0752592e6b602d2a89c9",
+      "message": "refactor(downloader): improve import paths and add MD5 check skip option",
+      "parent_shas": [
+        "4a8dd946494158d6509a669c072860c18b764fcb"
+      ]
+    },
+    {
+      "sha": "8752824b425e8c0227a1d51facce9b4a7c4fba5f",
+      "message": "refactor(filesystem): reorder imports and remove redundant comments",
+      "parent_shas": [
+        "9256e2f0c2873a917a9c0752592e6b602d2a89c9"
+      ]
+    },
+    {
+      "sha": "7043d6498824b5d71d981e97f44f81a992c3d6ac",
+      "message": "feat: add updater.py and uv sync --locked to Dockerfile for dependency management",
+      "parent_shas": [
+        "8752824b425e8c0227a1d51facce9b4a7c4fba5f"
+      ]
+    },
+    {
+      "sha": "28db6dbc833a8da38ec0e1eaadb4ea8535e8f090",
+      "message": "refactor: improve download and update logic, fix variable names and imports",
+      "parent_shas": [
+        "7043d6498824b5d71d981e97f44f81a992c3d6ac"
+      ]
+    },
+    {
+      "sha": "baf4b38598e33bc1c09638f1b88db18f0ff28f14",
+      "message": "refactor: replace pbzip2 with lbzip2 and simplify Docker entrypoint configuration",
+      "parent_shas": [
+        "28db6dbc833a8da38ec0e1eaadb4ea8535e8f090"
+      ]
+    },
+    {
+      "sha": "ada35daa42022e061e5a3e9f99a2cd208836516f",
+      "message": "refactor: improve supervisor integration, filesystem operations, and debugging\n\n- Fix supervisor XML-RPC communication with proper Unix socket classes\n- Add comprehensive debug logging for config variables and filesystem operations\n- Improve error handling in index extraction and move operations\n- Add clear_temp_dir function to cleanup after operations\n- Create start-photon.sh script for better parameter handling\n- Add minimal docstrings for complex functions",
+      "parent_shas": [
+        "baf4b38598e33bc1c09638f1b88db18f0ff28f14"
+      ]
+    },
+    {
+      "sha": "d31cff4f9b11c6cf181e69608ddf98aca4ec7ea2",
+      "message": "feat: initial draft for notification module",
+      "parent_shas": [
+        "ada35daa42022e061e5a3e9f99a2cd208836516f"
+      ]
+    },
+    {
+      "sha": "e24568a7e2bc31e2e6500d30b10949cb6ed20a76",
+      "message": "feat: add notification system with error handling for photon updates",
+      "parent_shas": [
+        "d31cff4f9b11c6cf181e69608ddf98aca4ec7ea2"
+      ]
+    },
+    {
+      "sha": "3e038182cf6a7e79c57b1eb071e4860d4d2348b9",
+      "message": "docs: add APPRISE_URLS environment variable for notification support",
+      "parent_shas": [
+        "e24568a7e2bc31e2e6500d30b10949cb6ed20a76"
+      ]
+    },
+    {
+      "sha": "85ce137d3ed1e112ca33377e7de8f73789b57124",
+      "message": "feat: integrate Apprise notifications into entrypoint and update documentation\n\n- Add Apprise dependency to pyproject.toml\n- Send initialization notification when entrypoint starts\n- Update README with comprehensive APPRISE_URLS configuration details\n- Add Pushover example in Docker Compose configuration",
+      "parent_shas": [
+        "3e038182cf6a7e79c57b1eb071e4860d4d2348b9"
+      ]
+    },
+    {
+      "sha": "f21b69f153fd7691b6925410254451b4513ac257",
+      "message": "feat: add apprise notification library with dependencies",
+      "parent_shas": [
+        "85ce137d3ed1e112ca33377e7de8f73789b57124"
+      ]
+    },
+    {
+      "sha": "5494164ea6ff7a90149bc96f2675a8f0b5f4cb53",
+      "message": "refactor: replace supervisord and cron with simple Python process manager\n\n- Remove supervisor and cron dependencies\n- Replace supervisord.conf with simple process_manager.py using threading\n- Use schedule package for update scheduling instead of crontab\n- Simplify entrypoint.py to support setup mode\n- Update Dockerfile to use process_manager.py as CMD\n- Remove complex XML-RPC supervisor integration\n- Maintain all existing functionality with cleaner architecture",
+      "parent_shas": [
+        "f21b69f153fd7691b6925410254451b4513ac257"
+      ]
+    },
+    {
+      "sha": "0abd0ee4772807e2c420d3c0cf7ab6514f803735",
+      "message": "fix: remove supervisor imports from downloader module\n\n- Remove import of stop_photon from src.supervisor\n- Remove direct Photon process control from downloader functions\n- Process manager now handles all Photon lifecycle management\n- Downloader focuses only on downloading and file operations",
+      "parent_shas": [
+        "5494164ea6ff7a90149bc96f2675a8f0b5f4cb53"
+      ]
+    },
+    {
+      "sha": "1176489fa9a60f6adbc188b6c93c8d8796991974",
+      "message": "refactor: remove unused shell scripts and simplify Docker build process",
+      "parent_shas": [
+        "0abd0ee4772807e2c420d3c0cf7ab6514f803735"
+      ]
+    },
+    {
+      "sha": "861b5d82a2c4b1597af63326cd8cf60fd8173fea",
+      "message": "refactor: improve code readability and maintainability across multiple files",
+      "parent_shas": [
+        "1176489fa9a60f6adbc188b6c93c8d8796991974"
+      ]
+    },
+    {
+      "sha": "3b2f4b8e3ba9b3964b3d259b8ba98ec83ad9a418",
+      "message": "refactor: improve process management and index handling",
+      "parent_shas": [
+        "861b5d82a2c4b1597af63326cd8cf60fd8173fea"
+      ]
+    },
+    {
+      "sha": "cd601a7b3044c6953b6d00a960ade7b02006dba3",
+      "message": "feat: implement ruff check and update photon data directory structure",
+      "parent_shas": [
+        "3b2f4b8e3ba9b3964b3d259b8ba98ec83ad9a418"
+      ]
+    },
+    {
+      "sha": "7e4de835435e436f1cde4b7e3aa86e64133e0a40",
+      "message": "refactor: update volume mount path from /photon/photon_data to /photon/data",
+      "parent_shas": [
+        "cd601a7b3044c6953b6d00a960ade7b02006dba3"
+      ]
+    },
+    {
+      "sha": "b95ef208974f578fe6cc6d432e6cc5f81ae8fc22",
+      "message": "feat: introduce entrypoint.sh for improved container startup and permissions handling",
+      "parent_shas": [
+        "7e4de835435e436f1cde4b7e3aa86e64133e0a40"
+      ]
+    },
+    {
+      "sha": "611d4289e625dae2d2d100ac75720e11dec9909d",
+      "message": "fix(check_remote): increase grace period for remote index comparison to 144 hours",
+      "parent_shas": [
+        "b95ef208974f578fe6cc6d432e6cc5f81ae8fc22"
+      ]
+    },
+    {
+      "sha": "d02df2a7842f5fe6968c5b83569dc98fb6f2e16a",
+      "message": "refactor: restructure python scripts and update Dockerfile for improved management",
+      "parent_shas": [
+        "611d4289e625dae2d2d100ac75720e11dec9909d"
+      ]
+    },
+    {
+      "sha": "4d26052cdf3272ca3e2572f6eecbe7dc3ed09004",
+      "message": "feat(downloader): add disk space checks and helper functions for downloads",
+      "parent_shas": [
+        "d02df2a7842f5fe6968c5b83569dc98fb6f2e16a"
+      ]
+    },
+    {
+      "sha": "a1899013017cd6a4123fd4a30a74d0df0af9d01a",
+      "message": "feat(downloader): implement resumable downloads with state saving and retries",
+      "parent_shas": [
+        "4d26052cdf3272ca3e2572f6eecbe7dc3ed09004"
+      ]
+    },
+    {
+      "sha": "6b1117d8d58470306f2eea5be17d4f96476c69bd",
+      "message": "feat: improve Photon health checks and update process reliability",
+      "parent_shas": [
+        "a1899013017cd6a4123fd4a30a74d0df0af9d01a"
+      ]
+    },
+    {
+      "sha": "1b60a3756e1c49a372bd17291a68b41152bae476",
+      "message": "refactor: implement atomic index move with rollback and cleanup functions",
+      "parent_shas": [
+        "6b1117d8d58470306f2eea5be17d4f96476c69bd"
+      ]
+    },
+    {
+      "sha": "bd41ef8e1b0fc86a5efddb6918008b96b767852b",
+      "message": "refactor: improve logging, add structured logging and context filters",
+      "parent_shas": [
+        "1b60a3756e1c49a372bd17291a68b41152bae476"
+      ]
+    },
+    {
+      "sha": "76df41041954c4c37bbb99c27701ec8b726c90c3",
+      "message": "ci: update lint workflow to include ruff and ty checks and use uv for package management",
+      "parent_shas": [
+        "bd41ef8e1b0fc86a5efddb6918008b96b767852b"
+      ]
+    },
+    {
+      "sha": "ebcad3c5c2e9ce61df428a05a94e1e52e90ddf88",
+      "message": "fix(lint): correct typo in workflow file from 'ty check' to 'ruff format'",
+      "parent_shas": [
+        "76df41041954c4c37bbb99c27701ec8b726c90c3"
+      ]
+    },
+    {
+      "sha": "b47570d76d5abe246162791fe574ffdf06c1e106",
+      "message": "refactor(lint): migrate from super-linter to ruff and ty for linting and formatting",
+      "parent_shas": [
+        "ebcad3c5c2e9ce61df428a05a94e1e52e90ddf88"
+      ]
+    },
+    {
+      "sha": "4593cfa15a13fa20c20d0048291b8f1a7100785c",
+      "message": "fix(lint): update ruff and ty commands to use `uv` instead of `uvx`",
+      "parent_shas": [
+        "b47570d76d5abe246162791fe574ffdf06c1e106"
+      ]
+    },
+    {
+      "sha": "41cc2ff5eba8c8e21acb21ec148fe734d2ccc945",
+      "message": "fix worklow uv commands",
+      "parent_shas": [
+        "4593cfa15a13fa20c20d0048291b8f1a7100785c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "too_many_commits"
+    ],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__rtuszik__photon-docker__pr96.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\rtuszik__photon-docker__pr96__java_python__rtuszik__photon-docker__pr96\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\rtuszik__photon-docker__pr96__java_python__rtuszik__photon-docker__pr96\\rn"
+  }
+}

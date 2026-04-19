@@ -1,0 +1,597 @@
+{
+  "instance_id": "py2_py3__google__timesketch__pr3657",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "google/timesketch",
+  "pr_number": 3657,
+  "pr_url": "https://github.com/google/timesketch/pull/3657",
+  "repo": {
+    "full_name": "google/timesketch",
+    "clone_url": "https://github.com/google/timesketch.git",
+    "default_branch": "master",
+    "created_at": "2014-06-19T17:49:45Z",
+    "stars": 3309,
+    "license": "Apache-2.0",
+    "size_kb": 213465
+  },
+  "pull_request": {
+    "id": 3149555295,
+    "title": "fix: some issues with soft_delete",
+    "body": "1. Closing OpenSearch Indices on Soft Delete:\r\n   * Updated `SketchResource.delete` in `timesketch/api/v1/resources/sketch.py` to close all associated OpenSearch indices when a sketch is soft-deleted. This saves cluster resources.\r\n\r\n2. Allowing Force Deletion of Soft-Deleted Sketches:\r\n     * Modified `get_with_acl` in `timesketch/models/__init__.py` to accept an include_deleted parameter.\r\n         This allows retrieving soft-deleted objects if the user is an admin and explicitly requests it.\r\n      * Updated SketchResource.delete in `timesketch/api/v1/resources/sketch.py` to move the force_delete\r\n         detection logic earlier and pass it to `get_with_acl(include_deleted=force_delete)`. This ensures\r\n         that admins can find and permanently delete sketches that are already soft-deleted.\r\n\r\n\r\nAnd adding e2e tests and documentation updates.\r\n\r\nThis PR is dependend on https://github.com/google/timesketch/pull/3661\r\n\r\nfixes #3689",
+    "created_at": "2026-01-06T14:06:18Z",
+    "merged_at": "2026-03-11T14:23:19Z",
+    "base_sha": "146f7886e4e001451e6385ca793e7e05bcf3f54f",
+    "head_sha": "a40659bcc2446d5c6288e78291d26ff82e20b749",
+    "merge_commit_sha": "72a4e693a1abe33d11bfc603a92fe306c7dd2f38",
+    "labels": [
+      "Backend"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "ab34531793e356819c77693d42ef3c43f9f040b0",
+  "final_sha": "a40659bcc2446d5c6288e78291d26ff82e20b749",
+  "changed_files": [
+    {
+      "sha": "51efb9b2dbe786ac755a44b60026dd325a022f1a",
+      "filename": "api_client/python/timesketch_api_client/sketch.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 4,
+      "changes": 10,
+      "blob_url": "https://github.com/google/timesketch/blob/a40659bcc2446d5c6288e78291d26ff82e20b749/api_client%2Fpython%2Ftimesketch_api_client%2Fsketch.py",
+      "raw_url": "https://github.com/google/timesketch/raw/a40659bcc2446d5c6288e78291d26ff82e20b749/api_client%2Fpython%2Ftimesketch_api_client%2Fsketch.py",
+      "contents_url": "https://api.github.com/repos/google/timesketch/contents/api_client%2Fpython%2Ftimesketch_api_client%2Fsketch.py?ref=a40659bcc2446d5c6288e78291d26ff82e20b749",
+      "patch": "@@ -471,10 +471,12 @@ def delete(self, force_delete=False):\n         Args:\n             force_delete (bool): If True, a hard delete is performed, which\n                 permanently removes the sketch and all its associated data\n-                (timelines, events, views, etc.) from the Timesketch database.\n-                If False (default), the sketch is soft-deleted, typically by\n-                marking it as deleted for admins to pick it up e.g. in a\n-                cron job.\n+                (timelines, events, views, etc.) from the Timesketch database\n+                and OpenSearch. Administrators can use this to permanently\n+                remove sketches that have already been soft-deleted.\n+                If False (default), the sketch is soft-deleted by marking it\n+                as deleted in the database and closing associated OpenSearch\n+                indices to free up cluster resources.\n \n         Returns:\n             bool: True if the sketch was successfully deleted (either soft or hard)."
+    },
+    {
+      "sha": "6ca08504b25d3a367ac2e511749ab0e98528c71a",
+      "filename": "docs/guides/user/sketch-overview.md",
+      "status": "modified",
+      "additions": 27,
+      "deletions": 12,
+      "changes": 39,
+      "blob_url": "https://github.com/google/timesketch/blob/a40659bcc2446d5c6288e78291d26ff82e20b749/docs%2Fguides%2Fuser%2Fsketch-overview.md",
+      "raw_url": "https://github.com/google/timesketch/raw/a40659bcc2446d5c6288e78291d26ff82e20b749/docs%2Fguides%2Fuser%2Fsketch-overview.md",
+      "contents_url": "https://api.github.com/repos/google/timesketch/contents/docs%2Fguides%2Fuser%2Fsketch-overview.md?ref=a40659bcc2446d5c6288e78291d26ff82e20b749",
+      "patch": "@@ -71,21 +71,32 @@ If you click on the \"More\" Button in the Sketch Overview, you get the following\n \n ### Delete\n \n-Deletes the sketch.\n+Deleting a sketch removes it from your list of active sketches. There are two types of deletion:\n \n-*   **Soft Delete (Default):** The sketch is marked as deleted in the database but all associated data (timelines, indices) remains intact. It is just not shown in the UI anymore.\n-*   **Hard Delete (`force_delete`):** Permanently removes the sketch and its associated data. This operation is restricted to administrators and not available via the UI and follows a safe order of operations to ensure no orphaned data is left behind:\n-    1.  **OpenSearch Indices:** The raw event data is deleted from OpenSearch first.\n-    2.  **Timelines:** The timeline records are removed from the database.\n-    3.  **Search Indices:** The search index metadata is removed.\n-    4.  **Sketch:** Finally, the sketch itself is deleted.\n+1.  **Soft Delete (Default):**\n+    *   The sketch is marked as **'deleted'** in the database.\n+    *   It is hidden from the main sketch list.\n+    *   **Crucially**, Timesketch attempts to **close all associated OpenSearch indices** to free up memory and resources on the cluster. **Note:** Indices are only closed if they are not shared with other active (non-deleted) sketches. This check is performed system-wide across all users to ensure data integrity.\n+    *   This action is reversible by an administrator (via database intervention) if needed, as the data is not permanently destroyed.\n+\n+2.  **Hard Delete (Force Delete):**\n+    *   This permanently removes the sketch, all its timelines, and all associated metadata from the database.\n+    *   It also **permanently deletes** the underlying OpenSearch indices. **Note:** As with soft deletion, indices are only deleted if they are not shared with other active sketches in the system.\n+    *   **Admin Only:** Only administrators can perform a hard delete, and they can do so even on sketches that have already been soft-deleted.\n+    *   *Note:* You cannot delete a sketch that is currently **'archived'**. You must unarchive it first.\n+\n+#### Administrative Overrides\n+Administrators have the ability to delete **any sketch in the system**, regardless of whether they are explicitly listed in the sketch's access control list (ACL). This allows for system-wide cleanup and management.\n+\n+#### Protection Labels\n+Certain labels can be configured to prevent a sketch from being deleted. By default, any sketch with the label **`protected`** or **`preserved`** cannot be deleted (either soft or hard) by any user, including administrators. To delete such a sketch, the label must first be removed.\n \n ### Archive\n \n Archiving a sketch is a way to preserve it in a archived state while freeing up system resources. When a sketch is archived:\n - It is hidden from the default list of sketches.\n - All its timelines are marked as archived.\n-- The underlying OpenSearch indices are closed if they are not used by any other active sketches. This reduces memory usage on the OpenSearch cluster.\n+- The underlying OpenSearch indices are closed if they are not used by any other active sketches. This reduces memory usage on the OpenSearch cluster. **Note:** This check is performed system-wide across all users to ensure data integrity.\n - You cannot explore data, run analyzers, or make other modifications to an archived sketch.\n - The sketch can be unarchived at any time to restore full functionality.\n \n@@ -137,14 +148,18 @@ Unarchiving a sketch restores it to a fully active and writable state. This acti\n \n * Timesketch attempts to **reopen all associated OpenSearch indices** that were previously closed (archived).\n * If an OpenSearch index is already open, it's considered a success.\n-* If all necessary OpenSearch indices are successfully opened (or were already open), the sketch's status is updated to **'ready'**.\n-* All timelines within that sketch that were **'archived'** have their status set back to **'ready'**.\n-* The corresponding SearchIndex database objects also have their status updated to **'ready'**.\n+* **Missing or Failed Indices:** If an index cannot be found (e.g., deleted) or fails to open:\n+    * The system logs a warning but **does not abort** the unarchive process.\n+    * The affected **timeline** and its **search index** in the database are set to a **'fail'** state. This allows you to identify which parts of the sketch are broken.\n+* For all successfully opened indices:\n+    * The corresponding **timeline** status is set back to **'ready'**.\n+    * The corresponding **SearchIndex** database object status is updated to **'ready'**.\n+* The sketch's status is updated to **'ready'**, allowing you to access it and manage any failed timelines.\n \n #### When a sketch cannot be unarchived (and why):\n \n * If the sketch is not currently 'archived' (e.g., it's already **'ready'** or **'deleted'**), the operation will be aborted.\n-* If there's a critical error opening an OpenSearch index (e.g., the index is genuinely missing or a network error occurs), the entire unarchival process will be aborted, and the sketch will remain in its **'archived'** state.\n+* Critical errors unrelated to specific indices (e.g., database connection failures) may still abort the process.\n \n ### Export\n "
+    },
+    {
+      "sha": "24f04a98a03e587a74b014f622cc918e362335b8",
+      "filename": "end_to_end_tests/archive_test.py",
+      "status": "modified",
+      "additions": 35,
+      "deletions": 0,
+      "changes": 35,
+      "blob_url": "https://github.com/google/timesketch/blob/a40659bcc2446d5c6288e78291d26ff82e20b749/end_to_end_tests%2Farchive_test.py",
+      "raw_url": "https://github.com/google/timesketch/raw/a40659bcc2446d5c6288e78291d26ff82e20b749/end_to_end_tests%2Farchive_test.py",
+      "contents_url": "https://api.github.com/repos/google/timesketch/contents/end_to_end_tests%2Farchive_test.py?ref=a40659bcc2446d5c6288e78291d26ff82e20b749",
+      "patch": "@@ -281,5 +281,40 @@ def test_archive_cycle_with_deletion(self):\n         sketch.unarchive()\n         self.assertions.assertEqual(sketch.status, \"ready\")\n \n+    def test_deleted_sketch_access(self):\n+        \"\"\"Test that deleted sketches are not accessible via ACL for normal users.\n+\n+        This test verifies that:\n+        1. An admin can still retrieve a deleted sketch.\n+        2. A normal user (even with read access) cannot retrieve a deleted sketch.\n+        \"\"\"\n+        # 1. Setup: Create a sketch as admin\n+        sketch_name = f\"test-deleted-access_{uuid.uuid4().hex}\"\n+        sketch = self.admin_api.create_sketch(name=sketch_name)\n+        sketch_id = sketch.id\n+\n+        # 2. Grant read access to a normal user\n+        # Note: self.api is typically a normal user in E2E tests\n+        normal_username = self.api.current_user.username\n+        sketch.add_to_acl(user_list=[normal_username], permissions=[\"read\"])\n+\n+        # 3. Delete the sketch\n+        sketch.delete()\n+\n+        # 4. Verify Admin access (should work)\n+        admin_sketch = self.admin_api.get_sketch(sketch_id)\n+        self.assertions.assertEqual(admin_sketch.id, sketch_id)\n+        self.assertions.assertEqual(admin_sketch.status, \"deleted\")\n+\n+        # 5. Verify Normal User access (should 404)\n+        try:\n+            normal_sketch = self.api.get_sketch(sketch_id)\n+            # Accessing a property triggers lazy loading and thus the API call\n+            _ = normal_sketch.status\n+            self.assertions.fail(\"Normal user should not be able to see deleted sketch\")\n+        except RuntimeError as e:\n+            # The API client raises RuntimeError for non-200 responses\n+            self.assertions.assertIn(\"404\", str(e))\n+\n \n manager.EndToEndTestManager.register_test(ArchiveTest)"
+    },
+    {
+      "sha": "b8e54b7e34814b6e74880d90f34129db07ff5598",
+      "filename": "end_to_end_tests/client_test.py",
+      "status": "modified",
+      "additions": 253,
+      "deletions": 100,
+      "changes": 353,
+      "blob_url": "https://github.com/google/timesketch/blob/a40659bcc2446d5c6288e78291d26ff82e20b749/end_to_end_tests%2Fclient_test.py",
+      "raw_url": "https://github.com/google/timesketch/raw/a40659bcc2446d5c6288e78291d26ff82e20b749/end_to_end_tests%2Fclient_test.py",
+      "contents_url": "https://api.github.com/repos/google/timesketch/contents/end_to_end_tests%2Fclient_test.py?ref=a40659bcc2446d5c6288e78291d26ff82e20b749",
+      "patch": "@@ -19,6 +19,7 @@\n import random\n import zipfile\n import os\n+import requests\n import opensearchpy\n \n from timesketch_api_client import search\n@@ -36,6 +37,41 @@ class ClientTest(interface.BaseEndToEndTest):\n     RULEID1 = str(uuid.uuid4())\n     RULEID2 = str(uuid.uuid4())\n \n+    def _get_opensearch_client(self):\n+        \"\"\"Returns an OpenSearch client.\"\"\"\n+        return opensearchpy.OpenSearch(\n+            [\n+                {\n+                    \"host\": interface.OPENSEARCH_HOST,\n+                    \"port\": interface.OPENSEARCH_PORT,\n+                }\n+            ],\n+            http_compress=True,\n+        )\n+\n+    def check_opensearch_index_status(self, index_name):\n+        \"\"\"Helper to check the status of an OpenSearch index.\n+\n+        Returns:\n+            String: \"open\", \"close\", or \"not_found\"\n+        \"\"\"\n+        url = (\n+            f\"http://{interface.OPENSEARCH_HOST}:\"\n+            f\"{interface.OPENSEARCH_PORT}/_cat/indices/\"\n+            f\"{index_name}?format=json\"\n+        )\n+        try:\n+            response = requests.get(url, timeout=5)\n+            if response.status_code == 404:\n+                return \"not_found\"\n+            response.raise_for_status()\n+            data = response.json()\n+            if not data:\n+                return \"not_found\"\n+            return data[0].get(\"status\")\n+        except Exception:  # pylint: disable=broad-except\n+            return \"error\"\n+\n     def test_client(self):\n         \"\"\"Client tests.\"\"\"\n         expected_user = \"test\"\n@@ -99,6 +135,7 @@ def test_direct_opensearch(self):\n     def test_sigmarule_create(self):\n         \"\"\"Create a Sigma rule in database\"\"\"\n \n+        # fmt: off\n         MOCK_SIGMA_RULE = f\"\"\"\n title: Suspicious Installation of bbbbbb\n id: {self.RULEID1}\n@@ -120,6 +157,7 @@ def test_sigmarule_create(self):\n     - Unknown\n level: high\n \"\"\"\n+        # fmt: on\n         rule = self.api.create_sigmarule(rule_yaml=MOCK_SIGMA_RULE)\n         self.assertions.assertIsNotNone(rule)\n \n@@ -320,80 +358,6 @@ def test_delete_sketch(self):\n             # Restore the original logging level regardless of test outcome\n             api_client_logger.setLevel(original_level)\n \n-    def test_delete_sketch_without_acls(self):\n-        \"\"\"Test to attempt to delete a sketch where the admin user has no ACLs,\n-        and the deletion should fail.\"\"\"\n-        sketch_name_prefix = \"test_sketch_no_admin_acls_fail_\"\n-        # Sketch created by the regular user (self.api)\n-        initial_sketch_count_regular_user = len(list(self.api.list_sketches()))\n-\n-        sketch_by_regular_user = self.api.create_sketch(\n-            name=f\"{sketch_name_prefix}{uuid.uuid4().hex}\",\n-            description=\"Sketch created by regular user, admin will fail to delete.\",\n-        )\n-        self.assertions.assertIsNotNone(sketch_by_regular_user)\n-        sketch_id_to_delete = sketch_by_regular_user.id\n-\n-        # Verify sketch count increased for the regular user\n-        current_sketch_count_regular_user = len(list(self.api.list_sketches()))\n-        self.assertions.assertEqual(\n-            current_sketch_count_regular_user, initial_sketch_count_regular_user + 1\n-        )\n-\n-        # Check that admin is not explicitly part of the sketch's ACLs initially.\n-        # The sketch is owned by the regular 'test' user.\n-        acl = sketch_by_regular_user.acl\n-        admin_username = self.admin_api.current_user.username  # Should be \"admin\"\n-\n-        admin_user = self.admin_api.current_user\n-        self.assertions.assertEqual(admin_user.username, \"admin\")\n-        self.assertions.assertEqual(admin_user.is_admin, True)\n-        self.assertions.assertEqual(admin_user.is_active, True)\n-\n-        admin_has_direct_permission = any(\n-            user_perm.get(\"username\") == admin_username\n-            for user_perm in acl.get(\"users\", [])\n-        )\n-\n-        self.assertions.assertFalse(\n-            admin_has_direct_permission,\n-            f\"Admin user '{admin_username}' should not have explicit user ACLs \"\n-            \"on this sketch initially as it was created by another user.\",\n-        )\n-\n-        # Admin user (self.admin_api) attempts to get the sketch.\n-        # This might succeed if admins have global read by default.\n-        admin_sketch_instance = None\n-        try:\n-            admin_sketch_instance = self.admin_api.get_sketch(sketch_id_to_delete)\n-            self.assertions.assertIsNotNone(\n-                admin_sketch_instance,\n-                \"Admin should generally be able to get/read any sketch.\",\n-            )\n-        except RuntimeError as e:\n-            self.assertions.fail(\n-                f\"Admin failed to even GET sketch {sketch_id_to_delete} \"\n-                f\"which they did not own and had no explicit ACLs for. Error: {e}. \"\n-                \"This might indicate admins don't have global read by default, \"\n-                \"or the sketch was not found.\"\n-            )\n-\n-        with self.assertions.assertRaises(RuntimeError) as context_delete:\n-            admin_sketch_instance.delete(force_delete=True)  # type: ignore\n-\n-        self.assertions.assertIn(\n-            \"have the permission to access the requested resource\",\n-            str(context_delete.exception),\n-        )\n-\n-        # Verify the sketch is actually still there (checked by regular user)\n-        still_exists_sketch = self.api.get_sketch(sketch_id_to_delete)\n-        self.assertions.assertIsNotNone(\n-            still_exists_sketch,\n-            \"Sketch should still exist after failed admin deletion attempt.\",\n-        )\n-        self.assertions.assertEqual(still_exists_sketch.id, sketch_id_to_delete)\n-\n     def test_delete_sketch_without_force_delete(self):\n         \"\"\"This test will attempt to delete a sketch\n         without passing the force_delete argument\"\"\"\n@@ -437,6 +401,108 @@ def test_delete_sketch_without_force_delete(self):\n         except RuntimeError as e:\n             self.assertions.fail(f\"Failed to get sketch after soft delete: {e}\")\n \n+    def test_soft_delete_closes_indices(self):\n+        \"\"\"Test that soft-deleting a sketch closes its OpenSearch indices.\"\"\"\n+        sketch_name = f\"test_soft_delete_indices_{uuid.uuid4().hex}\"\n+        sketch = self.api.create_sketch(name=sketch_name)\n+        timeline = self.import_timeline(\"sigma_events.jsonl\", sketch=sketch)\n+        index_name = timeline.index_name\n+\n+        # Verify index is open\n+        es = self._get_opensearch_client()\n+        stats = es.cat.indices(index=index_name, params={\"format\": \"json\"})\n+        self.assertions.assertEqual(stats[0].get(\"status\"), \"open\")\n+\n+        # Soft delete\n+        sketch.delete(force_delete=False)\n+\n+        # Verify index is closed\n+        stats = es.cat.indices(index=index_name, params={\"format\": \"json\"})\n+        self.assertions.assertEqual(\n+            stats[0].get(\"status\"),\n+            \"close\",\n+            f\"Index {index_name} should be closed\",\n+        )\n+\n+    def test_force_delete_soft_deleted_sketch(self):\n+        \"\"\"Test that admins can force-delete a soft-deleted sketch.\"\"\"\n+        sketch_name = f\"test_force_delete_soft_deleted_{uuid.uuid4().hex}\"\n+        sketch = self.api.create_sketch(name=sketch_name)\n+        sketch_id = sketch.id\n+        timeline = self.import_timeline(\"sigma_events.jsonl\", sketch=sketch)\n+        index_name = timeline.index_name\n+\n+        # Grant admin permission before soft-deleting\n+        sketch.add_to_acl(\n+            user_list=[\"admin\"],\n+            permissions=[\"read\", \"write\", \"delete\"],\n+        )\n+\n+        # Soft delete as owner\n+        sketch.delete(force_delete=False)\n+\n+        # 1. Verify it's hidden from owner (should raise NotFoundError)\n+        with self.assertions.assertRaises(NotFoundError):\n+            _ = self.api.get_sketch(sketch_id).name  # pylint: disable=W0106\n+\n+        # 2. Verify admin CAN find it and see it is deleted\n+        admin_sketch = self.admin_api.get_sketch(sketch_id)\n+        self.assertions.assertEqual(\n+            admin_sketch.status,\n+            \"deleted\",\n+            \"Admin should see sketch status as 'deleted'\",\n+        )\n+\n+        # 3. Verify admin CAN find it in the list with include_deleted=True\n+        resource_url = (\n+            f\"{self.admin_api.api_root}/sketches/?\" \"include_deleted=true&scope=admin\"\n+        )\n+        response = self.admin_api.session.get(resource_url)\n+        self.assertions.assertEqual(response.status_code, 200)\n+        sketch_list = response.json()[\"objects\"]\n+        found = any(s[\"id\"] == sketch_id for s in sketch_list)\n+        self.assertions.assertTrue(found, \"Admin should find deleted sketch in list\")\n+\n+        # 4. Force delete as admin\n+        admin_sketch.delete(force_delete=True)\n+\n+        # Verify it's completely gone (even for admin now)\n+        with self.assertions.assertRaises(NotFoundError):\n+            _ = self.admin_api.get_sketch(sketch_id).name  # pylint: disable=W0106\n+\n+        es = self._get_opensearch_client()\n+        self.assertions.assertFalse(\n+            es.indices.exists(index=index_name), \"Index should be deleted\"\n+        )\n+\n+    def test_delete_sketch_with_missing_index(self):\n+        \"\"\"Test deleting a sketch where the OpenSearch index is missing.\"\"\"\n+        sketch_name = f\"test_delete_missing_index_{uuid.uuid4().hex}\"\n+        sketch = self.api.create_sketch(name=sketch_name)\n+\n+        # Import a timeline\n+        # Just use the filename, import_timeline handles the full path resolution\n+        filename = \"sigma_events.jsonl\"\n+        timeline = self.import_timeline(filename, sketch=sketch)\n+        index_name = timeline.index_name\n+\n+        # Manually delete the index from OpenSearch\n+        es = self._get_opensearch_client()\n+        es.indices.delete(index=index_name)\n+\n+        # Delete the sketch\n+        # This should succeed despite the missing index (it should just warn\n+        # and continue)\n+        sketch.delete()\n+\n+        # Verify it's gone\n+        sketches = list(self.api.list_sketches())\n+        found = False\n+        for s in sketches:\n+            if s.id == sketch.id:\n+                found = True\n+        self.assertions.assertFalse(found, \"Sketch should be deleted\")\n+\n     # test to delete a sketch that is archived\n     def test_delete_archived_sketch(self):\n         \"\"\"Test deleting an archived sketch.\"\"\"\n@@ -674,37 +740,124 @@ def test_export_sketch(self):\n             if os.path.exists(export_file_path):\n                 os.remove(export_file_path)\n \n-    def test_delete_sketch_with_missing_index(self):\n-        \"\"\"Test deleting a sketch where the OpenSearch index is missing.\"\"\"\n-        sketch = self.api.create_sketch(name=\"test_delete_missing_index\")\n+    def test_delete_sketch_with_shared_index(self):\n+        \"\"\"Test deleting a sketch where multiple timelines share the same index.\n \n-        # Import a timeline\n-        # Just use the filename, import_timeline handles the full path resolution\n-        filename = \"sigma_events.jsonl\"\n-        timeline = self.import_timeline(filename, sketch=sketch)\n-        index_name = timeline.index_name\n-        # Manually delete the index from OpenSearch\n-        es = opensearchpy.OpenSearch(\n-            [{\"host\": interface.OPENSEARCH_HOST, \"port\": interface.OPENSEARCH_PORT}],\n-            http_compress=True,\n+        This test verifies that the 'InvalidRequestError' is resolved and the\n+        sketch is successfully deleted even when multiple timelines in it\n+        point to the same search index.\n+        \"\"\"\n+        rand = uuid.uuid4().hex\n+        sketch = self.api.create_sketch(name=f\"test-sketch-deletion-shared_{rand}\")\n+\n+        shared_index_name = f\"shared_index_{rand}\"\n+\n+        # 1. Import Timeline A\n+        self.import_timeline(\n+            \"sigma_events.csv\", sketch=sketch, index_name=shared_index_name\n         )\n-        es.indices.delete(index=index_name)\n \n-        # Switch to admin to force delete (or just delete as owner)\n-        # Owner can delete their own sketch.\n+        # 2. Import Timeline B sharing same index\n+        # We use a different file to simulate a different datasource if needed,\n+        # but the key is the index_name.\n+        self.import_timeline(\n+            \"evtx_part.csv\", sketch=sketch, index_name=shared_index_name\n+        )\n \n-        # Delete the sketch\n-        # This should succeed despite the missing index (it should just warn\n-        # and continue)\n-        sketch.delete()\n+        # Verify both timelines exist in the sketch\n+        timelines = sketch.list_timelines()\n+        self.assertions.assertEqual(len(timelines), 2)\n \n-        # Verify it's gone\n-        sketches = list(self.api.list_sketches())\n-        found = False\n-        for s in sketches:\n-            if s.id == sketch.id:\n-                found = True\n-        self.assertions.assertFalse(found, \"Sketch should be deleted\")\n+        # Verify index exists in OpenSearch\n+        self.assertions.assertEqual(\n+            self.check_opensearch_index_status(shared_index_name), \"open\"\n+        )\n+\n+        # 3. Delete the sketch with force=true\n+        # The Python API client's delete method might need to be checked if it\n+        # supports force. Based on timesketch_api_client/sketch.py, it should.\n+        # However, we can also use a direct request if needed.\n+        sketch.delete()  # By default, the API client might not use force_delete.\n+\n+        # Let's check how to do a force delete with the API client or direct\n+        # request. If we use sketch.delete(), it sends a DELETE request.\n+        # We want force=true.\n+\n+        session = self.admin_api.session\n+        resource_url = f\"{self.admin_api.api_root}/sketches/{sketch.id}/?force=true\"\n+        response = session.delete(resource_url)\n+\n+        self.assertions.assertEqual(response.status_code, 200)\n+\n+        # 4. Verify the sketch is gone\n+        # The API client's get_sketch() always returns a Sketch object,\n+        # but loading data for it will fail with a 404 error if it's deleted.\n+        deleted_sketch = self.api.get_sketch(sketch.id)\n+        with self.assertions.assertRaises(NotFoundError):\n+            deleted_sketch.lazyload_data(refresh_cache=True)\n+\n+        # 5. Verify the OpenSearch index is gone (since it was force deleted)\n+        self.assertions.assertEqual(\n+            self.check_opensearch_index_status(shared_index_name), \"not_found\"\n+        )\n+\n+    def test_cross_sketch_shared_index_soft_delete(self):\n+        \"\"\"Test that soft-deleting a sketch doesn't close a shared search index.\n+\n+        Logic:\n+        1. Create Sketch A and Sketch B.\n+        2. Import a timeline into Sketch A, resulting in SearchIndex X.\n+        3. Manually add SearchIndex X to Sketch B (simulating shared usage).\n+        4. Verify SearchIndex X is 'open'.\n+        5. Soft-delete Sketch A.\n+        6. Verify SearchIndex X is STILL 'open' because Sketch B is still active.\n+        \"\"\"\n+        rand = uuid.uuid4().hex\n+        sketch_a = self.api.create_sketch(name=f\"test-shared-index-A_{rand}\")\n+        sketch_b = self.api.create_sketch(name=f\"test-shared-index-B_{rand}\")\n+\n+        index_name = f\"shared_cross_sketch_{rand}\"\n+\n+        # 1. Import timeline into Sketch A\n+        tl_a = self.import_timeline(\n+            \"sigma_events.csv\", sketch=sketch_a, index_name=index_name\n+        )\n+        search_index_obj = tl_a.index\n+\n+        # 2. Add the SAME search index to Sketch B\n+        # We use a direct API request since add_timeline is deprecated in client\n+        resource_url = f\"{self.api.api_root}/sketches/{sketch_b.id}/timelines/\"\n+        data = {\"timeline\": search_index_obj.id}\n+        response = self.api.session.post(resource_url, json=data)\n+        self.assertions.assertEqual(response.status_code, 201)\n+\n+        # Verify index is open\n+        self.assertions.assertEqual(\n+            self.check_opensearch_index_status(index_name), \"open\"\n+        )\n+\n+        # 3. Soft-delete Sketch A\n+        sketch_a.delete()\n+\n+        # 4. Verify index remains OPEN because Sketch B still uses it\n+        status = self.check_opensearch_index_status(index_name)\n+        self.assertions.assertEqual(\n+            status,\n+            \"open\",\n+            f\"Index {index_name} was closed but should remain open \"\n+            \"(shared with Sketch B)\",\n+        )\n+\n+        # 5. Soft-delete Sketch B (the last one using it)\n+        sketch_b.delete()\n+\n+        # 6. Verify index is now CLOSED (as no active sketches use it anymore)\n+        status = self.check_opensearch_index_status(index_name)\n+        self.assertions.assertEqual(\n+            status,\n+            \"close\",\n+            f\"Index {index_name} should be closed after all sketches \" \"are deleted\",\n+        )\n \n \n manager.EndToEndTestManager.register_test(ClientTest)"
+    },
+    {
+      "sha": "4565185e668ea58be3045a7c373d55ff72035c8a",
+      "filename": "end_to_end_tests/timeline_deletion_test.py",
+      "status": "modified",
+      "additions": 47,
+      "deletions": 0,
+      "changes": 47,
+      "blob_url": "https://github.com/google/timesketch/blob/a40659bcc2446d5c6288e78291d26ff82e20b749/end_to_end_tests%2Ftimeline_deletion_test.py",
+      "raw_url": "https://github.com/google/timesketch/raw/a40659bcc2446d5c6288e78291d26ff82e20b749/end_to_end_tests%2Ftimeline_deletion_test.py",
+      "contents_url": "https://api.github.com/repos/google/timesketch/contents/end_to_end_tests%2Ftimeline_deletion_test.py?ref=a40659bcc2446d5c6288e78291d26ff82e20b749",
+      "patch": "@@ -262,5 +262,52 @@ def test_delete_sketch_with_shared_index(self):\n         # 5. Verify the OpenSearch index is gone (since it was force deleted)\n         self.check_opensearch_index_status(shared_index_name, \"deleted\")\n \n+    def test_admin_delete_non_owned_sketch(self):\n+        \"\"\"Test that an admin can delete a sketch they don't own.\n+\n+        This verifies the administrative permission override.\n+        \"\"\"\n+        rand = uuid.uuid4().hex\n+        # Create a sketch with the regular user\n+        sketch = self.api.create_sketch(name=f\"non-owned-sketch_{rand}\")\n+\n+        # Try to delete it with the admin API\n+        # (This previously failed with 403 because admin wasn't in the ACL)\n+        sketch_id = sketch.id\n+        admin_sketch = self.admin_api.get_sketch(sketch_id)\n+\n+        # Soft delete\n+        admin_sketch.delete()\n+\n+        # Verify it is deleted.\n+        # Note: Administrators can still fetch metadata for soft-deleted\n+        # sketches, so we check the status instead of expecting a 404.\n+        admin_sketch.lazyload_data(refresh_cache=True)\n+        self.assertions.assertEqual(admin_sketch.status, \"deleted\")\n+\n+    def test_delete_sketch_with_protected_label(self):\n+        \"\"\"Test that a sketch with a protected label cannot be deleted.\"\"\"\n+        rand = uuid.uuid4().hex\n+        sketch = self.api.create_sketch(name=f\"protected-sketch_{rand}\")\n+\n+        # Use the \"protected\" label which is in LABELS_TO_PREVENT_DELETION\n+        sketch.add_sketch_label(\"protected\")\n+\n+        # Attempt to delete (soft delete)\n+        with self.assertions.assertRaises(RuntimeError) as context:\n+            sketch.delete()\n+        self.assertions.assertIn(\"[403]\", str(context.exception))\n+\n+        # Attempt to force delete as admin\n+        admin_sketch = self.admin_api.get_sketch(sketch.id)\n+        with self.assertions.assertRaises(RuntimeError) as context:\n+            admin_sketch.delete(force_delete=True)\n+        self.assertions.assertIn(\"[403]\", str(context.exception))\n+\n+        # Verify sketch still exists and is not deleted.\n+        # Since it's a new sketch without timelines, the status is 'new'.\n+        _ = sketch.lazyload_data(refresh_cache=True)\n+        self.assertions.assertEqual(sketch.status, \"new\")\n+\n \n manager.EndToEndTestManager.register_test(TimelineDeletionTest)"
+    },
+    {
+      "sha": "ce1e638009de0ac48d5740b3af99ea4d235d8323",
+      "filename": "timesketch/api/v1/resources/searchindex.py",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 9,
+      "changes": 27,
+      "blob_url": "https://github.com/google/timesketch/blob/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Fapi%2Fv1%2Fresources%2Fsearchindex.py",
+      "raw_url": "https://github.com/google/timesketch/raw/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Fapi%2Fv1%2Fresources%2Fsearchindex.py",
+      "contents_url": "https://api.github.com/repos/google/timesketch/contents/timesketch%2Fapi%2Fv1%2Fresources%2Fsearchindex.py?ref=a40659bcc2446d5c6288e78291d26ff82e20b749",
+      "patch": "@@ -184,21 +184,30 @@ def post(self, searchindex_id):\n     @login_required\n     def delete(self, searchindex_id):\n         \"\"\"Handles DELETE request to the resource.\"\"\"\n-        searchindex = SearchIndex.get_with_acl(searchindex_id)\n+        if current_user.admin:\n+            # For admins, we use get_by_id which includes deleted search indices.\n+            # This is necessary so admins can perform a delete on an index\n+            # that has already been soft-deleted.\n+            searchindex = SearchIndex.get_by_id(searchindex_id)\n+        else:\n+            searchindex = SearchIndex.get_with_acl(searchindex_id)\n+\n         if not searchindex:\n             abort(HTTP_STATUS_CODE_NOT_FOUND, \"No searchindex found with this ID.\")\n \n         if not searchindex.has_permission(current_user, \"delete\"):\n-            abort(\n-                HTTP_STATUS_CODE_FORBIDDEN,\n-                (\n-                    \"User does not have sufficient access rights to \"\n-                    \"delete the search index.\"\n-                ),\n-            )\n+            if not current_user.admin:\n+                abort(\n+                    HTTP_STATUS_CODE_FORBIDDEN,\n+                    (\n+                        f\"User does not have sufficient access rights to \"\n+                        f\"delete search index {searchindex_id}.\"\n+                    ),\n+                )\n \n         if searchindex.get_status.status == \"deleted\":\n-            abort(HTTP_STATUS_CODE_BAD_REQUEST, \"Search index already deleted.\")\n+            if not current_user.admin:\n+                abort(HTTP_STATUS_CODE_BAD_REQUEST, \"Search index already deleted.\")\n \n         timelines = Timeline.query.filter_by(searchindex=searchindex).all()\n         sketches = ["
+    },
+    {
+      "sha": "628d142957cb12d9a05c667d39c6b0c93eebaaff",
+      "filename": "timesketch/api/v1/resources/sketch.py",
+      "status": "modified",
+      "additions": 134,
+      "deletions": 43,
+      "changes": 177,
+      "blob_url": "https://github.com/google/timesketch/blob/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Fapi%2Fv1%2Fresources%2Fsketch.py",
+      "raw_url": "https://github.com/google/timesketch/raw/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Fapi%2Fv1%2Fresources%2Fsketch.py",
+      "contents_url": "https://api.github.com/repos/google/timesketch/contents/timesketch%2Fapi%2Fv1%2Fresources%2Fsketch.py?ref=a40659bcc2446d5c6288e78291d26ff82e20b749",
+      "patch": "@@ -82,6 +82,13 @@ def __init__(self):\n             default=False,\n             location=\"args\",\n         )\n+        self.parser.add_argument(\n+            \"include_deleted\",\n+            type=inputs.boolean,\n+            required=False,\n+            default=False,\n+            location=\"args\",\n+        )\n \n     @login_required\n     def get(self):\n@@ -120,21 +127,32 @@ def get(self):\n         per_page = args.get(\"per_page\")\n         search_query = args.get(\"search_query\")\n         include_archived = args.get(\"include_archived\")\n+        include_deleted = args.get(\"include_deleted\")\n \n         if current_user.admin and scope == \"admin\":\n             sketch_query = Sketch.query\n         else:\n             sketch_query = Sketch.all_with_acl()\n \n-        base_filter = sketch_query.filter(\n-            not_(Sketch.Status.status == \"deleted\"),\n-            not_(Sketch.Status.status == \"archived\"),\n-            Sketch.Status.parent,\n-        ).order_by(Sketch.updated_at.desc())\n+        if include_deleted and current_user.admin:\n+            base_filter = sketch_query.filter(\n+                not_(Sketch.Status.status == \"archived\"),\n+                Sketch.Status.parent,\n+            ).order_by(Sketch.updated_at.desc())\n \n-        base_filter_with_archived = sketch_query.filter(\n-            not_(Sketch.Status.status == \"deleted\"), Sketch.Status.parent\n-        ).order_by(Sketch.updated_at.desc())\n+            base_filter_with_archived = sketch_query.filter(\n+                Sketch.Status.parent\n+            ).order_by(Sketch.updated_at.desc())\n+        else:\n+            base_filter = sketch_query.filter(\n+                not_(Sketch.Status.status == \"deleted\"),\n+                not_(Sketch.Status.status == \"archived\"),\n+                Sketch.Status.parent,\n+            ).order_by(Sketch.updated_at.desc())\n+\n+            base_filter_with_archived = sketch_query.filter(\n+                not_(Sketch.Status.status == \"deleted\"), Sketch.Status.parent\n+            ).order_by(Sketch.updated_at.desc())\n \n         filtered_sketches = None\n         sketches = []\n@@ -151,7 +169,9 @@ def get(self):\n         if include_archived:\n             base_filter = base_filter_with_archived\n         else:\n-            base_filter = base_filter.filter(not_(Sketch.status.any(status=\"archived\")))\n+            base_filter = base_filter.filter(\n+                not_(Sketch.status.any(status=\"archived\"))\n+            )  # pylint: disable=line-too-long\n \n         if scope == \"recent\":\n             # Get list of sketches that the user has actively searched in.\n@@ -292,13 +312,14 @@ def _remove_label(sketch, label):\n     def _get_sketch_for_admin(sketch: Sketch):\n         \"\"\"Returns a limited sketch view for administrators.\n \n-        An administrator needs to get information about all sketches\n-        that are stored on the backend. However that view should be\n-        limited for sketches that user does not have explicit read\n-        or other permissions as well. In those cases the returned\n-        sketch only contains information about the name, description,\n-        etc but not any information about the data, nor any access\n-        to the underlying data of the sketch.\n+        Administrators may need to access information about any sketch on the\n+        system. This method provides a limited view for sketches where the\n+        administrator does not have explicit read permissions, or for sketches\n+        that are archived or soft-deleted (where associated OpenSearch indices\n+        may be closed or unavailable).\n+\n+        The limited view includes basic metadata like name and description\n+        but excludes access to the underlying timeline data.\n \n         Args:\n             sketch: (object) a sketch object (instance of models.Sketch)\n@@ -309,6 +330,8 @@ def _get_sketch_for_admin(sketch: Sketch):\n         \"\"\"\n         if sketch.get_status.status == \"archived\":\n             status = \"archived\"\n+        elif sketch.get_status.status == \"deleted\":\n+            status = \"deleted\"\n         else:\n             status = \"admin_view\"\n \n@@ -352,6 +375,15 @@ def get(self, sketch_id):\n             if not sketch.has_permission(current_user, \"read\"):\n                 return self._get_sketch_for_admin(sketch)\n \n+        # If the sketch is soft-deleted, we return a minimal response only for admins.\n+        # This is because the OpenSearch indices are closed when a sketch\n+        # is soft-deleted, and attempting to load full details (mappings,\n+        # counts, etc) would result in a 500 error from OpenSearch.\n+        if sketch.get_status.status == \"deleted\":\n+            if not current_user.admin:\n+                abort(HTTP_STATUS_CODE_NOT_FOUND, \"No sketch found with this ID.\")\n+            return self._get_sketch_for_admin(sketch)\n+\n         aggregators = {}\n         for _, cls in aggregator_manager.AggregatorManager.get_aggregators():\n             aggregators[cls.NAME] = {\n@@ -562,6 +594,18 @@ def _force_delete_sketch(self, sketch):\n                     db_session.delete(timeline)\n                 continue\n \n+            # Check if this index is used in any other active sketch\n+            if searchindex.is_shared(exclude_sketch_id=sketch.id):\n+                logger.warning(\n+                    \"Search index %s is shared with another active sketch. \"\n+                    \"Skipping index and SearchIndex deletion for sketch %s.\",\n+                    searchindex.index_name,\n+                    sketch.id,\n+                )\n+                if inspect(timeline).persistent:\n+                    db_session.delete(timeline)\n+                continue\n+\n             # If the searchindex has already been processed (e.g. shared by\n             # another timeline), we just delete the timeline and continue.\n             searchindex_id = getattr(searchindex, \"id\", None)\n@@ -612,7 +656,8 @@ def _force_delete_sketch(self, sketch):\n                         )\n \n                 except NotFoundError:\n-                    # This can happen if the index was already deleted or never existed.\n+                    # This can happen if the index was already deleted or never\n+                    # existed.\n                     e_msg = (\n                         f\"OpenSearch index {index_name_to_delete} was not found \"\n                         f\"during deletion attempt. It might have been deleted \"\n@@ -650,11 +695,16 @@ def _force_delete_sketch(self, sketch):\n     def delete(self, sketch_id: int, force_delete: bool = False):\n         \"\"\"Handles DELETE request to the resource.\n \n-        This method supports both a 'soft' and a 'hard' (force) delete.\n+        By default (force_delete=False), this method marks the sketch as 'deleted'\n+        in the database and attempts to close all associated OpenSearch indices\n+        to free up cluster resources. This is a soft delete.\n \n-        Soft delete (default): Marks the sketch as 'deleted'. This is often used\n-            to hide the sketch from general users while allowing administrators\n-            to review or permanently remove it later.\n+        If force_delete is set to True (either via the parameter or the 'force'\n+        URL query parameter), the sketch, its timelines, associated search indices,\n+        and all related data in the database and OpenSearch will be permanently\n+        removed. This is a hard delete and is irreversible. Administrators can\n+        use this to permanently remove sketches that have already been\n+        soft-deleted.\n \n         Hard delete (force): Permanently removes the sketch and all its\n             associated data (timelines, search indices, and OpenSearch data).\n@@ -672,8 +722,8 @@ def delete(self, sketch_id: int, force_delete: bool = False):\n         4. Mark the Sketch itself for deletion.\n         5. Commit the transaction to the database.\n \n-        Requires 'delete' permission on the sketch and the\n-            user must be an administrator for force_delete.\n+        Requires 'delete' permission on the sketch and the user must be an\n+        administrator for force deletion.\n \n         Args:\n             sketch_id (int): The ID of the sketch to delete.\n@@ -683,30 +733,49 @@ def delete(self, sketch_id: int, force_delete: bool = False):\n                 Can also be triggered by setting the 'force' URL query parameter.\n \n         Returns:\n-            int: HTTP_STATUS_CODE_OK (200) if the operation is successful (even\n-                 for a soft delete where data is only marked).\n+            int: HTTP_STATUS_CODE_OK (200) if the operation is successful.\n \n         Raises:\n             HTTP_STATUS_CODE_NOT_FOUND (404): If no sketch is found with the\n-                given ID.\n+                given ID, or if the sketch is soft-deleted and the request\n+                is not a force delete by an admin.\n             HTTP_STATUS_CODE_FORBIDDEN (403): If the user does not have 'delete'\n                 permission on the sketch, or if the sketch has a label\n-                preventing deletion, or if the user is not an admin.\n+                preventing deletion, or if the user is not an admin when\n+                attempting a force delete.\n             HTTP_STATUS_CODE_BAD_REQUEST (400): If there's an issue during the\n                 deletion process e.g. the sketch being archived,\n                 or if timelines are still processing.\n             HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR (500): If there's an unrecoverable\n                 error during OpenSearch index deletion.\n         \"\"\"\n-        sketch = Sketch.get_with_acl(sketch_id)\n+        if not force_delete:\n+            force_delete = request.args.get(\"force\", default=False, type=inputs.boolean)\n+            if force_delete:\n+                logger.debug(\"Force delete detected from URL parameter.\")\n+            else:\n+                logger.debug(\"Force delete not present, will keep the OS data.\")\n+\n+        if current_user.admin:\n+            # For admins, we use get_by_id which includes soft-deleted sketches.\n+            # This is necessary so admins can perform a hard delete (force)\n+            # on a sketch that has already been soft-deleted.\n+            sketch = Sketch.get_by_id(sketch_id)\n+        else:\n+            sketch = Sketch.get_with_acl(sketch_id)\n+\n         if not sketch:\n             abort(HTTP_STATUS_CODE_NOT_FOUND, \"No sketch found with this ID.\")\n \n         if not sketch.has_permission(current_user, \"delete\"):\n-            abort(\n-                HTTP_STATUS_CODE_FORBIDDEN,\n-                \"User does not have sufficient access rights to delete a sketch.\",\n-            )\n+            if not current_user.admin:\n+                abort(\n+                    HTTP_STATUS_CODE_FORBIDDEN,\n+                    (\n+                        f\"User does not have sufficient access rights to delete \"\n+                        f\"sketch {sketch_id}.\"\n+                    ),\n+                )\n \n         not_delete_labels = current_app.config.get(\"LABELS_TO_PREVENT_DELETION\", [])\n         for label in not_delete_labels:\n@@ -722,11 +791,6 @@ def delete(self, sketch_id: int, force_delete: bool = False):\n                 \"Unable to delete a sketch that is already archived.\",\n             )\n \n-        # Allow triggering force delete via URL parameter\n-        if not force_delete and request.args.get(\"force\"):\n-            force_delete = True\n-            logger.debug(\"Force delete detected from URL parameter.\")\n-\n         # Permissions and state checks for force deletion\n         if force_delete:\n             if not current_user.admin:\n@@ -742,20 +806,47 @@ def delete(self, sketch_id: int, force_delete: bool = False):\n             if is_any_timeline_processing:\n                 abort(\n                     HTTP_STATUS_CODE_BAD_REQUEST,\n-                    \"Cannot delete sketch: one or more timelines are still processing.\",\n+                    (\n+                        \"Cannot delete sketch: one or more timelines are still \"\n+                        \"processing.\"\n+                    ),\n                 )\n \n-        # Soft delete is always performed, even as a first step of force delete\n         sketch.set_status(status=\"deleted\")\n \n+        # Default behaviour for historical reasons: exit with 200 without\n+        # deleting\n+        if not force_delete:\n+            # Close indices to save resources\n+            for timeline in sketch.timelines:\n+                searchindex = timeline.searchindex\n+\n+                # Check if this index is used in any other active sketch\n+                if searchindex.is_shared(exclude_sketch_id=sketch.id):\n+                    logger.warning(\n+                        \"Search index %s is shared with another active sketch. \"\n+                        \"Skipping index close for soft-deleted sketch %s.\",\n+                        searchindex.index_name,\n+                        sketch.id,\n+                    )\n+                    continue\n+\n+                try:\n+                    self.datastore.client.indices.close(index=searchindex.index_name)\n+                except Exception as e:  # pylint: disable=broad-except\n+                    logger.warning(\n+                        \"Failed to close index %s for soft-deleted sketch %s: %s\",\n+                        searchindex.index_name,\n+                        sketch.id,\n+                        e,\n+                    )\n+            db_session.commit()\n+            return HTTP_STATUS_CODE_OK\n+\n         if force_delete:\n             logger.debug(\"User %s is force-deleting sketch %s\", current_user, sketch_id)\n             self._force_delete_sketch(sketch)\n \n-        else:\n-            # if force_delete is false, still commit changes to the db\n-            db_session.commit()\n-\n         return HTTP_STATUS_CODE_OK\n \n     @login_required"
+    },
+    {
+      "sha": "ad7f37804b4cc8d0bddc5d635f3feb8392fab082",
+      "filename": "timesketch/api/v1/resources/timeline.py",
+      "status": "modified",
+      "additions": 29,
+      "deletions": 23,
+      "changes": 52,
+      "blob_url": "https://github.com/google/timesketch/blob/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Fapi%2Fv1%2Fresources%2Ftimeline.py",
+      "raw_url": "https://github.com/google/timesketch/raw/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Fapi%2Fv1%2Fresources%2Ftimeline.py",
+      "contents_url": "https://api.github.com/repos/google/timesketch/contents/timesketch%2Fapi%2Fv1%2Fresources%2Ftimeline.py?ref=a40659bcc2446d5c6288e78291d26ff82e20b749",
+      "patch": "@@ -517,7 +517,14 @@ def delete(self, sketch_id: int, timeline_id: int) -> int:\n             HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR: If an unexpected error\n                 occurs while attempting to close the search index in the datastore.\n         \"\"\"\n-        sketch = Sketch.get_with_acl(sketch_id)\n+        if current_user.admin:\n+            # For admins, we use get_by_id which includes soft-deleted sketches.\n+            # This is necessary so admins can perform a delete on a timeline\n+            # in a sketch that has already been soft-deleted.\n+            sketch = Sketch.get_by_id(sketch_id)\n+        else:\n+            sketch = Sketch.get_with_acl(sketch_id)\n+\n         if not sketch:\n             abort(HTTP_STATUS_CODE_NOT_FOUND, \"No sketch found with this ID.\")\n \n@@ -552,10 +559,14 @@ def delete(self, sketch_id: int, timeline_id: int) -> int:\n             abort(HTTP_STATUS_CODE_NOT_FOUND, msg)\n \n         if not sketch.has_permission(user=current_user, permission=\"write\"):\n-            abort(\n-                HTTP_STATUS_CODE_FORBIDDEN,\n-                \"The user does not have write permission on the sketch.\",\n-            )\n+            if not current_user.admin:\n+                abort(\n+                    HTTP_STATUS_CODE_FORBIDDEN,\n+                    (\n+                        f\"User does not have write permission on sketch {sketch_id} \"\n+                        f\"to remove timeline {timeline_id}.\"\n+                    ),\n+                )\n \n         not_delete_labels = current_app.config.get(\"LABELS_TO_PREVENT_DELETION\", [])\n         for label in not_delete_labels:\n@@ -568,24 +579,19 @@ def delete(self, sketch_id: int, timeline_id: int) -> int:\n         # Check if this searchindex is used in other sketches.\n         close_index = True\n         searchindex = timeline.searchindex\n-        index_name = searchindex.index_name\n-        search_indices = SearchIndex.query.filter_by(index_name=index_name).all()\n-        timelines = []\n-        for index in search_indices:\n-            timelines.extend(index.timelines)\n-\n-        for timeline_ in timelines:\n-            if timeline_.sketch is None:\n-                continue\n-\n-            if timeline_.sketch.id != sketch.id:\n-                close_index = False\n-                break\n-\n-            if timeline_.id != timeline_id:\n-                # There are more than a single timeline using this index_name,\n-                # we can't close it (unless this timeline is archived).\n-                if timeline_.get_status.status not in (\"archived\", \"fail\", \"deleted\"):\n+        if searchindex.is_shared(exclude_sketch_id=sketch.id):\n+            close_index = False\n+        else:\n+            # If not shared with other sketches, we still need to check if there\n+            # are other timelines in the SAME sketch using this index.\n+            # (e.g. if the user added the same index twice to the same sketch)\n+            other_timelines_in_sketch = [\n+                t\n+                for t in searchindex.timelines\n+                if t.sketch_id == sketch.id and t.id != timeline_id\n+            ]\n+            for t in other_timelines_in_sketch:\n+                if t.get_status.status not in (\"archived\", \"fail\", \"deleted\"):\n                     close_index = False\n                     break\n "
+    },
+    {
+      "sha": "b5ac77b39077d677f7058d9b1305e8756f6b1d5a",
+      "filename": "timesketch/lib/aggregators/interface.py",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 8,
+      "changes": 22,
+      "blob_url": "https://github.com/google/timesketch/blob/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Flib%2Faggregators%2Finterface.py",
+      "raw_url": "https://github.com/google/timesketch/raw/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Flib%2Faggregators%2Finterface.py",
+      "contents_url": "https://api.github.com/repos/google/timesketch/contents/timesketch%2Flib%2Faggregators%2Finterface.py?ref=a40659bcc2446d5c6288e78291d26ff82e20b749",
+      "patch": "@@ -95,23 +95,29 @@ def to_chart(\n         as_chart: bool = False,\n         color: str = \"\",\n     ):\n-        \"\"\"Encode aggregation result as Vega-Lite chart.\n+        \"\"\"Encode aggregation result as a Vega-Lite chart.\n \n         Args:\n-            chart_name: Name of chart as string, defaults to initialized\n-                value of the chart type..\n+            chart_name: Name of chart as string. Defaults to the initialized\n+                chart type of the aggregation result.\n             chart_title: The title of the chart.\n-            as_html: Boolean indicating if chart should be returned in HTML.\n+            as_html: Boolean indicating if chart should be returned as HTML\n+                string.\n             interactive: Boolean indicating if chart should be interactive.\n-            as_chart: Boolean indicating if chart should be returned as a\n-                chart object (instance of altair.vegalite.v3.api.LayerChart).\n+            as_chart: Boolean indicating if chart should be returned as an\n+                Altair chart object (instance of altair.Chart).\n             color: String with the color information for the chart.\n \n         Returns:\n-            Vega-Lite chart spec in either JSON or HTML format.\n+            - If as_html is True: String containing HTML representation of\n+              the chart.\n+            - If as_chart is True: Altair Chart object.\n+            - Default: Dictionary containing the Vega-Lite JSON specification.\n+            - Returns empty result (according to return type) if chart\n+              generation fails or if encoding is missing.\n \n         Raises:\n-            RuntimeError if chart type does not exist.\n+            RuntimeError: If the requested chart type does not exist.\n         \"\"\"\n         if not chart_name:\n             chart_name = self.chart_type"
+    },
+    {
+      "sha": "e5e2bb8a1ba64d39131cd65701df36766ee90fe9",
+      "filename": "timesketch/lib/tasks.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/google/timesketch/blob/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Flib%2Ftasks.py",
+      "raw_url": "https://github.com/google/timesketch/raw/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Flib%2Ftasks.py",
+      "contents_url": "https://api.github.com/repos/google/timesketch/contents/timesketch%2Flib%2Ftasks.py?ref=a40659bcc2446d5c6288e78291d26ff82e20b749",
+      "patch": "@@ -423,6 +423,7 @@ def build_index_pipeline(\n     if not (file_path or events):\n         raise RuntimeError(\"Unable to upload data, missing either a file or events.\")\n     index_task_class = _get_index_task_class(file_extension)\n+    index_task = None\n     sketch_analyzer_chain = None\n     searchindex = SearchIndex.query.filter_by(index_name=index_name).first()\n "
+    },
+    {
+      "sha": "b9f7df087973be1a2c4a961d04a96409515dd789",
+      "filename": "timesketch/models/__init__.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 4,
+      "changes": 10,
+      "blob_url": "https://github.com/google/timesketch/blob/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Fmodels%2F__init__.py",
+      "raw_url": "https://github.com/google/timesketch/raw/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Fmodels%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/google/timesketch/contents/timesketch%2Fmodels%2F__init__.py?ref=a40659bcc2446d5c6288e78291d26ff82e20b749",
+      "patch": "@@ -83,12 +83,13 @@ def update_modification_time(self):\n         self.updated_at = func.now()\n \n     @classmethod\n-    def get_with_acl(cls, model_id, user=current_user):\n+    def get_with_acl(cls, model_id, user=current_user, include_deleted=False):\n         \"\"\"Get a database object with permission check enforced.\n \n         Args:\n-            model_id: The integer ID of the model to get.\n-            user: User (instance of timesketch.models.user.User)\n+            model_id (int): The integer ID of the model to get.\n+            user (User): User (instance of timesketch.models.user.User)\n+            include_deleted (bool): Boolean to include deleted objects.\n \n         Returns:\n             A BaseQuery instance.\n@@ -98,7 +99,8 @@ def get_with_acl(cls, model_id, user=current_user):\n             abort(HTTP_STATUS_CODE_NOT_FOUND)\n         try:\n             if result_obj.get_status.status == \"deleted\":\n-                abort(HTTP_STATUS_CODE_NOT_FOUND)\n+                if not (include_deleted and user.admin):\n+                    abort(HTTP_STATUS_CODE_NOT_FOUND)\n         except AttributeError:\n             pass\n         if result_obj.is_public:"
+    },
+    {
+      "sha": "08d49401c35dac288cd3cf2c41b73a3667edabb4",
+      "filename": "timesketch/models/sketch.py",
+      "status": "modified",
+      "additions": 39,
+      "deletions": 0,
+      "changes": 39,
+      "blob_url": "https://github.com/google/timesketch/blob/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Fmodels%2Fsketch.py",
+      "raw_url": "https://github.com/google/timesketch/raw/a40659bcc2446d5c6288e78291d26ff82e20b749/timesketch%2Fmodels%2Fsketch.py",
+      "contents_url": "https://api.github.com/repos/google/timesketch/contents/timesketch%2Fmodels%2Fsketch.py?ref=a40659bcc2446d5c6288e78291d26ff82e20b749",
+      "patch": "@@ -293,6 +293,45 @@ class SearchIndex(AccessControlMixin, LabelMixin, StatusMixin, CommentMixin, Bas\n     )\n     events = relationship(\"Event\", backref=\"searchindex\", lazy=\"dynamic\")\n \n+    def is_shared(self, exclude_sketch_id: Optional[int] = None) -> bool:\n+        \"\"\"Checks if the underlying OpenSearch index is shared with other sketches.\n+\n+        This method identifies all `SearchIndex` objects that share the same\n+        `index_name` and then iterates through all associated timelines across\n+        the entire system. It determines if the index is \"shared\" by checking\n+        if any of those timelines belong to a sketch that is not marked as\n+        deleted (excluding the optionally provided `exclude_sketch_id`).\n+\n+        This check is performed at the system level, bypassing access control\n+        layers, to ensure data integrity. This prevents indices from being closed\n+        or deleted if they are still required by other sketches, even if the\n+        current user does not have permission to view those other sketches.\n+\n+        Args:\n+            exclude_sketch_id: Optional sketch ID to exclude from the check.\n+                Typically, this is the ID of the sketch currently being deleted\n+                or archived.\n+\n+        Returns:\n+            True if the index is associated with at least one other non-deleted\n+            sketch; False otherwise.\n+        \"\"\"\n+        # Use a single joined query to find other non-deleted sketches\n+        # that share the same index name.\n+        query = (\n+            db_session.query(Timeline.id)\n+            .join(SearchIndex)\n+            .join(Sketch, Timeline.sketch)\n+            .join(Sketch.Status, Sketch.status)\n+            .filter(SearchIndex.index_name == self.index_name)\n+            .filter(Sketch.Status.status != \"deleted\")\n+        )\n+\n+        if exclude_sketch_id:\n+            query = query.filter(Sketch.id != exclude_sketch_id)\n+\n+        return query.first() is not None\n+\n \n class View(AccessControlMixin, LabelMixin, StatusMixin, CommentMixin, BaseModel):\n     \"\"\"Implements the View model.\"\"\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8244b2acc07fdf83bfc9c0632b8a55c88005f505",
+      "message": "fix some issues with soft_delete",
+      "parent_shas": [
+        "ab34531793e356819c77693d42ef3c43f9f040b0"
+      ]
+    },
+    {
+      "sha": "07327516aa9f8ef19855b9e96a0ccd9357c6d5c5",
+      "message": "add tests",
+      "parent_shas": [
+        "8244b2acc07fdf83bfc9c0632b8a55c88005f505"
+      ]
+    },
+    {
+      "sha": "b566bca66ff0ed943404bc960f39226cfe9793f0",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "07327516aa9f8ef19855b9e96a0ccd9357c6d5c5",
+        "ce7b717233b45ab952e9c0806a7cdae8eae7fce6"
+      ]
+    },
+    {
+      "sha": "4da50fe72dd21a74e25de9c1e65173934d48c411",
+      "message": "update docs and docstrings",
+      "parent_shas": [
+        "b566bca66ff0ed943404bc960f39226cfe9793f0"
+      ]
+    },
+    {
+      "sha": "1ee57622cb160f569bce5242b158f770381d90df",
+      "message": "fix lint",
+      "parent_shas": [
+        "4da50fe72dd21a74e25de9c1e65173934d48c411"
+      ]
+    },
+    {
+      "sha": "6e99247fa3e0666ff40d23027b36b9edb36f8281",
+      "message": "docstring",
+      "parent_shas": [
+        "1ee57622cb160f569bce5242b158f770381d90df"
+      ]
+    },
+    {
+      "sha": "b36bddd2144456a7c33e33d4aa2e7f24fdfb3e1e",
+      "message": "include delted in the sketch list.",
+      "parent_shas": [
+        "6e99247fa3e0666ff40d23027b36b9edb36f8281"
+      ]
+    },
+    {
+      "sha": "9a26f2199f0fae9fbfa8c5ef149f697ece829154",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "b36bddd2144456a7c33e33d4aa2e7f24fdfb3e1e",
+        "0f5dd35c55fd946f91fd90426532d03b41bc076e"
+      ]
+    },
+    {
+      "sha": "1763ae7694497b4cbbeb6800df690c2671e59883",
+      "message": "modify interface.py",
+      "parent_shas": [
+        "9a26f2199f0fae9fbfa8c5ef149f697ece829154"
+      ]
+    },
+    {
+      "sha": "5ae5a54c1e68df9b22af0b071b29c4164b1a2781",
+      "message": "more fixes",
+      "parent_shas": [
+        "1763ae7694497b4cbbeb6800df690c2671e59883"
+      ]
+    },
+    {
+      "sha": "65b006572b790bb583a95bc873194c68448b0942",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "5ae5a54c1e68df9b22af0b071b29c4164b1a2781",
+        "a3700ea0c1a3ee8d797c92cc169a43e840bb17a5"
+      ]
+    },
+    {
+      "sha": "9eea27782974a090e907bd92f856440693f862d5",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "65b006572b790bb583a95bc873194c68448b0942",
+        "8138ede6e9bd37529aad732ac86a21c219445200"
+      ]
+    },
+    {
+      "sha": "c5f4e7dfd1fec589587fd972e69c9d1f1fb84137",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "9eea27782974a090e907bd92f856440693f862d5",
+        "cbad5021f62366ecce476d72aa9668cb80ab036e"
+      ]
+    },
+    {
+      "sha": "2ae96b956414f45763b4de8cbe8fa9e7634b918f",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "c5f4e7dfd1fec589587fd972e69c9d1f1fb84137",
+        "6ab86688dfb8089592b633c6ce9650f0c40160ea"
+      ]
+    },
+    {
+      "sha": "68fd4338a57ffb2412a29839b9ecf3ce56b6fe74",
+      "message": "remove duplicate test def test_delete_sketch_with_missing_index",
+      "parent_shas": [
+        "2ae96b956414f45763b4de8cbe8fa9e7634b918f"
+      ]
+    },
+    {
+      "sha": "7d3d9dc524a4eb671da9e838624b6f1aeec66042",
+      "message": "firs test",
+      "parent_shas": [
+        "68fd4338a57ffb2412a29839b9ecf3ce56b6fe74"
+      ]
+    },
+    {
+      "sha": "269fe8072ab7b25ae08fb0508cf2889b599819c3",
+      "message": "lint",
+      "parent_shas": [
+        "7d3d9dc524a4eb671da9e838624b6f1aeec66042"
+      ]
+    },
+    {
+      "sha": "dfc7cd1d796e5386670fa8f5269a8e44038f95c5",
+      "message": "lint",
+      "parent_shas": [
+        "269fe8072ab7b25ae08fb0508cf2889b599819c3"
+      ]
+    },
+    {
+      "sha": "f2c137abc7a1af22f7d4bb8de1726b4e0ef981d4",
+      "message": "lint23234",
+      "parent_shas": [
+        "dfc7cd1d796e5386670fa8f5269a8e44038f95c5"
+      ]
+    },
+    {
+      "sha": "6d69454b72288009b7d68f5847133956f7aa345f",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "f2c137abc7a1af22f7d4bb8de1726b4e0ef981d4",
+        "8b5fc007d853304350f50fa4eea27864d38474e2"
+      ]
+    },
+    {
+      "sha": "5aa0296ff3d2d68c104db5927caddaa0f21ded9e",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "6d69454b72288009b7d68f5847133956f7aa345f",
+        "4a57d14de24381ea2c75498dd43d43933a6a13bf"
+      ]
+    },
+    {
+      "sha": "3f409e87fc644ecb395fef80f671f11c36182865",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "5aa0296ff3d2d68c104db5927caddaa0f21ded9e",
+        "9b6978d4c4626705d4a26f716bf49e2b0b95ea49"
+      ]
+    },
+    {
+      "sha": "73b05ffa594fbd810a9dc2d14180ee1e19e479b7",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "3f409e87fc644ecb395fef80f671f11c36182865",
+        "d50d78edab70a2f1ebb8b9de1f71502ef812c2b4"
+      ]
+    },
+    {
+      "sha": "2f072a5c7cd283dc8f93d5ac98b8854f347ca9a1",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "73b05ffa594fbd810a9dc2d14180ee1e19e479b7",
+        "349869a87b2208378935cd059e46daf87eb2e229"
+      ]
+    },
+    {
+      "sha": "bb398079d383bb8ff04efbe8c78744efbe966d24",
+      "message": "Apply suggestions from code review\n\nCo-authored-by: gemini-code-assist[bot] <176961590+gemini-code-assist[bot]@users.noreply.github.com>",
+      "parent_shas": [
+        "2f072a5c7cd283dc8f93d5ac98b8854f347ca9a1"
+      ]
+    },
+    {
+      "sha": "b4c6bcdef56214126dcbc23497ff2c70ebb4efdb",
+      "message": "fix",
+      "parent_shas": [
+        "bb398079d383bb8ff04efbe8c78744efbe966d24"
+      ]
+    },
+    {
+      "sha": "9ecb5ffb178df04d352c7f5a8630c932a76413bf",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "b4c6bcdef56214126dcbc23497ff2c70ebb4efdb",
+        "a1cef3a5333b4345049cf993b86990cf47acc470"
+      ]
+    },
+    {
+      "sha": "da9af659d6dc17e9c0ffbead957ef50d084296dc",
+      "message": "timeline check",
+      "parent_shas": [
+        "9ecb5ffb178df04d352c7f5a8630c932a76413bf"
+      ]
+    },
+    {
+      "sha": "62793285ded3ca90508f2bc33d62ee951ea59ff1",
+      "message": "your commit message",
+      "parent_shas": [
+        "da9af659d6dc17e9c0ffbead957ef50d084296dc"
+      ]
+    },
+    {
+      "sha": "e72e429a0bc4a434c17ec7a00587c500e84caa09",
+      "message": "fix(api): implement shared index safety for soft-delete",
+      "parent_shas": [
+        "62793285ded3ca90508f2bc33d62ee951ea59ff1"
+      ]
+    },
+    {
+      "sha": "3816d66f90430d052b9f364be61b3647937fe455",
+      "message": "fix(api): implement shared index safety for soft-delete",
+      "parent_shas": [
+        "e72e429a0bc4a434c17ec7a00587c500e84caa09"
+      ]
+    },
+    {
+      "sha": "28f7cd0b6a9c0b640a1c62073c40fb7297d05db6",
+      "message": "fix(api): implement shared index safety for soft-delete",
+      "parent_shas": [
+        "3816d66f90430d052b9f364be61b3647937fe455"
+      ]
+    },
+    {
+      "sha": "3bb03639eb8a1ff1eecb06fd4600e4e7107978bd",
+      "message": "fix(api): implement shared index safety for soft-delete",
+      "parent_shas": [
+        "28f7cd0b6a9c0b640a1c62073c40fb7297d05db6"
+      ]
+    },
+    {
+      "sha": "4bd82e562f52bdce695186fde29789cc2573a044",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "3bb03639eb8a1ff1eecb06fd4600e4e7107978bd",
+        "0425c5f942517d027f08f2b82e8ac4ea5ee358d6"
+      ]
+    },
+    {
+      "sha": "c2eaf793936b0f5958849bf7009ef621177b4be8",
+      "message": "some more improvements",
+      "parent_shas": [
+        "4bd82e562f52bdce695186fde29789cc2573a044"
+      ]
+    },
+    {
+      "sha": "5fd7c44982631231f60a9e0b6fead48a0c5789bd",
+      "message": "feedback and docs",
+      "parent_shas": [
+        "c2eaf793936b0f5958849bf7009ef621177b4be8"
+      ]
+    },
+    {
+      "sha": "e35c80ea121298657ebaabc25960281069062a93",
+      "message": "fix",
+      "parent_shas": [
+        "5fd7c44982631231f60a9e0b6fead48a0c5789bd"
+      ]
+    },
+    {
+      "sha": "b65b3999370d246621936c4d53e60a93e4648f19",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "e35c80ea121298657ebaabc25960281069062a93",
+        "9a37835b37c3a2ce5022c991b2d07e38e702be3c"
+      ]
+    },
+    {
+      "sha": "50a3c445985d05671dd54c37c9cee86dff47ddba",
+      "message": "more fixes, remove sketch-delete back from tsctl",
+      "parent_shas": [
+        "b65b3999370d246621936c4d53e60a93e4648f19"
+      ]
+    },
+    {
+      "sha": "7ea42033a05e222e4268c7a1e8821b43479be639",
+      "message": "fix tests attempt",
+      "parent_shas": [
+        "50a3c445985d05671dd54c37c9cee86dff47ddba"
+      ]
+    },
+    {
+      "sha": "394958e96ca1920ae89b641fa6c3cb1796fb92e5",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "7ea42033a05e222e4268c7a1e8821b43479be639",
+        "e33b46efc4e7f1628625b1fb7f7a540f6915bcdb"
+      ]
+    },
+    {
+      "sha": "11edfdfad2bda5b245677ad16bfb64ded76b7122",
+      "message": "improve tests",
+      "parent_shas": [
+        "394958e96ca1920ae89b641fa6c3cb1796fb92e5"
+      ]
+    },
+    {
+      "sha": "c61b330b600a99bae3f2080f1855dce9f7907255",
+      "message": "merge conflict",
+      "parent_shas": [
+        "11edfdfad2bda5b245677ad16bfb64ded76b7122"
+      ]
+    },
+    {
+      "sha": "95fd37823e9d8cd06224693d12436d9114263b19",
+      "message": "test",
+      "parent_shas": [
+        "c61b330b600a99bae3f2080f1855dce9f7907255"
+      ]
+    },
+    {
+      "sha": "2ff731ad97d2bb2989fae01e22445be5aec12549",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "95fd37823e9d8cd06224693d12436d9114263b19",
+        "5690e95603d6e4bc1f7844a3780e71d618bcf5b8"
+      ]
+    },
+    {
+      "sha": "8e401255ab70ee4dac338f0152d5ce751dbf3107",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "2ff731ad97d2bb2989fae01e22445be5aec12549",
+        "61435c9fe2965b983b2ec4e89c0a00f1ed02cc7e"
+      ]
+    },
+    {
+      "sha": "e4626b07e08c106e364f2ef71e6ca18a634d6bd0",
+      "message": "some feedback",
+      "parent_shas": [
+        "8e401255ab70ee4dac338f0152d5ce751dbf3107"
+      ]
+    },
+    {
+      "sha": "4dc07a7444d43238f0b4fae14ac1fb6009d2c163",
+      "message": "get barameter as bool",
+      "parent_shas": [
+        "e4626b07e08c106e364f2ef71e6ca18a634d6bd0"
+      ]
+    },
+    {
+      "sha": "8ef8d47064e64ac7497679f0a539ddb01f0cf706",
+      "message": "feedback",
+      "parent_shas": [
+        "4dc07a7444d43238f0b4fae14ac1fb6009d2c163"
+      ]
+    },
+    {
+      "sha": "e77144fd149604ab384a3f2dc0b0dd7ffc1350f4",
+      "message": "lint",
+      "parent_shas": [
+        "8ef8d47064e64ac7497679f0a539ddb01f0cf706"
+      ]
+    },
+    {
+      "sha": "6fd0aa8ffd2946700a5f57c90f5b8641012e8281",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "e77144fd149604ab384a3f2dc0b0dd7ffc1350f4",
+        "fc5f30bbb2602858db8bb49e9513b87949d62f5f"
+      ]
+    },
+    {
+      "sha": "0ec4e71d282026d7ebab267b05ce3a996bf7ec0c",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "6fd0aa8ffd2946700a5f57c90f5b8641012e8281",
+        "c71af127f9409ce91acc882e9b960edab5ad3d86"
+      ]
+    },
+    {
+      "sha": "a40659bcc2446d5c6288e78291d26ff82e20b749",
+      "message": "Merge branch 'master' into 2026-01-06_find_soft_deleted_sketches",
+      "parent_shas": [
+        "0ec4e71d282026d7ebab267b05ce3a996bf7ec0c",
+        "146f7886e4e001451e6385ca793e7e05bcf3f54f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "too_many_commits"
+    ],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__google__timesketch__pr3657.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\google__timesketch__pr3657__py2_py3__google__timesketch__pr3657\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\google__timesketch__pr3657__py2_py3__google__timesketch__pr3657\\rn"
+  }
+}

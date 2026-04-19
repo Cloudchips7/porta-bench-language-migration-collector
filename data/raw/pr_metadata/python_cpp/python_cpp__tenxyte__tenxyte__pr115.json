@@ -1,0 +1,77 @@
+{
+  "instance_id": "python_cpp__tenxyte__tenxyte__pr115",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "tenxyte/tenxyte",
+  "pr_number": 115,
+  "pr_url": "https://github.com/tenxyte/tenxyte/pull/115",
+  "repo": {
+    "full_name": "tenxyte/tenxyte",
+    "clone_url": "https://github.com/tenxyte/tenxyte.git",
+    "default_branch": "main",
+    "created_at": "2026-03-05T06:40:57Z",
+    "stars": 42,
+    "license": "MIT",
+    "size_kb": 3218
+  },
+  "pull_request": {
+    "id": 3498125960,
+    "title": "Ugraded mkdocstrings[python] to mkdocstrings[python]",
+    "body": "",
+    "created_at": "2026-04-07T13:33:44Z",
+    "merged_at": "2026-04-07T13:33:57Z",
+    "base_sha": "6931e94ed9f6f05f55e4e394c92da939a624a15d",
+    "head_sha": "d97b5eb78347c6b7fe8b9a2420dcab91b634ad4f",
+    "merge_commit_sha": "1bdf50868ef9c8219a5190db10e32345a34c9754",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "012ff42aa4fe0b00ba95d8f4a80887a07d792572",
+  "final_sha": "d97b5eb78347c6b7fe8b9a2420dcab91b634ad4f",
+  "changed_files": [
+    {
+      "sha": "6c229f90dec01e54f18282548cba7a5b5dad861f",
+      "filename": "docs/en/requirements.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/tenxyte/tenxyte/blob/d97b5eb78347c6b7fe8b9a2420dcab91b634ad4f/docs%2Fen%2Frequirements.txt",
+      "raw_url": "https://github.com/tenxyte/tenxyte/raw/d97b5eb78347c6b7fe8b9a2420dcab91b634ad4f/docs%2Fen%2Frequirements.txt",
+      "contents_url": "https://api.github.com/repos/tenxyte/tenxyte/contents/docs%2Fen%2Frequirements.txt?ref=d97b5eb78347c6b7fe8b9a2420dcab91b634ad4f",
+      "patch": "@@ -1,2 +1,2 @@\n mkdocs-material==9.7.5\n-mkdocstrings[python]>=mkdocstrings[python]\n\\ No newline at end of file\n+mkdocstrings[python]>=0.27.0\n\\ No newline at end of file"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d97b5eb78347c6b7fe8b9a2420dcab91b634ad4f",
+      "message": "Ugraded mkdocstrings[python] to mkdocstrings[python]",
+      "parent_shas": [
+        "012ff42aa4fe0b00ba95d8f4a80887a07d792572"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__tenxyte__tenxyte__pr115.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\tenxyte__tenxyte__pr115__python_cpp__tenxyte__tenxyte__pr115\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\tenxyte__tenxyte__pr115__python_cpp__tenxyte__tenxyte__pr115\\rn"
+  }
+}

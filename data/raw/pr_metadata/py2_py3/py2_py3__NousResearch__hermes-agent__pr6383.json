@@ -1,0 +1,91 @@
+{
+  "instance_id": "py2_py3__NousResearch__hermes-agent__pr6383",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "NousResearch/hermes-agent",
+  "pr_number": 6383,
+  "pr_url": "https://github.com/NousResearch/hermes-agent/pull/6383",
+  "repo": {
+    "full_name": "NousResearch/hermes-agent",
+    "clone_url": "https://github.com/NousResearch/hermes-agent.git",
+    "default_branch": "main",
+    "created_at": "2025-07-22T22:22:28Z",
+    "stars": 97247,
+    "license": "MIT",
+    "size_kb": 131933
+  },
+  "pull_request": {
+    "id": 3506393782,
+    "title": "fix(models): preserve OpenRouter variant tags (:free, :extended, :fast) during model switch",
+    "body": "## Summary\n\nFixes the bug reported on Discord and identified in PR #6088: OpenRouter model IDs with variant suffixes like `:free`, `:extended`, `:fast` were being mangled during `/model` switching.\n\n**Root cause:** `model_switch.py` Step c blindly converted the first colon to a slash for aggregator providers, even when the model already had a slash (meaning it was already in `vendor/model` format). So `nvidia/nemotron-3-super-120b-a12b:free` became `nvidia/nemotron-3-super-120b-a12b/free` → 400 Bad Request.\n\n**Fix:** One-line guard — skip colon→slash conversion when the model already contains a `/`. The module docstring already documented this intent (\"colons are reserved for OpenRouter variant suffixes\") but the implementation didn't enforce it.\n\nNote: PR #6088 identified the same bug but placed the fix in `model_normalize.py`, which is only called *after* `model_switch.py` has already mangled the model. The fix needs to be in Step c of `switch_model()` where the mangling actually occurs.\n\n## Changes\n- `hermes_cli/model_switch.py` — added `and \"/\" not in raw_input` guard to Step c\n- `tests/hermes_cli/test_model_switch_variant_tags.py` — 7 tests covering :free, :extended, :fast tags, legacy colon format, and bare model names\n\n## Test plan\n```\npython -m pytest tests/hermes_cli/test_model_switch_variant_tags.py -v  # 7 passed\npython -m pytest tests/hermes_cli/test_model_normalize.py tests/hermes_cli/test_model_validation.py tests/hermes_cli/test_models.py tests/hermes_cli/test_gemini_provider.py -v  # 167 passed\n```",
+    "created_at": "2026-04-09T02:55:27Z",
+    "merged_at": "2026-04-09T02:58:17Z",
+    "base_sha": "ae4a884e8dfc5cccf7303f1270d3d913791ae960",
+    "head_sha": "cd15c04016cd2e3aa4ba7230dd8b9173412fc2b5",
+    "merge_commit_sha": "980fadfea9dbe7906a70e3f1fe376559de476728",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "6e3f7f3610e0cedd52f339e80c9fedd4d2c7880b",
+  "final_sha": "cd15c04016cd2e3aa4ba7230dd8b9173412fc2b5",
+  "changed_files": [
+    {
+      "sha": "7d120d94f1bc53663e710cf923e4caa42f3dc829",
+      "filename": "hermes_cli/model_switch.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 1,
+      "changes": 5,
+      "blob_url": "https://github.com/NousResearch/hermes-agent/blob/cd15c04016cd2e3aa4ba7230dd8b9173412fc2b5/hermes_cli%2Fmodel_switch.py",
+      "raw_url": "https://github.com/NousResearch/hermes-agent/raw/cd15c04016cd2e3aa4ba7230dd8b9173412fc2b5/hermes_cli%2Fmodel_switch.py",
+      "contents_url": "https://api.github.com/repos/NousResearch/hermes-agent/contents/hermes_cli%2Fmodel_switch.py?ref=cd15c04016cd2e3aa4ba7230dd8b9173412fc2b5",
+      "patch": "@@ -537,8 +537,11 @@ def switch_model(\n                     )\n             else:\n                 # --- Step c: On aggregator, convert vendor:model to vendor/model ---\n+                # Only convert when there's no slash — a slash means the name\n+                # is already in vendor/model format and the colon is a variant\n+                # tag (:free, :extended, :fast) that must be preserved.\n                 colon_pos = raw_input.find(\":\")\n-                if colon_pos > 0 and is_aggregator(current_provider):\n+                if colon_pos > 0 and \"/\" not in raw_input and is_aggregator(current_provider):\n                     left = raw_input[:colon_pos].strip().lower()\n                     right = raw_input[colon_pos + 1:].strip()\n                     if left and right:"
+    },
+    {
+      "sha": "eebb5dc139c2bfcc9cf3105bedb881e16afd62ad",
+      "filename": "tests/hermes_cli/test_model_switch_variant_tags.py",
+      "status": "added",
+      "additions": 70,
+      "deletions": 0,
+      "changes": 70,
+      "blob_url": "https://github.com/NousResearch/hermes-agent/blob/cd15c04016cd2e3aa4ba7230dd8b9173412fc2b5/tests%2Fhermes_cli%2Ftest_model_switch_variant_tags.py",
+      "raw_url": "https://github.com/NousResearch/hermes-agent/raw/cd15c04016cd2e3aa4ba7230dd8b9173412fc2b5/tests%2Fhermes_cli%2Ftest_model_switch_variant_tags.py",
+      "contents_url": "https://api.github.com/repos/NousResearch/hermes-agent/contents/tests%2Fhermes_cli%2Ftest_model_switch_variant_tags.py?ref=cd15c04016cd2e3aa4ba7230dd8b9173412fc2b5",
+      "patch": "@@ -0,0 +1,70 @@\n+\"\"\"Tests for OpenRouter variant tag preservation in model switching.\n+\n+Regression test for GitHub PR #6088 / Discord report: OpenRouter model IDs\n+with variant suffixes like ``:free``, ``:extended``, ``:fast`` were being\n+mangled by the colon-to-slash conversion in model_switch.py Step c.\n+\n+The fix: Step c now skips colon→slash conversion when the model name already\n+contains a forward slash (i.e. is already in ``vendor/model`` format), since\n+the colon is a variant tag, not a vendor separator.\n+\"\"\"\n+import pytest\n+from unittest.mock import patch\n+\n+from hermes_cli.model_switch import switch_model\n+\n+\n+# Shared mock context — skip network calls, credential resolution, catalog lookups\n+_MOCK_VALIDATION = {\"accepted\": True, \"persist\": True, \"recognized\": True, \"message\": None}\n+\n+\n+def _run_switch(raw_input: str, current_provider: str = \"openrouter\") -> str:\n+    \"\"\"Run switch_model with mocked dependencies, return the resolved model name.\"\"\"\n+    with patch(\"hermes_cli.model_switch.resolve_alias\", return_value=None), \\\n+         patch(\"hermes_cli.model_switch.list_provider_models\", return_value=[]), \\\n+         patch(\"hermes_cli.runtime_provider.resolve_runtime_provider\",\n+               return_value={\"api_key\": \"test\", \"base_url\": \"\", \"api_mode\": \"chat_completions\"}), \\\n+         patch(\"hermes_cli.models.validate_requested_model\", return_value=_MOCK_VALIDATION), \\\n+         patch(\"hermes_cli.model_switch.get_model_info\", return_value=None), \\\n+         patch(\"hermes_cli.model_switch.get_model_capabilities\", return_value=None), \\\n+         patch(\"hermes_cli.models.detect_provider_for_model\", return_value=None):\n+        result = switch_model(\n+            raw_input=raw_input,\n+            current_provider=current_provider,\n+            current_model=\"anthropic/claude-sonnet-4.6\",\n+        )\n+        assert result.success, f\"switch_model failed: {result.error_message}\"\n+        return result.new_model\n+\n+\n+class TestVariantTagPreservation:\n+    \"\"\"OpenRouter variant tags (:free, :extended, :fast) must survive model switching.\"\"\"\n+\n+    @pytest.mark.parametrize(\"model,expected\", [\n+        (\"nvidia/nemotron-3-super-120b-a12b:free\", \"nvidia/nemotron-3-super-120b-a12b:free\"),\n+        (\"anthropic/claude-sonnet-4.6:extended\", \"anthropic/claude-sonnet-4.6:extended\"),\n+        (\"meta-llama/llama-4-maverick:fast\", \"meta-llama/llama-4-maverick:fast\"),\n+    ])\n+    def test_slash_format_preserves_variant_tag(self, model, expected):\n+        \"\"\"Models already in vendor/model:tag format must not have their tag mangled.\"\"\"\n+        assert _run_switch(model) == expected\n+\n+    def test_legacy_colon_format_converts_to_slash(self):\n+        \"\"\"Legacy vendor:model (no slash) should still be converted to vendor/model.\"\"\"\n+        result = _run_switch(\"nvidia:nemotron-3-super-120b-a12b\")\n+        assert result == \"nvidia/nemotron-3-super-120b-a12b\"\n+\n+    def test_legacy_colon_format_with_tag_converts_first_colon_only(self):\n+        \"\"\"vendor:model:free (no slash) → vendor/model:free — first colon becomes slash.\"\"\"\n+        result = _run_switch(\"nvidia:nemotron-3-super-120b-a12b:free\")\n+        assert result == \"nvidia/nemotron-3-super-120b-a12b:free\"\n+\n+    def test_bare_model_name_unaffected(self):\n+        \"\"\"Bare model names without colons or slashes should work normally.\"\"\"\n+        result = _run_switch(\"claude-sonnet-4.6\")\n+        assert result == \"anthropic/claude-sonnet-4.6\"\n+\n+    def test_already_correct_slug_no_tag(self):\n+        \"\"\"Standard vendor/model slugs without tags pass through unchanged.\"\"\"\n+        result = _run_switch(\"anthropic/claude-sonnet-4.6\")\n+        assert result == \"anthropic/claude-sonnet-4.6\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "cd15c04016cd2e3aa4ba7230dd8b9173412fc2b5",
+      "message": "fix(models): preserve OpenRouter variant tags (:free, :extended, :fast) during model switch\n\nStep c in switch_model() blindly converted the first colon to a slash for\naggregator providers, even when the model name already contained a slash\n(vendor/model format). This mangled variant tags like :free into /free,\ncausing 400 Bad Request from the API.\n\nFix: skip the colon→slash conversion when the model already has a slash,\nsince the colon is a variant tag, not a vendor separator. The module\ndocstring already documented this intent (line 17-18) but the\nimplementation didn't enforce it.\n\nReported via Discord. Related to PR #6088 (which identified the same bug\nbut placed the fix in model_normalize.py instead of model_switch.py where\nthe actual mangling occurs).",
+      "parent_shas": [
+        "6e3f7f3610e0cedd52f339e80c9fedd4d2c7880b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "adds_new_tests",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__NousResearch__hermes-agent__pr6383.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\NousResearch__hermes-agent__pr6383__py2_py3__NousResearch__hermes-agent__pr6383\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\NousResearch__hermes-agent__pr6383__py2_py3__NousResearch__hermes-agent__pr6383\\rn"
+  }
+}

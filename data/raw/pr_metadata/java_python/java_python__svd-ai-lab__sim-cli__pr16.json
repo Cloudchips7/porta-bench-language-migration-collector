@@ -1,0 +1,92 @@
+{
+  "instance_id": "java_python__svd-ai-lab__sim-cli__pr16",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "svd-ai-lab/sim-cli",
+  "pr_number": 16,
+  "pr_url": "https://github.com/svd-ai-lab/sim-cli/pull/16",
+  "repo": {
+    "full_name": "svd-ai-lab/sim-cli",
+    "clone_url": "https://github.com/svd-ai-lab/sim-cli.git",
+    "default_branch": "main",
+    "created_at": "2026-04-07T12:31:05Z",
+    "stars": 25,
+    "license": "Apache-2.0",
+    "size_kb": 952
+  },
+  "pull_request": {
+    "id": 3519435770,
+    "title": "fix(comsol): add run_file so /run path works end-to-end",
+    "body": "## Summary\n\n- `ComsolDriver.run_file()` was missing, so `sim.runner.execute_script(driver=...)` crashed with `AttributeError` for every COMSOL script. This regressed (latently) in the unified DriverProtocol refactor (f428ab6), which routed COMSOL through the one-shot `/run` path but never added the execution method.\n- Add `run_file()` matching the PyFluent driver's pattern (shell out to `sys.executable`).\n- Replace a placebo `TestRunFile` test with two real ones — the old test monkeypatched `execute_script` then called `execute_script` directly, so it never touched the driver.\n\n## Root cause\n\n`server.py /run` → `runner.execute_script(driver=driver)` → `driver.run_file(script)` (see `src/sim/runner.py:47`). Before this PR, `ComsolDriver` had no `run_file`, so every call raised `AttributeError: 'ComsolDriver' object has no attribute 'run_file'`.\n\n## Changes\n\n- `src/sim/drivers/comsol/driver.py` — add `run_file(self, script)` that delegates to `run_subprocess([sys.executable, str(script)], ...)`. Keeps the driver SDK-free at module load; the subprocess inherits whichever `mph`/JPype/Java is present in the env.\n- `tests/test_comsol_driver.py` — rewrite `TestRunFile`:\n  - `test_run_file_invokes_python_subprocess`: asserts the subprocess command starts with `[sys.executable, script]`.\n  - `test_run_file_routes_through_execute_script`: asserts `runner.execute_script(driver=driver)` completes without `AttributeError` — the exact integration path that was broken.\n\n## Test plan\n\n- [x] Offline suite: 84 passed on macOS (was 83; +1 new real test).\n- [x] Live on Windows (win1) with COMSOL 6.4.0.293 + `mph` 1.3.1 + JPype 1.7.0: `driver.run_file(script)` → `mph.start()` boots the Java client → `exit_code=0`, stdout `{\"ok\": true, \"java_version\": \"6.4\", \"models\": []}`.\n- [ ] Reviewer: sanity-check the subprocess pattern matches PyFluent (`src/sim/drivers/fluent/driver.py:264`).\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "created_at": "2026-04-12T13:30:42Z",
+    "merged_at": "2026-04-12T13:33:21Z",
+    "base_sha": "17d3d3118eae32f6c8d29a4ded424120462e3dd4",
+    "head_sha": "59457873fd0b7e11045db2c8ba8acf5607e4c2da",
+    "merge_commit_sha": "155742073a199dbd19194b9b04f37d870499bff8",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "9b361a8db3efd43858918bb7c16fd35a63ce72cf",
+  "final_sha": "59457873fd0b7e11045db2c8ba8acf5607e4c2da",
+  "changed_files": [
+    {
+      "sha": "453100188e86aff0c1efc2666c0dcdf83f30c5b8",
+      "filename": "src/sim/drivers/comsol/driver.py",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 0,
+      "changes": 16,
+      "blob_url": "https://github.com/svd-ai-lab/sim-cli/blob/59457873fd0b7e11045db2c8ba8acf5607e4c2da/src%2Fsim%2Fdrivers%2Fcomsol%2Fdriver.py",
+      "raw_url": "https://github.com/svd-ai-lab/sim-cli/raw/59457873fd0b7e11045db2c8ba8acf5607e4c2da/src%2Fsim%2Fdrivers%2Fcomsol%2Fdriver.py",
+      "contents_url": "https://api.github.com/repos/svd-ai-lab/sim-cli/contents/src%2Fsim%2Fdrivers%2Fcomsol%2Fdriver.py?ref=59457873fd0b7e11045db2c8ba8acf5607e4c2da",
+      "patch": "@@ -17,10 +17,12 @@\n import os\n import re\n import shutil\n+import sys\n from pathlib import Path\n from typing import Callable\n \n from sim.driver import ConnectionInfo, Diagnostic, LintResult, SolverInstall\n+from sim.runner import run_subprocess\n \n \n # ─── extension points (open for additions, closed for modifications) ──────\n@@ -370,3 +372,17 @@ def parse_output(self, stdout: str) -> dict:\n                 except json.JSONDecodeError:\n                     continue\n         return {}\n+\n+    def run_file(self, script: Path):\n+        \"\"\"Execute a one-shot COMSOL/MPh Python script.\n+\n+        The script runs in the same interpreter sim-cli is running under.\n+        `mph` and its JPype/JVM dependencies must be importable in that\n+        env — sim-cli itself is SDK-free, so `sim env install comsol`\n+        (or a manual `pip install mph`) provisions the runtime.\n+        \"\"\"\n+        return run_subprocess(\n+            [sys.executable, str(script)],\n+            script=script,\n+            solver=self.name,\n+        )"
+    },
+    {
+      "sha": "24111501cac62feae6a0cee3bc9322367736e551",
+      "filename": "tests/test_comsol_driver.py",
+      "status": "modified",
+      "additions": 41,
+      "deletions": 23,
+      "changes": 64,
+      "blob_url": "https://github.com/svd-ai-lab/sim-cli/blob/59457873fd0b7e11045db2c8ba8acf5607e4c2da/tests%2Ftest_comsol_driver.py",
+      "raw_url": "https://github.com/svd-ai-lab/sim-cli/raw/59457873fd0b7e11045db2c8ba8acf5607e4c2da/tests%2Ftest_comsol_driver.py",
+      "contents_url": "https://api.github.com/repos/svd-ai-lab/sim-cli/contents/tests%2Ftest_comsol_driver.py?ref=59457873fd0b7e11045db2c8ba8acf5607e4c2da",
+      "patch": "@@ -84,34 +84,52 @@ def test_parse_last_json_wins(self):\n \n \n class TestRunFile:\n-    def test_run_constructs_command(self, monkeypatch, tmp_path):\n-        \"\"\"Verify run_file uses execute_script correctly.\"\"\"\n-        script = tmp_path / \"test.py\"\n+    def test_run_file_invokes_python_subprocess(self, monkeypatch, tmp_path):\n+        \"\"\"driver.run_file shells out to the running Python with the script.\"\"\"\n+        import sys as _sys\n+        from types import SimpleNamespace\n+\n+        from sim.drivers.comsol import driver as comsol_driver_mod\n+\n+        script = tmp_path / \"smoke.py\"\n         script.write_text(\"import mph\\nclient = mph.start()\\n\")\n \n+        captured = {}\n+\n+        def fake_run(command, capture_output, text):\n+            captured[\"command\"] = command\n+            return SimpleNamespace(returncode=0, stdout=\"{}\", stderr=\"\")\n+\n+        monkeypatch.setattr(\"sim.runner.subprocess.run\", fake_run)\n+\n+        driver = ComsolDriver()\n+        result = driver.run_file(script)\n+\n+        assert captured[\"command\"][0] == _sys.executable\n+        assert captured[\"command\"][1] == str(script)\n+        assert result.solver == \"comsol\"\n+        assert result.exit_code == 0\n+\n+    def test_run_file_routes_through_execute_script(self, monkeypatch, tmp_path):\n+        \"\"\"The /run server path calls execute_script(driver=...), which must\n+        delegate to driver.run_file — this is the integration path that\n+        previously blew up with AttributeError.\"\"\"\n+        from types import SimpleNamespace\n+\n         from sim import runner\n-        from sim.driver import RunResult\n \n-        captured = {}\n+        script = tmp_path / \"smoke.py\"\n+        script.write_text(\"import mph\\n\")\n+\n+        def fake_run(command, capture_output, text):\n+            return SimpleNamespace(returncode=0, stdout=\"{}\", stderr=\"\")\n \n-        def fake_execute(s, python=None, solver=\"unknown\"):\n-            captured[\"script\"] = s\n-            captured[\"solver\"] = solver\n-            return RunResult(\n-                exit_code=0,\n-                stdout=\"{}\",\n-                stderr=\"\",\n-                duration_s=0.1,\n-                script=str(s),\n-                solver=solver,\n-                timestamp=\"2026-01-01T00:00:00+00:00\",\n-            )\n-\n-        monkeypatch.setattr(runner, \"execute_script\", fake_execute)\n-\n-        result = runner.execute_script(script, solver=\"comsol\")\n-        assert captured[\"solver\"] == \"comsol\"\n-        assert captured[\"script\"] == script\n+        monkeypatch.setattr(\"sim.runner.subprocess.run\", fake_run)\n+\n+        driver = ComsolDriver()\n+        result = runner.execute_script(script, solver=\"comsol\", driver=driver)\n+        assert result.exit_code == 0\n+        assert result.solver == \"comsol\"\n \n \n def _make_import_blocker(blocked: str):"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "59457873fd0b7e11045db2c8ba8acf5607e4c2da",
+      "message": "fix(comsol): add run_file so /run path works end-to-end\n\nThe unified DriverProtocol refactor (f428ab6) routed COMSOL through\nthe one-shot /run path (supports_session=False) but the driver never\ngrew a run_file() method, so sim.runner.execute_script(driver=...)\ncrashed with AttributeError for every COMSOL script.\n\nAdd run_file() that shells out to the current Python with the script\npath, matching the PyFluent driver's pattern. The subprocess inherits\nwhichever mph / JPype / Java install is present in sim-cli's env.\n\nAlso replace the placebo TestRunFile test — it monkeypatched\nexecute_script and then called execute_script directly, so it never\nactually exercised the driver — with two real tests: one asserting\nrun_file invokes the right subprocess, and one asserting the full\nrunner.execute_script(driver=...) path works without AttributeError.\n\nValidated live on Windows with mph 1.3.1 + COMSOL 6.4.0.293:\nmph.start() succeeds, script exits 0, stdout carries the expected\nJSON payload.\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "9b361a8db3efd43858918bb7c16fd35a63ce72cf"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "java_python_bridge_noise"
+    ],
+    "auto_signals": [
+      "java_python_bridge_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__svd-ai-lab__sim-cli__pr16.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\svd-ai-lab__sim-cli__pr16__java_python__svd-ai-lab__sim-cli__pr16\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\svd-ai-lab__sim-cli__pr16__java_python__svd-ai-lab__sim-cli__pr16\\rn"
+  }
+}

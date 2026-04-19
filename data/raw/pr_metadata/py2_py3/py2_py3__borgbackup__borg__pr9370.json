@@ -1,0 +1,106 @@
+{
+  "instance_id": "py2_py3__borgbackup__borg__pr9370",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "borgbackup/borg",
+  "pr_number": 9370,
+  "pr_url": "https://github.com/borgbackup/borg/pull/9370",
+  "repo": {
+    "full_name": "borgbackup/borg",
+    "clone_url": "https://github.com/borgbackup/borg.git",
+    "default_branch": "master",
+    "created_at": "2015-05-12T23:10:47Z",
+    "stars": 13222,
+    "license": "NOASSERTION",
+    "size_kb": 38026
+  },
+  "pull_request": {
+    "id": 3300577206,
+    "title": "Fix hashindex .iteritems (1.4-maint)",
+    "body": "<!--\r\nThank you for contributing to BorgBackup!\r\n\r\nPlease make sure your PR complies with our contribution guidelines:\r\nhttps://borgbackup.readthedocs.io/en/latest/development.html#contributions\r\n-->\r\n\r\n## Description\r\n\r\nFix .iteritems methods to correctly check hashindex_get return value, fixes #9368.\r\n\r\nAlso tests and cosmetic consistency fixes.\r\n\r\n## Checklist\r\n\r\n- [X] PR is against `1.4-maint` branch, only applicable there\r\n- [X] New code has tests and docs where appropriate\r\n- [X] Tests pass (run `tox` or the relevant test subset)\r\n- [X] Commit messages are clean and reference related issues\r\n",
+    "created_at": "2026-02-18T22:09:13Z",
+    "merged_at": "2026-02-18T23:24:15Z",
+    "base_sha": "b1aa1a4eb082fe4747f747ba84257e25d009c428",
+    "head_sha": "c5a7a3cda67886e909f6cd10059097842c322d28",
+    "merge_commit_sha": "86f6b8e7ee2c2d6b6663bc50354af5b476653dc6",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "b1aa1a4eb082fe4747f747ba84257e25d009c428",
+  "final_sha": "c5a7a3cda67886e909f6cd10059097842c322d28",
+  "changed_files": [
+    {
+      "sha": "9ce87abcd14a949f70c3ac4722b0cce6e857e9db",
+      "filename": "src/borg/hashindex.pyx",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 10,
+      "changes": 20,
+      "blob_url": "https://github.com/borgbackup/borg/blob/c5a7a3cda67886e909f6cd10059097842c322d28/src%2Fborg%2Fhashindex.pyx",
+      "raw_url": "https://github.com/borgbackup/borg/raw/c5a7a3cda67886e909f6cd10059097842c322d28/src%2Fborg%2Fhashindex.pyx",
+      "contents_url": "https://api.github.com/repos/borgbackup/borg/contents/src%2Fborg%2Fhashindex.pyx?ref=c5a7a3cda67886e909f6cd10059097842c322d28",
+      "patch": "@@ -205,7 +205,7 @@ cdef class NSIndex(IndexBase):\n     def __getitem__(self, key):\n         assert len(key) == self.key_size\n         data = <uint32_t *>hashindex_get(self.index, <unsigned char *>key)\n-        if not data:\n+        if data == NULL:\n             raise KeyError(key)\n         cdef uint32_t segment = _le32toh(data[0])\n         assert segment <= _MAX_VALUE, \"maximum number of segments reached\"\n@@ -237,8 +237,8 @@ cdef class NSIndex(IndexBase):\n         iter.index = self.index\n         if marker:\n             key = hashindex_get(self.index, <unsigned char *>marker)\n-            if marker is None:\n-                raise IndexError\n+            if key == NULL:\n+                raise KeyError(\"marker not found\")\n             iter.key = key - self.key_size\n         return iter\n \n@@ -296,7 +296,7 @@ cdef class ChunkIndex(IndexBase):\n     def __getitem__(self, key):\n         assert len(key) == self.key_size\n         data = <uint32_t *>hashindex_get(self.index, <unsigned char *>key)\n-        if not data:\n+        if data == NULL:\n             raise KeyError(key)\n         cdef uint32_t refcount = _le32toh(data[0])\n         assert refcount <= _MAX_VALUE, \"invalid reference count\"\n@@ -324,7 +324,7 @@ cdef class ChunkIndex(IndexBase):\n         \"\"\"Increase refcount for 'key', return (refcount, size, csize).\"\"\"\n         assert len(key) == self.key_size\n         data = <uint32_t *>hashindex_get(self.index, <unsigned char *>key)\n-        if not data:\n+        if data == NULL:\n             raise KeyError(key)\n         cdef uint32_t refcount = _le32toh(data[0])\n         assert refcount <= _MAX_VALUE, \"invalid reference count\"\n@@ -337,7 +337,7 @@ cdef class ChunkIndex(IndexBase):\n         \"\"\"Decrease refcount for 'key', return (refcount, size, csize).\"\"\"\n         assert len(key) == self.key_size\n         data = <uint32_t *>hashindex_get(self.index, <unsigned char *>key)\n-        if not data:\n+        if data == NULL:\n             raise KeyError(key)\n         cdef uint32_t refcount = _le32toh(data[0])\n         # Never decrease a reference count of zero\n@@ -354,8 +354,8 @@ cdef class ChunkIndex(IndexBase):\n         iter.index = self.index\n         if marker:\n             key = hashindex_get(self.index, <unsigned char *>marker)\n-            if marker is None:\n-                raise IndexError\n+            if key == NULL:\n+                raise KeyError(\"marker not found\")\n             iter.key = key - self.key_size\n         return iter\n \n@@ -406,7 +406,7 @@ cdef class ChunkIndex(IndexBase):\n                 break\n             our_values = <const uint32_t*> (key + self.key_size)\n             master_values = <const uint32_t*> hashindex_get(master, key)\n-            if not master_values:\n+            if master_values == NULL:\n                 raise ValueError('stats_against: key contained in self but not in master_index.')\n             our_refcount = _le32toh(our_values[0])\n             chunk_size = _le32toh(master_values[1])\n@@ -434,7 +434,7 @@ cdef class ChunkIndex(IndexBase):\n     cdef _add(self, unsigned char *key, uint32_t *data):\n         cdef uint64_t refcount1, refcount2, result64\n         values = <uint32_t*> hashindex_get(self.index, key)\n-        if values:\n+        if values != NULL:\n             refcount1 = _le32toh(values[0])\n             refcount2 = _le32toh(data[0])\n             assert refcount1 <= _MAX_VALUE, \"invalid reference count\""
+    },
+    {
+      "sha": "e81d3242cc45ce55c743b23fc023f0b19840c347",
+      "filename": "src/borg/testsuite/hashindex_pytest.py",
+      "status": "renamed",
+      "additions": 31,
+      "deletions": 1,
+      "changes": 32,
+      "blob_url": "https://github.com/borgbackup/borg/blob/c5a7a3cda67886e909f6cd10059097842c322d28/src%2Fborg%2Ftestsuite%2Fhashindex_pytest.py",
+      "raw_url": "https://github.com/borgbackup/borg/raw/c5a7a3cda67886e909f6cd10059097842c322d28/src%2Fborg%2Ftestsuite%2Fhashindex_pytest.py",
+      "contents_url": "https://api.github.com/repos/borgbackup/borg/contents/src%2Fborg%2Ftestsuite%2Fhashindex_pytest.py?ref=c5a7a3cda67886e909f6cd10059097842c322d28",
+      "patch": "@@ -3,7 +3,37 @@\n \n import pytest\n \n-from ..hashindex import NSIndex\n+from borg.hashindex import NSIndex, ChunkIndex\n+\n+\n+def test_nsindex_iteritems_marker():\n+    nsindex = NSIndex()\n+    nsindex[b'\\xbb'*32] = (123, 456)\n+    nsindex[b'\\xaa'*32] = (234, 567)\n+\n+    # marker exists\n+    items = list(nsindex.iteritems(marker=b'\\xbb'*32))\n+    assert len(items) == 1\n+    assert items[0][0] == b'\\xaa'*32\n+\n+    # marker does not exist\n+    with pytest.raises(KeyError, match=\"marker not found\"):\n+        list(nsindex.iteritems(marker=b'\\xcc'*32))\n+\n+\n+def test_chunkindex_iteritems_marker():\n+    chunkindex = ChunkIndex()\n+    chunkindex[b'\\xbb'*32] = (1, 100, 50)\n+    chunkindex[b'\\xaa'*32] = (1, 200, 100)\n+\n+    # marker exists\n+    items = list(chunkindex.iteritems(marker=b'\\xbb'*32))\n+    assert len(items) == 1\n+    assert items[0][0] == b'\\xaa'*32\n+\n+    # marker does not exist\n+    with pytest.raises(KeyError, match=\"marker not found\"):\n+        list(chunkindex.iteritems(marker=b'\\xcc'*32))\n \n \n @pytest.mark.skipif(\"BORG_TESTS_SLOW\" not in os.environ, reason=\"slow tests not enabled, use BORG_TESTS_SLOW=1\")",
+      "previous_filename": "src/borg/testsuite/hashindex_stress.py"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "2e6af653f6fa05c0706412fa6ac518a94081eb20",
+      "message": "hashindex: fixed iteritems segfaulting with non-existent marker, fixes #9368\n\nNever happened in borg, because borg always gives existing markers to iteritems.\n\nAlso: added test for this.",
+      "parent_shas": [
+        "b1aa1a4eb082fe4747f747ba84257e25d009c428"
+      ]
+    },
+    {
+      "sha": "eb80e53fc2f1094d193976eac3208ee8dd110408",
+      "message": "hashindex: always check return value of hashindex_get in the same way",
+      "parent_shas": [
+        "2e6af653f6fa05c0706412fa6ac518a94081eb20"
+      ]
+    },
+    {
+      "sha": "c5a7a3cda67886e909f6cd10059097842c322d28",
+      "message": "hashindex: moved the tests from hashindex_stress to hashindex_pytest",
+      "parent_shas": [
+        "eb80e53fc2f1094d193976eac3208ee8dd110408"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__borgbackup__borg__pr9370.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\borgbackup__borg__pr9370__py2_py3__borgbackup__borg__pr9370\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\borgbackup__borg__pr9370__py2_py3__borgbackup__borg__pr9370\\rn"
+  }
+}

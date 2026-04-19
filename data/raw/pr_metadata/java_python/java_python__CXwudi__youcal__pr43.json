@@ -1,0 +1,117 @@
+{
+  "instance_id": "java_python__CXwudi__youcal__pr43",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "CXwudi/youcal",
+  "pr_number": 43,
+  "pr_url": "https://github.com/CXwudi/youcal/pull/43",
+  "repo": {
+    "full_name": "CXwudi/youcal",
+    "clone_url": "https://github.com/CXwudi/youcal.git",
+    "default_branch": "main",
+    "created_at": "2022-10-23T00:52:40Z",
+    "stars": 6,
+    "license": "MIT",
+    "size_kb": 4608
+  },
+  "pull_request": {
+    "id": 2983346761,
+    "title": "docs: Add Python rewrite plan document",
+    "body": "This PR adds a comprehensive plan for rewriting YouCal from Kotlin to Python.\r\n\r\nThe plan includes:\r\n- Project structure with core and cli modules\r\n- Technology stack using uv, httpx, icalendar, and pydantic\r\n- 5-phase migration strategy\r\n- Feature parity checklist\r\n- Testing strategy and implementation examples\r\n\r\nAddresses issue #42\r\n\r\n---\r\nGenerated with [Claude Code](https://claude.ai/code)",
+    "created_at": "2025-11-06T06:35:59Z",
+    "merged_at": "2025-11-06T06:56:52Z",
+    "base_sha": "e6779459cc60bcc0919d57250d8f5ff50252d396",
+    "head_sha": "421929ac03c9760d3998525660a9501a4c1d6fad",
+    "merge_commit_sha": "70266295e5d0dd8151abb06169855a4c292dd8d4",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "0e526c700e04f7b89c210c6186e768c36c0c80aa",
+  "final_sha": "421929ac03c9760d3998525660a9501a4c1d6fad",
+  "changed_files": [
+    {
+      "sha": "50d51f1e2af21f7156a141267ebffb60acbdba39",
+      "filename": "doc/PYTHON_REWRITE_PLAN.md",
+      "status": "added",
+      "additions": 301,
+      "deletions": 0,
+      "changes": 301,
+      "blob_url": "https://github.com/CXwudi/youcal/blob/421929ac03c9760d3998525660a9501a4c1d6fad/doc%2FPYTHON_REWRITE_PLAN.md",
+      "raw_url": "https://github.com/CXwudi/youcal/raw/421929ac03c9760d3998525660a9501a4c1d6fad/doc%2FPYTHON_REWRITE_PLAN.md",
+      "contents_url": "https://api.github.com/repos/CXwudi/youcal/contents/doc%2FPYTHON_REWRITE_PLAN.md?ref=421929ac03c9760d3998525660a9501a4c1d6fad",
+      "patch": "@@ -0,0 +1,301 @@\n+# Python Rewrite Plan\n+\n+This document outlines the comprehensive plan for rewriting YouCal from Kotlin to Python.\n+\n+## Current Implementation Overview\n+\n+**Technology Stack:**\n+- **Language:** Kotlin with Spring Boot\n+- **Build System:** Gradle with Kotlin DSL\n+- **Key Dependencies:**\n+  - Spring Boot (WebFlux for HTTP client, Validation, JSON)\n+  - iCal4j (for iCalendar file generation)\n+  - Jackson (JSON processing)\n+- **Architecture:** Modular design with 3 modules:\n+  1. `yc-apiclient-youtrack` - YouTrack API client\n+  2. `yc-core-ical` - Core iCal mapping logic\n+  3. `yc-app-cli` - CLI application\n+\n+**Functionality:**\n+- Queries YouTrack issues via REST API\n+- Maps YouTrack issues to iCalendar VEvent components\n+- Exports events to .ics files\n+- Supports custom field mapping, alarms, and timezone handling\n+- Pagination support for large result sets\n+- GraalVM native image compilation capability\n+\n+## 1. Project Structure\n+\n+```\n+youcal/\n+├── pyproject.toml              # Project metadata and dependencies (uv-managed)\n+├── uv.lock                     # Lock file for reproducible installs\n+├── README.md\n+├── .gitignore\n+├── .python-version             # Python version specification for uv\n+├── src/\n+│   └── youcal/\n+│       ├── __init__.py\n+│       ├── core/               # Core module (for potential serverless use)\n+│       │   ├── __init__.py\n+│       │   ├── api/           # YouTrack API client\n+│       │   │   ├── __init__.py\n+│       │   │   ├── client.py\n+│       │   │   └── models.py\n+│       │   ├── ical/          # iCalendar generation\n+│       │   │   ├── __init__.py\n+│       │   │   ├── mapper.py\n+│       │   │   ├── event.py\n+│       │   │   ├── alarm.py\n+│       │   │   └── calendar.py\n+│       │   └── config/        # Configuration models\n+│       │       ├── __init__.py\n+│       │       └── models.py\n+│       └── cli/               # CLI module\n+│           ├── __init__.py\n+│           ├── main.py\n+│           └── config_loader.py\n+├── tests/\n+│   ├── __init__.py\n+│   ├── test_core/\n+│   └── test_cli/\n+└── examples/\n+    └── config.yaml\n+```\n+\n+## 2. Technology Stack\n+\n+### Package Manager & Build Tool\n+\n+- **`uv`** - Ultra-fast Python package installer and resolver (replaces pip, pip-tools, and poetry)\n+  - Benefits: Extremely fast dependency resolution, built in Rust\n+  - Lock file support for reproducible builds\n+  - Compatible with standard `pyproject.toml`\n+\n+### Core Dependencies\n+\n+- **HTTP Client:** `httpx` (async support, similar to Spring WebFlux)\n+- **iCalendar:** `icalendar` library (Python equivalent of iCal4j)\n+- **JSON Processing:** Built-in `json` module + `pydantic` for validation\n+- **Configuration:** `pydantic-settings` (replaces Spring Boot Configuration Properties)\n+- **CLI Framework:** `click` or `typer` (for better CLI experience)\n+- **Async Support:** `asyncio` (built-in)\n+- **Logging:** `structlog` or built-in `logging`\n+\n+### Development Dependencies\n+\n+- **Testing:** `pytest`, `pytest-asyncio`, `pytest-cov`\n+- **Linting:** `ruff` (fast linter/formatter)\n+- **Type Checking:** `mypy`\n+\n+## 3. Module Breakdown\n+\n+### 3.1 Core Module (`youcal.core`)\n+\n+This module will be completely independent and can be used in serverless environments (AWS Lambda, Azure Functions, etc.).\n+\n+#### API Client (`youcal.core.api`)\n+- `YouTrackClient` class using `httpx.AsyncClient`\n+- Pagination iterator for lazy loading\n+- Authentication handling (Bearer token)\n+- [ ] Implement `YouTrackClient` with basic authentication\n++ [ ] Implement `YouTrackClient` with Bearer Token authentication\n+\n+#### iCalendar Generation (`youcal.core.ical`)\n+- `EventMapper` - Maps YouTrack issues to VEvent\n+- `AlarmMapper` - Handles alarm/reminder creation\n+- `DateTimeFieldSetter` - Handles date/time field mapping\n+- `CalendarBuilder` - Creates iCalendar objects\n+- Support for timezones using `zoneinfo`\n+\n+#### Configuration Models (`youcal.core.config`)\n+- Pydantic models for all configuration\n+- Validation rules\n+- Type-safe configuration handling\n+\n+### 3.2 CLI Module (`youcal.cli`)\n+\n+#### Main Application\n+- Entry point using Click or Typer\n+- Configuration loading from YAML/JSON/env vars\n+- Progress indicators for long-running operations\n+- Error handling and user-friendly messages\n+\n+#### Configuration Loading\n+- Support multiple config sources (similar to Spring Boot):\n+  - YAML/JSON files\n+  - Environment variables\n+  - Command-line arguments\n+- Config file import support\n+\n+## 4. Migration Strategy\n+\n+### Phase 1: Core API Client (Week 1-2)\n+- [ ] Set up Python project structure with `pyproject.toml` and `uv`\n+- [ ] Implement `YouTrackClient` with basic authentication\n+- [ ] Implement issue querying with pagination\n+- [ ] Add comprehensive tests\n+- [ ] Document API usage\n+\n+### Phase 2: iCalendar Generation (Week 2-3)\n+- [ ] Implement `EventMapper` and supporting classes\n+- [ ] Add datetime field mapping logic\n+- [ ] Implement alarm/reminder support\n+- [ ] Add timezone handling\n+- [ ] Test with various YouTrack issue formats\n+\n+### Phase 3: CLI Application (Week 3-4)\n+- [ ] Implement CLI using Click/Typer\n+- [ ] Add configuration loading system\n+- [ ] Implement main orchestration logic\n+- [ ] Add progress indicators and logging\n+- [ ] Handle errors gracefully\n+\n+### Phase 4: Testing & Documentation (Week 4-5)\n+- [ ] Write comprehensive unit tests (target >80% coverage)\n+- [ ] Write integration tests\n+- [ ] Create user documentation\n+- [ ] Add examples and usage guides\n+- [ ] Performance testing\n+\n+### Phase 5: Packaging & Distribution (Week 5-6)\n+- [ ] Set up PyPI packaging\n+- [ ] Create Docker image\n+- [ ] Add GitHub Actions for CI/CD\n+- [ ] Consider PyInstaller for standalone binaries\n+- [ ] Migration guide from Kotlin version\n+\n+## 5. Key Implementation Considerations\n+\n+### Using `uv` for Development\n+\n+```bash\n+# Initialize project\n+uv init\n+\n+# Add dependencies\n+uv add httpx icalendar pydantic pydantic-settings click\n+\n+# Add dev dependencies\n+uv add --dev pytest pytest-asyncio pytest-cov ruff mypy\n+\n+# Install dependencies\n+uv sync\n+\n+# Run commands\n+uv run pytest\n+uv run mypy src/\n+uv run ruff check src/\n+```\n+\n+### Async/Await Pattern\n+\n+```python\n+async def get_issues(client: YouTrackClient, query: str) -> list[VEvent]:\n+    return [map_to_event(issue) async for issue in client.get_issues_lazy(query)]\n+```\n+\n+### Configuration Example\n+\n+```python\n+from pydantic_settings import BaseSettings\n+\n+class YouCalConfig(BaseSettings):\n+    youtrack_url: str\n+    youtrack_token: str\n+    search_query: str\n+    output_file: str\n+    timezone: str = \"UTC\"\n+\n+    class Config:\n+        env_prefix = \"YOUCAL_\"\n+        env_file = \".env\"\n+```\n+\n+### Serverless-Friendly Core\n+\n+The core module will be designed to work in serverless contexts:\n+\n+```python\n+# Lambda handler example\n+from youcal.core import YouTrackClient, EventMapper, CalendarBuilder\n+\n+async def lambda_handler(event, context):\n+    config = parse_config(event)\n+    client = YouTrackClient(config.youtrack_url, config.token)\n+    mapper = EventMapper()\n+    builder = CalendarBuilder()\n+\n+    issues = await client.get_issues(config.query)\n+    events = [mapper.map(issue) for issue in issues]\n+    calendar = builder.build(events)\n+\n+    return calendar.to_ical()\n+```\n+\n+## 6. Feature Parity Checklist\n+\n+To ensure same functionality:\n+- [ ] YouTrack API authentication\n+- [ ] Issue querying with custom fields\n+- [ ] Pagination support\n+- [ ] Date/DateTime field mapping\n+- [ ] Timezone handling\n+- [ ] Alarm/reminder creation\n+- [ ] Custom field mapping\n+- [ ] Summary and description handling\n+- [ ] Configuration via YAML/JSON/env\n+- [ ] Configuration validation\n+- [ ] .ics file output\n+- [ ] Logging and error handling\n+- [ ] Async processing for I/O-bound tasks; sequential processing for CPU-bound tasks (acceptable for up to 10,000 items)\n+\n+## 7. Testing Strategy\n+\n+### Unit Tests\n+- Test each core component independently\n+- Mock external API calls\n+- Test configuration validation\n+- Test edge cases and error conditions\n+\n+### Integration Tests\n+- Test against YouTrack API (with test account)\n+- Validate generated .ics files\n+- Test full end-to-end workflow\n+\n+### Performance Tests\n+- Compare performance with Kotlin version\n+- Test with large result sets\n+- Measure memory usage\n+\n+## 8. Benefits of Python Rewrite with `uv`\n+\n+1. **Easier to maintain** - Python is more accessible than Kotlin\n+2. **Serverless ready** - Core module designed for AWS Lambda, Azure Functions\n+3. **Simpler deployment** - No JVM required, smaller Docker images\n+4. **Better ecosystem** - Rich Python libraries for data processing\n+5. **Type safety** - Pydantic provides runtime validation\n+6. **Modern tooling** - Ruff for fast linting, pytest for testing\n+7. **Ultra-fast dependency management** - `uv` is 10-100x faster than pip/poetry\n+8. **Reproducible builds** - Lock file ensures consistent environments\n+\n+## 9. Potential Challenges\n+\n+1. **iCal4j vs icalendar** - Library differences may require adjustments\n+2. **Spring Boot configuration** - Need to replicate flexibility\n+3. **GraalVM native** - Need alternative (PyInstaller) for single binary\n+4. **Performance** - May need optimization for large datasets\n+\n+## Summary\n+\n+This plan provides a roadmap for rewriting YouCal in Python that:\n+\n+- Maintains the same functionality as the current Kotlin implementation\n+- Splits the codebase into **core** and **cli** modules as required\n+- Makes the core module serverless-ready for AWS Lambda, Azure Functions, etc.\n+- Provides a clear migration strategy with 5 phases\n+- Recommends modern Python tooling and best practices\n+- Includes testing and documentation plans\n+- Uses `uv` for ultra-fast dependency management\n+\n+The plan analyzes the current Kotlin implementation (~65 source files) and proposes equivalent Python implementations using `httpx` for HTTP, `icalendar` for iCal generation, and `pydantic` for configuration validation."
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "83bbd4ce13216ff3f865e8185e27429b18216f02",
+      "message": "docs: Add Python rewrite plan document\n\nAdded comprehensive plan for rewriting YouCal from Kotlin to Python, including:\n- Project structure with core and cli modules\n- Technology stack using uv, httpx, icalendar, and pydantic\n- 5-phase migration strategy\n- Feature parity checklist\n- Testing strategy and implementation examples\n\nThis plan addresses issue #42 requirements for same functionality\nand modular architecture suitable for serverless deployment.\n\nCo-authored-by: CXwudi <CXwudi@users.noreply.github.com>",
+      "parent_shas": [
+        "0e526c700e04f7b89c210c6186e768c36c0c80aa"
+      ]
+    },
+    {
+      "sha": "01d2729acc00563967993ba23dcaddb80f057039",
+      "message": "Update doc/PYTHON_REWRITE_PLAN.md\n\nCo-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
+      "parent_shas": [
+        "83bbd4ce13216ff3f865e8185e27429b18216f02"
+      ]
+    },
+    {
+      "sha": "10e95185645d9bf4a84cd5974b6562bf5f78a3f6",
+      "message": "Update doc/PYTHON_REWRITE_PLAN.md\n\nCo-authored-by: gemini-code-assist[bot] <176961590+gemini-code-assist[bot]@users.noreply.github.com>",
+      "parent_shas": [
+        "01d2729acc00563967993ba23dcaddb80f057039"
+      ]
+    },
+    {
+      "sha": "1b9ead78382de945f6d36ba62364bacb3ab3c61a",
+      "message": "Update doc/PYTHON_REWRITE_PLAN.md\n\nCo-authored-by: gemini-code-assist[bot] <176961590+gemini-code-assist[bot]@users.noreply.github.com>",
+      "parent_shas": [
+        "10e95185645d9bf4a84cd5974b6562bf5f78a3f6"
+      ]
+    },
+    {
+      "sha": "5f3b6eb5f1d37f43f59c37b10df55ac682ef3eb9",
+      "message": "Update doc/PYTHON_REWRITE_PLAN.md\n\nCo-authored-by: gemini-code-assist[bot] <176961590+gemini-code-assist[bot]@users.noreply.github.com>",
+      "parent_shas": [
+        "1b9ead78382de945f6d36ba62364bacb3ab3c61a"
+      ]
+    },
+    {
+      "sha": "421929ac03c9760d3998525660a9501a4c1d6fad",
+      "message": "Merge branch 'main' into claude/issue-42-20251106-0631",
+      "parent_shas": [
+        "5f3b6eb5f1d37f43f59c37b10df55ac682ef3eb9",
+        "e6779459cc60bcc0919d57250d8f5ff50252d396"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "dependency_only",
+      "doc_only",
+      "java_python_bridge_noise"
+    ],
+    "auto_signals": [
+      "java_python_bridge_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__CXwudi__youcal__pr43.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\CXwudi__youcal__pr43__java_python__CXwudi__youcal__pr43\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\CXwudi__youcal__pr43__java_python__CXwudi__youcal__pr43\\rn"
+  }
+}

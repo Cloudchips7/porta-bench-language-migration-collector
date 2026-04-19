@@ -1,0 +1,75 @@
+{
+  "instance_id": "java_python__eclipse-scout__scout.rt__pr2137",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "eclipse-scout/scout.rt",
+  "pr_number": 2137,
+  "pr_url": "https://github.com/eclipse-scout/scout.rt/pull/2137",
+  "repo": {
+    "full_name": "eclipse-scout/scout.rt",
+    "clone_url": "https://github.com/eclipse-scout/scout.rt.git",
+    "default_branch": "releases/26.1",
+    "created_at": "2021-08-16T17:42:36Z",
+    "stars": 45,
+    "license": "EPL-2.0",
+    "size_kb": 130772
+  },
+  "pull_request": {
+    "id": 3509566711,
+    "title": "Remove empty java file",
+    "body": "457158",
+    "created_at": "2026-04-09T16:01:23Z",
+    "merged_at": "2026-04-13T06:56:48Z",
+    "base_sha": "5af4f92788f532f5d7b27bb3ef6047edb26f92ee",
+    "head_sha": "51040d6b399972699be6eff02c88e015651c785d",
+    "merge_commit_sha": "17231390026d1ce45e70c7951e39d6b9e1d04878",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "5af4f92788f532f5d7b27bb3ef6047edb26f92ee",
+  "final_sha": "51040d6b399972699be6eff02c88e015651c785d",
+  "changed_files": [
+    {
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "filename": "org.eclipse.scout.rt.shared/src/main/java/org/eclipse/scout/rt/shared/extension/MethodState.java",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/eclipse-scout/scout.rt/blob/5af4f92788f532f5d7b27bb3ef6047edb26f92ee/org.eclipse.scout.rt.shared%2Fsrc%2Fmain%2Fjava%2Forg%2Feclipse%2Fscout%2Frt%2Fshared%2Fextension%2FMethodState.java",
+      "raw_url": "https://github.com/eclipse-scout/scout.rt/raw/5af4f92788f532f5d7b27bb3ef6047edb26f92ee/org.eclipse.scout.rt.shared%2Fsrc%2Fmain%2Fjava%2Forg%2Feclipse%2Fscout%2Frt%2Fshared%2Fextension%2FMethodState.java",
+      "contents_url": "https://api.github.com/repos/eclipse-scout/scout.rt/contents/org.eclipse.scout.rt.shared%2Fsrc%2Fmain%2Fjava%2Forg%2Feclipse%2Fscout%2Frt%2Fshared%2Fextension%2FMethodState.java?ref=5af4f92788f532f5d7b27bb3ef6047edb26f92ee"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "51040d6b399972699be6eff02c88e015651c785d",
+      "message": "Remove empty java file\n\n457158",
+      "parent_shas": [
+        "5af4f92788f532f5d7b27bb3ef6047edb26f92ee"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__eclipse-scout__scout.rt__pr2137.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\eclipse-scout__scout.rt__pr2137__java_python__eclipse-scout__scout.rt__pr2137\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\eclipse-scout__scout.rt__pr2137__java_python__eclipse-scout__scout.rt__pr2137\\rn"
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "instance_id": "py2_py3__easybuilders__easybuild-easyblocks__pr1740",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "easybuilders/easybuild-easyblocks",
+  "pr_number": 1740,
+  "pr_url": "https://github.com/easybuilders/easybuild-easyblocks/pull/1740",
+  "repo": {
+    "full_name": "easybuilders/easybuild-easyblocks",
+    "clone_url": "https://github.com/easybuilders/easybuild-easyblocks.git",
+    "default_branch": "develop",
+    "created_at": "2012-10-15T14:31:19Z",
+    "stars": 117,
+    "license": "GPL-2.0",
+    "size_kb": 20186
+  },
+  "pull_request": {
+    "id": 284099502,
+    "title": "fix GROMACS easyblock for list-type configopts",
+    "body": "GROMACS easyblock currently fails in `sanity_check_step` when used\r\nwith a list-type `configopts` config like:\r\n\r\n```\r\nconfigopts = [\r\n    \"-DGMX_THREAD_MPI=OFF -DGMX_DOUBLE=OFF\",\r\n    \"-DGMX_THREAD_MPI=OFF -DGMX_DOUBLE=ON\",\r\n]\r\n```\r\n\r\nThis patch fixes this issue by correctly iterating over multiple\r\nconfigopts strings to determine which binary and lib names to\r\ncheck for.",
+    "created_at": "2019-05-31T15:46:03Z",
+    "merged_at": "2019-06-04T20:14:43Z",
+    "base_sha": "777615b383f849a5863c4dec89e021a59cd4baa8",
+    "head_sha": "f8233510a1ce3cfb44b5194963e144af83f50dd8",
+    "merge_commit_sha": "1c2d48ab75181f85ff1bfb35976c38bf26dcdef9",
+    "labels": [
+      "enhancement",
+      "bug fix"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "777615b383f849a5863c4dec89e021a59cd4baa8",
+  "final_sha": "f8233510a1ce3cfb44b5194963e144af83f50dd8",
+  "changed_files": [
+    {
+      "sha": "e83a26ad86376ee24f0f4c9a098eb937c264a5be",
+      "filename": "easybuild/easyblocks/g/gromacs.py",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 5,
+      "changes": 22,
+      "blob_url": "https://github.com/easybuilders/easybuild-easyblocks/blob/f8233510a1ce3cfb44b5194963e144af83f50dd8/easybuild%2Feasyblocks%2Fg%2Fgromacs.py",
+      "raw_url": "https://github.com/easybuilders/easybuild-easyblocks/raw/f8233510a1ce3cfb44b5194963e144af83f50dd8/easybuild%2Feasyblocks%2Fg%2Fgromacs.py",
+      "contents_url": "https://api.github.com/repos/easybuilders/easybuild-easyblocks/contents/easybuild%2Feasyblocks%2Fg%2Fgromacs.py?ref=f8233510a1ce3cfb44b5194963e144af83f50dd8",
+      "patch": "@@ -468,18 +468,30 @@ def sanity_check_step(self):\n             libnames.extend([libname + mpisuff for libname in libnames])\n \n         suff = ''\n-        # add the _d suffix to the suffix, in case of the double precission\n-        if re.search('DGMX_DOUBLE=(ON|YES|TRUE|Y|[1-9])', self.cfg['configopts'], re.I):\n-            suff = '_d'\n \n-        libs = ['lib%s%s.%s' % (libname, suff, self.libext) for libname in libnames]\n+        # make sure that configopts is a list:\n+        configopts_list = self.cfg['configopts']\n+        if isinstance(configopts_list, str):\n+            configopts_list = [configopts_list]\n+\n+        lib_files = []\n+        bin_files = []\n+\n+        for configopts in configopts_list:\n+            # add the _d suffix to the suffix, in case of the double precission\n+            if re.search('DGMX_DOUBLE=(ON|YES|TRUE|Y|[1-9])', configopts, re.I):\n+                suff = '_d'\n+\n+            lib_files.extend(['lib%s%s.%s' % (libname, suff, self.libext) for libname in libnames])\n+            bin_files.extend([b + suff for b in bins])\n \n         # pkgconfig dir not available for earlier versions, exact version to use here is unclear\n         if LooseVersion(self.version) >= LooseVersion('4.6'):\n             dirs.append(os.path.join(self.lib_subdir, 'pkgconfig'))\n \n         custom_paths = {\n-            'files': [os.path.join('bin', b + suff) for b in bins] + [os.path.join(self.lib_subdir, l) for l in libs],\n+            'files': [os.path.join('bin', b) for b in bin_files] +\n+                [os.path.join(self.lib_subdir, l) for l in lib_files],\n             'dirs': dirs,\n         }\n         super(EB_GROMACS, self).sanity_check_step(custom_paths=custom_paths)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "bfec8e35ce34ff084e87de031d43196a1fcf5aef",
+      "message": "fix GROMACS easyblock for list-type configopts\n\nGROMACS easyblock currently fails in sanity_check_step when used\nwith a list-type configopts config like:\n\n```\nconfigopts = [\n    \"-DGMX_THREAD_MPI=OFF -DGMX_DOUBLE=OFF\",\n    \"-DGMX_THREAD_MPI=OFF -DGMX_DOUBLE=ON\",\n]\n```\n\nThis patch fixes this issue by correctly iterating over multiple\nconfigopts strings to determine which binary and lib names to\ncheck for.",
+      "parent_shas": [
+        "777615b383f849a5863c4dec89e021a59cd4baa8"
+      ]
+    },
+    {
+      "sha": "37d1d4f2465214477c16e4f40473651d3d973b23",
+      "message": "GROMACS easyblock: applied @boegel's suggestions\n\nin PR: easybuilders/easybuild-easyblocks#1740",
+      "parent_shas": [
+        "bfec8e35ce34ff084e87de031d43196a1fcf5aef"
+      ]
+    },
+    {
+      "sha": "52fc48aa045938464ec1008c335c5d2ecfb603ca",
+      "message": "GROMACS easyblock: resolve 'line too long'",
+      "parent_shas": [
+        "37d1d4f2465214477c16e4f40473651d3d973b23"
+      ]
+    },
+    {
+      "sha": "f8233510a1ce3cfb44b5194963e144af83f50dd8",
+      "message": "GROMACS easyblock: resolve more houndci-bot comments.",
+      "parent_shas": [
+        "52fc48aa045938464ec1008c335c5d2ecfb603ca"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__easybuilders__easybuild-easyblocks__pr1740.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\easybuilders__easybuild-easyblocks__pr1740__py2_py3__easybuilders__easybuild-easyblocks__pr1740\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\easybuilders__easybuild-easyblocks__pr1740__py2_py3__easybuilders__easybuild-easyblocks__pr1740\\rn"
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "instance_id": "python_cpp__SzymonPajzert__koryta__pr469",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "SzymonPajzert/koryta",
+  "pr_number": 469,
+  "pr_url": "https://github.com/SzymonPajzert/koryta/pull/469",
+  "repo": {
+    "full_name": "SzymonPajzert/koryta",
+    "clone_url": "https://github.com/SzymonPajzert/koryta.git",
+    "default_branch": "main",
+    "created_at": "2025-06-14T15:32:07Z",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 30241
+  },
+  "pull_request": {
+    "id": 3510938047,
+    "title": "Update python deps",
+    "body": "",
+    "created_at": "2026-04-09T21:55:37Z",
+    "merged_at": "2026-04-10T16:50:58Z",
+    "base_sha": "af849ff481437b9fc31c3ce1a44049d30729d07a",
+    "head_sha": "5774f37c560b2e74adb1b05d265a7542ff17df5d",
+    "merge_commit_sha": "4d14a37942f451e127f912228b358e06c316a263",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "af849ff481437b9fc31c3ce1a44049d30729d07a",
+  "final_sha": "5774f37c560b2e74adb1b05d265a7542ff17df5d",
+  "changed_files": [
+    {
+      "sha": "6c32f45821917c2ddee22b21d63309a9e1100a1c",
+      "filename": "data/scrapers/poetry.lock",
+      "status": "modified",
+      "additions": 1214,
+      "deletions": 1261,
+      "changes": 2475,
+      "blob_url": "https://github.com/SzymonPajzert/koryta/blob/5774f37c560b2e74adb1b05d265a7542ff17df5d/data%2Fscrapers%2Fpoetry.lock",
+      "raw_url": "https://github.com/SzymonPajzert/koryta/raw/5774f37c560b2e74adb1b05d265a7542ff17df5d/data%2Fscrapers%2Fpoetry.lock",
+      "contents_url": "https://api.github.com/repos/SzymonPajzert/koryta/contents/data%2Fscrapers%2Fpoetry.lock?ref=5774f37c560b2e74adb1b05d265a7542ff17df5d"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "5774f37c560b2e74adb1b05d265a7542ff17df5d",
+      "message": "Update python deps",
+      "parent_shas": [
+        "af849ff481437b9fc31c3ce1a44049d30729d07a"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__SzymonPajzert__koryta__pr469.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\SzymonPajzert__koryta__pr469__python_cpp__SzymonPajzert__koryta__pr469\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\SzymonPajzert__koryta__pr469__python_cpp__SzymonPajzert__koryta__pr469\\rn"
+  }
+}

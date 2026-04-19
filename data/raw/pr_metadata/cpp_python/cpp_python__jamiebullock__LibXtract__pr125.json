@@ -1,0 +1,182 @@
+{
+  "instance_id": "cpp_python__jamiebullock__LibXtract__pr125",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "jamiebullock/LibXtract",
+  "pr_number": 125,
+  "pr_url": "https://github.com/jamiebullock/LibXtract/pull/125",
+  "repo": {
+    "full_name": "jamiebullock/LibXtract",
+    "clone_url": "https://github.com/jamiebullock/LibXtract.git",
+    "default_branch": "main",
+    "created_at": "2012-05-31T15:16:08Z",
+    "stars": 230,
+    "license": "MIT",
+    "size_kb": 1563
+  },
+  "pull_request": {
+    "id": 3494528486,
+    "title": "fix: resolve verified bugs batch 1",
+    "body": "## Summary\n\n- Fix last bark band never being computed in `xtract_bark_coefficients`\n- Fix `swig/test.py` passing undersized argv to `xtract_spectrum` and update to Python 3\n- Clarify LPCC and rolloff header documentation\n- Add `install` target to `swig/Makefile`\n- Fix `swig/Makefile` hardcoding `-framework Accelerate` on all platforms\n- Document MSYS2 requirement for Windows builds in README\n\n## Issues fixed\n\nFixes #31\nFixes #21\nFixes #68\nFixes #69\nFixes #44\nFixes #93\nFixes #102\nFixes #106\n\n## Test plan\n\n- [x] `make && make check` passes (233 assertions, 60 test cases)\n- [ ] Verify `make swig` still works on macOS\n- [ ] Verify `make swig` works on Linux (no Accelerate linkage)",
+    "created_at": "2026-04-06T19:03:04Z",
+    "merged_at": "2026-04-06T19:09:53Z",
+    "base_sha": "6815ea43a9c4eccf2d9a7a8ccfcfdfb7db762f74",
+    "head_sha": "6bd1bfb948fdd3ba02c532147d01c91898363eeb",
+    "merge_commit_sha": "fb61900e88c55afb995cf7bd35cf8cf3e9673855",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "6815ea43a9c4eccf2d9a7a8ccfcfdfb7db762f74",
+  "final_sha": "6bd1bfb948fdd3ba02c532147d01c91898363eeb",
+  "changed_files": [
+    {
+      "sha": "217f377ac3efc35c08d8d0cc4826722f1842da90",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/6bd1bfb948fdd3ba02c532147d01c91898363eeb/README.md",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/6bd1bfb948fdd3ba02c532147d01c91898363eeb/README.md",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/README.md?ref=6bd1bfb948fdd3ba02c532147d01c91898363eeb",
+      "patch": "@@ -21,6 +21,8 @@ A complete list of features can be found by viewing the header files, or reading\n \n On macOS, the library uses Apple's Accelerate framework for FFT. On Linux and Windows, it uses the bundled Ooura FFT.\n \n+On Windows, an MSYS2/MinGW environment is required to provide `make` and a POSIX-compatible shell. Install [MSYS2](https://www.msys2.org), then from the MinGW 64-bit shell run `pacman -S mingw-w64-x86_64-gcc make`.\n+\n ### Build and test\n \n ```bash"
+    },
+    {
+      "sha": "e81570bf329be9431c1b73e669a9ec21514d300b",
+      "filename": "include/xtract/xtract_scalar.h",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/6bd1bfb948fdd3ba02c532147d01c91898363eeb/include%2Fxtract%2Fxtract_scalar.h",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/6bd1bfb948fdd3ba02c532147d01c91898363eeb/include%2Fxtract%2Fxtract_scalar.h",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/include%2Fxtract%2Fxtract_scalar.h?ref=6bd1bfb948fdd3ba02c532147d01c91898363eeb",
+      "patch": "@@ -227,8 +227,8 @@ int xtract_zcr(const double *data, const int N, const void *argv, double *result\n  * \n  * \\param *data: a pointer to the first element in an array of doubles representing the magnitude coefficients from the spectrum of an audio vector, (e.g. the first half of the array pointed to by *result from xtract_spectrum().\n  * \\param N: the number of elements to be considered\n- * \\param *argv: a pointer to an array containing a double representing (samplerate / N ) and  a double representing the threshold for rolloff, i.e. the percentile at which the rolloff is determined, expressed as a percentage, and  \n- * \\param *result: the spectral rolloff in Hz of N values from the array pointed to by *data. This is the point in the spectrum below which argv[0] of the energy is distributed.\n+ * \\param *argv: a pointer to an array of two doubles: argv[0] is the frequency resolution (samplerate / N), and argv[1] is the rolloff threshold as a percentage (e.g. 95.0 for the 95th percentile).\n+ * \\param *result: the spectral rolloff in Hz of N values from the array pointed to by *data. This is the point in the spectrum below which argv[1] percent of the energy is distributed.\n  */\n int xtract_rolloff(const double *data, const int N, const void *argv, double *result);\n "
+    },
+    {
+      "sha": "5ecbab674703fa3adaabe255c2b6f11ec1bdf7eb",
+      "filename": "include/xtract/xtract_vector.h",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/6bd1bfb948fdd3ba02c532147d01c91898363eeb/include%2Fxtract%2Fxtract_vector.h",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/6bd1bfb948fdd3ba02c532147d01c91898363eeb/include%2Fxtract%2Fxtract_vector.h",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/include%2Fxtract%2Fxtract_vector.h?ref=6bd1bfb948fdd3ba02c532147d01c91898363eeb",
+      "patch": "@@ -177,7 +177,7 @@ int xtract_lpc(const double *data, const int N, const void *argv, double *result\n  * \n  * \\param *data: a pointer to the first element in an array of LPC coeffiecients e.g. a pointer to the second half of the array pointed to by *result from xtract_lpc()\n  * \\param N: the number of LPC coefficients to be considered\n- * \\param *argv: a pointer to a double representing the order of the result vector. This must be a whole number. According to Rabiner and Juang the ratio between the number (p) of LPC coefficients and the order (Q) of the LPC cepstrum is given by Q ~ (3/2)p where Q > p.\n+ * \\param *argv: a pointer to a double representing the order (Q) of the result vector. This must be a whole number. According to Rabiner and Juang the recommended ratio is Q ~ (3/2)N where N is the number of LPC coefficients and Q > N.\n  * \\param *result: a pointer to an array containing the resultant LPCC.\n  * \n  * An array of size Q, where Q is given by argv[0] must be allocated, and *result must point to its first element."
+    },
+    {
+      "sha": "a63996e8986ca3fe49a98f9f7f48114bddbe0d21",
+      "filename": "src/vector.c",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/6bd1bfb948fdd3ba02c532147d01c91898363eeb/src%2Fvector.c",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/6bd1bfb948fdd3ba02c532147d01c91898363eeb/src%2Fvector.c",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/src%2Fvector.c?ref=6bd1bfb948fdd3ba02c532147d01c91898363eeb",
+      "patch": "@@ -743,6 +743,11 @@ int xtract_bark_coefficients(const double *data, const int N, const void *argv,\n             result[band] += data[n];\n     }\n \n+    /* Last band: sum from limits[XTRACT_BARK_BANDS - 1] to N */\n+    result[band] = 0.0;\n+    for(n = limits[band]; n < N; n++)\n+        result[band] += data[n];\n+\n     return XTRACT_SUCCESS;\n }\n "
+    },
+    {
+      "sha": "385ca241c9ede195594bc5252915974ee2252544",
+      "filename": "swig/Makefile",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 3,
+      "changes": 12,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/6bd1bfb948fdd3ba02c532147d01c91898363eeb/swig%2FMakefile",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/6bd1bfb948fdd3ba02c532147d01c91898363eeb/swig%2FMakefile",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2FMakefile?ref=6bd1bfb948fdd3ba02c532147d01c91898363eeb",
+      "patch": "@@ -7,20 +7,26 @@ INCLUDEPY = $(shell python -m sysconfig | grep -w INCLUDEPY | awk '{print $$3}')\n \n ifeq ($(OS), Darwin)\n     CFLAGS=-g -c\n-    LD=gcc\n     LDFLAGS=-bundle -flat_namespace -undefined suppress\n+    LIBS=-framework Accelerate\n else\n     CFLAGS=-g -c -fPIC\n-    LD=ld\n     LDFLAGS=-shared\n+    LIBS=\n endif\n \n .PHONY: python\n \n python:\n \t@swig -I../include -python $(NAME).i\n \t@$(CC) $(CFLAGS) $(NAME)_wrap.c -o $(NAME)_wrap.o -I$(INCLUDEPY) -I../include\n-\t@$(CC) $(LDFLAGS) ../src/lib$(NAME).a $(NAME)_wrap.o -o _$(NAME).so -framework Accelerate\n+\t@$(CC) $(LDFLAGS) ../src/lib$(NAME).a $(NAME)_wrap.o -o _$(NAME).so $(LIBS)\n+\n+install: python\n+\t@SITE_DIR=$$(python -c \"import site; print(site.getsitepackages()[0])\") && \\\n+\tinstall -d \"$$SITE_DIR\" && \\\n+\tinstall _$(NAME).so \"$$SITE_DIR\" && \\\n+\tinstall -m 644 $(NAME).py \"$$SITE_DIR\"\n \n clean:\n \t@$(RM) *.o"
+    },
+    {
+      "sha": "cf1291feed112572cd94cea0fd3879b932566af3",
+      "filename": "swig/test.py",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 13,
+      "changes": 29,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/6bd1bfb948fdd3ba02c532147d01c91898363eeb/swig%2Ftest.py",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/6bd1bfb948fdd3ba02c532147d01c91898363eeb/swig%2Ftest.py",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2Ftest.py?ref=6bd1bfb948fdd3ba02c532147d01c91898363eeb",
+      "patch": "@@ -3,9 +3,9 @@\n try:\n     import xtract\n except ImportError:\n-    print 'Failed to load the library \"xtract\"'\n+    print('Failed to load the library \"xtract\"')\n \n-print '\\nRunning libxtract Python bindings test...\\n'\n+print('\\nRunning libxtract Python bindings test...\\n')\n \n len = 8\n \n@@ -18,19 +18,22 @@\n \n mean = xtract.xtract_mean(a,len,None)[1]\n \n-print 'The mean of ' + ', '.join(temp) + ' is: %.2f' % mean\n+print('The mean of ' + ', '.join(temp) + ' is: %.2f' % mean)\n \n argv = xtract.doubleArray(1)\n argv[0] = mean\n \n variance = xtract.xtract_variance(a, len, argv)[1]\n \n-print 'The variance is %.2f' % variance\n+print('The variance is %.2f' % variance)\n \n-print 'Computing spectrum...'\n+print('Computing spectrum...')\n \n-argv = xtract.doubleArray(1)\n-argv[0] = 44100.0 / len  # Fake sample rate\n+argv = xtract.doubleArray(4)\n+argv[0] = 44100.0 / len\n+argv[1] = float(xtract.XTRACT_MAGNITUDE_SPECTRUM)\n+argv[2] = 0.0\n+argv[3] = 0.0\n \n xtract.xtract_init_fft(len, xtract.XTRACT_SPECTRUM);\n \n@@ -40,18 +43,18 @@\n \n \n for i in range(len):\n-    print result[i]\n+    print(result[i])\n \n \n-print 'Computing windowed subframes...'\n+print('Computing windowed subframes...')\n \n for i in range(0, len):\n     a[i] = 1.0\n \n-window = xtract.xtract_init_window(len / 2, xtract.XTRACT_HANN)\n-xtract.xtract_features_from_subframes(a, len, xtract.XTRACT_WINDOWED, window, result) \n+window = xtract.xtract_init_window(len // 2, xtract.XTRACT_HANN)\n+xtract.xtract_features_from_subframes(a, len, xtract.XTRACT_WINDOWED, window, result)\n \n for i in range(len):\n-    print result[i]\n+    print(result[i])\n \n-print '\\nFinished!\\n'\n+print('\\nFinished!\\n')"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "47df78ce7abb6e4496f4d865791b26057b83d1a3",
+      "message": "fix: compute last bark band in xtract_bark_coefficients\n\nThe loop stopped at XTRACT_BARK_BANDS - 2, leaving result[25]\nuninitialised. Handle the last band separately since limits only\nhas XTRACT_BARK_BANDS entries and we cannot read limits[band + 1].\n\nFixes #31",
+      "parent_shas": [
+        "6815ea43a9c4eccf2d9a7a8ccfcfdfb7db762f74"
+      ]
+    },
+    {
+      "sha": "185bc9d3f7d2142ba426a1d13cc0f09139ea7cff",
+      "message": "fix: pass correct argv to xtract_spectrum in swig/test.py\n\nxtract_spectrum reads 4 argv values (q, spectrum type, DC, normalise)\nbut only 1 was passed, causing reads of uninitialised memory.\nAlso update print statements to Python 3 syntax and use integer\ndivision for window init.\n\nFixes #21",
+      "parent_shas": [
+        "47df78ce7abb6e4496f4d865791b26057b83d1a3"
+      ]
+    },
+    {
+      "sha": "38762eb7c97779f0b274bbeaa0ad2523f7d184f3",
+      "message": "fix: clarify LPCC documentation for argv and order Q\n\nThe docs introduced 'p' without linking it to the N parameter.\nReword to use N directly so the relationship Q ~ (3/2)N is clear.\n\nFixes #68",
+      "parent_shas": [
+        "185bc9d3f7d2142ba426a1d13cc0f09139ea7cff"
+      ]
+    },
+    {
+      "sha": "06c6d919b4a1b9eeccb95d04aef3a19ebe2874de",
+      "message": "fix: clarify rolloff documentation for argv and result\n\nThe argv description ran two parameters together and the result\ndescription incorrectly referenced argv[0] instead of argv[1]\nfor the threshold percentage.\n\nFixes #69",
+      "parent_shas": [
+        "38762eb7c97779f0b274bbeaa0ad2523f7d184f3"
+      ]
+    },
+    {
+      "sha": "79cc866e8b3344b2a5d3ae2824abca15924325ad",
+      "message": "fix: add install target to swig/Makefile\n\nBindings were built into the swig/ directory with no way to install\nthem to site-packages. Add an install target that uses Python's\nsite.getsitepackages() to find the correct location.\n\nFixes #44",
+      "parent_shas": [
+        "06c6d919b4a1b9eeccb95d04aef3a19ebe2874de"
+      ]
+    },
+    {
+      "sha": "0054d55185ea3e6f9846972d7121d73638aeb53d",
+      "message": "fix: don't hardcode -framework Accelerate in swig/Makefile\n\nThe link step unconditionally passed -framework Accelerate, causing\nmake swig to fail on Linux. Move framework linkage into a LIBS\nvariable set only on Darwin, mirroring src/Make.config.\n\nFixes #93\nFixes #102",
+      "parent_shas": [
+        "79cc866e8b3344b2a5d3ae2824abca15924325ad"
+      ]
+    },
+    {
+      "sha": "6bd1bfb948fdd3ba02c532147d01c91898363eeb",
+      "message": "fix: document MSYS2 requirement for Windows builds in README\n\nUsers were getting build errors on Windows with no guidance on\nthe required build environment.\n\nFixes #106",
+      "parent_shas": [
+        "0054d55185ea3e6f9846972d7121d73638aeb53d"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "cross_language_mapping_visible",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__jamiebullock__LibXtract__pr125.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\jamiebullock__LibXtract__pr125__cpp_python__jamiebullock__LibXtract__pr125\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\jamiebullock__LibXtract__pr125__cpp_python__jamiebullock__LibXtract__pr125\\rn"
+  }
+}

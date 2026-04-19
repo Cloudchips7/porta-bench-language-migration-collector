@@ -1,0 +1,110 @@
+{
+  "instance_id": "python_java__celery__celery__pr10265",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "celery/celery",
+  "pr_number": 10265,
+  "pr_url": "https://github.com/celery/celery/pull/10265",
+  "repo": {
+    "full_name": "celery/celery",
+    "clone_url": "https://github.com/celery/celery.git",
+    "default_branch": "main",
+    "created_at": "2009-04-24T11:31:24Z",
+    "stars": 28374,
+    "license": "NOASSERTION",
+    "size_kb": 36626
+  },
+  "pull_request": {
+    "id": 3529139288,
+    "title": "Replace archived blacksmith python action with upstream python action",
+    "body": "## Description\r\n\r\nChanges to the official setup-python action, as described in https://github.com/useblacksmith/setup-python (which is archived)\r\n\r\nSee warning in current CI on main branch:\r\n\r\n> Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea, codecov/test-results-action@v1, useblacksmith/setup-python@v6. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/\r\n\r\n\r\n<!-- Please describe your pull request.\r\n\r\nNOTE: All patches should be made against main, not a maintenance branch like\r\n3.1, 2.5, etc.  That is unless the bug is already fixed in main, but not in\r\nthat version series.\r\n\r\nIf it fixes a bug or resolves a feature request,\r\nbe sure to link to that issue via (Fixes #4412) for example.\r\n-->\r\n",
+    "created_at": "2026-04-14T15:14:24Z",
+    "merged_at": "2026-04-14T17:05:24Z",
+    "base_sha": "ca0259df5cd21eb51f5143768834626ff27c0f0b",
+    "head_sha": "fd0340060cc31b91457f5131d464f8a428530901",
+    "merge_commit_sha": "f8cc65dc5fa9098e99f391519b8e1560ad1cec6d",
+    "labels": [
+      "CI"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "d68250e55d8baaf83b04d757a5ee2686d4b46621",
+  "final_sha": "fd0340060cc31b91457f5131d464f8a428530901",
+  "changed_files": [
+    {
+      "sha": "a2072bd039437f23f2140597069ae645310de5c2",
+      "filename": ".github/workflows/integration-tests.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/celery/celery/blob/fd0340060cc31b91457f5131d464f8a428530901/.github%2Fworkflows%2Fintegration-tests.yml",
+      "raw_url": "https://github.com/celery/celery/raw/fd0340060cc31b91457f5131d464f8a428530901/.github%2Fworkflows%2Fintegration-tests.yml",
+      "contents_url": "https://api.github.com/repos/celery/celery/contents/.github%2Fworkflows%2Fintegration-tests.yml?ref=fd0340060cc31b91457f5131d464f8a428530901",
+      "patch": "@@ -52,7 +52,7 @@ jobs:\n \n       - uses: actions/checkout@v6\n       - name: Set up Python ${{ matrix.python-version }}\n-        uses: useblacksmith/setup-python@v6\n+        uses: actions/setup-python@v6\n         with:\n           python-version: ${{ matrix.python-version }}\n           allow-prereleases: true"
+    },
+    {
+      "sha": "f1b8db029cf88030f73ee2f216bbd780c3471a57",
+      "filename": ".github/workflows/python-package.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/celery/celery/blob/fd0340060cc31b91457f5131d464f8a428530901/.github%2Fworkflows%2Fpython-package.yml",
+      "raw_url": "https://github.com/celery/celery/raw/fd0340060cc31b91457f5131d464f8a428530901/.github%2Fworkflows%2Fpython-package.yml",
+      "contents_url": "https://api.github.com/repos/celery/celery/contents/.github%2Fworkflows%2Fpython-package.yml?ref=fd0340060cc31b91457f5131d464f8a428530901",
+      "patch": "@@ -56,7 +56,7 @@ jobs:\n         sudo apt-get update && sudo apt-get install -f libcurl4-openssl-dev libssl-dev libgnutls28-dev httping expect libmemcached-dev\n     - uses: actions/checkout@v6\n     - name: Set up Python ${{ matrix.python-version }}\n-      uses: useblacksmith/setup-python@v6\n+      uses: actions/setup-python@v6\n       with:\n         python-version: ${{ matrix.python-version }}\n         allow-prereleases: true"
+    },
+    {
+      "sha": "a15be4d3e365d251b6309eac158173621eb23977",
+      "filename": ".github/workflows/smoke-tests.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/celery/celery/blob/fd0340060cc31b91457f5131d464f8a428530901/.github%2Fworkflows%2Fsmoke-tests.yml",
+      "raw_url": "https://github.com/celery/celery/raw/fd0340060cc31b91457f5131d464f8a428530901/.github%2Fworkflows%2Fsmoke-tests.yml",
+      "contents_url": "https://api.github.com/repos/celery/celery/contents/.github%2Fworkflows%2Fsmoke-tests.yml?ref=fd0340060cc31b91457f5131d464f8a428530901",
+      "patch": "@@ -40,7 +40,7 @@ jobs:\n       - name: Setup Docker Builder\n         uses: useblacksmith/setup-docker-builder@v1\n       - name: Set up Python ${{ matrix.python-version }}\n-        uses: useblacksmith/setup-python@v6\n+        uses: actions/setup-python@v6\n         with:\n           python-version: ${{ matrix.python-version }}\n           allow-prereleases: true"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "5bb49c9ae05437669d13f8f79ef036c9f4656316",
+      "message": "Replace archived blacksmith python action with upstream python action\n\nSee https://github.com/useblacksmith/setup-python and https://www.blacksmith.sh/blog/cache",
+      "parent_shas": [
+        "d68250e55d8baaf83b04d757a5ee2686d4b46621"
+      ]
+    },
+    {
+      "sha": "fd0340060cc31b91457f5131d464f8a428530901",
+      "message": "Merge branch 'main' into chore/replace-deprecated-python-action",
+      "parent_shas": [
+        "5bb49c9ae05437669d13f8f79ef036c9f4656316",
+        "ca0259df5cd21eb51f5143768834626ff27c0f0b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__celery__celery__pr10265.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\celery__celery__pr10265__python_java__celery__celery__pr10265\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\celery__celery__pr10265__python_java__celery__celery__pr10265\\rn"
+  }
+}

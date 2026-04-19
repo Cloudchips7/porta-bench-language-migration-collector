@@ -1,0 +1,329 @@
+{
+  "instance_id": "cpp_python__intercepted16__fibrumpdf__pr15",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "intercepted16/fibrumpdf",
+  "pr_number": 15,
+  "pr_url": "https://github.com/intercepted16/fibrumpdf/pull/15",
+  "repo": {
+    "full_name": "intercepted16/fibrumpdf",
+    "clone_url": "https://github.com/intercepted16/fibrumpdf.git",
+    "default_branch": "main",
+    "created_at": "2025-09-06T14:55:15Z",
+    "stars": 103,
+    "license": "NOASSERTION",
+    "size_kb": 40598
+  },
+  "pull_request": {
+    "id": 3506858507,
+    "title": "refactor(python): use `ijson` for proper streaming, use `ctypes` again, remove redundant code",
+    "body": "- use `ijson` so that we are... actually streaming\r\n\r\n- migrated back to ctypes in `fibrum_pdf/_cffi.py`,\r\n\r\n- replaced the custom cli implementation in `fibrum_pdf/main.py` with typer\r\n\r\n- refactored `fibrum_pdf/_block_converter.py` to improve markdown output, including better handling of links, tables, lists, and headings, and streamlined span styling logic.\r\n\r\n- updated `manifest.in` to include go sources and clean up build system file inclusion.\r\n\r\n- improved type annotations and conditional imports in `fibrum_pdf/__init__.py`, and implemented module-level `__getattr__` for cleaner api exposure. \r\n\r\n- adjusted models in `fibrum_pdf/models.py` for more accurate type hints and added module docstrings. \r\n\r\n- relaxed some pyright and ruff linting rules for better developer experience. \r\n\r\n- fixed output file handling and improved error reporting in the api. \r\n\r\n- updated project urls to the new repository location in `pyproject.toml`.",
+    "created_at": "2026-04-09T05:52:13Z",
+    "merged_at": "2026-04-09T10:28:48Z",
+    "base_sha": "4d82baf9b5eb329d40cc3d46935a659eecbf73a0",
+    "head_sha": "e13d731d8c06117c506b1b95b516ea9053a5e970",
+    "merge_commit_sha": "63be9d53c525719282d20efedc6136245f12f50c",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "4d82baf9b5eb329d40cc3d46935a659eecbf73a0",
+  "final_sha": "e13d731d8c06117c506b1b95b516ea9053a5e970",
+  "changed_files": [
+    {
+      "sha": "bfb4b4e1c3c74c103f661976631637c2f86f46d3",
+      "filename": "MANIFEST.in",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 8,
+      "changes": 10,
+      "blob_url": "https://github.com/intercepted16/fibrumpdf/blob/e13d731d8c06117c506b1b95b516ea9053a5e970/MANIFEST.in",
+      "raw_url": "https://github.com/intercepted16/fibrumpdf/raw/e13d731d8c06117c506b1b95b516ea9053a5e970/MANIFEST.in",
+      "contents_url": "https://api.github.com/repos/intercepted16/fibrumpdf/contents/MANIFEST.in?ref=e13d731d8c06117c506b1b95b516ea9053a5e970",
+      "patch": "@@ -1,23 +1,17 @@\n-# Include build system files\n-include CMakeLists.txt\n-include meson.build\n-include meson.options\n include pyproject.toml\n include README.md\n include LICENSE\n include BUILD.md\n \n-# Include C source and headers\n-recursive-include include *.h\n-recursive-include src *.c\n \n-# Include MuPDF headers (needed for compilation)\n recursive-include mupdf/include *.h\n \n include lib/mupdf/libmupdf.so*\n include lib/mupdf/libmupdf.dylib\n include lib/mupdf/*.dll\n \n+recursive-include go *.go *.c *.h\n+\n prune build\n prune dist\n prune *.egg-info"
+    },
+    {
+      "sha": "84af3c453b8cdd7b4a7fdd674949a5ce2225af22",
+      "filename": "fibrum_pdf/__init__.py",
+      "status": "modified",
+      "additions": 33,
+      "deletions": 2,
+      "changes": 35,
+      "blob_url": "https://github.com/intercepted16/fibrumpdf/blob/e13d731d8c06117c506b1b95b516ea9053a5e970/fibrum_pdf%2F__init__.py",
+      "raw_url": "https://github.com/intercepted16/fibrumpdf/raw/e13d731d8c06117c506b1b95b516ea9053a5e970/fibrum_pdf%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/intercepted16/fibrumpdf/contents/fibrum_pdf%2F__init__.py?ref=e13d731d8c06117c506b1b95b516ea9053a5e970",
+      "patch": "@@ -2,9 +2,11 @@\n \n import logging\n from importlib import metadata\n+from typing import TYPE_CHECKING, Any\n \n-from .api import ConversionResult, ExtractionError, to_json\n-from .models import Block, Page, Pages\n+if TYPE_CHECKING:\n+    from .api import ConversionResult, ExtractionError, to_json\n+    from .models import Block, Page, Pages\n \n __all__ = [\n     \"Block\",\n@@ -17,6 +19,35 @@\n ]\n logging.getLogger(__name__).addHandler(logging.NullHandler())\n \n+\n+def __getattr__(name: str) -> Any:\n+    if name == \"to_json\":\n+        from .api import to_json\n+\n+        return to_json\n+    if name == \"ExtractionError\":\n+        from .api import ExtractionError\n+\n+        return ExtractionError\n+    if name == \"ConversionResult\":\n+        from .api import ConversionResult\n+\n+        return ConversionResult\n+    if name == \"Block\":\n+        from .models import Block\n+\n+        return Block\n+    if name == \"Page\":\n+        from .models import Page\n+\n+        return Page\n+    if name == \"Pages\":\n+        from .models import Pages\n+\n+        return Pages\n+    raise AttributeError(name)\n+\n+\n try:\n     __version__ = metadata.version(\"fibrum-pdf\")\n except metadata.PackageNotFoundError:"
+    },
+    {
+      "sha": "c50630ca27d1135b027f821a71e613c6b15105e9",
+      "filename": "fibrum_pdf/_block_converter.py",
+      "status": "modified",
+      "additions": 69,
+      "deletions": 79,
+      "changes": 148,
+      "blob_url": "https://github.com/intercepted16/fibrumpdf/blob/e13d731d8c06117c506b1b95b516ea9053a5e970/fibrum_pdf%2F_block_converter.py",
+      "raw_url": "https://github.com/intercepted16/fibrumpdf/raw/e13d731d8c06117c506b1b95b516ea9053a5e970/fibrum_pdf%2F_block_converter.py",
+      "contents_url": "https://api.github.com/repos/intercepted16/fibrumpdf/contents/fibrum_pdf%2F_block_converter.py?ref=e13d731d8c06117c506b1b95b516ea9053a5e970",
+      "patch": "@@ -11,50 +11,30 @@\n BULLETS = frozenset(\"•‣⁃⁌⁍∙▪▫●○◦■□▶▸◆◇♦➤\\uf0b7\\ufffd\")\n FMT_MARKERS = (\"**\", \"*\", \"`\", \"~~\")\n PUNCT = \" \\n\\t.,;:)]/\\\\-?!\"\n-STYLES = [\n-    (\"monospace\", \"`\"),\n-    (\"bold\", \"**\"),\n-    (\"italic\", \"*\"),\n-    (\"strikeout\", \"~~\"),\n-    (\"subscript\", \"~\"),\n-]\n-\n-\n-def _normalize_bullets(text: str) -> str:\n-    out: list[str] = []\n-    i: int = 0\n-    while i < len(text):\n-        if text[i] in BULLETS:\n-            out.append(\"- \")\n-            i += 1\n-            while i < len(text) and text[i] in \" \\t\":\n-                i += 1\n-        else:\n-            out.append(text[i])\n-            i += 1\n-    return \"\".join(out)\n+STYLES = [(\"bold\", \"**\"), (\"italic\", \"*\"), (\"strikeout\", \"~~\"), (\"subscript\", \"~\")]\n \n \n def _style_span(span: dict[str, Any]) -> str:\n-    text = span.get(\"text\", \"\")\n-    if not text:\n+    if not (text := span.get(\"text\", \"\")):\n         return \"\"\n+    link = (\n+        next((span.get(k) for k in [\"link\", \"uri\"] if isinstance(span.get(k), str)), \"\")\n+        or \"\"\n+    )\n     if span.get(\"superscript\"):\n         s = text.strip()\n-        return f\"[{s}]\" if s.isdigit() or re.match(r\"^\\d+[,\\s\\d]*$\", s) else f\"^{text}^\"\n+        text = f\"[{s}]\" if s.isdigit() or re.match(r\"^\\d+[,\\s\\d]*$\", s) else f\"^{text}^\"\n+        return f\"[{text}]({link})\" if link else text\n     for key, fmt in STYLES:\n         if span.get(key):\n             text = f\"{fmt}{text}{fmt}\"\n-    return text\n+    return f\"[{text}]({link})\" if link else text\n \n \n def _join_spans(spans: list[dict[str, Any]]) -> str:\n-    if not spans:\n-        return \"\"\n-    parts: list[str] = []\n+    parts = []\n     for i, span in enumerate(spans):\n-        styled = _style_span(span)\n-        if not styled:\n+        if not (styled := _style_span(span)):\n             continue\n         if (\n             parts\n@@ -63,48 +43,52 @@ def _join_spans(spans: list[dict[str, Any]]) -> str:\n         ):\n             parts.append(\" \")\n         parts.append(styled)\n-        if i + 1 < len(spans):\n-            nxt = spans[i + 1].get(\"text\", \"\")\n-            if (\n-                any(styled.endswith(m) for m in FMT_MARKERS)\n-                and nxt\n-                and nxt[0] not in PUNCT\n-            ):\n-                parts.append(\" \")\n+        if (\n+            i + 1 < len(spans)\n+            and (nxt := spans[i + 1].get(\"text\", \"\"))\n+            and any(styled.endswith(m) for m in FMT_MARKERS)\n+            and nxt[0] not in PUNCT\n+        ):\n+            parts.append(\" \")\n     return \"\".join(parts)\n \n \n def _cell_text(cell: dict[str, Any]) -> str:\n-    if spans := cell.get(\"spans\"):\n-        return \" \".join(s.get(\"text\", \"\") for s in spans).strip().replace(\"|\", \"\\\\|\")\n-    return cell.get(\"text\", \"\").strip().replace(\"|\", \"\\\\|\")\n+    text = (\n+        \" \".join(s.get(\"text\", \"\") for s in (cell.get(\"spans\") or [])).strip()\n+        if cell.get(\"spans\")\n+        else cell.get(\"text\", \"\").strip()\n+    )\n+    return text.replace(\"|\", \"\\\\|\").replace(\"\\n\", \"<br>\")\n \n \n def _table(rows: list[dict[str, Any]]) -> str:\n-    if not rows:\n-        return \"\"\n-    hdr = [_cell_text(c) for c in rows[0].get(\"cells\", [])]\n-    lines: list[str] = []\n-    if any(hdr):\n-        lines += [\n-            \"| \" + \" | \".join(hdr) + \" |\",\n-            \"| \" + \" | \".join(\"---\" for _ in hdr) + \" |\",\n-        ]\n-    for row in rows[1:]:\n-        lines.append(\n-            \"| \" + \" | \".join(_cell_text(c) for c in row.get(\"cells\", [])) + \" |\"\n+    if (\n+        not rows\n+        or not (\n+            matrix := [[_cell_text(c) for c in row.get(\"cells\", [])] for row in rows]\n         )\n-    return \"\\n\".join(lines) + \"\\n\" if lines else \"\"\n+        or not any(matrix[0])\n+    ):\n+        return \"\"\n+    hdr = matrix[0]\n+    lines = [\n+        \"| \" + \" | \".join(hdr) + \" |\",\n+        \"| \" + \" | \".join(\"---\" for _ in hdr) + \" |\",\n+    ]\n+    for row in matrix[1:]:\n+        row = (row + [\"\"] * len(hdr))[: len(hdr)]\n+        lines.append(\"| \" + \" | \".join(row) + \" |\")\n+    return \"\\n\".join(lines) + \"\\n\"\n \n \n def _list(block: dict[str, Any], text: str) -> str:\n     if items := block.get(\"items\"):\n-        lines: list[str] = []\n-        for item in items:\n-            if t := _join_spans(item.get(\"spans\", [])):\n-                ind = \"  \" * item.get(\"indent\", 0)\n-                mark = f\"{item.get('prefix')} \" if item.get(\"prefix\") else \"- \"\n-                lines.append(f\"{ind}{mark}{t.strip()}\")\n+        lines = [\n+            f\"{'  ' * item.get('indent', 0)}{item.get('prefix', '-') + ' ' if item.get('prefix') else '- '}{t.strip()}\"\n+            for item in items\n+            if (t := _join_spans(item.get(\"spans\", [])))\n+        ]\n         return \"\\n\".join(lines) + \"\\n\" if lines else \"\"\n     return (\n         \"\\n\".join(f\"- {ln.strip()}\" for ln in text.split(\"\\n\") if ln.strip()) + \"\\n\"\n@@ -114,22 +98,28 @@ def _list(block: dict[str, Any], text: str) -> str:\n \n \n def block_to_markdown(block: dict[str, Any]) -> str:\n-    type = block.get(\"type\", \"\")\n+    typ = block.get(\"type\", \"\")\n     text = block.get(\"text\", \"\").strip() or _join_spans(block.get(\"spans\", []))\n-    if text:\n-        text = _normalize_bullets(text)\n-\n-    match type:\n-        case \"heading\" if text:\n-            return f\"{'#' * block.get('level', 1)} {text}\\n\"\n-        case \"paragraph\" | \"text\" if text:\n-            return f\"{text}\\n\"\n-        case \"table\":\n-            return _table(block.get(\"rows\", []))\n-        case \"list\":\n-            return _list(block, text)\n-        case \"figure\":\n-            return f\"![Figure]({block.get('text', 'figure')})\\n\"\n-        case _:\n-            log.debug(\"skipping block type=%s\", type)\n-            return \"\"\n+    if not text and typ not in (\"table\", \"list\"):\n+        return \"\"\n+\n+    if typ == \"heading\":\n+        level = max(1, min(int(block.get(\"level\") or 1), 6))\n+        if level >= 4:\n+            plain = (block.get(\"text\") or \"\").strip() or \"\".join(\n+                str(span.get(\"text\", \"\")) for span in block.get(\"spans\", [])\n+            ).strip()\n+            return f\"**{plain or text}**\\n\"\n+        return f\"{'#' * level} **{text}**\\n\"\n+    elif typ in (\"paragraph\", \"text\"):\n+        return f\"{text}\\n\"\n+    elif typ == \"code\":\n+        return f\"{text}\\n\"\n+    elif typ == \"table\":\n+        return _table(block.get(\"rows\", []))\n+    elif typ == \"list\":\n+        return _list(block, text)\n+    elif typ == \"figure\":\n+        return f\"![Figure]({block.get('text', 'figure')})\\n\"\n+    log.debug(\"skipping block type=%s\", typ)\n+    return \"\""
+    },
+    {
+      "sha": "93e251a65ae4c6d1fcc9583f92ca52db9ee0da62",
+      "filename": "fibrum_pdf/_cffi.py",
+      "status": "modified",
+      "additions": 43,
+      "deletions": 55,
+      "changes": 98,
+      "blob_url": "https://github.com/intercepted16/fibrumpdf/blob/e13d731d8c06117c506b1b95b516ea9053a5e970/fibrum_pdf%2F_cffi.py",
+      "raw_url": "https://github.com/intercepted16/fibrumpdf/raw/e13d731d8c06117c506b1b95b516ea9053a5e970/fibrum_pdf%2F_cffi.py",
+      "contents_url": "https://api.github.com/repos/intercepted16/fibrumpdf/contents/fibrum_pdf%2F_cffi.py?ref=e13d731d8c06117c506b1b95b516ea9053a5e970",
+      "patch": "@@ -1,4 +1,4 @@\n-\"\"\"cffi bindings and library loading.\"\"\"\n+\"\"\"ctypes bindings and library loading.\"\"\"\n \n from __future__ import annotations\n \n@@ -8,83 +8,71 @@\n import sys\n from functools import lru_cache\n from pathlib import Path\n-from typing import Any\n-\n-from cffi import FFI\n \n log = logging.getLogger(__name__)\n-ENV_VAR = \"PYMUPDF4LLM_C_LIB\"\n-\n-\n-def _lib_names() -> str:\n-    if sys.platform == \"darwin\":\n-        return \"libtomd.dylib\"\n-\n-    elif sys.platform == \"win32\":\n-        return \"libtomd.dll\"\n \n-    else:\n-        return \"libtomd.so\"\n \n+@lru_cache(maxsize=1)\n+def find_library() -> Path | None:\n+    env = os.environ.get(\"FIBRUMPDF_LIB\")\n+    if env and (p := Path(env)).exists():\n+        log.debug(\"library from env: %s\", p)\n+        return p.resolve()\n \n-def _search_paths() -> list[Path]:\n     pkg = Path(__file__).resolve().parent\n     proj, build = pkg.parent, pkg.parent / \"build\"\n-    paths = [\n+    lib_name = {\"darwin\": \"libtomd.dylib\", \"win32\": \"libtomd.dll\"}.get(\n+        sys.platform, \"libtomd.so\"\n+    )\n+\n+    for d in [\n         pkg / \"lib\",\n-        build / \"lib\" / \"pymupdf4llm_c\" / \"lib\",\n+        build / \"lib\" / \"fibrum_pdf\" / \"lib\",\n         proj / \"lib\",\n+        proj / \"lib\" / \"mupdf\",\n         build,\n         build / \"lib\",\n-    ]\n+    ]:\n+        if d.exists():\n+            for f in d.rglob(lib_name):\n+                if f.is_file():\n+                    log.debug(\"found library: %s\", f)\n+                    return f.resolve()\n+\n     if build.exists():\n         for child in build.iterdir():\n             if child.is_dir() and child.name.startswith(\"lib\"):\n-                paths += [child / \"pymupdf4llm_c\" / \"lib\", child]\n-    return paths\n-\n+                for f in (child / \"fibrum_pdf\" / \"lib\").rglob(lib_name):\n+                    if f.is_file():\n+                        return f.resolve()\n \n-@lru_cache(maxsize=1)\n-def find_library() -> Path | None:\n-    if env := os.environ.get(ENV_VAR):\n-        p = Path(env)\n-        if p.exists():\n-            log.debug(\"library from env: %s\", p)\n-            return p.resolve()\n-    for d in _search_paths():\n-        if not d.exists():\n-            continue\n-        name = _lib_names()\n-        for f in d.rglob(name):\n-            if f.is_file():\n-                log.debug(\"found library: %s\", f)\n-                return f.resolve()\n     log.warning(\"libtomd not found\")\n     return None\n \n \n @lru_cache(maxsize=1)\n-def get_ffi() -> FFI:\n-    ffi = FFI()\n-    ffi.cdef(\"\"\"\n-        int pdf_to_json(const char *pdf_path, const char *output_dir);\n-        char *page_to_json_string(const char *pdf_path, int page_number);\n-        void free(void *ptr);\n-    \"\"\")\n-    return ffi\n-\n-\n-def load_library(path: Path) -> Any:\n+def load_library(path: Path) -> ctypes.CDLL:\n     log.debug(\"loading %s\", path)\n     if sys.platform != \"win32\":\n-        for mupdf in sorted(path.parent.glob(\"libmupdf.so.*\"), reverse=True) or list(\n-            path.parent.glob(\"libmupdf.so\")\n-        ):\n-            log.debug(\"preloading mupdf: %s\", mupdf)\n-            ctypes.CDLL(str(mupdf), mode=ctypes.RTLD_GLOBAL)\n-            break\n+        for d in [\n+            path.parent,\n+            path.parent.parent.parent / \"lib\" / \"mupdf\",\n+            Path(__file__).resolve().parent.parent / \"lib\" / \"mupdf\",\n+        ]:\n+            if d.exists():\n+                for mupdf in sorted(d.glob(\"libmupdf.so.*\"), reverse=True) or list(\n+                    d.glob(\"libmupdf.so\")\n+                ):\n+                    try:\n+                        ctypes.CDLL(str(mupdf), mode=ctypes.RTLD_GLOBAL)\n+                        break\n+                    except Exception:\n+                        pass\n     try:\n-        return get_ffi().dlopen(str(path))\n+        lib = ctypes.CDLL(str(path))\n+        lib.pdf_to_json.argtypes = [ctypes.c_char_p, ctypes.c_char_p]\n+        lib.pdf_to_json.restype = ctypes.c_int\n+        return lib\n     except OSError as e:\n         log.error(\"load failed: %s\", e)\n         raise RuntimeError(f\"failed to load libtomd: {e}\") from e"
+    },
+    {
+      "sha": "761312bb22d2feb618a0520f85a84b4d91c2bcca",
+      "filename": "fibrum_pdf/api.py",
+      "status": "modified",
+      "additions": 49,
+      "deletions": 19,
+      "changes": 68,
+      "blob_url": "https://github.com/intercepted16/fibrumpdf/blob/e13d731d8c06117c506b1b95b516ea9053a5e970/fibrum_pdf%2Fapi.py",
+      "raw_url": "https://github.com/intercepted16/fibrumpdf/raw/e13d731d8c06117c506b1b95b516ea9053a5e970/fibrum_pdf%2Fapi.py",
+      "contents_url": "https://api.github.com/repos/intercepted16/fibrumpdf/contents/fibrum_pdf%2Fapi.py?ref=e13d731d8c06117c506b1b95b516ea9053a5e970",
+      "patch": "@@ -8,15 +8,24 @@\n import sys\n import tempfile\n from contextlib import contextmanager\n-from functools import lru_cache\n+from functools import cached_property, lru_cache\n from pathlib import Path\n-from typing import Any, Iterator\n+from typing import TYPE_CHECKING, Any, Iterator\n \n-from ._cffi import find_library, load_library\n-from .models import Page, Pages\n+if TYPE_CHECKING:\n+    from .models import Page, Pages\n \n log = logging.getLogger(__name__)\n-_CAPTURE = tempfile.NamedTemporaryFile(mode=\"w+\", delete=False).name\n+_capture_file: str | None = None\n+\n+\n+def _capture_path() -> str:\n+    global _capture_file\n+    if _capture_file is None:\n+        fd, path = tempfile.mkstemp(prefix=\"fibrum_pdf_capture_\", suffix=\".log\")\n+        os.close(fd)\n+        _capture_file = path\n+    return _capture_file\n \n \n class ExtractionError(Exception):\n@@ -25,13 +34,14 @@ class ExtractionError(Exception):\n \n @contextmanager\n def _redirect_c_output() -> Iterator[str]:\n+    capture = _capture_path()\n     saved = os.dup(1), os.dup(2)\n-    fd = os.open(_CAPTURE, os.O_WRONLY | os.O_TRUNC)\n     try:\n+        fd = os.open(capture, os.O_WRONLY | os.O_TRUNC)\n         os.dup2(fd, 1)\n         os.dup2(fd, 2)\n         os.close(fd)\n-        yield _CAPTURE\n+        yield capture\n     finally:\n         sys.stdout.flush()\n         sys.stderr.flush()\n@@ -43,6 +53,8 @@ def _redirect_c_output() -> Iterator[str]:\n \n @lru_cache(maxsize=1)\n def _lib(path: Path | None = None):\n+    from ._cffi import find_library, load_library\n+\n     p = path or find_library()\n     if not p or not p.exists():\n         raise ExtractionError(\n@@ -59,19 +71,40 @@ def __init__(self, path: Path):\n         self.path = path\n         log.debug(\"result at %s\", path)\n \n-    def _load(self) -> list[dict[str, Any]]:\n+    def _load(self) -> list[Any]:\n         with open(self.path, encoding=\"utf-8\") as f:\n-            return json.load(f)\n+            data = json.load(f)\n+            return data if isinstance(data, list) else []\n+\n+    @cached_property\n+    def markdown(self) -> str:\n+        from ._block_converter import block_to_markdown\n+\n+        markdowns = []\n+        for page in self._load():\n+            if isinstance(page, dict) and isinstance(page.get(\"data\"), list):\n+                page_md = \"\\n\".join(\n+                    m for m in [block_to_markdown(b) for b in page[\"data\"]] if m\n+                )\n+                if page_md:\n+                    markdowns.append(page_md)\n+        return \"\\n---\\n\\n\".join(markdowns)\n+\n+    def collect(self) -> \"Pages\":\n+        from .models import Page, Pages\n \n-    def collect(self) -> Pages:\n         pages = Pages([Page(p[\"data\"]) for p in self._load()])\n         log.info(\"collected %d pages\", len(pages))\n         return pages\n \n-    def __iter__(self) -> Iterator[Page]:\n-        for i, p in enumerate(self._load()):\n-            log.debug(\"page %d\", i + 1)\n-            yield Page(p[\"data\"])\n+    def __iter__(self) -> Iterator[\"Page\"]:\n+        import ijson\n+        from .models import Page\n+\n+        with open(self.path, encoding=\"utf-8\") as f:\n+            for i, p in enumerate(ijson.items(f, \"item\")):\n+                log.debug(\"page %d\", i + 1)\n+                yield Page(p[\"data\"])\n \n     def __repr__(self) -> str:\n         return f\"ConversionResult({self.path})\"\n@@ -86,23 +119,20 @@ def to_json(\n     pdf = Path(pdf_path).resolve()\n     if not pdf.exists():\n         raise FileNotFoundError(f\"pdf not found: {pdf}\")\n-\n     out = Path(output).resolve() if output else pdf.with_suffix(\".json\")\n     out.parent.mkdir(parents=True, exist_ok=True)\n     log.info(\"extracting %s -> %s\", pdf, out)\n-\n     with _redirect_c_output() as cap:\n         rc = _lib(lib_path).pdf_to_json(str(pdf).encode(), str(out).encode())\n-\n     if rc != 0:\n         try:\n             with open(cap) as f:\n-                if msg := f.read().strip():\n+                msg = f.read().strip()\n+                if msg:\n                     log.error(\"c output:\\n%s\", msg)\n         except OSError:\n             pass\n         raise ExtractionError(f\"extraction failed (code {rc})\")\n-\n     log.info(\"done\")\n     return ConversionResult(out)\n "
+    },
+    {
+      "sha": "71c69542f18fcf2d9fcc0e600e45695e67becb16",
+      "filename": "fibrum_pdf/main.py",
+      "status": "modified",
+      "additions": 38,
+      "deletions": 16,
+      "changes": 54,
+      "blob_url": "https://github.com/intercepted16/fibrumpdf/blob/e13d731d8c06117c506b1b95b516ea9053a5e970/fibrum_pdf%2Fmain.py",
+      "raw_url": "https://github.com/intercepted16/fibrumpdf/raw/e13d731d8c06117c506b1b95b516ea9053a5e970/fibrum_pdf%2Fmain.py",
+      "contents_url": "https://api.github.com/repos/intercepted16/fibrumpdf/contents/fibrum_pdf%2Fmain.py?ref=e13d731d8c06117c506b1b95b516ea9053a5e970",
+      "patch": "@@ -1,31 +1,53 @@\n \"\"\"cli entry point.\"\"\"\n \n from __future__ import annotations\n+\n import logging\n-import sys\n from pathlib import Path\n-from .api import ExtractionError, to_json\n+from typing import Annotated, Optional\n \n+import typer\n \n-def main(argv: list[str] | None = None) -> int:\n-    logging.basicConfig(level=logging.INFO, format=\"%(levelname)s: %(message)s\")\n+from .api import ExtractionError, to_json\n \n-    args = argv if argv is not None else sys.argv[1:]\n-    if not args or len(args) > 2:\n-        print(\n-            f\"usage: {Path(sys.argv[0]).name} <input.pdf> [output.json]\",\n-            file=sys.stderr,\n-        )\n-        return 1\n \n+def run(\n+    pdf_path: Annotated[\n+        Path,\n+        typer.Argument(\n+            exists=True,\n+            dir_okay=False,\n+            readable=True,\n+            resolve_path=True,\n+            help=\"PDF file to extract\",\n+        ),\n+    ],\n+    output: Annotated[\n+        Optional[Path],\n+        typer.Argument(help=\"Output JSON path (defaults to pdf_path.json)\"),\n+    ] = None,\n+    verbose: Annotated[\n+        bool, typer.Option(\"--verbose\", \"-v\", help=\"Enable verbose logging\")\n+    ] = False,\n+) -> None:\n+    \"\"\"Extract PDF content to JSON.\"\"\"\n+    logging.basicConfig(\n+        level=logging.DEBUG if verbose else logging.INFO,\n+        format=\"%(levelname)s: %(message)s\",\n+        force=True,\n+    )\n     try:\n-        result = to_json(args[0], args[1] if len(args) > 1 else None)\n+        result = to_json(pdf_path, output)\n         logging.getLogger(__name__).info(\"wrote %s\", result.path)\n-        return 0\n     except (FileNotFoundError, ExtractionError) as e:\n-        logging.getLogger(__name__).error(\"%s\", e)\n-        return 1\n+        typer.secho(f\"Error: {e}\", fg=typer.colors.RED, err=True)\n+        raise typer.Exit(1) from e\n+\n+\n+def main() -> None:\n+    \"\"\"CLI entry point.\"\"\"\n+    typer.run(run)\n \n \n if __name__ == \"__main__\":\n-    sys.exit(main())\n+    main()"
+    },
+    {
+      "sha": "b7a9db6b6f136ae55a23aaf667cd266b96966584",
+      "filename": "fibrum_pdf/models.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 3,
+      "changes": 8,
+      "blob_url": "https://github.com/intercepted16/fibrumpdf/blob/e13d731d8c06117c506b1b95b516ea9053a5e970/fibrum_pdf%2Fmodels.py",
+      "raw_url": "https://github.com/intercepted16/fibrumpdf/raw/e13d731d8c06117c506b1b95b516ea9053a5e970/fibrum_pdf%2Fmodels.py",
+      "contents_url": "https://api.github.com/repos/intercepted16/fibrumpdf/contents/fibrum_pdf%2Fmodels.py?ref=e13d731d8c06117c506b1b95b516ea9053a5e970",
+      "patch": "@@ -1,3 +1,6 @@\n+\"\"\"Models for output of FibrumPDF.\"\"\"\n+\n+# ruff: noqa: D101, D102, D107\n from __future__ import annotations\n \n import logging\n@@ -18,8 +21,7 @@ class Span(BaseModel):\n     strikeout: bool = False\n     superscript: bool = False\n     subscript: bool = False\n-    link: bool = False\n-    uri: str | bool | None = None\n+    link: str | bool = False\n \n \n class TableCell(BaseModel):\n@@ -58,7 +60,7 @@ def __init__(self, items: list[Block | dict[str, Any]] | dict[str, Any]):\n         if isinstance(items, dict) and \"data\" in items:\n             items = items[\"data\"]\n         for item in items or []:\n-            self.append(Block(**item) if isinstance(item, dict) else item)\n+            self.append(Block(**item) if isinstance(item, dict) else item)  # type: ignore\n         log.debug(\"page: %d blocks\", len(self))\n \n     @cached_property"
+    },
+    {
+      "sha": "eddb55b7db78e1a302094b50d2b6614dce5ac914",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 4,
+      "changes": 9,
+      "blob_url": "https://github.com/intercepted16/fibrumpdf/blob/e13d731d8c06117c506b1b95b516ea9053a5e970/pyproject.toml",
+      "raw_url": "https://github.com/intercepted16/fibrumpdf/raw/e13d731d8c06117c506b1b95b516ea9053a5e970/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/intercepted16/fibrumpdf/contents/pyproject.toml?ref=e13d731d8c06117c506b1b95b516ea9053a5e970",
+      "patch": "@@ -11,20 +11,21 @@ readme = \"README.md\"\n requires-python = \">=3.9\"\n license = \"AGPL-3.0\"\n dependencies = [\n-    \"cffi\",\n     \"pydantic\"\n+    \"ijson\"\n ]\n \n [project.optional-dependencies]\n dev = [\n     \"ruff\",\n+    \"typer\",\n     \"build\",\n ]\n \n [project.urls]\n-Homepage = \"https://github.com/intercepted16/pymupdf4llm-C\"\n-Repository = \"https://github.com/intercepted16/pymupdf4llm-C\"\n-Issues = \"https://github.com/intercepted16/pymupdf4llm-C/issues\"\n+Homepage = \"https://github.com/intercepted16/fibrumpdf\"\n+Repository = \"https://github.com/intercepted16/fibrumpdf\"\n+Issues = \"https://github.com/intercepted16/fibrumpdf/issues\"\n \n [project.scripts]\n fibrum-pdf = \"fibrum_pdf.main:main\""
+    },
+    {
+      "sha": "48f093619d95ae6f44730e25f4e25d00d80d06c7",
+      "filename": "pyrightconfig.json",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1,
+      "changes": 4,
+      "blob_url": "https://github.com/intercepted16/fibrumpdf/blob/e13d731d8c06117c506b1b95b516ea9053a5e970/pyrightconfig.json",
+      "raw_url": "https://github.com/intercepted16/fibrumpdf/raw/e13d731d8c06117c506b1b95b516ea9053a5e970/pyrightconfig.json",
+      "contents_url": "https://api.github.com/repos/intercepted16/fibrumpdf/contents/pyrightconfig.json?ref=e13d731d8c06117c506b1b95b516ea9053a5e970",
+      "patch": "@@ -5,5 +5,7 @@\n   \"venv\": \".venv\",\n   \"typeCheckingMode\": \"strict\",\n   \"reportMissingTypeStubs\": \"none\",\n-  \"reportOptionalOperand\": \"none\"\n+  \"reportOptionalOperand\": \"none\",\n+  \"reportUnknownMemberType\": \"none\",\n+  \"reportUnknownArgumentType\": \"none\",\n }"
+    },
+    {
+      "sha": "7d304bb3e546767b7b9654b0f619ef8ce847cd97",
+      "filename": "ruff.toml",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 1,
+      "changes": 5,
+      "blob_url": "https://github.com/intercepted16/fibrumpdf/blob/e13d731d8c06117c506b1b95b516ea9053a5e970/ruff.toml",
+      "raw_url": "https://github.com/intercepted16/fibrumpdf/raw/e13d731d8c06117c506b1b95b516ea9053a5e970/ruff.toml",
+      "contents_url": "https://api.github.com/repos/intercepted16/fibrumpdf/contents/ruff.toml?ref=e13d731d8c06117c506b1b95b516ea9053a5e970",
+      "patch": "@@ -1,8 +1,11 @@\n line-length = 88\n+include = [\"*.py\"]\n+extend-exclude = [\"mupdf/*.py\"]\n+\n [lint]\n select = [\"E\", \"F\", \"W\", \"C\", \"D\", \"N\", \"T\", \"B\"]\n mccabe.max-complexity = 8\n-ignore = []  # no ignored rules\n+ignore = [D103, D101, D102]\n pydocstyle.convention = \"google\"\n \n "
+    },
+    {
+      "sha": "687317bef762e564ee60b83a5fa925c82731a2a6",
+      "filename": "scripts/gui.py",
+      "status": "renamed",
+      "additions": 34,
+      "deletions": 23,
+      "changes": 57,
+      "blob_url": "https://github.com/intercepted16/fibrumpdf/blob/e13d731d8c06117c506b1b95b516ea9053a5e970/scripts%2Fgui.py",
+      "raw_url": "https://github.com/intercepted16/fibrumpdf/raw/e13d731d8c06117c506b1b95b516ea9053a5e970/scripts%2Fgui.py",
+      "contents_url": "https://api.github.com/repos/intercepted16/fibrumpdf/contents/scripts%2Fgui.py?ref=e13d731d8c06117c506b1b95b516ea9053a5e970",
+      "patch": "@@ -1,80 +1,91 @@\n #!/usr/bin/env python3\n \"\"\"AI generated script, just for me to quickly visualise the output in Markdown. Not safe for real usage.\"\"\"\n+\n import sys\n import streamlit as st\n from time import perf_counter\n-from pymupdf4llm_c import to_json\n+from fibrum_pdf import to_json\n+\n \n def main(input_pdf: str, output_file: str):\n     st.set_page_config(\n-        page_title=\"PDF Viewer\",\n-        layout=\"wide\",\n-        initial_sidebar_state=\"expanded\"\n+        page_title=\"PDF Viewer\", layout=\"wide\", initial_sidebar_state=\"expanded\"\n     )\n-    \n+\n     # Extract PDF\n     if \"extraction_done\" not in st.session_state:\n         with st.spinner(\"🔄 Extracting PDF...\"):\n             start = perf_counter()\n             result = to_json(input_pdf, output=output_file)\n             end = perf_counter()\n-        \n+\n         st.session_state.extraction_done = True\n         st.session_state.result = result\n         st.session_state.pages = []\n         st.session_state.iterator = iter(result)\n         st.session_state.loading = True\n         st.session_state.current_idx = 0\n-        \n+\n         st.success(f\"✓ Extracted in {end - start:.2f}s\")\n-    \n+\n     # Load pages on demand\n-    def load_page(idx):\n+    def load_page(idx: int):\n         while len(st.session_state.pages) <= idx and st.session_state.loading:\n             try:\n                 page = next(st.session_state.iterator)\n                 st.session_state.pages.append(page.markdown)\n             except StopIteration:\n                 st.session_state.loading = False\n-        \n-        return st.session_state.pages[idx] if idx < len(st.session_state.pages) else None\n-    \n+\n+        return (\n+            st.session_state.pages[idx] if idx < len(st.session_state.pages) else None\n+        )\n+\n     # Sidebar controls\n     st.sidebar.markdown(\"## Navigation\")\n-    total = len(st.session_state.pages) if not st.session_state.loading else f\"{len(st.session_state.pages)}+\"\n+    total = (\n+        len(st.session_state.pages)\n+        if not st.session_state.loading\n+        else f\"{len(st.session_state.pages)}+\"\n+    )\n     st.sidebar.markdown(f\"**Page {st.session_state.current_idx + 1} / {total}**\")\n-    \n+\n     col1, col2 = st.sidebar.columns(2)\n     with col1:\n         if st.button(\"← Previous\", disabled=st.session_state.current_idx == 0):\n             st.session_state.current_idx -= 1\n             st.rerun()\n-    \n+\n     with col2:\n         next_available = load_page(st.session_state.current_idx + 1) is not None\n         if st.button(\"Next →\", disabled=not next_available):\n             st.session_state.current_idx += 1\n             st.rerun()\n-    \n-    st.sidebar.markdown(f\"**Status:** {'🔄 Loading...' if st.session_state.loading else '✓ Done'}\")\n-    \n+\n+    st.sidebar.markdown(\n+        f\"**Status:** {'🔄 Loading...' if st.session_state.loading else '✓ Done'}\"\n+    )\n+\n     # Display current page\n     content = load_page(st.session_state.current_idx)\n-    \n+\n     if content:\n-        st.markdown(content, unsafe_allow_html=True) # this is a one-off script, allow it.\n+        st.markdown(\n+            content, unsafe_allow_html=True\n+        )  # this is a one-off script, allow it.\n     else:\n         st.info(\"No pages available yet\")\n \n+\n if __name__ == \"__main__\":\n     argv = sys.argv.copy()\n     argv.pop(0)\n-    \n+\n     if len(argv) < 2:\n         print(f\"Usage: `streamlit run {sys.argv[0]} -- <input_pdf> <output_file>`\")\n         sys.exit(1)\n-    \n+\n     _in = argv[0]\n     _out = argv[1]\n-    \n+\n     main(_in, _out)",
+      "previous_filename": "scripts/test_st.py"
+    },
+    {
+      "sha": "47b319ba0fbd0a8fbdf71ab1df1cb8a5a08ef7c2",
+      "filename": "scripts/test.py",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 27,
+      "changes": 27,
+      "blob_url": "https://github.com/intercepted16/fibrumpdf/blob/4d82baf9b5eb329d40cc3d46935a659eecbf73a0/scripts%2Ftest.py",
+      "raw_url": "https://github.com/intercepted16/fibrumpdf/raw/4d82baf9b5eb329d40cc3d46935a659eecbf73a0/scripts%2Ftest.py",
+      "contents_url": "https://api.github.com/repos/intercepted16/fibrumpdf/contents/scripts%2Ftest.py?ref=4d82baf9b5eb329d40cc3d46935a659eecbf73a0",
+      "patch": "@@ -1,27 +0,0 @@\n-import sys\n-from time import perf_counter\n-from pymupdf4llm_c import to_json\n-\n-\n-def main(input_pdf: str, output_file: str):\n-    start = perf_counter()\n-    result = to_json(input_pdf, output=output_file)\n-    print(f\"extracted to: {result.path}\")\n-    end = perf_counter()\n-    elapsed = end - start\n-    print(f\"Time taken: {elapsed:.2f}\")\n-\n-\n-if __name__ == \"__main__\":\n-    argv = sys.argv.copy()\n-    argv.pop(0)\n-    \n-    if len(argv) < 2:\n-        print(f\"Usage: `python3 {sys.argv[0]} <input_pdf> <output_file>`\")\n-        sys.exit(1)\n-    \n-    _in = argv[0]\n-    _out = argv[1]\n-    \n-    main(_in, _out)\n-"
+    },
+    {
+      "sha": "1c1a4263ab2a79354f9ff045c38f96bf95d85173",
+      "filename": "setup.py",
+      "status": "modified",
+      "additions": 69,
+      "deletions": 13,
+      "changes": 82,
+      "blob_url": "https://github.com/intercepted16/fibrumpdf/blob/e13d731d8c06117c506b1b95b516ea9053a5e970/setup.py",
+      "raw_url": "https://github.com/intercepted16/fibrumpdf/raw/e13d731d8c06117c506b1b95b516ea9053a5e970/setup.py",
+      "contents_url": "https://api.github.com/repos/intercepted16/fibrumpdf/contents/setup.py?ref=e13d731d8c06117c506b1b95b516ea9053a5e970",
+      "patch": "@@ -1,5 +1,3 @@\n-\"\"\"setup.py: Build script for pymupdf4llm_c package.\"\"\"\n-\n from __future__ import annotations\n \n import os\n@@ -12,11 +10,7 @@\n from setuptools.command.build_py import build_py as build_py_base\n from setuptools.command.install import install as install_base\n \n-try:\n-    from wheel.bdist_wheel import bdist_wheel as bdist_wheel_base\n-except ImportError:\n-    # Fallback for newer setuptools versions\n-    from setuptools.command.bdist_wheel import bdist_wheel as bdist_wheel_base\n+from setuptools.command.bdist_wheel import bdist_wheel as bdist_wheel_base\n \n ROOT = Path(__file__).parent.resolve()\n PACKAGENAME = \"fibrum_pdf\"\n@@ -97,15 +91,14 @@ class bdist_wheel(bdist_wheel_base):\n \n     def finalize_options(self) -> None:\n         super().finalize_options()\n-        # Mark the wheel as platform-specific (not pure Python)\n+\n         self.root_is_pure = False\n \n     def get_tag(self):\n-        # Force platform-specific tags\n+\n         python, abi, plat = super().get_tag()\n-        # Ensure we don't get 'none-any' tags\n+\n         if abi == \"none\" and plat == \"any\":\n-            # Get the actual platform tags\n             from wheel.bdist_wheel import get_platform\n \n             plat = get_platform(self.bdist_dir)\n@@ -115,14 +108,77 @@ def get_tag(self):\n \n \n class install(install_base):\n-    \"\"\"Custom install to use platlib instead of purelib.\"\"\"\n+    \"\"\"Custom install to use platlib instead of purelib and rebuild Go library.\"\"\"\n+\n+    def run(self) -> None:\n+\n+        self._build_and_install_libtomd()\n+        super().run()\n \n     def finalize_options(self) -> None:\n         super().finalize_options()\n-        # Force installation to platlib (platform-specific) instead of purelib\n+\n         if self.install_lib is None:\n             self.install_lib = self.install_platlib\n \n+    def _build_and_install_libtomd(self) -> None:\n+        \"\"\"Build Go library and copy to both build location and source tree.\"\"\"\n+        go_dir = ROOT / \"go\"\n+        build_dir = ROOT / \"build\"\n+\n+        build_dir.mkdir(parents=True, exist_ok=True)\n+\n+        print(\"Downloading Go dependencies...\")\n+        try:\n+            subprocess.check_call([\"go\", \"mod\", \"download\"], cwd=go_dir)\n+        except subprocess.CalledProcessError as e:\n+            print(f\"Warning: Failed to download Go dependencies: {e}\")\n+\n+        if sys.platform == \"linux\":\n+            lib_ext = \".so\"\n+        elif sys.platform == \"darwin\":\n+            lib_ext = \".dylib\"\n+        elif sys.platform == \"win32\":\n+            lib_ext = \".dll\"\n+        else:\n+            lib_ext = \".so\"\n+\n+        lib_name = f\"lib{LIB_BASENAME}{lib_ext}\"\n+        output_path = build_dir / lib_name\n+\n+        print(f\"Building Go shared library: {lib_name}\")\n+        build_cmd = [\n+            \"go\",\n+            \"build\",\n+            \"-buildmode=c-shared\",\n+            \"-o\",\n+            str(output_path),\n+            \"./cmd/tojson\",\n+        ]\n+\n+        env = os.environ.copy()\n+\n+        try:\n+            subprocess.check_call(build_cmd, cwd=go_dir, env=env)\n+        except subprocess.CalledProcessError as e:\n+            print(f\"Error building Go library: {e}\")\n+            raise\n+\n+        if not output_path.exists():\n+            raise FileNotFoundError(\n+                f\"Go build succeeded but library not found at {output_path}\"\n+            )\n+\n+        source_lib_dir = ROOT / PACKAGENAME / \"lib\"\n+        source_lib_dir.mkdir(parents=True, exist_ok=True)\n+        print(f\"Copying {output_path} to {source_lib_dir / lib_name} (source tree)\")\n+        shutil.copy2(output_path, source_lib_dir / lib_name)\n+\n+        target_dir = Path(self.build_lib) / PACKAGENAME / \"lib\"\n+        target_dir.mkdir(parents=True, exist_ok=True)\n+        print(f\"Copying {output_path} to {target_dir / lib_name} (build tree)\")\n+        shutil.copy2(output_path, target_dir / lib_name)\n+\n \n if __name__ == \"__main__\":\n     setup("
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "64cfc14544500ad87e26a0ab4b286724e9bc7f54",
+      "message": "feat: actually lazy load via `ijson` and change capture out",
+      "parent_shas": [
+        "4d82baf9b5eb329d40cc3d46935a659eecbf73a0"
+      ]
+    },
+    {
+      "sha": "822cfc7da6b1130cd92aa4f9a7f88c44b4671d98",
+      "message": "refactor: use explicit shared library paths, use `FIBRUM_PDF_LIB` and remove redundant code",
+      "parent_shas": [
+        "64cfc14544500ad87e26a0ab4b286724e9bc7f54"
+      ]
+    },
+    {
+      "sha": "a8912ef11d8fcf2a744c774057cf6de04ca3bc63",
+      "message": "chore: ignore unknown member and argument types",
+      "parent_shas": [
+        "822cfc7da6b1130cd92aa4f9a7f88c44b4671d98"
+      ]
+    },
+    {
+      "sha": "e3a47f7da539dfc06b93d20be7bb1d697491b94b",
+      "message": "fix: remove unneeded part of API",
+      "parent_shas": [
+        "a8912ef11d8fcf2a744c774057cf6de04ca3bc63"
+      ]
+    },
+    {
+      "sha": "bf4f73f64968f3b487bf8e452c05f764dea3cf1d",
+      "message": "chore: remove unneeded test scripts and rename `test_st` -> `gui.py`",
+      "parent_shas": [
+        "e3a47f7da539dfc06b93d20be7bb1d697491b94b"
+      ]
+    },
+    {
+      "sha": "b9649a13b9fa6a4b27cfa9eec811218b08478c30",
+      "message": "refactor: enhance block conversion with URI support, bullet constants, and improved text extraction",
+      "parent_shas": [
+        "bf4f73f64968f3b487bf8e452c05f764dea3cf1d"
+      ]
+    },
+    {
+      "sha": "2f3a308ec70e6b149dc15ef9fddc6b7496a8a88a",
+      "message": "chore: ignore D101, D102, D103 in `ruff.toml`",
+      "parent_shas": [
+        "b9649a13b9fa6a4b27cfa9eec811218b08478c30"
+      ]
+    },
+    {
+      "sha": "e8d9f42f68992c3c262c52bba6db7063e3f53ed1",
+      "message": "feat: use `typer` for extraction cli",
+      "parent_shas": [
+        "2f3a308ec70e6b149dc15ef9fddc6b7496a8a88a"
+      ]
+    },
+    {
+      "sha": "b896b754ba937d8db9f5036470316ec4ec10f576",
+      "message": "chore: don't overshadow 'type'",
+      "parent_shas": [
+        "e8d9f42f68992c3c262c52bba6db7063e3f53ed1"
+      ]
+    },
+    {
+      "sha": "c1cf55bf9ca3a39399c3c31b204a5394dcef5716",
+      "message": "fix: include shared libraries properly",
+      "parent_shas": [
+        "b896b754ba937d8db9f5036470316ec4ec10f576"
+      ]
+    },
+    {
+      "sha": "57f5bdb310c3c2389828dbf58fd1ad5c186cb9f7",
+      "message": "fix: replace newlines with <br>",
+      "parent_shas": [
+        "c1cf55bf9ca3a39399c3c31b204a5394dcef5716"
+      ]
+    },
+    {
+      "sha": "703d975459e47e8270c7f6eef36d894f958fa7f5",
+      "message": "chore: remove redundant includes from MANIFEST.in",
+      "parent_shas": [
+        "57f5bdb310c3c2389828dbf58fd1ad5c186cb9f7"
+      ]
+    },
+    {
+      "sha": "6b1933ad715958b7d3d245a2f2acddbd5ba79b4a",
+      "message": "fix: ensure latest shared library in dev environments",
+      "parent_shas": [
+        "703d975459e47e8270c7f6eef36d894f958fa7f5"
+      ]
+    },
+    {
+      "sha": "44ea2bc87e0e7e20476030d09a31522bd5719dd9",
+      "message": "fix: exclude mupdf from ruff",
+      "parent_shas": [
+        "6b1933ad715958b7d3d245a2f2acddbd5ba79b4a"
+      ]
+    },
+    {
+      "sha": "eddd5a2d7165188190c5749eb88622ba3ff9f60d",
+      "message": "refactor: cleanup Python code, use ctypes instead of cffi (again)\n\n- use ctypes instead of cffi just so that we have less dependencies\n- move typer to dev deps. if using `fibrum_pdf.main`, that's gotta be\ninstalled\n- make Python code less verbose (remove some redundant defensive checks\nand code)",
+      "parent_shas": [
+        "44ea2bc87e0e7e20476030d09a31522bd5719dd9"
+      ]
+    },
+    {
+      "sha": "e13d731d8c06117c506b1b95b516ea9053a5e970",
+      "message": "chore: add 'ijson' to dependencies and remove 'cffi'",
+      "parent_shas": [
+        "eddd5a2d7165188190c5749eb88622ba3ff9f60d"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__intercepted16__fibrumpdf__pr15.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\intercepted16__fibrumpdf__pr15__cpp_python__intercepted16__fibrumpdf__pr15\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\intercepted16__fibrumpdf__pr15__cpp_python__intercepted16__fibrumpdf__pr15\\rn"
+  }
+}

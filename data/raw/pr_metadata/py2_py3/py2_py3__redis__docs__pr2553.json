@@ -1,0 +1,110 @@
+{
+  "instance_id": "py2_py3__redis__docs__pr2553",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "redis/docs",
+  "pr_number": 2553,
+  "pr_url": "https://github.com/redis/docs/pull/2553",
+  "repo": {
+    "full_name": "redis/docs",
+    "clone_url": "https://github.com/redis/docs.git",
+    "default_branch": "main",
+    "created_at": "2023-11-17T16:01:36Z",
+    "stars": 64,
+    "license": "NOASSERTION",
+    "size_kb": 250226
+  },
+  "pull_request": {
+    "id": 3109743124,
+    "title": "Update streams.md with XREADGROUP behavior details",
+    "body": "Clarify the behavior of XREADGROUP in Active-Active streams, including message order guarantees.",
+    "created_at": "2025-12-17T11:59:35Z",
+    "merged_at": "2025-12-17T16:32:14Z",
+    "base_sha": "5402f49b24994f890d0178f72e8546d56238405f",
+    "head_sha": "487ae3f335dcdfac8af5b9cba048c173a8773576",
+    "merge_commit_sha": "88de8888eb6112e7c7a50f556d6fc46ce25b2426",
+    "labels": [
+      "rs"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "5402f49b24994f890d0178f72e8546d56238405f",
+  "final_sha": "487ae3f335dcdfac8af5b9cba048c173a8773576",
+  "changed_files": [
+    {
+      "sha": "ac76ad3d4f42b2f53129ef8d5c7cdf86423f2146",
+      "filename": "content/operate/rs/databases/active-active/develop/data-types/streams.md",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/redis/docs/blob/487ae3f335dcdfac8af5b9cba048c173a8773576/content%2Foperate%2Frs%2Fdatabases%2Factive-active%2Fdevelop%2Fdata-types%2Fstreams.md",
+      "raw_url": "https://github.com/redis/docs/raw/487ae3f335dcdfac8af5b9cba048c173a8773576/content%2Foperate%2Frs%2Fdatabases%2Factive-active%2Fdevelop%2Fdata-types%2Fstreams.md",
+      "contents_url": "https://api.github.com/repos/redis/docs/contents/content%2Foperate%2Frs%2Fdatabases%2Factive-active%2Fdevelop%2Fdata-types%2Fstreams.md?ref=487ae3f335dcdfac8af5b9cba048c173a8773576",
+      "patch": "@@ -297,8 +297,12 @@ This means that the XREADGROUP does not return already-acknowledged entries.\n ### Guarantees\n \n Unlike XREAD, XREADGOUP will never skip stream entries.\n+\n In traffic redirection, XREADGROUP may return entries that have been read but not acknowledged. It may also even return entries that have already been acknowledged.\n \n+When entries are added from multiple regions, Redis guarantees ordered entries in the reply of a single read command (`XREAD`, `XREADGROUP`, or `XRANGE`). However, ordered IDs are not guaranteed for a sequence of read commands.\n+For example, two subsequent `XREADGROUP GROUP group consumer COUNT 1 STREAMS key >` commands may reply with decreasing IDs.\n+\n ## Summary\n \n With Active-Active streams, you can write to the same logical stream from multiple regions. As a result, the behavior of Active-Active streams differs somewhat from the behavior you get with Redis Open Source. This is summarized below:"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "0a81398d09a496d6a1a499e48d561bf4454e63f3",
+      "message": "Update streams.md with XREADGROUP behavior details\n\nClarify the behavior of XREADGROUP in Active-Active streams, including message order guarantees and acknowledgment handling.",
+      "parent_shas": [
+        "5402f49b24994f890d0178f72e8546d56238405f"
+      ]
+    },
+    {
+      "sha": "cb58711fe14f887f96ad2439f7212c7aa38ba42d",
+      "message": "Clarify XREADGROUP message order guarantees\n\nClarified the guarantee of message order in XREADGROUP regarding consumed messages from multiple regions.",
+      "parent_shas": [
+        "0a81398d09a496d6a1a499e48d561bf4454e63f3"
+      ]
+    },
+    {
+      "sha": "1ec37a54fbc67afa21e4237c96fc1fc635b1ad53",
+      "message": "Update XREADGROUP message ordering explanation\n\nClarified the message ordering guarantee for XREADGROUP in multi-region scenarios.",
+      "parent_shas": [
+        "cb58711fe14f887f96ad2439f7212c7aa38ba42d"
+      ]
+    },
+    {
+      "sha": "242f53bd3b8806364a9d7a5c48a0996054e6841a",
+      "message": "Update order guarantees for Active-Active streams\n\nClarified the guarantees of entry order for multiple regions in Active-Active streams.",
+      "parent_shas": [
+        "1ec37a54fbc67afa21e4237c96fc1fc635b1ad53"
+      ]
+    },
+    {
+      "sha": "487ae3f335dcdfac8af5b9cba048c173a8773576",
+      "message": "Apply suggestions from code review\r\n\r\nEditorial changes.",
+      "parent_shas": [
+        "242f53bd3b8806364a9d7a5c48a0996054e6841a"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__redis__docs__pr2553.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\redis__docs__pr2553__py2_py3__redis__docs__pr2553\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\redis__docs__pr2553__py2_py3__redis__docs__pr2553\\rn"
+  }
+}

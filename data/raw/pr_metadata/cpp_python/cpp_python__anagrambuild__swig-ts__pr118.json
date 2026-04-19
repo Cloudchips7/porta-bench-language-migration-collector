@@ -1,0 +1,225 @@
+{
+  "instance_id": "cpp_python__anagrambuild__swig-ts__pr118",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "anagrambuild/swig-ts",
+  "pr_number": 118,
+  "pr_url": "https://github.com/anagrambuild/swig-ts/pull/118",
+  "repo": {
+    "full_name": "anagrambuild/swig-ts",
+    "clone_url": "https://github.com/anagrambuild/swig-ts.git",
+    "default_branch": "main",
+    "created_at": "2025-04-04T10:41:04Z",
+    "stars": 8,
+    "license": "NOASSERTION",
+    "size_kb": 3880
+  },
+  "pull_request": {
+    "id": 3375813688,
+    "title": "Version Packages",
+    "body": "This PR was opened by the [Changesets release](https://github.com/changesets/action) GitHub action. When you're ready to do a release, you can merge this and the packages will be published to npm automatically. If you're not ready to do a release yet, that's fine, whenever you add more changesets to main, this PR will be updated.\n\n\n# Releases\n## @swig-wallet/api@1.2.0\n\n### Minor Changes\n\n-   2b1a7fb: Adds support for optional paymaster in createWallet\n\n## @swig-wallet/developer@1.2.0\n\n### Minor Changes\n\n-   2b1a7fb: Adds support for optional paymaster in createWallet\n\n### Patch Changes\n\n-   Updated dependencies [2b1a7fb]\n    -   @swig-wallet/api@1.2.0\n\n## @swig-wallet/mcp-server@1.0.3\n\n### Patch Changes\n\n-   @swig-wallet/paymaster-classic@1.0.3\n\n## @swig-wallet/paymaster-classic@1.0.3\n\n### Patch Changes\n\n-   @swig-wallet/paymaster-core@1.0.3\n\n## @swig-wallet/paymaster-core@1.0.3\n\n### Patch Changes\n\n-   Updated dependencies [2b1a7fb]\n    -   @swig-wallet/api@1.2.0\n\n## @swig-wallet/paymaster-kit@1.0.3\n\n### Patch Changes\n\n-   @swig-wallet/paymaster-core@1.0.3\n",
+    "created_at": "2026-03-09T22:52:40Z",
+    "merged_at": "2026-03-09T22:54:02Z",
+    "base_sha": "2b1a7fb0fc0763c4f56f5560d39784dab33f8303",
+    "head_sha": "15c3ece556ee3d9a6225185f5e83b626941e79ef",
+    "merge_commit_sha": "97e2e5286506e0e6e653b9880e0f8df484340e70",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "2b1a7fb0fc0763c4f56f5560d39784dab33f8303",
+  "final_sha": "15c3ece556ee3d9a6225185f5e83b626941e79ef",
+  "changed_files": [
+    {
+      "sha": "76957bb0b854202e99d9422851ba1fbae10d4fd7",
+      "filename": ".changeset/forty-symbols-pick.md",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 6,
+      "changes": 6,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/2b1a7fb0fc0763c4f56f5560d39784dab33f8303/.changeset%2Fforty-symbols-pick.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/2b1a7fb0fc0763c4f56f5560d39784dab33f8303/.changeset%2Fforty-symbols-pick.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/.changeset%2Fforty-symbols-pick.md?ref=2b1a7fb0fc0763c4f56f5560d39784dab33f8303",
+      "patch": "@@ -1,6 +0,0 @@\n----\n-'@swig-wallet/developer': minor\n-'@swig-wallet/api': minor\n----\n-\n-Adds support for optional paymaster in createWallet"
+    },
+    {
+      "sha": "825c59aa60b4f11620a47774f2b3d1df65016ab6",
+      "filename": "packages/api/CHANGELOG.md",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 0,
+      "changes": 6,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fapi%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fapi%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fapi%2FCHANGELOG.md?ref=15c3ece556ee3d9a6225185f5e83b626941e79ef",
+      "patch": "@@ -1,5 +1,11 @@\n # @swig-wallet/api\n \n+## 1.2.0\n+\n+### Minor Changes\n+\n+- 2b1a7fb: Adds support for optional paymaster in createWallet\n+\n ## 1.1.0\n \n ### Minor Changes"
+    },
+    {
+      "sha": "96156a747c89a9741ede64c4b29ff0739bdde701",
+      "filename": "packages/api/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fapi%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fapi%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fapi%2Fpackage.json?ref=15c3ece556ee3d9a6225185f5e83b626941e79ef",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/api\",\n-  \"version\": \"1.1.0\",\n+  \"version\": \"1.2.0\",\n   \"description\": \"API clients for the Swig ecosystem (Portal and Paymaster services)\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {"
+    },
+    {
+      "sha": "7c05c51a323c29ab5b094dfca1a628ca41f102fd",
+      "filename": "packages/developer/CHANGELOG.md",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 0,
+      "changes": 11,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fdeveloper%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fdeveloper%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fdeveloper%2FCHANGELOG.md?ref=15c3ece556ee3d9a6225185f5e83b626941e79ef",
+      "patch": "@@ -1,5 +1,16 @@\n # @swig-wallet/developer\n \n+## 1.2.0\n+\n+### Minor Changes\n+\n+- 2b1a7fb: Adds support for optional paymaster in createWallet\n+\n+### Patch Changes\n+\n+- Updated dependencies [2b1a7fb]\n+  - @swig-wallet/api@1.2.0\n+\n ## 1.1.1\n \n ### Patch Changes"
+    },
+    {
+      "sha": "a2b60ebdcd287bac95209d14d09793ab24a069bb",
+      "filename": "packages/developer/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fdeveloper%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fdeveloper%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fdeveloper%2Fpackage.json?ref=15c3ece556ee3d9a6225185f5e83b626941e79ef",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/developer\",\n-  \"version\": \"1.1.1\",\n+  \"version\": \"1.2.0\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "c0961f0e66ec27a5ef22865488f284f6587f0ff4",
+      "filename": "packages/mcp-server/CHANGELOG.md",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 0,
+      "changes": 6,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fmcp-server%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fmcp-server%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fmcp-server%2FCHANGELOG.md?ref=15c3ece556ee3d9a6225185f5e83b626941e79ef",
+      "patch": "@@ -1,5 +1,11 @@\n # @swig-wallet/mcp-server\n \n+## 1.0.3\n+\n+### Patch Changes\n+\n+- @swig-wallet/paymaster-classic@1.0.3\n+\n ## 1.0.2\n \n ### Patch Changes"
+    },
+    {
+      "sha": "52da9b3a940b0dfde08199031be34cee07c59beb",
+      "filename": "packages/mcp-server/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fmcp-server%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fmcp-server%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fmcp-server%2Fpackage.json?ref=15c3ece556ee3d9a6225185f5e83b626941e79ef",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/mcp-server\",\n-  \"version\": \"1.0.2\",\n+  \"version\": \"1.0.3\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "54f5b91018e9b00822090d9d4258d81a5cda1cb3",
+      "filename": "packages/paymaster/classic/CHANGELOG.md",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 0,
+      "changes": 6,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fpaymaster%2Fclassic%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fpaymaster%2Fclassic%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fpaymaster%2Fclassic%2FCHANGELOG.md?ref=15c3ece556ee3d9a6225185f5e83b626941e79ef",
+      "patch": "@@ -1,5 +1,11 @@\n # @swig-wallet/paymaster-classic\n \n+## 1.0.3\n+\n+### Patch Changes\n+\n+- @swig-wallet/paymaster-core@1.0.3\n+\n ## 1.0.2\n \n ### Patch Changes"
+    },
+    {
+      "sha": "2fdc29dc1f452509146c8eadf1f53f70ee115560",
+      "filename": "packages/paymaster/classic/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fpaymaster%2Fclassic%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fpaymaster%2Fclassic%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fpaymaster%2Fclassic%2Fpackage.json?ref=15c3ece556ee3d9a6225185f5e83b626941e79ef",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/paymaster-classic\",\n-  \"version\": \"1.0.2\",\n+  \"version\": \"1.0.3\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "a91948873c1de7d6076d8c69d1e5e5ce9bfee8cd",
+      "filename": "packages/paymaster/core/CHANGELOG.md",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fpaymaster%2Fcore%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fpaymaster%2Fcore%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fpaymaster%2Fcore%2FCHANGELOG.md?ref=15c3ece556ee3d9a6225185f5e83b626941e79ef",
+      "patch": "@@ -1,5 +1,12 @@\n # @swig-wallet/paymaster-core\n \n+## 1.0.3\n+\n+### Patch Changes\n+\n+- Updated dependencies [2b1a7fb]\n+  - @swig-wallet/api@1.2.0\n+\n ## 1.0.2\n \n ### Patch Changes"
+    },
+    {
+      "sha": "9413444f6ebfb010ca5b8073619b20c22541607c",
+      "filename": "packages/paymaster/core/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fpaymaster%2Fcore%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fpaymaster%2Fcore%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fpaymaster%2Fcore%2Fpackage.json?ref=15c3ece556ee3d9a6225185f5e83b626941e79ef",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/paymaster-core\",\n-  \"version\": \"1.0.2\",\n+  \"version\": \"1.0.3\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "95694d2d14af16855220384c4187f7571eccc77c",
+      "filename": "packages/paymaster/kit/CHANGELOG.md",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 0,
+      "changes": 6,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fpaymaster%2Fkit%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fpaymaster%2Fkit%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fpaymaster%2Fkit%2FCHANGELOG.md?ref=15c3ece556ee3d9a6225185f5e83b626941e79ef",
+      "patch": "@@ -1,5 +1,11 @@\n # @swig-wallet/paymaster-kit\n \n+## 1.0.3\n+\n+### Patch Changes\n+\n+- @swig-wallet/paymaster-core@1.0.3\n+\n ## 1.0.2\n \n ### Patch Changes"
+    },
+    {
+      "sha": "54b07e1b3aa61341ca70e2e8d499715ec94e847f",
+      "filename": "packages/paymaster/kit/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fpaymaster%2Fkit%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/15c3ece556ee3d9a6225185f5e83b626941e79ef/packages%2Fpaymaster%2Fkit%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fpaymaster%2Fkit%2Fpackage.json?ref=15c3ece556ee3d9a6225185f5e83b626941e79ef",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/paymaster-kit\",\n-  \"version\": \"1.0.2\",\n+  \"version\": \"1.0.3\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "15c3ece556ee3d9a6225185f5e83b626941e79ef",
+      "message": "Version Packages",
+      "parent_shas": [
+        "2b1a7fb0fc0763c4f56f5560d39784dab33f8303"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__anagrambuild__swig-ts__pr118.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\anagrambuild__swig-ts__pr118__cpp_python__anagrambuild__swig-ts__pr118\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\anagrambuild__swig-ts__pr118__cpp_python__anagrambuild__swig-ts__pr118\\rn"
+  }
+}

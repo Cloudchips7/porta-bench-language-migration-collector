@@ -1,0 +1,450 @@
+{
+  "instance_id": "py2_py3__pairinteraction__pairinteraction__pr388",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "pairinteraction/pairinteraction",
+  "pr_number": 388,
+  "pr_url": "https://github.com/pairinteraction/pairinteraction/pull/388",
+  "repo": {
+    "full_name": "pairinteraction/pairinteraction",
+    "clone_url": "https://github.com/pairinteraction/pairinteraction.git",
+    "default_branch": "master",
+    "created_at": "2016-09-01T16:37:32Z",
+    "stars": 50,
+    "license": "NOASSERTION",
+    "size_kb": 52109
+  },
+  "pull_request": {
+    "id": 3504298393,
+    "title": "Various GUI fixes",
+    "body": "- store all the systems and calculate the annotation labels just in time\r\n- a lot of small fixes\r\n\r\n# TODO in another PR\r\n- allow editing fields even if they are not checked\r\n- yrange and xrange in plotwindow setzen\r\n- select which energy_0 defintion to use (with or without fields) for pair calculations\r\n- add C6 page (after #391)\r\n\r\n## see #393\r\n- structure system parameters: (one checkbox for all efields, one for all b fields, put diamagnetism to b field, new title \"Rydberg interaction\" for distance, angle and multipole order)\r\n- add ion interaction to gui\r\n\r\n\r\n## see #396\r\n- show diagonalization progress in gui below spinning wheel\r\n\r\n\r\n## see #397\r\n- clean up lifetime page (and add lifetime jupyter notebook)\r\n\r\n",
+    "created_at": "2026-04-08T16:40:23Z",
+    "merged_at": "2026-04-13T10:16:29Z",
+    "base_sha": "48b1f9840c21d0498da4e5fc5bcba29c809090cd",
+    "head_sha": "f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+    "merge_commit_sha": "f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "48b1f9840c21d0498da4e5fc5bcba29c809090cd",
+  "final_sha": "f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+  "changed_files": [
+    {
+      "sha": "b26e6078bf3c9a61396fcb3e30495914c17162ae",
+      "filename": "docs/tutorials/examples_python/pair_potentials.ipynb",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/docs%2Ftutorials%2Fexamples_python%2Fpair_potentials.ipynb",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/docs%2Ftutorials%2Fexamples_python%2Fpair_potentials.ipynb",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/docs%2Ftutorials%2Fexamples_python%2Fpair_potentials.ipynb?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -97,7 +97,7 @@\n   },\n   {\n    \"cell_type\": \"code\",\n-   \"execution_count\": 4,\n+   \"execution_count\": null,\n    \"metadata\": {},\n    \"outputs\": [\n     {\n@@ -117,9 +117,9 @@\n     \"ax.set_xlabel(r\\\"Distance [$\\\\mu$m]\\\")\\n\",\n     \"ax.set_ylabel(\\\"Energy [GHz]\\\")\\n\",\n     \"\\n\",\n-    \"try:\\n\",\n+    \"if all(len(es) == len(eigenenergies[0]) for es in eigenenergies):  # check if homogeneous shape\\n\",\n     \"    ax.plot(distances, np.array(eigenenergies), c=\\\"0.9\\\", lw=0.25, zorder=-10)\\n\",\n-    \"except ValueError:  # inhomogeneous shape -> no simple line plot possible\\n\",\n+    \"else:\\n\",\n     \"    for x, es in zip(distances, eigenenergies, strict=False):\\n\",\n     \"        ax.plot([x] * len(es), es, c=\\\"0.9\\\", ls=\\\"None\\\", marker=\\\".\\\", zorder=-10)\\n\",\n     \"\\n\","
+    },
+    {
+      "sha": "074be4a0d277b280a03766c2a798fb9702f7778f",
+      "filename": "docs/tutorials/examples_python/stark_map.ipynb",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/docs%2Ftutorials%2Fexamples_python%2Fstark_map.ipynb",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/docs%2Ftutorials%2Fexamples_python%2Fstark_map.ipynb",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/docs%2Ftutorials%2Fexamples_python%2Fstark_map.ipynb?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -89,7 +89,7 @@\n   },\n   {\n    \"cell_type\": \"code\",\n-   \"execution_count\": 4,\n+   \"execution_count\": null,\n    \"metadata\": {},\n    \"outputs\": [\n     {\n@@ -109,9 +109,9 @@\n     \"ax.set_xlabel(\\\"Electric Field [V/cm]\\\")\\n\",\n     \"ax.set_ylabel(\\\"Energy [GHz]\\\")\\n\",\n     \"\\n\",\n-    \"try:\\n\",\n+    \"if all(len(es) == len(eigenenergies[0]) for es in eigenenergies):  # check if homogeneous shape\\n\",\n     \"    ax.plot(electric_fields, np.array(eigenenergies), c=\\\"0.9\\\", lw=0.25, zorder=-10)\\n\",\n-    \"except ValueError:  # inhomogeneous shape -> no simple line plot possible\\n\",\n+    \"else:\\n\",\n     \"    for x, es in zip(electric_fields, eigenenergies, strict=False):\\n\",\n     \"        ax.plot([x] * len(es), es, c=\\\"0.9\\\", ls=\\\"None\\\", marker=\\\".\\\", zorder=-10)\\n\",\n     \"\\n\","
+    },
+    {
+      "sha": "5fd4bfe1179a4347d6149ca4d346c575c989f5ac",
+      "filename": "docs/tutorials/examples_python/state_atom_object.ipynb",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 3,
+      "changes": 7,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/docs%2Ftutorials%2Fexamples_python%2Fstate_atom_object.ipynb",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/docs%2Ftutorials%2Fexamples_python%2Fstate_atom_object.ipynb",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/docs%2Ftutorials%2Fexamples_python%2Fstate_atom_object.ipynb?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -186,7 +186,7 @@\n   },\n   {\n    \"cell_type\": \"code\",\n-   \"execution_count\": 6,\n+   \"execution_count\": null,\n    \"metadata\": {},\n    \"outputs\": [\n     {\n@@ -209,9 +209,10 @@\n     \"energies_flattened = np.hstack(eigenenergies)\\n\",\n     \"\\n\",\n     \"for i, ax in enumerate(axs):\\n\",\n-    \"    try:\\n\",\n+    \"    # check if homogeneous shape\\n\",\n+    \"    if all(len(es) == len(eigenenergies[0]) for es in eigenenergies):\\n\",\n     \"        ax.plot(electric_fields, np.array(eigenenergies), c=\\\"0.5\\\", lw=0.25, zorder=-10)\\n\",\n-    \"    except ValueError:  # inhomogeneous shape -> no simple line plot possible\\n\",\n+    \"    else:\\n\",\n     \"        for x, es in zip(electric_fields, eigenenergies, strict=False):\\n\",\n     \"            ax.plot([x] * len(es), es, c=\\\"0.5\\\", ls=\\\"None\\\", marker=\\\".\\\", zorder=-10)\\n\",\n     \"\\n\","
+    },
+    {
+      "sha": "ddae87f75b2978ce878f7b8ff80fb7c942e05fc2",
+      "filename": "src/cpp/src/ket/KetPair.cpp",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fcpp%2Fsrc%2Fket%2FKetPair.cpp",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fcpp%2Fsrc%2Fket%2FKetPair.cpp",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fcpp%2Fsrc%2Fket%2FKetPair.cpp?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -36,7 +36,7 @@ std::string KetPair<Scalar>::get_label() const {\n         const auto &basis = atomic_bases[atom_index];\n         size_t idx = atomic_indices[atom_index];\n         Scalar coefficient =\n-            basis->get_coefficients().coeff(idx, basis->get_corresponding_ket_index(idx));\n+            basis->get_coefficients().coeff(basis->get_corresponding_ket_index(idx), idx);\n         std::string optional_tilde = (std::abs(coefficient - 1.0) > numerical_precision) ? \"~\" : \"\";\n         label += separator + optional_tilde + basis->get_corresponding_ket(idx)->get_label();\n         separator = \"; \";"
+    },
+    {
+      "sha": "8b6c6cb124068fab7817fd8425543c78c06eb73f",
+      "filename": "src/pairinteraction/basis/basis_base.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 5,
+      "changes": 11,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction%2Fbasis%2Fbasis_base.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction%2Fbasis%2Fbasis_base.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction%2Fbasis%2Fbasis_base.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -61,11 +61,12 @@ def kets(self) -> list[KetType]:\n     @property  # not cached_property since State objects are mutable\n     def states(self) -> list[StateType]:\n         \"\"\"Return a list containing the states of the basis.\"\"\"\n-        states: list[StateType] = []\n-        for i in range(self.number_of_states):\n-            state_cpp = self._cpp.get_state(i)\n-            states.append(self._state_class._from_cpp_object(state_cpp))\n-        return states\n+        return [self.get_state(i) for i in range(self.number_of_states)]\n+\n+    def get_state(self, index: int) -> StateType:\n+        \"\"\"Return the state at the given index.\"\"\"\n+        state_cpp = self._cpp.get_state(index)\n+        return self._state_class._from_cpp_object(state_cpp)\n \n     @property\n     def number_of_kets(self) -> int:"
+    },
+    {
+      "sha": "4b13a70f2b5baeeb100051cf24988bc9dbcc94e2",
+      "filename": "src/pairinteraction/basis/basis_pair.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction%2Fbasis%2Fbasis_pair.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction%2Fbasis%2Fbasis_pair.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction%2Fbasis%2Fbasis_pair.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -64,7 +64,7 @@ class BasisPair(BasisBase[KetPair, StatePair]):\n         ...     energy_unit=\"GHz\",\n         ... )\n         >>> print(pair_basis)\n-        BasisPair(|Rb:59,S_1/2,-1/2; Rb:61,S_1/2,-1/2⟩ ... |~Rb:58,F_7/2,7/2; Rb:59,S_1/2,1/2⟩)\n+        BasisPair(|Rb:59,S_1/2,-1/2; Rb:61,S_1/2,-1/2⟩ ... |Rb:58,F_7/2,7/2; Rb:59,S_1/2,1/2⟩)\n \n     \"\"\"\n "
+    },
+    {
+      "sha": "9e01e7d00e5ca8937d0306c99641cf5aa1730ede",
+      "filename": "src/pairinteraction/system/system_pair.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction%2Fsystem%2Fsystem_pair.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction%2Fsystem%2Fsystem_pair.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction%2Fsystem%2Fsystem_pair.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -47,9 +47,9 @@ class SystemPair(SystemBase[BasisPair]):\n         ... )\n         >>> pair_system = pi.SystemPair(pair_basis).set_distance(5, unit=\"micrometer\").set_interaction_order(3)\n         >>> print(pair_system)\n-        SystemPair(BasisPair(|Rb:59,S_1/2,-1/2; Rb:61,S_1/2,-1/2⟩ ... |~Rb:58,F_7/2,7/2; Rb:59,S_1/2,1/2⟩), is_diagonal=False)\n+        SystemPair(BasisPair(|Rb:59,S_1/2,-1/2; Rb:61,S_1/2,-1/2⟩ ... |Rb:58,F_7/2,7/2; Rb:59,S_1/2,1/2⟩), is_diagonal=False)\n         >>> pair_system.diagonalize()\n-        SystemPair(BasisPair(|Rb:59,S_1/2,-1/2; Rb:61,S_1/2,-1/2⟩ ... |~Rb:58,F_7/2,7/2; Rb:59,S_1/2,1/2⟩), is_diagonal=True)\n+        SystemPair(BasisPair(|Rb:59,S_1/2,-1/2; Rb:61,S_1/2,-1/2⟩ ... |Rb:58,F_7/2,7/2; Rb:59,S_1/2,1/2⟩), is_diagonal=True)\n         >>> eigenenergies = pair_system.get_eigenenergies(unit=\"GHz\")\n         >>> print(f\"{eigenenergies[0] - pair_energy:.5f}\")\n         -2.18394"
+    },
+    {
+      "sha": "233eba0ae03cd32c468483ae90a828db841f0c1c",
+      "filename": "src/pairinteraction_gui/calculate/calculate_base.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 14,
+      "changes": 20,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fcalculate%2Fcalculate_base.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fcalculate%2Fcalculate_base.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fcalculate%2Fcalculate_base.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -6,18 +6,17 @@\n from abc import ABC\n from typing import TYPE_CHECKING, Any, Generic, TypeVar\n \n-import numpy as np\n from attr import dataclass\n \n import pairinteraction as pi\n from pairinteraction_gui.worker import MultiThreadWorker\n \n if TYPE_CHECKING:\n-    from collections.abc import Mapping\n+    from collections.abc import Mapping, Sequence\n \n     from typing_extensions import Self\n \n-    from pairinteraction.system import SystemAtom, SystemAtomReal, SystemPair, SystemPairReal\n+    from pairinteraction.system import SystemBase\n     from pairinteraction.units import NDArray\n     from pairinteraction_gui.config.basis_config import QuantumNumberRestrictions\n     from pairinteraction_gui.config.ket_config import QuantumNumbers\n@@ -60,7 +59,6 @@ class Parameters(ABC, Generic[PageType]):\n     diamagnetism_enabled: bool\n     diagonalize_kwargs: dict[str, str]\n     diagonalize_relative_energy_range: tuple[float, float] | None\n-    number_state_labels: int\n \n     def __post_init__(self) -> None:\n         \"\"\"Post-initialization processing.\"\"\"\n@@ -106,7 +104,6 @@ def from_page(cls, page: PageType) -> Self:\n             diamagnetism_enabled,\n             diagonalize_kwargs,\n             diagonalize_relative_energy_range,\n-            page.calculation_config.number_state_labels.value(default=0),\n         )\n \n     @property\n@@ -239,13 +236,13 @@ class Results(ABC):\n     energies: list[NDArray]\n     energy_offset: float\n     ket_overlaps: list[NDArray]\n-    state_labels: dict[int, list[str]]\n+    systems: list[SystemBase[Any]]\n \n     @classmethod\n     def from_calculate(\n         cls,\n         parameters: Parameters[Any],\n-        system_list: list[SystemPairReal] | list[SystemPair] | list[SystemAtomReal] | list[SystemAtom],\n+        system_list: Sequence[SystemBase[Any]],\n         ket: pi.KetAtom | tuple[pi.KetAtom, ...],\n         energy_offset: float,\n     ) -> Self:\n@@ -254,14 +251,9 @@ def from_calculate(\n         energies = [system.get_eigenenergies(\"GHz\") - energy_offset for system in system_list]\n \n         MultiThreadWorker.task_checkpoint(\"Calculating state overlaps...\")\n-        ket_overlaps = [system.get_eigenbasis().get_overlaps(ket) for system in system_list]  # type: ignore [arg-type]\n+        ket_overlaps = [system.get_eigenbasis().get_overlaps(ket) for system in system_list]\n \n-        MultiThreadWorker.task_checkpoint(\"Preparing state labels...\")\n-        steps_with_labels = [int(i) for i in np.linspace(0, parameters.steps - 1, parameters.number_state_labels)]\n-        states_dict = {i: system_list[i].get_eigenbasis().states for i in steps_with_labels}\n-        state_labels = {i: [s.get_label() for s in states] for i, states in states_dict.items()}\n-\n-        return cls(energies, energy_offset, ket_overlaps, state_labels)\n+        return cls(energies, energy_offset, ket_overlaps, list(system_list))\n \n \n def as_string(value: str, *, raw_string: bool = False) -> str:"
+    },
+    {
+      "sha": "1f6c8fe49f01a3a4c4d85d8bfec5a74dd81adfba",
+      "filename": "src/pairinteraction_gui/config/calculation_config.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 11,
+      "changes": 12,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fconfig%2Fcalculation_config.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fconfig%2Fcalculation_config.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fconfig%2Fcalculation_config.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -26,24 +26,14 @@ def setupWidget(self) -> None:\n             vmax=9999,\n             vdefault=100,\n             tooltip=\"Number of steps for the calculation\",\n+            checkable=False,\n         )\n         self.layout().addWidget(self.steps)\n \n         self.layout().addWidget(QLabel(\"<b>Fast mode</b>\"))\n         self.fast_mode = Item(self, \"Use fast calculation mode\", checked=True)\n         self.layout().addWidget(self.fast_mode)\n \n-        self.layout().addWidget(QLabel(\"<b>State Annotations</b> (click on the diamond shaped markers)\"))\n-        self.number_state_labels = QnItemInt(\n-            self,\n-            \"Annotate\",\n-            unit=\"state labels\",\n-            vdefault=10,\n-            tooltip=\"Number of steps, for which the overlap is calculated and the corresponding state labels\"\n-            \" can be shown by clicking on the info circles.\",\n-        )\n-        self.layout().addWidget(self.number_state_labels)\n-\n         self.layout().addWidget(QLabel(\"<b>Energy Range</b>\"))\n         self.layout().addWidget(QLabel(\"Calculate eigenenergies in the range\"))\n         self.energy_range = RangeItem("
+    },
+    {
+      "sha": "b711d772d7d3a6cc2ffd057cbc60a32de18ce241",
+      "filename": "src/pairinteraction_gui/config/ket_config.py",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 2,
+      "changes": 15,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fconfig%2Fket_config.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fconfig%2Fket_config.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fconfig%2Fket_config.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -119,7 +119,7 @@ def get_ket_atom(self, atom: int, *, ask_download: bool = False) -> pi.KetAtom:\n         except Exception as err:\n             err = get_custom_error(err)\n             if ask_download and isinstance(err, DatabaseMissingError):\n-                Application.signals.ask_download_database.emit(err.species)\n+                Application.signals.ask_download_database.emit(species)\n             raise err\n \n     def on_species_changed(self, atom: int, species: str) -> None:\n@@ -141,7 +141,7 @@ def on_qnitem_changed(self, atom: int) -> None:\n             self._set_theme_role(self.ket_label_list[atom], \"info\")\n         except Exception as err:\n             if isinstance(err, NoStateFoundError):\n-                self.ket_label_list[atom].setText(\"No ket found. Please select different quantum numbers.\")\n+                self.ket_label_list[atom].setText(\"No state found. Please select different quantum numbers.\")\n             elif isinstance(err, DatabaseMissingError):\n                 self.ket_label_list[atom].setText(\n                     \"Database required but not downloaded. Please select a different species.\"\n@@ -188,10 +188,21 @@ def setupWidget(self) -> None:\n         self.lifetime_label = QLabel()\n         self.layout().addWidget(self.lifetime_label)\n \n+        mqdt_warning_text = \"WARNING: Use lifetimes for MQDT with care, as some low-lying states might be missing!\"\n+        self.mqdt_warning_label = QLabel(mqdt_warning_text)\n+        self.mqdt_warning_label.setWordWrap(True)\n+        self._set_theme_role(self.mqdt_warning_label, \"error\")\n+        self.mqdt_warning_label.hide()\n+        self.layout().addWidget(self.mqdt_warning_label)\n+\n     def on_qnitem_changed(self, atom: int) -> None:\n         super().on_qnitem_changed(atom)\n         self._reset_results()\n \n+    def on_species_changed(self, atom: int, species: str) -> None:\n+        super().on_species_changed(atom, species)\n+        self.mqdt_warning_label.setVisible(\"mqdt\" in species.lower())\n+\n     def _reset_results(self) -> None:\n         self.lifetime_label.setText(\"Lifetime: \\u2014\")  # \\u2014 = em dash\n         self._set_theme_role(self.lifetime_label, \"info\")"
+    },
+    {
+      "sha": "6eabbe74e6fb8605440e70c3169cf89e7d65e7e6",
+      "filename": "src/pairinteraction_gui/config/system_config.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fconfig%2Fsystem_config.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fconfig%2Fsystem_config.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fconfig%2Fsystem_config.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -105,7 +105,7 @@ def setupAngle(self) -> None:\n         label = QLabel(\"<b>Angle</b> (0° = z-axis, 90° = x-axis)\")\n         self.layout().addWidget(label)\n \n-        self.angle = RangeItem(self, \"Angle\", vdefaults=(0, 0), vrange=(0, 360), unit=\"degree\")\n+        self.angle = RangeItem(self, \"Angle\", vdefaults=(0, 0), vrange=(0, 360), unit=\"degree\", checkable=False)\n         self.layout().addWidget(self.angle)\n \n     def setupOrder(self) -> None:"
+    },
+    {
+      "sha": "3ad4c9f914980309edafef136e271fa8c8060bb2",
+      "filename": "src/pairinteraction_gui/export_templates/one_atom.ipynb",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fexport_templates%2Fone_atom.ipynb",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fexport_templates%2Fone_atom.ipynb",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fexport_templates%2Fone_atom.ipynb?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -126,9 +126,9 @@\n     \"ax.set_xlabel($X_LABEL)\\n\",\n     \"ax.set_ylabel(\\\"Energy [GHz]\\\")\\n\",\n     \"\\n\",\n-    \"try:\\n\",\n+    \"if all(len(es) == len(energies_list[0]) for es in energies_list):  # check if homogeneous shape\\n\",\n     \"    ax.plot($X_VARIABLE_NAME, np.array(energies_list), c=\\\"0.9\\\", lw=0.25, zorder=-10)\\n\",\n-    \"except ValueError:  # inhomogeneous shape -> no simple line plot possible\\n\",\n+    \"else:\\n\",\n     \"    for x, es in zip($X_VARIABLE_NAME, energies_list):\\n\",\n     \"        ax.plot([x] * len(es), es, c=\\\"0.9\\\", ls=\\\"None\\\", marker=\\\".\\\", zorder=-10)\\n\",\n     \"\\n\","
+    },
+    {
+      "sha": "2081fabac5cac99deb5c2f8f4b2e4b0dcb6a0384",
+      "filename": "src/pairinteraction_gui/export_templates/two_atoms.ipynb",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fexport_templates%2Ftwo_atoms.ipynb",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fexport_templates%2Ftwo_atoms.ipynb",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fexport_templates%2Ftwo_atoms.ipynb?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -171,9 +171,9 @@\n     \"ax.set_xlabel($X_LABEL)\\n\",\n     \"ax.set_ylabel(\\\"Energy [GHz]\\\")\\n\",\n     \"\\n\",\n-    \"try:\\n\",\n+    \"if all(len(es) == len(energies_list[0]) for es in energies_list):  # check if homogeneous shape\\n\",\n     \"    ax.plot($X_VARIABLE_NAME, np.array(energies_list), c=\\\"0.9\\\", lw=0.25, zorder=-10)\\n\",\n-    \"except ValueError:  # inhomogeneous shape -> no simple line plot possible\\n\",\n+    \"else:\\n\",\n     \"    for x, es in zip($X_VARIABLE_NAME, energies_list):\\n\",\n     \"        ax.plot([x] * len(es), es, c=\\\"0.9\\\", ls=\\\"None\\\", marker=\\\".\\\", zorder=-10)\\n\",\n     \"\\n\","
+    },
+    {
+      "sha": "1fb04531e0f621a9d38a3e63e457309cb1d69082",
+      "filename": "src/pairinteraction_gui/export_templates/two_atoms_variable_fields.ipynb",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fexport_templates%2Ftwo_atoms_variable_fields.ipynb",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fexport_templates%2Ftwo_atoms_variable_fields.ipynb",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fexport_templates%2Ftwo_atoms_variable_fields.ipynb?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -158,9 +158,9 @@\n     \"ax.set_xlabel($X_LABEL)\\n\",\n     \"ax.set_ylabel(\\\"Energy [GHz]\\\")\\n\",\n     \"\\n\",\n-    \"try:\\n\",\n+    \"if all(len(es) == len(energies_list[0]) for es in energies_list):  # check if homogeneous shape\\n\",\n     \"    ax.plot($X_VARIABLE_NAME, np.array(energies_list), c=\\\"0.9\\\", lw=0.25, zorder=-10)\\n\",\n-    \"except ValueError:  # inhomogeneous shape -> no simple line plot possible\\n\",\n+    \"else:\\n\",\n     \"    for x, es in zip($X_VARIABLE_NAME, energies_list):\\n\",\n     \"        ax.plot([x] * len(es), es, c=\\\"0.9\\\", ls=\\\"None\\\", marker=\\\".\\\", zorder=-10)\\n\",\n     \"\\n\","
+    },
+    {
+      "sha": "ed7889f6ea7e6b6e3958ccb10d82fe3109008b23",
+      "filename": "src/pairinteraction_gui/images/loading.gif",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/48b1f9840c21d0498da4e5fc5bcba29c809090cd/src%2Fpairinteraction_gui%2Fimages%2Floading.gif",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/48b1f9840c21d0498da4e5fc5bcba29c809090cd/src%2Fpairinteraction_gui%2Fimages%2Floading.gif",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fimages%2Floading.gif?ref=48b1f9840c21d0498da4e5fc5bcba29c809090cd"
+    },
+    {
+      "sha": "b9fc3e8d0ff22e71953ced5d2a9b791a25cfa524",
+      "filename": "src/pairinteraction_gui/page/base_page.py",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 2,
+      "changes": 12,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fpage%2Fbase_page.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fpage%2Fbase_page.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fpage%2Fbase_page.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -175,10 +175,18 @@ def calculate(self) -> tuple[Parameters[Any], Results]:\n         raise NotImplementedError(\"Subclasses must implement this method\")\n \n     def update_plot(self, parameters: Parameters[Any], results: Results) -> None:\n+        self.plotwidget.canvas.draw()  # draw once before, to avoid displaying artifacts during plotting\n         self.plotwidget.plot(parameters, results)\n-        self.plotwidget.add_cursor(parameters, results)\n+        self.plotwidget.setup_annotations(parameters, results)\n+        self._plot_function(parameters, results)\n         self.plotwidget.canvas.draw()\n-        show_status_tip(self, \"Finished updating plot.\", logger=logger)\n+        self.plotwidget.navigation_toolbar.reset_home_view()\n+        show_status_tip(self, \"Finished updating plot. Tip: Click on the plot to see state information.\", logger=logger)\n+\n+    def _plot_function(self, parameters: Parameters[Any], results: Results) -> None:\n+        # This method can be overridden by subclasses to provide a custom plotting function\n+        # that is called after the default plotting and before drawing the canvas.\n+        pass\n \n     def export_png(self) -> None:\n         \"\"\"Export the current plot as a PNG file.\"\"\""
+    },
+    {
+      "sha": "b5481433b10f1075ddc0a59b91bde797aa95603e",
+      "filename": "src/pairinteraction_gui/page/lifetimes_page.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fpage%2Flifetimes_page.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fpage%2Flifetimes_page.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fpage%2Flifetimes_page.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -97,6 +97,7 @@ def update_plot(self, parameters: ParametersLifetimes, results: ResultsLifetimes\n         self.add_cursor()\n \n         self.plotwidget.canvas.draw()\n+        self.plotwidget.navigation_toolbar.reset_home_view()\n         self.ket_config.set_lifetime(results.lifetime)\n \n     def add_cursor(self) -> None:"
+    },
+    {
+      "sha": "ab0d132fc9b8590a1523de06792e13449d131ad1",
+      "filename": "src/pairinteraction_gui/page/one_atom_page.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 5,
+      "changes": 11,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fpage%2Fone_atom_page.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fpage%2Fone_atom_page.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fpage%2Fone_atom_page.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -15,6 +15,7 @@\n from pairinteraction_gui.page.base_page import CalculationPage\n \n if TYPE_CHECKING:\n+    from pairinteraction.state import StateBase\n     from pairinteraction_gui.calculate.calculate_one_atom import ResultsOneAtom\n \n logger = logging.getLogger(__name__)\n@@ -43,24 +44,24 @@ def calculate(self) -> tuple[ParametersOneAtom, ResultsOneAtom]:\n         results = calculate_one_atom(parameters)\n         return parameters, results\n \n-    def update_plot(self, parameters: ParametersOneAtom, results: ResultsOneAtom) -> None:  # type: ignore[override]\n-        super().update_plot(parameters, results)\n+    def _plot_function(self, parameters: ParametersOneAtom, results: ResultsOneAtom) -> None:  # type: ignore[override]\n         self.add_short_labels(results)\n-        self.plotwidget.canvas.draw()\n \n     def add_short_labels(\n         self,\n         results: ResultsOneAtom,\n     ) -> None:\n-        if 0 not in results.state_labels:\n+        if not results.systems:\n             return\n \n         ax = self.plotwidget.canvas.ax\n         x_lim = ax.get_xlim()\n         ax.set_xlim(x_lim[0] - (x_lim[1] - x_lim[0]) * 0.1, x_lim[1])\n \n         used = set()\n-        for ket_label, energy in zip(results.state_labels[0], results.energies[0], strict=False):\n+        states0: list[StateBase[Any]] = results.systems[0].get_eigenbasis().states\n+        for state, energy in zip(states0, results.energies[0], strict=False):\n+            ket_label = state.get_label()\n             short_label = ket_label[1:-1]\n             short_label = short_label.split(\":\", 1)[-1]\n             components = short_label.split(\",\")"
+    },
+    {
+      "sha": "d86463d4c5658258dd248e88e37d0f3fd0e534fe",
+      "filename": "src/pairinteraction_gui/page/two_atoms_page.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fpage%2Ftwo_atoms_page.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fpage%2Ftwo_atoms_page.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fpage%2Ftwo_atoms_page.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -38,8 +38,6 @@ def setupWidget(self) -> None:\n         self.calculation_config = CalculationConfig(self)\n \n         # Set some better defaults for the two atoms page\n-        self.calculation_config.number_state_labels.setValue(5)\n-        self.calculation_config.number_state_labels.setChecked(False)\n         self.calculation_config.energy_range.setValues(-0.5, 0.5)\n         self.calculation_config.energy_range.setChecked(False)\n "
+    },
+    {
+      "sha": "927e7af9bfa067dfd46098c481eac36bf715cce1",
+      "filename": "src/pairinteraction_gui/plotwidget/navigation_toolbar.py",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 1,
+      "changes": 19,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fplotwidget%2Fnavigation_toolbar.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fplotwidget%2Fnavigation_toolbar.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fplotwidget%2Fnavigation_toolbar.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -2,11 +2,13 @@\n # SPDX-License-Identifier: LGPL-3.0-or-later\n from __future__ import annotations\n \n-from typing import TYPE_CHECKING\n+from typing import TYPE_CHECKING, Any\n \n from matplotlib.backends.backend_qt import NavigationToolbar2QT as NavigationToolbar\n \n if TYPE_CHECKING:\n+    from collections.abc import Callable\n+\n     from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg\n     from PySide6.QtWidgets import QWidget\n \n@@ -28,3 +30,18 @@ class CustomNavigationToolbar(NavigationToolbar):\n     def __init__(self, canvas: FigureCanvasQTAgg, parent: QWidget | None = None) -> None:\n         \"\"\"Initialize the custom navigation toolbar.\"\"\"\n         super().__init__(canvas, parent, coordinates=False)\n+        self._home_callbacks: list[Callable[[], None]] = []\n+\n+    def home(self, *args: Any) -> None:\n+        \"\"\"Reset view and notify registered callbacks.\"\"\"\n+        super().home(*args)\n+        for cb in self._home_callbacks:\n+            cb()\n+\n+    def reset_home_view(self) -> None:\n+        \"\"\"Reset the home view to the current axes state.\n+\n+        I.e. if a user afterwards clicks the home/reset button, the view will be reset to the current view.\n+        \"\"\"\n+        self.update()\n+        self.push_current()"
+    },
+    {
+      "sha": "fb85dd9190dd904507084b552293249b7bf5058f",
+      "filename": "src/pairinteraction_gui/plotwidget/plotwidget.py",
+      "status": "modified",
+      "additions": 93,
+      "deletions": 44,
+      "changes": 137,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fplotwidget%2Fplotwidget.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fplotwidget%2Fplotwidget.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fplotwidget%2Fplotwidget.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -2,12 +2,12 @@\n # SPDX-License-Identifier: LGPL-3.0-or-later\n from __future__ import annotations\n \n+import contextlib\n import logging\n from typing import TYPE_CHECKING, Any\n \n import matplotlib as mpl\n import matplotlib.pyplot as plt\n-import mplcursors\n import numpy as np\n from matplotlib.colors import Normalize\n from PySide6.QtGui import QPalette\n@@ -18,6 +18,7 @@\n from pairinteraction_gui.plotwidget.canvas import MatplotlibCanvas\n from pairinteraction_gui.plotwidget.navigation_toolbar import CustomNavigationToolbar\n from pairinteraction_gui.qobjects import WidgetV\n+from pairinteraction_gui.qobjects.events import show_status_tip\n from pairinteraction_gui.theme import theme_manager\n from pairinteraction_gui.worker import MultiThreadWorker\n \n@@ -27,6 +28,7 @@\n \n     from numpy.typing import NDArray\n \n+    from pairinteraction.state import StateBase\n     from pairinteraction_gui.calculate.calculate_base import Parameters, Results\n     from pairinteraction_gui.page import SimulationPage\n \n@@ -69,10 +71,16 @@ class PlotEnergies(PlotWidget):\n     parameters: Parameters[Any] | None = None\n     results: Results | None = None\n \n-    fit_idx: int = 0\n-    fit_type: str = \"\"\n-    fit_data_highlight: mpl.collections.PathCollection\n-    fit_curve: Sequence[mpl.lines.Line2D]\n+    def __init__(self, parent: SimulationPage) -> None:\n+        super().__init__(parent)\n+\n+        self._annotations: dict[int, mpl.text.Annotation] = {}\n+        self._click_cid: int | None = None\n+\n+        self.fit_idx = 0\n+        self.fit_type = \"\"\n+        self.fit_data_highlight: mpl.collections.PathCollection | None = None\n+        self.fit_curve: Sequence[mpl.lines.Line2D] | None = None\n \n     def setupWidget(self) -> None:\n         super().setupWidget()\n@@ -88,12 +96,15 @@ def setupWidget(self) -> None:\n             hspace=0.0,\n         )\n         mappable = plt.cm.ScalarMappable(cmap=alphamagma, norm=Normalize(vmin=0, vmax=1))\n-        self.canvas.fig.colorbar(mappable, ax=self.canvas.ax, label=\"Overlap with state of interest\", aspect=60)\n+        cbar = self.canvas.fig.colorbar(mappable, ax=self.canvas.ax, label=\"Overlap with state of interest\", aspect=60)\n+        cbar.ax.set_zorder(0)\n+        self.canvas.ax.set_zorder(1)\n \n     def plot(self, parameters: Parameters[Any], results: Results) -> None:\n         self.reset_fit()\n         ax = self.canvas.ax\n         ax.clear()\n+        self.clear_annotations()\n         ax.set_xmargin(0)\n \n         MultiThreadWorker.task_checkpoint(\"Plotting energy curves...\")\n@@ -105,14 +116,11 @@ def plot(self, parameters: Parameters[Any], results: Results) -> None:\n         x_values = parameters.get_x_values()\n         energies = results.energies\n \n-        try:\n+        if len({len(es) for es in energies}) <= 1:  # check if homogeneous shape\n             ax.plot(x_values, np.array(energies), c=\"0.75\", lw=0.25, zorder=-10)\n-        except ValueError as err:\n-            if \"inhomogeneous shape\" in str(err):\n-                for x_value, es in zip(x_values, energies, strict=False):\n-                    ax.plot([x_value] * len(es), es, c=\"0.75\", ls=\"None\", marker=\".\", zorder=-10)\n-            else:\n-                raise err\n+        else:\n+            for x_value, es in zip(x_values, energies, strict=False):\n+                ax.plot([x_value] * len(es), es, c=\"0.75\", ls=\"None\", marker=\".\", zorder=-10)\n \n         MultiThreadWorker.task_checkpoint(\"Plotting overlaps...\")\n \n@@ -140,37 +148,80 @@ def plot(self, parameters: Parameters[Any], results: Results) -> None:\n         ax.set_xlabel(parameters.get_x_label())\n         ax.set_ylabel(\"Energy (GHz)\")\n \n-    def add_cursor(self, parameters: Parameters[Any], results: Results) -> None:\n-        # Remove any existing cursors to avoid duplicates\n-        if hasattr(self, \"mpl_cursor\"):\n-            if hasattr(self.mpl_cursor, \"remove\"):  # type: ignore\n-                self.mpl_cursor.remove()  # type: ignore\n-            del self.mpl_cursor  # type: ignore\n+    def clear_annotations(self) -> None:\n+        for ann in self._annotations.values():\n+            with contextlib.suppress(NotImplementedError):\n+                ann.remove()  # artist may already be gone if ax.clear() was called\n+        self._annotations.clear()\n+        self.canvas.draw_idle()\n+\n+    def setup_annotations(self, parameters: Parameters[Any], results: Results) -> None:\n+        \"\"\"Connect click-based state annotation to the energy plot.\"\"\"\n+        if self._click_cid is not None:\n+            self.canvas.mpl_disconnect(self._click_cid)\n+            self._click_cid = None\n+        self.clear_annotations()\n \n         energies = results.energies\n         x_values = parameters.get_x_values()\n \n-        artists = []\n-        for idx, labels in results.state_labels.items():\n-            MultiThreadWorker.task_checkpoint(\"Adding plot annotations...\")\n+        self._point_index_map: list[tuple[int, int]] = []\n+        all_x: list[float] = []\n+        all_y: list[float] = []\n+        for idx in range(len(energies)):\n             x = x_values[idx]\n-            for energy, label in zip(energies[idx], labels, strict=False):\n-                artist = self.canvas.ax.plot(x, energy, \"d\", c=\"0.93\", alpha=0.5, ms=7, label=label, zorder=-20)\n-                artists.extend(artist)\n-\n-        self.mpl_cursor = mplcursors.cursor(\n-            artists,\n-            hover=False,\n-            annotation_kwargs={\n-                \"bbox\": {\"boxstyle\": \"round,pad=0.5\", \"fc\": \"white\", \"alpha\": 0.9, \"ec\": \"gray\"},\n-                \"arrowprops\": {\"arrowstyle\": \"->\", \"connectionstyle\": \"arc3\", \"color\": \"gray\"},\n-            },\n-        )\n+            for idstate, energy in enumerate(energies[idx]):\n+                all_x.append(x)\n+                all_y.append(float(energy))\n+                self._point_index_map.append((idx, idstate))\n+        pts_data = np.column_stack([all_x, all_y]) if all_x else np.empty((0, 2))\n+\n+        def on_click(event: mpl.backend_bases.MouseEvent) -> None:\n+            if event.inaxes is not self.canvas.ax or event.button != 1 or len(pts_data) == 0:\n+                return\n+            pts_disp = self.canvas.ax.transData.transform(pts_data)\n+            click_disp = np.array([event.x, event.y])\n+            dists = np.hypot(pts_disp[:, 0] - click_disp[0], pts_disp[:, 1] - click_disp[1])\n+            nearest = int(np.argmin(dists))\n+            if dists[nearest] > 20:  # pixel threshold\n+                self.clear_annotations()\n+                return\n+            if nearest in self._annotations:\n+                self._annotations[nearest].remove()\n+                del self._annotations[nearest]\n+                self.canvas.draw_idle()\n+                return\n+            show_status_tip(self, \"Calculating state annotation...\")\n+            idstep, idstate = self._point_index_map[nearest]\n+            state: StateBase[Any] = results.systems[idstep].get_eigenbasis().get_state(idstate)\n+            label = state.get_label().replace(\" + \", \"\\n + \").replace(\"+ -\", \" - \")\n+            xlim = self.canvas.ax.get_xlim()\n+            ylim = self.canvas.ax.get_ylim()\n+            x_frac = (pts_data[nearest, 0] - xlim[0]) / (xlim[1] - xlim[0])\n+            y_frac = (pts_data[nearest, 1] - ylim[0]) / (ylim[1] - ylim[0])\n+            ha = \"right\" if x_frac > 0.5 else \"left\"\n+            va = \"top\" if y_frac > 0.5 else \"bottom\"\n+            x_offset = -15 if x_frac > 0.5 else 15\n+            y_offset = -10 if y_frac > 0.5 else 10\n+            ann = self.canvas.ax.annotate(\n+                label,\n+                xy=(pts_data[nearest, 0], pts_data[nearest, 1]),\n+                xytext=(x_offset, y_offset),\n+                textcoords=\"offset points\",\n+                ha=ha,\n+                va=va,\n+                bbox={\"boxstyle\": \"round,pad=0.5\", \"fc\": \"white\", \"alpha\": 0.9, \"ec\": \"gray\"},\n+                arrowprops={\"arrowstyle\": \"->\", \"connectionstyle\": \"arc3\", \"color\": \"gray\"},\n+                clip_on=False,\n+                annotation_clip=False,\n+            )\n+            ann.set_in_layout(False)\n+            self._annotations[nearest] = ann\n+            self.canvas.draw_idle()\n+            show_status_tip(self, \"State annotation calculated.\")\n \n-        @self.mpl_cursor.connect(\"add\")\n-        def on_add(sel: mplcursors.Selection) -> None:\n-            label = sel.artist.get_label()\n-            sel.annotation.set_text(label.replace(\" + \", \"\\n + \"))\n+        self._click_cid = self.canvas.mpl_connect(\"button_press_event\", on_click)  # type: ignore [arg-type]\n+        self.navigation_toolbar._home_callbacks = [self.clear_annotations]\n \n     def fit(self, fit_type: str = \"c6\") -> None:  # noqa: PLR0912, PLR0915, C901\n         \"\"\"Fits a potential curve and displays the fit values.\n@@ -249,9 +300,9 @@ def fit(self, fit_type: str = \"c6\") -> None:  # noqa: PLR0912, PLR0915, C901\n         energies_fit = np.array([energy[idx] for energy, idx in zip(energies, idxs, strict=False)])\n \n         # stop highlighting the previous fit\n-        if hasattr(self, \"fit_data_highlight\"):\n+        if self.fit_data_highlight is not None:\n             self.fit_data_highlight.remove()\n-        if hasattr(self, \"fit_curve\"):\n+        if self.fit_curve is not None:\n             for curve in self.fit_curve:\n                 curve.remove()\n \n@@ -283,10 +334,8 @@ def reset_fit(self) -> None:\n         # restart at first potential curve\n         self.fit_idx = 0\n         # and also remove any previous highlighting/fit display\n-        if hasattr(self, \"fit_data_highlight\"):\n-            del self.fit_data_highlight\n-        if hasattr(self, \"fit_curve\"):\n-            del self.fit_curve\n+        self.fit_data_highlight = None\n+        self.fit_curve = None\n \n \n def fit_c3(x: NDArray[Any], /, e0: float, c3: float) -> NDArray[Any]:"
+    },
+    {
+      "sha": "c1c8b676ada7c2ec58f363d993f2e0288f565430",
+      "filename": "src/pairinteraction_gui/qobjects/item.py",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 25,
+      "changes": 42,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fqobjects%2Fitem.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fqobjects%2Fitem.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fqobjects%2Fitem.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -6,7 +6,7 @@\n from typing import TYPE_CHECKING, Generic, TypeVar\n \n import numpy as np\n-from PySide6.QtWidgets import QCheckBox, QLabel, QSpacerItem\n+from PySide6.QtWidgets import QCheckBox, QLabel\n \n from pairinteraction_gui.qobjects.spin_boxes import DoubleSpinBox, HalfIntSpinBox, IntSpinBox\n from pairinteraction_gui.qobjects.widget import WidgetH\n@@ -97,14 +97,14 @@ def __init__(\n     ) -> None:\n         tooltip = tooltip if tooltip is not None else f\"{label} in {unit}\"\n \n-        self.checkbox: QCheckBox | QSpacerItem\n+        self.checkbox: QCheckBox | None\n         if checkable:\n             self.checkbox = QCheckBox()\n             self.checkbox.setObjectName(f\"{label_to_object_name(label)}_checkbox\")\n             self.checkbox.setChecked(checked)\n             self.checkbox.stateChanged.connect(self._on_checkbox_changed)\n         else:\n-            self.checkbox = QSpacerItem(25, 0)\n+            self.checkbox = None\n \n         self.label = QLabel(label)\n         self.label.setMinimumWidth(25)\n@@ -120,8 +120,6 @@ def __init__(\n     def setupWidget(self) -> None:\n         if isinstance(self.checkbox, QCheckBox):\n             self.layout().addWidget(self.checkbox)\n-        elif isinstance(self.checkbox, QSpacerItem):\n-            self.layout().addItem(self.checkbox)\n         self.layout().addWidget(self.label)\n         self.layout().addWidget(self.spinbox)\n         self.layout().addWidget(self.unit)\n@@ -142,17 +140,15 @@ def _on_checkbox_changed(self, state: bool) -> None:\n \n     def isChecked(self) -> bool:\n         \"\"\"Return the state of the checkbox.\"\"\"\n-        if isinstance(self.checkbox, QSpacerItem):\n-            return True\n-        return self.checkbox.isChecked()\n+        if isinstance(self.checkbox, QCheckBox):\n+            return self.checkbox.isChecked()\n+        return True\n \n     def setChecked(self, checked: bool) -> None:\n         \"\"\"Set the state of the checkbox.\"\"\"\n-        if isinstance(self.checkbox, QSpacerItem):\n-            if checked:\n-                return\n-            raise ValueError(\"Cannot uncheck a non-checkable item.\")\n-        self.checkbox.setChecked(checked)\n+        if isinstance(self.checkbox, QCheckBox):\n+            return self.checkbox.setChecked(checked)\n+        raise ValueError(\"Cannot (un)check a non-checkable item.\")\n \n     def value(\n         self,\n@@ -203,14 +199,14 @@ def __init__(\n     ) -> None:\n         tooltip_label = tooltip_label if tooltip_label is not None else label\n \n-        self.checkbox: QCheckBox | QSpacerItem\n+        self.checkbox: QCheckBox | None\n         if checkable:\n             self.checkbox = QCheckBox()\n             self.checkbox.setObjectName(f\"{label_to_object_name(label)}_checkbox\")\n             self.checkbox.setChecked(checked)\n             self.checkbox.stateChanged.connect(self._on_checkbox_changed)\n         else:\n-            self.checkbox = QSpacerItem(25, 0)\n+            self.checkbox = None\n \n         self.label = QLabel(label)\n         self.label.setMinimumWidth(25)\n@@ -227,8 +223,6 @@ def __init__(\n     def setupWidget(self) -> None:\n         if isinstance(self.checkbox, QCheckBox):\n             self.layout().addWidget(self.checkbox)\n-        elif isinstance(self.checkbox, QSpacerItem):\n-            self.layout().addItem(self.checkbox)\n         self.layout().addWidget(self.label)\n \n         self.layout().addWidget(self.min_spinbox)\n@@ -260,17 +254,15 @@ def _on_checkbox_changed(self, state: bool) -> None:\n \n     def isChecked(self) -> bool:\n         \"\"\"Return the state of the checkbox.\"\"\"\n-        if isinstance(self.checkbox, QSpacerItem):\n-            return True\n-        return self.checkbox.isChecked()\n+        if isinstance(self.checkbox, QCheckBox):\n+            return self.checkbox.isChecked()\n+        return True\n \n     def setChecked(self, checked: bool) -> None:\n         \"\"\"Set the state of the checkbox.\"\"\"\n-        if isinstance(self.checkbox, QSpacerItem):\n-            if checked:\n-                return\n-            raise ValueError(\"Cannot uncheck a non-checkable item.\")\n-        self.checkbox.setChecked(checked)\n+        if isinstance(self.checkbox, QCheckBox):\n+            return self.checkbox.setChecked(checked)\n+        raise ValueError(\"Cannot (un)check a non-checkable item.\")\n \n     def values(self, default: tuple[float, float] | P | NotSet = NotSet) -> tuple[float, float] | P:\n         \"\"\"Return the values of the min and max spinboxes.\"\"\""
+    },
+    {
+      "sha": "a534a2c5915df79d397239b7df6d5cf30487fa7c",
+      "filename": "src/pairinteraction_gui/utils.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Futils.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Futils.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Futils.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -24,8 +24,6 @@\n class DatabaseMissingError(Exception):\n     def __init__(self, err: RuntimeError) -> None:\n         super().__init__(str(err))\n-        table = next(w for w in str(err).split(\" \") if \"states\" in w)\n-        self.species = table.replace(\"_states\", \"\")\n \n \n class NoStateFoundError(Exception):\n@@ -35,7 +33,7 @@ def __init__(self, err: ValueError) -> None:\n \n def get_custom_error(err: Exception) -> Exception:\n     \"\"\"Get a custom error message based on the type of error.\"\"\"\n-    if isinstance(err, RuntimeError) and \"Table\" in str(err) and \"not found\" in str(err):\n+    if isinstance(err, RuntimeError) and \"No tables found for\" in str(err):\n         return DatabaseMissingError(err)\n     if isinstance(err, ValueError) and (\"No state found\" in str(err) or \"quantum number m must be\" in str(err)):\n         return NoStateFoundError(err)"
+    },
+    {
+      "sha": "f83d084dfeec76a3fa749ce368498b9484864f84",
+      "filename": "src/pairinteraction_gui/worker.py",
+      "status": "modified",
+      "additions": 58,
+      "deletions": 27,
+      "changes": 85,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fworker.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/src%2Fpairinteraction_gui%2Fworker.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/src%2Fpairinteraction_gui%2Fworker.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -3,22 +3,67 @@\n from __future__ import annotations\n \n import logging\n-from pathlib import Path\n+import math\n+from collections.abc import Callable\n from typing import TYPE_CHECKING, Any, ClassVar\n \n-from PySide6.QtCore import QObject, QSize, Qt, QThread, QTimer, Signal\n-from PySide6.QtGui import QMovie\n-from PySide6.QtWidgets import QApplication, QLabel\n+from PySide6.QtCore import QObject, Qt, QThread, QTimer, Signal\n+from PySide6.QtGui import QColor, QPainter\n+from PySide6.QtWidgets import QApplication, QWidget\n \n from pairinteraction import _backend\n \n if TYPE_CHECKING:\n     from collections.abc import Callable\n \n-    from PySide6.QtWidgets import QWidget\n+logger = logging.getLogger(__name__)\n \n \n-logger = logging.getLogger(__name__)\n+class SpinnerWidget(QWidget):\n+    \"\"\"Spinning wheel indicator similar to the OS busy cursor, but larger.\"\"\"\n+\n+    def __init__(self, parent: QWidget, size: int = 80, n_dots: int = 12, dot_radius: int = 5) -> None:\n+        super().__init__(parent)\n+        self._step = 0\n+        self._n_dots = n_dots\n+        self._dot_radius = dot_radius\n+        self._timer = QTimer(self)\n+        self._timer.setInterval(80)\n+        self._timer.timeout.connect(self._advance)\n+        self.setFixedSize(size, size)\n+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)\n+        self.hide()\n+\n+    def _advance(self) -> None:\n+        self._step = (self._step + 1) % self._n_dots\n+        self.update()\n+\n+    def start(self) -> None:\n+        self._timer.start()\n+        self.show()\n+\n+    def stop(self) -> None:\n+        self._timer.stop()\n+        self.hide()\n+\n+    def paintEvent(self, event: Any) -> None:\n+        painter = QPainter(self)\n+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)\n+        center = self.width() / 2\n+        orbit = center - self._dot_radius - 4\n+        for i in range(self._n_dots):\n+            opacity = ((i - self._step) % self._n_dots) / (self._n_dots - 1)\n+            painter.setBrush(QColor(128, 128, 128, int(opacity * 220)))\n+            painter.setPen(Qt.PenStyle.NoPen)\n+            angle = 2 * math.pi * i / self._n_dots\n+            x = center + orbit * math.sin(angle)\n+            y = center - orbit * math.cos(angle)\n+            painter.drawEllipse(\n+                int(x - self._dot_radius),\n+                int(y - self._dot_radius),\n+                self._dot_radius * 2,\n+                self._dot_radius * 2,\n+            )\n \n \n class WorkerSignals(QObject):\n@@ -89,27 +134,13 @@ def report_progress(self, message: str) -> None:\n         self.signals.progress.emit(message)\n \n     def enable_busy_indicator(self, widget: QWidget) -> None:\n-        \"\"\"Run a loading gif while the worker is running.\"\"\"\n-        self.busy_label = QLabel(widget)\n-        gif_path = Path(__file__).parent / \"images\" / \"loading.gif\"\n-        self.busy_movie = QMovie(str(gif_path))\n-        self.busy_movie.setScaledSize(QSize(100, 100))  # Make the gif larger\n-        self.busy_label.setMovie(self.busy_movie)\n-        self.busy_label.setAlignment(Qt.AlignmentFlag.AlignCenter)\n-        self.busy_label.setGeometry((widget.width() - 100) // 2, (widget.height() - 100) // 2, 100, 100)\n-\n-        self.signals.started.connect(self._start_gif)\n-        self.signals.finished.connect(self._stop_gif)\n-\n-    def _start_gif(self) -> None:\n-        self.busy_label.show()\n-        self.busy_movie.start()\n-\n-    def _stop_gif(self) -> None:\n-        if hasattr(self, \"busy_movie\"):\n-            self.busy_movie.stop()\n-        if hasattr(self, \"busy_label\"):\n-            self.busy_label.hide()\n+        \"\"\"Show a spinning wheel overlay while the worker is running.\"\"\"\n+        size = 80\n+        self.busy_spinner = SpinnerWidget(widget, size=size)\n+        self.busy_spinner.setGeometry((widget.width() - size) // 2, (widget.height() - size) // 2, size, size)\n+\n+        self.signals.started.connect(self.busy_spinner.start)\n+        self.signals.finished.connect(self.busy_spinner.stop)\n \n     def run(self) -> None:\n         \"\"\"Initialise the runner function with passed args, kwargs.\"\"\""
+    },
+    {
+      "sha": "80c4d99b395f59c6cc4733517f5d74718e15f8a2",
+      "filename": "tests/test_gui.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/pairinteraction/pairinteraction/blob/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/tests%2Ftest_gui.py",
+      "raw_url": "https://github.com/pairinteraction/pairinteraction/raw/f5661e2ddd82459ca868522c2ca54cc63ed97ed4/tests%2Ftest_gui.py",
+      "contents_url": "https://api.github.com/repos/pairinteraction/pairinteraction/contents/tests%2Ftest_gui.py?ref=f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "patch": "@@ -162,9 +162,9 @@ def test_save_and_restore_settings(qtbot: QtBot, tmp_path: Path) -> None:\n     window.show()\n     qtbot.addWidget(window)\n     one_atom_page: OneAtomPage = window.stacked_pages.getNamedWidget(\"OneAtomPage\")  # type: ignore [assignment]\n-    one_atom_page.ket_config.species_combo_list[0].setCurrentText(\"Cs\")\n     ket_qn = one_atom_page.ket_config.stacked_qn_list[0].currentWidget()\n     ket_qn.items[\"n\"].setValue(222)\n+    ket_qn.items[\"l\"].setValue(999)\n     window.close()\n \n     window = MainWindow(cache_dir=tmp_path)\n@@ -173,5 +173,5 @@ def test_save_and_restore_settings(qtbot: QtBot, tmp_path: Path) -> None:\n     one_atom_page = window.stacked_pages.getNamedWidget(\"OneAtomPage\")  # type: ignore [assignment]\n     ket_qn = one_atom_page.ket_config.stacked_qn_list[0].currentWidget()\n \n-    assert one_atom_page.ket_config.species_combo_list[0].currentText() == \"Cs\"\n     assert ket_qn.items[\"n\"].value() == 222\n+    assert ket_qn.items[\"l\"].value() == 999"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "e921e932c02076b807d33c4002d079d7c3d7824e",
+      "message": "[gui] remove spacing if not checkable",
+      "parent_shas": [
+        "48b1f9840c21d0498da4e5fc5bcba29c809090cd"
+      ]
+    },
+    {
+      "sha": "bb86b1d076ec27d0f319b3c26d9987b405ed283c",
+      "message": "[gui] less checkable items",
+      "parent_shas": [
+        "e921e932c02076b807d33c4002d079d7c3d7824e"
+      ]
+    },
+    {
+      "sha": "7609a82857d99aacb6b985b2e152a83347c7d454",
+      "message": "[gui] add warning to lifetimes for MQDT",
+      "parent_shas": [
+        "bb86b1d076ec27d0f319b3c26d9987b405ed283c"
+      ]
+    },
+    {
+      "sha": "7c5975dba30ee5401acef7f0f645e6a81eb116f8",
+      "message": "[gui] fix home view",
+      "parent_shas": [
+        "7609a82857d99aacb6b985b2e152a83347c7d454"
+      ]
+    },
+    {
+      "sha": "7e8b207ece679d4817a72ea931c67203958e484c",
+      "message": "[gui] fix ask to download missing database",
+      "parent_shas": [
+        "7c5975dba30ee5401acef7f0f645e6a81eb116f8"
+      ]
+    },
+    {
+      "sha": "32a23cc022898b1377091dfff09de57aabb0c9aa",
+      "message": "small fix KetPair get_label",
+      "parent_shas": [
+        "7e8b207ece679d4817a72ea931c67203958e484c"
+      ]
+    },
+    {
+      "sha": "a1152b093f9664fdfc65ca0235da15fdda9581bc",
+      "message": "add basis get_state method",
+      "parent_shas": [
+        "32a23cc022898b1377091dfff09de57aabb0c9aa"
+      ]
+    },
+    {
+      "sha": "396a13f3813b80e8ec5b24a8c3d908388d22cddd",
+      "message": "[gui] calculate state annotations just in time",
+      "parent_shas": [
+        "a1152b093f9664fdfc65ca0235da15fdda9581bc"
+      ]
+    },
+    {
+      "sha": "ba5277f62cb4a2a42057064dafc35fa7d3d1e728",
+      "message": "improve check if homogoneous shape before plot",
+      "parent_shas": [
+        "396a13f3813b80e8ec5b24a8c3d908388d22cddd"
+      ]
+    },
+    {
+      "sha": "be4a011fd935fae552098f3381b622cade943273",
+      "message": "small fixes",
+      "parent_shas": [
+        "ba5277f62cb4a2a42057064dafc35fa7d3d1e728"
+      ]
+    },
+    {
+      "sha": "48006201f20a761a512d6aa2a388147b80546de4",
+      "message": "[gui] update loading wheel",
+      "parent_shas": [
+        "be4a011fd935fae552098f3381b622cade943273"
+      ]
+    },
+    {
+      "sha": "c5bbc27c228265646b1bc9804a31092b98d4cc82",
+      "message": "gui improve plotting behaviour",
+      "parent_shas": [
+        "48006201f20a761a512d6aa2a388147b80546de4"
+      ]
+    },
+    {
+      "sha": "f5661e2ddd82459ca868522c2ca54cc63ed97ed4",
+      "message": "fix ruff py3.10",
+      "parent_shas": [
+        "c5bbc27c228265646b1bc9804a31092b98d4cc82"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__pairinteraction__pairinteraction__pr388.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\pairinteraction__pairinteraction__pr388__py2_py3__pairinteraction__pairinteraction__pr388\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\pairinteraction__pairinteraction__pr388__py2_py3__pairinteraction__pairinteraction__pr388\\rn"
+  }
+}

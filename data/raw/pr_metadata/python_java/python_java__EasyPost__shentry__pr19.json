@@ -1,0 +1,200 @@
+{
+  "instance_id": "python_java__EasyPost__shentry__pr19",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "EasyPost/shentry",
+  "pr_number": 19,
+  "pr_url": "https://github.com/EasyPost/shentry/pull/19",
+  "repo": {
+    "full_name": "EasyPost/shentry",
+    "clone_url": "https://github.com/EasyPost/shentry.git",
+    "default_branch": "master",
+    "created_at": "2016-05-12T21:44:13Z",
+    "stars": 12,
+    "license": "ISC",
+    "size_kb": 85
+  },
+  "pull_request": {
+    "id": 3504921852,
+    "title": "new python versions",
+    "body": "- Drops support for Python earlier than 3.9\r\n- Adds support for Python 3.13 and 3.14\r\n- Swaps setup.py for pyproject.toml\r\n- Swaps Makefile for Justfile\r\n- Swaps pip for uv\r\n- Migrates from Coveralls to Codecov\r\n- Updates dev dependencies",
+    "created_at": "2026-04-08T19:14:01Z",
+    "merged_at": "2026-04-08T20:20:00Z",
+    "base_sha": "804ae345bb8c6f414a77abd7fbff86cf34c1ff32",
+    "head_sha": "3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f",
+    "merge_commit_sha": "fdc27d6734bd342ef0b4019765107a645a8187fd",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "804ae345bb8c6f414a77abd7fbff86cf34c1ff32",
+  "final_sha": "3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f",
+  "changed_files": [
+    {
+      "sha": "ad9eb6f9732a0a7a51903f8bc630bfe7b876e276",
+      "filename": ".github/workflows/ci.yml",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 16,
+      "changes": 34,
+      "blob_url": "https://github.com/EasyPost/shentry/blob/3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f/.github%2Fworkflows%2Fci.yml",
+      "raw_url": "https://github.com/EasyPost/shentry/raw/3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f/.github%2Fworkflows%2Fci.yml",
+      "contents_url": "https://api.github.com/repos/EasyPost/shentry/contents/.github%2Fworkflows%2Fci.yml?ref=3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f",
+      "patch": "@@ -4,38 +4,40 @@ on:\n   push:\n     branches: [master]\n   pull_request:\n+  workflow_dispatch:\n \n jobs:\n   flake8:\n     runs-on: ubuntu-latest\n     steps:\n-      - uses: actions/checkout@v3\n-      - name: set up python\n-        uses: actions/setup-python@v4\n+      - uses: actions/checkout@v6\n+      - uses: extractions/setup-just@v3\n+      - uses: astral-sh/setup-uv@v7\n+      - uses: actions/setup-python@v6\n         with:\n-          python-version: '3.12'\n+          python-version: '3.14'\n       - name: install dependencies\n-        run: make install\n+        run: just install\n       - name: lint with flake8\n-        run: make lint\n+        run: just lint\n   run-tests:\n     runs-on: ubuntu-latest\n     strategy:\n       matrix:\n-        pythonversion: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']\n+        pythonversion: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']\n     steps:\n-      - uses: actions/checkout@v3\n-      - name: set up python\n-        uses: actions/setup-python@v4\n+      - uses: actions/checkout@v6\n+      - uses: extractions/setup-just@v3\n+      - uses: astral-sh/setup-uv@v7\n+      - uses: actions/setup-python@v6\n         with:\n           python-version: ${{ matrix.pythonversion }}\n       - name: install dependencies\n-        run: make install\n+        run: just install\n       - name: test with pytest\n-        run: make coverage\n-      - name: Coveralls\n+        run: just coverage\n+      - name: Coverage\n         if: github.ref == 'refs/heads/master'\n-        uses: coverallsapp/github-action@master\n+        uses: codecov/codecov-action@v5\n         with:\n-          github-token: ${{ secrets.GITHUB_TOKEN }}\n-          path-to-lcov: './coverage.lcov'\n+          token: ${{ secrets.CODECOV_TOKEN }}"
+    },
+    {
+      "sha": "1cfcff596e706e631bf93468c582f2500a216d69",
+      "filename": "CHANGELOG.md",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 0,
+      "changes": 10,
+      "blob_url": "https://github.com/EasyPost/shentry/blob/3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f/CHANGELOG.md",
+      "raw_url": "https://github.com/EasyPost/shentry/raw/3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f/CHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/EasyPost/shentry/contents/CHANGELOG.md?ref=3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f",
+      "patch": "@@ -1,5 +1,15 @@\n # CHANGELOG\n \n+## v2.0.0 (2026-04-08)\n+\n+- Drops support for Python earlier than 3.9\n+- Adds support for Python 3.13 and 3.14\n+- Swaps setup.py for pyproject.toml\n+- Swaps Makefile for Justfile\n+- Swaps pip for uv\n+- Migrates from Coveralls to Codecov\n+- Updates dev dependencies\n+\n ## v1.0.0 (2023-11-20)\n \n - Drops support for Python earlier than 3.7"
+    },
+    {
+      "sha": "f3c7074c1af2e1eeb41bf9b6bca1bd21ef103be2",
+      "filename": "Makefile",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 36,
+      "changes": 36,
+      "blob_url": "https://github.com/EasyPost/shentry/blob/804ae345bb8c6f414a77abd7fbff86cf34c1ff32/Makefile",
+      "raw_url": "https://github.com/EasyPost/shentry/raw/804ae345bb8c6f414a77abd7fbff86cf34c1ff32/Makefile",
+      "contents_url": "https://api.github.com/repos/EasyPost/shentry/contents/Makefile?ref=804ae345bb8c6f414a77abd7fbff86cf34c1ff32",
+      "patch": "@@ -1,36 +0,0 @@\n-PYTHON_BINARY := python3\n-VIRTUAL_ENV := venv\n-VIRTUAL_BIN := $(VIRTUAL_ENV)/bin\n-PROJECT_NAME := shentry\n-TEST_DIR := tests\n-\n-## help - Display help about make targets for this Makefile\n-help:\n-\t@cat Makefile | grep '^## ' --color=never | cut -c4- | sed -e \"`printf 's/ - /\\t- /;'`\" | column -s \"`printf '\\t'`\" -t\n-\n-## clean - Clean the project\n-clean:\n-\trm -rf $(VIRTUAL_ENV) dist/ *.egg-info/ .*cache htmlcov *.lcov .coverage\n-\tfind . -name '*.pyc' -delete\n-\n-## coverage - Test the project and generate an HTML coverage report\n-coverage:\n-\t$(VIRTUAL_BIN)/pytest --cov=$(PROJECT_NAME) --cov-branch --cov-report=html --cov-report=lcov --cov-report=term-missing --cov-fail-under=50\n-\n-## flake8 - Lint the project with flake8\n-flake8:\n-\t$(VIRTUAL_BIN)/flake8 $(PROJECT_NAME).py $(TEST_DIR)/\n-\n-## install - Install the project locally\n-install:\n-\t$(PYTHON_BINARY) -m venv $(VIRTUAL_ENV)\n-\t$(VIRTUAL_BIN)/pip install -r requirements-tests.txt -e .\n-\n-## lint - Run linters on the project\n-lint: flake8\n-\n-## test - Test the project\n-test:\n-\t$(VIRTUAL_BIN)/pytest\n-\n-.PHONY: help clean coverage flake8 install lint test"
+    },
+    {
+      "sha": "3c8032e0bb53181d8c4e9b1b07bf85f8c3d5bd95",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/EasyPost/shentry/blob/3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f/README.md",
+      "raw_url": "https://github.com/EasyPost/shentry/raw/3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f/README.md",
+      "contents_url": "https://api.github.com/repos/EasyPost/shentry/contents/README.md?ref=3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f",
+      "patch": "@@ -1,7 +1,7 @@\n # Shentry\n \n [![Build Status](https://travis-ci.com/EasyPost/shentry.svg?branch=master)](https://travis-ci.com/EasyPost/shentry)\n-[![Coverage Status](https://coveralls.io/repos/github/EasyPost/shentry/badge.svg)](https://coveralls.io/github/EasyPost/shentry)\n+[![codecov](https://codecov.io/gh/EasyPost/shentry/graph/badge.svg?token=0iI00RC1q8)](https://codecov.io/gh/EasyPost/shentry)\n [![Version](https://img.shields.io/github/v/tag/EasyPost/shentry)](https://github.com/EasyPost/shentry/releases)\n \n **Shentry** is a single-file Python script which will run the wrapped\n@@ -21,7 +21,7 @@ If the `requests` library is available, it will be used; otherwise, the standard\n either `$SHELL_SENTRY_PROXY` or the contents of `/etc/shentry_proxy` can be\n used to configure an outbound proxy.\n \n-The `setup.py` in this directory only exists for this project's dev tooling. To get\n+The `pyproject.toml` in this directory only exists for this project's dev tooling. To get\n Shentry working on your machine, simply copy `shentry.py` wherever you need it.\n \n ## Usage"
+    },
+    {
+      "sha": "e325f520bac985d60606307b15b614e41b481de7",
+      "filename": "justfile",
+      "status": "added",
+      "additions": 29,
+      "deletions": 0,
+      "changes": 29,
+      "blob_url": "https://github.com/EasyPost/shentry/blob/3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f/justfile",
+      "raw_url": "https://github.com/EasyPost/shentry/raw/3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f/justfile",
+      "contents_url": "https://api.github.com/repos/EasyPost/shentry/contents/justfile?ref=3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f",
+      "patch": "@@ -0,0 +1,29 @@\n+VIRTUAL_ENV := \".venv\"\n+VIRTUAL_BIN := VIRTUAL_ENV + \"/bin\"\n+PROJECT_NAME := \"shentry\"\n+TEST_DIR := \"tests\"\n+\n+# Clean the project\n+clean:\n+    rm -rf {{VIRTUAL_ENV}} dist/ *.egg-info/ .*cache htmlcov *.lcov .coverage\n+    find . -name '*.pyc' -delete\n+\n+# Test the project and generate an HTML coverage report\n+coverage:\n+    {{VIRTUAL_BIN}}/pytest --cov={{PROJECT_NAME}} --cov-branch --cov-report=html --cov-report=lcov --cov-report=term-missing --cov-fail-under=50\n+\n+# Lint the project with flake8\n+flake8:\n+    {{VIRTUAL_BIN}}/flake8 {{PROJECT_NAME}}.py {{TEST_DIR}}/\n+\n+# Install the project locally\n+install:\n+    uv venv\n+    uv pip install -e '.[dev]'\n+\n+# Run linters on the project\n+lint: flake8\n+\n+# Test the project\n+test:\n+    {{VIRTUAL_BIN}}/pytest"
+    },
+    {
+      "sha": "7227a9c2cfd4d4490f4d817d7e471af7a399300f",
+      "filename": "pyproject.toml",
+      "status": "added",
+      "additions": 43,
+      "deletions": 0,
+      "changes": 43,
+      "blob_url": "https://github.com/EasyPost/shentry/blob/3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f/pyproject.toml",
+      "raw_url": "https://github.com/EasyPost/shentry/raw/3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/EasyPost/shentry/contents/pyproject.toml?ref=3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f",
+      "patch": "@@ -0,0 +1,43 @@\n+[build-system]\n+requires = [\"setuptools>=61.0\", \"wheel\"]\n+build-backend = \"setuptools.build_meta\"\n+\n+[project]\n+name = \"shentry\"\n+description = \"Wrap a program in sentry!\"\n+version = \"2.0.0\"\n+readme = \"README.md\"\n+requires-python = \">=3.9, <4\"\n+license = { file = \"LICENSE.txt\" }\n+authors = [{ name = \"EasyPost\", email = \"oss@easypost.com\" }]\n+keywords = [\"logging\"]\n+classifiers = [\n+    \"Development Status :: 3 - Alpha\",\n+    \"Environment :: Console\",\n+    \"Programming Language :: Python\",\n+    \"Programming Language :: Python :: 3.9\",\n+    \"Programming Language :: Python :: 3.10\",\n+    \"Programming Language :: Python :: 3.11\",\n+    \"Programming Language :: Python :: 3.12\",\n+    \"Programming Language :: Python :: 3.13\",\n+    \"Programming Language :: Python :: 3.14\",\n+    \"Operating System :: POSIX\",\n+    \"Intended Audience :: Developers\",\n+    \"License :: OSI Approved :: ISC License (ISCL)\",\n+]\n+optional-dependencies = { dev = [\n+    \"flake8 == 6.*\",\n+    \"pytest == 8.*\",\n+    \"pytest-cov == 7.*\",\n+    \"pytest-mock == 3.*\",\n+] }\n+\n+[project.urls]\n+Source = \"https://github.com/easypost/shentry\"\n+Tracker = \"https://github.com/easypost/shentry/issues\"\n+\n+[project.scripts]\n+shentry = \"shentry:main\"\n+\n+[tool.setuptools]\n+py-modules = [\"shentry\"]"
+    },
+    {
+      "sha": "b5385d5000c1e3bfb699a050a4024cf6b0fb7a1d",
+      "filename": "requirements-tests.txt",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 4,
+      "changes": 4,
+      "blob_url": "https://github.com/EasyPost/shentry/blob/804ae345bb8c6f414a77abd7fbff86cf34c1ff32/requirements-tests.txt",
+      "raw_url": "https://github.com/EasyPost/shentry/raw/804ae345bb8c6f414a77abd7fbff86cf34c1ff32/requirements-tests.txt",
+      "contents_url": "https://api.github.com/repos/EasyPost/shentry/contents/requirements-tests.txt?ref=804ae345bb8c6f414a77abd7fbff86cf34c1ff32",
+      "patch": "@@ -1,4 +0,0 @@\n-flake8==5.*  # TODO: flake8 v6 requires Python 3.8.1+\n-pytest-cov==4.*\n-pytest-mock==3.*\n-pytest==7.*"
+    },
+    {
+      "sha": "6d61e7ce9cee836197b07dcd2e3820645049306a",
+      "filename": "setup.py",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 31,
+      "changes": 31,
+      "blob_url": "https://github.com/EasyPost/shentry/blob/804ae345bb8c6f414a77abd7fbff86cf34c1ff32/setup.py",
+      "raw_url": "https://github.com/EasyPost/shentry/raw/804ae345bb8c6f414a77abd7fbff86cf34c1ff32/setup.py",
+      "contents_url": "https://api.github.com/repos/EasyPost/shentry/contents/setup.py?ref=804ae345bb8c6f414a77abd7fbff86cf34c1ff32",
+      "patch": "@@ -1,31 +0,0 @@\n-#!/usr/bin/env python\n-\n-from setuptools import setup\n-\n-setup(\n-    name=\"shentry\",\n-    version=\"1.0.0\",\n-    author=\"EasyPost\",\n-    author_email=\"oss@easypost.com\",\n-    url=\"https://github.com/easypost/shentry\",\n-    license=\"ISC\",\n-    packages=[],\n-    scripts=[\"shentry.py\"],\n-    keywords=[\"logging\"],\n-    description=\"Wrap a program in sentry!\",\n-    python_requires=\">=3.7, <4\",\n-    classifiers=[\n-        \"Development Status :: 3 - Alpha\",\n-        \"Environment :: Console\",\n-        \"Programming Language :: Python\",\n-        \"Programming Language :: Python :: 3.7\",\n-        \"Programming Language :: Python :: 3.8\",\n-        \"Programming Language :: Python :: 3.9\",\n-        \"Programming Language :: Python :: 3.10\",\n-        \"Programming Language :: Python :: 3.11\",\n-        \"Programming Language :: Python :: 3.12\",\n-        \"Operating System :: POSIX\",\n-        \"Intended Audience :: Developers\",\n-        \"License :: OSI Approved :: ISC License (ISCL)\",\n-    ],\n-)"
+    },
+    {
+      "sha": "6d237a89d554217d6e9b02110dff166218b1090f",
+      "filename": "shentry.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/EasyPost/shentry/blob/3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f/shentry.py",
+      "raw_url": "https://github.com/EasyPost/shentry/raw/3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f/shentry.py",
+      "contents_url": "https://api.github.com/repos/EasyPost/shentry/contents/shentry.py?ref=3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f",
+      "patch": "@@ -43,7 +43,7 @@\n import uuid\n from contextlib import closing\n \n-VERSION = \"1.0.0\"\n+VERSION = \"2.0.0\"\n \n \n def read_systemwide_config():"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "1e5cb307b16328b1ad37b3a3a3e25053433a803a",
+      "message": "feat: test against newer python versions",
+      "parent_shas": [
+        "804ae345bb8c6f414a77abd7fbff86cf34c1ff32"
+      ]
+    },
+    {
+      "sha": "63036bd23a00ca9c9172e596d4cd1f5ad7b41d6b",
+      "message": "feat: add workflow dispatch on CI",
+      "parent_shas": [
+        "1e5cb307b16328b1ad37b3a3a3e25053433a803a"
+      ]
+    },
+    {
+      "sha": "8104715c41390bd8de635469e2fe798fde06bf4f",
+      "message": "chore: drop 3.7, 3.8, bump deps",
+      "parent_shas": [
+        "63036bd23a00ca9c9172e596d4cd1f5ad7b41d6b"
+      ]
+    },
+    {
+      "sha": "97cf2a30297ff0a12bd1acca5333bfa47006a530",
+      "message": "chore: bump version",
+      "parent_shas": [
+        "8104715c41390bd8de635469e2fe798fde06bf4f"
+      ]
+    },
+    {
+      "sha": "3fb080dfdc1481d9cef8f0b0486435ef61b3ae0f",
+      "message": "feat: uv, justfile, pyproject.toml",
+      "parent_shas": [
+        "97cf2a30297ff0a12bd1acca5333bfa47006a530"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__EasyPost__shentry__pr19.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\EasyPost__shentry__pr19__python_java__EasyPost__shentry__pr19\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\EasyPost__shentry__pr19__python_java__EasyPost__shentry__pr19\\rn"
+  }
+}

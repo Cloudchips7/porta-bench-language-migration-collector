@@ -1,0 +1,162 @@
+{
+  "instance_id": "py2_py3__bigsnarfdude__Apache-access-log-parser__pr1",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "bigsnarfdude/Apache-access-log-parser",
+  "pr_number": 1,
+  "pr_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/pull/1",
+  "repo": {
+    "full_name": "bigsnarfdude/Apache-access-log-parser",
+    "clone_url": "https://github.com/bigsnarfdude/Apache-access-log-parser.git",
+    "default_branch": "master",
+    "created_at": "2014-02-17T22:26:03Z",
+    "stars": 5,
+    "license": "Apache-2.0",
+    "size_kb": 11066
+  },
+  "pull_request": {
+    "id": 3008143682,
+    "title": "Incomplete query - needs clarification",
+    "body": "- Migrate to Python 3: Update all print statements, replace .iteritems() with .items(), modernize string formatting with f-strings, update shebang to python3\r\n- Fix critical bug: Replace silent exception handler with proper error handling and informative error messages\r\n- Remove hardcoded absolute paths in GeoIP plugins, use relative paths instead\r\n- Fix typo: FEILD_MAPPINGS → FIELD_MAPPINGS\r\n- Add requirements.txt for dependency management\r\n- All changes tested and compile successfully with Python 3.11",
+    "created_at": "2025-11-13T19:47:03Z",
+    "merged_at": "2025-11-13T19:47:17Z",
+    "base_sha": "78f9e598b289bd39c8a55e1140eb8b8c5f9c2eb6",
+    "head_sha": "d1acaf4696fd983fd320b2bb98f1c6539e617731",
+    "merge_commit_sha": "c5f3e8496e1c091453a266bdbd1be174f1b88bc3",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "78f9e598b289bd39c8a55e1140eb8b8c5f9c2eb6",
+  "final_sha": "d1acaf4696fd983fd320b2bb98f1c6539e617731",
+  "changed_files": [
+    {
+      "sha": "5dd93d3fdaafa28d163e15bc8dd075221afecf64",
+      "filename": "http_log_parser.py",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 6,
+      "changes": 22,
+      "blob_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/blob/d1acaf4696fd983fd320b2bb98f1c6539e617731/http_log_parser.py",
+      "raw_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/raw/d1acaf4696fd983fd320b2bb98f1c6539e617731/http_log_parser.py",
+      "contents_url": "https://api.github.com/repos/bigsnarfdude/Apache-access-log-parser/contents/http_log_parser.py?ref=d1acaf4696fd983fd320b2bb98f1c6539e617731",
+      "patch": "@@ -1,11 +1,13 @@\n-#!/usr/bin/env python\n+#!/usr/bin/env python3\n \n import csv\n import re\n import os\n+import sys\n+import traceback\n from manager import PluginManager\n \n-FEILD_MAPPINGS = {'%h': 'remote_host',\n+FIELD_MAPPINGS = {'%h': 'remote_host',\n                   '%l': 'remote_logname',\n                   '%u': 'remote_user',\n                   '%t': 'time_stamp',\n@@ -27,15 +29,15 @@ def __init__(self, log_format=None, log_dir='logs'):\n         self.re_tsquote = re.compile(r'(\\[|\\])')\n         self.field_list = []\n         for directive in self.format_string.split(' '):\n-            self.field_list.append(FEILD_MAPPINGS[directive])\n+            self.field_list.append(FIELD_MAPPINGS[directive])\n     \n     def _quote_translator(self, file_name):\n         for line in open(file_name):\n             yield self.re_tsquote.sub('\"', line)\n \n     def _get_file_list(self):\n         for file in os.listdir(self.log_dir):\n-            file_name = \"%s/%s\" % (self.log_dir, file)\n+            file_name = os.path.join(self.log_dir, file)\n             if os.path.isfile(file_name):\n                 yield file_name\n \n@@ -55,5 +57,13 @@ def main():\n if __name__ == '__main__':\n     try:\n         main()\n-    except:\n-        pass\n+    except FileNotFoundError as e:\n+        print(f\"Error: Log file or directory not found - {e}\")\n+        sys.exit(1)\n+    except KeyError as e:\n+        print(f\"Error: Invalid log format or missing field - {e}\")\n+        sys.exit(1)\n+    except Exception as e:\n+        print(f\"Error: An unexpected error occurred - {e}\")\n+        traceback.print_exc()\n+        sys.exit(1)"
+    },
+    {
+      "sha": "1dbc6f5a5f569de7615859c0a7e6c0d78ce56d7d",
+      "filename": "manager.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/blob/d1acaf4696fd983fd320b2bb98f1c6539e617731/manager.py",
+      "raw_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/raw/d1acaf4696fd983fd320b2bb98f1c6539e617731/manager.py",
+      "contents_url": "https://api.github.com/repos/bigsnarfdude/Apache-access-log-parser/contents/manager.py?ref=d1acaf4696fd983fd320b2bb98f1c6539e617731",
+      "patch": "@@ -1,4 +1,4 @@\n-#!/usr/bin/env python\n+#!/usr/bin/env python3\n \n import sys\n import os"
+    },
+    {
+      "sha": "ca5c47930cda6bbbd56758bd5b3adba3a8dcaf0f",
+      "filename": "plugins/plugin_count_200.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 6,
+      "changes": 12,
+      "blob_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/blob/d1acaf4696fd983fd320b2bb98f1c6539e617731/plugins%2Fplugin_count_200.py",
+      "raw_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/raw/d1acaf4696fd983fd320b2bb98f1c6539e617731/plugins%2Fplugin_count_200.py",
+      "contents_url": "https://api.github.com/repos/bigsnarfdude/Apache-access-log-parser/contents/plugins%2Fplugin_count_200.py?ref=d1acaf4696fd983fd320b2bb98f1c6539e617731",
+      "patch": "@@ -1,4 +1,4 @@\n-#!/usr/bin/env python\n+#!/usr/bin/env python3\n \n from manager import Plugin\n \n@@ -13,14 +13,14 @@ def __init__(self, **kwargs):\n         self.counter_total = 0\n \n     def process(self, **kwargs):\n-        print kwargs\n-        print kwargs['status']\n+        print(kwargs)\n+        print(kwargs['status'])\n         if 'status' in kwargs:\n             self.counter_total += 1\n             if kwargs['status'] == '200':\n                 self.counter_200 += 1\n \n     def report(self, **kwargs):\n-        print '== HTTP code 200 counter =='\n-        print \"HTTP 200 responses: %d\" % self.counter_200\n-        print \"All responses: %d\" % self.counter_total\n+        print('== HTTP code 200 counter ==')\n+        print(f\"HTTP 200 responses: {self.counter_200}\")\n+        print(f\"All responses: {self.counter_total}\")"
+    },
+    {
+      "sha": "72bab11d4a57eaf763e0b89ef43e01ae68ed92f7",
+      "filename": "plugins/plugin_count_404.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/blob/d1acaf4696fd983fd320b2bb98f1c6539e617731/plugins%2Fplugin_count_404.py",
+      "raw_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/raw/d1acaf4696fd983fd320b2bb98f1c6539e617731/plugins%2Fplugin_count_404.py",
+      "contents_url": "https://api.github.com/repos/bigsnarfdude/Apache-access-log-parser/contents/plugins%2Fplugin_count_404.py?ref=d1acaf4696fd983fd320b2bb98f1c6539e617731",
+      "patch": "@@ -1,4 +1,4 @@\n-#!/usr/bin/env python\n+#!/usr/bin/env python3\n \n from manager import Plugin\n \n@@ -16,6 +16,6 @@ def process(self, **kwargs): #\n                 self.counter_404 += 1\n \n     def report(self, **kwargs):\n-        print '== HTTP code 404 counter =='\n-        print \"HTTP 404 responses: %d\" % self.counter_404\n-        print \"All responses: %d\" % self.counter_total\n+        print('== HTTP code 404 counter ==')\n+        print(f\"HTTP 404 responses: {self.counter_404}\")\n+        print(f\"All responses: {self.counter_total}\")"
+    },
+    {
+      "sha": "dd49465446d90766471fb204079555127528c2db",
+      "filename": "plugins/plugin_count_500.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/blob/d1acaf4696fd983fd320b2bb98f1c6539e617731/plugins%2Fplugin_count_500.py",
+      "raw_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/raw/d1acaf4696fd983fd320b2bb98f1c6539e617731/plugins%2Fplugin_count_500.py",
+      "contents_url": "https://api.github.com/repos/bigsnarfdude/Apache-access-log-parser/contents/plugins%2Fplugin_count_500.py?ref=d1acaf4696fd983fd320b2bb98f1c6539e617731",
+      "patch": "@@ -1,4 +1,4 @@\n-#!/usr/bin/env python\n+#!/usr/bin/env python3\n \n from manager import Plugin\n \n@@ -16,6 +16,6 @@ def process(self, **kwargs):\n                 self.counter_500 += 1\n \n     def report(self, **kwargs):\n-        print '== HTTP code 500 counter =='\n-        print \"HTTP 500 responses: %d\" % self.counter_500\n-        print \"All responses: %d\" % self.counter_total\n+        print('== HTTP code 500 counter ==')\n+        print(f\"HTTP 500 responses: {self.counter_500}\")\n+        print(f\"All responses: {self.counter_total}\")"
+    },
+    {
+      "sha": "dfc7685b547688be10b954d04a818ec93909cd54",
+      "filename": "plugins/plugin_geoip_stats.py",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 6,
+      "changes": 21,
+      "blob_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/blob/d1acaf4696fd983fd320b2bb98f1c6539e617731/plugins%2Fplugin_geoip_stats.py",
+      "raw_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/raw/d1acaf4696fd983fd320b2bb98f1c6539e617731/plugins%2Fplugin_geoip_stats.py",
+      "contents_url": "https://api.github.com/repos/bigsnarfdude/Apache-access-log-parser/contents/plugins%2Fplugin_geoip_stats.py?ref=d1acaf4696fd983fd320b2bb98f1c6539e617731",
+      "patch": "@@ -1,25 +1,34 @@\n-#!/usr/bin/env python\n+#!/usr/bin/env python3\n from manager import Plugin\n from operator import itemgetter\n+import os\n \n import pygeoip\n \n class GeoIPStats(Plugin):\n \n     def __init__(self, **kwargs):\n-        self.gi = pygeoip.GeoIP('/Users/antigen/dev/Apache-access-log-parser/geo_data_files/GeoIP.dat')\n+        # Use relative path from project root\n+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))\n+        geoip_path = os.path.join(project_root, 'geo_data_files', 'GeoIP.dat')\n+\n+        if not os.path.exists(geoip_path):\n+            print(f\"Warning: GeoIP database not found at {geoip_path}\")\n+            self.gi = None\n+        else:\n+            self.gi = pygeoip.GeoIP(geoip_path)\n         self.countries = {}\n \n     def process(self, **kwargs):\n-        if 'remote_host' in kwargs:\n+        if self.gi and 'remote_host' in kwargs:\n             country = self.gi.country_name_by_addr(kwargs['remote_host'])\n             if country in self.countries:\n                 self.countries[country] += 1\n             else:\n                 self.countries[country] = 1\n \n     def report(self, **kwargs):\n-        print \"== Requests by country ==\"\n-        for (country, count) in sorted(self.countries.iteritems(), key=itemgetter(1), reverse=True):\n-            print \" %10d: %s\" % (count, country)\n+        print(\"== Requests by country ==\")\n+        for (country, count) in sorted(self.countries.items(), key=itemgetter(1), reverse=True):\n+            print(f\" {count:>10d}: {country}\")\n "
+    },
+    {
+      "sha": "5439083574f42b9ed357b2993006dfd3d7a79e2a",
+      "filename": "plugins/plugin_geoip_stats_city.py",
+      "status": "modified",
+      "additions": 15,
+      "deletions": 6,
+      "changes": 21,
+      "blob_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/blob/d1acaf4696fd983fd320b2bb98f1c6539e617731/plugins%2Fplugin_geoip_stats_city.py",
+      "raw_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/raw/d1acaf4696fd983fd320b2bb98f1c6539e617731/plugins%2Fplugin_geoip_stats_city.py",
+      "contents_url": "https://api.github.com/repos/bigsnarfdude/Apache-access-log-parser/contents/plugins%2Fplugin_geoip_stats_city.py?ref=d1acaf4696fd983fd320b2bb98f1c6539e617731",
+      "patch": "@@ -1,25 +1,34 @@\n-#!/usr/bin/env python\n+#!/usr/bin/env python3\n from manager import Plugin\n from operator import itemgetter\n+import os\n \n import pygeoip\n \n class GeoIPStats(Plugin):\n \n     def __init__(self, **kwargs):\n-        self.gic = pygeoip.GeoIP('/Users/antigen/dev/Apache-access-log-parser/geo_data_files/GeoLiteCity.dat')\n+        # Use relative path from project root\n+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))\n+        geoip_city_path = os.path.join(project_root, 'geo_data_files', 'GeoLiteCity.dat')\n+\n+        if not os.path.exists(geoip_city_path):\n+            print(f\"Warning: GeoIP City database not found at {geoip_city_path}\")\n+            self.gic = None\n+        else:\n+            self.gic = pygeoip.GeoIP(geoip_city_path)\n         self.cities = {}\n \n     def process(self, **kwargs):\n-        if 'remote_host' in kwargs:\n+        if self.gic and 'remote_host' in kwargs:\n             city = self.gic.record_by_name(kwargs['remote_host'])['city']\n             if city in self.cities:\n                 self.cities[city] += 1\n             else:\n                 self.cities[city] = 1\n \n     def report(self, **kwargs):\n-        print \"== Requests by city ==\"\n-        for (city, count) in sorted(self.cities.iteritems(), key=itemgetter(1), reverse=True):\n-            print \" %10d: %s\" % (count, city)\n+        print(\"== Requests by city ==\")\n+        for (city, count) in sorted(self.cities.items(), key=itemgetter(1), reverse=True):\n+            print(f\" {count:>10d}: {city}\")\n "
+    },
+    {
+      "sha": "fbac2676cfd0b744f0bcc43574fe89cf13d1d2c5",
+      "filename": "requirements.txt",
+      "status": "added",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/blob/d1acaf4696fd983fd320b2bb98f1c6539e617731/requirements.txt",
+      "raw_url": "https://github.com/bigsnarfdude/Apache-access-log-parser/raw/d1acaf4696fd983fd320b2bb98f1c6539e617731/requirements.txt",
+      "contents_url": "https://api.github.com/repos/bigsnarfdude/Apache-access-log-parser/contents/requirements.txt?ref=d1acaf4696fd983fd320b2bb98f1c6539e617731",
+      "patch": "@@ -0,0 +1,7 @@\n+# Apache Access Log Parser Dependencies\n+\n+# GeoIP library for geographic location lookups\n+pygeoip>=0.3.2\n+\n+# Google Maps library for map generation\n+pygmaps>=0.1.1"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d1acaf4696fd983fd320b2bb98f1c6539e617731",
+      "message": "Modernize codebase: Python 3 migration and critical bug fixes\n\n- Migrate to Python 3: Update all print statements, replace .iteritems() with .items(),\n  modernize string formatting with f-strings, update shebang to python3\n- Fix critical bug: Replace silent exception handler with proper error handling and\n  informative error messages\n- Remove hardcoded absolute paths in GeoIP plugins, use relative paths instead\n- Fix typo: FEILD_MAPPINGS → FIELD_MAPPINGS\n- Add requirements.txt for dependency management\n- All changes tested and compile successfully with Python 3.11",
+      "parent_shas": [
+        "78f9e598b289bd39c8a55e1140eb8b8c5f9c2eb6"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__bigsnarfdude__Apache-access-log-parser__pr1.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\bigsnarfdude__Apache-access-log-parser__pr1__py2_py3__bigsnarfdude__Apache-access-log-parser__pr1\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\bigsnarfdude__Apache-access-log-parser__pr1__py2_py3__bigsnarfdude__Apache-access-log-parser__pr1\\rn"
+  }
+}

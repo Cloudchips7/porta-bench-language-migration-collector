@@ -1,0 +1,103 @@
+{
+  "instance_id": "cpp_python__openwrt__openwrt__pr22870",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "openwrt/openwrt",
+  "pr_number": 22870,
+  "pr_url": "https://github.com/openwrt/openwrt/pull/22870",
+  "repo": {
+    "full_name": "openwrt/openwrt",
+    "clone_url": "https://github.com/openwrt/openwrt.git",
+    "default_branch": "main",
+    "created_at": "2015-11-09T07:13:55Z",
+    "stars": 26344,
+    "license": "NOASSERTION",
+    "size_kb": 291644
+  },
+  "pull_request": {
+    "id": 3510468862,
+    "title": "[24.10]: u-boot: backport swig bugfix (tegra, sunxi)",
+    "body": "This PR is the same as #21415, but fixes more impacted targets (`tegra` & `sunxi`) which were missed during that PR.\r\n\r\n---\r\n\r\nWhen building on current Debian stable (13), which has a newer swig version, the build process fails. This was previously described in #20620, #21415, and in this PR's commit messages.\r\n\r\nI was not able to find backportable commits for these targets (`tegra` & `sunxi`), as most simply updated to/past 25.01 on `main`, before this problem showed up.\r\n\r\nFor additional context, u-boot 25.01 added the SWIG fix: u-boot/u-boot@a63456b9191fae2fe49f4b121e025792022e3950, which was part of v2025.01-rc2.\r\n\r\nAs such, targets either updated to/past u-boot 25.01 (e.g. tegra 92cd360aacd697f81f649ef78a7a5bb0d007f84a and sunxi 2aba2b32ce69556be76e428499abb39293f0a94b), or removed the patch when bumping the version (e.g. rockchip 92814fec77fe24a68ab4a2acbf3ac245163c6090).",
+    "created_at": "2026-04-09T19:49:32Z",
+    "merged_at": "2026-04-12T18:03:14Z",
+    "base_sha": "fbca86e8bd815921a37d432f4007564974eb3fc5",
+    "head_sha": "9d0bafca525d8309b836e7fa1780f9decb3a0c20",
+    "merge_commit_sha": "9d0bafca525d8309b836e7fa1780f9decb3a0c20",
+    "labels": [
+      "core packages",
+      "target/sunxi",
+      "target/tegra",
+      "release/24.10"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "fbca86e8bd815921a37d432f4007564974eb3fc5",
+  "final_sha": "9d0bafca525d8309b836e7fa1780f9decb3a0c20",
+  "changed_files": [
+    {
+      "sha": "522d1c5c69a1718434b0b71ca318bfe4ef717f1f",
+      "filename": "package/boot/uboot-sunxi/patches/003-scripts-dtc-pylibfdt-libfdt-i_shipped-Use-SWIG_AppendOutp.patch",
+      "status": "added",
+      "additions": 54,
+      "deletions": 0,
+      "changes": 54,
+      "blob_url": "https://github.com/openwrt/openwrt/blob/9d0bafca525d8309b836e7fa1780f9decb3a0c20/package%2Fboot%2Fuboot-sunxi%2Fpatches%2F003-scripts-dtc-pylibfdt-libfdt-i_shipped-Use-SWIG_AppendOutp.patch",
+      "raw_url": "https://github.com/openwrt/openwrt/raw/9d0bafca525d8309b836e7fa1780f9decb3a0c20/package%2Fboot%2Fuboot-sunxi%2Fpatches%2F003-scripts-dtc-pylibfdt-libfdt-i_shipped-Use-SWIG_AppendOutp.patch",
+      "contents_url": "https://api.github.com/repos/openwrt/openwrt/contents/package%2Fboot%2Fuboot-sunxi%2Fpatches%2F003-scripts-dtc-pylibfdt-libfdt-i_shipped-Use-SWIG_AppendOutp.patch?ref=9d0bafca525d8309b836e7fa1780f9decb3a0c20",
+      "patch": "@@ -0,0 +1,54 @@\n+From a63456b9191fae2fe49f4b121e025792022e3950 Mon Sep 17 00:00:00 2001\n+From: Markus Volk <f_l_k@t-online.de>\n+Date: Wed, 30 Oct 2024 06:07:16 +0100\n+Subject: [PATCH] scripts/dtc/pylibfdt/libfdt.i_shipped: Use SWIG_AppendOutput\n+MIME-Version: 1.0\n+Content-Type: text/plain; charset=UTF-8\n+Content-Transfer-Encoding: 8bit\n+\n+Swig has changed language specific AppendOutput functions. The helper\n+macro SWIG_AppendOutput remains unchanged. Use that instead\n+of SWIG_Python_AppendOutput, which would require an extra parameter\n+since swig 4.3.0.\n+\n+/home/flk/poky/build-test/tmp/work/qemux86_64-poky-linux/u-boot/2024.10/git/arch/x86/cpu/u-boot-64.lds\n+| scripts/dtc/pylibfdt/libfdt_wrap.c: In function '_wrap_fdt_next_node':\n+| scripts/dtc/pylibfdt/libfdt_wrap.c:5581:17: error: too few arguments to function 'SWIG_Python_AppendOutput'\n+|  5581 |     resultobj = SWIG_Python_AppendOutput(resultobj, val);\n+|       |                 ^~~~~~~~~~~~~~~~~~~~~~~~\n+\n+Signed-off-by: Markus Volk <f_l_k@t-online.de>\n+Reported-by: Rudi Heitbaum <rudi@heitbaum.com>\n+Link: https://github.com/dgibson/dtc/pull/154\n+---\n+ scripts/dtc/pylibfdt/libfdt.i_shipped | 6 +++---\n+ 1 file changed, 3 insertions(+), 3 deletions(-)\n+\n+--- a/scripts/dtc/pylibfdt/libfdt.i_shipped\n++++ b/scripts/dtc/pylibfdt/libfdt.i_shipped\n+@@ -1037,7 +1037,7 @@ typedef uint32_t fdt32_t;\n+ \t\t\tfdt_string(fdt1, fdt32_to_cpu($1->nameoff)));\n+ \t\tbuff = PyByteArray_FromStringAndSize(\n+ \t\t\t(const char *)($1 + 1), fdt32_to_cpu($1->len));\n+-\t\tresultobj = SWIG_Python_AppendOutput(resultobj, buff);\n++\t\tresultobj = SWIG_AppendOutput(resultobj, buff);\n+ \t}\n+ }\n+\n+@@ -1076,7 +1076,7 @@ typedef uint32_t fdt32_t;\n+\n+ %typemap(argout) int *depth {\n+         PyObject *val = Py_BuildValue(\"i\", *arg$argnum);\n+-        resultobj = SWIG_Python_AppendOutput(resultobj, val);\n++        resultobj = SWIG_AppendOutput(resultobj, val);\n+ }\n+\n+ %apply int *depth { int *depth };\n+@@ -1092,7 +1092,7 @@ typedef uint32_t fdt32_t;\n+            if (PyTuple_GET_SIZE(resultobj) == 0)\n+               resultobj = val;\n+            else\n+-              resultobj = SWIG_Python_AppendOutput(resultobj, val);\n++              resultobj = SWIG_AppendOutput(resultobj, val);\n+         }\n+ }"
+    },
+    {
+      "sha": "522d1c5c69a1718434b0b71ca318bfe4ef717f1f",
+      "filename": "package/boot/uboot-tegra/patches/001-scripts-dtc-pylibfdt-libfdt-i_shipped-Use-SWIG_AppendOutp.patch",
+      "status": "added",
+      "additions": 54,
+      "deletions": 0,
+      "changes": 54,
+      "blob_url": "https://github.com/openwrt/openwrt/blob/9d0bafca525d8309b836e7fa1780f9decb3a0c20/package%2Fboot%2Fuboot-tegra%2Fpatches%2F001-scripts-dtc-pylibfdt-libfdt-i_shipped-Use-SWIG_AppendOutp.patch",
+      "raw_url": "https://github.com/openwrt/openwrt/raw/9d0bafca525d8309b836e7fa1780f9decb3a0c20/package%2Fboot%2Fuboot-tegra%2Fpatches%2F001-scripts-dtc-pylibfdt-libfdt-i_shipped-Use-SWIG_AppendOutp.patch",
+      "contents_url": "https://api.github.com/repos/openwrt/openwrt/contents/package%2Fboot%2Fuboot-tegra%2Fpatches%2F001-scripts-dtc-pylibfdt-libfdt-i_shipped-Use-SWIG_AppendOutp.patch?ref=9d0bafca525d8309b836e7fa1780f9decb3a0c20",
+      "patch": "@@ -0,0 +1,54 @@\n+From a63456b9191fae2fe49f4b121e025792022e3950 Mon Sep 17 00:00:00 2001\n+From: Markus Volk <f_l_k@t-online.de>\n+Date: Wed, 30 Oct 2024 06:07:16 +0100\n+Subject: [PATCH] scripts/dtc/pylibfdt/libfdt.i_shipped: Use SWIG_AppendOutput\n+MIME-Version: 1.0\n+Content-Type: text/plain; charset=UTF-8\n+Content-Transfer-Encoding: 8bit\n+\n+Swig has changed language specific AppendOutput functions. The helper\n+macro SWIG_AppendOutput remains unchanged. Use that instead\n+of SWIG_Python_AppendOutput, which would require an extra parameter\n+since swig 4.3.0.\n+\n+/home/flk/poky/build-test/tmp/work/qemux86_64-poky-linux/u-boot/2024.10/git/arch/x86/cpu/u-boot-64.lds\n+| scripts/dtc/pylibfdt/libfdt_wrap.c: In function '_wrap_fdt_next_node':\n+| scripts/dtc/pylibfdt/libfdt_wrap.c:5581:17: error: too few arguments to function 'SWIG_Python_AppendOutput'\n+|  5581 |     resultobj = SWIG_Python_AppendOutput(resultobj, val);\n+|       |                 ^~~~~~~~~~~~~~~~~~~~~~~~\n+\n+Signed-off-by: Markus Volk <f_l_k@t-online.de>\n+Reported-by: Rudi Heitbaum <rudi@heitbaum.com>\n+Link: https://github.com/dgibson/dtc/pull/154\n+---\n+ scripts/dtc/pylibfdt/libfdt.i_shipped | 6 +++---\n+ 1 file changed, 3 insertions(+), 3 deletions(-)\n+\n+--- a/scripts/dtc/pylibfdt/libfdt.i_shipped\n++++ b/scripts/dtc/pylibfdt/libfdt.i_shipped\n+@@ -1037,7 +1037,7 @@ typedef uint32_t fdt32_t;\n+ \t\t\tfdt_string(fdt1, fdt32_to_cpu($1->nameoff)));\n+ \t\tbuff = PyByteArray_FromStringAndSize(\n+ \t\t\t(const char *)($1 + 1), fdt32_to_cpu($1->len));\n+-\t\tresultobj = SWIG_Python_AppendOutput(resultobj, buff);\n++\t\tresultobj = SWIG_AppendOutput(resultobj, buff);\n+ \t}\n+ }\n+\n+@@ -1076,7 +1076,7 @@ typedef uint32_t fdt32_t;\n+\n+ %typemap(argout) int *depth {\n+         PyObject *val = Py_BuildValue(\"i\", *arg$argnum);\n+-        resultobj = SWIG_Python_AppendOutput(resultobj, val);\n++        resultobj = SWIG_AppendOutput(resultobj, val);\n+ }\n+\n+ %apply int *depth { int *depth };\n+@@ -1092,7 +1092,7 @@ typedef uint32_t fdt32_t;\n+            if (PyTuple_GET_SIZE(resultobj) == 0)\n+               resultobj = val;\n+            else\n+-              resultobj = SWIG_Python_AppendOutput(resultobj, val);\n++              resultobj = SWIG_AppendOutput(resultobj, val);\n+         }\n+ }"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "1e61a54d7224eaa5c5067ca9d0edd3c8374fe75f",
+      "message": "uboot-sunxi: fix build with swig 4.3.0\n\nSwig 4.3.0 has changed SWIG_Python_AppendOutput, which now requires an\nadditional parameter `is_void`. SWIG_AppendOutput remains unchanged.\nThis was fixed upstream in u-boot/u-boot@a63456b\n\n```\nscripts/dtc/pylibfdt/libfdt_wrap.c: In function '_wrap_fdt_next_node':\nscripts/dtc/pylibfdt/libfdt_wrap.c:5581:17: error: too few arguments to function 'SWIG_Python_AppendOutput'\n 5581 |     resultobj = SWIG_Python_AppendOutput(resultobj, val);\n      |                 ^~~~~~~~~~~~~~~~~~~~~~~~\n```\n\nThis is the same fix as applied in 363e07d.\n\nSigned-off-by: Trix Taiclet <git@trix.moe>\nLink: https://github.com/openwrt/openwrt/pull/22870\nSigned-off-by: Hauke Mehrtens <hauke@hauke-m.de>",
+      "parent_shas": [
+        "fbca86e8bd815921a37d432f4007564974eb3fc5"
+      ]
+    },
+    {
+      "sha": "9d0bafca525d8309b836e7fa1780f9decb3a0c20",
+      "message": "uboot-tegra: fix build with swig 4.3.0\n\nSwig 4.3.0 has changed SWIG_Python_AppendOutput, which now requires an\nadditional parameter `is_void`. SWIG_AppendOutput remains unchanged.\nThis was fixed upstream in u-boot/u-boot@a63456b\n\n```\nscripts/dtc/pylibfdt/libfdt_wrap.c: In function '_wrap_fdt_next_node':\nscripts/dtc/pylibfdt/libfdt_wrap.c:5581:17: error: too few arguments to function 'SWIG_Python_AppendOutput'\n 5581 |     resultobj = SWIG_Python_AppendOutput(resultobj, val);\n      |                 ^~~~~~~~~~~~~~~~~~~~~~~~\n```\n\nThis is the same fix as applied in 363e07d.\n\nSigned-off-by: Trix Taiclet <git@trix.moe>\nLink: https://github.com/openwrt/openwrt/pull/22870\nSigned-off-by: Hauke Mehrtens <hauke@hauke-m.de>",
+      "parent_shas": [
+        "1e61a54d7224eaa5c5067ca9d0edd3c8374fe75f"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__openwrt__openwrt__pr22870.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\openwrt__openwrt__pr22870__cpp_python__openwrt__openwrt__pr22870\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\openwrt__openwrt__pr22870__cpp_python__openwrt__openwrt__pr22870\\rn"
+  }
+}

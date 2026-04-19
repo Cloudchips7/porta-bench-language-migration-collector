@@ -1,0 +1,79 @@
+{
+  "instance_id": "cpp_python__clearlydefined__curated-data__pr32363",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "clearlydefined/curated-data",
+  "pr_number": 32363,
+  "pr_url": "https://github.com/clearlydefined/curated-data/pull/32363",
+  "repo": {
+    "full_name": "clearlydefined/curated-data",
+    "clone_url": "https://github.com/clearlydefined/curated-data.git",
+    "default_branch": "master",
+    "created_at": "2017-12-11T21:18:50Z",
+    "stars": 139,
+    "license": "CC0-1.0",
+    "size_kb": 80558
+  },
+  "pull_request": {
+    "id": 3457732858,
+    "title": "swigwintools 4.2.0",
+    "body": "\n**Type:** Incorrect\n\n**Summary:**\nswigwintools 4.2.0\n\n**Details:**\nThe declared license for SWIG is GPL 3.0.\n\n**Resolution:**\nhttps://github.com/swig/swig/blob/v4.2.0/LICENSE\n\n**Affected definitions**:\n- [swigwintools 4.2.0](https://clearlydefined.io/definitions/nuget/nuget/-/swigwintools/4.2.0/4.2.0)",
+    "created_at": "2026-03-27T16:12:31Z",
+    "merged_at": "2026-03-27T16:13:42Z",
+    "base_sha": "954c37f67c9b8e168e7f4e0268b4023d41fce256",
+    "head_sha": "ba393c5086f1389cdf3bcc5fea527335a6e0fea7",
+    "merge_commit_sha": "291138574a0cbb766f6df0b05380ea1b8c95a61d",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "954c37f67c9b8e168e7f4e0268b4023d41fce256",
+  "final_sha": "ba393c5086f1389cdf3bcc5fea527335a6e0fea7",
+  "changed_files": [
+    {
+      "sha": "a460e5b8e0c36d01c5f1e8ce829d92b7e089e21c",
+      "filename": "curations/nuget/nuget/-/swigwintools.yaml",
+      "status": "added",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/clearlydefined/curated-data/blob/ba393c5086f1389cdf3bcc5fea527335a6e0fea7/curations%2Fnuget%2Fnuget%2F-%2Fswigwintools.yaml",
+      "raw_url": "https://github.com/clearlydefined/curated-data/raw/ba393c5086f1389cdf3bcc5fea527335a6e0fea7/curations%2Fnuget%2Fnuget%2F-%2Fswigwintools.yaml",
+      "contents_url": "https://api.github.com/repos/clearlydefined/curated-data/contents/curations%2Fnuget%2Fnuget%2F-%2Fswigwintools.yaml?ref=ba393c5086f1389cdf3bcc5fea527335a6e0fea7",
+      "patch": "@@ -0,0 +1,8 @@\n+coordinates:\n+  name: swigwintools\n+  provider: nuget\n+  type: nuget\n+revisions:\n+  4.2.0:\n+    licensed:\n+      declared: GPL-3.0-or-later"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "ba393c5086f1389cdf3bcc5fea527335a6e0fea7",
+      "message": "Update curations/nuget/nuget/-/swigwintools.yaml",
+      "parent_shas": [
+        "954c37f67c9b8e168e7f4e0268b4023d41fce256"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__clearlydefined__curated-data__pr32363.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\clearlydefined__curated-data__pr32363__cpp_python__clearlydefined__curated-data__pr32363\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\clearlydefined__curated-data__pr32363__cpp_python__clearlydefined__curated-data__pr32363\\rn"
+  }
+}

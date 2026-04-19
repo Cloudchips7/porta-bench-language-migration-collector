@@ -1,25 +1,25 @@
 # py2_py3 进度看板
 
-- 更新时间: `2026-04-18 00:43:06`
-- 触发节点: `export-review`
+- 更新时间: `2026-04-18 13:41:38`
+- 触发节点: `package`
 
 ## 阶段状态
 
 | 节点 | 状态 | 说明 |
 | --- | --- | --- |
 | `collect` | `done` | unique=844 |
-| `enrich` | `partial` | records=38/150 |
-| `export-review` | `done` | rows=18 |
+| `enrich` | `done` | records=150/150 |
+| `export-review` | `done` | rows=89 |
 | `apply-review` | `pending` | processed=0 |
 | `package` | `done` | stats=yes |
 
 ## 数量概览
 
 - Collect 候选: 150/844 [####................] 18%
-- Enrich 完成: 38/150 [#####...............] 25%
-- Enrich 候选: 18/38 [#########...........] 47%
-- 人工已标注: 0/18 [....................] 0%
-- Processed 保留: 0/18 [....................] 0%
+- Enrich 完成: 150/150 [####################] 100%
+- Enrich 候选: 89/150 [############........] 59%
+- 人工已标注: 0/89 [....................] 0%
+- Processed 保留: 0/89 [....................] 0%
 
 ## 中间产物
 
@@ -31,17 +31,19 @@
 
 ## 当前阻塞
 
-- `py2_py3__Cloud-CV__EvalAI__pr4872`: git checkout d4ce4fa3125fa8ad1a9233c60f1e937fba43a4b6 failed: error: RPC failed; curl 56 schannel: server closed abruptly (missing close_notify) error: 550 bytes of body are still expected fetch-pack: unexpected disconnect while reading sideband packet fatal: early EOF fatal: fetch-pack: invalid...
-- `py2_py3__LibrePhotos__librephotos__pr1780`: git checkout 0570c1d77f9af6142067d40908f02ff94d17fe95 failed:
+- `py2_py3__Cloud-CV__EvalAI__pr4872`: git clone failed: Cloning into 'D:\thecourceofdasi\TeacherWangWork\SWEbench锛坺zc锛塡tmp\porta_bench_030tey_b\repo'... fatal: unable to access 'https://github.com/Cloud-CV/EvalAI.git/': schannel: failed to receive handshake, SSL/TLS connection failed
+- `py2_py3__ansible-collections__community.proxysql__pr179`: git checkout 0baac9e7403eb877c154189e952508401451846b failed: fatal: unable to access 'https://github.com/ansible-collections/community.proxysql.git/': schannel: failed to receive handshake, SSL/TLS connection failed fatal: could not fetch 4ea6171c3d21d7bff7e8a3054147792afd14ef05 from promisor...
+- `py2_py3__flobz__psa_car_controller__pr1132`: git clone failed: Cloning into 'D:\thecourceofdasi\TeacherWangWork\SWEbench锛坺zc锛塡tmp\porta_bench_g4fgvr94\repo'... fatal: unable to access 'https://github.com/flobz/psa_car_controller.git/': schannel: failed to receive handshake, SSL/TLS connection failed
+- `py2_py3__pydantic__logfire__pr1696`: git clone failed: Cloning into 'D:\thecourceofdasi\TeacherWangWork\SWEbench锛坺zc锛塡tmp\porta_bench_u2uj2_nm\repo'... fatal: unable to access 'https://github.com/pydantic/logfire.git/': schannel: failed to receive handshake, SSL/TLS connection failed
 
 ## 统计快照
 
 - raw_pr_count: `700`
 - unique_pr_count: `844`
 - collect_candidate_count: `150`
-- auto_filtered_candidate_count: `18`
-- auto_excluded_count: `18`
-- enrich_error_count: `2`
+- auto_filtered_candidate_count: `89`
+- auto_excluded_count: `57`
+- enrich_error_count: `4`
 - manual_positive_count: `0`
 - manual_negative_count: `0`
 - manual_uncertain_count: `0`

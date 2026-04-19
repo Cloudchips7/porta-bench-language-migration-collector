@@ -1,0 +1,142 @@
+{
+  "instance_id": "cpp_python__chezou__Mykytea-python__pr35",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "chezou/Mykytea-python",
+  "pr_number": 35,
+  "pr_url": "https://github.com/chezou/Mykytea-python/pull/35",
+  "repo": {
+    "full_name": "chezou/Mykytea-python",
+    "clone_url": "https://github.com/chezou/Mykytea-python.git",
+    "default_branch": "master",
+    "created_at": "2011-07-15T08:34:12Z",
+    "stars": 36,
+    "license": "MIT",
+    "size_kb": 285
+  },
+  "pull_request": {
+    "id": 3459881959,
+    "title": "Add Python 3.13 and 3.14 support with SWIG 4.4.1",
+    "body": "## Summary\n- Add Python 3.13 and 3.14 to the build matrix across all platforms (Windows, Linux, macOS x86_64, macOS arm64)\n- Install SWIG 4.4.1 from source on Linux to support Python 3.13+ C API changes (e.g. removal of `PyEval_InitThreads`)\n- Regenerate `mykytea_wrap.cxx` with SWIG 4.4.1\n- Switch Linux builds from manylinux2014 (CentOS 7, EOL) to manylinux_2_28 (AlmaLinux 8)\n- Update cibuildwheel from 2.16.2 to 3.4.0\n- Update Windows runner from windows-2019 to windows-2022\n- Drop Python 3.8 and 3.9 (both EOL). Supported range is now **3.10–3.14**\n- Add `python_requires >= 3.10` to package metadata\n- Fix macOS lipo loop bug in `macos-build.sh` (unset `$file` variable)\n- Use HTTPS for KyTea download URL\n- Remove unused `bitness` field from CI matrix\n\n## Test plan\n- [x] Verify CI builds pass for Python 3.10–3.14 on all platforms\n- [x] Verify SWIG 4.4.1 installs correctly on manylinux_2_28\n- [x] Test import of built wheels for Python 3.12, 3.13, 3.14\n- [x] Regenerate `mykytea_wrap.cxx` with SWIG 4.4.1\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "created_at": "2026-03-28T05:11:23Z",
+    "merged_at": "2026-03-28T05:53:32Z",
+    "base_sha": "27b25c16a371f497eaffaadce32890e01cecbb5c",
+    "head_sha": "08aa61c13750e968f361cd952ab808477bb6d9df",
+    "merge_commit_sha": "f13120f07846fb2bd27aae2da13371f01889c61e",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "27b25c16a371f497eaffaadce32890e01cecbb5c",
+  "final_sha": "08aa61c13750e968f361cd952ab808477bb6d9df",
+  "changed_files": [
+    {
+      "sha": "31da511ce4d4ae0b205f87220d48293c2a4d4c2f",
+      "filename": ".github/workflows/macos-build.sh",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/chezou/Mykytea-python/blob/08aa61c13750e968f361cd952ab808477bb6d9df/.github%2Fworkflows%2Fmacos-build.sh",
+      "raw_url": "https://github.com/chezou/Mykytea-python/raw/08aa61c13750e968f361cd952ab808477bb6d9df/.github%2Fworkflows%2Fmacos-build.sh",
+      "contents_url": "https://api.github.com/repos/chezou/Mykytea-python/contents/.github%2Fworkflows%2Fmacos-build.sh?ref=08aa61c13750e968f361cd952ab808477bb6d9df",
+      "patch": "@@ -34,9 +34,9 @@ lipo -create src/lib/.libs-arm64/libkytea.a src/lib/.libs-x86_64/libkytea.a -out\n \n cp src/lib/.libs-arm64/libkytea.lai src/lib/.libs.combined/libkytea.lai\n \n-ls -l src/lib/.libs-arm64/*.o | while read line; do\n-    file=$(basename $file)\n-    echo $file\n+for filepath in src/lib/.libs-arm64/*.o; do\n+    file=$(basename \"$filepath\")\n+    echo \"$file\"\n     lipo -create src/lib/.libs-arm64/$file src/lib/.libs-x86_64/$file -output src/lib/.libs.combined/$file\n done\n "
+    },
+    {
+      "sha": "909bcac9624ee349c42cd894bad48ac2987fde99",
+      "filename": ".github/workflows/wheels.yml",
+      "status": "modified",
+      "additions": 216,
+      "deletions": 202,
+      "changes": 418,
+      "blob_url": "https://github.com/chezou/Mykytea-python/blob/08aa61c13750e968f361cd952ab808477bb6d9df/.github%2Fworkflows%2Fwheels.yml",
+      "raw_url": "https://github.com/chezou/Mykytea-python/raw/08aa61c13750e968f361cd952ab808477bb6d9df/.github%2Fworkflows%2Fwheels.yml",
+      "contents_url": "https://api.github.com/repos/chezou/Mykytea-python/contents/.github%2Fworkflows%2Fwheels.yml?ref=08aa61c13750e968f361cd952ab808477bb6d9df",
+      "patch": "@@ -1,202 +1,216 @@\n-name: Build and upload to PyPI\r\n-\r\n-on:\r\n-  push:\r\n-  release:\r\n-    types:\r\n-      - published\r\n-\r\n-jobs:\r\n-  build_wheels:\r\n-    name: Build wheels for cp${{ matrix.python }}-${{ matrix.platform_id }}\r\n-    runs-on: ${{ matrix.os }}\r\n-    strategy:\r\n-      fail-fast: false\r\n-      matrix:\r\n-        include:\r\n-          # Windows\r\n-          - os: windows-2019\r\n-            python: 38\r\n-            bitness: 64\r\n-            platform_id: win_amd64\r\n-          - os: windows-2019\r\n-            python: 39\r\n-            bitness: 64\r\n-            platform_id: win_amd64\r\n-          - os: windows-2019\r\n-            python: 310\r\n-            bitness: 64\r\n-            platform_id: win_amd64\r\n-          - os: windows-2019\r\n-            python: 311\r\n-            bitness: 64\r\n-            platform_id: win_amd64\r\n-          - os: windows-2019\r\n-            python: 312\r\n-            bitness: 64\r\n-            platform_id: win_amd64\r\n-\r\n-          # Linux\r\n-          - os: ubuntu-latest\r\n-            python: 38\r\n-            bitness: 64\r\n-            platform_id: manylinux_x86_64\r\n-            manylinux_image: manylinux2014\r\n-          - os: ubuntu-latest\r\n-            python: 39\r\n-            bitness: 64\r\n-            platform_id: manylinux_x86_64\r\n-            manylinux_image: manylinux2014\r\n-          - os: ubuntu-latest\r\n-            python: 310\r\n-            bitness: 64\r\n-            platform_id: manylinux_x86_64\r\n-            manylinux_image: manylinux2014\r\n-          - os: ubuntu-latest\r\n-            python: 311\r\n-            bitness: 64\r\n-            platform_id: manylinux_x86_64\r\n-            manylinux_image: manylinux2014\r\n-          - os: ubuntu-latest\r\n-            python: 312\r\n-            bitness: 64\r\n-            platform_id: manylinux_x86_64\r\n-            manylinux_image: manylinux2014\r\n-          # MacOS x86_64\r\n-          - os: macos-latest\r\n-            bitness: 64\r\n-            python: 38\r\n-            platform_id: macosx_x86_64\r\n-          - os: macos-latest\r\n-            bitness: 64\r\n-            python: 39\r\n-            platform_id: macosx_x86_64\r\n-          - os: macos-latest\r\n-            bitness: 64\r\n-            python: 310\r\n-            platform_id: macosx_x86_64\r\n-          - os: macos-latest\r\n-            bitness: 64\r\n-            python: 311\r\n-            platform_id: macosx_x86_64\r\n-          - os: macos-latest\r\n-            bitness: 64\r\n-            python: 312\r\n-            platform_id: macosx_x86_64\r\n-\r\n-          # macOS arm64\r\n-          - os: macos-latest\r\n-            bitness: 64\r\n-            python: 39\r\n-            platform_id: macosx_arm64\r\n-          - os: macos-latest\r\n-            bitness: 64\r\n-            python: 310\r\n-            platform_id: macosx_arm64\r\n-          - os: macos-latest\r\n-            bitness: 64\r\n-            python: 311\r\n-            platform_id: macosx_arm64\r\n-          - os: macos-latest\r\n-            bitness: 64\r\n-            python: 312\r\n-            platform_id: macosx_arm64\r\n-\r\n-    steps:\r\n-      - uses: actions/checkout@v4\r\n-      - name: Get history and tags for SCM versioning to work\r\n-        run: |\r\n-          git fetch --prune --unshallow\r\n-          git fetch --depth=1 origin +refs/tags/*:refs/tags/*\r\n-\r\n-      - uses: actions/setup-python@v5\r\n-        name: Install Python\r\n-        with:\r\n-          python-version: '3.9'\r\n-\r\n-      - name: Install cibuildwheel\r\n-        run: pip install cibuildwheel==2.16.2\r\n-\r\n-      - name: Prepare for Windows\r\n-        if: runner.os == 'Windows'\r\n-        run: |\r\n-          Invoke-WebRequest -OutFile kytea-win-x64.zip https://github.com/chezou/kytea/releases/download/0.4.7-3/kytea-win-x64.zip &&\r\n-          7z x kytea-win-x64.zip -okytea &&\r\n-          cp -r kytea\\include include &&\r\n-          cp  kytea\\lib\\libkytea.lib lib\\kytea\\\r\n-\r\n-      - name: Build wheels\r\n-        if: runner.os != 'macOS'\r\n-        env:\r\n-          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}\r\n-          CIBW_ARCHS: all\r\n-          CIBW_BUILD_VERBOSITY: 3\r\n-          CIBW_BEFORE_ALL_LINUX: >\r\n-            yum install -y wget &&\r\n-            wget http://www.phontron.com/kytea/download/kytea-0.4.7.tar.gz &&\r\n-            tar zxf kytea-0.4.7.tar.gz &&\r\n-            pushd kytea-0.4.7 &&\r\n-            autoreconf -i &&\r\n-            ./configure && make && make install &&\r\n-            ldconfig &&\r\n-            popd &&\r\n-            rm -r kytea-0.4.7 &&\r\n-            swig -Wall -c++ -python -shadow -I/usr/local/include lib/kytea/mykytea.i\r\n-          CIBW_BEFORE_ALL_MACOS: >\r\n-            brew install kytea &&\r\n-            swig -Wall -c++ -python -shadow -I$(brew --prefix)/include lib/kytea/mykytea.i\r\n-        run: python -m cibuildwheel --output-dir wheelhouse\r\n-      - name: Build wheels if macOS\r\n-        if: runner.os == 'macOS'\r\n-        env:\r\n-          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}\r\n-          CIBW_REPAIR_WHEEL_COMMAND_MACOS: >\r\n-            delocate-listdeps {wheel} &&\r\n-            delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}\r\n-          CIBW_PLATFORM: macos\r\n-          CIBW_BUILD_VERBOSITY: 3\r\n-        run: .github/workflows/macos-build.sh\r\n-\r\n-      - uses: actions/upload-artifact@v4\r\n-        with:\r\n-          name: artifact-${{ matrix.python }}-${{ matrix.platform_id }}\r\n-          path: ./wheelhouse/*.whl\r\n-\r\n-  build_sdist:\r\n-    name: Build source distribution\r\n-    runs-on: ubuntu-latest\r\n-    steps:\r\n-      - uses: actions/checkout@v4\r\n-      - name: Get history and tags for SCM versioning to work\r\n-        run: |\r\n-          git fetch --prune --unshallow\r\n-          git fetch --depth=1 origin +refs/tags/*:refs/tags/*\r\n-\r\n-      - uses: actions/setup-python@v5\r\n-        name: Install Python\r\n-        with:\r\n-          python-version: '3.9'\r\n-\r\n-      - name: Build sdist\r\n-        run: pip install setuptools_scm && python setup.py sdist\r\n-\r\n-      - uses: actions/upload-artifact@v4\r\n-        with:\r\n-          name: artifact-source\r\n-          path: dist/*.tar.gz\r\n-\r\n-  upload_pypi:\r\n-    needs: [build_wheels, build_sdist]\r\n-    runs-on: ubuntu-latest\r\n-    environment: release\r\n-    permissions:\r\n-      id-token: write\r\n-    if: github.event_name == 'release' && github.event.action == 'published'\r\n-    steps:\r\n-      - uses: actions/download-artifact@v4\r\n-        with:\r\n-          pattern: artifact-*\r\n-          merge-multiple: true\r\n-          path: dist\r\n-\r\n-      - uses: pypa/gh-action-pypi-publish@release/v1\r\n+name: Build and upload to PyPI\n+\n+on:\n+  push:\n+  release:\n+    types:\n+      - published\n+\n+jobs:\n+  build_wheels:\n+    name: Build wheels for cp${{ matrix.python }}-${{ matrix.platform_id }}\n+    runs-on: ${{ matrix.os }}\n+    strategy:\n+      fail-fast: false\n+      matrix:\n+        include:\n+          # Windows\n+          - os: windows-2022\n+            python: 310\n+\n+            platform_id: win_amd64\n+          - os: windows-2022\n+            python: 311\n+\n+            platform_id: win_amd64\n+          - os: windows-2022\n+            python: 312\n+\n+            platform_id: win_amd64\n+          - os: windows-2022\n+            python: 313\n+\n+            platform_id: win_amd64\n+          - os: windows-2022\n+            python: 314\n+\n+            platform_id: win_amd64\n+\n+          # Linux\n+          - os: ubuntu-latest\n+            python: 310\n+\n+            platform_id: manylinux_x86_64\n+            manylinux_image: manylinux_2_28\n+          - os: ubuntu-latest\n+            python: 311\n+\n+            platform_id: manylinux_x86_64\n+            manylinux_image: manylinux_2_28\n+          - os: ubuntu-latest\n+            python: 312\n+\n+            platform_id: manylinux_x86_64\n+            manylinux_image: manylinux_2_28\n+          - os: ubuntu-latest\n+            python: 313\n+\n+            platform_id: manylinux_x86_64\n+            manylinux_image: manylinux_2_28\n+          - os: ubuntu-latest\n+            python: 314\n+\n+            platform_id: manylinux_x86_64\n+            manylinux_image: manylinux_2_28\n+\n+          # MacOS x86_64\n+          - os: macos-latest\n+\n+            python: 310\n+            platform_id: macosx_x86_64\n+          - os: macos-latest\n+\n+            python: 311\n+            platform_id: macosx_x86_64\n+          - os: macos-latest\n+\n+            python: 312\n+            platform_id: macosx_x86_64\n+          - os: macos-latest\n+\n+            python: 313\n+            platform_id: macosx_x86_64\n+          - os: macos-latest\n+\n+            python: 314\n+            platform_id: macosx_x86_64\n+\n+          # macOS arm64\n+          - os: macos-latest\n+\n+            python: 310\n+            platform_id: macosx_arm64\n+          - os: macos-latest\n+\n+            python: 311\n+            platform_id: macosx_arm64\n+          - os: macos-latest\n+\n+            python: 312\n+            platform_id: macosx_arm64\n+          - os: macos-latest\n+\n+            python: 313\n+            platform_id: macosx_arm64\n+          - os: macos-latest\n+\n+            python: 314\n+            platform_id: macosx_arm64\n+\n+    steps:\n+      - uses: actions/checkout@v4\n+      - name: Get history and tags for SCM versioning to work\n+        run: |\n+          git fetch --prune --unshallow\n+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*\n+\n+      - uses: actions/setup-python@v5\n+        name: Install Python\n+        with:\n+          python-version: '3.12'\n+\n+      - name: Install cibuildwheel\n+        run: pip install cibuildwheel==3.4.0\n+\n+      - name: Prepare for Windows\n+        if: runner.os == 'Windows'\n+        run: |\n+          Invoke-WebRequest -OutFile kytea-win-x64.zip https://github.com/chezou/kytea/releases/download/0.4.7-3/kytea-win-x64.zip &&\n+          7z x kytea-win-x64.zip -okytea &&\n+          cp -r kytea\\include include &&\n+          cp  kytea\\lib\\libkytea.lib lib\\kytea\\\n+\n+      - name: Build wheels\n+        if: runner.os != 'macOS'\n+        env:\n+          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}\n+          CIBW_ARCHS: all\n+          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}\n+          CIBW_BUILD_VERBOSITY: 3\n+          CIBW_BEFORE_ALL_LINUX: >\n+            yum install -y wget pcre2-devel &&\n+            wget https://downloads.sourceforge.net/project/swig/swig/swig-4.4.1/swig-4.4.1.tar.gz &&\n+            tar xzf swig-4.4.1.tar.gz &&\n+            pushd swig-4.4.1 &&\n+            ./configure --prefix=/usr/local &&\n+            make -j$(nproc) &&\n+            make install &&\n+            popd &&\n+            rm -rf swig-4.4.1 swig-4.4.1.tar.gz &&\n+            wget https://www.phontron.com/kytea/download/kytea-0.4.7.tar.gz &&\n+            tar zxf kytea-0.4.7.tar.gz &&\n+            pushd kytea-0.4.7 &&\n+            autoreconf -i &&\n+            ./configure && make && make install &&\n+            ldconfig &&\n+            popd &&\n+            rm -r kytea-0.4.7 &&\n+            swig -Wall -c++ -python -shadow -I/usr/local/include lib/kytea/mykytea.i\n+          CIBW_BEFORE_ALL_MACOS: >\n+            brew install kytea &&\n+            swig -Wall -c++ -python -shadow -I$(brew --prefix)/include lib/kytea/mykytea.i\n+        run: python -m cibuildwheel --output-dir wheelhouse\n+      - name: Build wheels if macOS\n+        if: runner.os == 'macOS'\n+        env:\n+          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}\n+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: >\n+            delocate-listdeps {wheel} &&\n+            delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}\n+          CIBW_PLATFORM: macos\n+          CIBW_BUILD_VERBOSITY: 3\n+        run: .github/workflows/macos-build.sh\n+\n+      - uses: actions/upload-artifact@v4\n+        with:\n+          name: artifact-${{ matrix.python }}-${{ matrix.platform_id }}\n+          path: ./wheelhouse/*.whl\n+\n+  build_sdist:\n+    name: Build source distribution\n+    runs-on: ubuntu-latest\n+    steps:\n+      - uses: actions/checkout@v4\n+      - name: Get history and tags for SCM versioning to work\n+        run: |\n+          git fetch --prune --unshallow\n+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*\n+\n+      - uses: actions/setup-python@v5\n+        name: Install Python\n+        with:\n+          python-version: '3.12'\n+\n+      - name: Build sdist\n+        run: pip install setuptools_scm && python setup.py sdist\n+\n+      - uses: actions/upload-artifact@v4\n+        with:\n+          name: artifact-source\n+          path: dist/*.tar.gz\n+\n+  upload_pypi:\n+    needs: [build_wheels, build_sdist]\n+    runs-on: ubuntu-latest\n+    environment: release\n+    permissions:\n+      id-token: write\n+    if: github.event_name == 'release' && github.event.action == 'published'\n+    steps:\n+      - uses: actions/download-artifact@v4\n+        with:\n+          pattern: artifact-*\n+          merge-multiple: true\n+          path: dist\n+\n+      - uses: pypa/gh-action-pypi-publish@release/v1"
+    },
+    {
+      "sha": "bc101d3578ca7a7eb1e0083c78af5d325e629d6e",
+      "filename": "lib/kytea/mykytea_wrap.cxx",
+      "status": "modified",
+      "additions": 2533,
+      "deletions": 1866,
+      "changes": 4399,
+      "blob_url": "https://github.com/chezou/Mykytea-python/blob/08aa61c13750e968f361cd952ab808477bb6d9df/lib%2Fkytea%2Fmykytea_wrap.cxx",
+      "raw_url": "https://github.com/chezou/Mykytea-python/raw/08aa61c13750e968f361cd952ab808477bb6d9df/lib%2Fkytea%2Fmykytea_wrap.cxx",
+      "contents_url": "https://api.github.com/repos/chezou/Mykytea-python/contents/lib%2Fkytea%2Fmykytea_wrap.cxx?ref=08aa61c13750e968f361cd952ab808477bb6d9df"
+    },
+    {
+      "sha": "b7180545ed191debc61391181398cff3b004a4b8",
+      "filename": "setup.cfg",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2,
+      "changes": 5,
+      "blob_url": "https://github.com/chezou/Mykytea-python/blob/08aa61c13750e968f361cd952ab808477bb6d9df/setup.cfg",
+      "raw_url": "https://github.com/chezou/Mykytea-python/raw/08aa61c13750e968f361cd952ab808477bb6d9df/setup.cfg",
+      "contents_url": "https://api.github.com/repos/chezou/Mykytea-python/contents/setup.cfg?ref=08aa61c13750e968f361cd952ab808477bb6d9df",
+      "patch": "@@ -8,12 +8,13 @@ author = Aki Ariga\n author_email = chezou@gmail.com\n license = MIT license\n license_file = LICENSE\n+python_requires = >=3.10\n classifiers =\n-    Programming Language :: Python :: 3.8\n-    Programming Language :: Python :: 3.9\n     Programming Language :: Python :: 3.10\n     Programming Language :: Python :: 3.11\n     Programming Language :: Python :: 3.12\n+    Programming Language :: Python :: 3.13\n+    Programming Language :: Python :: 3.14\n     License :: OSI Approved :: MIT License\n     Topic :: Text Processing :: Linguistic\n project_urls ="
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "bd30e76289713eb39f5149314d0e7da07ad859dc",
+      "message": "Add Python 3.13 and 3.14 support with SWIG 4.2.1\n\n- Drop Python 3.8 and 3.9 (EOL), support range is now 3.10–3.14\n- Install SWIG 4.2.1 from source on Linux for Python 3.13+ compatibility\n- Switch Linux builds from manylinux2014 to manylinux_2_28\n- Update cibuildwheel 2.16.2 → 2.22.0\n- Update Windows runner to windows-2022\n- Update setup Python to 3.12\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "27b25c16a371f497eaffaadce32890e01cecbb5c"
+      ]
+    },
+    {
+      "sha": "ad1973a6c54ed24fc53d808ce96a9c7ace50cc80",
+      "message": "Fix CI: SWIG URL, cibuildwheel version, and macOS lipo bug\n\n- Use SourceForge URL for SWIG 4.4.1 (GitHub has no release assets)\n- Update cibuildwheel 2.22.0 → 3.4.0 (adds Python 3.14 support)\n- Fix macos-build.sh lipo loop: $file was unset, use for-loop instead\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "bd30e76289713eb39f5149314d0e7da07ad859dc"
+      ]
+    },
+    {
+      "sha": "ec69b89352683869668c1ae725ddac21ff135529",
+      "message": "Update with Swig 4.4.1",
+      "parent_shas": [
+        "ad1973a6c54ed24fc53d808ce96a9c7ace50cc80"
+      ]
+    },
+    {
+      "sha": "af00b2159c3fd1be5aee729528758f389d560f3a",
+      "message": "Apply suggestions from code review\n\nCo-authored-by: Copilot <175728472+Copilot@users.noreply.github.com>",
+      "parent_shas": [
+        "ec69b89352683869668c1ae725ddac21ff135529"
+      ]
+    },
+    {
+      "sha": "08aa61c13750e968f361cd952ab808477bb6d9df",
+      "message": "Address review: remove bitness, HTTPS for KyTea, add python_requires\n\n- Remove unused bitness field from matrix\n- Use HTTPS for KyTea download URL\n- Add python_requires >= 3.10 to setup.cfg\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "af00b2159c3fd1be5aee729528758f389d560f3a"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__chezou__Mykytea-python__pr35.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\chezou__Mykytea-python__pr35__cpp_python__chezou__Mykytea-python__pr35\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\chezou__Mykytea-python__pr35__cpp_python__chezou__Mykytea-python__pr35\\rn"
+  }
+}

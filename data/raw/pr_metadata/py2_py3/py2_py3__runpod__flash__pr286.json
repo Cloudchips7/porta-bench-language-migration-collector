@@ -1,0 +1,161 @@
+{
+  "instance_id": "py2_py3__runpod__flash__pr286",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "runpod/flash",
+  "pr_number": 286,
+  "pr_url": "https://github.com/runpod/flash/pull/286",
+  "repo": {
+    "full_name": "runpod/flash",
+    "clone_url": "https://github.com/runpod/flash.git",
+    "default_branch": "main",
+    "created_at": "2025-03-25T22:16:46Z",
+    "stars": 101,
+    "license": "MIT",
+    "size_kb": 5017
+  },
+  "pull_request": {
+    "id": 3447347353,
+    "title": "fix(runtime): handle input=None in generic handler",
+    "body": "## Summary\n\n- Fix `AttributeError` crash when malformed job sends `{\"input\": null}` to generic handler\n- Changed `job.get(\"input\", {})` to `job.get(\"input\") or {}` in both `create_handler` and `create_deployed_handler` — the default `{}` only applies when the key is missing, not when it's explicitly `null`\n- Added tests for `input=None` and missing `input` key scenarios\n\n## Test plan\n\n- [x] `test_create_handler_input_none` — verifies graceful error response instead of crash\n- [x] `test_create_handler_input_missing` — verifies missing input key handled\n- [x] All 2491 existing tests pass\n- [x] Coverage at 85.79%\n\nFixes AE-2317",
+    "created_at": "2026-03-25T20:25:00Z",
+    "merged_at": "2026-03-26T23:20:12Z",
+    "base_sha": "a6512756a8b06cd8dd22ac8b3a5c90e3830edd6d",
+    "head_sha": "06c517d52829f8d1426e08c9c568411c92b66bd7",
+    "merge_commit_sha": "cab2d0c4c80d3c450d102db641e5414bec995976",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "a6512756a8b06cd8dd22ac8b3a5c90e3830edd6d",
+  "final_sha": "06c517d52829f8d1426e08c9c568411c92b66bd7",
+  "changed_files": [
+    {
+      "sha": "2f1283b0f3eb878554f623d2e44264dc64662b48",
+      "filename": ".github/workflows/release-please.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/runpod/flash/blob/06c517d52829f8d1426e08c9c568411c92b66bd7/.github%2Fworkflows%2Frelease-please.yml",
+      "raw_url": "https://github.com/runpod/flash/raw/06c517d52829f8d1426e08c9c568411c92b66bd7/.github%2Fworkflows%2Frelease-please.yml",
+      "contents_url": "https://api.github.com/repos/runpod/flash/contents/.github%2Fworkflows%2Frelease-please.yml?ref=06c517d52829f8d1426e08c9c568411c92b66bd7",
+      "patch": "@@ -21,7 +21,7 @@ jobs:\n     strategy:\n       fail-fast: false\n       matrix:\n-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']\n+        python-version: ['3.10', '3.11', '3.12']\n     timeout-minutes: 15\n     \n     steps:"
+    },
+    {
+      "sha": "419d3b914618a43256124dcc169301099932906d",
+      "filename": "src/runpod_flash/runtime/generic_handler.py",
+      "status": "modified",
+      "additions": 25,
+      "deletions": 3,
+      "changes": 28,
+      "blob_url": "https://github.com/runpod/flash/blob/06c517d52829f8d1426e08c9c568411c92b66bd7/src%2Frunpod_flash%2Fruntime%2Fgeneric_handler.py",
+      "raw_url": "https://github.com/runpod/flash/raw/06c517d52829f8d1426e08c9c568411c92b66bd7/src%2Frunpod_flash%2Fruntime%2Fgeneric_handler.py",
+      "contents_url": "https://api.github.com/repos/runpod/flash/contents/src%2Frunpod_flash%2Fruntime%2Fgeneric_handler.py?ref=06c517d52829f8d1426e08c9c568411c92b66bd7",
+      "patch": "@@ -166,7 +166,17 @@ def handler(job: Dict[str, Any]) -> Dict[str, Any]:\n         Returns:\n             Response dict with 'success', 'result'/'error' keys\n         \"\"\"\n-        job_input = job.get(\"input\", {})\n+        raw_input = job.get(\"input\")\n+        if raw_input is None:\n+            job_input = {}\n+        elif not isinstance(raw_input, dict):\n+            return {\n+                \"success\": False,\n+                \"error\": f\"Invalid job input type: expected dict, got {type(raw_input).__name__}\",\n+                \"traceback\": \"\",\n+            }\n+        else:\n+            job_input = raw_input\n         function_name = job_input.get(\"function_name\")\n         execution_type = job_input.get(\"execution_type\", \"function\")\n \n@@ -227,7 +237,15 @@ def create_deployed_handler(func: Callable) -> Callable:\n     \"\"\"\n \n     def handler(job: Dict[str, Any]) -> Any:\n-        job_input = job.get(\"input\", {})\n+        if \"input\" not in job or job.get(\"input\") is None:\n+            job_input = {}\n+        else:\n+            job_input = job.get(\"input\")\n+            if not isinstance(job_input, dict):\n+                return {\n+                    \"success\": False,\n+                    \"error\": f\"Malformed input: expected dict, got {type(job_input).__name__}\",\n+                }\n         try:\n             result = func(**job_input)\n             if inspect.iscoroutine(result):\n@@ -250,6 +268,10 @@ def handler(job: Dict[str, Any]) -> Any:\n                 e,\n                 exc_info=True,\n             )\n-            return {\"error\": str(e), \"traceback\": traceback.format_exc()}\n+            return {\n+                \"success\": False,\n+                \"error\": str(e),\n+                \"traceback\": traceback.format_exc(),\n+            }\n \n     return handler"
+    },
+    {
+      "sha": "ff060c3b46e4ed3acd95365afb169c04f31571b0",
+      "filename": "tests/unit/resources/test_resource_manager.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1,
+      "changes": 4,
+      "blob_url": "https://github.com/runpod/flash/blob/06c517d52829f8d1426e08c9c568411c92b66bd7/tests%2Funit%2Fresources%2Ftest_resource_manager.py",
+      "raw_url": "https://github.com/runpod/flash/raw/06c517d52829f8d1426e08c9c568411c92b66bd7/tests%2Funit%2Fresources%2Ftest_resource_manager.py",
+      "contents_url": "https://api.github.com/repos/runpod/flash/contents/tests%2Funit%2Fresources%2Ftest_resource_manager.py?ref=06c517d52829f8d1426e08c9c568411c92b66bd7",
+      "patch": "@@ -31,7 +31,9 @@ def reset_singleton(self):\n     @pytest.fixture\n     def mock_resource_file(self, tmp_path):\n         \"\"\"Mock the resource state file path.\"\"\"\n-        resource_file = tmp_path / \".flash\" / \"resources.pkl\"\n+        flash_dir = tmp_path / \".flash\"\n+        flash_dir.mkdir()\n+        resource_file = flash_dir / \"resources.pkl\"\n         with patch(\n             \"runpod_flash.core.resources.resource_manager.RESOURCE_STATE_FILE\",\n             resource_file,"
+    },
+    {
+      "sha": "7604904fe6d8442758426bf12b31fc5e1864853b",
+      "filename": "tests/unit/runtime/test_generic_handler.py",
+      "status": "modified",
+      "additions": 91,
+      "deletions": 0,
+      "changes": 91,
+      "blob_url": "https://github.com/runpod/flash/blob/06c517d52829f8d1426e08c9c568411c92b66bd7/tests%2Funit%2Fruntime%2Ftest_generic_handler.py",
+      "raw_url": "https://github.com/runpod/flash/raw/06c517d52829f8d1426e08c9c568411c92b66bd7/tests%2Funit%2Fruntime%2Ftest_generic_handler.py",
+      "contents_url": "https://api.github.com/repos/runpod/flash/contents/tests%2Funit%2Fruntime%2Ftest_generic_handler.py?ref=06c517d52829f8d1426e08c9c568411c92b66bd7",
+      "patch": "@@ -5,6 +5,7 @@\n import cloudpickle\n \n from runpod_flash.runtime.generic_handler import (\n+    create_deployed_handler,\n     create_handler,\n     deserialize_arguments,\n     execute_function,\n@@ -366,3 +367,93 @@ def returns_none():\n     assert response[\"success\"] is True\n     result = cloudpickle.loads(base64.b64decode(response[\"result\"]))\n     assert result is None\n+\n+\n+def test_create_handler_input_none():\n+    \"\"\"Test handler returns error when job input is None instead of crashing.\"\"\"\n+\n+    def dummy():\n+        return \"dummy\"\n+\n+    handler = create_handler({\"dummy\": dummy})\n+\n+    job = {\"input\": None}\n+\n+    response = handler(job)\n+    assert response[\"success\"] is False\n+    assert \"not found\" in response[\"error\"]\n+\n+\n+def test_create_handler_input_missing():\n+    \"\"\"Test handler returns error when job has no input key.\"\"\"\n+\n+    def dummy():\n+        return \"dummy\"\n+\n+    handler = create_handler({\"dummy\": dummy})\n+\n+    job = {}\n+\n+    response = handler(job)\n+    assert response[\"success\"] is False\n+    assert \"not found\" in response[\"error\"]\n+\n+\n+def test_create_handler_input_non_dict():\n+    \"\"\"Test handler rejects non-dict input types.\"\"\"\n+\n+    def dummy():\n+        return \"dummy\"\n+\n+    handler = create_handler({\"dummy\": dummy})\n+\n+    job = {\"input\": \"not a dict\"}\n+\n+    response = handler(job)\n+    assert response[\"success\"] is False\n+    assert \"Invalid job input type\" in response[\"error\"]\n+    assert \"str\" in response[\"error\"]\n+\n+\n+def test_create_deployed_handler_input_none():\n+    \"\"\"Test deployed handler treats None input as empty kwargs instead of crashing.\"\"\"\n+\n+    def dummy(x: int = 1):\n+        return x\n+\n+    handler = create_deployed_handler(dummy)\n+\n+    job = {\"input\": None}\n+\n+    result = handler(job)\n+    assert result == 1\n+\n+\n+def test_create_deployed_handler_input_missing():\n+    \"\"\"Test deployed handler treats missing input key as empty kwargs.\"\"\"\n+\n+    def dummy(x: int = 1):\n+        return x\n+\n+    handler = create_deployed_handler(dummy)\n+\n+    job = {}\n+\n+    result = handler(job)\n+    assert result == 1\n+\n+\n+def test_create_deployed_handler_input_non_dict():\n+    \"\"\"Test deployed handler rejects non-dict input types.\"\"\"\n+\n+    def dummy(x: int = 1):\n+        return x\n+\n+    handler = create_deployed_handler(dummy)\n+\n+    job = {\"input\": [1, 2, 3]}\n+\n+    result = handler(job)\n+    assert result[\"success\"] is False\n+    assert \"error\" in result\n+    assert \"list\" in result[\"error\"]"
+    },
+    {
+      "sha": "dba56d1416375f34d604f720b2878255a679266d",
+      "filename": "tests/unit/test_resource_identity.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 14,
+      "changes": 21,
+      "blob_url": "https://github.com/runpod/flash/blob/06c517d52829f8d1426e08c9c568411c92b66bd7/tests%2Funit%2Ftest_resource_identity.py",
+      "raw_url": "https://github.com/runpod/flash/raw/06c517d52829f8d1426e08c9c568411c92b66bd7/tests%2Funit%2Ftest_resource_identity.py",
+      "contents_url": "https://api.github.com/repos/runpod/flash/contents/tests%2Funit%2Ftest_resource_identity.py?ref=06c517d52829f8d1426e08c9c568411c92b66bd7",
+      "patch": "@@ -1,7 +1,5 @@\n \"\"\"Unit tests for resource identity and resource_id stability.\"\"\"\n \n-import cloudpickle\n-\n from runpod_flash.core.resources.live_serverless import LiveServerless\n from runpod_flash.core.resources.gpu import GpuGroup\n \n@@ -91,9 +89,12 @@ def test_resource_id_same_for_identical_configs(self):\n         assert config1.resource_id == config2.resource_id\n \n     def test_pickled_resource_preserves_id(self):\n-        \"\"\"Test that pickling and unpickling preserves resource_id.\"\"\"\n-        import gc\n+        \"\"\"Test that serialization round-trip preserves resource_id.\n \n+        Uses Pydantic's model_validate(model_dump()) instead of cloudpickle\n+        because cloudpickle + Pydantic v2 produces corrupt schemas under\n+        parallel test execution (pytest-xdist).\n+        \"\"\"\n         config = LiveServerless(\n             name=\"test-pickle\",\n             gpus=[GpuGroup.ADA_24],\n@@ -102,21 +103,13 @@ def test_pickled_resource_preserves_id(self):\n             flashboot=True,\n         )\n \n-        # Get resource_id before pickling\n         id_before = config.resource_id\n \n-        # Force garbage collection to clear any stray references\n-        # that might have been left by previous tests\n-        gc.collect()\n-\n-        # Pickle and unpickle\n-        pickled = cloudpickle.dumps(config)\n-        restored = cloudpickle.loads(pickled)\n+        # Round-trip through Pydantic serialization\n+        restored = LiveServerless.model_validate(config.model_dump(by_alias=True))\n \n-        # Get resource_id after unpickling\n         id_after = restored.resource_id\n \n-        # Should be the same\n         assert id_before == id_after\n \n     def test_validator_idempotency_name_suffix(self):"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "650763bdc8e47b00e097a4f129bfb7421f6d2b94",
+      "message": "fix(runtime): handle input=None in generic handler gracefully\n\n`job.get(\"input\", {})` returns None when input is explicitly null,\ncausing AttributeError on the subsequent `.get()` call. Use `or {}`\nto coalesce both missing and null input to empty dict.\n\nFixes AE-2317",
+      "parent_shas": [
+        "a6512756a8b06cd8dd22ac8b3a5c90e3830edd6d"
+      ]
+    },
+    {
+      "sha": "c863ba9e98c3d2df2a1d42e6788c5756b99103ac",
+      "message": "test: add deployed handler coverage and tighten assertions\n\n- Add tests for create_deployed_handler with input=None and missing input\n- Tighten create_handler assertions to verify \"not found\" error message",
+      "parent_shas": [
+        "650763bdc8e47b00e097a4f129bfb7421f6d2b94"
+      ]
+    },
+    {
+      "sha": "133688feabdce8873561b0b0efddc0c5f826f700",
+      "message": "fix(runtime): use explicit None check and type validation for job input\n\nAddress review feedback: replace `or {}` with explicit `is None` check\nand add type validation to reject non-dict input types. Remove duplicate\ntest_create_deployed_handler_input_missing (covered in deployed handler\ntests). Add type-validation tests for both handlers.",
+      "parent_shas": [
+        "c863ba9e98c3d2df2a1d42e6788c5756b99103ac"
+      ]
+    },
+    {
+      "sha": "0e40657721d11ea26488182ae0d9c719876bafb0",
+      "message": "fix: add missing deployed handler test, align error schema\n\nAdd test for create_deployed_handler with missing input key (job = {}).\nAdd success: False to deployed handler error returns to match\ncreate_handler error schema.",
+      "parent_shas": [
+        "133688feabdce8873561b0b0efddc0c5f826f700"
+      ]
+    },
+    {
+      "sha": "f6b92aca746491dfb9530bb15b5bff2e2c79e929",
+      "message": "fix(test): fix pickle test and resource manager test failures\n\nReplace cloudpickle with Pydantic model_validate round-trip in\ntest_pickled_resource_preserves_id — cloudpickle + Pydantic v2\nproduces corrupt schemas under pytest-xdist parallel execution.\n\nCreate .flash/ directory in mock_resource_file fixture — the .runpod\nto .flash migration changed the state directory but the fixture was\nnot updated to create the new parent directory.",
+      "parent_shas": [
+        "0e40657721d11ea26488182ae0d9c719876bafb0"
+      ]
+    },
+    {
+      "sha": "06c517d52829f8d1426e08c9c568411c92b66bd7",
+      "message": "fix(ci): align release workflow Python matrix with pyproject.toml\n\nRelease workflow tested 3.9 and 3.13 which are outside the supported\nrange (>=3.10,<3.13). Align with ci.yml: 3.10, 3.11, 3.12.",
+      "parent_shas": [
+        "f6b92aca746491dfb9530bb15b5bff2e2c79e929"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__runpod__flash__pr286.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\runpod__flash__pr286__py2_py3__runpod__flash__pr286\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\runpod__flash__pr286__py2_py3__runpod__flash__pr286\\rn"
+  }
+}

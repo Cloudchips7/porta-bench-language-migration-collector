@@ -1,0 +1,192 @@
+{
+  "instance_id": "python_cpp__kdeldycke__repomatic__pr2489",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "kdeldycke/repomatic",
+  "pr_number": 2489,
+  "pr_url": "https://github.com/kdeldycke/repomatic/pull/2489",
+  "repo": {
+    "full_name": "kdeldycke/repomatic",
+    "clone_url": "https://github.com/kdeldycke/repomatic.git",
+    "default_branch": "main",
+    "created_at": "2021-12-09T15:04:12Z",
+    "stars": 45,
+    "license": "GPL-2.0",
+    "size_kb": 9763
+  },
+  "pull_request": {
+    "id": 3473210414,
+    "title": "Format Python",
+    "body": "### Description\n\nAuto-formats Python files with [autopep8](https://github.com/hhatto/autopep8) (comment wrapping) and [Ruff](https://docs.astral.sh/ruff/) (linting and formatting). When no `[tool.ruff]` section or `ruff.toml` is present, [repomatic's bundled defaults](https://github.com/kdeldycke/repomatic/blob/main/repomatic/data/ruff.toml) are applied at runtime. See the [`format-python` job documentation](https://github.com/kdeldycke/repomatic?tab=readme-ov-file#githubworkflowsautofixyaml-jobs) for details.\n\n> [!TIP]\n> Customize formatting and linting rules via [`[tool.ruff]`](https://docs.astral.sh/ruff/configuration/) and [`[tool.autopep8]`](https://github.com/hhatto/autopep8#configuration) in your `pyproject.toml`.\n\n\n> [!IMPORTANT]\n> If you suspect the PR content is outdated, **[click `Run workflow`](https://github.com/kdeldycke/repomatic/actions/workflows/autofix.yaml)** to refresh it manually before merging.\n\n\n<details><summary><code>Workflow metadata</code></summary>\n\n| Field | Value |\n| :-- | :-- |\n| **Trigger** | `push` |\n| **Actor** | @kdeldycke |\n| **Ref** | `main` |\n| **Commit** | [`86dc88be`](https://github.com/kdeldycke/repomatic/commit/86dc88be0e232921d3286492b744fbe7034417cb) |\n| **Job** | [`format-python`](https://github.com/kdeldycke/repomatic/blob/86dc88be0e232921d3286492b744fbe7034417cb/.github/workflows/autofix.yaml) |\n| **Workflow** | [`autofix.yaml`](https://github.com/kdeldycke/repomatic/blob/86dc88be0e232921d3286492b744fbe7034417cb/.github/workflows/autofix.yaml) |\n| **Run** | [#4217.1](https://github.com/kdeldycke/repomatic/actions/runs/23920679148) |\n\n</details>\n\n---\n\n🏭 Generated with [repomatic](https://github.com/kdeldycke/repomatic) `6.10.0.dev0`",
+    "created_at": "2026-03-31T17:36:43Z",
+    "merged_at": "2026-04-02T20:42:21Z",
+    "base_sha": "86dc88be0e232921d3286492b744fbe7034417cb",
+    "head_sha": "6c52de2e9a91bf475710273dede1b0496efab4c2",
+    "merge_commit_sha": "dd1f5c2fc58d6257a1da721c9829f023ffcc1ae1",
+    "labels": [
+      "🤖 ci"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "86dc88be0e232921d3286492b744fbe7034417cb",
+  "final_sha": "6c52de2e9a91bf475710273dede1b0496efab4c2",
+  "changed_files": [
+    {
+      "sha": "335ff3faf776d023e3611962aea370378a5e4965",
+      "filename": "repomatic/cli.py",
+      "status": "modified",
+      "additions": 25,
+      "deletions": 22,
+      "changes": 47,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/6c52de2e9a91bf475710273dede1b0496efab4c2/repomatic%2Fcli.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/6c52de2e9a91bf475710273dede1b0496efab4c2/repomatic%2Fcli.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/repomatic%2Fcli.py?ref=6c52de2e9a91bf475710273dede1b0496efab4c2",
+      "patch": "@@ -1749,21 +1749,15 @@ def _validate_docs_script_path(script: str, repo_root: Path) -> Path | None:\n     try:\n         script_path.relative_to(repo_root)\n     except ValueError:\n-        raise ClickException(\n-            f\"docs.update-script escapes repository root: {script}\"\n-        )\n+        raise ClickException(f\"docs.update-script escapes repository root: {script}\")\n     # Must be under docs/ and be a Python file.\n     docs_dir = (repo_root / \"docs\").resolve()\n     try:\n         script_path.relative_to(docs_dir)\n     except ValueError:\n-        raise ClickException(\n-            f\"docs.update-script must be under docs/: {script}\"\n-        )\n+        raise ClickException(f\"docs.update-script must be under docs/: {script}\")\n     if script_path.suffix != \".py\":\n-        raise ClickException(\n-            f\"docs.update-script must be a .py file: {script}\"\n-        )\n+        raise ClickException(f\"docs.update-script must be a .py file: {script}\")\n     return script_path\n \n \n@@ -1789,7 +1783,7 @@ def update_docs() -> None:\n     from .rst_to_myst import convert_rst_files_in_directory\n \n     config = get_tool_config()\n-    repo_root = Path().resolve()\n+    repo_root = Path.cwd()\n     docs_dir = repo_root / \"docs\"\n \n     # Detect Sphinx capabilities from conf.py.\n@@ -1802,11 +1796,18 @@ def update_docs() -> None:\n     # Phase 1: sphinx-apidoc.\n     if meta.active_autodoc:\n         apidoc_cmd = [\n-            \"uv\", \"--no-progress\", \"run\", \"--frozen\", \"--group\", \"docs\", \"--\",\n+            \"uv\",\n+            \"--no-progress\",\n+            \"run\",\n+            \"--frozen\",\n+            \"--group\",\n+            \"docs\",\n+            \"--\",\n             \"sphinx-apidoc\",\n             \"--no-toc\",\n             \"--module-first\",\n-            \"--output-dir\", str(docs_dir),\n+            \"--output-dir\",\n+            str(docs_dir),\n             *config.docs_apidoc_extra_args,\n             \".\",\n             *config.docs_apidoc_exclude,\n@@ -1832,13 +1833,18 @@ def update_docs() -> None:\n         logging.info(\"MyST-Parser not detected. Skipping RST conversion.\")\n \n     # Phase 3: docs update script.\n-    script_path = _validate_docs_script_path(\n-        config.docs_update_script, repo_root\n-    )\n+    script_path = _validate_docs_script_path(config.docs_update_script, repo_root)\n     if script_path and script_path.is_file():\n         script_cmd = [\n-            \"uv\", \"--no-progress\", \"run\", \"--frozen\", \"--group\", \"docs\", \"--\",\n-            \"python\", str(script_path),\n+            \"uv\",\n+            \"--no-progress\",\n+            \"run\",\n+            \"--frozen\",\n+            \"--group\",\n+            \"docs\",\n+            \"--\",\n+            \"python\",\n+            str(script_path),\n         ]\n         logging.info(f\"Running: {' '.join(script_cmd)}\")\n         result = subprocess.run(script_cmd, check=False)\n@@ -2157,8 +2163,7 @@ def setup_guide(\n         labels=[\"🤖 ci\"],\n         title=\"Set up `REPOMATIC_PAT` to enable workflow auto-updates\",\n         no_issues_comment=(\n-            \"PAT configured, all permissions verified,\"\n-            \" repository settings complete.\"\n+            \"PAT configured, all permissions verified, repository settings complete.\"\n         ),\n     )\n \n@@ -3262,9 +3267,7 @@ def update_checksums_cmd(workflow_file: Path | None, registry: bool) -> None:\n     help=\"Output file path. Defaults to stdout.\",\n )\n @output_format_option\n-def format_images_cmd(\n-    min_savings: float, output: Path, output_format: str\n-) -> None:\n+def format_images_cmd(min_savings: float, output: Path, output_format: str) -> None:\n     \"\"\"Format images by losslessly optimizing them with external CLI tools.\n \n     Discovers PNG and JPEG files and compresses them losslessly in-place"
+    },
+    {
+      "sha": "2c7554f7317100caab77fc3a483266585d5453ae",
+      "filename": "repomatic/config.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/6c52de2e9a91bf475710273dede1b0496efab4c2/repomatic%2Fconfig.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/6c52de2e9a91bf475710273dede1b0496efab4c2/repomatic%2Fconfig.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/repomatic%2Fconfig.py?ref=6c52de2e9a91bf475710273dede1b0496efab4c2",
+      "patch": "@@ -32,7 +32,6 @@\n from pathlib import Path\n from textwrap import dedent\n \n-\n if sys.version_info >= (3, 11):\n     import tomllib\n else:\n@@ -620,7 +619,8 @@ def load_repomatic_config(\n     for key in user_config:\n         if key.replace(\"_\", \"-\") not in known_keys:\n             logging.warning(\n-                \"Unknown [tool.repomatic] option: %s (ignored).\", key,\n+                \"Unknown [tool.repomatic] option: %s (ignored).\",\n+                key,\n             )\n \n     schema_callable = _make_schema_callable(Config, strict=False)"
+    },
+    {
+      "sha": "dd6583cd040684ab0ea06172df159cf997a57e8a",
+      "filename": "repomatic/github/matrix.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/6c52de2e9a91bf475710273dede1b0496efab4c2/repomatic%2Fgithub%2Fmatrix.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/6c52de2e9a91bf475710273dede1b0496efab4c2/repomatic%2Fgithub%2Fmatrix.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/repomatic%2Fgithub%2Fmatrix.py?ref=6c52de2e9a91bf475710273dede1b0496efab4c2",
+      "patch": "@@ -116,9 +116,7 @@ def add_variation(self, variation_id: str, values: Iterable[str]) -> None:\n         var_values = list(self.variations.get(variation_id, [])) + list(values)\n         self.variations[variation_id] = tuple(unique(var_values))\n \n-    def replace_variation_value(\n-        self, variation_id: str, old: str, new: str\n-    ) -> None:\n+    def replace_variation_value(self, variation_id: str, old: str, new: str) -> None:\n         \"\"\"Replace a single value within a variation axis.\n \n         The new value takes the position of the old value. If the new value"
+    },
+    {
+      "sha": "c3d640cd0e685832553d8e0a86b631206bd9d503",
+      "filename": "repomatic/metadata.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/6c52de2e9a91bf475710273dede1b0496efab4c2/repomatic%2Fmetadata.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/6c52de2e9a91bf475710273dede1b0496efab4c2/repomatic%2Fmetadata.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/repomatic%2Fmetadata.py?ref=6c52de2e9a91bf475710273dede1b0496efab4c2",
+      "patch": "@@ -1704,9 +1704,7 @@ def _has_sphinx_extension(self, extension_name: str) -> bool:\n                 )\n                 if extension_found:\n                     elements = (\n-                        e.value\n-                        for e in node.value.elts\n-                        if isinstance(e, ast.Constant)\n+                        e.value for e in node.value.elts if isinstance(e, ast.Constant)\n                     )\n                     if extension_name in elements:\n                         return True"
+    },
+    {
+      "sha": "a7ce19f6f3a75e02e299142233079d47ce0ae9b5",
+      "filename": "repomatic/rst_to_myst.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/6c52de2e9a91bf475710273dede1b0496efab4c2/repomatic%2Frst_to_myst.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/6c52de2e9a91bf475710273dede1b0496efab4c2/repomatic%2Frst_to_myst.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/repomatic%2Frst_to_myst.py?ref=6c52de2e9a91bf475710273dede1b0496efab4c2",
+      "patch": "@@ -32,7 +32,6 @@\n import re\n from pathlib import Path\n \n-\n #: RST underline characters mapped to Markdown heading levels.\n _RST_UNDERLINE_LEVELS: dict[str, str] = {\n     \"=\": \"#\","
+    },
+    {
+      "sha": "0fd654852881b4b008eb0fabb3bc2e8e42b267ca",
+      "filename": "repomatic/uv.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 31,
+      "changes": 40,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/6c52de2e9a91bf475710273dede1b0496efab4c2/repomatic%2Fuv.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/6c52de2e9a91bf475710273dede1b0496efab4c2/repomatic%2Fuv.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/repomatic%2Fuv.py?ref=6c52de2e9a91bf475710273dede1b0496efab4c2",
+      "patch": "@@ -415,9 +415,7 @@ def add_exclude_newer_packages(\n         # Append new entries to the existing inline table.\n         prefix = match.group(1)\n         inner = match.group(2).strip().rstrip(\",\")\n-        new_entries = \", \".join(\n-            f'\"{pkg}\" = \"0 day\"' for pkg in sorted(to_add)\n-        )\n+        new_entries = \", \".join(f'\"{pkg}\" = \"0 day\"' for pkg in sorted(to_add))\n         updated_line = f\"{prefix}{{ {inner}, {new_entries} }}\"\n         content = content[: match.start()] + updated_line + content[match.end() :]\n     else:\n@@ -427,9 +425,7 @@ def add_exclude_newer_packages(\n             content,\n             re.MULTILINE,\n         )\n-        new_entries = \", \".join(\n-            f'\"{pkg}\" = \"0 day\"' for pkg in sorted(to_add)\n-        )\n+        new_entries = \", \".join(f'\"{pkg}\" = \"0 day\"' for pkg in sorted(to_add))\n         new_line = f\"exclude-newer-package = {{ {new_entries} }}\"\n         if newer_match:\n             insert_pos = newer_match.end()\n@@ -488,8 +484,7 @@ def prune_stale_exclude_newer_packages(\n         cutoff = _parse_iso_datetime(exclude_newer_str)\n     if cutoff is None:\n         logging.warning(\n-            \"Cannot parse exclude-newer value\"\n-            f\" {exclude_newer_str!r}; skipping prune.\"\n+            f\"Cannot parse exclude-newer value {exclude_newer_str!r}; skipping prune.\"\n         )\n         return False\n \n@@ -507,15 +502,9 @@ def prune_stale_exclude_newer_packages(\n             continue\n         if upload_dt < cutoff:\n             stale.add(pkg)\n-            logging.info(\n-                f\"Pruning {pkg}: upload time {upload_str}\"\n-                \" is before cutoff.\"\n-            )\n+            logging.info(f\"Pruning {pkg}: upload time {upload_str} is before cutoff.\")\n         else:\n-            logging.debug(\n-                f\"Keeping {pkg}: upload time {upload_str}\"\n-                \" is after cutoff.\"\n-            )\n+            logging.debug(f\"Keeping {pkg}: upload time {upload_str} is after cutoff.\")\n \n     if not stale:\n         logging.debug(\"No stale exclude-newer-package entries.\")\n@@ -524,10 +513,7 @@ def prune_stale_exclude_newer_packages(\n     # Rewrite pyproject.toml with stale entries removed.\n     match = _EXCLUDE_NEWER_PKG_RE.search(content)\n     if not match:\n-        logging.warning(\n-            \"Cannot find exclude-newer-package line in\"\n-            f\" {pyproject_path}.\"\n-        )\n+        logging.warning(f\"Cannot find exclude-newer-package line in {pyproject_path}.\")\n         return False\n \n     inner = match.group(2)\n@@ -540,11 +526,7 @@ def prune_stale_exclude_newer_packages(\n     if kept_entries:\n         prefix = match.group(1)\n         updated_line = f\"{prefix}{{ {', '.join(kept_entries)} }}\"\n-        content = (\n-            content[: match.start()]\n-            + updated_line\n-            + content[match.end() :]\n-        )\n+        content = content[: match.start()] + updated_line + content[match.end() :]\n     else:\n         # Remove the entire line and its trailing newline.\n         start = match.start()\n@@ -1096,15 +1078,11 @@ def sync_uv_lock(lock_path: Path) -> SyncResult:\n     # Step 3: Run uv lock --upgrade in the project directory.\n     project_dir = lock_path.parent\n     logging.info(f\"Running uv lock --upgrade in {project_dir}...\")\n-    subprocess.run(\n-        [*uv_cmd(\"lock\"), \"--upgrade\"], check=True, cwd=project_dir\n-    )\n+    subprocess.run([*uv_cmd(\"lock\"), \"--upgrade\"], check=True, cwd=project_dir)\n \n     # Step 4: Revert uv.lock if only timestamp noise changed.\n     if revert_lock_if_noise(lock_path):\n-        return SyncResult(\n-            reverted=True, changes=[], upload_times={}, exclude_newer=\"\"\n-        )\n+        return SyncResult(reverted=True, changes=[], upload_times={}, exclude_newer=\"\")\n \n     # Step 5: Compute version diff.\n     after = parse_lock_versions(lock_path)"
+    },
+    {
+      "sha": "3f9afdf48bb6b3597645c87dfdf1f8ef8d78685b",
+      "filename": "tests/test_broken_links.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 2,
+      "changes": 6,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/6c52de2e9a91bf475710273dede1b0496efab4c2/tests%2Ftest_broken_links.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/6c52de2e9a91bf475710273dede1b0496efab4c2/tests%2Ftest_broken_links.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/tests%2Ftest_broken_links.py?ref=6c52de2e9a91bf475710273dede1b0496efab4c2",
+      "patch": "@@ -676,7 +676,9 @@ def test_setup_guide_completed_step_collapsed(\n     body_file = mock_lifecycle.call_args_list[0][1][\"body_file\"]\n     content = body_file.read_text(encoding=\"UTF-8\")\n     # Token step should be collapsed with checkmark.\n-    assert \"<details>\\n<summary>\\u2705 <strong>Create and configure the token\" in content\n+    assert (\n+        \"<details>\\n<summary>\\u2705 <strong>Create and configure the token\" in content\n+    )\n     # Branch step should be collapsed with checkmark.\n     assert \"<details>\\n<summary>\\u2705 <strong>Protect the main branch\" in content\n \n@@ -739,7 +741,7 @@ def test_check_branch_ruleset_none():\n         {\"name\": \"tags\", \"target\": \"tag\", \"enforcement\": \"active\"},\n     ])\n     with patch(\"repomatic.lint_repo.run_gh_command\", return_value=rulesets_json):\n-        passed, msg = check_branch_ruleset_on_default(\"owner/repo\")\n+        passed, _msg = check_branch_ruleset_on_default(\"owner/repo\")\n     assert passed is False\n \n "
+    },
+    {
+      "sha": "3aa517c971b3007d584204480ae83994aa72c8a4",
+      "filename": "tests/test_init_project.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 5,
+      "changes": 11,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/6c52de2e9a91bf475710273dede1b0496efab4c2/tests%2Ftest_init_project.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/6c52de2e9a91bf475710273dede1b0496efab4c2/tests%2Ftest_init_project.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/tests%2Ftest_init_project.py?ref=6c52de2e9a91bf475710273dede1b0496efab4c2",
+      "patch": "@@ -45,7 +45,6 @@\n     SKILL_PHASES,\n     BundledComponent,\n     GeneratedComponent,\n-    SyncMode,\n     TemplateComponent,\n     ToolConfigComponent,\n     WorkflowComponent,\n@@ -1123,7 +1122,7 @@ def test_preserves_local_array_entries(tmp_path: Path) -> None:\n         'current_version = \"1.0.0.dev0\"\\n'\n         \"allow_dirty = true\\n\"\n         'parse = \"(?P<major>\\\\\\\\d+)\"\\n'\n-        \"serialize = [\\\"{major}\\\"]\\n\\n\"\n+        'serialize = [\"{major}\"]\\n\\n'\n         \"[[tool.bumpversion.files]]\\n\"\n         'filename = \"./pyproject.toml\"\\n'\n         \"search = 'version = \\\"{current_version}\\\"'\\n\"\n@@ -1157,7 +1156,7 @@ def test_ongoing_sync_idempotent_with_local_entries(tmp_path: Path) -> None:\n         'current_version = \"1.0.0.dev0\"\\n'\n         \"allow_dirty = true\\n\"\n         'parse = \"(?P<major>\\\\\\\\d+)\"\\n'\n-        \"serialize = [\\\"{major}\\\"]\\n\\n\"\n+        'serialize = [\"{major}\"]\\n\\n'\n         \"[[tool.bumpversion.files]]\\n\"\n         'filename = \"./readme.md\"\\n'\n         \"ignore_missing_version = true\\n\"\n@@ -1190,7 +1189,9 @@ def test_ongoing_sync_no_duplicate_template_entries(tmp_path: Path) -> None:\n     parsed = tomllib.loads(result)\n     files_entries = parsed[\"tool\"][\"bumpversion\"][\"files\"]\n     # Template entries for pyproject.toml should appear exactly twice (version + tag).\n-    pyproject_entries = [e for e in files_entries if e.get(\"filename\") == \"./pyproject.toml\"]\n+    pyproject_entries = [\n+        e for e in files_entries if e.get(\"filename\") == \"./pyproject.toml\"\n+    ]\n     assert len(pyproject_entries) == 2\n \n \n@@ -1217,7 +1218,7 @@ def test_serialize_array_entries_roundtrip() -> None:\n     ]\n     text = _serialize_array_entries(entries, \"[[tool.bumpversion.files]]\")\n     # Wrap in [tool.bumpversion] to make it valid as a complete document.\n-    doc = \"[tool.bumpversion]\\ncurrent_version = \\\"0\\\"\\n\\n\" + text\n+    doc = '[tool.bumpversion]\\ncurrent_version = \"0\"\\n\\n' + text\n     parsed = tomllib.loads(doc)\n     files = parsed[\"tool\"][\"bumpversion\"][\"files\"]\n     assert len(files) == 2"
+    },
+    {
+      "sha": "9ee8fa6106682c0a0595e1ba83b012d78ad933f6",
+      "filename": "tests/test_metadata.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 4,
+      "changes": 5,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/6c52de2e9a91bf475710273dede1b0496efab4c2/tests%2Ftest_metadata.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/6c52de2e9a91bf475710273dede1b0496efab4c2/tests%2Ftest_metadata.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/tests%2Ftest_metadata.py?ref=6c52de2e9a91bf475710273dede1b0496efab4c2",
+      "patch": "@@ -26,7 +26,6 @@\n \n from repomatic.config import (\n     Config,\n-    _field_to_key,\n     config_reference,\n     load_repomatic_config,\n )\n@@ -1434,9 +1433,7 @@ def test_test_matrix_config_exclude(tmp_path, monkeypatch):\n     # PR matrix: windows-11-arm is not in the PR runner list, so the exclude\n     # is pruned as a no-op.\n     pr = metadata.test_matrix_pr.matrix()\n-    assert \"exclude\" not in pr or {\"os\": \"windows-11-arm\"} not in pr.get(\n-        \"exclude\", ()\n-    )\n+    assert \"exclude\" not in pr or {\"os\": \"windows-11-arm\"} not in pr.get(\"exclude\", ())\n \n \n def test_test_matrix_config_variations(tmp_path, monkeypatch):"
+    },
+    {
+      "sha": "4a2679528701d1a59b7bdc566a0ac7d9689f146e",
+      "filename": "tests/test_renovate.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 6,
+      "changes": 8,
+      "blob_url": "https://github.com/kdeldycke/repomatic/blob/6c52de2e9a91bf475710273dede1b0496efab4c2/tests%2Ftest_renovate.py",
+      "raw_url": "https://github.com/kdeldycke/repomatic/raw/6c52de2e9a91bf475710273dede1b0496efab4c2/tests%2Ftest_renovate.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/repomatic/contents/tests%2Ftest_renovate.py?ref=6c52de2e9a91bf475710273dede1b0496efab4c2",
+      "patch": "@@ -35,7 +35,6 @@\n )\n from repomatic.uv import (\n     RELEASE_NOTES_MAX_LENGTH,\n-    SyncResult,\n     _format_upload_date,\n     _parse_github_owner_repo,\n     _parse_iso_datetime,\n@@ -698,10 +697,7 @@ def test_add_exclude_newer_packages_skips_existing(tmp_path):\n def test_add_exclude_newer_packages_creates_line(tmp_path):\n     \"\"\"A new exclude-newer-package line is inserted when none exists.\"\"\"\n     pyproject = tmp_path / \"pyproject.toml\"\n-    pyproject.write_text(\n-        \"[tool.uv]\\n\"\n-        'exclude-newer = \"1 week\"\\n'\n-    )\n+    pyproject.write_text('[tool.uv]\\nexclude-newer = \"1 week\"\\n')\n     assert add_exclude_newer_packages(pyproject, {\"requests\"}) is True\n     content = pyproject.read_text()\n     assert 'exclude-newer-package = { \"requests\" = \"0 day\" }' in content\n@@ -887,7 +883,7 @@ def test_prune_stale_nothing_stale(tmp_path):\n def test_prune_stale_no_entries(tmp_path):\n     \"\"\"Return False when there are no exclude-newer-package entries.\"\"\"\n     pyproject = tmp_path / \"pyproject.toml\"\n-    pyproject.write_text(\"[tool.uv]\\n\" 'exclude-newer = \"1 week\"\\n')\n+    pyproject.write_text('[tool.uv]\\nexclude-newer = \"1 week\"\\n')\n     lock = tmp_path / \"uv.lock\"\n     lock.write_text(\"version = 1\\n\")\n     assert prune_stale_exclude_newer_packages(pyproject, lock) is False"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "6c52de2e9a91bf475710273dede1b0496efab4c2",
+      "message": "Format Python",
+      "parent_shas": [
+        "86dc88be0e232921d3286492b744fbe7034417cb"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "python_cpp_wrapper_noise"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "python_cpp_wrapper_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__kdeldycke__repomatic__pr2489.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\kdeldycke__repomatic__pr2489__python_cpp__kdeldycke__repomatic__pr2489\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\kdeldycke__repomatic__pr2489__python_cpp__kdeldycke__repomatic__pr2489\\rn"
+  }
+}

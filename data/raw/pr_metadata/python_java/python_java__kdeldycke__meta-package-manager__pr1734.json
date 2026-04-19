@@ -1,0 +1,81 @@
+{
+  "instance_id": "python_java__kdeldycke__meta-package-manager__pr1734",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "kdeldycke/meta-package-manager",
+  "pr_number": 1734,
+  "pr_url": "https://github.com/kdeldycke/meta-package-manager/pull/1734",
+  "repo": {
+    "full_name": "kdeldycke/meta-package-manager",
+    "clone_url": "https://github.com/kdeldycke/meta-package-manager.git",
+    "default_branch": "main",
+    "created_at": "2016-08-17T16:14:34Z",
+    "stars": 573,
+    "license": "GPL-2.0",
+    "size_kb": 34312
+  },
+  "pull_request": {
+    "id": 3502805866,
+    "title": "Format Python",
+    "body": "### Description\n\nAuto-formats Python files with [autopep8](https://github.com/hhatto/autopep8) (comment wrapping) and [Ruff](https://docs.astral.sh/ruff/) (linting and formatting). When no `[tool.ruff]` section or `ruff.toml` is present, [repomatic's bundled defaults](https://github.com/kdeldycke/repomatic/blob/main/repomatic/data/ruff.toml) are applied at runtime. See the [`format-python` job documentation](https://github.com/kdeldycke/repomatic?tab=readme-ov-file#githubworkflowsautofixyaml-jobs) for details.\n\n> [!TIP]\n> Customize formatting and linting rules via [`[tool.ruff]`](https://docs.astral.sh/ruff/configuration/) and [`[tool.autopep8]`](https://github.com/hhatto/autopep8#configuration) in your `pyproject.toml`.\n\n\n> [!IMPORTANT]\n> If you suspect the PR content is outdated, **[click `Run workflow`](https://github.com/kdeldycke/meta-package-manager/actions/workflows/autofix.yaml)** to refresh it manually before merging.\n\n\n<details><summary><code>Workflow metadata</code></summary>\n\n| Field | Value |\n| :-- | :-- |\n| **Trigger** | `push` |\n| **Actor** | @kdeldycke |\n| **Ref** | `main` |\n| **Commit** | [`62d5285a`](https://github.com/kdeldycke/meta-package-manager/commit/62d5285a3c048f92eea7ea799f55f716b033cb9e) |\n| **Job** | [`format-python`](https://github.com/kdeldycke/meta-package-manager/blob/62d5285a3c048f92eea7ea799f55f716b033cb9e/.github/workflows/autofix.yaml) |\n| **Workflow** | [`autofix.yaml`](https://github.com/kdeldycke/meta-package-manager/blob/62d5285a3c048f92eea7ea799f55f716b033cb9e/.github/workflows/autofix.yaml) |\n| **Run** | [#2709.1](https://github.com/kdeldycke/meta-package-manager/actions/runs/24132110999) |\n\n</details>\n\n---\n\n🏭 Generated with [repomatic](https://github.com/kdeldycke/repomatic) `6.11.0`",
+    "created_at": "2026-04-08T11:11:00Z",
+    "merged_at": "2026-04-08T11:14:57Z",
+    "base_sha": "62d5285a3c048f92eea7ea799f55f716b033cb9e",
+    "head_sha": "69ecf382aa1a71687526a9d9ab647c00df5c5644",
+    "merge_commit_sha": "0e9ff9830d6e6b1235288655ce71cf05f448819a",
+    "labels": [
+      "🤖 ci"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "62d5285a3c048f92eea7ea799f55f716b033cb9e",
+  "final_sha": "69ecf382aa1a71687526a9d9ab647c00df5c5644",
+  "changed_files": [
+    {
+      "sha": "79b81101525a9c69575c672a09f1825e234ba6a6",
+      "filename": "meta_package_manager/base.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 2,
+      "changes": 9,
+      "blob_url": "https://github.com/kdeldycke/meta-package-manager/blob/69ecf382aa1a71687526a9d9ab647c00df5c5644/meta_package_manager%2Fbase.py",
+      "raw_url": "https://github.com/kdeldycke/meta-package-manager/raw/69ecf382aa1a71687526a9d9ab647c00df5c5644/meta_package_manager%2Fbase.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/meta-package-manager/contents/meta_package_manager%2Fbase.py?ref=69ecf382aa1a71687526a9d9ab647c00df5c5644",
+      "patch": "@@ -530,8 +530,13 @@ def normalize_path(path: Path) -> str:\n                 if is_any_windows():\n                     try:\n                         file_stat = file.lstat()\n-                        if file_stat.st_file_attributes & stat.FILE_ATTRIBUTE_REPARSE_POINT:\n-                            logging.debug(f\"CLI found at {highlight_cli_name(file, cli_names)} (reparse point)\")\n+                        if (\n+                            file_stat.st_file_attributes\n+                            & stat.FILE_ATTRIBUTE_REPARSE_POINT\n+                        ):\n+                            logging.debug(\n+                                f\"CLI found at {highlight_cli_name(file, cli_names)} (reparse point)\"\n+                            )\n                             yield file\n                             continue\n                     except OSError:"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "69ecf382aa1a71687526a9d9ab647c00df5c5644",
+      "message": "Format Python",
+      "parent_shas": [
+        "62d5285a3c048f92eea7ea799f55f716b033cb9e"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__kdeldycke__meta-package-manager__pr1734.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__meta-package-manager__pr1734__python_java__kdeldycke__meta-package-manager__pr1734\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\kdeldycke__meta-package-manager__pr1734__python_java__kdeldycke__meta-package-manager__pr1734\\rn"
+  }
+}

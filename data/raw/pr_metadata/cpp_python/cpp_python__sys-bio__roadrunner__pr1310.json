@@ -1,0 +1,79 @@
+{
+  "instance_id": "cpp_python__sys-bio__roadrunner__pr1310",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "sys-bio/roadrunner",
+  "pr_number": 1310,
+  "pr_url": "https://github.com/sys-bio/roadrunner/pull/1310",
+  "repo": {
+    "full_name": "sys-bio/roadrunner",
+    "clone_url": "https://github.com/sys-bio/roadrunner.git",
+    "default_branch": "develop",
+    "created_at": "2014-07-10T19:31:22Z",
+    "stars": 57,
+    "license": "NOASSERTION",
+    "size_kb": 285908
+  },
+  "pull_request": {
+    "id": 3355864531,
+    "title": "Update swig version.",
+    "body": "Hopefully fix for https://github.com/sbmlteam/python-libsbml/issues/40 , since at least one of the linked issues claims that the underlying swig bug is 'fixed'.  Hopefully this means 'with 4.4.1'.",
+    "created_at": "2026-03-05T00:07:13Z",
+    "merged_at": "2026-03-05T23:52:10Z",
+    "base_sha": "da6426f71c2c2b53825b686856690d1879653dc0",
+    "head_sha": "5fb073bd5f355b66c290bc6b09fa79e50888e18a",
+    "merge_commit_sha": "a342d4220e7fb4680df530da6ec21dbee2820816",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "da6426f71c2c2b53825b686856690d1879653dc0",
+  "final_sha": "5fb073bd5f355b66c290bc6b09fa79e50888e18a",
+  "changed_files": [
+    {
+      "sha": "afaf2c6f5d3ca8d5d424350009ab7b84f4a9fb8c",
+      "filename": ".github/workflows/main.yml",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 8,
+      "changes": 16,
+      "blob_url": "https://github.com/sys-bio/roadrunner/blob/5fb073bd5f355b66c290bc6b09fa79e50888e18a/.github%2Fworkflows%2Fmain.yml",
+      "raw_url": "https://github.com/sys-bio/roadrunner/raw/5fb073bd5f355b66c290bc6b09fa79e50888e18a/.github%2Fworkflows%2Fmain.yml",
+      "contents_url": "https://api.github.com/repos/sys-bio/roadrunner/contents/.github%2Fworkflows%2Fmain.yml?ref=5fb073bd5f355b66c290bc6b09fa79e50888e18a",
+      "patch": "@@ -300,31 +300,31 @@ jobs:\n             brew install pcre pcre2\n             mkdir -p ${RUNNER_WORKSPACE}/swig\n             cd swig\n-            curl -L https://sourceforge.net/projects/swig/files/swig/swig-4.4.0/swig-4.4.0.tar.gz/download > swig.tar.gz\n+            curl -L https://sourceforge.net/projects/swig/files/swig/swig-4.4.1/swig-4.4.1.tar.gz/download > swig.tar.gz\n             tar -zxf swig.tar.gz\n             rm swig.tar.gz\n             mkdir -p install-swig\n-            cd swig-4.4.0/\n+            cd swig-4.4.1/\n             ./configure --prefix=${RUNNER_WORKSPACE}/swig/install-swig\n             make\n             make install\n             echo SWIG_DIR=\"-DSWIG_EXECUTABLE=${RUNNER_WORKSPACE}/swig/install-swig/bin/swig\" >> $GITHUB_ENV\n           elif [ \"${{ matrix.platform.os_type }}\" == 'windows' ]; then\n             mkdir -p swig\n             cd swig\n-            curl -L https://sourceforge.net/projects/swig/files/swigwin/swigwin-4.4.0/swigwin-4.4.0.zip/download > swig.zip\n+            curl -L https://sourceforge.net/projects/swig/files/swigwin/swigwin-4.4.1/swigwin-4.4.1.zip/download > swig.zip\n             unzip -q swig.zip -d install-swig\n             rm swig.zip\n-            echo SWIG_DIR=\"-DSWIG_EXECUTABLE=${RUNNER_WORKSPACE}/swig/install-swig/swigwin-4.4.0/\" >> \"${GITHUB_PATH}\"\n+            echo SWIG_DIR=\"-DSWIG_EXECUTABLE=${RUNNER_WORKSPACE}/swig/install-swig/swigwin-4.4.1/\" >> \"${GITHUB_PATH}\"\n           elif [ \"${{ matrix.platform.os_type }}\" == 'manylinux' ]; then\n             dnf install -y pcre-devel pcre2-devel\n             mkdir -p swig\n             cd swig\n-            curl -L https://sourceforge.net/projects/swig/files/swig/swig-4.4.0/swig-4.4.0.tar.gz/download > swig.tar.gz\n+            curl -L https://sourceforge.net/projects/swig/files/swig/swig-4.4.1/swig-4.4.1.tar.gz/download > swig.tar.gz\n             tar -zxf swig.tar.gz\n             rm swig.tar.gz\n             mkdir -p install-swig\n-            cd swig-4.4.0/\n+            cd swig-4.4.1/\n             ./configure --disable-dependency-tracking --prefix=${RUNNER_WORKSPACE}/swig/install-swig\n             make\n             make install\n@@ -334,11 +334,11 @@ jobs:\n             sudo sed -i \"681,684d;686d\" /usr/share/swig4.0/swig.swg\n             # mkdir -p swig\n             # cd swig\n-            # curl -L https://sourceforge.net/projects/swig/files/swig/swig-4.3.0/swig-4.3.0.tar.gz/download > swig.tar.gz\n+            # curl -L https://sourceforge.net/projects/swig/files/swig/swig-4.4.1/swig-4.4.1.tar.gz/download > swig.tar.gz\n             # tar -zxf swig.tar.gz\n             # rm swig.tar.gz\n             # mkdir -p install-swig\n-            # cd swig-4.3.0/\n+            # cd swig-4.4.1/\n             # sed -i \"677,680d;682d\" Lib/swig.swg\n             # ./configure --disable-dependency-tracking --prefix=${RUNNER_WORKSPACE}/swig/install-swig\n             # make"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "5fb073bd5f355b66c290bc6b09fa79e50888e18a",
+      "message": "Update swig version.\n\nHopefully fix for https://github.com/sbmlteam/python-libsbml/issues/40 , since at least one of the linked issues claims that the underlying swig bug is 'fixed'.  Hopefully this means 'with 4.4.1'.",
+      "parent_shas": [
+        "da6426f71c2c2b53825b686856690d1879653dc0"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "ci_only"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__sys-bio__roadrunner__pr1310.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\sys-bio__roadrunner__pr1310__cpp_python__sys-bio__roadrunner__pr1310\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\sys-bio__roadrunner__pr1310__cpp_python__sys-bio__roadrunner__pr1310\\rn"
+  }
+}

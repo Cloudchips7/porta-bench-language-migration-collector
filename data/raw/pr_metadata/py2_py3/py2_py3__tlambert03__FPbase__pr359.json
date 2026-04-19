@@ -1,0 +1,376 @@
+{
+  "instance_id": "py2_py3__tlambert03__FPbase__pr359",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "tlambert03/FPbase",
+  "pr_number": 359,
+  "pr_url": "https://github.com/tlambert03/FPbase/pull/359",
+  "repo": {
+    "full_name": "tlambert03/FPbase",
+    "clone_url": "https://github.com/tlambert03/FPbase.git",
+    "default_branch": "main",
+    "created_at": "2017-11-20T20:55:19Z",
+    "stars": 79,
+    "license": "GPL-3.0",
+    "size_kb": 70643
+  },
+  "pull_request": {
+    "id": 2986849051,
+    "title": "New xrange picker, Fixes FPBASE-626, FPBASE-60H",
+    "body": "",
+    "created_at": "2025-11-07T02:01:24Z",
+    "merged_at": "2025-11-07T03:55:19Z",
+    "base_sha": "db7a891aba83806fd7c889bf3920b054ae1a82d2",
+    "head_sha": "50b281be891370aeb03e13f7ab510291a7ed644f",
+    "merge_commit_sha": "99c4bd73f13a2a74bd67f6745cec255385d71dcc",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "5da2353ff50ddfc13b97d3fb6e9b42cc189dcd4d",
+  "final_sha": "50b281be891370aeb03e13f7ab510291a7ed644f",
+  "changed_files": [
+    {
+      "sha": "2505474f3cfeca912003a25d89d2a00463607e4c",
+      "filename": ".claude/CLAUDE.md",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/50b281be891370aeb03e13f7ab510291a7ed644f/.claude%2FCLAUDE.md",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/50b281be891370aeb03e13f7ab510291a7ed644f/.claude%2FCLAUDE.md",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/.claude%2FCLAUDE.md?ref=50b281be891370aeb03e13f7ab510291a7ed644f",
+      "patch": "@@ -36,7 +36,6 @@ uv run backend/manage.py shell_plus    # Interactive shell with auto-imports\n # Testing\n uv run pytest path/to/test.py          # Run specific test\n uv run pytest --cov                    # Run with coverage\n-pnpm --filter @fpbase/spectra test:ci  # Frontend tests\n \n # Code Quality\n ruff format backend                    # Format Python"
+    },
+    {
+      "sha": "3a584a364775e9a4a242ff8e2039d561407377d3",
+      "filename": ".github/workflows/ci.yml",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 3,
+      "changes": 3,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/50b281be891370aeb03e13f7ab510291a7ed644f/.github%2Fworkflows%2Fci.yml",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/50b281be891370aeb03e13f7ab510291a7ed644f/.github%2Fworkflows%2Fci.yml",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/.github%2Fworkflows%2Fci.yml?ref=50b281be891370aeb03e13f7ab510291a7ed644f",
+      "patch": "@@ -78,9 +78,6 @@ jobs:\n       - name: Install node Dependencies\n         run: pnpm install\n \n-      - name: Test spectra package\n-        run: pnpm --filter @fpbase/spectra test:ci\n-\n       - name: Test\n         run: |\n           uv sync --group test --no-dev"
+    },
+    {
+      "sha": "d2d60083f89da368f36f7cd2ac15a5f4e017697d",
+      "filename": ".github/workflows/claude.yml",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/50b281be891370aeb03e13f7ab510291a7ed644f/.github%2Fworkflows%2Fclaude.yml",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/50b281be891370aeb03e13f7ab510291a7ed644f/.github%2Fworkflows%2Fclaude.yml",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/.github%2Fworkflows%2Fclaude.yml?ref=50b281be891370aeb03e13f7ab510291a7ed644f",
+      "patch": "@@ -47,4 +47,3 @@ jobs:\n           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md\n           # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options\n           # claude_args: '--allowed-tools Bash(gh pr:*)'\n-"
+    },
+    {
+      "sha": "fd775b9ebf48391fa3dff5d35d5a0aecabf1530d",
+      "filename": "backend/tests_e2e/conftest.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/50b281be891370aeb03e13f7ab510291a7ed644f/backend%2Ftests_e2e%2Fconftest.py",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/50b281be891370aeb03e13f7ab510291a7ed644f/backend%2Ftests_e2e%2Fconftest.py",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/backend%2Ftests_e2e%2Fconftest.py?ref=50b281be891370aeb03e13f7ab510291a7ed644f",
+      "patch": "@@ -280,6 +280,9 @@ def _should_ignore(self, *texts: str) -> bool:\n     def on_console(self, msg: ConsoleMessage) -> None:\n         \"\"\"Collect console messages unless they match ignore patterns.\"\"\"\n         url = (msg.location or {}).get(\"url\", \"\")\n+        if msg.type in {\"debug\", \"log\"}:\n+            print(f\"[Console {msg.type}] {msg.text} (at {url})\")\n+            return\n         if msg.type == \"error\" and \"at \" in msg.text:\n             text = _apply_source_maps_to_stack(msg.text)\n         else:"
+    },
+    {
+      "sha": "ab9451e2370166f10f97f6e9b497c6c092a2ad6b",
+      "filename": "backend/tests_e2e/test_spectra_viewer.py",
+      "status": "modified",
+      "additions": 191,
+      "deletions": 43,
+      "changes": 234,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/50b281be891370aeb03e13f7ab510291a7ed644f/backend%2Ftests_e2e%2Ftest_spectra_viewer.py",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/50b281be891370aeb03e13f7ab510291a7ed644f/backend%2Ftests_e2e%2Ftest_spectra_viewer.py",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/backend%2Ftests_e2e%2Ftest_spectra_viewer.py?ref=50b281be891370aeb03e13f7ab510291a7ed644f",
+      "patch": "@@ -34,23 +34,24 @@ def spectra_viewer(live_server: LiveServer, page: Page) -> Iterator[Page]:\n     page.wait_for_timeout(100)\n \n \n-def test_spectra_viewer_add_from_input(spectra_viewer: Page, assert_snapshot: Callable) -> None:\n-    \"\"\"Test the spectra viewer page loads without console errors.\"\"\"\n-    tab_wrapper = spectra_viewer.locator(\".tab-wrapper\")\n+def _add_egfp_to_viewer(page: Page) -> None:\n+    tab_wrapper = page.locator(\".tab-wrapper\")\n     expect(tab_wrapper.get_by_text(\"Type to search...\")).to_be_visible()\n     search_input = tab_wrapper.get_by_role(\"combobox\")\n     search_input.click()\n-    search_input.type(\"EGF\")\n-\n+    search_input.type(\"EGFP\")\n     egfp_option = tab_wrapper.get_by_role(\"option\", name=\"EGFP\", exact=True)\n     expect(egfp_option).to_be_visible()\n     egfp_option.click()\n-\n-    # a selector for EGFP should now be visible\n     expect(tab_wrapper.get_by_text(re.compile(r\"^EGFP\"))).to_be_visible()\n+\n+\n+def test_spectra_viewer_add_from_input(spectra_viewer: Page, assert_snapshot: Callable) -> None:\n+    \"\"\"Test the spectra viewer page loads without console errors.\"\"\"\n+    _add_egfp_to_viewer(spectra_viewer)\n     # a NEW search input should appear after selecting a protein\n+    tab_wrapper = spectra_viewer.locator(\".tab-wrapper\")\n     expect(tab_wrapper.get_by_text(\"Type to search...\")).to_be_visible()\n-\n     assert_snapshot(spectra_viewer)\n \n \n@@ -106,19 +107,8 @@ def test_spectra_url_sharing_basic(live_server: LiveServer, page: Page) -> None:\n     page.goto(url)\n     expect(page).to_have_url(url)\n \n-    # Add EGFP using spacebar shortcut\n-    page.keyboard.press(\"Space\")\n-    modal = page.get_by_role(\"presentation\").filter(has_text=\"Quick Entry\")\n-    expect(modal).to_be_attached()\n-\n-    search_input = modal.get_by_role(\"combobox\").first\n-    expect(search_input).to_be_visible()\n-    search_input.type(\"EGFP\")\n-    page.keyboard.press(\"Enter\")\n-\n-    # Wait for EGFP to be added to the selector list\n-    tab_wrapper = page.locator(\".tab-wrapper\")\n-    expect(tab_wrapper.get_by_text(re.compile(r\"^EGFP\"))).to_be_visible()\n+    # Add EGFP to the viewer\n+    _add_egfp_to_viewer(page)\n \n     # Wait for chart to load with data\n     chart = page.locator(\".highcharts-container\")\n@@ -246,16 +236,8 @@ def test_custom_laser_exnorm_persistence(live_server: LiveServer, page: Page) ->\n     page.goto(url)\n     expect(page).to_have_url(url)\n \n-    # Add EGFP\n-    page.keyboard.press(\"Space\")\n-    modal = page.get_by_role(\"presentation\").filter(has_text=\"Quick Entry\")\n-    search_input = modal.get_by_role(\"combobox\").first\n-    search_input.type(\"EGFP\")\n-    page.keyboard.press(\"Enter\")\n-\n-    # Wait for EGFP to be added\n-    tab_wrapper = page.locator(\".tab-wrapper\")\n-    expect(tab_wrapper.get_by_text(re.compile(r\"^EGFP\"))).to_be_visible()\n+    # Add EGFP to the viewer\n+    _add_egfp_to_viewer(page)\n \n     # Navigate to Light Sources tab\n     page.get_by_role(\"tab\", name=re.compile(\"Light Sources\")).click()\n@@ -338,11 +320,20 @@ def test_hidden_spectra_in_share_url(live_server: LiveServer, page: Page) -> Non\n     assert ex_id in shared_url, f\"Shared URL should contain hidden EX spectrum ID: {ex_id}\"\n \n \n-def test_spectra_graph(live_server: LiveServer, page: Page):\n+@pytest.mark.parametrize(\n+    \"params\",\n+    [\n+        {},\n+        {\"xMin\": 400, \"xMax\": 600},\n+        {\"xMin\": 400, \"xMax\": 600, \"scaleEC\": 1},\n+    ],\n+)\n+def test_spectra_graph(live_server: LiveServer, page: Page, params: dict) -> None:\n     egfp = create_egfp()\n \n     ids = f\"{egfp.default_state.ex_spectrum.id},{egfp.default_state.em_spectrum.id}\"\n-    url = f\"{live_server.url}{reverse('proteins:spectra_graph')}?s={ids}\"\n+    query = f\"?s={ids}\" + \"\".join(f\"&{k}={v}\" for k, v in params.items())\n+    url = f\"{live_server.url}{reverse('proteins:spectra_graph')}{query}\"\n     page.goto(url)\n     expect(page).to_have_url(url)\n \n@@ -352,29 +343,30 @@ def test_spectra_graph(live_server: LiveServer, page: Page):\n     series_paths = spectra_viewer.locator(\".highcharts-series-group path.highcharts-area\")\n     expect(series_paths).to_have_count(2)\n \n+    if \"xMin\" in params and \"xMax\" in params:\n+        # Verify that x-axis extremes match the parameters\n+        x_axis_labels = spectra_viewer.locator(\".highcharts-xaxis-labels text\")\n+        label_texts = x_axis_labels.all_text_contents()\n+        label_values = [int(text) for text in label_texts if text.strip() and text.strip().isdigit()]\n+        assert min(label_values) >= params[\"xMin\"], f\"Min label {min(label_values)} should be >= {params['xMin']}\"\n+        assert max(label_values) <= params[\"xMax\"], f\"Max label {max(label_values)} should be <= {params['xMax']}\"\n+\n \n def test_subtype_visibility_toggles(spectra_viewer: Page) -> None:\n     \"\"\"Test that clicking subtype toggle buttons (EX, EM, 2P) changes spectrum visibility.\n \n     Regression test for bug where EX and 2P toggle buttons did not respond to clicks\n     while EM toggle worked correctly.\n     \"\"\"\n-    # Add EGFP using spacebar shortcut\n-    spectra_viewer.keyboard.press(\"Space\")\n-    modal = spectra_viewer.get_by_role(\"presentation\").filter(has_text=\"Quick Entry\")\n-    search_input = modal.get_by_role(\"combobox\").first\n-    search_input.type(\"EGFP\")\n-    spectra_viewer.keyboard.press(\"Enter\")\n-\n-    # Wait for EGFP to be added\n-    tab_wrapper = spectra_viewer.locator(\".tab-wrapper\")\n-    expect(tab_wrapper.get_by_text(re.compile(r\"^EGFP\"))).to_be_visible()\n+    # Add EGFP to the viewer\n+    _add_egfp_to_viewer(spectra_viewer)\n \n     # Wait for chart to load with spectra\n     visible_areas = spectra_viewer.locator(\".highcharts-series-group path.highcharts-area:visible\")\n     expect(visible_areas).to_have_count(2)  # EGFP has EX and EM spectra\n \n     # Find the subtype toggle buttons within the EGFP selector group\n+    tab_wrapper = spectra_viewer.locator(\".tab-wrapper\")\n     ex_button = tab_wrapper.get_by_role(\"button\", name=\"EX\", exact=True)\n     em_button = tab_wrapper.get_by_role(\"button\", name=\"EM\", exact=True)\n     twop_button = tab_wrapper.get_by_role(\"button\", name=\"2P\", exact=True)\n@@ -405,3 +397,159 @@ def test_subtype_visibility_toggles(spectra_viewer: Page) -> None:\n     # expect(visible_areas).to_have_count(3)  # EX, EM, and 2P visible\n     # twop_button.click()\n     # expect(visible_areas).to_have_count(2)  # Back to EX and EM\n+\n+\n+def test_x_range_pickers(spectra_viewer: Page) -> None:\n+    \"\"\"Test that X range picker inputs correctly set chart zoom.\n+\n+    Verifies:\n+    1. Range picker inputs are visible when spectra are loaded\n+    2. Typing new min/max values and pressing Enter updates the chart\n+    3. Chart extremes reflect the entered values\n+    4. Values persist across page refresh\n+    5. URL parameters (xMin/xMax) correctly set initial range\n+    \"\"\"\n+    # Add EGFP to the viewer\n+    _add_egfp_to_viewer(spectra_viewer)\n+\n+    # Wait for chart to load\n+    chart = spectra_viewer.locator(\".highcharts-container\")\n+    expect(chart).to_be_visible()\n+\n+    # Range pickers should be visible\n+    min_input = spectra_viewer.locator('input[name=\"min\"]')\n+    max_input = spectra_viewer.locator('input[name=\"max\"]')\n+    expect(min_input).to_be_visible()\n+    expect(max_input).to_be_visible()\n+\n+    # Get initial values (should be autoscaled)\n+    initial_min = min_input.input_value()\n+    initial_max = max_input.input_value()\n+    assert initial_min, \"Min input should have a value\"\n+    assert initial_max, \"Max input should have a value\"\n+    # Set min to 400\n+    min_input.click()\n+    min_input.fill(\"400\")\n+    min_input.press(\"Enter\")\n+    expect(min_input).to_have_value(\"400\")\n+\n+    # Set max to 600\n+    max_input.click()\n+    max_input.fill(\"600\")\n+    max_input.press(\"Enter\")\n+    expect(max_input).to_have_value(\"600\")\n+\n+    # Verify chart has zoomed by checking x-axis labels\n+    # Should see labels around 400-600 range, not the original full range\n+    x_axis_labels = spectra_viewer.locator(\".highcharts-xaxis-labels text\")\n+    # Note: Some labels may be hidden by XRangePickers positioning logic\n+    # Get all label values (including hidden ones) and verify they're in the expected range\n+    label_texts = x_axis_labels.all_text_contents()\n+    label_values = [int(text) for text in label_texts if text.strip() and text.strip().isdigit()]\n+    assert len(label_values) > 0, \"Should have numeric x-axis labels\"\n+    assert min(label_values) >= 400, f\"Min label {min(label_values)} should be >= 400\"\n+    assert max(label_values) <= 600, f\"Max label {max(label_values)} should be <= 600\"\n+\n+    # Test persistence: refresh the page and verify values are restored\n+    spectra_viewer.reload()\n+    spectra_viewer.wait_for_load_state(\"networkidle\")\n+\n+    # Wait for chart to reload\n+    expect(chart).to_be_visible()\n+    expect(min_input).to_be_visible()\n+    expect(max_input).to_be_visible()\n+\n+    # Verify values persisted\n+    expect(min_input).to_have_value(\"400\")\n+    expect(max_input).to_have_value(\"600\")\n+\n+    # Verify chart is still zoomed after reload\n+    label_texts_after = x_axis_labels.all_text_contents()\n+    label_values_after = [int(text) for text in label_texts_after if text.strip() and text.strip().isdigit()]\n+    min_label_after = min(label_values_after)\n+    max_label_after = max(label_values_after)\n+    assert min_label_after >= 400, f\"Min label after reload {min_label_after} should be >= 400\"\n+    assert max_label_after <= 600, f\"Max label after reload {max_label_after} should be <= 600\"\n+\n+    # click the reset zoom button to return to full range\n+    zoom_btn = spectra_viewer.locator(\"g.highcharts-reset-zoom\").first\n+    expect(zoom_btn).to_be_visible()\n+    zoom_btn.click()\n+    expect(min_input).to_have_value(initial_min)\n+    expect(max_input).to_have_value(initial_max)\n+\n+    # verify chart is back to full range\n+    label_texts_full = x_axis_labels.all_text_contents()\n+    label_values_full = [int(text) for text in label_texts_full if text.strip() and text.strip().isdigit()]\n+    assert min(label_values_full) == 300\n+    assert max(label_values_full) == 900\n+\n+\n+def test_x_range_url_parameters(live_server: LiveServer, page: Page) -> None:\n+    \"\"\"Test that xMin and xMax URL parameters correctly set initial chart range.\n+\n+    Verifies:\n+    1. URL with xMin/xMax parameters loads correctly\n+    2. Chart range matches URL parameters\n+    3. Range picker inputs show correct values\n+    \"\"\"\n+    egfp = create_egfp()\n+    ex_id = egfp.default_state.ex_spectrum.id\n+    em_id = egfp.default_state.em_spectrum.id\n+\n+    # Navigate with URL parameters including xMin and xMax\n+    url = f\"{live_server.url}{reverse('proteins:spectra')}?s={ex_id},{em_id}&xMin=420&xMax=580\"\n+    page.goto(url)\n+    page.wait_for_load_state(\"networkidle\")\n+\n+    # Wait for chart to load\n+    chart = page.locator(\".highcharts-container\")\n+    expect(chart).to_be_visible()\n+\n+    # Verify range picker inputs show the URL parameter values\n+    min_input = page.locator('input[name=\"min\"]')\n+    max_input = page.locator('input[name=\"max\"]')\n+    expect(min_input).to_be_visible()\n+    expect(max_input).to_be_visible()\n+    expect(min_input).to_have_value(\"420\")\n+    expect(max_input).to_have_value(\"580\")\n+\n+    # Verify chart is zoomed by checking x-axis labels\n+    x_axis_labels = page.locator(\".highcharts-xaxis-labels text\")\n+\n+    label_texts = x_axis_labels.all_text_contents()\n+    label_values = [int(text) for text in label_texts if text.strip() and text.strip().isdigit()]\n+    assert len(label_values) > 0, \"Should have numeric x-axis labels\"\n+    assert min(label_values) >= 420, f\"Min label {min(label_values)} should be >= 420\"\n+    assert max(label_values) <= 580, f\"Max label {max(label_values)} should be <= 580\"\n+\n+\n+def test_remove_all_spectra(spectra_viewer: Page) -> None:\n+    \"\"\"Test that removing all spectra from the viewer works correctly.\"\"\"\n+    # Add EGFP to the viewer\n+    x_axis_labels = spectra_viewer.locator(\".highcharts-xaxis-labels\")\n+    zoom_button = spectra_viewer.locator(\"text\").filter(has_text=\"Reset zoom\")\n+    expect(x_axis_labels).not_to_be_visible()\n+    expect(zoom_button).not_to_be_visible()\n+\n+    _add_egfp_to_viewer(spectra_viewer)\n+\n+    # manually set the xMax\n+    max_input = spectra_viewer.locator('input[name=\"max\"]')\n+    max_input.click()\n+    max_input.fill(\"600\")\n+    max_input.press(\"Enter\")\n+    expect(max_input).to_have_value(\"600\")\n+    expect(x_axis_labels).to_be_visible()\n+    expect(zoom_button).to_be_visible()\n+\n+    # blur the input to ensure the value is set\n+    max_input.blur()\n+\n+    # open config drawer with \",\"\n+    spectra_viewer.keyboard.press(\"Comma\")\n+    reset_btn = spectra_viewer.locator('button:has-text(\"Remove All Spectra\")')\n+    expect(reset_btn).to_be_visible()\n+    reset_btn.click()\n+    expect(x_axis_labels).not_to_be_visible()\n+    expect(zoom_button).not_to_be_visible()"
+    },
+    {
+      "sha": "6d68661abb139a1ff0534dae1e8da6557bc6b1c0",
+      "filename": "biome.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/50b281be891370aeb03e13f7ab510291a7ed644f/biome.json",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/50b281be891370aeb03e13f7ab510291a7ed644f/biome.json",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/biome.json?ref=50b281be891370aeb03e13f7ab510291a7ed644f",
+      "patch": "@@ -1,5 +1,5 @@\n {\n-  \"$schema\": \"https://biomejs.dev/schemas/2.3.2/schema.json\",\n+  \"$schema\": \"https://biomejs.dev/schemas/2.3.3/schema.json\",\n   \"assist\": {\n     \"actions\": {\n       \"source\": {"
+    },
+    {
+      "sha": "5a74fd67d2440b3b008e76081072cf02ad205646",
+      "filename": "justfile",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 3,
+      "changes": 3,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/50b281be891370aeb03e13f7ab510291a7ed644f/justfile",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/50b281be891370aeb03e13f7ab510291a7ed644f/justfile",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/justfile?ref=50b281be891370aeb03e13f7ab510291a7ed644f",
+      "patch": "@@ -44,9 +44,6 @@ prod-local:\n     DJANGO_SETTINGS_MODULE=config.settings.production_local \\\n         uv run gunicorn --chdir backend --workers 2 --worker-class sync --timeout 30 --bind 127.0.0.1:8000 config.wsgi:application\n \n-test-js:\n-    pnpm --filter @fpbase/spectra test:ci\n-\n test-e2e:\n     uv run pytest backend/tests_e2e/ -v -n=6 --browser chromium\n     uv run pytest backend/tests_e2e/ -v -n=6 --browser webkit"
+    },
+    {
+      "sha": "8e30624cda96970b5e28a4d12b2e4b612d9dce4c",
+      "filename": "packages/spectra/src/Components/SpectraViewer/SpectraViewer.jsx",
+      "status": "modified",
+      "additions": 77,
+      "deletions": 18,
+      "changes": 95,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/50b281be891370aeb03e13f7ab510291a7ed644f/packages%2Fspectra%2Fsrc%2FComponents%2FSpectraViewer%2FSpectraViewer.jsx",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/50b281be891370aeb03e13f7ab510291a7ed644f/packages%2Fspectra%2Fsrc%2FComponents%2FSpectraViewer%2FSpectraViewer.jsx",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/packages%2Fspectra%2Fsrc%2FComponents%2FSpectraViewer%2FSpectraViewer.jsx?ref=50b281be891370aeb03e13f7ab510291a7ed644f",
+      "patch": "@@ -26,7 +26,7 @@ import DEFAULT_OPTIONS from \"./ChartOptions\"\n import fixLogScale from \"./fixLogScale\"\n import NoData from \"./NoData\"\n import SpectrumSeries from \"./SpectrumSeries\"\n-import XRangePickers from \"./XRangePickers\"\n+import { XAxisRangeInputs } from \"./XAxisRangeInputs\"\n \n fixLogScale(Highcharts)\n \n@@ -95,13 +95,70 @@ const BaseSpectraViewerContainer = React.memo(function BaseSpectraViewerContaine\n     gridLineWidth: chartOptions.showGrid ? 1 : 0,\n   }\n \n+  const updateChartOptions = useSpectraStore((state) => state.updateChartOptions)\n+\n   const xAxis = {\n     ..._xAxis,\n     labels: {\n       ..._xAxis.labels,\n-      enabled: chartOptions.showX,\n+      enabled: chartOptions.showX && activeSpectra.length > 0,\n     },\n     gridLineWidth: chartOptions.showGrid ? 1 : 0,\n+    events: {\n+      ..._xAxis.events,\n+      afterSetExtremes: (event) => {\n+        // Call original handler for zoom-info display\n+        if (_xAxis.events?.afterSetExtremes) {\n+          _xAxis.events.afterSetExtremes(event)\n+        }\n+\n+        const { min, max, userMin, userMax, dataMin, dataMax, trigger } = event\n+\n+        // Only process user-initiated zoom events (not programmatic updates)\n+        // event.trigger can be: 'zoom', 'navigator', 'rangeSelectorButton', 'rangeSelectorInput', undefined\n+        // This check MUST come first to prevent programmatic updates (like restoring from sessionStorage)\n+        // from incorrectly clearing extremes\n+        const isUserZoom = trigger === \"zoom\"\n+        if (!isUserZoom) {\n+          return\n+        }\n+\n+        // Handle reset case: both min and max are null\n+        if (min === null && max === null) {\n+          if (chartOptions.extremes !== null) {\n+            updateChartOptions({ extremes: null })\n+          }\n+          return\n+        }\n+\n+        // If extremes match the full data range (with tolerance for Highcharts padding), treat as \"no zoom\" (reset)\n+        // This handles the case where user zooms out to full range or clicks reset zoom button\n+        const dataRange = dataMax - dataMin\n+        const tolerance = dataRange * 0.02 // 2% tolerance for padding\n+        const isFullDataRange =\n+          Math.abs(min - dataMin) <= tolerance && Math.abs(max - dataMax) <= tolerance\n+        if (isFullDataRange) {\n+          if (chartOptions.extremes !== null) {\n+            updateChartOptions({ extremes: null })\n+          }\n+          return\n+        }\n+\n+        // Zoom case - use userMin/userMax (actual zoom values set by user)\n+        const newMin = userMin ?? min\n+        const newMax = userMax ?? max\n+\n+        // Only update if extremes actually changed (prevents infinite loops)\n+        const currentMin = chartOptions.extremes?.[0]\n+        const currentMax = chartOptions.extremes?.[1]\n+\n+        if (currentMin !== newMin || currentMax !== newMax) {\n+          updateChartOptions({\n+            extremes: [newMin ?? null, newMax ?? null],\n+          })\n+        }\n+      },\n+    },\n   }\n \n   const tooltip = {\n@@ -142,20 +199,25 @@ export const BaseSpectraViewer = memo(function BaseSpectraViewer({\n   const nonExData = data.filter((i) => i.subtype !== \"EX\" && i.subtype !== \"AB\")\n \n   const height = calcHeight(windowWidth) * (chartOptions.height || 1)\n-  let showPickers = numSpectra > 0 && !chartOptions.simpleMode\n   if (chartOptions.zoomType !== undefined) {\n     _chart.zoomType = chartOptions.zoomType\n-    showPickers = chartOptions.zoomType !== null\n     // convert to no-op function\n     xAxis.events.afterSetExtremes = () => {}\n-    xAxis.min = chartOptions.extremes[0]\n-    xAxis.max = chartOptions.extremes[1]\n+    // Handle new extremes format: [number | null, number | null] | null\n+    if (chartOptions.extremes) {\n+      xAxis.min = chartOptions.extremes[0] ?? undefined\n+      xAxis.max = chartOptions.extremes[1] ?? undefined\n+    }\n   }\n   // Note: legendHeight is already accounted for by Highcharts internally\n   // Adding it here causes reflow issues when toggling series visibility\n \n   return (\n-    <div className=\"spectra-viewer\" style={{ position: \"relative\", height: height }}>\n+    <div\n+      id=\"spectra-viewer-container\"\n+      className=\"spectra-viewer\"\n+      style={{ position: \"relative\", height: height }}\n+    >\n       <span\n         id=\"zoom-info\"\n         style={{\n@@ -263,7 +325,13 @@ export const BaseSpectraViewer = memo(function BaseSpectraViewer({\n             <MyCredits hide={numSpectra < 1 || chartOptions.simpleMode} />\n           </YAxis>\n \n-          <XAxisWithRange options={xAxis} showPickers={showPickers} />\n+          <XAxis {...xAxis} lineWidth={numSpectra > 0 ? 1 : 0} id=\"xAxis\">\n+            <XAxis.Title style={{ display: \"none\" }}>Wavelength</XAxis.Title>\n+            <XAxisRangeInputs\n+              enabled={chartOptions.showX && numSpectra > 0}\n+              extremes={chartOptions.extremes}\n+            />\n+          </XAxis>\n         </HighchartsChart>\n       </HighchartsProvider>\n     </div>\n@@ -298,16 +366,7 @@ const MyCredits = function MyCredits({ hide }) {\n   )\n }\n \n-export const XAxisWithRange = memo(function XAxisWithRange({ options, showPickers }) {\n-  return (\n-    <XAxis {...options} lineWidth={showPickers ? 1 : 0} id=\"xAxis\">\n-      <XAxis.Title style={{ display: \"none\" }}>Wavelength</XAxis.Title>\n-      {showPickers && <XRangePickers visible={showPickers && options.labels.enabled} />}\n-    </XAxis>\n-  )\n-})\n-\n-const ExNormNotice = memo(function ExNormNotice({ exNorm, ecNorm, qyNorm, ownerInfo }) {\n+const ExNormNotice = memo(function ExNormNotice({ exNorm, ecNorm, qyNorm, ownerInfo = {} }) {\n   const exNormed = ecNorm && Object.keys(ownerInfo).length > 0\n   const emNormed = (exNorm || qyNorm) && Object.keys(ownerInfo).length > 0\n   return ("
+    },
+    {
+      "sha": "71ef062442c38bcb80dc4c08feb66f38c3081aff",
+      "filename": "packages/spectra/src/Components/SpectraViewer/XAxisRangeInputs.tsx",
+      "status": "added",
+      "additions": 372,
+      "deletions": 0,
+      "changes": 372,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/50b281be891370aeb03e13f7ab510291a7ed644f/packages%2Fspectra%2Fsrc%2FComponents%2FSpectraViewer%2FXAxisRangeInputs.tsx",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/50b281be891370aeb03e13f7ab510291a7ed644f/packages%2Fspectra%2Fsrc%2FComponents%2FSpectraViewer%2FXAxisRangeInputs.tsx",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/packages%2Fspectra%2Fsrc%2FComponents%2FSpectraViewer%2FXAxisRangeInputs.tsx?ref=50b281be891370aeb03e13f7ab510291a7ed644f",
+      "patch": "@@ -0,0 +1,372 @@\n+import Input from \"@mui/material/Input\"\n+import Tooltip from \"@mui/material/Tooltip\"\n+import Highcharts from \"highcharts\"\n+import type React from \"react\"\n+import { useCallback, useEffect, useMemo, useRef, useState } from \"react\"\n+import { createPortal } from \"react-dom\"\n+import { useAxis } from \"react-jsx-highcharts\"\n+import { useSpectraStore } from \"../../store/spectraStore\"\n+\n+interface XAxisRangeInputsProps {\n+  enabled?: boolean\n+  containerId?: string\n+  extremes?: [number | null, number | null] | null\n+}\n+\n+/**\n+ * Editable x-axis range inputs that replace/overlay the min/max axis labels.\n+ * Must be rendered as a child of the XAxis component to access the axis instance.\n+ * Uses a React Portal to render inputs in the correct position.\n+ */\n+export const XAxisRangeInputs: React.FC<XAxisRangeInputsProps> = ({\n+  enabled = true,\n+  containerId = \"spectra-viewer-container\",\n+  extremes: extremesProp,\n+}) => {\n+  const axis = useAxis()\n+  const storeExtremes = useSpectraStore((state) => state.chartOptions.extremes)\n+  const updateChartOptions = useSpectraStore((state) => state.updateChartOptions)\n+\n+  // Use provided extremes prop if available (for SimpleSpectraViewer with provideState)\n+  // Otherwise fall back to store extremes (for main app)\n+  const extremes = extremesProp !== undefined ? extremesProp : storeExtremes\n+  const [container, setContainer] = useState<HTMLElement | null>(null)\n+\n+  // Local state for input values (controlled inputs with validation on blur)\n+  const [minInput, setMinInput] = useState<string>(\"\")\n+  const [maxInput, setMaxInput] = useState<string>(\"\")\n+\n+  // Store extremes in a ref so updateInputsFromAxis doesn't need to depend on it\n+  const extremesRef = useRef(extremes)\n+\n+  // Update input values based on current axis state\n+  // Stable callback (doesn't change when extremes change) to avoid event listener churn\n+  const updateInputsFromAxis = useCallback(() => {\n+    if (!axis?.object) return\n+\n+    const axisMin = axis.object.min\n+    const axisMax = axis.object.max\n+    if (axisMin === undefined || axisMax === undefined) return\n+\n+    const currentExtremes = extremesRef.current\n+\n+    if (currentExtremes === null) {\n+      // No extremes set, show actual axis values as integers\n+      setMinInput(Math.round(axisMin).toString())\n+      setMaxInput(Math.round(axisMax).toString())\n+    } else {\n+      // Extremes are set, show them (or axis values if individual extremes are null)\n+      const minValue = currentExtremes[0] !== null ? currentExtremes[0] : axisMin\n+      const maxValue = currentExtremes[1] !== null ? currentExtremes[1] : axisMax\n+      setMinInput(Math.round(minValue).toString())\n+      setMaxInput(Math.round(maxValue).toString())\n+    }\n+  }, [axis])\n+\n+  // Update ref and inputs whenever extremes change\n+  useEffect(() => {\n+    extremesRef.current = extremes\n+    updateInputsFromAxis()\n+  }, [extremes, updateInputsFromAxis])\n+\n+  // Find the container element\n+  useEffect(() => {\n+    const element = document.getElementById(containerId)\n+    setContainer(element)\n+  }, [containerId])\n+\n+  // Position inputs and hide overlapping axis labels\n+  const [leftPad, setLeftPad] = useState(-5)\n+  const [rightPad, setRightPad] = useState(0)\n+  const prevPaddingRef = useRef({ left: -5, right: 0 })\n+\n+  const positionInputsAndHideLabels = useCallback(() => {\n+    if (!axis?.object) return\n+\n+    const chart = axis.object.chart\n+    if (!chart) return\n+\n+    // Calculate padding based on Y-axis title margins\n+    let left = -5\n+    // biome-ignore lint/suspicious/noExplicitAny: Highcharts internal axis properties not typed\n+    const yAx1 = chart.get(\"yAx1\") as any\n+    if (yAx1?.axisTitleMargin) {\n+      left += Number(yAx1.axisTitleMargin)\n+    }\n+\n+    let right = 0\n+    // biome-ignore lint/suspicious/noExplicitAny: Highcharts internal axis properties not typed\n+    const yAx2 = chart.get(\"yAx2\") as any\n+    if (yAx2?.axisTitleMargin) {\n+      right += Number(yAx2.axisTitleMargin)\n+    }\n+\n+    // Only update state if values changed\n+    if (left !== prevPaddingRef.current.left) {\n+      setLeftPad(left)\n+      prevPaddingRef.current.left = left\n+    }\n+    if (right !== prevPaddingRef.current.right) {\n+      setRightPad(right)\n+      prevPaddingRef.current.right = right\n+    }\n+\n+    // Hide axis labels that overlap with our inputs\n+    // biome-ignore lint/suspicious/noExplicitAny: Highcharts internal axis properties not typed\n+    const axisObj = axis.object as any\n+    if (axisObj.labelGroup?.element?.childNodes) {\n+      const { min: exMin, max: exMax } = axis.object.getExtremes()\n+      const tickInterval = axisObj.tickInterval\n+\n+      axisObj.labelGroup.element.childNodes.forEach((node: Element) => {\n+        const htmlNode = node as HTMLElement\n+        // Show all labels first\n+        htmlNode.style.display = \"block\"\n+\n+        // Hide labels that are close to min or max extremes\n+        const labelValue = Number(htmlNode.textContent)\n+        const distToMin = Math.abs(labelValue - exMin)\n+        const distToMax = Math.abs(labelValue - exMax)\n+        const minDist = Math.min(distToMin, distToMax)\n+\n+        if (minDist < 0.43 * tickInterval) {\n+          htmlNode.style.display = \"none\"\n+        }\n+      })\n+    }\n+  }, [axis])\n+\n+  // Listen to chart redraw and update inputs directly\n+  useEffect(() => {\n+    if (!axis?.object) return\n+\n+    const chart = axis.object.chart\n+    if (!chart) return\n+\n+    const handleUpdate = () => {\n+      updateInputsFromAxis()\n+      positionInputsAndHideLabels()\n+    }\n+\n+    // Listen to both redraw and afterSetExtremes to catch all axis changes\n+    const removeRedraw = Highcharts.addEvent(chart, \"redraw\", handleUpdate)\n+    const removeAfterSetExtremes = Highcharts.addEvent(\n+      axis.object,\n+      \"afterSetExtremes\",\n+      handleUpdate\n+    )\n+\n+    // Trigger initial update\n+    handleUpdate()\n+\n+    return () => {\n+      removeRedraw()\n+      removeAfterSetExtremes()\n+    }\n+  }, [axis, updateInputsFromAxis, positionInputsAndHideLabels])\n+\n+  // Apply extremes from store to chart\n+  useEffect(() => {\n+    if (!axis?.object) return\n+\n+    const chart = axis.object.chart\n+\n+    if (extremes === null) {\n+      // Reset zoom - Highcharts expects undefined (not null) for full reset\n+      if (enabled) {\n+        axis.object.setExtremes(undefined, undefined, true, false)\n+      }\n+      // Always hide reset zoom button when extremes are null, even if component is disabled\n+      // This ensures the button disappears when \"Remove All Spectra\" is clicked\n+      // biome-ignore lint/suspicious/noExplicitAny: Highcharts resetZoomButton not typed\n+      if (chart && (chart as any).resetZoomButton) {\n+        // biome-ignore lint/suspicious/noExplicitAny: Highcharts resetZoomButton not typed\n+        ;(chart as any).resetZoomButton = (chart as any).resetZoomButton.destroy()\n+      }\n+    } else if (enabled) {\n+      // Only apply extremes if component is enabled\n+      // undefined means \"use default/autoscale\", null in our store means \"unset\"\n+      const minValue = extremes[0] === null ? undefined : extremes[0]\n+      const maxValue = extremes[1] === null ? undefined : extremes[1]\n+\n+      axis.object.setExtremes(\n+        minValue,\n+        maxValue,\n+        true, // redraw\n+        false // no animation (prevents jarring updates)\n+      )\n+\n+      // Only show reset zoom button if at least one extreme is actually set to a number\n+      // (not just [null, null] which means no zoom)\n+      const hasActualExtremes = extremes[0] !== null || extremes[1] !== null\n+      if (hasActualExtremes && chart && typeof chart.showResetZoom === \"function\") {\n+        chart.showResetZoom()\n+      }\n+    }\n+  }, [axis, extremes, enabled])\n+\n+  // Shared blur handler logic for min/max inputs\n+  const handleRangeBlur = useCallback(\n+    (\n+      isMin: boolean,\n+      inputValue: string,\n+      setInputValue: (value: string) => void,\n+      axisValue: number | undefined\n+    ) => {\n+      if (!inputValue.trim()) {\n+        // Empty input = clear this extreme (keep the other)\n+        const newExtremes: [number | null, number | null] | null = extremes\n+          ? isMin\n+            ? [null, extremes[1]]\n+            : [extremes[0], null]\n+          : null\n+        updateChartOptions({ extremes: newExtremes })\n+        return\n+      }\n+\n+      const numValue = parseFloat(inputValue)\n+      if (Number.isNaN(numValue)) {\n+        // Invalid - reset to current value from extremes or axis\n+        if (axisValue === undefined) return\n+        const fallbackValue = isMin ? (extremes?.[0] ?? axisValue) : (extremes?.[1] ?? axisValue)\n+        setInputValue(Math.round(fallbackValue).toString())\n+        return\n+      }\n+\n+      // Valid - round to integer and update store\n+      const roundedValue = Math.round(numValue)\n+      const newExtremes: [number | null, number | null] = isMin\n+        ? [roundedValue, extremes?.[1] ?? null]\n+        : [extremes?.[0] ?? null, roundedValue]\n+      updateChartOptions({ extremes: newExtremes })\n+    },\n+    [extremes, updateChartOptions]\n+  )\n+\n+  // Handle min input change\n+  const handleMinChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {\n+    setMinInput(e.target.value)\n+  }, [])\n+\n+  // Handle min input blur (validation and commit)\n+  const handleMinBlur = useCallback(() => {\n+    handleRangeBlur(true, minInput, setMinInput, axis?.object?.min)\n+  }, [handleRangeBlur, minInput, axis])\n+\n+  // Handle max input change\n+  const handleMaxChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {\n+    setMaxInput(e.target.value)\n+  }, [])\n+\n+  // Handle max input blur (validation and commit)\n+  const handleMaxBlur = useCallback(() => {\n+    handleRangeBlur(false, maxInput, setMaxInput, axis?.object?.max)\n+  }, [handleRangeBlur, maxInput, axis])\n+\n+  // Handle Enter key to commit input\n+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {\n+    if (e.key === \"Enter\") {\n+      ;(e.target as HTMLInputElement).blur()\n+    }\n+  }, [])\n+\n+  // Calculate input colors based on clipping state\n+  // Gray = autoscale, Red = clipping data, Blue = user zoom (no clipping)\n+  // IMPORTANT: Must be before early return to satisfy Rules of Hooks\n+  const minColor = useMemo(() => {\n+    if (!extremes || extremes[0] === null) return \"#444\" // Autoscale\n+    if (!axis?.object) return \"#444\"\n+    // biome-ignore lint/suspicious/noExplicitAny: dataMin/dataMax not in Highcharts type definitions\n+    const axisObj = axis.object as any\n+    const isClipping =\n+      axisObj.dataMin !== undefined &&\n+      axis.object.min !== undefined &&\n+      axisObj.dataMin < axis.object.min\n+    return isClipping ? \"#B1191E\" : \"#5F67CE\"\n+  }, [extremes, axis])\n+\n+  const maxColor = useMemo(() => {\n+    if (!extremes || extremes[1] === null) return \"#444\" // Autoscale\n+    if (!axis?.object) return \"#444\"\n+    // biome-ignore lint/suspicious/noExplicitAny: dataMin/dataMax not in Highcharts type definitions\n+    const axisObj = axis.object as any\n+    const isClipping =\n+      axisObj.dataMax !== undefined &&\n+      axis.object.max !== undefined &&\n+      axisObj.dataMax > axis.object.max\n+    return isClipping ? \"#B1191E\" : \"#5F67CE\"\n+  }, [extremes, axis])\n+\n+  if (!enabled || !container) return null\n+\n+  // Shared tooltip configuration\n+  const tooltipSlotProps = {\n+    transition: { timeout: { enter: 150, exit: 400 } },\n+    tooltip: {\n+      sx: {\n+        backgroundColor: \"white\",\n+        color: \"rgba(0, 0, 0, 0.87)\",\n+        boxShadow: 1,\n+        fontSize: 12,\n+        margin: \"0 13px 7px\",\n+      },\n+    },\n+  }\n+\n+  // Shared input styles (position-specific styles applied inline)\n+  const baseInputSx = {\n+    position: \"absolute\" as const,\n+    width: 30,\n+    fontWeight: \"bold\",\n+    fontSize: \"0.75rem\",\n+    pointerEvents: \"auto\" as const,\n+    \"& input\": {\n+      textAlign: \"center\" as const,\n+    },\n+  }\n+\n+  const inputsElement = (\n+    <div\n+      style={{\n+        height: 0,\n+        position: \"relative\",\n+        bottom: 38,\n+        pointerEvents: \"none\",\n+      }}\n+    >\n+      <Tooltip\n+        title=\"Type to change min, clear to autoscale\"\n+        placement=\"top-end\"\n+        slotProps={tooltipSlotProps}\n+      >\n+        <Input\n+          name=\"min\"\n+          value={minInput}\n+          onChange={handleMinChange}\n+          onBlur={handleMinBlur}\n+          onKeyDown={handleKeyDown}\n+          type=\"text\"\n+          sx={{ ...baseInputSx, left: `${leftPad}px`, color: minColor }}\n+        />\n+      </Tooltip>\n+\n+      <Tooltip\n+        title=\"Type to change max, clear to autoscale\"\n+        placement=\"top-start\"\n+        slotProps={tooltipSlotProps}\n+      >\n+        <Input\n+          type=\"text\"\n+          name=\"max\"\n+          value={maxInput}\n+          onChange={handleMaxChange}\n+          onBlur={handleMaxBlur}\n+          onKeyDown={handleKeyDown}\n+          sx={{ ...baseInputSx, right: `${rightPad}px`, color: maxColor }}\n+        />\n+      </Tooltip>\n+    </div>\n+  )\n+\n+  return createPortal(inputsElement, container)\n+}"
+    },
+    {
+      "sha": "e0bc869a1cc1983a0c40e6f19cc5e48482830bb6",
+      "filename": "packages/spectra/src/Components/SpectraViewer/XRangePickers.jsx",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 213,
+      "changes": 213,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/db7a891aba83806fd7c889bf3920b054ae1a82d2/packages%2Fspectra%2Fsrc%2FComponents%2FSpectraViewer%2FXRangePickers.jsx",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/db7a891aba83806fd7c889bf3920b054ae1a82d2/packages%2Fspectra%2Fsrc%2FComponents%2FSpectraViewer%2FXRangePickers.jsx",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/packages%2Fspectra%2Fsrc%2FComponents%2FSpectraViewer%2FXRangePickers.jsx?ref=db7a891aba83806fd7c889bf3920b054ae1a82d2",
+      "patch": "@@ -1,213 +0,0 @@\n-import { Tooltip } from \"@mui/material\"\n-import Input from \"@mui/material/Input\"\n-import { withStyles } from \"@mui/styles\"\n-import React, { useEffect, useRef } from \"react\"\n-import { useAxis, useHighcharts } from \"react-jsx-highcharts\"\n-import { useSpectraStore } from \"../../store/spectraStore\"\n-\n-const LightTooltip = withStyles((theme) => ({\n-  tooltip: {\n-    backgroundColor: theme.palette.common.white,\n-    color: \"rgba(0, 0, 0, 0.87)\",\n-    boxShadow: theme.shadows[1],\n-    fontSize: 12,\n-    margin: \"0 13px 7px\",\n-  },\n-}))(Tooltip)\n-\n-const CLASSES = {\n-  minInput: {\n-    fontWeight: \"bold\",\n-    fontSize: \"0.75rem\",\n-    width: 30,\n-    color: \"#444\",\n-    position: \"absolute\",\n-  },\n-  maxInput: {\n-    position: \"absolute\",\n-    fontWeight: \"bold\",\n-    fontSize: \"0.75rem\",\n-    width: 30,\n-    color: \"#444\",\n-  },\n-}\n-\n-let counter = 0\n-const XRangePickers = ({ visible }) => {\n-  const axis = useAxis()\n-  const Highcharts = useHighcharts()\n-  const extremes = useSpectraStore((state) => state.chartOptions.extremes)\n-  const updateChartOptions = useSpectraStore((state) => state.updateChartOptions)\n-  const [min, max] = extremes || [null, null]\n-  const minNode = useRef()\n-  const maxNode = useRef()\n-  const forceUpdate = React.useState()[1]\n-\n-  useEffect(() => {\n-    if (!axis || !axis.object) return\n-    if (min || max) {\n-      // Only call setExtremes if the values are actually different from current axis extremes\n-      // This prevents infinite loop with handleAfterSetExtremes\n-      const current = axis.object.getExtremes()\n-      const targetMin = min && Math.round(min)\n-      const targetMax = max && Math.round(max)\n-      const currentMin = current.userMin && Math.round(current.min)\n-      const currentMax = current.userMax && Math.round(current.max)\n-\n-      // Only update if the extremes have actually changed\n-      if (targetMin !== currentMin || targetMax !== currentMax) {\n-        axis.setExtremes(targetMin, targetMax)\n-        if (min && max) {\n-          axis.object.chart.showResetZoom()\n-        }\n-      }\n-    }\n-  }, [axis, min, max])\n-\n-  useEffect(() => {\n-    if (!axis || !axis.object || !Highcharts) return\n-\n-    function handleAfterSetExtremes() {\n-      const e = axis.object.getExtremes()\n-      if (e) {\n-        const newExtremes = [e.userMin && Math.round(e.min), e.userMax && Math.round(e.max)]\n-        // Only update store if extremes actually changed (prevents infinite loop)\n-        const currentExtremes = useSpectraStore.getState().chartOptions.extremes || [null, null]\n-        if (newExtremes[0] !== currentExtremes[0] || newExtremes[1] !== currentExtremes[1]) {\n-          updateChartOptions({ extremes: newExtremes })\n-        }\n-        forceUpdate(counter++)\n-      }\n-    }\n-\n-    function positionInputs() {\n-      if (axis.object.labelGroup && minNode.current) {\n-        let leftPad = -5\n-        if (axis.object.chart.get(\"yAx1\")) {\n-          leftPad += +axis.object.chart.get(\"yAx1\").axisTitleMargin\n-        }\n-        let rightPad = 0\n-        if (axis.object.chart.get(\"yAx2\")) {\n-          rightPad += +axis.object.chart.get(\"yAx2\").axisTitleMargin\n-        }\n-        minNode.current.parentElement.style.left = `${leftPad}px`\n-        maxNode.current.parentElement.style.right = `${rightPad}px`\n-        axis.object.labelGroup.element.childNodes.forEach((node) => {\n-          node.style.display = \"block\"\n-        })\n-        const { min: exMin, max: exMax } = axis.getExtremes()\n-        axis.object.labelGroup.element.childNodes.forEach((node) => {\n-          if (\n-            Math.min(Math.abs(node.textContent - exMin), Math.abs(node.textContent - exMax)) <\n-            0.43 * axis.object.tickInterval\n-          ) {\n-            node.style.display = \"none\"\n-          }\n-        })\n-      }\n-    }\n-\n-    Highcharts.addEvent(axis.object.chart, \"redraw\", positionInputs)\n-    Highcharts.addEvent(axis.object, \"afterSetExtremes\", handleAfterSetExtremes)\n-    Highcharts.addEvent(axis.object.chart, \"redraw\", handleAfterSetExtremes)\n-\n-    handleAfterSetExtremes()\n-    positionInputs()\n-\n-    // Cleanup: remove ALL three event listeners\n-    return () => {\n-      if (axis?.object?.chart && Highcharts) {\n-        try {\n-          Highcharts.removeEvent(axis.object.chart, \"redraw\", positionInputs)\n-          Highcharts.removeEvent(axis.object, \"afterSetExtremes\", handleAfterSetExtremes)\n-          Highcharts.removeEvent(axis.object.chart, \"redraw\", handleAfterSetExtremes)\n-        } catch (_e) {\n-          // Ignore errors during cleanup if objects have been destroyed\n-        }\n-      }\n-    }\n-  }, [axis, Highcharts, updateChartOptions, forceUpdate]) // Added missing dependencies\n-\n-  const updateRange = () => {\n-    if (!axis) return\n-    const extremes = [+minNode.current.value || null, +maxNode.current.value || null]\n-    axis.setExtremes(...extremes)\n-  }\n-  const handleKeyPress = (e) => {\n-    if (e.key === \"Enter\") {\n-      updateRange()\n-      e.target.select()\n-    } else {\n-      if (e.target.name === \"min\") {\n-        minNode.current.value = e.target.value\n-      }\n-      if (e.target.name === \"max\") {\n-        maxNode.current.value = e.target.value\n-      }\n-    }\n-  }\n-\n-  if (!axis) return null\n-\n-  const axisExtremes = axis.getExtremes()\n-  const minColor = !axisExtremes.userMin\n-    ? \"444\"\n-    : axisExtremes.dataMin < axisExtremes.min\n-      ? \"#B1191E\"\n-      : \"#5F67CE\"\n-  const maxColor = !axisExtremes.userMax\n-    ? \"444\"\n-    : axisExtremes.dataMax > axisExtremes.max\n-      ? \"#B1191E\"\n-      : \"#5F67CE\"\n-\n-  return (\n-    <div\n-      className=\"x-range-pickers\"\n-      style={{\n-        height: 0,\n-        position: \"relative\",\n-        bottom: 38,\n-        display: visible ? \"block\" : \"none\",\n-      }}\n-    >\n-      <LightTooltip\n-        title=\"Type to change min, clear to autoscale\"\n-        placement=\"top-end\"\n-        TransitionProps={{ timeout: { enter: 150, exit: 400 } }}\n-      >\n-        <Input\n-          name=\"min\"\n-          type=\"text\"\n-          placeholder={`${axisExtremes.dataMin || \"\"}`}\n-          value={Math.round(min) || \"\"}\n-          inputRef={minNode}\n-          onChange={(e) => updateChartOptions({ extremes: [e.target.value, max] })}\n-          onKeyPress={handleKeyPress}\n-          onBlur={updateRange}\n-          style={{ ...CLASSES.minInput, color: minColor }}\n-          inputProps={{ style: { textAlign: \"center\" } }}\n-        />\n-      </LightTooltip>\n-      <LightTooltip\n-        title=\"Type to change max, clear to autoscale\"\n-        placement=\"top-start\"\n-        TransitionProps={{ timeout: { enter: 150, exit: 400 } }}\n-      >\n-        <Input\n-          name=\"max\"\n-          type=\"text\"\n-          placeholder={`${axisExtremes.dataMax || \"\"}`}\n-          value={Math.round(max) || \"\"}\n-          inputRef={maxNode}\n-          onChange={(e) => updateChartOptions({ extremes: [min, e.target.value] })}\n-          onKeyPress={handleKeyPress}\n-          onBlur={updateRange}\n-          style={{ ...CLASSES.maxInput, color: maxColor }}\n-          inputProps={{ style: { textAlign: \"center\" } }}\n-        />\n-      </LightTooltip>\n-    </div>\n-  )\n-}\n-export default XRangePickers"
+    },
+    {
+      "sha": "091efc02d5edc69f82d9ffa984ccbbe1e9e29163",
+      "filename": "packages/spectra/src/__tests__/SpectraViewer.test.jsx",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 23,
+      "changes": 23,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/db7a891aba83806fd7c889bf3920b054ae1a82d2/packages%2Fspectra%2Fsrc%2F__tests__%2FSpectraViewer.test.jsx",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/db7a891aba83806fd7c889bf3920b054ae1a82d2/packages%2Fspectra%2Fsrc%2F__tests__%2FSpectraViewer.test.jsx",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/packages%2Fspectra%2Fsrc%2F__tests__%2FSpectraViewer.test.jsx?ref=db7a891aba83806fd7c889bf3920b054ae1a82d2",
+      "patch": "@@ -1,23 +0,0 @@\n-import { describe, expect, it } from \"vitest\"\n-import {\n-  BaseSpectraViewer,\n-  SpectraViewerContainer,\n-  XAxisWithRange,\n-} from \"../Components/SpectraViewer/SpectraViewer\"\n-\n-describe(\"SpectraViewer exports\", () => {\n-  it(\"exports BaseSpectraViewer component\", () => {\n-    expect(BaseSpectraViewer).toBeDefined()\n-    expect(BaseSpectraViewer).toBeTruthy()\n-  })\n-\n-  it(\"exports XAxisWithRange component\", () => {\n-    expect(XAxisWithRange).toBeDefined()\n-    expect(XAxisWithRange).toBeTruthy()\n-  })\n-\n-  it(\"exports SpectraViewerContainer component\", () => {\n-    expect(SpectraViewerContainer).toBeDefined()\n-    expect(SpectraViewerContainer).toBeTruthy()\n-  })\n-})"
+    },
+    {
+      "sha": "00c71d2f05852331a97fd21c4ff57abb9df538a1",
+      "filename": "packages/spectra/src/__tests__/fixtures/spectra.js",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 146,
+      "changes": 146,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/db7a891aba83806fd7c889bf3920b054ae1a82d2/packages%2Fspectra%2Fsrc%2F__tests__%2Ffixtures%2Fspectra.js",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/db7a891aba83806fd7c889bf3920b054ae1a82d2/packages%2Fspectra%2Fsrc%2F__tests__%2Ffixtures%2Fspectra.js",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/packages%2Fspectra%2Fsrc%2F__tests__%2Ffixtures%2Fspectra.js?ref=db7a891aba83806fd7c889bf3920b054ae1a82d2",
+      "patch": "@@ -1,146 +0,0 @@\n-/**\n- * Test fixtures for spectrum data\n- * These mirror real data structures from the FPbase GraphQL API\n- */\n-\n-export const EGFP_STATE_OWNER = {\n-  __typename: \"State\",\n-  id: \"egfp-state\",\n-  slug: \"egfp\",\n-  name: \"EGFP\",\n-  // Fields from FluorophoreInterface fragment\n-  qy: 0.6,\n-  extCoeff: 55900,\n-  twopPeakgm: null,\n-  exMax: 488,\n-  emMax: 509,\n-}\n-\n-export const MCHERRY_STATE_OWNER = {\n-  __typename: \"State\",\n-  id: \"mcherry-state\",\n-  slug: \"mcherry\",\n-  name: \"mCherry\",\n-  // Fields from FluorophoreInterface fragment\n-  qy: 0.22,\n-  extCoeff: 72000,\n-  twopPeakgm: null,\n-  exMax: 587,\n-  emMax: 610,\n-}\n-\n-export const ALEXA488_DYE_OWNER = {\n-  __typename: \"Dye\",\n-  id: \"alexa-488\",\n-  slug: \"alexa-488\",\n-  name: \"Alexa Fluor 488\",\n-  // Fields from FluorophoreInterface fragment\n-  qy: 0.92,\n-  extCoeff: 71000,\n-  twopPeakgm: null,\n-  exMax: 495,\n-  emMax: 519,\n-}\n-\n-export const FILTER_OWNER = {\n-  __typename: \"Filter\",\n-  id: \"filter-1\",\n-  slug: \"bp-525-50\",\n-  name: \"BP 525/50\",\n-  // Filters don't implement FluorophoreInterface\n-  // so they don't have qy, extCoeff, etc.\n-}\n-\n-export const EGFP_EXCITATION_SPECTRUM = {\n-  __typename: \"Spectrum\",\n-  id: 18,\n-  category: \"P\",\n-  subtype: \"EX\",\n-  color: \"#00FF00\",\n-  data: [\n-    [350, 0.01],\n-    [400, 0.15],\n-    [450, 0.45],\n-    [488, 1.0],\n-    [520, 0.35],\n-    [550, 0.05],\n-  ],\n-  owner: EGFP_STATE_OWNER,\n-}\n-\n-export const EGFP_EMISSION_SPECTRUM = {\n-  __typename: \"Spectrum\",\n-  id: 17,\n-  category: \"P\",\n-  subtype: \"EM\",\n-  color: \"#00FF00\",\n-  data: [\n-    [450, 0.01],\n-    [480, 0.05],\n-    [509, 1.0],\n-    [550, 0.45],\n-    [600, 0.05],\n-  ],\n-  owner: EGFP_STATE_OWNER,\n-}\n-\n-export const MCHERRY_EXCITATION_SPECTRUM = {\n-  __typename: \"Spectrum\",\n-  id: 80,\n-  category: \"P\",\n-  subtype: \"EX\",\n-  color: \"#FF0066\",\n-  data: [\n-    [450, 0.05],\n-    [500, 0.15],\n-    [550, 0.55],\n-    [587, 1.0],\n-    [620, 0.25],\n-  ],\n-  owner: MCHERRY_STATE_OWNER,\n-}\n-\n-export const MCHERRY_EMISSION_SPECTRUM = {\n-  __typename: \"Spectrum\",\n-  id: 79,\n-  category: \"P\",\n-  subtype: \"EM\",\n-  color: \"#FF0066\",\n-  data: [\n-    [550, 0.01],\n-    [580, 0.08],\n-    [610, 1.0],\n-    [650, 0.45],\n-    [700, 0.05],\n-  ],\n-  owner: MCHERRY_STATE_OWNER,\n-}\n-\n-export const FILTER_SPECTRUM = {\n-  __typename: \"Spectrum\",\n-  id: 50,\n-  category: \"F\",\n-  subtype: \"BP\",\n-  color: \"#0000FF\",\n-  data: [\n-    [500, 0.0],\n-    [510, 0.9],\n-    [530, 0.9],\n-    [540, 0.0],\n-  ],\n-  owner: FILTER_OWNER,\n-}\n-\n-/**\n- * Helper to get spectrum by ID (mimics API behavior)\n- */\n-export function getSpectrumById(id) {\n-  const spectra = {\n-    17: EGFP_EMISSION_SPECTRUM,\n-    18: EGFP_EXCITATION_SPECTRUM,\n-    79: MCHERRY_EMISSION_SPECTRUM,\n-    80: MCHERRY_EXCITATION_SPECTRUM,\n-    50: FILTER_SPECTRUM,\n-  }\n-  return spectra[id] || null\n-}"
+    },
+    {
+      "sha": "97333e846a032a37baf7ca182bf306dcf33a1456",
+      "filename": "packages/spectra/src/__tests__/mockData.js",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 71,
+      "changes": 71,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/db7a891aba83806fd7c889bf3920b054ae1a82d2/packages%2Fspectra%2Fsrc%2F__tests__%2FmockData.js",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/db7a891aba83806fd7c889bf3920b054ae1a82d2/packages%2Fspectra%2Fsrc%2F__tests__%2FmockData.js",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/packages%2Fspectra%2Fsrc%2F__tests__%2FmockData.js?ref=db7a891aba83806fd7c889bf3920b054ae1a82d2",
+      "patch": "@@ -1,71 +0,0 @@\n-// Realistic spectrum data based on EGFP (excitation and emission)\n-export const mockSpectrumEGFP_EX = {\n-  id: 17,\n-  category: \"P\",\n-  subtype: \"EX\",\n-  color: \"#00FF00\",\n-  // Realistic EGFP excitation spectrum data: wavelength (nm), intensity (0-1)\n-  data: [\n-    [350, 0.01],\n-    [380, 0.05],\n-    [400, 0.15],\n-    [420, 0.35],\n-    [450, 0.75],\n-    [470, 0.95],\n-    [488, 1.0],\n-    [500, 0.85],\n-    [520, 0.25],\n-    [550, 0.05],\n-  ],\n-  owner: {\n-    id: \"egfp-state\",\n-    slug: \"egfp\",\n-    name: \"EGFP\",\n-    qy: 0.6,\n-    extCoeff: 55900,\n-    exMax: 488,\n-    emMax: 509,\n-  },\n-}\n-\n-export const mockSpectrumEGFP_EM = {\n-  id: 18,\n-  category: \"P\",\n-  subtype: \"EM\",\n-  color: \"#00FF00\",\n-  // Realistic EGFP emission spectrum data\n-  data: [\n-    [470, 0.01],\n-    [490, 0.15],\n-    [500, 0.45],\n-    [509, 1.0],\n-    [520, 0.95],\n-    [540, 0.65],\n-    [560, 0.35],\n-    [580, 0.15],\n-    [600, 0.05],\n-    [620, 0.01],\n-  ],\n-  owner: {\n-    id: \"egfp-state\",\n-    slug: \"egfp\",\n-    name: \"EGFP\",\n-    qy: 0.6,\n-    extCoeff: 55900,\n-    exMax: 488,\n-    emMax: 509,\n-  },\n-}\n-\n-export const mockChartOptions = {\n-  showY: false,\n-  showX: true,\n-  showGrid: false,\n-  areaFill: true,\n-  logScale: false,\n-  scaleEC: false,\n-  scaleQY: false,\n-  extremes: [null, null],\n-  shareTooltip: true,\n-  palette: \"wavelength\",\n-}"
+    },
+    {
+      "sha": "dbdaf12a54d34be656ce19d6e1ba34b19979824e",
+      "filename": "packages/spectra/src/__tests__/msw/handlers.js",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 115,
+      "changes": 115,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/db7a891aba83806fd7c889bf3920b054ae1a82d2/packages%2Fspectra%2Fsrc%2F__tests__%2Fmsw%2Fhandlers.js",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/db7a891aba83806fd7c889bf3920b054ae1a82d2/packages%2Fspectra%2Fsrc%2F__tests__%2Fmsw%2Fhandlers.js",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/packages%2Fspectra%2Fsrc%2F__tests__%2Fmsw%2Fhandlers.js?ref=db7a891aba83806fd7c889bf3920b054ae1a82d2",
+      "patch": "@@ -1,115 +0,0 @@\n-/**\n- * MSW (Mock Service Worker) handlers for GraphQL queries\n- * These intercept network requests during tests and return mock data\n- */\n-\n-import { graphql, HttpResponse } from \"msw\"\n-import { getSpectrumById } from \"../fixtures/spectra\"\n-\n-// Create GraphQL handler for FPbase GraphQL endpoint\n-const fpbaseGraphQL = graphql.link(\"http://test-endpoint/graphql/\")\n-\n-export const handlers = [\n-  // GET_SPECTRUM query handler\n-  fpbaseGraphQL.query(\"Spectrum\", ({ variables }) => {\n-    const { id } = variables\n-    const spectrum = getSpectrumById(Number(id))\n-\n-    if (!spectrum) {\n-      return HttpResponse.json({\n-        errors: [{ message: `Spectrum with id ${id} not found` }],\n-      })\n-    }\n-\n-    return HttpResponse.json({\n-      data: {\n-        spectrum,\n-      },\n-    })\n-  }),\n-\n-  // Handle batch spectrum queries (if needed)\n-  fpbaseGraphQL.query(\"BatchSpectra\", ({ variables }) => {\n-    const results = {}\n-\n-    // BatchSpectra query uses dynamic field names like spectrum_17, spectrum_18\n-    Object.keys(variables).forEach((key) => {\n-      const match = key.match(/^spectrum_(\\d+)$/)\n-      if (match) {\n-        const id = Number(match[1])\n-        const spectrum = getSpectrumById(id)\n-        if (spectrum) {\n-          results[key] = spectrum\n-        }\n-      }\n-    })\n-\n-    return HttpResponse.json({\n-      data: results,\n-    })\n-  }),\n-\n-  // GET_ACTIVE_SPECTRA query handler (client-side only, but can be mocked for integration tests)\n-  fpbaseGraphQL.query(\"ActiveSpectra\", () => {\n-    return HttpResponse.json({\n-      data: {\n-        activeSpectra: [\"17\", \"18\", \"79\", \"80\"],\n-      },\n-    })\n-  }),\n-\n-  // GET_CHART_OPTIONS query handler\n-  fpbaseGraphQL.query(\"ChartOptions\", () => {\n-    return HttpResponse.json({\n-      data: {\n-        chartOptions: {\n-          __typename: \"ChartOptions\",\n-          showY: true,\n-          showX: true,\n-          showGrid: false,\n-          areaFill: true,\n-          logScale: false,\n-          scaleEC: true,\n-          scaleQY: true,\n-          extremes: [null, null],\n-          shareTooltip: true,\n-          palette: \"wavelength\",\n-        },\n-      },\n-    })\n-  }),\n-]\n-\n-/**\n- * Create a custom handler for specific test scenarios\n- * Useful for testing error states or specific data combinations\n- */\n-export function createSpectrumHandler(id, customData) {\n-  return fpbaseGraphQL.query(\"Spectrum\", ({ variables }) => {\n-    if (variables.id === id) {\n-      return HttpResponse.json({\n-        data: {\n-          spectrum: customData,\n-        },\n-      })\n-    }\n-    // Fallback to default behavior\n-    const spectrum = getSpectrumById(Number(variables.id))\n-    return HttpResponse.json({\n-      data: {\n-        spectrum,\n-      },\n-    })\n-  })\n-}\n-\n-/**\n- * Create an error handler for testing error states\n- */\n-export function createErrorHandler(errorMessage = \"GraphQL error\") {\n-  return fpbaseGraphQL.query(\"Spectrum\", () => {\n-    return HttpResponse.json({\n-      errors: [{ message: errorMessage }],\n-    })\n-  })\n-}"
+    },
+    {
+      "sha": "e7b2086fe699055b7b45e8f105e02407ef733d70",
+      "filename": "packages/spectra/src/__tests__/setup.js",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 46,
+      "changes": 46,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/db7a891aba83806fd7c889bf3920b054ae1a82d2/packages%2Fspectra%2Fsrc%2F__tests__%2Fsetup.js",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/db7a891aba83806fd7c889bf3920b054ae1a82d2/packages%2Fspectra%2Fsrc%2F__tests__%2Fsetup.js",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/packages%2Fspectra%2Fsrc%2F__tests__%2Fsetup.js?ref=db7a891aba83806fd7c889bf3920b054ae1a82d2",
+      "patch": "@@ -1,46 +0,0 @@\n-import \"@testing-library/jest-dom\"\n-import { cleanup } from \"@testing-library/react\"\n-import { setupServer } from \"msw/node\"\n-import { afterAll, afterEach, beforeAll } from \"vitest\"\n-import { handlers } from \"./msw/handlers\"\n-\n-// Set up MSW server for API mocking\n-const server = setupServer(...handlers)\n-\n-// Start server before all tests\n-beforeAll(() => {\n-  server.listen({\n-    onUnhandledRequest: \"warn\", // Warn on unhandled requests instead of error\n-  })\n-\n-  // Suppress Highcharts warnings in test environment (no WebGL support in happy-dom)\n-  const originalConsoleError = console.error\n-  console.error = (...args) => {\n-    // Suppress Highcharts warning #26 (Boost module WebGL fallback)\n-    if (typeof args[0] === \"string\" && args[0].includes(\"Highcharts warning\")) {\n-      return\n-    }\n-    originalConsoleError.apply(console, args)\n-  }\n-})\n-\n-// Reset handlers after each test\n-afterEach(() => {\n-  server.resetHandlers()\n-  cleanup()\n-})\n-\n-// Close server after all tests\n-afterAll(() => {\n-  server.close()\n-})\n-\n-// Export server for tests that need to add custom handlers\n-export { server }\n-\n-// Mock Highcharts globally to avoid initialization issues in tests\n-global.Highcharts = {\n-  charts: [],\n-  addEvent: () => {},\n-  removeEvent: () => {},\n-}"
+    },
+    {
+      "sha": "b7857377235db721de1f9bd5ec62aff6aa93f361",
+      "filename": "packages/spectra/src/store/spectraStore.ts",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 2,
+      "changes": 8,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/50b281be891370aeb03e13f7ab510291a7ed644f/packages%2Fspectra%2Fsrc%2Fstore%2FspectraStore.ts",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/50b281be891370aeb03e13f7ab510291a7ed644f/packages%2Fspectra%2Fsrc%2Fstore%2FspectraStore.ts",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/packages%2Fspectra%2Fsrc%2Fstore%2FspectraStore.ts?ref=50b281be891370aeb03e13f7ab510291a7ed644f",
+      "patch": "@@ -166,15 +166,19 @@ export const useSpectraStore = create<SpectraStore>()(\n \n       // Clear all spectra and related state\n       clearAllSpectra: () =>\n-        set({\n+        set((state) => ({\n           activeSpectra: [],\n           activeOverlaps: [],\n           hiddenSpectra: [],\n           exNorm: defaults.exNorm,\n+          chartOptions: {\n+            ...state.chartOptions,\n+            extremes: null,\n+          },\n           customFilters: {},\n           customLasers: {},\n           overlapCache: {},\n-        }),\n+        })),\n \n       // URL initialization tracking\n       setUrlInitialized: (value) => set({ _urlInitialized: value }),"
+    },
+    {
+      "sha": "6cc2ba65cb6ca38d0350581fb7f23ccd52cf5287",
+      "filename": "packages/spectra/src/types/index.ts",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/50b281be891370aeb03e13f7ab510291a7ed644f/packages%2Fspectra%2Fsrc%2Ftypes%2Findex.ts",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/50b281be891370aeb03e13f7ab510291a7ed644f/packages%2Fspectra%2Fsrc%2Ftypes%2Findex.ts",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/packages%2Fspectra%2Fsrc%2Ftypes%2Findex.ts?ref=50b281be891370aeb03e13f7ab510291a7ed644f",
+      "patch": "@@ -101,7 +101,7 @@ export interface ChartOptions {\n   logScale: boolean\n   scaleEC: boolean\n   scaleQY: boolean\n-  extremes: [number, number] | null\n+  extremes: [number | null, number | null] | null\n   shareTooltip: boolean\n   palette: string\n }"
+    },
+    {
+      "sha": "8109b8f8ebe6b24ead12a80b4deac3a6bfce918d",
+      "filename": "packages/spectra/src/utils/urlParams.ts",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 7,
+      "changes": 21,
+      "blob_url": "https://github.com/tlambert03/FPbase/blob/50b281be891370aeb03e13f7ab510291a7ed644f/packages%2Fspectra%2Fsrc%2Futils%2FurlParams.ts",
+      "raw_url": "https://github.com/tlambert03/FPbase/raw/50b281be891370aeb03e13f7ab510291a7ed644f/packages%2Fspectra%2Fsrc%2Futils%2FurlParams.ts",
+      "contents_url": "https://api.github.com/repos/tlambert03/FPbase/contents/packages%2Fspectra%2Fsrc%2Futils%2FurlParams.ts?ref=50b281be891370aeb03e13f7ab510291a7ed644f",
+      "patch": "@@ -164,13 +164,19 @@ export function parseURLParams(search: string): SpectraURLState {\n   }\n \n   // Extremes (support both 'min'+'max' and legacy 'xMin'+'xMax' formats)\n+  // Allow individual extremes to be set (e.g., only min or only max)\n   const minParam = params.get(\"min\") || params.get(\"xMin\")\n   const maxParam = params.get(\"max\") || params.get(\"xMax\")\n-  if (minParam !== null && maxParam !== null) {\n-    const min = Number.parseFloat(minParam)\n-    const max = Number.parseFloat(maxParam)\n-    if (!Number.isNaN(min) && !Number.isNaN(max)) {\n-      chartOptions.extremes = [min, max]\n+  if (minParam !== null || maxParam !== null) {\n+    const min = minParam !== null ? Number.parseFloat(minParam) : null\n+    const max = maxParam !== null ? Number.parseFloat(maxParam) : null\n+\n+    // Only set extremes if at least one valid number was parsed\n+    if ((min !== null && !Number.isNaN(min)) || (max !== null && !Number.isNaN(max))) {\n+      chartOptions.extremes = [\n+        min !== null && !Number.isNaN(min) ? min : null,\n+        max !== null && !Number.isNaN(max) ? max : null,\n+      ]\n       hasChartOptions = true\n     }\n   }\n@@ -238,13 +244,14 @@ export function serializeURLParams(state: SpectraURLState): string {\n     }\n \n     // Extremes - use xMin/xMax for backwards compatibility\n+    // Always round to integers to avoid floating point values in URLs\n     if (state.chartOptions.extremes && Array.isArray(state.chartOptions.extremes)) {\n       const [xMin, xMax] = state.chartOptions.extremes\n       if (xMin !== null && xMin !== undefined) {\n-        params.set(\"xMin\", String(xMin))\n+        params.set(\"xMin\", String(Math.round(xMin)))\n       }\n       if (xMax !== null && xMax !== undefined) {\n-        params.set(\"xMax\", String(xMax))\n+        params.set(\"xMax\", String(Math.round(xMax)))\n       }\n     }\n   }"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "a70a6fdc17c619b1e6292e0bc0f5c7eacc10ef3a",
+      "message": "remove old picker",
+      "parent_shas": [
+        "5da2353ff50ddfc13b97d3fb6e9b42cc189dcd4d"
+      ]
+    },
+    {
+      "sha": "6c016da7ce54019ece8a71639a3ea1f86b0f21c8",
+      "message": "decent",
+      "parent_shas": [
+        "a70a6fdc17c619b1e6292e0bc0f5c7eacc10ef3a"
+      ]
+    },
+    {
+      "sha": "e9461567eacaff3431ff500e125b35a4586e9202",
+      "message": "hide x",
+      "parent_shas": [
+        "6c016da7ce54019ece8a71639a3ea1f86b0f21c8"
+      ]
+    },
+    {
+      "sha": "e92c889d92ec63fab4524f4ce54571524ac3a498",
+      "message": "bring back styles",
+      "parent_shas": [
+        "e9461567eacaff3431ff500e125b35a4586e9202"
+      ]
+    },
+    {
+      "sha": "c5fbd011e6fd8682b3481608b862aa4664e8c4eb",
+      "message": "tests",
+      "parent_shas": [
+        "e92c889d92ec63fab4524f4ce54571524ac3a498"
+      ]
+    },
+    {
+      "sha": "ce02e4df2f45c693cfb8aeef4512142482324113",
+      "message": "remove doc",
+      "parent_shas": [
+        "c5fbd011e6fd8682b3481608b862aa4664e8c4eb"
+      ]
+    },
+    {
+      "sha": "e1c6d0d1d73c32dfe84d130219bbf57f42b5a750",
+      "message": "refactor: optimize padding updates and extract shared blur handler logic",
+      "parent_shas": [
+        "ce02e4df2f45c693cfb8aeef4512142482324113"
+      ]
+    },
+    {
+      "sha": "eed11b8cd2c05c077703dcefff47723a0335689c",
+      "message": "colors",
+      "parent_shas": [
+        "e1c6d0d1d73c32dfe84d130219bbf57f42b5a750"
+      ]
+    },
+    {
+      "sha": "da41e6bd4363f7084c32543d8693076f44f83292",
+      "message": "fix bugs",
+      "parent_shas": [
+        "eed11b8cd2c05c077703dcefff47723a0335689c"
+      ]
+    },
+    {
+      "sha": "6f644cd1e76bd1bc29c542057010e6e02a1d87a1",
+      "message": "Merge branch 'main' into new-xrange-picker",
+      "parent_shas": [
+        "da41e6bd4363f7084c32543d8693076f44f83292",
+        "db7a891aba83806fd7c889bf3920b054ae1a82d2"
+      ]
+    },
+    {
+      "sha": "64195f4984ef39d57f09f70cd0c875143206b7ce",
+      "message": "[pre-commit.ci] auto fixes from pre-commit.com hooks\n\nfor more information, see https://pre-commit.ci",
+      "parent_shas": [
+        "6f644cd1e76bd1bc29c542057010e6e02a1d87a1"
+      ]
+    },
+    {
+      "sha": "ee280de856cb42463e4a0909bfdc11bcb3051bbd",
+      "message": "remove unused",
+      "parent_shas": [
+        "da41e6bd4363f7084c32543d8693076f44f83292"
+      ]
+    },
+    {
+      "sha": "02da9e1222ec02ac0903c8692dd0694806a74adc",
+      "message": "Merge branch 'new-xrange-picker' of https://github.com/tlambert03/FPbase into new-xrange-picker",
+      "parent_shas": [
+        "ee280de856cb42463e4a0909bfdc11bcb3051bbd",
+        "64195f4984ef39d57f09f70cd0c875143206b7ce"
+      ]
+    },
+    {
+      "sha": "50b281be891370aeb03e13f7ab510291a7ed644f",
+      "message": "fix test",
+      "parent_shas": [
+        "02da9e1222ec02ac0903c8692dd0694806a74adc"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__tlambert03__FPbase__pr359.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\tlambert03__FPbase__pr359__py2_py3__tlambert03__FPbase__pr359\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\tlambert03__FPbase__pr359__py2_py3__tlambert03__FPbase__pr359\\rn"
+  }
+}

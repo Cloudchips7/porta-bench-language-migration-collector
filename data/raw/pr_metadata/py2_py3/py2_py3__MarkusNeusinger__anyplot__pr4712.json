@@ -1,0 +1,142 @@
+{
+  "instance_id": "py2_py3__MarkusNeusinger__anyplot__pr4712",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "MarkusNeusinger/anyplot",
+  "pr_number": 4712,
+  "pr_url": "https://github.com/MarkusNeusinger/anyplot/pull/4712",
+  "repo": {
+    "full_name": "MarkusNeusinger/anyplot",
+    "clone_url": "https://github.com/MarkusNeusinger/anyplot.git",
+    "default_branch": "main",
+    "created_at": "2025-11-18T18:15:06Z",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 33528
+  },
+  "pull_request": {
+    "id": 3372801788,
+    "title": "feat(pygal): implement calibration-beer-lambert",
+    "body": "## Implementation: `calibration-beer-lambert` - pygal\n\nImplements the **pygal** version of `calibration-beer-lambert`.\n\n**File:** `plots/calibration-beer-lambert/implementations/pygal.py`\n\n**Parent Issue:** #4410\n\n---\n:robot: *[impl-generate workflow](https://github.com/MarkusNeusinger/pyplots/actions/runs/22849775852)*",
+    "created_at": "2026-03-09T10:49:04Z",
+    "merged_at": "2026-03-09T11:14:45Z",
+    "base_sha": "2c6085732254985ead89ee5a9f8ef23179a7ccf1",
+    "head_sha": "2748fa4abc8641c0ad82491a3d6226b9d7e94543",
+    "merge_commit_sha": "1012d650241712290bd699aaefa7a870586b63c4",
+    "labels": [
+      "ai-attempt-1",
+      "ai-attempt-2",
+      "ai-approved",
+      "quality:91",
+      "quality:82",
+      "quality:76"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "e1d493dfd2597861bad51303cda140e8ee4cd021",
+  "final_sha": "2748fa4abc8641c0ad82491a3d6226b9d7e94543",
+  "changed_files": [
+    {
+      "sha": "461d72a44df681a06dfbd16eda59b730dd147fe6",
+      "filename": "plots/calibration-beer-lambert/implementations/pygal.py",
+      "status": "added",
+      "additions": 146,
+      "deletions": 0,
+      "changes": 146,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/2748fa4abc8641c0ad82491a3d6226b9d7e94543/plots%2Fcalibration-beer-lambert%2Fimplementations%2Fpygal.py",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/2748fa4abc8641c0ad82491a3d6226b9d7e94543/plots%2Fcalibration-beer-lambert%2Fimplementations%2Fpygal.py",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fcalibration-beer-lambert%2Fimplementations%2Fpygal.py?ref=2748fa4abc8641c0ad82491a3d6226b9d7e94543",
+      "patch": "@@ -0,0 +1,146 @@\n+\"\"\" pyplots.ai\n+calibration-beer-lambert: Beer-Lambert Calibration Curve\n+Library: pygal 3.1.0 | Python 3.14.3\n+Quality: 91/100 | Created: 2026-03-09\n+\"\"\"\n+\n+import numpy as np\n+import pygal\n+from pygal.style import Style\n+from scipy import stats\n+\n+\n+# Data: Calibration standards for copper sulfate at 810 nm\n+np.random.seed(42)\n+concentration = np.array([0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0])\n+true_absorbance = 0.045 * concentration + 0.003\n+noise = np.random.normal(0, 0.004, len(concentration))\n+absorbance = true_absorbance + noise\n+absorbance[0] = 0.002\n+\n+# Linear regression\n+slope, intercept, r_value, p_value, std_err = stats.linregress(concentration, absorbance)\n+r_squared = r_value**2\n+\n+# Regression line points (tightened to data range)\n+conc_fit = np.linspace(-0.3, 12.8, 100)\n+abs_fit = slope * conc_fit + intercept\n+\n+# Prediction interval\n+n = len(concentration)\n+conc_mean = np.mean(concentration)\n+se_fit = std_err * np.sqrt(1 + 1 / n + (conc_fit - conc_mean) ** 2 / np.sum((concentration - conc_mean) ** 2))\n+t_crit = stats.t.ppf(0.975, n - 2)\n+upper_band = abs_fit + t_crit * se_fit\n+lower_band = abs_fit - t_crit * se_fit\n+\n+# Unknown sample\n+unknown_absorbance = 0.350\n+unknown_concentration = (unknown_absorbance - intercept) / slope\n+\n+# Style with refined guide colors for subtle grid\n+custom_style = Style(\n+    background=\"white\",\n+    plot_background=\"white\",\n+    foreground=\"#2c3e50\",\n+    foreground_strong=\"#2c3e50\",\n+    foreground_subtle=\"#e8e8e8\",\n+    colors=(\"#306998\", \"#1a5276\", \"#5a9abf\", \"#c0392b\"),\n+    guide_stroke_color=\"#e8e8e8\",\n+    major_guide_stroke_color=\"#d5d5d5\",\n+    guide_stroke_dasharray=\"2,2\",\n+    major_guide_stroke_dasharray=\"\",\n+    title_font_size=72,\n+    label_font_size=48,\n+    major_label_font_size=44,\n+    legend_font_size=44,\n+    value_font_size=36,\n+    tooltip_font_size=36,\n+    stroke_width=5,\n+    opacity=0.95,\n+    opacity_hover=1.0,\n+)\n+\n+# Chart with custom CSS to hide axis spines/frame lines\n+chart = pygal.XY(\n+    style=custom_style,\n+    width=4800,\n+    height=2700,\n+    title=\"calibration-beer-lambert · pygal · pyplots.ai\",\n+    x_title=\"Concentration (mg/L)\",\n+    y_title=\"Absorbance\",\n+    show_dots=True,\n+    dots_size=18,\n+    show_x_guides=False,\n+    show_y_guides=True,\n+    xrange=(-0.3, 13.0),\n+    range=(-0.02, 0.62),\n+    legend_at_bottom=True,\n+    legend_at_bottom_columns=4,\n+    legend_box_size=30,\n+    truncate_legend=-1,\n+    margin=50,\n+    margin_top=80,\n+    margin_bottom=200,\n+    tooltip_fancy_mode=True,\n+    tooltip_border_radius=8,\n+    print_labels=False,\n+    x_value_formatter=lambda x: f\"{x:.1f}\",\n+    y_value_formatter=lambda y: f\"{y:.3f}\",\n+    css=[\"file://style.css\", \"file://graph.css\", \"inline:.axis > .line { stroke: transparent !important; }\"],\n+)\n+\n+# Calibration standards with rich value dicts for interactive tooltips\n+std_points = [\n+    {\"value\": (float(c), float(a)), \"label\": f\"Standard {i + 1}: {c:.1f} mg/L, A = {a:.4f}\", \"color\": \"#306998\"}\n+    for i, (c, a) in enumerate(zip(concentration, absorbance, strict=False))\n+]\n+chart.add(\"Calibration Standards\", std_points, stroke=False, dots_size=18)\n+\n+# Regression fit line\n+fit_points = [\n+    {\"value\": (float(x), float(y)), \"label\": f\"Fit: A = {slope:.4f} × {x:.1f} + {intercept:.4f} = {y:.4f}\"}\n+    for x, y in zip(conc_fit, abs_fit, strict=False)\n+]\n+chart.add(\n+    f\"Fit: A = {slope:.4f}·C + {intercept:.4f} (R² = {r_squared:.4f})\",\n+    fit_points,\n+    show_dots=False,\n+    stroke_style={\"width\": 5},\n+)\n+\n+# Prediction interval — both bands in a single series to avoid empty legend\n+# Upper band followed by lower band with a None gap\n+pi_points = [\n+    {\"value\": (float(x), float(y)), \"label\": f\"Upper 95% PI: {y:.4f} at C = {x:.1f}\"}\n+    for x, y in zip(conc_fit, upper_band, strict=False)\n+]\n+pi_points.append(None)\n+pi_points.extend(\n+    {\"value\": (float(x), float(y)), \"label\": f\"Lower 95% PI: {y:.4f} at C = {x:.1f}\"}\n+    for x, y in zip(conc_fit, lower_band, strict=False)\n+)\n+chart.add(\"95% Prediction Interval\", pi_points, show_dots=False, stroke_style={\"width\": 4}, stroke_dasharray=\"10,5\")\n+\n+# Unknown sample crosshair — both H and V lines in single series\n+unknown_points = [\n+    {\"value\": (-0.3, unknown_absorbance), \"label\": f\"Unknown: A = {unknown_absorbance:.3f}\"},\n+    {\n+        \"value\": (float(unknown_concentration), unknown_absorbance),\n+        \"label\": f\"Intersection: C = {unknown_concentration:.2f} mg/L\",\n+    },\n+    None,\n+    {\"value\": (float(unknown_concentration), unknown_absorbance), \"label\": f\"C = {unknown_concentration:.2f} mg/L\"},\n+    {\"value\": (float(unknown_concentration), 0.0), \"label\": f\"Determined: {unknown_concentration:.2f} mg/L\"},\n+]\n+chart.add(\n+    f\"Unknown → {unknown_concentration:.2f} mg/L\",\n+    unknown_points,\n+    stroke_dasharray=\"14,7\",\n+    dots_size=14,\n+    stroke_style={\"width\": 4},\n+)\n+\n+# Save — dual render leveraging pygal's native SVG+HTML interactivity\n+chart.render_to_png(\"plot.png\")\n+chart.render_to_file(\"plot.html\")"
+    },
+    {
+      "sha": "397f7ae8a1bcd77d6dc80f9de3fd3478d0dcaccc",
+      "filename": "plots/calibration-beer-lambert/metadata/pygal.yaml",
+      "status": "added",
+      "additions": 234,
+      "deletions": 0,
+      "changes": 234,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/2748fa4abc8641c0ad82491a3d6226b9d7e94543/plots%2Fcalibration-beer-lambert%2Fmetadata%2Fpygal.yaml",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/2748fa4abc8641c0ad82491a3d6226b9d7e94543/plots%2Fcalibration-beer-lambert%2Fmetadata%2Fpygal.yaml",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fcalibration-beer-lambert%2Fmetadata%2Fpygal.yaml?ref=2748fa4abc8641c0ad82491a3d6226b9d7e94543",
+      "patch": "@@ -0,0 +1,234 @@\n+library: pygal\n+specification_id: calibration-beer-lambert\n+created: '2026-03-09T10:48:59Z'\n+updated: '2026-03-09T11:14:27Z'\n+generated_by: claude-opus-4-5-20251101\n+workflow_run: 22849775852\n+issue: 4410\n+python_version: 3.14.3\n+library_version: 3.1.0\n+preview_url: https://storage.googleapis.com/pyplots-images/plots/calibration-beer-lambert/pygal/plot.png\n+preview_thumb: https://storage.googleapis.com/pyplots-images/plots/calibration-beer-lambert/pygal/plot_thumb.png\n+preview_html: https://storage.googleapis.com/pyplots-images/plots/calibration-beer-lambert/pygal/plot.html\n+quality_score: 91\n+review:\n+  strengths:\n+  - Excellent spec compliance with all required features (regression equation, R-squared,\n+    prediction interval, unknown sample crosshair)\n+  - Strong library mastery with CSS injection for spine removal and rich value dicts\n+    for interactive tooltips\n+  - Realistic analytical chemistry context (copper sulfate UV-Vis at 810 nm)\n+  - Clean visual hierarchy with blue calibration data vs red unknown determination\n+  - Dual render (PNG + HTML) properly leverages pygal SVG interactivity\n+  weaknesses:\n+  - Prediction interval band is very narrow due to near-perfect fit (R-squared=0.9998),\n+    reducing its visual impact as a teaching element\n+  - Monospace font rendering from pygal SVG engine is slightly less polished than\n+    proportional fonts\n+  image_description: 'The plot displays a Beer-Lambert calibration curve on a white\n+    background with the title \"calibration-beer-lambert · pygal · pyplots.ai\" at the\n+    top. Seven blue circular calibration standard data points are plotted at concentrations\n+    0, 2, 4, 6, 8, 10, and 12 mg/L, showing a clear linear relationship between concentration\n+    (x-axis, \"Concentration (mg/L)\") and absorbance (y-axis, \"Absorbance\"). A solid\n+    blue regression fit line passes through the data. Two light blue dashed lines\n+    show the 95% prediction interval flanking the regression line (narrow due to excellent\n+    R²=0.9998 fit). A red dashed crosshair marks the unknown sample: a horizontal\n+    line from the y-axis at A=0.350 to the intersection with the fit line at ~7.66\n+    mg/L, then a vertical dashed line drops to the x-axis. Axis spines are hidden\n+    via CSS injection. Subtle light-gray horizontal grid lines provide y-axis reference.\n+    The legend at the bottom displays four items in a single row: \"Calibration Standards\",\n+    \"Fit: A = 0.0453·C + 0.0028 (R² = 0.9998)\", \"95% Prediction Interval\", and \"Unknown\n+    → 7.66 mg/L\". The overall appearance is clean and professional with intentional\n+    color hierarchy (blue for calibration data, red for the unknown).'\n+  criteria_checklist:\n+    visual_quality:\n+      score: 28\n+      max: 30\n+      items:\n+      - id: VQ-01\n+        name: Text Legibility\n+        score: 7\n+        max: 8\n+        passed: true\n+        comment: Font sizes explicitly set (title=72, labels=48, major_labels=44,\n+          legend=44); all readable. Minor deduction for monospace rendering.\n+      - id: VQ-02\n+        name: No Overlap\n+        score: 6\n+        max: 6\n+        passed: true\n+        comment: No overlapping text anywhere. Legend, axis labels, and tick labels\n+          all fully readable.\n+      - id: VQ-03\n+        name: Element Visibility\n+        score: 5\n+        max: 6\n+        passed: true\n+        comment: Calibration dots clearly visible (dots_size=18). PI bands narrow\n+          due to excellent fit (R²=0.9998).\n+      - id: VQ-04\n+        name: Color Accessibility\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: Blue vs red provides excellent colorblind-safe contrast.\n+      - id: VQ-05\n+        name: Layout & Canvas\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: Good canvas utilization with balanced margins. Legend at bottom well-positioned.\n+      - id: VQ-06\n+        name: Axis Labels & Title\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: Concentration (mg/L) with units, Absorbance (dimensionless as spec\n+          requires).\n+    design_excellence:\n+      score: 14\n+      max: 20\n+      items:\n+      - id: DE-01\n+        name: Aesthetic Sophistication\n+        score: 6\n+        max: 8\n+        passed: true\n+        comment: Custom blue/red palette, CSS spine removal, subtle guide colors.\n+          Above defaults, professional and clean.\n+      - id: DE-02\n+        name: Visual Refinement\n+        score: 4\n+        max: 6\n+        passed: true\n+        comment: Spines removed via CSS, subtle y-axis-only grid, good whitespace.\n+          Some refinement but monospace font limits polish.\n+      - id: DE-03\n+        name: Data Storytelling\n+        score: 4\n+        max: 6\n+        passed: true\n+        comment: Red unknown crosshair creates focal point. Blue-to-red hierarchy\n+          guides viewer from calibration to determination.\n+    spec_compliance:\n+      score: 15\n+      max: 15\n+      items:\n+      - id: SC-01\n+        name: Plot Type\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Correct XY scatter with linear regression calibration curve.\n+      - id: SC-02\n+        name: Required Features\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: 'All features: regression equation, R², prediction interval, unknown\n+          sample crosshair.'\n+      - id: SC-03\n+        name: Data Mapping\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: X=concentration, Y=absorbance, correctly assigned.\n+      - id: SC-04\n+        name: Title & Legend\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: Title matches required format. Legend labels descriptive and accurate.\n+    data_quality:\n+      score: 15\n+      max: 15\n+      items:\n+      - id: DQ-01\n+        name: Feature Coverage\n+        score: 6\n+        max: 6\n+        passed: true\n+        comment: 'Shows all calibration curve aspects: blank, standards, regression,\n+          PI, unknown determination.'\n+      - id: DQ-02\n+        name: Realistic Context\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Copper sulfate at 810 nm — real UV-Vis spectrophotometry scenario.\n+      - id: DQ-03\n+        name: Appropriate Scale\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: Concentrations 0-12 mg/L, absorbance 0-0.55, slope ~0.045 — realistic\n+          for Beer-Lambert.\n+    code_quality:\n+      score: 10\n+      max: 10\n+      items:\n+      - id: CQ-01\n+        name: KISS Structure\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: 'Linear flow: imports, data, regression, chart config, series, save.\n+          No functions/classes.'\n+      - id: CQ-02\n+        name: Reproducibility\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: np.random.seed(42) set at beginning.\n+      - id: CQ-03\n+        name: Clean Imports\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: 'All imports used: numpy, pygal, Style, scipy.stats.'\n+      - id: CQ-04\n+        name: Code Elegance\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: Clean, well-organized. Rich value dicts and PI None-gap pattern are\n+          elegant.\n+      - id: CQ-05\n+        name: Output & API\n+        score: 1\n+        max: 1\n+        passed: true\n+        comment: Saves as plot.png and plot.html. Current pygal API.\n+    library_mastery:\n+      score: 9\n+      max: 10\n+      items:\n+      - id: LM-01\n+        name: Idiomatic Usage\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: 'Expert pygal usage: XY chart, rich value dicts, custom Style, formatters,\n+          tooltip config.'\n+      - id: LM-02\n+        name: Distinctive Features\n+        score: 4\n+        max: 5\n+        passed: true\n+        comment: CSS injection for spines, rich value dicts for tooltips, dual render\n+          PNG+HTML, tooltip_fancy_mode.\n+  verdict: APPROVED\n+impl_tags:\n+  dependencies:\n+  - scipy\n+  techniques:\n+  - hover-tooltips\n+  - html-export\n+  - custom-legend\n+  patterns:\n+  - data-generation\n+  dataprep:\n+  - regression\n+  styling:\n+  - minimal-chrome\n+  - grid-styling"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "416d69c2a9cf959cbb6a8fd58b18ce3d115ac2dd",
+      "message": "feat(pygal): implement calibration-beer-lambert",
+      "parent_shas": [
+        "e1d493dfd2597861bad51303cda140e8ee4cd021"
+      ]
+    },
+    {
+      "sha": "c31d188d809102bdf01f0ffb7c47c322fcf5d537",
+      "message": "chore(pygal): add metadata for calibration-beer-lambert",
+      "parent_shas": [
+        "416d69c2a9cf959cbb6a8fd58b18ce3d115ac2dd"
+      ]
+    },
+    {
+      "sha": "51453123459bbf75443326c91aff6ea9f2f05112",
+      "message": "chore(pygal): update quality score 76 and review feedback for calibration-beer-lambert",
+      "parent_shas": [
+        "c31d188d809102bdf01f0ffb7c47c322fcf5d537"
+      ]
+    },
+    {
+      "sha": "177ca4c3559167e53bebc755331ac32e78d33a3a",
+      "message": "chore(pygal): update quality score 82 and review feedback for calibration-beer-lambert",
+      "parent_shas": [
+        "51453123459bbf75443326c91aff6ea9f2f05112"
+      ]
+    },
+    {
+      "sha": "a4ae98384686c55ee03b257393795b0200424660",
+      "message": "fix(pygal): address review feedback for calibration-beer-lambert\n\nAttempt 2/3 - fixes based on AI review",
+      "parent_shas": [
+        "177ca4c3559167e53bebc755331ac32e78d33a3a"
+      ]
+    },
+    {
+      "sha": "3e574a11c657027331c8770383d9fadb4307d097",
+      "message": "chore(pygal): update quality score 91 and review feedback for calibration-beer-lambert",
+      "parent_shas": [
+        "a4ae98384686c55ee03b257393795b0200424660"
+      ]
+    },
+    {
+      "sha": "2748fa4abc8641c0ad82491a3d6226b9d7e94543",
+      "message": "Merge branch 'main' into implementation/calibration-beer-lambert/pygal",
+      "parent_shas": [
+        "3e574a11c657027331c8770383d9fadb4307d097",
+        "2c6085732254985ead89ee5a9f8ef23179a7ccf1"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__MarkusNeusinger__anyplot__pr4712.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4712__py2_py3__MarkusNeusinger__anyplot__pr4712\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4712__py2_py3__MarkusNeusinger__anyplot__pr4712\\rn"
+  }
+}

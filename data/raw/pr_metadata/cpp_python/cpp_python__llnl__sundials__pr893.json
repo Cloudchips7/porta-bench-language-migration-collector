@@ -1,0 +1,244 @@
+{
+  "instance_id": "cpp_python__llnl__sundials__pr893",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "llnl/sundials",
+  "pr_number": 893,
+  "pr_url": "https://github.com/llnl/sundials/pull/893",
+  "repo": {
+    "full_name": "llnl/sundials",
+    "clone_url": "https://github.com/llnl/sundials.git",
+    "default_branch": "main",
+    "created_at": "2017-10-05T17:20:03Z",
+    "stars": 645,
+    "license": "BSD-3-Clause",
+    "size_kb": 269771
+  },
+  "pull_request": {
+    "id": 3469249560,
+    "title": "Add a AGENTS.md and a couple of SKILLS",
+    "body": "Add an [AGENTS.md](https://agents.md/) and some [SKILLS](https://agentskills.io/home) for us to get started with!",
+    "created_at": "2026-03-30T23:37:20Z",
+    "merged_at": "2026-04-02T20:58:05Z",
+    "base_sha": "bcb4124abc35eea28894e596b1d0616fe99e7c82",
+    "head_sha": "c628187f8bc631a0b35651508d2f65fcd0123966",
+    "merge_commit_sha": "00da703d4b183b3141ee360da8341f58c6c70a3b",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "d140e64cd95237f33c38c375cfbfdc9107224e0b",
+  "final_sha": "c628187f8bc631a0b35651508d2f65fcd0123966",
+  "changed_files": [
+    {
+      "sha": "4b1e998a89970f5f663c18b18014c9eb0dc14c07",
+      "filename": ".agents/skills/building/SKILL.md",
+      "status": "added",
+      "additions": 87,
+      "deletions": 0,
+      "changes": 87,
+      "blob_url": "https://github.com/llnl/sundials/blob/c628187f8bc631a0b35651508d2f65fcd0123966/.agents%2Fskills%2Fbuilding%2FSKILL.md",
+      "raw_url": "https://github.com/llnl/sundials/raw/c628187f8bc631a0b35651508d2f65fcd0123966/.agents%2Fskills%2Fbuilding%2FSKILL.md",
+      "contents_url": "https://api.github.com/repos/llnl/sundials/contents/.agents%2Fskills%2Fbuilding%2FSKILL.md?ref=c628187f8bc631a0b35651508d2f65fcd0123966",
+      "patch": "@@ -0,0 +1,87 @@\n+---\n+name: building\n+description: Build, install, and test SUNDIALS from source as an end user or as a SUNDIALS developer. Use when a request involves configuring CMake, selecting compilers/options (MPI, GPU backends, Fortran), building/installing, running CTest, enabling dev/unit tests, or troubleshooting common build/test issues.\n+---\n+\n+# Build SUNDIALS (user then developer)\n+\n+Prefer out-of-source CMake builds. Never build in the source tree.\n+\n+If you need full option details or platform-specific notes, open `doc/shared/sundials/Install.rst` (search for “Configuration options”, “Build Type”, “Compilers”, and “Example Programs”).\n+\n+For CI-like, multi-config testing use `test/test_driver.sh` (supports `--testtype pr|release|branch` and `--buildjobs/--testjobs`).\n+\n+Python bindings (sundials4py) are driven by `pyproject.toml` and `scikit-build-core`:\n+`python -m pip install -e \".[dev]\"` then `pytest`.\n+\n+## User build (install + consume)\n+\n+1) Configure (choose an install prefix):\n+\n+```bash\n+cmake -S . -B build \\\n+  -DCMAKE_BUILD_TYPE=Release \\\n+  -DCMAKE_INSTALL_PREFIX=\"$PWD/install\"\n+```\n+\n+2) Build and install:\n+\n+```bash\n+cmake --build build -j\n+cmake --install build\n+```\n+\n+3) Use SUNDIALS from another CMake project:\n+\n+- Set `SUNDIALS_DIR` to the SUNDIALS install tree (or to the installed CMake package dir) and use `find_package(SUNDIALS REQUIRED)`; link with exported targets like `SUNDIALS::cvode`. If you link via CMake targets, the required `libsundials_core` dependency is handled automatically.\n+\n+### Common user options\n+\n+- **Examples**: examples are usually enabled by default for C; enable others as needed:\n+  - `-DSUNDIALS_ENABLE_C_EXAMPLES=ON`\n+  - `-DSUNDIALS_ENABLE_CXX_EXAMPLES=ON`\n+  - `-DSUNDIALS_ENABLE_FORTRAN_EXAMPLES=ON` (requires Fortran)\n+  - `-DSUNDIALS_ENABLE_CUDA_EXAMPLES=ON` (requires CUDA enabled)\n+  - If working with older option names, note that `EXAMPLES_ENABLE_C`/`EXAMPLES_ENABLE_CXX`/etc. are deprecated in favor of the `SUNDIALS_ENABLE_*_EXAMPLES` options.\n+- **MPI**: `-DSUNDIALS_ENABLE_MPI=ON`\n+- **Fortran interfaces**: `-DSUNDIALS_ENABLE_FORTRAN=ON`\n+- **Build type**: `Debug` (slow, checks), `Release` (fast), `RelWithDebInfo` (good default)\n+\n+## Developer build (iterate + test)\n+\n+Use a separate build directory per configuration (e.g., `build-debug`, `build-gcc`, `build-mpi`).\n+\n+### Configure for development\n+\n+```bash\n+cmake -S . -B build-dev \\\n+  -DCMAKE_BUILD_TYPE=Debug \\\n+  -DBUILD_TESTING=ON \\\n+  -DSUNDIALS_TEST_ENABLE_DEV_TESTS=ON \\\n+  -DSUNDIALS_TEST_ENABLE_UNIT_TESTS=ON\n+```\n+\n+Optional tightening (CI-like):\n+\n+- Warnings: `-DSUNDIALS_ENABLE_ALL_WARNINGS=ON`\n+- Warnings as errors: `-DCMAKE_COMPILE_WARNING_AS_ERROR=ON`\n+- Sanitizers (compiler support required): `-DSUNDIALS_ENABLE_ADDRESS_SANITIZER=ON` (and/or leak/undefined/thread variants)\n+\n+### Build and run tests\n+\n+```bash\n+cmake --build build-dev -j\n+ctest --test-dir build-dev --output-on-failure\n+```\n+\n+Notes:\n+\n+- If tests that compare against “answer files” fail due to platform differences, consider rerunning with a locally-generated answer directory using `SUNDIALS_TEST_ANSWER_DIR` (see `doc/superbuild/source/developers/testing/CTest.rst`).\n+- To focus on a subset, use CTest filters (e.g., `ctest --test-dir build-dev -R <regex>`).\n+\n+## Troubleshooting checklist\n+\n+- **CMake refuses in-source build**: delete any accidental `CMakeCache.txt` in the source tree; configure with `-B <builddir>`.\n+- **Changed options not taking effect**: start from a fresh build directory or clear cache (`rm -rf build-dev`).\n+- **Wrong compiler/MPI wrapper**: set `CC`, `CXX`, `FC` env vars before configuring, or pass `-DCMAKE_<LANG>_COMPILER=...`.\n+- **Link errors after enabling a backend/TPL**: confirm that the corresponding `SUNDIALS_ENABLE_*` option is ON and that required dependencies are discoverable (use `CMAKE_PREFIX_PATH`)."
+    },
+    {
+      "sha": "37f2a4e97cfb6dda0b4740f789dc6d85c16c25fc",
+      "filename": ".agents/skills/new-module/SKILL.md",
+      "status": "added",
+      "additions": 155,
+      "deletions": 0,
+      "changes": 155,
+      "blob_url": "https://github.com/llnl/sundials/blob/c628187f8bc631a0b35651508d2f65fcd0123966/.agents%2Fskills%2Fnew-module%2FSKILL.md",
+      "raw_url": "https://github.com/llnl/sundials/raw/c628187f8bc631a0b35651508d2f65fcd0123966/.agents%2Fskills%2Fnew-module%2FSKILL.md",
+      "contents_url": "https://api.github.com/repos/llnl/sundials/contents/.agents%2Fskills%2Fnew-module%2FSKILL.md?ref=c628187f8bc631a0b35651508d2f65fcd0123966",
+      "patch": "@@ -0,0 +1,155 @@\n+---\n+name: new-module\n+description: Add a new SUNDIALS module (e.g., NVECTOR_*, SUNMATRIX_*, SUNLINSOL_*, SUNNONLINSOL_*, SUNMEMORY_*, or a new shared component) including source/header layout, CMake wiring, enable/disable options, exported CMake targets, installed component registration, and developer tests/examples/docs updates.\n+---\n+\n+# Create a new SUNDIALS module\n+\n+Follow existing module patterns; copy the closest neighbor (same category + similar dependencies) and adapt minimally.\n+\n+Open these files as references when needed:\n+\n+- `src/<category>/CMakeLists.txt` (how modules are conditionally added)\n+- `cmake/SundialsBuildOptionsPost.cmake` (module enable options + `SUNDIALS_BUILD_LIST`)\n+- `cmake/macros/SundialsAddLibrary.cmake` (how `sundials_add_library` installs headers and registers components)\n+- `doc/shared/sundials/Install.rst` (user-visible options / CMake targets)\n+- `test/unit_tests/<category>/` (how unit tests are wired)\n+\n+## 1) Decide what “module” means\n+\n+Pick one of these patterns; it determines naming, options, and wiring:\n+\n+- **Native always-built module** (e.g., `SUNMATRIX_BAND`, `SUNLINSOL_SPGMR`): always enabled; no user option.\n+- **Optional module gated by a TPL/backend** (e.g., CUDA/HIP/Kokkos/Ginkgo): add `SUNDIALS_ENABLE_<CATEGORY>_<NAME>` option with `DEPENDS_ON ...`.\n+- **Header-only / interface-only module** (rare): uses an `INTERFACE` library; you must manually register it as an installed component.\n+- **Internal-only helper**: can be `OBJECT_LIB_ONLY` (no installed component/target intended for end users).\n+\n+If the module is user-visible, prefer “optional module” (with a CMake option) over ad-hoc logic.\n+\n+## 2) Choose names (directory, library, headers, CMake target)\n+\n+Keep names consistent with existing modules in the same category:\n+\n+- **Source dir**: `src/<category>/<name>/` (e.g., `src/sunlinsol/spgmr/`)\n+- **Public header(s)**: `include/<category>/<category>_<name>.<h|hpp>` (e.g., `include/sunlinsol/sunlinsol_spgmr.h`)\n+- **CMake/Library target**: `sundials_<category><name>` (e.g., `sundials_sunlinsolspgmr`)\n+- **Exported target for consumers**: `SUNDIALS::<category><name>` (auto-created by `sundials_add_library`)\n+- **Enable option** (if optional): `SUNDIALS_ENABLE_<CATEGORY>_<NAME>` (e.g., `SUNDIALS_ENABLE_SUNMATRIX_CUSPARSE`)\n+\n+Use existing capitalization conventions:\n+\n+- options use `SUNDIALS_ENABLE_<...>` with category in uppercase (NVECTOR/SUNMATRIX/SUNLINSOL/…)\n+- messages often say `Added <CATEGORY>_<NAME> module`\n+\n+## 3) Add sources + headers\n+\n+Create:\n+\n+- `src/<category>/<name>/<implementation>.c` (and/or `.cpp` if needed)\n+- `include/<category>/<category>_<name>.h` (public API; installable)\n+- `src/<category>/<name>/CMakeLists.txt` (module build rules)\n+\n+Avoid installing “private” headers. If a header is only for the module implementation, keep it under `src/<category>/<name>/` and do not list it in `HEADERS`.\n+\n+## 4) Add the module CMakeLists.txt\n+\n+For standard compiled modules, use `sundials_add_library` (preferred):\n+\n+- `SOURCES ...`\n+- `HEADERS ${SUNDIALS_SOURCE_DIR}/include/<category>/<category>_<name>.h`\n+- `INCLUDE_SUBDIR <category>`\n+- `LINK_LIBRARIES PUBLIC sundials_core` (+ any TPL targets)\n+- `OUTPUT_NAME sundials_<category><name>`\n+- `VERSION`/`SOVERSION` using the category’s variables (see neighboring modules)\n+\n+Reference examples:\n+\n+- `src/nvector/serial/CMakeLists.txt`\n+- `src/sunmatrix/band/CMakeLists.txt`\n+- `src/sunlinsol/spgmr/CMakeLists.txt`\n+\n+Notes:\n+\n+- `sundials_add_library` automatically:\n+  - installs the listed headers to `${CMAKE_INSTALL_INCLUDEDIR}/<category>`\n+  - registers the module as an installed component for `SUNDIALSConfig.cmake`\n+  - creates the `SUNDIALS::<...>` alias for build-tree usage\n+- If you add Fortran 2003 wrappers like other modules do, gate them under `if(SUNDIALS_ENABLE_FORTRAN)` and mirror the existing `fmod_int${SUNDIALS_INDEX_SIZE}` pattern.\n+\n+## 5) Wire the module into the build (add_subdirectory)\n+\n+Edit `src/<category>/CMakeLists.txt` to include your module:\n+\n+- Always-built: `add_subdirectory(<name>)`\n+- Optional: wrap with `if(SUNDIALS_ENABLE_<CATEGORY>_<NAME>) ... endif()`\n+\n+For categories that are listed in `src/CMakeLists.txt` (e.g., `nvector`, `sunmatrix`, `sunlinsol`, …), you usually only need to change the category-level `CMakeLists.txt`.\n+\n+## 6) Add/adjust the enable option and build-list registration\n+\n+If the module is optional and should appear in `sundials_config.h` (and in build summaries), add an option in `cmake/SundialsBuildOptionsPost.cmake`:\n+\n+- Add `sundials_option(SUNDIALS_ENABLE_<CATEGORY>_<NAME> BOOL \"... module ...\" <default> DEPENDS_ON ...)`\n+- Append to build list: `list(APPEND SUNDIALS_BUILD_LIST \"SUNDIALS_ENABLE_<CATEGORY>_<NAME>\")`\n+\n+Pick appropriate dependencies:\n+\n+- CUDA modules: `DEPENDS_ON SUNDIALS_ENABLE_CUDA` (and sometimes `CMAKE_CUDA_COMPILER`)\n+- MPI modules: `DEPENDS_ON SUNDIALS_ENABLE_MPI`\n+- TPL modules: depend on the corresponding `SUNDIALS_ENABLE_<TPL>` option\n+\n+If the module is required and must not be disabled, follow the pattern:\n+\n+```cmake\n+set(SUNDIALS_ENABLE_<CATEGORY>_<NAME> TRUE)\n+list(APPEND SUNDIALS_BUILD_LIST \"SUNDIALS_ENABLE_<CATEGORY>_<NAME>\")\n+```\n+\n+## 7) Handle “installed components” for INTERFACE-only modules\n+\n+If you implement a module as an `INTERFACE` library (no `sundials_add_library`), you must manually add it to `_SUNDIALS_INSTALLED_COMPONENTS` so that `find_package(SUNDIALS COMPONENTS ...)` can work.\n+\n+Reference patterns:\n+\n+- `src/sunmatrix/CMakeLists.txt` (Ginkgo/KokkosDense interface modules)\n+- `src/sunlinsol/CMakeLists.txt` (Ginkgo/KokkosDense interface modules)\n+\n+## 8) Tests, examples, and docs (when user-visible)\n+\n+Do the smallest set that proves correctness and prevents regressions:\n+\n+- **Unit tests**: add under `test/unit_tests/<category>/...` and gate by your enable option if optional.\n+- **Examples**: add under `examples/<package>/<lang>_<backend>/...` only if it materially helps users.\n+- **Docs**:\n+  - If users must know about a new option/target, update `doc/shared/sundials/Install.rst`.\n+  - If it’s a user-visible feature, also update `doc/shared/RecentChanges.rst` and/or `CHANGELOG.md` per repo conventions.\n+\n+## 9) Local validation commands\n+\n+Configure/build (pick options that enable your module), then run focused tests first:\n+\n+```bash\n+cmake -S . -B build-dev -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON\n+cmake --build build-dev -j\n+ctest --test-dir build-dev --output-on-failure -R <your-module-regex>\n+```\n+\n+If you added a new enable option, confirm it shows up in `build-dev/include/sundials/sundials_config.h`.\n+\n+## 10) Language bindings\n+\n+Only add language bindings when they are applicable:\n+\n+- The module is user-visible (i.e., part of the public API users are expected to call), and\n+- The module’s category already has existing Fortran and/or Python bindings.\n+\n+If Fortran bindings are applicable:\n+\n+- Add the SWIG interface file in `swig/` and add it to `swig/Makefile` appropriately.\n+- Generate the Fortran interface code and commit the generated sources.\n+\n+If Python bindings are applicable:\n+\n+- Add the module as a neighbor to the other modules of the same type in `bindings/sundials4py`.\n+- Add it to the `generate.yaml` with the appropriate neighbors.\n+- Generate the Python binding code to commit, and always format it first."
+    },
+    {
+      "sha": "e59ea57c197582bd05a4ff657ad0fd15e879c3bf",
+      "filename": "AGENTS.md",
+      "status": "added",
+      "additions": 39,
+      "deletions": 0,
+      "changes": 39,
+      "blob_url": "https://github.com/llnl/sundials/blob/c628187f8bc631a0b35651508d2f65fcd0123966/AGENTS.md",
+      "raw_url": "https://github.com/llnl/sundials/raw/c628187f8bc631a0b35651508d2f65fcd0123966/AGENTS.md",
+      "contents_url": "https://api.github.com/repos/llnl/sundials/contents/AGENTS.md?ref=c628187f8bc631a0b35651508d2f65fcd0123966",
+      "patch": "@@ -0,0 +1,39 @@\n+# Repository Guidelines\n+\n+## Project Structure\n+\n+- `src/` and `include/`: core SUNDIALS C/C++ sources and public headers, organized by package (e.g., `cvode/`, `ida/`) or module (e.g., `nvector/`, `sunlinsol/`).\n+- `examples/`: buildable examples (C, C++, CUDA, etc.) wired into CMake.\n+- `test/`: test infrastructure, answer files, and `test/unit_tests/` (optionally includes GoogleTest-based tests).\n+- `cmake/`: CMake modules and option definitions (e.g., example/test toggles).\n+- `bindings/` and `swig/`: language bindings (notably `bindings/sundials4py`).\n+- `doc/`: user/developer documentation sources.\n+\n+## Build, Test, and Development Commands\n+\n+Refer to [`.agents/skills/building/SKILL.md`](.agents/skills/building/SKILL.md).\n+\n+## Coding Style & Naming\n+\n+- C/C++: follow `.clang-format` (2-space indent); format before pushing.\n+- CMake: keep listfile style consistent with `.cmake-format.py`.\n+- Fortran: formatted via `fprettify --indent 2`.\n+- Python: formatted with Black (configured in `pyproject.toml`).\n+\n+Formatting helpers:\n+`./scripts/format.sh src include cmake test bindings`\n+`./scripts/spelling.sh` (uses `codespell` and may edit files).\n+\n+## Testing Guidelines\n+\n+- Primary harness: CTest (`ctest --test-dir build`).\n+- Unit tests: enable with `-DSUNDIALS_TEST_ENABLE_UNIT_TESTS=ON` (and optionally `-DSUNDIALS_TEST_ENABLE_GTEST=ON`).\n+- Keep new features paired with targeted tests; update answer files under `test/answers/` only when output changes are intended.\n+\n+## Commits & Pull Requests\n+\n+- Target the `develop` branch.\n+- Use clear, scoped subjects; common patterns in history include `CMake: ...`, `CI: ...`, `Docs: ...`, `Tools: ...`.\n+- All commits must include a DCO sign-off: use `git commit -s`.\n+- PRs should include: what/why, how it was tested, and updates to `CHANGELOG.md` and `doc/shared/RecentChanges.rst` when user-visible.\n+"
+    },
+    {
+      "sha": "47dc3e3d863cfb5727b87d785d09abf9743c0a72",
+      "filename": "CLAUDE.md",
+      "status": "added",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/llnl/sundials/blob/c628187f8bc631a0b35651508d2f65fcd0123966/CLAUDE.md",
+      "raw_url": "https://github.com/llnl/sundials/raw/c628187f8bc631a0b35651508d2f65fcd0123966/CLAUDE.md",
+      "contents_url": "https://api.github.com/repos/llnl/sundials/contents/CLAUDE.md?ref=c628187f8bc631a0b35651508d2f65fcd0123966",
+      "patch": "@@ -0,0 +1 @@\n+AGENTS.md\n\\ No newline at end of file"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "458cb249475ae09ffd81d41fbcb18a69e8949840",
+      "message": "add AGENTS.md",
+      "parent_shas": [
+        "d140e64cd95237f33c38c375cfbfdc9107224e0b"
+      ]
+    },
+    {
+      "sha": "ce9f3e1474c5e43e3bedece8de3f62fba45ba8b0",
+      "message": "Feature: Add support for Kokkos 5.x (#875)\n\nKokkos 5.0 removed `Kokkos::MemoryManaged` and `view_type::HostMirror`\nUse `Kokkos::MemoryTraits<0>` until v4.7+ is required\nUse `view_type::host_mirror_type` when using v5+",
+      "parent_shas": [
+        "458cb249475ae09ffd81d41fbcb18a69e8949840"
+      ]
+    },
+    {
+      "sha": "a74892465dd8219f13c75d479eefc39290858b90",
+      "message": "CMake: Update package options to SUNDIALS_ENABLE_ (#876)\n\nChange package cmake option prefixes from `BUILD_` to `SUNDIALS_ENABLE_`\nFix some missed `SUNDIALS_BUILD_BENCHMARKS` to\n`SUNDIALS_ENABLE_BENCHMARKS` updates\nFix some doc strings",
+      "parent_shas": [
+        "ce9f3e1474c5e43e3bedece8de3f62fba45ba8b0"
+      ]
+    },
+    {
+      "sha": "5c8b3f43c4363c9071882a5c7b4fbc311139eab4",
+      "message": "CMake: Prefix post options with `SUNDIALS_BUILD_` (#837)\n\n* Update SUNDIALS post options to use `SUNDIALS_ENABLE_` instead of\n`BUILD_`\n* Fix `DEPENDS_ON` for `SUNDIALS_ENABLE_CALIPER` and\n`SUNDIALS_ENABLE_ADIAK`",
+      "parent_shas": [
+        "a74892465dd8219f13c75d479eefc39290858b90"
+      ]
+    },
+    {
+      "sha": "f92b7628c9c3fcc71715a56ad741916f67cf90f4",
+      "message": "Bugfix: Disable logging output with empty string (#860)\n\nPassing `NULL` or an empty string disables logging output (Fixes #844)\n\n---------\n\nCo-authored-by: Steven Roberts <roberts115@llnl.gov>\nCo-authored-by: David J. Gardner <gardner48@llnl.gov>",
+      "parent_shas": [
+        "5c8b3f43c4363c9071882a5c7b4fbc311139eab4"
+      ]
+    },
+    {
+      "sha": "1c06117239f5e48bf5418ffa8ca6623c39d2fac4",
+      "message": "Docs: Corret ARKodeSetOrder ranges and defaults (#877)\n\nUpdate docs with allowable orders for the various steppers",
+      "parent_shas": [
+        "f92b7628c9c3fcc71715a56ad741916f67cf90f4"
+      ]
+    },
+    {
+      "sha": "8c019ea5f7d38734839eac80f9fc78da0e9a5305",
+      "message": "Docs: Update Fortran User Data Example in Docs (#878)\n\nUpdate Fortran example doc to not use deprecated function",
+      "parent_shas": [
+        "1c06117239f5e48bf5418ffa8ca6623c39d2fac4"
+      ]
+    },
+    {
+      "sha": "328ea946e7fc6dee231728b516286cd72da09cfa",
+      "message": "CI: Remove GTEST check to set C++ standard (#879)\n\nFixes CI tests on Tigoa with CCE compilers and explicitly requesting\nC++14.",
+      "parent_shas": [
+        "8c019ea5f7d38734839eac80f9fc78da0e9a5305"
+      ]
+    },
+    {
+      "sha": "e15dc01d2ffbb12f692e65c806060a913b7ae7fd",
+      "message": "Maintenance: deprecate cvode monitor function(s) (#808)\n\nDeprecate CVodeSetMonitorFn and CVodeSetMonitorFrequency",
+      "parent_shas": [
+        "328ea946e7fc6dee231728b516286cd72da09cfa"
+      ]
+    },
+    {
+      "sha": "4b1f42dc0f33199bd4d1c1fd036e994ce938ed1e",
+      "message": "Bugfix: Default logger not printing errors to stderr and warnings to stdout (#882)\n\nResolves a bug introduced in #860 where the default logger had it's\nerror and warning file pointers overwritten to NULL.\n\n---------\n\nCo-authored-by: David Gardner <gardner48@llnl.gov>",
+      "parent_shas": [
+        "e15dc01d2ffbb12f692e65c806060a913b7ae7fd"
+      ]
+    },
+    {
+      "sha": "fafdeb94b7315f8c92b7acf53b2638a34ecbbc97",
+      "message": "Remove unused <ranges> include (#890)\n\nWe couldn't build the Python interface with a C++17 compiler because of\nthis unnecessary include.",
+      "parent_shas": [
+        "4b1f42dc0f33199bd4d1c1fd036e994ce938ed1e"
+      ]
+    },
+    {
+      "sha": "c919dedaa8f8f9b34f603c7fd793013662e8c996",
+      "message": "docs: cap Sphinx <9 for RTD (#891)\n\nRead the Docs is currently installing Sphinx 9.1.0 (because\ndoc/requirements.txt only requires Sphinx >=6), which breaks\nsphinx-toolbox during extension import with:\n\nImportError: cannot import name 'logger' from 'sphinx.ext.autodoc'\n\nCap Sphinx to <9 to keep RTD builds working until sphinx-toolbox\nsupports Sphinx 9.\n\n---------\n\nCo-authored-by: David Gardner <gardner48@llnl.gov>",
+      "parent_shas": [
+        "fafdeb94b7315f8c92b7acf53b2638a34ecbbc97"
+      ]
+    },
+    {
+      "sha": "089b49446133e07f640c9354327e3fa2a710fc01",
+      "message": "Bugfix: Fix some python bindings to functions in ARKODE that should allow None (#889)\n\nFixes ARKodeButcherTable_Create and ARKStepSetTables",
+      "parent_shas": [
+        "c919dedaa8f8f9b34f603c7fd793013662e8c996"
+      ]
+    },
+    {
+      "sha": "99b24164c41e73ff45cb58345c9fbc2da55f9e1d",
+      "message": "add a simple building skill",
+      "parent_shas": [
+        "089b49446133e07f640c9354327e3fa2a710fc01"
+      ]
+    },
+    {
+      "sha": "628252bd67b68fd43334da74bd9b67213c49341b",
+      "message": "add skill to create a new module",
+      "parent_shas": [
+        "99b24164c41e73ff45cb58345c9fbc2da55f9e1d"
+      ]
+    },
+    {
+      "sha": "6452761fb2eb2e272592d335087507b48da3c8cf",
+      "message": "cleanup AGENTS",
+      "parent_shas": [
+        "628252bd67b68fd43334da74bd9b67213c49341b"
+      ]
+    },
+    {
+      "sha": "cd25a510ca94cffebf34c4a184e8c2185083264f",
+      "message": "Merge branch 'develop' into feature/ai-code-tools",
+      "parent_shas": [
+        "6452761fb2eb2e272592d335087507b48da3c8cf",
+        "fbd2a3f9f542d00ad5fd0f7c2913f79446f4c898"
+      ]
+    },
+    {
+      "sha": "a96510f0263cd10b30987d9c0e1da7f0bd2f72ec",
+      "message": "Apply suggestions from code review\n\nCo-authored-by: Copilot <175728472+Copilot@users.noreply.github.com>",
+      "parent_shas": [
+        "cd25a510ca94cffebf34c4a184e8c2185083264f"
+      ]
+    },
+    {
+      "sha": "c628187f8bc631a0b35651508d2f65fcd0123966",
+      "message": "Merge branch 'develop' into feature/ai-code-tools",
+      "parent_shas": [
+        "a96510f0263cd10b30987d9c0e1da7f0bd2f72ec",
+        "bcb4124abc35eea28894e596b1d0616fe99e7c82"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__llnl__sundials__pr893.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\llnl__sundials__pr893__cpp_python__llnl__sundials__pr893\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\llnl__sundials__pr893__cpp_python__llnl__sundials__pr893\\rn"
+  }
+}

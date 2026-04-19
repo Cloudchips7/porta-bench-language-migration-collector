@@ -1,0 +1,211 @@
+{
+  "instance_id": "python_cpp__boltffi__boltffi__pr161",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "boltffi/boltffi",
+  "pr_number": 161,
+  "pr_url": "https://github.com/boltffi/boltffi/pull/161",
+  "repo": {
+    "full_name": "boltffi/boltffi",
+    "clone_url": "https://github.com/boltffi/boltffi.git",
+    "default_branch": "main",
+    "created_at": "2025-12-23T07:43:26Z",
+    "stars": 545,
+    "license": "MIT",
+    "size_kb": 23855
+  },
+  "pull_request": {
+    "id": 3521830196,
+    "title": "Scaffold python backend",
+    "body": "",
+    "created_at": "2026-04-13T08:42:24Z",
+    "merged_at": "2026-04-13T15:45:15Z",
+    "base_sha": "2441e26629eaf98dfb0fb698300e42f13040f960",
+    "head_sha": "e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+    "merge_commit_sha": "b57b6ccba13468868e6399cff4bf3a845556bd9b",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "2441e26629eaf98dfb0fb698300e42f13040f960",
+  "final_sha": "e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+  "changed_files": [
+    {
+      "sha": "fa7885ff8f71383ddb7fb6721770e4e59291712b",
+      "filename": "boltffi_bindgen/askama.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/boltffi/boltffi/blob/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Faskama.toml",
+      "raw_url": "https://github.com/boltffi/boltffi/raw/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Faskama.toml",
+      "contents_url": "https://api.github.com/repos/boltffi/boltffi/contents/boltffi_bindgen%2Faskama.toml?ref=e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+      "patch": "@@ -1,2 +1,2 @@\n [general]\n-dirs = [\"templates\", \"src/render/swift/templates\", \"src/render/jni/templates\", \"src/render/kotlin/templates\", \"src/render/typescript/templates\", \"src/render/java/templates\", \"src/render/c/templates\", \"src/render/dart/templates\"]\n+dirs = [\"templates\", \"src/render/swift/templates\", \"src/render/jni/templates\", \"src/render/kotlin/templates\", \"src/render/typescript/templates\", \"src/render/java/templates\", \"src/render/c/templates\", \"src/render/dart/templates\", \"src/render/python/templates\"]"
+    },
+    {
+      "sha": "0af0a61ddf7fc18e0430cca1419f4078f827c470",
+      "filename": "boltffi_bindgen/src/render/mod.rs",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/boltffi/boltffi/blob/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fmod.rs",
+      "raw_url": "https://github.com/boltffi/boltffi/raw/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fmod.rs",
+      "contents_url": "https://api.github.com/repos/boltffi/boltffi/contents/boltffi_bindgen%2Fsrc%2Frender%2Fmod.rs?ref=e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+      "patch": "@@ -21,6 +21,7 @@ pub mod dart;\n pub mod java;\n pub mod jni;\n pub mod kotlin;\n+pub mod python;\n pub mod swift;\n pub mod typescript;\n "
+    },
+    {
+      "sha": "a3c2130afd5b42ef76a9ea41508c47959ea89b6c",
+      "filename": "boltffi_bindgen/src/render/python/emit.rs",
+      "status": "added",
+      "additions": 41,
+      "deletions": 0,
+      "changes": 41,
+      "blob_url": "https://github.com/boltffi/boltffi/blob/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Femit.rs",
+      "raw_url": "https://github.com/boltffi/boltffi/raw/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Femit.rs",
+      "contents_url": "https://api.github.com/repos/boltffi/boltffi/contents/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Femit.rs?ref=e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+      "patch": "@@ -0,0 +1,41 @@\n+use askama::Template as _;\n+\n+use crate::render::python::PythonModule;\n+use crate::render::python::templates::ModuleTemplate;\n+\n+pub struct PythonEmitter;\n+\n+impl PythonEmitter {\n+    pub fn emit(module: &PythonModule) -> String {\n+        ModuleTemplate { module }.render().unwrap()\n+    }\n+}\n+\n+#[cfg(test)]\n+mod tests {\n+    use super::PythonEmitter;\n+    use crate::render::python::{PythonExportCounts, PythonModule};\n+\n+    #[test]\n+    fn emits_importable_python_module_scaffold() {\n+        let module = PythonModule {\n+            module_name: \"demo_lib\".to_string(),\n+            package_name: \"demo-lib\".to_string(),\n+            package_version: Some(\"0.1.0\".to_string()),\n+            exported_api: PythonExportCounts {\n+                functions: 2,\n+                records: 1,\n+                enumerations: 1,\n+                classes: 1,\n+                callbacks: 1,\n+            },\n+        };\n+\n+        let rendered = PythonEmitter::emit(&module);\n+\n+        assert!(rendered.contains(\"MODULE_NAME = \\\"demo_lib\\\"\"));\n+        assert!(rendered.contains(\"PACKAGE_NAME = \\\"demo-lib\\\"\"));\n+        assert!(rendered.contains(\"\\\"callbacks\\\": 1\"));\n+        assert!(rendered.contains(\"__all__ = [\"));\n+    }\n+}"
+    },
+    {
+      "sha": "64a2cbfd7b43db51555c4001593426b9568c5db1",
+      "filename": "boltffi_bindgen/src/render/python/lower.rs",
+      "status": "added",
+      "additions": 39,
+      "deletions": 0,
+      "changes": 39,
+      "blob_url": "https://github.com/boltffi/boltffi/blob/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Flower.rs",
+      "raw_url": "https://github.com/boltffi/boltffi/raw/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Flower.rs",
+      "contents_url": "https://api.github.com/repos/boltffi/boltffi/contents/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Flower.rs?ref=e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+      "patch": "@@ -0,0 +1,39 @@\n+use crate::ir::{AbiContract, FfiContract};\n+use crate::render::python::{PythonExportCounts, PythonModule};\n+\n+pub struct PythonLowerer<'a> {\n+    ffi_contract: &'a FfiContract,\n+    abi_contract: &'a AbiContract,\n+    module_name: &'a str,\n+}\n+\n+impl<'a> PythonLowerer<'a> {\n+    pub fn new(\n+        ffi_contract: &'a FfiContract,\n+        abi_contract: &'a AbiContract,\n+        module_name: &'a str,\n+    ) -> Self {\n+        Self {\n+            ffi_contract,\n+            abi_contract,\n+            module_name,\n+        }\n+    }\n+\n+    pub fn lower(&self) -> PythonModule {\n+        let exported_api = PythonExportCounts {\n+            functions: self.ffi_contract.functions.len(),\n+            records: self.ffi_contract.catalog.all_records().count(),\n+            enumerations: self.ffi_contract.catalog.all_enums().count(),\n+            classes: self.ffi_contract.catalog.all_classes().count(),\n+            callbacks: self.abi_contract.callbacks.len(),\n+        };\n+\n+        PythonModule {\n+            module_name: self.module_name.to_string(),\n+            package_name: self.ffi_contract.package.name.clone(),\n+            package_version: self.ffi_contract.package.version.clone(),\n+            exported_api,\n+        }\n+    }\n+}"
+    },
+    {
+      "sha": "e4add53981fbde8ccc6d48bbba8666ef44765ceb",
+      "filename": "boltffi_bindgen/src/render/python/mod.rs",
+      "status": "added",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/boltffi/boltffi/blob/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Fmod.rs",
+      "raw_url": "https://github.com/boltffi/boltffi/raw/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Fmod.rs",
+      "contents_url": "https://api.github.com/repos/boltffi/boltffi/contents/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Fmod.rs?ref=e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+      "patch": "@@ -0,0 +1,8 @@\n+mod emit;\n+mod lower;\n+mod plan;\n+mod templates;\n+\n+pub use emit::PythonEmitter;\n+pub use lower::PythonLowerer;\n+pub use plan::{PythonExportCounts, PythonModule};"
+    },
+    {
+      "sha": "e05e52494fcc45e75f3a258f6660a298976ef8ae",
+      "filename": "boltffi_bindgen/src/render/python/plan.rs",
+      "status": "added",
+      "additions": 33,
+      "deletions": 0,
+      "changes": 33,
+      "blob_url": "https://github.com/boltffi/boltffi/blob/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Fplan.rs",
+      "raw_url": "https://github.com/boltffi/boltffi/raw/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Fplan.rs",
+      "contents_url": "https://api.github.com/repos/boltffi/boltffi/contents/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Fplan.rs?ref=e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+      "patch": "@@ -0,0 +1,33 @@\n+#[derive(Debug, Clone, PartialEq, Eq)]\n+pub struct PythonExportCounts {\n+    pub functions: usize,\n+    pub records: usize,\n+    pub enumerations: usize,\n+    pub classes: usize,\n+    pub callbacks: usize,\n+}\n+\n+#[derive(Debug, Clone, PartialEq, Eq)]\n+pub struct PythonModule {\n+    pub module_name: String,\n+    pub package_name: String,\n+    pub package_version: Option<String>,\n+    pub exported_api: PythonExportCounts,\n+}\n+\n+impl PythonModule {\n+    pub fn module_name_literal(&self) -> String {\n+        format!(\"{:?}\", self.module_name)\n+    }\n+\n+    pub fn package_name_literal(&self) -> String {\n+        format!(\"{:?}\", self.package_name)\n+    }\n+\n+    pub fn package_version_literal(&self) -> String {\n+        self.package_version\n+            .as_ref()\n+            .map(|version| format!(\"{version:?}\"))\n+            .unwrap_or_else(|| \"None\".to_string())\n+    }\n+}"
+    },
+    {
+      "sha": "d12c5d1ba9fa6bdc1f7e0e22c4e6e19d015c9918",
+      "filename": "boltffi_bindgen/src/render/python/templates.rs",
+      "status": "added",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/boltffi/boltffi/blob/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Ftemplates.rs",
+      "raw_url": "https://github.com/boltffi/boltffi/raw/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Ftemplates.rs",
+      "contents_url": "https://api.github.com/repos/boltffi/boltffi/contents/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Ftemplates.rs?ref=e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+      "patch": "@@ -0,0 +1,7 @@\n+use askama::Template;\n+\n+#[derive(Template)]\n+#[template(path = \"render_python/module.txt\", escape = \"none\")]\n+pub struct ModuleTemplate<'a> {\n+    pub module: &'a super::PythonModule,\n+}"
+    },
+    {
+      "sha": "dd8661b06b83f49e086ad958a4c65c468a45a31c",
+      "filename": "boltffi_bindgen/src/render/python/templates/render_python/module.txt",
+      "status": "added",
+      "additions": 19,
+      "deletions": 0,
+      "changes": 19,
+      "blob_url": "https://github.com/boltffi/boltffi/blob/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Ftemplates%2Frender_python%2Fmodule.txt",
+      "raw_url": "https://github.com/boltffi/boltffi/raw/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Ftemplates%2Frender_python%2Fmodule.txt",
+      "contents_url": "https://api.github.com/repos/boltffi/boltffi/contents/boltffi_bindgen%2Fsrc%2Frender%2Fpython%2Ftemplates%2Frender_python%2Fmodule.txt?ref=e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+      "patch": "@@ -0,0 +1,19 @@\n+from __future__ import annotations\n+\n+MODULE_NAME = {{ module.module_name_literal() }}\n+PACKAGE_NAME = {{ module.package_name_literal() }}\n+PACKAGE_VERSION = {{ module.package_version_literal() }}\n+EXPORTED_API = {\n+    \"functions\": {{ module.exported_api.functions }},\n+    \"records\": {{ module.exported_api.records }},\n+    \"enumerations\": {{ module.exported_api.enumerations }},\n+    \"classes\": {{ module.exported_api.classes }},\n+    \"callbacks\": {{ module.exported_api.callbacks }},\n+}\n+\n+__all__ = [\n+    \"MODULE_NAME\",\n+    \"PACKAGE_NAME\",\n+    \"PACKAGE_VERSION\",\n+    \"EXPORTED_API\",\n+]"
+    },
+    {
+      "sha": "7a930134991129cd746a84ab094a11fad9a5f62e",
+      "filename": "boltffi_cli/src/commands/generate.rs",
+      "status": "modified",
+      "additions": 173,
+      "deletions": 1,
+      "changes": 174,
+      "blob_url": "https://github.com/boltffi/boltffi/blob/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_cli%2Fsrc%2Fcommands%2Fgenerate.rs",
+      "raw_url": "https://github.com/boltffi/boltffi/raw/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_cli%2Fsrc%2Fcommands%2Fgenerate.rs",
+      "contents_url": "https://api.github.com/repos/boltffi/boltffi/contents/boltffi_cli%2Fsrc%2Fcommands%2Fgenerate.rs?ref=e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+      "patch": "@@ -2,6 +2,7 @@ use std::path::PathBuf;\n use std::path::{Component, Path};\n \n use boltffi_bindgen::render::dart::{DartEmitter, DartLowerer};\n+use boltffi_bindgen::render::python::{PythonEmitter, PythonLowerer};\n use boltffi_bindgen::render::typescript::{\n     TypeScriptEmitter, TypeScriptLowerError, TypeScriptLowerer,\n };\n@@ -23,6 +24,7 @@ pub enum GenerateTarget {\n     Header,\n     Typescript,\n     Dart,\n+    Python,\n     All,\n }\n \n@@ -67,6 +69,10 @@ pub fn run_generate_with_output(config: &Config, options: GenerateOptions) -> Re\n             require_experimental_target(config, Target::Dart, options.experimental)?;\n             generate_dart(config, options.output)\n         }\n+        GenerateTarget::Python => {\n+            require_experimental_target(config, Target::Python, options.experimental)?;\n+            generate_python(config, options.output)\n+        }\n         GenerateTarget::All => {\n             if config.should_process(Target::Swift, options.experimental) {\n                 generate_swift(config, options.output.clone())?;\n@@ -84,7 +90,10 @@ pub fn run_generate_with_output(config: &Config, options: GenerateOptions) -> Re\n                 generate_typescript(config, options.output.clone())?;\n             }\n             if config.should_process(Target::Dart, options.experimental) {\n-                generate_dart(config, options.output)?;\n+                generate_dart(config, options.output.clone())?;\n+            }\n+            if config.should_process(Target::Python, options.experimental) {\n+                generate_python(config, options.output)?;\n             }\n             Ok(())\n         }\n@@ -594,3 +603,166 @@ fn generate_dart(config: &Config, output: Option<PathBuf>) -> Result<()> {\n \n     Ok(())\n }\n+\n+fn generate_python(config: &Config, output: Option<PathBuf>) -> Result<()> {\n+    let crate_dir = std::env::current_dir()\n+        .and_then(|path| path.canonicalize())\n+        .unwrap_or_else(|_| PathBuf::from(\".\"));\n+    generate_python_from_source_directory(config, output, &crate_dir, config.library_name())\n+}\n+\n+fn generate_python_from_source_directory(\n+    config: &Config,\n+    output: Option<PathBuf>,\n+    source_directory: &Path,\n+    crate_name: &str,\n+) -> Result<()> {\n+    if !config.is_python_enabled() {\n+        return Err(CliError::CommandFailed {\n+            command: \"targets.python.enabled = false\".to_string(),\n+            status: None,\n+        });\n+    }\n+\n+    let output_dir = output.unwrap_or_else(|| config.python_output());\n+\n+    std::fs::create_dir_all(&output_dir).map_err(|source| CliError::CreateDirectoryFailed {\n+        path: output_dir.clone(),\n+        source,\n+    })?;\n+\n+    let mut module = scan_crate(source_directory, crate_name, host_pointer_width_bits())?;\n+    let ffi_contract = ir::build_contract(&mut module);\n+    let abi_contract = ir::Lowerer::new(&ffi_contract).to_abi_contract();\n+\n+    let module_name = config.python_module_name();\n+    let python_module = PythonLowerer::new(&ffi_contract, &abi_contract, &module_name).lower();\n+    let python_source = PythonEmitter::emit(&python_module);\n+    let output_path = output_dir.join(format!(\"{module_name}.py\"));\n+\n+    std::fs::write(&output_path, python_source).map_err(|source| CliError::WriteFailed {\n+        path: output_path,\n+        source,\n+    })?;\n+\n+    Ok(())\n+}\n+\n+#[cfg(test)]\n+mod tests {\n+    use super::{\n+        GenerateOptions, GenerateTarget, generate_python_from_source_directory,\n+        run_generate_with_output,\n+    };\n+    use crate::config::Config;\n+    use crate::error::CliError;\n+    use std::fs;\n+    use std::path::PathBuf;\n+    use std::time::{SystemTime, UNIX_EPOCH};\n+\n+    fn parse_config(input: &str) -> Config {\n+        let parsed: Config = toml::from_str(input).expect(\"toml parse failed\");\n+        parsed.validate().expect(\"config validation failed\");\n+        parsed\n+    }\n+\n+    fn unique_temp_dir(prefix: &str) -> PathBuf {\n+        let unique_suffix = SystemTime::now()\n+            .duration_since(UNIX_EPOCH)\n+            .expect(\"system time before unix epoch\")\n+            .as_nanos();\n+        std::env::temp_dir().join(format!(\"{prefix}-{unique_suffix}\"))\n+    }\n+\n+    fn demo_source_directory() -> PathBuf {\n+        PathBuf::from(env!(\"CARGO_MANIFEST_DIR\")).join(\"../examples/demo\")\n+    }\n+\n+    #[test]\n+    fn python_generate_requires_experimental_opt_in() {\n+        let config = parse_config(\n+            r#\"\n+[package]\n+name = \"demo\"\n+\n+[targets.python]\n+enabled = true\n+\"#,\n+        );\n+\n+        let error = run_generate_with_output(\n+            &config,\n+            GenerateOptions {\n+                target: GenerateTarget::Python,\n+                output: None,\n+                experimental: false,\n+            },\n+        )\n+        .expect_err(\"python generate should require experimental opt-in\");\n+\n+        assert!(matches!(\n+            error,\n+            CliError::CommandFailed { command, status: None }\n+                if command\n+                    == \"python is experimental, use --experimental flag or add \\\"python\\\" to [experimental]\"\n+        ));\n+    }\n+\n+    #[test]\n+    fn python_generate_requires_enabled_target() {\n+        let config = parse_config(\n+            r#\"\n+[package]\n+name = \"demo\"\n+\"#,\n+        );\n+\n+        let error = run_generate_with_output(\n+            &config,\n+            GenerateOptions {\n+                target: GenerateTarget::Python,\n+                output: None,\n+                experimental: true,\n+            },\n+        )\n+        .expect_err(\"python generate should require enabled target\");\n+\n+        assert!(matches!(\n+            error,\n+            CliError::CommandFailed { command, status: None }\n+                if command == \"targets.python.enabled = false\"\n+        ));\n+    }\n+\n+    #[test]\n+    fn python_generate_writes_module_file() {\n+        let output_dir = unique_temp_dir(\"boltffi-python-generate-test\");\n+        let config = parse_config(\n+            r#\"\n+[package]\n+name = \"demo\"\n+\n+[targets.python]\n+enabled = true\n+\"#,\n+        );\n+\n+        generate_python_from_source_directory(\n+            &config,\n+            Some(output_dir.clone()),\n+            &demo_source_directory(),\n+            \"demo\",\n+        )\n+        .expect(\"python generate should succeed\");\n+\n+        let generated_module_path = output_dir.join(\"demo.py\");\n+        let generated_module = fs::read_to_string(&generated_module_path)\n+            .expect(\"generated python module should be readable\");\n+\n+        assert!(generated_module.contains(\"MODULE_NAME = \\\"demo\\\"\"));\n+        assert!(generated_module.contains(\"PACKAGE_NAME = \\\"demo\\\"\"));\n+        assert!(generated_module.contains(\"EXPORTED_API = {\"));\n+\n+        fs::remove_dir_all(output_dir).expect(\"cleanup generated output\");\n+    }\n+}"
+    },
+    {
+      "sha": "3bf4368a7cc7b4db82e8e6fec0b76eea103c1826",
+      "filename": "boltffi_cli/src/commands/init.rs",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/boltffi/boltffi/blob/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_cli%2Fsrc%2Fcommands%2Finit.rs",
+      "raw_url": "https://github.com/boltffi/boltffi/raw/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_cli%2Fsrc%2Fcommands%2Finit.rs",
+      "contents_url": "https://api.github.com/repos/boltffi/boltffi/contents/boltffi_cli%2Fsrc%2Fcommands%2Finit.rs?ref=e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+      "patch": "@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};\n use crate::config::{\n     AndroidConfig, AndroidKotlinConfig, AndroidPackConfig, AppleConfig, AppleSwiftConfig,\n     CargoConfig, Config, DartConfig, ErrorStyle, FactoryStyle, HeaderConfig, JavaConfig,\n-    PackageConfig, SpmConfig, TargetsConfig, WasmConfig, XcframeworkConfig,\n+    PackageConfig, PythonConfig, SpmConfig, TargetsConfig, WasmConfig, XcframeworkConfig,\n };\n use crate::error::Result;\n \n@@ -127,6 +127,7 @@ fn create_default_config(package_name: &str) -> Config {\n             wasm: WasmConfig::default(),\n             java: JavaConfig::default(),\n             dart: DartConfig::default(),\n+            python: PythonConfig::default(),\n         },\n     }\n }"
+    },
+    {
+      "sha": "848595c28e01fdbaac997e51bd08516d9cbe2a9e",
+      "filename": "boltffi_cli/src/config.rs",
+      "status": "modified",
+      "additions": 77,
+      "deletions": 0,
+      "changes": 77,
+      "blob_url": "https://github.com/boltffi/boltffi/blob/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_cli%2Fsrc%2Fconfig.rs",
+      "raw_url": "https://github.com/boltffi/boltffi/raw/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_cli%2Fsrc%2Fconfig.rs",
+      "contents_url": "https://api.github.com/repos/boltffi/boltffi/contents/boltffi_cli%2Fsrc%2Fconfig.rs?ref=e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+      "patch": "@@ -15,6 +15,7 @@ pub enum Target {\n     TypeScript,\n     Header,\n     Dart,\n+    Python,\n }\n \n impl Target {\n@@ -26,6 +27,7 @@ impl Target {\n             Target::TypeScript => \"typescript\",\n             Target::Header => \"header\",\n             Target::Dart => \"dart\",\n+            Target::Python => \"python\",\n         }\n     }\n }\n@@ -43,6 +45,7 @@ impl Experimental {\n             name: \"async_streams\",\n         },\n         Experimental::WholeTarget(Target::Dart),\n+        Experimental::WholeTarget(Target::Python),\n     ];\n \n     pub fn is_target_experimental(target: Target) -> bool {\n@@ -95,6 +98,8 @@ pub struct TargetsConfig {\n     pub java: JavaConfig,\n     #[serde(default)]\n     pub dart: DartConfig,\n+    #[serde(default)]\n+    pub python: PythonConfig,\n }\n \n #[derive(Debug, Serialize, Deserialize, Clone)]\n@@ -114,6 +119,23 @@ impl Default for DartConfig {\n     }\n }\n \n+#[derive(Debug, Serialize, Deserialize, Clone)]\n+pub struct PythonConfig {\n+    #[serde(default = \"default_python_output\")]\n+    pub output: PathBuf,\n+    #[serde(default)]\n+    pub enabled: bool,\n+}\n+\n+impl Default for PythonConfig {\n+    fn default() -> Self {\n+        Self {\n+            output: default_python_output(),\n+            enabled: false,\n+        }\n+    }\n+}\n+\n #[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq, Default)]\n #[serde(rename_all = \"lowercase\")]\n pub enum ErrorStyle {\n@@ -521,6 +543,10 @@ fn default_dart_output() -> PathBuf {\n     PathBuf::from(\"dist/dart\")\n }\n \n+fn default_python_output() -> PathBuf {\n+    PathBuf::from(\"dist/python\")\n+}\n+\n fn read_toml_value(path: &Path) -> Result<toml::Value, ConfigError> {\n     let content = std::fs::read_to_string(path).map_err(|err| ConfigError::Read {\n         path: path.to_path_buf(),\n@@ -713,6 +739,10 @@ impl Config {\n         self.targets.dart.enabled\n     }\n \n+    pub fn is_python_enabled(&self) -> bool {\n+        self.targets.python.enabled\n+    }\n+\n     pub fn apple_include_macos(&self) -> bool {\n         self.targets.apple.include_macos\n     }\n@@ -955,6 +985,7 @@ impl Config {\n             Target::TypeScript => self.is_wasm_enabled(),\n             Target::Header => self.is_apple_enabled() || self.is_android_enabled(),\n             Target::Dart => self.is_dart_enabled(),\n+            Target::Python => self.is_python_enabled(),\n         }\n     }\n \n@@ -1040,6 +1071,14 @@ impl Config {\n         self.targets.java.android.output.clone()\n     }\n \n+    pub fn python_output(&self) -> PathBuf {\n+        self.targets.python.output.clone()\n+    }\n+\n+    pub fn python_module_name(&self) -> String {\n+        self.crate_artifact_name()\n+    }\n+\n     pub fn wasm_triple(&self) -> &str {\n         &self.targets.wasm.triple\n     }\n@@ -2021,4 +2060,42 @@ package_name = \"OverlayKit\"\n         );\n         assert_eq!(config.apple_spm_package_name(), Some(\"OverlayKit\"));\n     }\n+\n+    #[test]\n+    fn marks_python_as_experimental_target() {\n+        assert!(Experimental::is_target_experimental(Target::Python));\n+    }\n+\n+    #[test]\n+    fn python_should_process_requires_opt_in() {\n+        let config = parse_config(\n+            r#\"\n+[package]\n+name = \"mylib\"\n+\n+[targets.python]\n+enabled = true\n+\"#,\n+        );\n+\n+        assert!(!config.should_process(Target::Python, false));\n+        assert!(config.should_process(Target::Python, true));\n+    }\n+\n+    #[test]\n+    fn python_should_process_accepts_config_opt_in() {\n+        let config = parse_config(\n+            r#\"\n+experimental = [\"python\"]\n+\n+[package]\n+name = \"mylib\"\n+\n+[targets.python]\n+enabled = true\n+\"#,\n+        );\n+\n+        assert!(config.should_process(Target::Python, false));\n+    }\n }"
+    },
+    {
+      "sha": "adc4cd9198199b073a9eb3266ac6db84e5a271df",
+      "filename": "boltffi_cli/src/main.rs",
+      "status": "modified",
+      "additions": 27,
+      "deletions": 7,
+      "changes": 34,
+      "blob_url": "https://github.com/boltffi/boltffi/blob/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_cli%2Fsrc%2Fmain.rs",
+      "raw_url": "https://github.com/boltffi/boltffi/raw/e9a229bf2daa1ba49e2a477509365ad273b37f3e/boltffi_cli%2Fsrc%2Fmain.rs",
+      "contents_url": "https://api.github.com/repos/boltffi/boltffi/contents/boltffi_cli%2Fsrc%2Fmain.rs?ref=e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+      "patch": "@@ -30,7 +30,7 @@ use error::{CliError, Result};\n #[command(name = \"boltffi\")]\n #[command(about = \"BoltFFI - Rust FFI toolchain (Apple + Android + WASM)\")]\n #[command(\n-    after_help = \"Examples:\\n  boltffi init\\n  boltffi check --apple\\n  boltffi generate swift\\n  boltffi build apple --release\\n  boltffi build wasm --release\\n  boltffi pack apple --layout bundled\\n  boltffi pack wasm --release\\n  boltffi --overlay boltffi.ci.toml pack android\\n\\nConfig:\\n  boltffi reads ./boltffi.toml\\n  Use --overlay PATH to load a merged overlay config on top of it\\n  Settings live under [targets.apple.*], [targets.android.*], [targets.wasm.*]\\n\"\n+    after_help = \"Examples:\\n  boltffi init\\n  boltffi check --apple\\n  boltffi generate swift\\n  boltffi build apple --release\\n  boltffi build wasm --release\\n  boltffi pack apple --layout bundled\\n  boltffi pack wasm --release\\n  boltffi --overlay boltffi.ci.toml pack android\\n\\nConfig:\\n  boltffi reads ./boltffi.toml\\n  Use --overlay PATH to load a merged overlay config on top of it\\n  Settings live under [targets.apple.*], [targets.android.*], [targets.wasm.*], [targets.java.*], [targets.dart.*], and [targets.python.*]\\n\"\n )]\n #[command(version)]\n struct Cli {\n@@ -104,8 +104,8 @@ enum Commands {\n     },\n \n     #[command(\n-        about = \"Generate bindings (Swift/Kotlin/header)\",\n-        long_about = \"Generate bindings.\\n\\nExamples:\\n  boltffi generate\\n  boltffi generate swift\\n  boltffi generate kotlin\\n  boltffi generate header\\n\"\n+        about = \"Generate bindings\",\n+        long_about = \"Generate bindings.\\n\\nExamples:\\n  boltffi generate\\n  boltffi generate swift\\n  boltffi generate kotlin\\n  boltffi generate header\\n  boltffi generate python --experimental\\n\"\n     )]\n     Generate {\n         #[arg(value_enum)]\n@@ -172,6 +172,8 @@ enum GenerateTargetArg {\n     Typescript,\n     #[value(help = \"Generate Dart Bindings\")]\n     Dart,\n+    #[value(help = \"Generate experimental Python bindings\")]\n+    Python,\n     #[value(help = \"Generate all bindings\")]\n     All,\n }\n@@ -409,6 +411,7 @@ fn execute_command(\n                         GenerateTargetArg::Header => GenerateTarget::Header,\n                         GenerateTargetArg::Typescript => GenerateTarget::Typescript,\n                         GenerateTargetArg::Dart => GenerateTarget::Dart,\n+                        GenerateTargetArg::Python => GenerateTarget::Python,\n                         GenerateTargetArg::All => GenerateTarget::All,\n                     })\n                     .unwrap_or(GenerateTarget::All),\n@@ -819,15 +822,17 @@ fn release_requires_java_environment_validation(\n #[cfg(test)]\n mod tests {\n     use super::{\n-        BuildPlatformArg, ConfigPaths, configured_android_targets_for_diagnostics,\n-        configured_apple_targets_for_diagnostics, configured_wasm_target_triple_for_diagnostics,\n-        load_config_if_present, release_pack_commands,\n-        release_requires_java_environment_validation, resolve_doctor_config, resolve_init_options,\n+        BuildPlatformArg, Cli, Commands, ConfigPaths, GenerateTargetArg,\n+        configured_android_targets_for_diagnostics, configured_apple_targets_for_diagnostics,\n+        configured_wasm_target_triple_for_diagnostics, load_config_if_present,\n+        release_pack_commands, release_requires_java_environment_validation, resolve_doctor_config,\n+        resolve_init_options,\n     };\n     use crate::commands::doctor::ConfigSummary;\n     use crate::commands::pack::PackCommand;\n     use crate::target::RustTarget;\n     use crate::{config::Config, error::CliError};\n+    use clap::Parser;\n     use std::path::PathBuf;\n \n     fn parse_config(input: &str) -> Config {\n@@ -1065,6 +1070,21 @@ enabled = true\n         ));\n     }\n \n+    #[test]\n+    fn cli_parses_generate_python_target() {\n+        let cli = Cli::try_parse_from([\"boltffi\", \"generate\", \"python\", \"--experimental\"])\n+            .expect(\"cli parse should succeed\");\n+\n+        assert!(matches!(\n+            cli.command,\n+            Commands::Generate {\n+                target: Some(GenerateTargetArg::Python),\n+                experimental: true,\n+                ..\n+            }\n+        ));\n+    }\n+\n     #[test]\n     fn release_all_requires_java_environment_validation_when_enabled() {\n         let config = parse_config("
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "e9a229bf2daa1ba49e2a477509365ad273b37f3e",
+      "message": "scaffold python backend",
+      "parent_shas": [
+        "2441e26629eaf98dfb0fb698300e42f13040f960"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes",
+      "python_cpp_wrapper_noise"
+    ],
+    "auto_signals": [
+      "python_cpp_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__boltffi__boltffi__pr161.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\boltffi__boltffi__pr161__python_cpp__boltffi__boltffi__pr161\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\boltffi__boltffi__pr161__python_cpp__boltffi__boltffi__pr161\\rn"
+  }
+}

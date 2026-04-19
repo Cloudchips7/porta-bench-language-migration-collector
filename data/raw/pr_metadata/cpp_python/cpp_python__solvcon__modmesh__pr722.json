@@ -1,0 +1,216 @@
+{
+  "instance_id": "cpp_python__solvcon__modmesh__pr722",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "solvcon/modmesh",
+  "pr_number": 722,
+  "pr_url": "https://github.com/solvcon/modmesh/pull/722",
+  "repo": {
+    "full_name": "solvcon/modmesh",
+    "clone_url": "https://github.com/solvcon/modmesh.git",
+    "default_branch": "master",
+    "created_at": "2019-12-20T13:19:29Z",
+    "stars": 61,
+    "license": "NOASSERTION",
+    "size_kb": 2676
+  },
+  "pull_request": {
+    "id": 3519274323,
+    "title": "Remove testhelper, test SimpleArrayPlex directly",
+    "body": "## Summary\n\n- Remove the C++ `TestSimpleArrayHelper` pybind binding and the entire `cpp/modmesh/testhelper/` directory\n- Remove the `USE_PYTEST_HELPER_BINDING` CMake option and all references in CI workflows\n- Remove `testhelper` submodule registration from `module.cpp` and `core.py`\n- Replace the old `test_SimpleArray_casting` (which required the C++ helper) with new pytest-only test cases in `SimpleArrayPlexTC`\n\nClose #720\n\n## Old vs new test coverage\n\nThe old `test_SimpleArray_casting` method (in `SimpleArrayBasicTC`) relied on `TestSimpleArrayHelper` C++ pybind bindings. All scenarios it covered are now tested directly using the `.typed`, `.plex`, and `ndarray` Python APIs:\n\n| Old test scenario (`test_SimpleArray_casting`) | New test case (`SimpleArrayPlexTC`) |\n|---|---|\n| All plex instances share `_modmesh.SimpleArray` type regardless of dtype (`type(plex_int32) is type(plex_float64)`) | `test_SimpleArrayPlex_uniform_type` |\n| Plex with matching dtype accepted by C++ function (`helper.test_load_arrayin32_from_arrayplex(plex_int32)`) | `test_SimpleArrayPlex_cast_to_typed` — verifies `.typed` produces the correct typed class and `ndarray.dtype` matches |\n| Plex with wrong dtype rejected by C++ function (`helper.test_load_arrayin32_from_arrayplex(plex_uint64)` → `TypeError`) | `test_SimpleArrayPlex_cast_dtype_mismatch` — verifies constructing a typed array from a wrong-dtype plex's ndarray raises `RuntimeError: dtype mismatch` |\n| C++ cast returns correct typed class (`helper.test_cast_to_arrayint32()` matches `SimpleArrayInt32`) | `test_SimpleArrayPlex_typed_from_typed_constructor` — verifies typed from `plex.typed` matches typed from direct constructor |\n| *(not previously covered)* | `test_SimpleArrayPlex_typed_roundtrip` — verifies plex → typed → plex type chain |\n| *(not previously covered)* | `test_SimpleArrayPlex_typed_preserves_data` — verifies data integrity through `.typed` cast |\n\n## Files removed\n\n- `cpp/modmesh/testhelper/CMakeLists.txt`\n- `cpp/modmesh/testhelper/pymod/testbuffer_pymod.hpp`\n- `cpp/modmesh/testhelper/pymod/testbuffer_pymod.cpp`\n- `cpp/modmesh/testhelper/pymod/wrap_TestSimpleArrayHelper.cpp`\n\n## Files modified\n\n- `CMakeLists.txt` — remove `USE_PYTEST_HELPER_BINDING` option\n- `cpp/modmesh/CMakeLists.txt` — remove testhelper subdirectory and file references\n- `cpp/modmesh/python/module.cpp` — remove testhelper submodule registration\n- `modmesh/core.py` — remove `list_of_testhelper` and references\n- `tests/test_buffer.py` — remove old test, add 6 new direct test cases\n- `.github/workflows/devbuild.yml` — remove `USE_PYTEST_HELPER_BINDING` flags, consolidate redundant ON/OFF build steps\n- `.github/workflows/lint.yml` — merge duplicate pilot build steps into one\n- `.github/workflows/nouse_install.yml` — remove `USE_PYTEST_HELPER_BINDING` flag\n\n## Test plan\n\n- [x] All 136 tests in `test_buffer.py` pass locally\n- [ ] CI builds succeed without `USE_PYTEST_HELPER_BINDING`\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "created_at": "2026-04-12T11:34:46Z",
+    "merged_at": "2026-04-12T12:23:52Z",
+    "base_sha": "696017ab00e5911dc217238527249d8f047fc463",
+    "head_sha": "4a4427504df8f061e88fd2ad9e4a78eed0b9edee",
+    "merge_commit_sha": "52e7438c870ef277049752a0d319ee4ed1f3165c",
+    "labels": [
+      "test",
+      "array"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "696017ab00e5911dc217238527249d8f047fc463",
+  "final_sha": "4a4427504df8f061e88fd2ad9e4a78eed0b9edee",
+  "changed_files": [
+    {
+      "sha": "42dc18a6eb7b6b5b1a00a8aa5019a42b0cb2f173",
+      "filename": ".github/workflows/devbuild.yml",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 30,
+      "changes": 36,
+      "blob_url": "https://github.com/solvcon/modmesh/blob/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/.github%2Fworkflows%2Fdevbuild.yml",
+      "raw_url": "https://github.com/solvcon/modmesh/raw/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/.github%2Fworkflows%2Fdevbuild.yml",
+      "contents_url": "https://api.github.com/repos/solvcon/modmesh/contents/.github%2Fworkflows%2Fdevbuild.yml?ref=4a4427504df8f061e88fd2ad9e4a78eed0b9edee",
+      "patch": "@@ -115,7 +115,7 @@ jobs:\n           VERBOSE=1 USE_CLANG_TIDY=OFF \\\n           BUILD_QT=OFF \\\n           CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} \\\n-          CMAKE_ARGS=\"-DPYTHON_EXECUTABLE=$(which python3) -DUSE_PYTEST_HELPER_BINDING=ON\"\n+          CMAKE_ARGS=\"-DPYTHON_EXECUTABLE=$(which python3)\"\n         make buildext VERBOSE=1\n \n     - name: make pytest BUILD_QT=OFF\n@@ -127,7 +127,7 @@ jobs:\n         fi\n         make pytest ${JOB_MAKE_ARGS}\n \n-    - name: make buildext BUILD_QT=ON USE_PYTEST_HELPER_BINDING=OFF\n+    - name: make buildext BUILD_QT=ON\n       run: |\n         rm -f build/*/Makefile\n         make cmake \\\n@@ -137,18 +137,7 @@ jobs:\n           CMAKE_ARGS=\"-DPYTHON_EXECUTABLE=$(which python3)\"\n         make buildext VERBOSE=1\n \n-    # build with pytest helper binding for testing\n-    - name: make buildext BUILD_QT=ON USE_PYTEST_HELPER_BINDING=ON\n-      run: |\n-        rm -f build/*/Makefile\n-        make cmake \\\n-          VERBOSE=1 USE_CLANG_TIDY=OFF \\\n-          BUILD_QT=ON \\\n-          CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} \\\n-          CMAKE_ARGS=\"-DPYTHON_EXECUTABLE=$(which python3) -DUSE_PYTEST_HELPER_BINDING=ON\"\n-        make buildext VERBOSE=1\n-\n-    - name: make pytest BUILD_QT=ON USE_PYTEST_HELPER_BINDING=ON\n+    - name: make pytest BUILD_QT=ON\n       run: |\n         python3 -c \"import modmesh; assert modmesh.HAS_PILOT == True\"\n         JOB_MAKE_ARGS=\"${JOB_MAKE_ARGS} VERBOSE=1\"\n@@ -178,7 +167,7 @@ jobs:\n           VERBOSE=1 USE_CLANG_TIDY=OFF \\\n           BUILD_QT=ON \\\n           CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} \\\n-          CMAKE_ARGS=\"-DPYTHON_EXECUTABLE=$(which python3) -DUSE_PYTEST_HELPER_BINDING=ON\"\n+          CMAKE_ARGS=\"-DPYTHON_EXECUTABLE=$(which python3)\"\n \n     - name: make run_pilot_pytest\n       run: |\n@@ -194,7 +183,7 @@ jobs:\n           VERBOSE=1 USE_CLANG_TIDY=OFF \\\n           BUILD_QT=OFF \\\n           CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} \\\n-          CMAKE_ARGS=\"-DPYTHON_EXECUTABLE=$(which python3) -DUSE_SANITIZER=OFF -DUSE_PYTEST_HELPER_BINDING=ON\"\n+          CMAKE_ARGS=\"-DPYTHON_EXECUTABLE=$(which python3) -DUSE_SANITIZER=OFF\"\n         make buildext VERBOSE=1\n         make pytest VERBOSE=1\n \n@@ -278,24 +267,11 @@ jobs:\n           Get-Command clang-tidy\n           Get-Command flake8\n \n-      - name: cmake ALL_BUILD USE_PYTEST_HELPER_BINDING=OFF\n-        run: |\n-          cmake `\n-            -DCMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} `\n-            -Dpybind11_DIR=\"$(pybind11-config --cmakedir)\" `\n-            -S${{ github.workspace }} `\n-            -B${{ github.workspace }}/build\n-          cmake --build ${{ github.workspace }}/build `\n-            --config ${{ matrix.cmake_build_type }} `\n-            --target ALL_BUILD\n-\n-      - name: cmake ALL_BUILD USE_PYTEST_HELPER_BINDING=ON\n+      - name: cmake ALL_BUILD\n         run: |\n-          Remove-Item -Path ${{ github.workspace }}/build -Recurse -Force\n           cmake `\n             -DCMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} `\n             -Dpybind11_DIR=\"$(pybind11-config --cmakedir)\" `\n-            -DUSE_PYTEST_HELPER_BINDING=ON `\n             -S${{ github.workspace }} `\n             -B${{ github.workspace }}/build\n           cmake --build ${{ github.workspace }}/build `"
+    },
+    {
+      "sha": "fcbc74b5fafa8ced76ea9a35b49285e7d163260b",
+      "filename": ".github/workflows/lint.yml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 11,
+      "changes": 14,
+      "blob_url": "https://github.com/solvcon/modmesh/blob/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/.github%2Fworkflows%2Flint.yml",
+      "raw_url": "https://github.com/solvcon/modmesh/raw/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/.github%2Fworkflows%2Flint.yml",
+      "contents_url": "https://api.github.com/repos/solvcon/modmesh/contents/.github%2Fworkflows%2Flint.yml?ref=4a4427504df8f061e88fd2ad9e4a78eed0b9edee",
+      "patch": "@@ -112,28 +112,20 @@ jobs:\n     - name: make checktws (check trailing whitespace)\n       run: make checktws\n \n-    - name: make pilot USE_PYTEST_HELPER_BINDING=OFF\n+    - name: make pilot\n       run: |\n         make pilot \\\n           ${JOB_MAKE_ARGS} \\\n           CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} \\\n-          CMAKE_ARGS=\"-DPYTHON_EXECUTABLE=$(which python3) -DUSE_PYTEST_HELPER_BINDING=OFF\"\n-\n-    - name: make pilot USE_PYTEST_HELPER_BINDING=ON\n-      run: |\n-        rm -f build/*/Makefile\n-        make pilot \\\n-          ${JOB_MAKE_ARGS} \\\n-          CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} \\\n-          CMAKE_ARGS=\"-DPYTHON_EXECUTABLE=$(which python3) -DUSE_PYTEST_HELPER_BINDING=ON\"\n+          CMAKE_ARGS=\"-DPYTHON_EXECUTABLE=$(which python3)\"\n \n     - name: make run_pilot_pytest\n       run: |\n         export LD_LIBRARY_PATH=$(python3 -c \"import sys, os, shiboken6; sys.stdout.write(os.path.dirname(shiboken6.__file__))\")\n         make run_pilot_pytest \\\n           ${JOB_MAKE_ARGS} \\\n           CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} \\\n-          CMAKE_ARGS=\"-DPYTHON_EXECUTABLE=$(which python3) -DUSE_PYTEST_HELPER_BINDING=ON\"\n+          CMAKE_ARGS=\"-DPYTHON_EXECUTABLE=$(which python3)\"\n \n     - name: make flake8\n       run: |"
+    },
+    {
+      "sha": "19e4a2ef1661af4908e44aa3d80f389ef5c4989d",
+      "filename": ".github/workflows/nouse_install.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/solvcon/modmesh/blob/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/.github%2Fworkflows%2Fnouse_install.yml",
+      "raw_url": "https://github.com/solvcon/modmesh/raw/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/.github%2Fworkflows%2Fnouse_install.yml",
+      "contents_url": "https://api.github.com/repos/solvcon/modmesh/contents/.github%2Fworkflows%2Fnouse_install.yml?ref=4a4427504df8f061e88fd2ad9e4a78eed0b9edee",
+      "patch": "@@ -55,7 +55,7 @@ jobs:\n             SUDO_CMD=\"sudo\"\n           fi\n           $SUDO_CMD python3 setup.py install build_ext \\\n-            --cmake-args=\"${JOB_CMAKE_ARGS} -DPYTHON_EXECUTABLE=$(which python3) -DUSE_PYTEST_HELPER_BINDING=ON\" \\\n+            --cmake-args=\"${JOB_CMAKE_ARGS} -DPYTHON_EXECUTABLE=$(which python3)\" \\\n             --make-args=\"VERBOSE=1\"\n \n       - name: pytest"
+    },
+    {
+      "sha": "ac373c5d12e58d0720bc6d907dd19aa7c6c343e9",
+      "filename": "CMakeLists.txt",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 6,
+      "changes": 6,
+      "blob_url": "https://github.com/solvcon/modmesh/blob/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/CMakeLists.txt",
+      "raw_url": "https://github.com/solvcon/modmesh/raw/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/CMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/solvcon/modmesh/contents/CMakeLists.txt?ref=4a4427504df8f061e88fd2ad9e4a78eed0b9edee",
+      "patch": "@@ -31,12 +31,6 @@ option(LINT_AS_ERRORS \"clang-tidy warnings as errors\" OFF)\n # - Address Sanitization: Protecting against address-related vulnerabilities. See https://clang.llvm.org/docs/AddressSanitizer.html\n option(USE_SANITIZER \"use sanitizer (undefined, leak, address)\" OFF)\n \n-option(USE_PYTEST_HELPER_BINDING \"use helper bindings to run pytest. should be ON if the build is for pytest\" OFF)\n-if(USE_PYTEST_HELPER_BINDING)\n-    add_definitions(-D USE_PYTEST_HELPER_BINDING)\n-endif()\n-message(STATUS \"USE_PYTEST_HELPER_BINDING: ${USE_PYTEST_HELPER_BINDING}\")\n-\n \n if(BUILD_QT)\n     option(QT3D_USE_RHI \"Qt use RHI\" OFF)"
+    },
+    {
+      "sha": "719d3440f697a0a6301fa638c3f2f139592fa49a",
+      "filename": "cpp/modmesh/CMakeLists.txt",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 5,
+      "changes": 5,
+      "blob_url": "https://github.com/solvcon/modmesh/blob/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/cpp%2Fmodmesh%2FCMakeLists.txt",
+      "raw_url": "https://github.com/solvcon/modmesh/raw/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/cpp%2Fmodmesh%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/solvcon/modmesh/contents/cpp%2Fmodmesh%2FCMakeLists.txt?ref=4a4427504df8f061e88fd2ad9e4a78eed0b9edee",
+      "patch": "@@ -47,10 +47,6 @@ add_subdirectory(math)\n add_subdirectory(linalg)\n add_subdirectory(simd)\n \n-if(USE_PYTEST_HELPER_BINDING)\n-    add_subdirectory(testhelper)\n-endif() # USE_PYTEST_HELPER_BINDING\n-\n set(MODMESH_ROOT_HEADERS\n     ${CMAKE_CURRENT_SOURCE_DIR}/modmesh.hpp\n     ${CMAKE_CURRENT_SOURCE_DIR}/base.hpp\n@@ -96,7 +92,6 @@ set(MODMESH_TERMINAL_FILES\n     ${MODMESH_SPACETIME_FILES}\n     ${MODMESH_PYTHON_FILES}\n     ${MODMESH_INOUT_FILES}\n-    ${MODMESH_TESTHELPER_FILES}\n     ${MODMESH_SERIALIZATION_FILES}\n     ${MODMESH_TRANSFORM_FILES}\n     ${MODMESH_MATH_FILES}"
+    },
+    {
+      "sha": "3d8a5d3c5ec20ba1351d4c9383cd6515831837c0",
+      "filename": "cpp/modmesh/python/module.cpp",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 12,
+      "changes": 12,
+      "blob_url": "https://github.com/solvcon/modmesh/blob/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/cpp%2Fmodmesh%2Fpython%2Fmodule.cpp",
+      "raw_url": "https://github.com/solvcon/modmesh/raw/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/cpp%2Fmodmesh%2Fpython%2Fmodule.cpp",
+      "contents_url": "https://api.github.com/repos/solvcon/modmesh/contents/cpp%2Fmodmesh%2Fpython%2Fmodule.cpp?ref=4a4427504df8f061e88fd2ad9e4a78eed0b9edee",
+      "patch": "@@ -35,10 +35,6 @@\n #include <modmesh/linalg/pymod/linalg_pymod.hpp>\n #include <modmesh/oasis/pymod/oasis_pymod.hpp>\n \n-#ifdef USE_PYTEST_HELPER_BINDING\n-#include <modmesh/testhelper/pymod/testbuffer_pymod.hpp>\n-#endif // USE_PYTEST_HELPER_BINDING\n-\n #ifdef QT_CORE_LIB\n #include <modmesh/pilot/wrap_pilot.hpp>\n #endif // QT_CORE_LIB\n@@ -66,14 +62,6 @@ void initialize(pybind11::module_ mod)\n     initialize_transform(mod);\n     initialize_oasis(mod);\n \n-    pybind11::module_ testhelper_mod = mod.def_submodule(\"testhelper\", \"testhelper\");\n-#ifdef USE_PYTEST_HELPER_BINDING\n-    initialize_testbuffer(testhelper_mod);\n-    testhelper_mod.attr(\"PYTEST_HELPER_BINDING_BUILT\") = true;\n-#else\n-    testhelper_mod.attr(\"PYTEST_HELPER_BINDING_BUILT\") = false;\n-#endif\n-\n #ifdef QT_CORE_LIB\n     mod.attr(\"HAS_PILOT\") = true;\n     pybind11::module_ view_mod = mod.def_submodule(\"pilot\", \"pilot\");"
+    },
+    {
+      "sha": "3f7b54687f81a8e185986122ebe73e5af02b3d6a",
+      "filename": "cpp/modmesh/testhelper/CMakeLists.txt",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 28,
+      "changes": 28,
+      "blob_url": "https://github.com/solvcon/modmesh/blob/696017ab00e5911dc217238527249d8f047fc463/cpp%2Fmodmesh%2Ftesthelper%2FCMakeLists.txt",
+      "raw_url": "https://github.com/solvcon/modmesh/raw/696017ab00e5911dc217238527249d8f047fc463/cpp%2Fmodmesh%2Ftesthelper%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/solvcon/modmesh/contents/cpp%2Fmodmesh%2Ftesthelper%2FCMakeLists.txt?ref=696017ab00e5911dc217238527249d8f047fc463",
+      "patch": "@@ -1,28 +0,0 @@\n-# Copyright (c) 2024, An-Chi Liu <phy.tiger@gmail.com>\n-# BSD-style license; see COPYING\n-\n-cmake_minimum_required(VERSION 4.0.1)\n-\n-set(MODMESH_TESTHELPER_HEADERS\n-    CACHE FILEPATH \"\" FORCE)\n-\n-set(MODMESH_TESTHELPER_SOURCES\n-    CACHE FILEPATH \"\" FORCE)\n-\n-set(MODMESH_TESTHELPER_PYMODHEADERS\n-    ${CMAKE_CURRENT_SOURCE_DIR}/pymod/testbuffer_pymod.hpp\n-    CACHE FILEPATH \"\" FORCE)\n-\n-set(MODMESH_TESTHELPER_PYMODSOURCES\n-    ${CMAKE_CURRENT_SOURCE_DIR}/pymod/testbuffer_pymod.cpp\n-    ${CMAKE_CURRENT_SOURCE_DIR}/pymod/wrap_TestSimpleArrayHelper.cpp\n-    CACHE FILEPATH \"\" FORCE)\n-\n-set(MODMESH_TESTHELPER_FILES\n-    ${MODMESH_TESTHELPER_HEADERS}\n-    ${MODMESH_TESTHELPER_SOURCES}\n-    ${MODMESH_TESTHELPER_PYMODHEADERS}\n-    ${MODMESH_TESTHELPER_PYMODSOURCES}\n-    CACHE FILEPATH \"\" FORCE)\n-\n-# vim: set ff=unix fenc=utf8 nobomb et sw=4 ts=4 sts=4:"
+    },
+    {
+      "sha": "605f9582f328c0e9a094f8e6af3585c33dc8ac71",
+      "filename": "cpp/modmesh/testhelper/pymod/testbuffer_pymod.cpp",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 65,
+      "changes": 65,
+      "blob_url": "https://github.com/solvcon/modmesh/blob/696017ab00e5911dc217238527249d8f047fc463/cpp%2Fmodmesh%2Ftesthelper%2Fpymod%2Ftestbuffer_pymod.cpp",
+      "raw_url": "https://github.com/solvcon/modmesh/raw/696017ab00e5911dc217238527249d8f047fc463/cpp%2Fmodmesh%2Ftesthelper%2Fpymod%2Ftestbuffer_pymod.cpp",
+      "contents_url": "https://api.github.com/repos/solvcon/modmesh/contents/cpp%2Fmodmesh%2Ftesthelper%2Fpymod%2Ftestbuffer_pymod.cpp?ref=696017ab00e5911dc217238527249d8f047fc463",
+      "patch": "@@ -1,65 +0,0 @@\n-/*\n- * Copyright (c) 2024, An-Chi Liu <phy.tiger@gmail.com>\n- *\n- * Redistribution and use in source and binary forms, with or without\n- * modification, are permitted provided that the following conditions are met:\n- *\n- * - Redistributions of source code must retain the above copyright notice,\n- *   this list of conditions and the following disclaimer.\n- * - Redistributions in binary form must reproduce the above copyright notice,\n- *   this list of conditions and the following disclaimer in the documentation\n- *   and/or other materials provided with the distribution.\n- * - Neither the name of the copyright holder nor the names of its contributors\n- *   may be used to endorse or promote products derived from this software\n- *   without specific prior written permission.\n- *\n- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n- * POSSIBILITY OF SUCH DAMAGE.\n- */\n-\n-#include <modmesh/testhelper/pymod/testbuffer_pymod.hpp> // Must be the first include.\n-\n-#include <modmesh/modmesh.hpp>\n-#include <modmesh/python/common.hpp>\n-#include <pybind11/stl.h>\n-\n-namespace modmesh\n-{\n-namespace python\n-{\n-\n-struct testbuffer_pymod_tag\n-{\n-};\n-\n-template <>\n-OneTimeInitializer<testbuffer_pymod_tag> & OneTimeInitializer<testbuffer_pymod_tag>::me()\n-{\n-    static OneTimeInitializer<testbuffer_pymod_tag> instance;\n-    return instance;\n-}\n-\n-void initialize_testbuffer(pybind11::module & mod)\n-{\n-    auto initialize_impl = [](pybind11::module & mod)\n-    {\n-        wrap_TestSimpleArrayHelper(mod);\n-    };\n-\n-    OneTimeInitializer<testbuffer_pymod_tag>::me()(mod, initialize_impl);\n-}\n-\n-} /* end namespace python */\n-\n-} /* end namespace modmesh */\n-\n-// vim: set ff=unix fenc=utf8 et sw=4 ts=4 sts=4:"
+    },
+    {
+      "sha": "940472ee53bc7176505f2ba597428f41d12e058b",
+      "filename": "cpp/modmesh/testhelper/pymod/testbuffer_pymod.hpp",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 49,
+      "changes": 49,
+      "blob_url": "https://github.com/solvcon/modmesh/blob/696017ab00e5911dc217238527249d8f047fc463/cpp%2Fmodmesh%2Ftesthelper%2Fpymod%2Ftestbuffer_pymod.hpp",
+      "raw_url": "https://github.com/solvcon/modmesh/raw/696017ab00e5911dc217238527249d8f047fc463/cpp%2Fmodmesh%2Ftesthelper%2Fpymod%2Ftestbuffer_pymod.hpp",
+      "contents_url": "https://api.github.com/repos/solvcon/modmesh/contents/cpp%2Fmodmesh%2Ftesthelper%2Fpymod%2Ftestbuffer_pymod.hpp?ref=696017ab00e5911dc217238527249d8f047fc463",
+      "patch": "@@ -1,49 +0,0 @@\n-#pragma once\n-/*\n- * Copyright (c) 2024, An-Chi Liu <phy.tiger@gmail.com>\n- *\n- * Redistribution and use in source and binary forms, with or without\n- * modification, are permitted provided that the following conditions are met:\n- *\n- * - Redistributions of source code must retain the above copyright notice,\n- *   this list of conditions and the following disclaimer.\n- * - Redistributions in binary form must reproduce the above copyright notice,\n- *   this list of conditions and the following disclaimer in the documentation\n- *   and/or other materials provided with the distribution.\n- * - Neither the name of the copyright holder nor the names of its contributors\n- *   may be used to endorse or promote products derived from this software\n- *   without specific prior written permission.\n- *\n- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n- * POSSIBILITY OF SUCH DAMAGE.\n- */\n-\n-#include <pybind11/pybind11.h> // Must be the first include.\n-#include <pybind11/stl.h>\n-\n-#include <modmesh/python/common.hpp>\n-\n-namespace modmesh\n-{\n-\n-namespace python\n-{\n-\n-void initialize_testbuffer(pybind11::module & mod);\n-\n-void wrap_TestSimpleArrayHelper(pybind11::module & mod);\n-\n-} /* end namespace python */\n-\n-} /* end namespace modmesh */\n-\n-// vim: set ff=unix fenc=utf8 et sw=4 ts=4 sts=4:\n\\ No newline at end of file"
+    },
+    {
+      "sha": "744adb6c3adf1a801fbef4d3c7c06d9110df314d",
+      "filename": "cpp/modmesh/testhelper/pymod/wrap_TestSimpleArrayHelper.cpp",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 84,
+      "changes": 84,
+      "blob_url": "https://github.com/solvcon/modmesh/blob/696017ab00e5911dc217238527249d8f047fc463/cpp%2Fmodmesh%2Ftesthelper%2Fpymod%2Fwrap_TestSimpleArrayHelper.cpp",
+      "raw_url": "https://github.com/solvcon/modmesh/raw/696017ab00e5911dc217238527249d8f047fc463/cpp%2Fmodmesh%2Ftesthelper%2Fpymod%2Fwrap_TestSimpleArrayHelper.cpp",
+      "contents_url": "https://api.github.com/repos/solvcon/modmesh/contents/cpp%2Fmodmesh%2Ftesthelper%2Fpymod%2Fwrap_TestSimpleArrayHelper.cpp?ref=696017ab00e5911dc217238527249d8f047fc463",
+      "patch": "@@ -1,84 +0,0 @@\n-/*\n- * Copyright (c) 2024, An-Chi Liu <phy.tiger@gmail.com>\n- *\n- * Redistribution and use in source and binary forms, with or without\n- * modification, are permitted provided that the following conditions are met:\n- *\n- * - Redistributions of source code must retain the above copyright notice,\n- *   this list of conditions and the following disclaimer.\n- * - Redistributions in binary form must reproduce the above copyright notice,\n- *   this list of conditions and the following disclaimer in the documentation\n- *   and/or other materials provided with the distribution.\n- * - Neither the name of the copyright holder nor the names of its contributors\n- *   may be used to endorse or promote products derived from this software\n- *   without specific prior written permission.\n- *\n- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n- * POSSIBILITY OF SUCH DAMAGE.\n- */\n-\n-#include <modmesh/testhelper/pymod/testbuffer_pymod.hpp> // Must be the first include.\n-\n-#include <modmesh/buffer/buffer.hpp>\n-#include <modmesh/buffer/pymod/SimpleArrayCaster.hpp>\n-\n-namespace modmesh\n-{\n-\n-namespace python\n-{\n-\n-struct TestSimpleArrayHelper\n-{\n-}; /* end of TestSimpleArrayHelper */\n-\n-class MODMESH_PYTHON_WRAPPER_VISIBILITY WrapTestSimpleArrayHelper\n-    : public WrapBase<WrapTestSimpleArrayHelper, TestSimpleArrayHelper>\n-{\n-\n-public:\n-\n-    friend root_base_type;\n-\n-protected:\n-\n-    WrapTestSimpleArrayHelper(pybind11::module & mod, char const * pyname, char const * pydoc)\n-        : root_base_type(mod, pyname, pydoc)\n-    {\n-        (*this)\n-            .def(\"test_cast_to_arrayint32\", []() -> modmesh::SimpleArrayInt32\n-                 {\n-                     // clang-format off\n-                     SimpleArrayInt32 arr(100);\n-                     return arr;\n-                     // clang-format on\n-                 })\n-            .def(\"test_load_arrayin32_from_arrayplex\", [](modmesh::SimpleArrayInt32 &) -> bool\n-                 { return true; })\n-            .def(\"test_load_arrayfloat64_from_arrayplex\", [](modmesh::SimpleArrayFloat64 &) -> bool\n-                 { return true; })\n-            //\n-            ;\n-    }\n-\n-}; /* end class WrapTestSimpleArrayHelper */\n-\n-void wrap_TestSimpleArrayHelper(pybind11::module & mod)\n-{\n-    WrapTestSimpleArrayHelper::commit(mod, \"TestSimpleArrayHelper\", \"TestSimpleArrayHelper\");\n-}\n-\n-} /* end namespace python */\n-\n-} /* end namespace modmesh */\n-\n-// vim: set ff=unix fenc=utf8 et sw=4 ts=4 sts=4:\n\\ No newline at end of file"
+    },
+    {
+      "sha": "02ecf923f7eb31e4ce022159f688aa6ad60fbeda",
+      "filename": "modmesh/core.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 7,
+      "changes": 7,
+      "blob_url": "https://github.com/solvcon/modmesh/blob/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/modmesh%2Fcore.py",
+      "raw_url": "https://github.com/solvcon/modmesh/raw/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/modmesh%2Fcore.py",
+      "contents_url": "https://api.github.com/repos/solvcon/modmesh/contents/modmesh%2Fcore.py?ref=4a4427504df8f061e88fd2ad9e4a78eed0b9edee",
+      "patch": "@@ -100,11 +100,6 @@\n     'HAS_PILOT',\n ]\n \n-# testhelper directory symbols\n-list_of_testhelper = [\n-    'testhelper',\n-]\n-\n # toggle directory symbols\n list_of_toggle = [\n     'WrapperProfilerStatus',\n@@ -187,7 +182,6 @@\n     list_of_mesh +\n     list_of_multidim +\n     list_of_python +\n-    list_of_testhelper +\n     list_of_toggle +\n     list_of_transform +\n     list_of_linalg +\n@@ -215,7 +209,6 @@ def _load(symbol_list):\n _load(list_of_mesh)\n _load(list_of_multidim)\n _load(list_of_python)\n-_load(list_of_testhelper)\n _load(list_of_toggle)\n _load(list_of_transform)\n _load(list_of_linalg)"
+    },
+    {
+      "sha": "74b779c11a85b2c8d98799e4af45414bbd8cb963",
+      "filename": "tests/test_buffer.py",
+      "status": "modified",
+      "additions": 69,
+      "deletions": 55,
+      "changes": 124,
+      "blob_url": "https://github.com/solvcon/modmesh/blob/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/tests%2Ftest_buffer.py",
+      "raw_url": "https://github.com/solvcon/modmesh/raw/4a4427504df8f061e88fd2ad9e4a78eed0b9edee/tests%2Ftest_buffer.py",
+      "contents_url": "https://api.github.com/repos/solvcon/modmesh/contents/tests%2Ftest_buffer.py?ref=4a4427504df8f061e88fd2ad9e4a78eed0b9edee",
+      "patch": "@@ -928,61 +928,6 @@ def test_SimpleArray_broadcast_from_tuple_tuple(self):\n         self.assertEqual(sarr[0, 0], 1)\n         self.assertEqual(sarr[0, 1], 2)\n \n-    @unittest.skipUnless(modmesh.testhelper.PYTEST_HELPER_BINDING_BUILT,\n-                         \"TestSimpleArrayHelper is not built\")\n-    def test_SimpleArray_casting(self):\n-        helper = modmesh.testhelper.TestSimpleArrayHelper\n-        # first check the caster works if the argument is exact the same type\n-        array_float64 = modmesh.SimpleArrayFloat64((2, 3, 4))\n-        self.assertEqual(\n-            helper.test_load_arrayfloat64_from_arrayplex(array_float64), True)\n-\n-        # init arrayplex\n-        arrayplex_int32 = modmesh.SimpleArray((2, 3, 4), dtype=\"int32\")\n-        arrayplex_uint64 = modmesh.SimpleArray((2, 3, 4), dtype=\"uint64\")\n-        arrayplex_float64 = modmesh.SimpleArray((2, 3, 4), dtype=\"float64\")\n-\n-        # check the type is the same with different data types\n-        self.assertTrue(type(arrayplex_int32) is type(arrayplex_uint64))\n-        self.assertTrue(type(arrayplex_uint64) is type(arrayplex_float64))\n-        self.assertEqual(\n-            str(type(arrayplex_int32)), \"<class '_modmesh.SimpleArray'>\")\n-        self.assertEqual(\n-            str(type(arrayplex_uint64)), \"<class '_modmesh.SimpleArray'>\")\n-        self.assertEqual(\n-            str(type(arrayplex_float64)), \"<class '_modmesh.SimpleArray'>\")\n-\n-        # check if arrayplex can cast to simplearray\n-        self.assertEqual(\n-            helper.test_load_arrayin32_from_arrayplex(arrayplex_int32), True)\n-\n-        # int32 and uint64 are different types\n-        with self.assertRaisesRegex(\n-                TypeError,\n-                r\"incompatible function arguments\"):\n-            helper.test_load_arrayin32_from_arrayplex(arrayplex_uint64)\n-\n-        # check if arrayplex can cast to simplearray\n-        self.assertEqual(\n-            helper.test_load_arrayfloat64_from_arrayplex(arrayplex_float64),\n-            True)  # noqa: E501\n-\n-        # float64 and int32 are differet types\n-        with self.assertRaisesRegex(TypeError,\n-                                    r\"incompatible function arguments\"):\n-            helper.test_load_arrayfloat64_from_arrayplex(arrayplex_int32)\n-\n-        # explicitly check the `cast` function of the customized caster works\n-        # SimpleArray32 from the constructor directly\n-        array_int32 = modmesh.SimpleArrayInt32((2, 3, 4))\n-        # SimpleArray32 from casting\n-        array_int32_2 = helper.test_cast_to_arrayint32()\n-        self.assertTrue(type(array_int32) is type(array_int32_2))\n-        self.assertEqual(\n-            str(type(array_int32)), \"<class '_modmesh.SimpleArrayInt32'>\")\n-        self.assertEqual(\n-            str(type(array_int32_2)), \"<class '_modmesh.SimpleArrayInt32'>\")\n-\n     def test_SimpleArray_SimpleArrayPlex_type_switch(self):\n         arrayplex_int32 = modmesh.SimpleArray((2, 3, 4), dtype=\"int32\")\n \n@@ -3499,6 +3444,75 @@ def test_SimpleArrayPlex_set_item_ellipse(self):\n                 for k in range(4):\n                     self.assertEqual(stride_arr[i, j, k], sarr[i, j, k])\n \n+    def test_SimpleArrayPlex_uniform_type(self):\n+        arrayplex_int32 = modmesh.SimpleArray((2, 3, 4), dtype=\"int32\")\n+        arrayplex_uint64 = modmesh.SimpleArray((2, 3, 4), dtype=\"uint64\")\n+        arrayplex_float64 = modmesh.SimpleArray((2, 3, 4), dtype=\"float64\")\n+\n+        # all plex instances share the same Python type regardless of dtype\n+        self.assertTrue(type(arrayplex_int32) is type(arrayplex_uint64))\n+        self.assertTrue(type(arrayplex_uint64) is type(arrayplex_float64))\n+        self.assertEqual(\n+            str(type(arrayplex_int32)), \"<class '_modmesh.SimpleArray'>\")\n+        self.assertEqual(\n+            str(type(arrayplex_uint64)), \"<class '_modmesh.SimpleArray'>\")\n+        self.assertEqual(\n+            str(type(arrayplex_float64)), \"<class '_modmesh.SimpleArray'>\")\n+\n+    def test_SimpleArrayPlex_cast_to_typed(self):\n+        dtype_typed_map = {\n+            \"int32\": (\"_modmesh.SimpleArrayInt32\", np.int32),\n+            \"uint64\": (\"_modmesh.SimpleArrayUint64\", np.uint64),\n+            \"float64\": (\"_modmesh.SimpleArrayFloat64\", np.float64),\n+        }\n+        for dtype, (typed_name, np_dtype) in dtype_typed_map.items():\n+            plex = modmesh.SimpleArray((2, 3, 4), dtype=dtype)\n+            typed = plex.typed\n+            self.assertEqual(str(type(typed)),\n+                             \"<class '{}'>\".format(typed_name))\n+            # verify ndarray dtype matches the expected numpy dtype\n+            self.assertEqual(typed.ndarray.dtype, np_dtype)\n+\n+    def test_SimpleArrayPlex_cast_dtype_mismatch(self):\n+        # constructing a typed array from a wrong-dtype plex must fail\n+        plex_i32 = modmesh.SimpleArray((2, 3, 4), dtype=\"int32\")\n+        ndarr_i32 = np.array(plex_i32, copy=False)\n+        with self.assertRaisesRegex(RuntimeError, r\"dtype mismatch\"):\n+            modmesh.SimpleArrayFloat64(array=ndarr_i32)\n+\n+        plex_f64 = modmesh.SimpleArray((2, 3, 4), dtype=\"float64\")\n+        ndarr_f64 = np.array(plex_f64, copy=False)\n+        with self.assertRaisesRegex(RuntimeError, r\"dtype mismatch\"):\n+            modmesh.SimpleArrayInt32(array=ndarr_f64)\n+\n+    def test_SimpleArrayPlex_typed_roundtrip(self):\n+        plex = modmesh.SimpleArray((2, 3, 4), dtype=\"int32\")\n+        typed = plex.typed\n+        plex2 = typed.plex\n+\n+        self.assertEqual(str(type(plex)), \"<class '_modmesh.SimpleArray'>\")\n+        self.assertEqual(\n+            str(type(typed)), \"<class '_modmesh.SimpleArrayInt32'>\")\n+        self.assertEqual(str(type(plex2)), \"<class '_modmesh.SimpleArray'>\")\n+\n+    def test_SimpleArrayPlex_typed_preserves_data(self):\n+        plex = modmesh.SimpleArray((4,), dtype=\"float64\", value=3.14)\n+        typed = plex.typed\n+        for i in range(4):\n+            self.assertEqual(typed[i], 3.14)\n+\n+    def test_SimpleArrayPlex_typed_from_typed_constructor(self):\n+        # typed array built from the constructor directly\n+        array_int32 = modmesh.SimpleArrayInt32((2, 3, 4))\n+        # typed array obtained via plex.typed\n+        array_int32_2 = modmesh.SimpleArray(\n+            (2, 3, 4), dtype=\"int32\").typed\n+        self.assertTrue(type(array_int32) is type(array_int32_2))\n+        self.assertEqual(\n+            str(type(array_int32)), \"<class '_modmesh.SimpleArrayInt32'>\")\n+        self.assertEqual(\n+            str(type(array_int32_2)), \"<class '_modmesh.SimpleArrayInt32'>\")\n+\n \n class SimpleArrayPlexAlignmentTC(unittest.TestCase):\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "4a4427504df8f061e88fd2ad9e4a78eed0b9edee",
+      "message": "Remove testhelper infrastructure, test SimpleArrayPlex directly in pytest\n\nRemove the C++ TestSimpleArrayHelper pybind binding and the\nUSE_PYTEST_HELPER_BINDING CMake option. The SimpleArrayPlex API (.typed,\n.plex, ndarray) is now mature enough to test directly from Python without\na dedicated C++ test helper.\n\nClose #720\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "696017ab00e5911dc217238527249d8f047fc463"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "cross_language_mapping_visible",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": true,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__solvcon__modmesh__pr722.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\solvcon__modmesh__pr722__cpp_python__solvcon__modmesh__pr722\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\solvcon__modmesh__pr722__cpp_python__solvcon__modmesh__pr722\\rn"
+  }
+}

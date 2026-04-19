@@ -1,0 +1,312 @@
+{
+  "instance_id": "java_python__opendataloader-project__opendataloader-pdf__pr275",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "opendataloader-project/opendataloader-pdf",
+  "pr_number": 275,
+  "pr_url": "https://github.com/opendataloader-project/opendataloader-pdf/pull/275",
+  "repo": {
+    "full_name": "opendataloader-project/opendataloader-pdf",
+    "clone_url": "https://github.com/opendataloader-project/opendataloader-pdf.git",
+    "default_branch": "main",
+    "created_at": "2025-05-13T05:48:02Z",
+    "stars": 18010,
+    "license": "Apache-2.0",
+    "size_kb": 86580
+  },
+  "pull_request": {
+    "id": 3381997659,
+    "title": "feat: add --sanitize option, separate from --content-safety-off",
+    "body": "## Summary\n\n- Add `--sanitize` boolean CLI option that enables sensitive data masking (emails, URLs, phones, credit cards → placeholders). **Disabled by default.**\n- Separate it from `--content-safety-off`, which now exclusively controls rendering-mismatch filters (hidden-text, off-page, tiny, hidden-ocg)\n- Deprecate `--content-safety-off sensitive-data` with a stderr warning (still accepted, no-op)\n\n### Why\n\n`--content-safety-off` mixed two fundamentally different concerns:\n- **Rendering-mismatch filters** (security): remove invisible content that could be prompt injection\n- **Sensitive data masking** (privacy): replace visible, legitimate content with placeholders\n\nThese have opposite defaults (security ON, masking OFF) and opposite user intent. Splitting them makes the API clearer.\n\n### Changes\n\n| Area | Files | What |\n|------|-------|------|\n| Java CLI | `CLIOptions.java` | Add `--sanitize`, deprecate `sensitive-data` value, update `all` case |\n| Java Tests | `CLIOptionsContentSafetyTest.java` (new) | 5 tests covering flag, defaults, combinations, deprecation |\n| Bindings | `options.json`, generated Python/Node/MDX files | Regenerated via `npm run sync` |\n| Node Tests | `convert-options.test.ts` | sanitize in buildArgs + all-options test |\n| Python Tests | `test_cli_options.py` | sanitize option existence |\n| Docs | `ai-safety.mdx`, `README.md`, Python/Node READMEs | Rewrite filter documentation |\n\n## Test plan\n\n- [x] Java: 406 tests pass (`mvn test`)\n- [x] Node: 18 tests pass (`npm test`)\n- [x] Python: 38 tests pass (`pytest`)\n- [ ] Manual: `opendataloader-pdf test.pdf --sanitize` enables masking\n- [ ] Manual: `opendataloader-pdf test.pdf --content-safety-off sensitive-data` prints deprecation warning\n- [ ] Manual: `opendataloader-pdf test.pdf --sanitize --content-safety-off all` → sanitize ON, rendering OFF\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "created_at": "2026-03-11T04:39:58Z",
+    "merged_at": "2026-03-11T04:55:40Z",
+    "base_sha": "985407b1dcf7c22796c7272b74416cbc3b2f6d6f",
+    "head_sha": "cdc15ef6632bc1b357b1cf50cf53938de5207255",
+    "merge_commit_sha": "bd139c53b984e33d0d82ce40ac34f23e7a179cf3",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "985407b1dcf7c22796c7272b74416cbc3b2f6d6f",
+  "final_sha": "cdc15ef6632bc1b357b1cf50cf53938de5207255",
+  "changed_files": [
+    {
+      "sha": "00fc3c9af5366776a5122d285de4a1e5449e3fb0",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/README.md",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/README.md",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/README.md?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -328,10 +328,10 @@ PDFs can contain hidden prompt injection attacks. OpenDataLoader automatically f\n - Off-page content\n - Suspicious invisible layers\n \n-The `sensitive-data` safety filter is **enabled by default**, replacing extracted emails/URLs with placeholders. To preserve raw links for trusted documents:\n+To sanitize sensitive data (emails, URLs, phone numbers → placeholders), enable it explicitly:\n \n ```bash\n-opendataloader-pdf file1.pdf file2.pdf folder/ --content-safety-off sensitive-data\n+opendataloader-pdf input.pdf --sanitize\n ```\n \n [AI Safety Guide](https://opendataloader.org/docs/ai-safety)"
+    },
+    {
+      "sha": "ed9e1e7415c3b814c3036cf8b74dad84ac783077",
+      "filename": "content/docs/_generated/node-convert-options.mdx",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/content%2Fdocs%2F_generated%2Fnode-convert-options.mdx",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/content%2Fdocs%2F_generated%2Fnode-convert-options.mdx",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/content%2Fdocs%2F_generated%2Fnode-convert-options.mdx?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -13,7 +13,8 @@ description: Options for the Node.js convert function\n | `password`              | `string`             | -            | Password for encrypted PDF files                                                                                                   |\n | `format`                | `string \\| string[]` | -            | Output formats (comma-separated). Values: json, text, html, pdf, markdown, markdown-with-html, markdown-with-images. Default: json |\n | `quiet`                 | `boolean`            | `false`      | Suppress console logging output                                                                                                    |\n-| `contentSafetyOff`      | `string \\| string[]` | -            | Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg, sensitive-data                               |\n+| `contentSafetyOff`      | `string \\| string[]` | -            | Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg                                               |\n+| `sanitize`              | `boolean`            | `false`      | Enable sensitive data sanitization. Replaces emails, phone numbers, IPs, credit cards, and URLs with placeholders                  |\n | `keepLineBreaks`        | `boolean`            | `false`      | Preserve original line breaks in extracted text                                                                                    |\n | `replaceInvalidChars`   | `string`             | `\" \"`        | Replacement character for invalid/unrecognized characters. Default: space                                                          |\n | `useStructTree`         | `boolean`            | `false`      | Use PDF structure tree (tagged PDF) for reading order and semantic structure                                                       |"
+    },
+    {
+      "sha": "3bbb21d2c6f09a4c1dc6e0226c05816a263f0eba",
+      "filename": "content/docs/_generated/python-convert-options.mdx",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/content%2Fdocs%2F_generated%2Fpython-convert-options.mdx",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/content%2Fdocs%2F_generated%2Fpython-convert-options.mdx",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/content%2Fdocs%2F_generated%2Fpython-convert-options.mdx?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -14,7 +14,8 @@ description: Options for the Python convert function\n | `password`                | `str`                | -            | Password for encrypted PDF files                                                                                                   |\n | `format`                  | `str \\| list[str]`   | -            | Output formats (comma-separated). Values: json, text, html, pdf, markdown, markdown-with-html, markdown-with-images. Default: json |\n | `quiet`                   | `bool`               | `False`      | Suppress console logging output                                                                                                    |\n-| `content_safety_off`      | `str \\| list[str]`   | -            | Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg, sensitive-data                               |\n+| `content_safety_off`      | `str \\| list[str]`   | -            | Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg                                               |\n+| `sanitize`                | `bool`               | `False`      | Enable sensitive data sanitization. Replaces emails, phone numbers, IPs, credit cards, and URLs with placeholders                  |\n | `keep_line_breaks`        | `bool`               | `False`      | Preserve original line breaks in extracted text                                                                                    |\n | `replace_invalid_chars`   | `str`                | `\" \"`        | Replacement character for invalid/unrecognized characters. Default: space                                                          |\n | `use_struct_tree`         | `bool`               | `False`      | Use PDF structure tree (tagged PDF) for reading order and semantic structure                                                       |"
+    },
+    {
+      "sha": "3073a8fe3651477237d7e5ca9489411e2843b5ba",
+      "filename": "content/docs/ai-safety.mdx",
+      "status": "modified",
+      "additions": 48,
+      "deletions": 20,
+      "changes": 68,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/content%2Fdocs%2Fai-safety.mdx",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/content%2Fdocs%2Fai-safety.mdx",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/content%2Fdocs%2Fai-safety.mdx?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -54,37 +54,65 @@ Attackers can encode ASCII characters by tweaking the least significant bit (LSB\n \n ### Configuration\n \n-| Command                | Description                                      | Example                                     |\n-| ---------------------- | ------------------------------------------------ | ------------------------------------------- |\n-| `--content-safety-off` | Disable one or more filters (comma-separated).   | `--content-safety-off hidden-text,off-page` |\n+| Command                | Description                                                  | Example                                     |\n+| ---------------------- | ------------------------------------------------------------ | ------------------------------------------- |\n+| `--content-safety-off` | Disable rendering-mismatch filters (comma-separated).        | `--content-safety-off hidden-text,off-page` |\n+| `--sanitize`           | Enable sensitive data sanitization (disabled by default).    | `--sanitize`                                |\n \n-### Available filters\n+### Rendering-mismatch filters (enabled by default)\n \n-| Filter           | Purpose                                                 | Status      |\n-| ---------------- | ------------------------------------------------------- | ----------- |\n-| `all`            | Enables every safety filter (default).                  | ✅          |\n-| `hidden-text`    | Blocks transparent, low-contrast, or invisible strokes. | ✅          |\n-| `off-page`       | Removes text located outside the visible page bounds.   | ✅          |\n-| `tiny`           | Filters extremely small fonts.                          | ✅          |\n-| `hidden-ocg`     | Drops content hidden in Optional Content Groups.        | ✅          |\n-| `sensitive-data` | Filters emails, IPs, phone numbers, and credit cards.   | ✅          |\n-| `patterns`       | Detects repeating visual patterns that encode prompts.  | 🚀 Upcoming |\n-| `malicious-font` | Detects manipulated font `cmap` tables.                 | 🚀 Upcoming |\n-| `noised-figure`  | Detects steganographic prompts in images.               | 🚀 Upcoming |\n+These filters remove content that is invisible to humans but readable by machines — the primary vector for prompt injection attacks.\n \n-When `sensitive-data` is enabled, extracted emails/URLs may be replaced with placeholders (for example, `email@example.com` or `https://example.com`) in Markdown output.\n+| Filter        | Purpose                                                 |\n+| ------------- | ------------------------------------------------------- |\n+| `hidden-text` | Blocks transparent, low-contrast, or invisible strokes. |\n+| `off-page`    | Removes text located outside the visible page bounds.   |\n+| `tiny`        | Filters extremely small fonts (≤ 1pt).                  |\n+| `hidden-ocg`  | Drops content hidden in Optional Content Groups.        |\n \n-To preserve original links and email addresses for trusted documents, disable only that filter:\n+To disable a specific filter for trusted documents:\n \n ```bash\n-opendataloader-pdf input.pdf --content-safety-off sensitive-data\n+opendataloader-pdf input.pdf --content-safety-off hidden-text\n+```\n+\n+`--content-safety-off all` disables all four rendering-mismatch filters. It does not affect `--sanitize`.\n+\n+### Sensitive data sanitization (disabled by default)\n+\n+The `--sanitize` flag replaces personally identifiable information with placeholders. This is **disabled by default** because it modifies visible, legitimate content.\n+\n+```bash\n+opendataloader-pdf input.pdf --sanitize\n ```\n \n ```python\n opendataloader_pdf.convert(\n     input_path=\"input.pdf\",\n-    content_safety_off=[\"sensitive-data\"],\n+    sanitize=True,\n )\n ```\n \n-Leave filters enabled whenever possible; only disable them with `--content-safety-off` when you fully trust the source documents and understand the trade-offs.\n+```typescript\n+import { convert } from 'opendataloader-pdf';\n+await convert('input.pdf', { sanitize: true });\n+```\n+\n+| Data type     | Example replacement        |\n+| ------------- | -------------------------- |\n+| Email         | `email@example.com`        |\n+| Phone         | `+00-0000-0000`            |\n+| Credit card   | `0000-0000-0000-0000`      |\n+| IPv4/IPv6     | `0.0.0.0`                  |\n+| URL           | `https://example.com`      |\n+| MAC address   | `00:00:00:00:00:00`        |\n+\n+### Upcoming filters\n+\n+| Filter           | Purpose                                                |\n+| ---------------- | ------------------------------------------------------ |\n+| `patterns`       | Detects repeating visual patterns that encode prompts.  |\n+| `malicious-font` | Detects manipulated font `cmap` tables.                 |\n+| `noised-figure`  | Detects steganographic prompts in images.               |\n+\n+Leave rendering filters enabled whenever possible; only disable them with `--content-safety-off` when you fully trust the source documents and understand the trade-offs."
+    },
+    {
+      "sha": "ac1557e6811ad050ecc1dc59c15d92e3fd0afe32",
+      "filename": "content/docs/cli-options-reference.mdx",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 13,
+      "changes": 15,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/content%2Fdocs%2Fcli-options-reference.mdx",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/content%2Fdocs%2Fcli-options-reference.mdx",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/content%2Fdocs%2Fcli-options-reference.mdx?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -17,7 +17,8 @@ This page documents all available CLI options for opendataloader-pdf.\n | `--password`                | `-p`  | `string`  | -            | Password for encrypted PDF files                                                                                                   |\n | `--format`                  | `-f`  | `string`  | -            | Output formats (comma-separated). Values: json, text, html, pdf, markdown, markdown-with-html, markdown-with-images. Default: json |\n | `--quiet`                   | `-q`  | `boolean` | `false`      | Suppress console logging output                                                                                                    |\n-| `--content-safety-off`      | -     | `string`  | -            | Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg, sensitive-data                               |\n+| `--content-safety-off`      | -     | `string`  | -            | Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg                                               |\n+| `--sanitize`                | -     | `boolean` | `false`      | Enable sensitive data sanitization. Replaces emails, phone numbers, IPs, credit cards, and URLs with placeholders                  |\n | `--keep-line-breaks`        | -     | `boolean` | `false`      | Preserve original line breaks in extracted text                                                                                    |\n | `--replace-invalid-chars`   | -     | `string`  | `\" \"`        | Replacement character for invalid/unrecognized characters. Default: space                                                          |\n | `--use-struct-tree`         | -     | `boolean` | `false`      | Use PDF structure tree (tagged PDF) for reading order and semantic structure                                                       |\n@@ -45,24 +46,12 @@ This page documents all available CLI options for opendataloader-pdf.\n opendataloader-pdf document.pdf -o ./output -f json,markdown\n ```\n \n-### Multiple files (single JVM invocation)\n-\n-```bash\n-opendataloader-pdf report.pdf contract.pdf invoice.pdf -o ./output -f json,markdown\n-```\n-\n ### Convert entire folder\n \n ```bash\n opendataloader-pdf ./pdf-folder -o ./output -f json\n ```\n \n-### Mix files and directories\n-\n-```bash\n-opendataloader-pdf report.pdf ./invoices/ ./receipts/ -o ./output -f markdown\n-```\n-\n ### Save images as external files\n \n ```bash"
+    },
+    {
+      "sha": "bc8059723e2bc100733d98253c3dde5eac3b17f0",
+      "filename": "java/opendataloader-pdf-cli/src/main/java/org/opendataloader/pdf/cli/CLIOptions.java",
+      "status": "modified",
+      "additions": 20,
+      "deletions": 6,
+      "changes": 26,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/java%2Fopendataloader-pdf-cli%2Fsrc%2Fmain%2Fjava%2Forg%2Fopendataloader%2Fpdf%2Fcli%2FCLIOptions.java",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/java%2Fopendataloader-pdf-cli%2Fsrc%2Fmain%2Fjava%2Forg%2Fopendataloader%2Fpdf%2Fcli%2FCLIOptions.java",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/java%2Fopendataloader-pdf-cli%2Fsrc%2Fmain%2Fjava%2Forg%2Fopendataloader%2Fpdf%2Fcli%2FCLIOptions.java?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -55,7 +55,12 @@ public class CLIOptions {\n     // ===== Content Safety =====\n     private static final String CONTENT_SAFETY_OFF_LONG_OPTION = \"content-safety-off\";\n     private static final String CONTENT_SAFETY_OFF_DESC = \"Disable content safety filters. \"\n-            + \"Values: all, hidden-text, off-page, tiny, hidden-ocg, sensitive-data\";\n+            + \"Values: all, hidden-text, off-page, tiny, hidden-ocg\";\n+\n+    // ===== Sanitize =====\n+    private static final String SANITIZE_LONG_OPTION = \"sanitize\";\n+    private static final String SANITIZE_DESC = \"Enable sensitive data sanitization. \"\n+            + \"Replaces emails, phone numbers, IPs, credit cards, and URLs with placeholders\";\n \n     // ===== Keep Line Breaks =====\n     private static final String KEEP_LINE_BREAKS_LONG_OPTION = \"keep-line-breaks\";\n@@ -148,6 +153,7 @@ public class CLIOptions {\n             new OptionDefinition(FORMAT_LONG_OPTION, FORMAT_OPTION, \"string\", null, FORMAT_DESC, true),\n             new OptionDefinition(QUIET_LONG_OPTION, QUIET_OPTION, \"boolean\", false, QUIET_DESC, true),\n             new OptionDefinition(CONTENT_SAFETY_OFF_LONG_OPTION, null, \"string\", null, CONTENT_SAFETY_OFF_DESC, true),\n+            new OptionDefinition(SANITIZE_LONG_OPTION, null, \"boolean\", false, SANITIZE_DESC, true),\n             new OptionDefinition(KEEP_LINE_BREAKS_LONG_OPTION, null, \"boolean\", false, KEEP_LINE_BREAKS_DESC, true),\n             new OptionDefinition(REPLACE_INVALID_CHARS_LONG_OPTION, null, \"string\", \" \", REPLACE_INVALID_CHARS_DESC,\n                     true),\n@@ -245,6 +251,7 @@ public static Config createConfigFromCommandLine(CommandLine commandLine) {\n             config.setOutputFolder(file.isDirectory() ? file.getAbsolutePath() : file.getParent());\n         }\n         applyContentSafetyOption(config, commandLine);\n+        applySanitizeOption(config, commandLine);\n         applyFormatOption(config, commandLine);\n         applyTableMethodOption(config, commandLine);\n         applyImageOptions(config, commandLine);\n@@ -319,13 +326,13 @@ private static void applyContentSafetyOption(Config config, CommandLine commandL\n         String[] optionValues = commandLine.getOptionValues(CONTENT_SAFETY_OFF_LONG_OPTION);\n         if (optionValues == null || optionValues.length == 0) {\n             throw new IllegalArgumentException(\n-                    \"Option --content-safety-off requires at least one value. Supported values: all, hidden-text, off-page, tiny, hidden-ocg, sensitive-data\");\n+                    \"Option --content-safety-off requires at least one value. Supported values: all, hidden-text, off-page, tiny, hidden-ocg\");\n         }\n \n         Set<String> values = parseOptionValues(optionValues);\n         if (values.isEmpty()) {\n             throw new IllegalArgumentException(\n-                    \"Option --content-safety-off requires at least one value. Supported values: all, hidden-text, off-page, tiny, hidden-ocg, sensitive-data\");\n+                    \"Option --content-safety-off requires at least one value. Supported values: all, hidden-text, off-page, tiny, hidden-ocg\");\n         }\n \n         for (String value : values) {\n@@ -343,23 +350,30 @@ private static void applyContentSafetyOption(Config config, CommandLine commandL\n                     config.getFilterConfig().setFilterHiddenOCG(false);\n                     break;\n                 case \"sensitive-data\":\n-                    config.getFilterConfig().setFilterSensitiveData(false);\n+                    System.err.println(\"Warning: '--content-safety-off sensitive-data' is deprecated and has no effect. \"\n+                            + \"Sensitive data sanitization is now opt-in. \"\n+                            + \"Use '--sanitize' to enable masking.\");\n                     break;\n                 case \"all\":\n                     config.getFilterConfig().setFilterHiddenText(false);\n                     config.getFilterConfig().setFilterOutOfPage(false);\n                     config.getFilterConfig().setFilterTinyText(false);\n                     config.getFilterConfig().setFilterHiddenOCG(false);\n-                    config.getFilterConfig().setFilterSensitiveData(false);\n                     break;\n                 default:\n                     throw new IllegalArgumentException(String.format(\n-                            \"Unsupported value '%s'. Supported values: all, hidden-text, off-page, tiny, hidden-ocg, sensitive-data\",\n+                            \"Unsupported value '%s'. Supported values: all, hidden-text, off-page, tiny, hidden-ocg\",\n                             value));\n             }\n         }\n     }\n \n+    private static void applySanitizeOption(Config config, CommandLine commandLine) {\n+        if (commandLine.hasOption(SANITIZE_LONG_OPTION)) {\n+            config.getFilterConfig().setFilterSensitiveData(true);\n+        }\n+    }\n+\n     private static void applyFormatOption(Config config, CommandLine commandLine) {\n         if (!commandLine.hasOption(FORMAT_OPTION)) {\n             return;"
+    },
+    {
+      "sha": "ed4bd23be49c69c2a605b8c15db49638ab693046",
+      "filename": "java/opendataloader-pdf-cli/src/test/java/org/opendataloader/pdf/cli/CLIOptionsContentSafetyTest.java",
+      "status": "added",
+      "additions": 102,
+      "deletions": 0,
+      "changes": 102,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/java%2Fopendataloader-pdf-cli%2Fsrc%2Ftest%2Fjava%2Forg%2Fopendataloader%2Fpdf%2Fcli%2FCLIOptionsContentSafetyTest.java",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/java%2Fopendataloader-pdf-cli%2Fsrc%2Ftest%2Fjava%2Forg%2Fopendataloader%2Fpdf%2Fcli%2FCLIOptionsContentSafetyTest.java",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/java%2Fopendataloader-pdf-cli%2Fsrc%2Ftest%2Fjava%2Forg%2Fopendataloader%2Fpdf%2Fcli%2FCLIOptionsContentSafetyTest.java?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -0,0 +1,102 @@\n+/*\n+ * Copyright 2025-2026 Hancom Inc.\n+ *\n+ * Licensed under the Apache License, Version 2.0 (the \"License\");\n+ * you may not use this file except in compliance with the License.\n+ * You may obtain a copy of the License at\n+ *\n+ *     http://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing, software\n+ * distributed under the License is distributed on an \"AS IS\" BASIS,\n+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+ * See the License for the specific language governing permissions and\n+ * limitations under the License.\n+ */\n+package org.opendataloader.pdf.cli;\n+\n+import org.apache.commons.cli.CommandLine;\n+import org.apache.commons.cli.CommandLineParser;\n+import org.apache.commons.cli.DefaultParser;\n+import org.apache.commons.cli.Options;\n+import org.junit.jupiter.api.Test;\n+import org.opendataloader.pdf.api.Config;\n+\n+import java.io.ByteArrayOutputStream;\n+import java.io.PrintStream;\n+\n+import static org.junit.jupiter.api.Assertions.*;\n+\n+class CLIOptionsContentSafetyTest {\n+\n+    private Config parseArgs(String... args) throws Exception {\n+        Options options = CLIOptions.defineOptions();\n+        CommandLineParser parser = new DefaultParser();\n+        CommandLine commandLine = parser.parse(options, args);\n+        return CLIOptions.createConfigFromCommandLine(commandLine);\n+    }\n+\n+    @Test\n+    void sanitizeFlagEnablesSensitiveDataFilter() throws Exception {\n+        Config config = parseArgs(\"--output-dir\", \"/tmp\", \"--sanitize\");\n+        assertTrue(config.getFilterConfig().isFilterSensitiveData(),\n+                \"--sanitize should set filterSensitiveData to true\");\n+    }\n+\n+    @Test\n+    void defaultDoesNotEnableSensitiveDataFilter() throws Exception {\n+        Config config = parseArgs(\"--output-dir\", \"/tmp\");\n+        assertFalse(config.getFilterConfig().isFilterSensitiveData(),\n+                \"Without --sanitize, filterSensitiveData should remain false\");\n+    }\n+\n+    @Test\n+    void sanitizeWithContentSafetyOffAllStillEnablesSanitize() throws Exception {\n+        Config config = parseArgs(\"--output-dir\", \"/tmp\", \"--content-safety-off\", \"all\", \"--sanitize\");\n+        assertTrue(config.getFilterConfig().isFilterSensitiveData(),\n+                \"--sanitize should set filterSensitiveData=true even when --content-safety-off all is used\");\n+        assertFalse(config.getFilterConfig().isFilterHiddenText(),\n+                \"--content-safety-off all should disable filterHiddenText\");\n+        assertFalse(config.getFilterConfig().isFilterOutOfPage(),\n+                \"--content-safety-off all should disable filterOutOfPage\");\n+        assertFalse(config.getFilterConfig().isFilterTinyText(),\n+                \"--content-safety-off all should disable filterTinyText\");\n+        assertFalse(config.getFilterConfig().isFilterHiddenOCG(),\n+                \"--content-safety-off all should disable filterHiddenOCG\");\n+    }\n+\n+    @Test\n+    void contentSafetyOffAllDoesNotTouchSensitiveData() throws Exception {\n+        Config config = parseArgs(\"--output-dir\", \"/tmp\", \"--content-safety-off\", \"all\");\n+        assertFalse(config.getFilterConfig().isFilterSensitiveData(),\n+                \"--content-safety-off all should not enable filterSensitiveData (stays false)\");\n+    }\n+\n+    @Test\n+    void deprecatedSensitiveDataValueIsAccepted() throws Exception {\n+        Config config = parseArgs(\"--output-dir\", \"/tmp\", \"--content-safety-off\", \"sensitive-data\");\n+        assertFalse(config.getFilterConfig().isFilterSensitiveData(),\n+                \"Deprecated sensitive-data value should not enable sanitization\");\n+    }\n+\n+    @Test\n+    void deprecatedSensitiveDataValuePrintsWarning() throws Exception {\n+        PrintStream originalErr = System.err;\n+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();\n+        System.setErr(new PrintStream(errContent));\n+        try {\n+            parseArgs(\"--output-dir\", \"/tmp\", \"--content-safety-off\", \"sensitive-data\");\n+            assertTrue(errContent.toString().contains(\"deprecated\"),\n+                    \"Should print a deprecation warning to stderr\");\n+        } finally {\n+            System.setErr(originalErr);\n+        }\n+    }\n+\n+    @Test\n+    void sanitizeWithDeprecatedSensitiveDataStillEnablesSanitize() throws Exception {\n+        Config config = parseArgs(\"--output-dir\", \"/tmp\", \"--content-safety-off\", \"sensitive-data\", \"--sanitize\");\n+        assertTrue(config.getFilterConfig().isFilterSensitiveData(),\n+                \"--sanitize should win over deprecated --content-safety-off sensitive-data\");\n+    }\n+}"
+    },
+    {
+      "sha": "eef6a14bf272ba3ce14ec0f817e9b174438619ba",
+      "filename": "node/opendataloader-pdf/src/cli-options.generated.ts",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/node%2Fopendataloader-pdf%2Fsrc%2Fcli-options.generated.ts",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/node%2Fopendataloader-pdf%2Fsrc%2Fcli-options.generated.ts",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/node%2Fopendataloader-pdf%2Fsrc%2Fcli-options.generated.ts?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -11,7 +11,8 @@ export function registerCliOptions(program: Command): void {\n   program.option('-p, --password <value>', 'Password for encrypted PDF files');\n   program.option('-f, --format <value>', 'Output formats (comma-separated). Values: json, text, html, pdf, markdown, markdown-with-html, markdown-with-images. Default: json');\n   program.option('-q, --quiet', 'Suppress console logging output');\n-  program.option('--content-safety-off <value>', 'Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg, sensitive-data');\n+  program.option('--content-safety-off <value>', 'Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg');\n+  program.option('--sanitize', 'Enable sensitive data sanitization. Replaces emails, phone numbers, IPs, credit cards, and URLs with placeholders');\n   program.option('--keep-line-breaks', 'Preserve original line breaks in extracted text');\n   program.option('--replace-invalid-chars <value>', 'Replacement character for invalid/unrecognized characters. Default: space');\n   program.option('--use-struct-tree', 'Use PDF structure tree (tagged PDF) for reading order and semantic structure');"
+    },
+    {
+      "sha": "aead4d74166125dab93bf96370158e1a026509e5",
+      "filename": "node/opendataloader-pdf/src/convert-options.generated.ts",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 1,
+      "changes": 11,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/node%2Fopendataloader-pdf%2Fsrc%2Fconvert-options.generated.ts",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/node%2Fopendataloader-pdf%2Fsrc%2Fconvert-options.generated.ts",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/node%2Fopendataloader-pdf%2Fsrc%2Fconvert-options.generated.ts?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -13,8 +13,10 @@ export interface ConvertOptions {\n   format?: string | string[];\n   /** Suppress console logging output */\n   quiet?: boolean;\n-  /** Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg, sensitive-data */\n+  /** Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg */\n   contentSafetyOff?: string | string[];\n+  /** Enable sensitive data sanitization. Replaces emails, phone numbers, IPs, credit cards, and URLs with placeholders */\n+  sanitize?: boolean;\n   /** Preserve original line breaks in extracted text */\n   keepLineBreaks?: boolean;\n   /** Replacement character for invalid/unrecognized characters. Default: space */\n@@ -62,6 +64,7 @@ export interface CliOptions {\n   format?: string;\n   quiet?: boolean;\n   contentSafetyOff?: string;\n+  sanitize?: boolean;\n   keepLineBreaks?: boolean;\n   replaceInvalidChars?: string;\n   useStructTree?: boolean;\n@@ -103,6 +106,9 @@ export function buildConvertOptions(cliOptions: CliOptions): ConvertOptions {\n   if (cliOptions.contentSafetyOff) {\n     convertOptions.contentSafetyOff = cliOptions.contentSafetyOff;\n   }\n+  if (cliOptions.sanitize) {\n+    convertOptions.sanitize = true;\n+  }\n   if (cliOptions.keepLineBreaks) {\n     convertOptions.keepLineBreaks = true;\n   }\n@@ -194,6 +200,9 @@ export function buildArgs(options: ConvertOptions): string[] {\n       args.push('--content-safety-off', options.contentSafetyOff);\n     }\n   }\n+  if (options.sanitize) {\n+    args.push('--sanitize');\n+  }\n   if (options.keepLineBreaks) {\n     args.push('--keep-line-breaks');\n   }"
+    },
+    {
+      "sha": "16306cc33cc393b71d476fc45d7df5dcfba4cbdd",
+      "filename": "node/opendataloader-pdf/test/convert-options.test.ts",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 0,
+      "changes": 14,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/node%2Fopendataloader-pdf%2Ftest%2Fconvert-options.test.ts",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/node%2Fopendataloader-pdf%2Ftest%2Fconvert-options.test.ts",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/node%2Fopendataloader-pdf%2Ftest%2Fconvert-options.test.ts?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -40,6 +40,18 @@ describe('buildArgs()', () => {\n     ]);\n   });\n \n+  it('should handle sanitize boolean', () => {\n+    const options: ConvertOptions = { sanitize: true };\n+    const args = buildArgs(options);\n+    expect(args).toEqual(['--sanitize']);\n+  });\n+\n+  it('should not include sanitize when false', () => {\n+    const options: ConvertOptions = { sanitize: false };\n+    const args = buildArgs(options);\n+    expect(args).toEqual([]);\n+  });\n+\n   it('should handle list options with string value', () => {\n     const args = buildArgs({\n       format: 'json,markdown',\n@@ -79,6 +91,7 @@ describe('buildArgs()', () => {\n       htmlPageSeparator: '<hr>',\n       imageOutput: 'external',\n       imageFormat: 'jpeg',\n+      sanitize: true,\n     };\n \n     const args = buildArgs(options);\n@@ -106,6 +119,7 @@ describe('buildArgs()', () => {\n     expect(args).toContain('external');\n     expect(args).toContain('--image-format');\n     expect(args).toContain('jpeg');\n+    expect(args).toContain('--sanitize');\n   });\n \n   it('should not include undefined options', () => {"
+    },
+    {
+      "sha": "678c3961f65c2ca9fd59f03297ba696be59eda3c",
+      "filename": "options.json",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 1,
+      "changes": 10,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/options.json",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/options.json",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/options.json?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -38,7 +38,15 @@\n       \"type\": \"string\",\n       \"required\": false,\n       \"default\": null,\n-      \"description\": \"Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg, sensitive-data\"\n+      \"description\": \"Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg\"\n+    },\n+    {\n+      \"name\": \"sanitize\",\n+      \"shortName\": null,\n+      \"type\": \"boolean\",\n+      \"required\": false,\n+      \"default\": false,\n+      \"description\": \"Enable sensitive data sanitization. Replaces emails, phone numbers, IPs, credit cards, and URLs with placeholders\"\n     },\n     {\n       \"name\": \"keep-line-breaks\","
+    },
+    {
+      "sha": "ad4b9670c2d886c6f085f2c8eb720bd2c991da92",
+      "filename": "python/opendataloader-pdf/src/opendataloader_pdf/cli_options_generated.py",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 1,
+      "changes": 11,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/python%2Fopendataloader-pdf%2Fsrc%2Fopendataloader_pdf%2Fcli_options_generated.py",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/python%2Fopendataloader-pdf%2Fsrc%2Fopendataloader_pdf%2Fcli_options_generated.py",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/python%2Fopendataloader-pdf%2Fsrc%2Fopendataloader_pdf%2Fcli_options_generated.py?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -52,7 +52,16 @@\n         \"type\": \"string\",\n         \"required\": False,\n         \"default\": None,\n-        \"description\": \"Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg, sensitive-data\",\n+        \"description\": \"Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg\",\n+    },\n+    {\n+        \"name\": \"sanitize\",\n+        \"python_name\": \"sanitize\",\n+        \"short_name\": None,\n+        \"type\": \"boolean\",\n+        \"required\": False,\n+        \"default\": False,\n+        \"description\": \"Enable sensitive data sanitization. Replaces emails, phone numbers, IPs, credit cards, and URLs with placeholders\",\n     },\n     {\n         \"name\": \"keep-line-breaks\","
+    },
+    {
+      "sha": "a402e0678656a95e6bc7c08ea63c1490cdbd1962",
+      "filename": "python/opendataloader-pdf/src/opendataloader_pdf/convert_generated.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 1,
+      "changes": 6,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/python%2Fopendataloader-pdf%2Fsrc%2Fopendataloader_pdf%2Fconvert_generated.py",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/python%2Fopendataloader-pdf%2Fsrc%2Fopendataloader_pdf%2Fconvert_generated.py",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/python%2Fopendataloader-pdf%2Fsrc%2Fopendataloader_pdf%2Fconvert_generated.py?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -16,6 +16,7 @@ def convert(\n     format: Optional[Union[str, List[str]]] = None,\n     quiet: bool = False,\n     content_safety_off: Optional[Union[str, List[str]]] = None,\n+    sanitize: bool = False,\n     keep_line_breaks: bool = False,\n     replace_invalid_chars: Optional[str] = None,\n     use_struct_tree: bool = False,\n@@ -44,7 +45,8 @@ def convert(\n         password: Password for encrypted PDF files\n         format: Output formats (comma-separated). Values: json, text, html, pdf, markdown, markdown-with-html, markdown-with-images. Default: json\n         quiet: Suppress console logging output\n-        content_safety_off: Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg, sensitive-data\n+        content_safety_off: Disable content safety filters. Values: all, hidden-text, off-page, tiny, hidden-ocg\n+        sanitize: Enable sensitive data sanitization. Replaces emails, phone numbers, IPs, credit cards, and URLs with placeholders\n         keep_line_breaks: Preserve original line breaks in extracted text\n         replace_invalid_chars: Replacement character for invalid/unrecognized characters. Default: space\n         use_struct_tree: Use PDF structure tree (tagged PDF) for reading order and semantic structure\n@@ -90,6 +92,8 @@ def convert(\n                 args.extend([\"--content-safety-off\", \",\".join(content_safety_off)])\n         else:\n             args.extend([\"--content-safety-off\", content_safety_off])\n+    if sanitize:\n+        args.append(\"--sanitize\")\n     if keep_line_breaks:\n         args.append(\"--keep-line-breaks\")\n     if replace_invalid_chars:"
+    },
+    {
+      "sha": "ec5d3670696206ae7bcdac1e66f22ed301618b69",
+      "filename": "python/opendataloader-pdf/tests/test_cli_options.py",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/opendataloader-project/opendataloader-pdf/blob/cdc15ef6632bc1b357b1cf50cf53938de5207255/python%2Fopendataloader-pdf%2Ftests%2Ftest_cli_options.py",
+      "raw_url": "https://github.com/opendataloader-project/opendataloader-pdf/raw/cdc15ef6632bc1b357b1cf50cf53938de5207255/python%2Fopendataloader-pdf%2Ftests%2Ftest_cli_options.py",
+      "contents_url": "https://api.github.com/repos/opendataloader-project/opendataloader-pdf/contents/python%2Fopendataloader-pdf%2Ftests%2Ftest_cli_options.py?ref=cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "patch": "@@ -57,6 +57,13 @@ def test_known_options_exist(self):\n         for expected in expected_options:\n             assert expected in option_names, f\"Expected option not found: {expected}\"\n \n+    def test_sanitize_option_exists(self):\n+        option_names = [opt[\"name\"] for opt in CLI_OPTIONS]\n+        assert \"sanitize\" in option_names\n+        sanitize_opt = next(opt for opt in CLI_OPTIONS if opt[\"name\"] == \"sanitize\")\n+        assert sanitize_opt[\"type\"] == \"boolean\"\n+        assert sanitize_opt[\"default\"] == False\n+\n \n \n class TestAddOptionsToParser:"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8ff786a1dddcb57cb0b7487be0816e19db792d39",
+      "message": "feat: add --sanitize option constant and definition\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "985407b1dcf7c22796c7272b74416cbc3b2f6d6f"
+      ]
+    },
+    {
+      "sha": "2d72c8e8ff6099fbdaf43cfd9f4c0a5dc856215c",
+      "message": "feat: wire --sanitize to FilterConfig, deprecate sensitive-data in --content-safety-off\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "8ff786a1dddcb57cb0b7487be0816e19db792d39"
+      ]
+    },
+    {
+      "sha": "e7ebc793be42c328021080c53d942d3e84126363",
+      "message": "test: add CLI content-safety tests for --sanitize and deprecation\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "2d72c8e8ff6099fbdaf43cfd9f4c0a5dc856215c"
+      ]
+    },
+    {
+      "sha": "796d6ba68ea9c9a0e3f4c5a75543915a21ce263d",
+      "message": "chore: regenerate bindings with --sanitize option\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "e7ebc793be42c328021080c53d942d3e84126363"
+      ]
+    },
+    {
+      "sha": "ae6f70cd9fa2a1055ed362ab576c921586330f37",
+      "message": "test: add Node.js tests for --sanitize option\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "796d6ba68ea9c9a0e3f4c5a75543915a21ce263d"
+      ]
+    },
+    {
+      "sha": "90b6df0f9a6cb1546762057387661b828c45152b",
+      "message": "test: add Python tests for --sanitize option\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "ae6f70cd9fa2a1055ed362ab576c921586330f37"
+      ]
+    },
+    {
+      "sha": "71134c8af558b122e15a90540c7adf474774e83e",
+      "message": "docs: rewrite ai-safety page to separate --sanitize from --content-safety-off\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "90b6df0f9a6cb1546762057387661b828c45152b"
+      ]
+    },
+    {
+      "sha": "dac76f4593fa6446a847ad00bf1cee4a557e5270",
+      "message": "docs: fix README AI Safety section for --sanitize\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "71134c8af558b122e15a90540c7adf474774e83e"
+      ]
+    },
+    {
+      "sha": "fcb45478203d58caab9ff791beaa9bad53e4c6b6",
+      "message": "test: strengthen deprecation test to verify config state\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "dac76f4593fa6446a847ad00bf1cee4a557e5270"
+      ]
+    },
+    {
+      "sha": "60f3a7a7f4c13197b44027a7ddcbd46a9e9d2923",
+      "message": "docs: clarify --content-safety-off all does not affect --sanitize\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "fcb45478203d58caab9ff791beaa9bad53e4c6b6"
+      ]
+    },
+    {
+      "sha": "c15d3b773b5633122825fb0627bebea73be7f159",
+      "message": "test: add stderr warning and flag combo tests per review feedback\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "60f3a7a7f4c13197b44027a7ddcbd46a9e9d2923"
+      ]
+    },
+    {
+      "sha": "cdc15ef6632bc1b357b1cf50cf53938de5207255",
+      "message": "refactor: improve deprecation message clarity and strengthen Python test\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "c15d3b773b5633122825fb0627bebea73be7f159"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "adds_new_tests",
+      "cross_language_mapping_visible",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": true,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__opendataloader-project__opendataloader-pdf__pr275.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\opendataloader-project__opendataloader-pdf__pr275__java_python__opendataloader-project__opendataloader-pdf__pr275\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\opendataloader-project__opendataloader-pdf__pr275__java_python__opendataloader-project__opendataloader-pdf__pr275\\rn"
+  }
+}

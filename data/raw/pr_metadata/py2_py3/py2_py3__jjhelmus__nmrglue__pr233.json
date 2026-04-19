@@ -1,0 +1,78 @@
+{
+  "instance_id": "py2_py3__jjhelmus__nmrglue__pr233",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "jjhelmus/nmrglue",
+  "pr_number": 233,
+  "pr_url": "https://github.com/jjhelmus/nmrglue/pull/233",
+  "repo": {
+    "full_name": "jjhelmus/nmrglue",
+    "clone_url": "https://github.com/jjhelmus/nmrglue.git",
+    "default_branch": "master",
+    "created_at": "2012-03-15T20:39:00Z",
+    "stars": 261,
+    "license": "BSD-3-Clause",
+    "size_kb": 20253
+  },
+  "pull_request": {
+    "id": 2446674087,
+    "title": "Update 2d_interactive.py",
+    "body": "change xrange to range in examples/interactive/interactive_2d/2d_interactive.py as xrange is only present in Python2.\r\n\r\nPython3 uses range",
+    "created_at": "2025-04-08T18:27:53Z",
+    "merged_at": "2025-04-10T04:55:20Z",
+    "base_sha": "905418947b0741e35f7ff90ff396bd69fade893b",
+    "head_sha": "314f45f6db8e09a686e416cc54cd92bd3dc7fe70",
+    "merge_commit_sha": "91310655747661f7a8148cdf08c4b23d25483204",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "905418947b0741e35f7ff90ff396bd69fade893b",
+  "final_sha": "314f45f6db8e09a686e416cc54cd92bd3dc7fe70",
+  "changed_files": [
+    {
+      "sha": "7a47b6f9528f696389f09ce3d1b86527ddd34860",
+      "filename": "examples/interactive/interactive_2d/2d_interactive.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/jjhelmus/nmrglue/blob/314f45f6db8e09a686e416cc54cd92bd3dc7fe70/examples%2Finteractive%2Finteractive_2d%2F2d_interactive.py",
+      "raw_url": "https://github.com/jjhelmus/nmrglue/raw/314f45f6db8e09a686e416cc54cd92bd3dc7fe70/examples%2Finteractive%2Finteractive_2d%2F2d_interactive.py",
+      "contents_url": "https://api.github.com/repos/jjhelmus/nmrglue/contents/examples%2Finteractive%2Finteractive_2d%2F2d_interactive.py?ref=314f45f6db8e09a686e416cc54cd92bd3dc7fe70",
+      "patch": "@@ -12,7 +12,7 @@\n contour_factor = 1.20           # scaling factor between contour levels\n \n # calculate contour levels\n-cl = [contour_start * contour_factor ** x for x in xrange(contour_num)]\n+cl = [contour_start * contour_factor ** x for x in range(contour_num)]\n \n # read in the data from a NMRPipe file\n dic, data = ng.pipe.read(\"nmrpipe_2d/test.ft2\")"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "314f45f6db8e09a686e416cc54cd92bd3dc7fe70",
+      "message": "Update 2d_interactive.py\n\nchange xrange to range in examples/interactive/interactive_2d/2d_interactive.py as xrange is only present in Python2.\r\n\r\nPython3 uses range",
+      "parent_shas": [
+        "905418947b0741e35f7ff90ff396bd69fade893b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__jjhelmus__nmrglue__pr233.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\jjhelmus__nmrglue__pr233__py2_py3__jjhelmus__nmrglue__pr233\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\jjhelmus__nmrglue__pr233__py2_py3__jjhelmus__nmrglue__pr233\\rn"
+  }
+}

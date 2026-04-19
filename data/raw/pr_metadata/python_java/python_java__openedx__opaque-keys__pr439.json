@@ -1,0 +1,138 @@
+{
+  "instance_id": "python_java__openedx__opaque-keys__pr439",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "openedx/opaque-keys",
+  "pr_number": 439,
+  "pr_url": "https://github.com/openedx/opaque-keys/pull/439",
+  "repo": {
+    "full_name": "openedx/opaque-keys",
+    "clone_url": "https://github.com/openedx/opaque-keys.git",
+    "default_branch": "master",
+    "created_at": "2014-05-23T17:24:54Z",
+    "stars": 9,
+    "license": "AGPL-3.0",
+    "size_kb": 943
+  },
+  "pull_request": {
+    "id": 3520423924,
+    "title": "chore: Upgrade Python requirements",
+    "body": "Python requirements update. Please review the [changelogs](https://openedx.atlassian.net/wiki/spaces/TE/pages/1001521320/Python+Package+Changelogs) for the upgraded packages.",
+    "created_at": "2026-04-13T00:14:33Z",
+    "merged_at": "2026-04-13T05:52:23Z",
+    "base_sha": "b18e2d20945a5d63c4f24220ffeda62b9fba8360",
+    "head_sha": "565daf798b650f7bc9d9691cb8a42f953ff9271a",
+    "merge_commit_sha": "5e0427d8a76639d1bc437c2519e79492cbc06e79",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "b18e2d20945a5d63c4f24220ffeda62b9fba8360",
+  "final_sha": "565daf798b650f7bc9d9691cb8a42f953ff9271a",
+  "changed_files": [
+    {
+      "sha": "128b3aeea9f4245c897940cc3102a0fb6677b7a6",
+      "filename": "requirements/ci.txt",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/openedx/opaque-keys/blob/565daf798b650f7bc9d9691cb8a42f953ff9271a/requirements%2Fci.txt",
+      "raw_url": "https://github.com/openedx/opaque-keys/raw/565daf798b650f7bc9d9691cb8a42f953ff9271a/requirements%2Fci.txt",
+      "contents_url": "https://api.github.com/repos/openedx/opaque-keys/contents/requirements%2Fci.txt?ref=565daf798b650f7bc9d9691cb8a42f953ff9271a",
+      "patch": "@@ -21,7 +21,7 @@ packaging==26.0\n     # via\n     #   pyproject-api\n     #   tox\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   python-discovery\n     #   tox\n@@ -30,13 +30,13 @@ pluggy==1.6.0\n     # via tox\n pyproject-api==1.10.0\n     # via tox\n-python-discovery==1.2.1\n+python-discovery==1.2.2\n     # via\n     #   tox\n     #   virtualenv\n tomli-w==1.2.0\n     # via tox\n-tox==4.52.0\n+tox==4.52.1\n     # via -r requirements/ci.in\n-virtualenv==21.2.0\n+virtualenv==21.2.1\n     # via tox"
+    },
+    {
+      "sha": "29a431177f4276ba6c8132a49a7db0fca0be7230",
+      "filename": "requirements/dev.txt",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 8,
+      "changes": 16,
+      "blob_url": "https://github.com/openedx/opaque-keys/blob/565daf798b650f7bc9d9691cb8a42f953ff9271a/requirements%2Fdev.txt",
+      "raw_url": "https://github.com/openedx/opaque-keys/raw/565daf798b650f7bc9d9691cb8a42f953ff9271a/requirements%2Fdev.txt",
+      "contents_url": "https://api.github.com/repos/openedx/opaque-keys/contents/requirements%2Fdev.txt?ref=565daf798b650f7bc9d9691cb8a42f953ff9271a",
+      "patch": "@@ -26,7 +26,7 @@ beautifulsoup4==4.14.3\n     # via\n     #   -r requirements/doc.txt\n     #   pydata-sphinx-theme\n-build==1.4.2\n+build==1.4.3\n     # via\n     #   -r requirements/pip-tools.txt\n     #   pip-tools\n@@ -99,7 +99,7 @@ filelock==3.25.2\n     #   python-discovery\n     #   tox\n     #   virtualenv\n-hypothesis==6.151.11\n+hypothesis==6.151.12\n     # via -r requirements/doc.txt\n idna==3.11\n     # via\n@@ -122,7 +122,7 @@ jinja2==3.1.6\n     #   -r requirements/doc.txt\n     #   code-annotations\n     #   sphinx\n-librt==0.8.1\n+librt==0.9.0\n     # via\n     #   -r requirements/doc.txt\n     #   mypy\n@@ -163,7 +163,7 @@ pathspec==1.0.4\n     #   mypy\n pip-tools==7.5.3\n     # via -r requirements/pip-tools.txt\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   -r requirements/ci.txt\n     #   -r requirements/doc.txt\n@@ -223,7 +223,7 @@ pyproject-hooks==1.2.0\n     #   -r requirements/pip-tools.txt\n     #   build\n     #   pip-tools\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   -r requirements/doc.txt\n     #   pytest-cov\n@@ -232,7 +232,7 @@ pytest-cov==7.1.0\n     # via -r requirements/doc.txt\n pytest-xdist==3.8.0\n     # via -r requirements/doc.txt\n-python-discovery==1.2.1\n+python-discovery==1.2.2\n     # via\n     #   -r requirements/ci.txt\n     #   tox\n@@ -318,7 +318,7 @@ tomlkit==0.14.0\n     # via\n     #   -r requirements/doc.txt\n     #   pylint\n-tox==4.52.0\n+tox==4.52.1\n     # via -r requirements/ci.txt\n typing-extensions==4.15.0\n     # via\n@@ -330,7 +330,7 @@ urllib3==2.6.3\n     # via\n     #   -r requirements/doc.txt\n     #   requests\n-virtualenv==21.2.0\n+virtualenv==21.2.1\n     # via\n     #   -r requirements/ci.txt\n     #   tox"
+    },
+    {
+      "sha": "ffa6e66f86a32b8f52eaeacf91b7454ed33a2daa",
+      "filename": "requirements/django-test.txt",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/openedx/opaque-keys/blob/565daf798b650f7bc9d9691cb8a42f953ff9271a/requirements%2Fdjango-test.txt",
+      "raw_url": "https://github.com/openedx/opaque-keys/raw/565daf798b650f7bc9d9691cb8a42f953ff9271a/requirements%2Fdjango-test.txt",
+      "contents_url": "https://api.github.com/repos/openedx/opaque-keys/contents/requirements%2Fdjango-test.txt?ref=565daf798b650f7bc9d9691cb8a42f953ff9271a",
+      "patch": "@@ -43,7 +43,7 @@ execnet==2.1.2\n     # via\n     #   -r requirements/test.txt\n     #   pytest-xdist\n-hypothesis==6.151.11\n+hypothesis==6.151.12\n     # via -r requirements/test.txt\n iniconfig==2.3.0\n     # via\n@@ -57,7 +57,7 @@ jinja2==3.1.6\n     # via\n     #   -r requirements/test.txt\n     #   code-annotations\n-librt==0.8.1\n+librt==0.9.0\n     # via\n     #   -r requirements/test.txt\n     #   mypy\n@@ -85,7 +85,7 @@ pathspec==1.0.4\n     # via\n     #   -r requirements/test.txt\n     #   mypy\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   -r requirements/test.txt\n     #   pylint\n@@ -122,7 +122,7 @@ pylint-plugin-utils==0.9.0\n     #   pylint-django\n pymongo==4.16.0\n     # via -r requirements/test.txt\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   -r requirements/test.txt\n     #   pytest-cov"
+    },
+    {
+      "sha": "83527cb760bb1a1b083182f457ff62bfdcecc29b",
+      "filename": "requirements/doc.txt",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/openedx/opaque-keys/blob/565daf798b650f7bc9d9691cb8a42f953ff9271a/requirements%2Fdoc.txt",
+      "raw_url": "https://github.com/openedx/opaque-keys/raw/565daf798b650f7bc9d9691cb8a42f953ff9271a/requirements%2Fdoc.txt",
+      "contents_url": "https://api.github.com/repos/openedx/opaque-keys/contents/requirements%2Fdoc.txt?ref=565daf798b650f7bc9d9691cb8a42f953ff9271a",
+      "patch": "@@ -62,7 +62,7 @@ execnet==2.1.2\n     # via\n     #   -r requirements/test.txt\n     #   pytest-xdist\n-hypothesis==6.151.11\n+hypothesis==6.151.12\n     # via -r requirements/test.txt\n idna==3.11\n     # via requests\n@@ -81,7 +81,7 @@ jinja2==3.1.6\n     #   -r requirements/test.txt\n     #   code-annotations\n     #   sphinx\n-librt==0.8.1\n+librt==0.9.0\n     # via\n     #   -r requirements/test.txt\n     #   mypy\n@@ -112,7 +112,7 @@ pathspec==1.0.4\n     # via\n     #   -r requirements/test.txt\n     #   mypy\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   -r requirements/test.txt\n     #   pylint\n@@ -155,7 +155,7 @@ pylint-plugin-utils==0.9.0\n     #   pylint-django\n pymongo==4.16.0\n     # via -r requirements/test.txt\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   -r requirements/test.txt\n     #   pytest-cov"
+    },
+    {
+      "sha": "e7d1c474f00c8ad12ee7f22e1fe04cdeaef3d3f1",
+      "filename": "requirements/pip-tools.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/openedx/opaque-keys/blob/565daf798b650f7bc9d9691cb8a42f953ff9271a/requirements%2Fpip-tools.txt",
+      "raw_url": "https://github.com/openedx/opaque-keys/raw/565daf798b650f7bc9d9691cb8a42f953ff9271a/requirements%2Fpip-tools.txt",
+      "contents_url": "https://api.github.com/repos/openedx/opaque-keys/contents/requirements%2Fpip-tools.txt?ref=565daf798b650f7bc9d9691cb8a42f953ff9271a",
+      "patch": "@@ -4,7 +4,7 @@\n #\n #    make upgrade\n #\n-build==1.4.2\n+build==1.4.3\n     # via pip-tools\n click==8.3.2\n     # via pip-tools"
+    },
+    {
+      "sha": "2de845165ad40bf31b9efe43f5884a62fdb21515",
+      "filename": "requirements/test.txt",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/openedx/opaque-keys/blob/565daf798b650f7bc9d9691cb8a42f953ff9271a/requirements%2Ftest.txt",
+      "raw_url": "https://github.com/openedx/opaque-keys/raw/565daf798b650f7bc9d9691cb8a42f953ff9271a/requirements%2Ftest.txt",
+      "contents_url": "https://api.github.com/repos/openedx/opaque-keys/contents/requirements%2Ftest.txt?ref=565daf798b650f7bc9d9691cb8a42f953ff9271a",
+      "patch": "@@ -33,15 +33,15 @@ edx-lint==6.0.0\n     # via -r requirements/test.in\n execnet==2.1.2\n     # via pytest-xdist\n-hypothesis==6.151.11\n+hypothesis==6.151.12\n     # via -r requirements/test.in\n iniconfig==2.3.0\n     # via pytest\n isort==8.0.1\n     # via pylint\n jinja2==3.1.6\n     # via code-annotations\n-librt==0.8.1\n+librt==0.9.0\n     # via mypy\n markupsafe==3.0.3\n     # via jinja2\n@@ -57,7 +57,7 @@ packaging==26.0\n     # via pytest\n pathspec==1.0.4\n     # via mypy\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via pylint\n pluggy==1.6.0\n     # via\n@@ -83,7 +83,7 @@ pylint-plugin-utils==0.9.0\n     #   pylint-django\n pymongo==4.16.0\n     # via -r requirements/base.txt\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   -r requirements/test.in\n     #   pytest-cov"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "565daf798b650f7bc9d9691cb8a42f953ff9271a",
+      "message": "chore: Upgrade Python requirements",
+      "parent_shas": [
+        "b18e2d20945a5d63c4f24220ffeda62b9fba8360"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "dependency_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__openedx__opaque-keys__pr439.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\openedx__opaque-keys__pr439__python_java__openedx__opaque-keys__pr439\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\openedx__opaque-keys__pr439__python_java__openedx__opaque-keys__pr439\\rn"
+  }
+}

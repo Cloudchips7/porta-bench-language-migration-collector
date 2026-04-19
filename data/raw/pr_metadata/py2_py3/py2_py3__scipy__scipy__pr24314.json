@@ -1,0 +1,217 @@
+{
+  "instance_id": "py2_py3__scipy__scipy__pr24314",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "scipy/scipy",
+  "pr_number": 24314,
+  "pr_url": "https://github.com/scipy/scipy/pull/24314",
+  "repo": {
+    "full_name": "scipy/scipy",
+    "clone_url": "https://github.com/scipy/scipy.git",
+    "default_branch": "main",
+    "created_at": "2011-03-09T18:52:03Z",
+    "stars": 14611,
+    "license": "BSD-3-Clause",
+    "size_kb": 194596
+  },
+  "pull_request": {
+    "id": 3160981681,
+    "title": "BUG: stats.levy_stable: fix PDF in Tails for `beta=+-1`",
+    "body": "#### Reference issue\r\nCloses #20636 by fixing integration. \r\n\r\n#### What does this implement/fix?\r\nThe PDF of the Levy Stable distribution did not produce the correct results in the far tails for $\\beta = \\pm 1$. This PR fixes that as show in the graph where the y-axis is the log of the pdf\r\n<img width=\"640\" height=\"480\" alt=\"Figure_1\" src=\"https://github.com/user-attachments/assets/a247cc3b-7926-4e6d-8bab-2290e34e2b7d\" />\r\n\r\nFurthermore, for the S1 parameterization with $\\alpha\\approx 1$ and $\\beta=\\pm 1$, the PDF was wildly off as shown in the graph where the y-axis is the log of the pdf\r\n<img width=\"640\" height=\"480\" alt=\"Figure_2\" src=\"https://github.com/user-attachments/assets/88470e3f-4084-4aa8-b5a2-99bbf5f1d594\" />\r\nWith this PR, the above graph looks like \r\n<img width=\"640\" height=\"480\" alt=\"CorrectedFigure_1\" src=\"https://github.com/user-attachments/assets/1ed83b6b-dc47-4e0d-a5c5-f9f1de707e44\" />\r\n\r\n#### Additional information\r\nCorrecting these issues was accomplished with two main fixes. First, I modified the points used to integrate in the function `_pdf_single_value_piecewise_post_rounding_Z0`. The integrand in this function goes from very peaked for small $x$ to somewhat broad for large $x$. The previous method to get the integration points worked for an integrand that was peaked but not broad. To fix this, I caught when the previous technique broke down and then chose evenly spaced integration points which works well for a broad integrand. \r\n\r\nFor very small $x$, the integrand becomes so peaked that integration is hopeless. To fix this, I used a Taylor Series for small $x$ which fixes the \"step\" behavior we see in the second graph above. \r\n\r\nOne issue is that this implementation is about 2-3x slower than the previous implementation. This could probably be fixed by vectorizing the function `g` in [`levyst.c`](https://github.com/scipy/scipy/blob/main/scipy/stats/_levy_stable/c_src/levyst.c), but I figured I'd wait for a review before trying that. ",
+    "created_at": "2026-01-09T21:56:41Z",
+    "merged_at": "2026-02-12T00:17:31Z",
+    "base_sha": "f9a444f0fbdee9303be1d3cba556fa63b4fc3a23",
+    "head_sha": "9841f30c5b2ec8b14b83cb3a3d04e55f5166e024",
+    "merge_commit_sha": "32619dc728cb52dbf7c9198e0c7bc4eacd84b5d0",
+    "labels": [
+      "defect",
+      "scipy.stats"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "69f6b9a61673fa76aab412bf4c9301e4e4eee03a",
+  "final_sha": "9841f30c5b2ec8b14b83cb3a3d04e55f5166e024",
+  "changed_files": [
+    {
+      "sha": "127c2464cebd4c168e5f01f0c88cfcdd1c9da8ad",
+      "filename": "scipy/stats/_levy_stable/__init__.py",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 1,
+      "changes": 9,
+      "blob_url": "https://github.com/scipy/scipy/blob/9841f30c5b2ec8b14b83cb3a3d04e55f5166e024/scipy%2Fstats%2F_levy_stable%2F__init__.py",
+      "raw_url": "https://github.com/scipy/scipy/raw/9841f30c5b2ec8b14b83cb3a3d04e55f5166e024/scipy%2Fstats%2F_levy_stable%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/scipy/scipy/contents/scipy%2Fstats%2F_levy_stable%2F__init__.py?ref=9841f30c5b2ec8b14b83cb3a3d04e55f5166e024",
+      "patch": "@@ -281,7 +281,14 @@ def integrand(theta):\n             for exp_height in [100, 10, 5]\n             # exp_height = 1 is handled by peak\n         ]\n-        intg_points = [0, peak] + tail_points\n+        # Symmetry is used to ensure x > zeta as above. Integration \n+        # becomes numerically unstable so let `quad` handle \n+        # integration points\n+        if beta != -1:\n+            intg_points = [0, peak] + tail_points\n+        else:\n+            intg_points = None\n+\n         intg, *ret = integrate.quad(\n             integrand,\n             -xi,"
+    },
+    {
+      "sha": "7d7f4db8ee1448f1a30be668272a47daf2e2cac2",
+      "filename": "scipy/stats/tests/test_distributions.py",
+      "status": "modified",
+      "additions": 20,
+      "deletions": 0,
+      "changes": 20,
+      "blob_url": "https://github.com/scipy/scipy/blob/9841f30c5b2ec8b14b83cb3a3d04e55f5166e024/scipy%2Fstats%2Ftests%2Ftest_distributions.py",
+      "raw_url": "https://github.com/scipy/scipy/raw/9841f30c5b2ec8b14b83cb3a3d04e55f5166e024/scipy%2Fstats%2Ftests%2Ftest_distributions.py",
+      "contents_url": "https://api.github.com/repos/scipy/scipy/contents/scipy%2Fstats%2Ftests%2Ftest_distributions.py?ref=9841f30c5b2ec8b14b83cb3a3d04e55f5166e024",
+      "patch": "@@ -6400,6 +6400,26 @@ def test_frozen_parameterization_gh20821b(self, levy_stable_lock):\n             frozen_b = frozen.rvs(size=10, random_state=rng(329823498))\n             assert_equal(frozen_b, unfrozen_b)\n \n+    @pytest.mark.parametrize(\n+        \"param, alpha, beta, xs, expected\",\n+        [\n+            (0, 1.6, 1, [-15, -14, -13], [-187.1444263, -157.1411663, -130.3526688]),\n+            (1, 1.6, 1, [-15, -14, -13], [-165.0203129, -137.3671717, -112.8223545]),\n+            (0, 1.4, -1, [13, 14, 15], [-367.1943293, -464.7049565, -579.4399286]),\n+            (1, 1.4, -1, [13, 14, 15], [-258.1216497, -334.6139857, -426.0724094]),\n+        ],\n+    )\n+    @pytest.mark.xfail_on_32bit(\"`bisect` fails to recognize valid bracket\")\n+    def test_logpdf_tail(self, param, alpha, beta, xs, expected):\n+        # gh-20636\n+        # Expected values computed from Mathematica. Mathematica command is:\n+        # Log[PDF[StableDistribution[0, 1.6, 1, 0, 1], -15.0]] // InputForm\n+        # Test levy_stable.logpdf accuracy in the tails when beta=1 or beta=-1\n+        # for both S0/S1 parameterizations.\n+        # Testing logpdf instead of pdf as more compact.\n+        stats.levy_stable.parameterization = f\"S{param}\"\n+        logpdfs = stats.levy_stable(alpha=alpha, beta=beta).logpdf(xs)\n+        assert_allclose(logpdfs, expected, rtol=1e-5)\n \n class TestArrayArgument:  # test for ticket:992\n     def setup_method(self):"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "4355345485c74339525266b0e5aa4086303ed02b",
+      "message": "Fixed precision issues in tail of levy_stable distribution [skip ci]",
+      "parent_shas": [
+        "69f6b9a61673fa76aab412bf4c9301e4e4eee03a"
+      ]
+    },
+    {
+      "sha": "5ffeed68e7e4b59ff0a1a1b47c92084c3ff428f3",
+      "message": "Merge branch 'scipy:main' into levy-stable-logpdf",
+      "parent_shas": [
+        "4355345485c74339525266b0e5aa4086303ed02b",
+        "9bc9295147040a06d00a00ce8b0ad180c66a2101"
+      ]
+    },
+    {
+      "sha": "829b6805079c78b32142c18f1be90500efb29218",
+      "message": "Failing for S1 with alpha~1 and x~0",
+      "parent_shas": [
+        "5ffeed68e7e4b59ff0a1a1b47c92084c3ff428f3"
+      ]
+    },
+    {
+      "sha": "51b0c42d78082fe36629a88cb214d1f72180044b",
+      "message": "Merge branch 'scipy:main' into levy-stable-logpdf",
+      "parent_shas": [
+        "829b6805079c78b32142c18f1be90500efb29218",
+        "10bd7ba5e1b7a537856e08c2168796342fb053e7"
+      ]
+    },
+    {
+      "sha": "d0a12d1a85917e9e3ef09d8e8ab55e40e907ba24",
+      "message": "Merge branch 'scipy:main' into levy-stable-logpdf",
+      "parent_shas": [
+        "51b0c42d78082fe36629a88cb214d1f72180044b",
+        "d4551bd19964f3f37d64555409fb261c19335300"
+      ]
+    },
+    {
+      "sha": "3fe3f670ae96b24683c0be4074ca43612a91958f",
+      "message": "Fixed small x precision issues; had to increase pdf x tolerance",
+      "parent_shas": [
+        "d0a12d1a85917e9e3ef09d8e8ab55e40e907ba24"
+      ]
+    },
+    {
+      "sha": "3cdfe4c2c6d61694f0bece09bd1e708cc35df344",
+      "message": "Merge branch 'scipy:main' into levy-stable-logpdf",
+      "parent_shas": [
+        "3fe3f670ae96b24683c0be4074ca43612a91958f",
+        "c28aa87b29d931db9dc104074f5d81dbe2ad30a8"
+      ]
+    },
+    {
+      "sha": "6b4724939512eb4dd27a80f4a6ddb6b158663f43",
+      "message": "Catch ValueError not all exceptions [skip ci]",
+      "parent_shas": [
+        "3cdfe4c2c6d61694f0bece09bd1e708cc35df344"
+      ]
+    },
+    {
+      "sha": "a1157e72df4530251df4a2ebfee4c47dce8cd473",
+      "message": "Vectorized taylor series [skip ci]",
+      "parent_shas": [
+        "6b4724939512eb4dd27a80f4a6ddb6b158663f43"
+      ]
+    },
+    {
+      "sha": "41750f1d1863a0d9bd61d4bfc2e45657cb379531",
+      "message": "Added example Mathematica command [skip ci]",
+      "parent_shas": [
+        "a1157e72df4530251df4a2ebfee4c47dce8cd473"
+      ]
+    },
+    {
+      "sha": "d81dfebeaccafa3b1de040e3c7dc84184938f474",
+      "message": "Changed function naming convention [skip ci]",
+      "parent_shas": [
+        "41750f1d1863a0d9bd61d4bfc2e45657cb379531"
+      ]
+    },
+    {
+      "sha": "dcebab96703cbe8001e3df66c2877f516186b8d3",
+      "message": "Reverted changes to main branch [skip ci]",
+      "parent_shas": [
+        "d81dfebeaccafa3b1de040e3c7dc84184938f474"
+      ]
+    },
+    {
+      "sha": "120e0f05eeff2b4b96271dbcb16f61323aff6efa",
+      "message": "Ignore integration points if abs(beta)=1",
+      "parent_shas": [
+        "dcebab96703cbe8001e3df66c2877f516186b8d3"
+      ]
+    },
+    {
+      "sha": "8e072794ffcf5c9036d9852bcbcbf2cd4f1458f2",
+      "message": "Merge branch 'scipy:main' into levy-stable-logpdf",
+      "parent_shas": [
+        "120e0f05eeff2b4b96271dbcb16f61323aff6efa",
+        "ff2d94141253cf08a0a7812a058a27c39e5944c0"
+      ]
+    },
+    {
+      "sha": "003226f1d175bc0f0751fc30eb49eb318e80fc53",
+      "message": "Merge branch 'scipy:main' into levy-stable-logpdf",
+      "parent_shas": [
+        "8e072794ffcf5c9036d9852bcbcbf2cd4f1458f2",
+        "f9a444f0fbdee9303be1d3cba556fa63b4fc3a23"
+      ]
+    },
+    {
+      "sha": "f798bf9e80ba9ee1a3e9bc7fa7e2ea555d421704",
+      "message": "Accepted review comments",
+      "parent_shas": [
+        "003226f1d175bc0f0751fc30eb49eb318e80fc53"
+      ]
+    },
+    {
+      "sha": "bbbe9ed821fe64facce205682f75ed8eeaf150f3",
+      "message": "Accepted review comments [lint only]",
+      "parent_shas": [
+        "f798bf9e80ba9ee1a3e9bc7fa7e2ea555d421704"
+      ]
+    },
+    {
+      "sha": "9841f30c5b2ec8b14b83cb3a3d04e55f5166e024",
+      "message": "Update scipy/stats/_levy_stable/__init__.py\r\n\r\n[skip ci]",
+      "parent_shas": [
+        "bbbe9ed821fe64facce205682f75ed8eeaf150f3"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__scipy__scipy__pr24314.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\scipy__scipy__pr24314__py2_py3__scipy__scipy__pr24314\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\scipy__scipy__pr24314__py2_py3__scipy__scipy__pr24314\\rn"
+  }
+}

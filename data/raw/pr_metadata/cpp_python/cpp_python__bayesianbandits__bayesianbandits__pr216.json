@@ -1,0 +1,103 @@
+{
+  "instance_id": "cpp_python__bayesianbandits__bayesianbandits__pr216",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "bayesianbandits/bayesianbandits",
+  "pr_number": 216,
+  "pr_url": "https://github.com/bayesianbandits/bayesianbandits/pull/216",
+  "repo": {
+    "full_name": "bayesianbandits/bayesianbandits",
+    "clone_url": "https://github.com/bayesianbandits/bayesianbandits.git",
+    "default_branch": "master",
+    "created_at": "2023-02-14T00:34:59Z",
+    "stars": 140,
+    "license": "MIT",
+    "size_kb": 11286
+  },
+  "pull_request": {
+    "id": 3401624213,
+    "title": "Remove swig installation from CI workflows ",
+    "body": "THis was for umfpack and we don't have that as a dependency anymore",
+    "created_at": "2026-03-15T19:42:39Z",
+    "merged_at": "2026-03-15T19:49:38Z",
+    "base_sha": "9d7035a99f6ff1ecde1e774d3ce4219259670aee",
+    "head_sha": "4e7633f8bcdfcf0330a8c17699beb4605d878883",
+    "merge_commit_sha": "aceeddcc22fae0354d7243eb066dbf13004a7329",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "9d7035a99f6ff1ecde1e774d3ce4219259670aee",
+  "final_sha": "4e7633f8bcdfcf0330a8c17699beb4605d878883",
+  "changed_files": [
+    {
+      "sha": "c2e7d90925603b7718d8410db9f53810f191d416",
+      "filename": ".github/workflows/build.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/bayesianbandits/bayesianbandits/blob/4e7633f8bcdfcf0330a8c17699beb4605d878883/.github%2Fworkflows%2Fbuild.yml",
+      "raw_url": "https://github.com/bayesianbandits/bayesianbandits/raw/4e7633f8bcdfcf0330a8c17699beb4605d878883/.github%2Fworkflows%2Fbuild.yml",
+      "contents_url": "https://api.github.com/repos/bayesianbandits/bayesianbandits/contents/.github%2Fworkflows%2Fbuild.yml?ref=4e7633f8bcdfcf0330a8c17699beb4605d878883",
+      "patch": "@@ -23,7 +23,7 @@ jobs:\n \n       - name: Install Dependencies\n         run: |\n-          sudo apt-get install -y swig libsuitesparse-dev\n+          sudo apt-get install -y libsuitesparse-dev\n           uv sync\n \n       - name: Run tests"
+    },
+    {
+      "sha": "0834afc1cebae174a2c19fefe6d058e9f54ba7a0",
+      "filename": ".github/workflows/ci.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/bayesianbandits/bayesianbandits/blob/4e7633f8bcdfcf0330a8c17699beb4605d878883/.github%2Fworkflows%2Fci.yml",
+      "raw_url": "https://github.com/bayesianbandits/bayesianbandits/raw/4e7633f8bcdfcf0330a8c17699beb4605d878883/.github%2Fworkflows%2Fci.yml",
+      "contents_url": "https://api.github.com/repos/bayesianbandits/bayesianbandits/contents/.github%2Fworkflows%2Fci.yml?ref=4e7633f8bcdfcf0330a8c17699beb4605d878883",
+      "patch": "@@ -52,7 +52,7 @@ jobs:\n \n       - name: Install Dependencies\n         run: |\n-          sudo apt-get install -y swig libsuitesparse-dev\n+          sudo apt-get install -y libsuitesparse-dev\n           uv sync\n \n       - name: Run tests"
+    },
+    {
+      "sha": "1c3e4bcf5f63452eb46b4ad478e3a6fb109ec62a",
+      "filename": ".github/workflows/matrix_test.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/bayesianbandits/bayesianbandits/blob/4e7633f8bcdfcf0330a8c17699beb4605d878883/.github%2Fworkflows%2Fmatrix_test.yml",
+      "raw_url": "https://github.com/bayesianbandits/bayesianbandits/raw/4e7633f8bcdfcf0330a8c17699beb4605d878883/.github%2Fworkflows%2Fmatrix_test.yml",
+      "contents_url": "https://api.github.com/repos/bayesianbandits/bayesianbandits/contents/.github%2Fworkflows%2Fmatrix_test.yml?ref=4e7633f8bcdfcf0330a8c17699beb4605d878883",
+      "patch": "@@ -65,7 +65,7 @@ jobs:\n \n     - name: Install dependencies\n       run: |\n-        sudo apt-get install -y swig libsuitesparse-dev\n+        sudo apt-get install -y libsuitesparse-dev\n         python -m pip install --upgrade pip pytest\n         pip install scikit-learn==${{ matrix.sklearn-version }} scikit-sparse pandas\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "4e7633f8bcdfcf0330a8c17699beb4605d878883",
+      "message": "Remove swig installation from CI workflows to streamline dependency management",
+      "parent_shas": [
+        "9d7035a99f6ff1ecde1e774d3ce4219259670aee"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "ci_only"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__bayesianbandits__bayesianbandits__pr216.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\bayesianbandits__bayesianbandits__pr216__cpp_python__bayesianbandits__bayesianbandits__pr216\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\bayesianbandits__bayesianbandits__pr216__cpp_python__bayesianbandits__bayesianbandits__pr216\\rn"
+  }
+}

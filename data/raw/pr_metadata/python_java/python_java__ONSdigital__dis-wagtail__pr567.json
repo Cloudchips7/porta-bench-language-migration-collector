@@ -1,0 +1,79 @@
+{
+  "instance_id": "python_java__ONSdigital__dis-wagtail__pr567",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "ONSdigital/dis-wagtail",
+  "pr_number": 567,
+  "pr_url": "https://github.com/ONSdigital/dis-wagtail/pull/567",
+  "repo": {
+    "full_name": "ONSdigital/dis-wagtail",
+    "clone_url": "https://github.com/ONSdigital/dis-wagtail.git",
+    "default_branch": "main",
+    "created_at": "2024-10-15T13:27:57Z",
+    "stars": 10,
+    "license": "MIT",
+    "size_kb": 4771
+  },
+  "pull_request": {
+    "id": 3498427768,
+    "title": "Update Python dependencies",
+    "body": "### What is the context of this PR?\r\n\r\nThis PR updates the project's Python dependencies and is the result of running `poetry update`.\r\n\r\n### How to review\r\n\r\nEnsure that all tests pass.\r\n\r\n### Deployment Safety\r\n\r\nBleed and Sandbox deploy automatically on merge, so PRs should be safe to deploy immediately.\r\n\r\nPlease select one:\r\n\r\n- [x] Safe to auto-deploy\r\n- [ ] Not safe to auto-deploy\r\n\r\n<!--\r\nIf this PR is not safe to auto-deploy, explain what is required before merge\r\n(for example, Helm/config changes, another PR, migration sequencing, or coordinated release steps).\r\n-->\r\n\r\n### Follow-up Actions\r\n\r\nN/A\r\n",
+    "created_at": "2026-04-07T14:29:16Z",
+    "merged_at": "2026-04-07T14:59:07Z",
+    "base_sha": "5a6f78302d41ce9bcbcc0fb112ac7e426692417b",
+    "head_sha": "b1ce4bb932e3da63f98396661321902a6230e5a7",
+    "merge_commit_sha": "23f297cc5761a7fb36b939077f544f00e2396dc1",
+    "labels": [
+      "component: Dependencies 🕸️",
+      "python",
+      "dependencies"
+    ]
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "5a6f78302d41ce9bcbcc0fb112ac7e426692417b",
+  "final_sha": "b1ce4bb932e3da63f98396661321902a6230e5a7",
+  "changed_files": [
+    {
+      "sha": "89cf52731ae16eee9a19c3fb0ca3e63cc729347a",
+      "filename": "poetry.lock",
+      "status": "modified",
+      "additions": 963,
+      "deletions": 900,
+      "changes": 1863,
+      "blob_url": "https://github.com/ONSdigital/dis-wagtail/blob/b1ce4bb932e3da63f98396661321902a6230e5a7/poetry.lock",
+      "raw_url": "https://github.com/ONSdigital/dis-wagtail/raw/b1ce4bb932e3da63f98396661321902a6230e5a7/poetry.lock",
+      "contents_url": "https://api.github.com/repos/ONSdigital/dis-wagtail/contents/poetry.lock?ref=b1ce4bb932e3da63f98396661321902a6230e5a7"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "b1ce4bb932e3da63f98396661321902a6230e5a7",
+      "message": "Update Python dependencies",
+      "parent_shas": [
+        "5a6f78302d41ce9bcbcc0fb112ac7e426692417b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__ONSdigital__dis-wagtail__pr567.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\ONSdigital__dis-wagtail__pr567__python_java__ONSdigital__dis-wagtail__pr567\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\ONSdigital__dis-wagtail__pr567__python_java__ONSdigital__dis-wagtail__pr567\\rn"
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "instance_id": "cpp_python__corazawaf__libcoraza__pr89",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "corazawaf/libcoraza",
+  "pr_number": 89,
+  "pr_url": "https://github.com/corazawaf/libcoraza/pull/89",
+  "repo": {
+    "full_name": "corazawaf/libcoraza",
+    "clone_url": "https://github.com/corazawaf/libcoraza.git",
+    "default_branch": "main",
+    "created_at": "2021-10-29T07:11:36Z",
+    "stars": 27,
+    "license": "NOASSERTION",
+    "size_kb": 313
+  },
+  "pull_request": {
+    "id": 3511689455,
+    "title": "feat: add coraza_is_response_body_processable() API",
+    "body": "Exposes the Go engine's `IsResponseBodyProcessable()` through the C API so connectors (nginx, apache) can skip response body processing when `SecResponseBodyAccess` is Off or the response Content-Type doesn't match `SecResponseBodyMimeType`.\n\nReturns 1 if the body should be processed, 0 otherwise. Must be called after `coraza_process_response_headers()`.\n\nRelated: corazawaf/coraza-nginx#41 (large response hang) and corazawaf/coraza-nginx#42 (nginx fix that uses this API).\n\ncc @fzipi @jptosso\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n## Summary by CodeRabbit\n\n* **New Features**\n  * Added the ability to check whether a transaction's response body can be processed, enabling callers to verify processability before invoking response-body processing operations.\n  * Improves safety and flow control for integrations that conditionally handle response bodies.\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "created_at": "2026-04-10T02:08:52Z",
+    "merged_at": "2026-04-10T13:57:49Z",
+    "base_sha": "627e13aeca94f1a555dea5ddba3727505cf999b7",
+    "head_sha": "8767ebeb4a708b5cf711fd4b3b0ae060c9c2ab71",
+    "merge_commit_sha": "18498bd8bf517a1f6fcbe6c1205b3002471e13dd",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "627e13aeca94f1a555dea5ddba3727505cf999b7",
+  "final_sha": "8767ebeb4a708b5cf711fd4b3b0ae060c9c2ab71",
+  "changed_files": [
+    {
+      "sha": "12e7cb44604c5ad2c715bc83f245a2940fc5551e",
+      "filename": "coraza.i",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/corazawaf/libcoraza/blob/8767ebeb4a708b5cf711fd4b3b0ae060c9c2ab71/coraza.i",
+      "raw_url": "https://github.com/corazawaf/libcoraza/raw/8767ebeb4a708b5cf711fd4b3b0ae060c9c2ab71/coraza.i",
+      "contents_url": "https://api.github.com/repos/corazawaf/libcoraza/contents/coraza.i?ref=8767ebeb4a708b5cf711fd4b3b0ae060c9c2ab71",
+      "patch": "@@ -388,6 +388,7 @@ extern int coraza_add_response_header(coraza_transaction_t t,\n extern int coraza_append_response_body(coraza_transaction_t t,\n                                        const unsigned char *data, int length);\n extern int coraza_process_response_body(coraza_transaction_t t);\n+extern int coraza_is_response_body_processable(coraza_transaction_t t);\n extern int coraza_process_response_headers(coraza_transaction_t t, int status,\n                                            const char *proto);\n extern int coraza_rules_count(coraza_waf_t w);"
+    },
+    {
+      "sha": "6dd44eabd8bb27314aeaf88cc72e7d82e5731a45",
+      "filename": "libcoraza/coraza.go",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 0,
+      "changes": 9,
+      "blob_url": "https://github.com/corazawaf/libcoraza/blob/8767ebeb4a708b5cf711fd4b3b0ae060c9c2ab71/libcoraza%2Fcoraza.go",
+      "raw_url": "https://github.com/corazawaf/libcoraza/raw/8767ebeb4a708b5cf711fd4b3b0ae060c9c2ab71/libcoraza%2Fcoraza.go",
+      "contents_url": "https://api.github.com/repos/corazawaf/libcoraza/contents/libcoraza%2Fcoraza.go?ref=8767ebeb4a708b5cf711fd4b3b0ae060c9c2ab71",
+      "patch": "@@ -339,6 +339,15 @@ func coraza_process_response_headers(t C.coraza_transaction_t, status C.int, pro\n \treturn 0\n }\n \n+//export coraza_is_response_body_processable\n+func coraza_is_response_body_processable(t C.coraza_transaction_t) C.int {\n+\ttx := fromRaw[types.Transaction](t)\n+\tif tx.IsResponseBodyProcessable() {\n+\t\treturn 1\n+\t}\n+\treturn 0\n+}\n+\n //export coraza_rules_count\n func coraza_rules_count(w C.coraza_waf_t) C.int {\n \thandle := fromRaw[*WafHandle](w)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8767ebeb4a708b5cf711fd4b3b0ae060c9c2ab71",
+      "message": "feat: add coraza_is_response_body_processable() API\n\nExpose IsResponseBodyProcessable() through the C API so connectors\ncan skip response body processing when SecResponseBodyAccess is Off\nor the Content-Type doesn't match SecResponseBodyMimeType.\n\nReturns 1 if the body should be processed, 0 otherwise.\nMust be called after coraza_process_response_headers().",
+      "parent_shas": [
+        "627e13aeca94f1a555dea5ddba3727505cf999b7"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__corazawaf__libcoraza__pr89.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\corazawaf__libcoraza__pr89__cpp_python__corazawaf__libcoraza__pr89\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\corazawaf__libcoraza__pr89__cpp_python__corazawaf__libcoraza__pr89\\rn"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "instance_id": "python_java__texus__TGUI__pr351",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "texus/TGUI",
+  "pr_number": 351,
+  "pr_url": "https://github.com/texus/TGUI/pull/351",
+  "repo": {
+    "full_name": "texus/TGUI",
+    "clone_url": "https://github.com/texus/TGUI.git",
+    "default_branch": "1.x",
+    "created_at": "2012-05-05T15:38:22Z",
+    "stars": 1032,
+    "license": "Zlib",
+    "size_kb": 50257
+  },
+  "pull_request": {
+    "id": 3523331495,
+    "title": "Minor python fixups",
+    "body": "",
+    "created_at": "2026-04-13T14:18:22Z",
+    "merged_at": "2026-04-13T14:46:15Z",
+    "base_sha": "71c537d1d3d25268563e0c0b1b28d1a9493a51ba",
+    "head_sha": "356427c2a2bb43c3c680f1a091aa957c558c07da",
+    "merge_commit_sha": "5050eadbbb0a2527687bee582048b966b89f58aa",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "71c537d1d3d25268563e0c0b1b28d1a9493a51ba",
+  "final_sha": "356427c2a2bb43c3c680f1a091aa957c558c07da",
+  "changed_files": [
+    {
+      "sha": "df5c78d219facbb637afb5b82f38a8d9c60ca33c",
+      "filename": "themes/development/Black/generate.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/texus/TGUI/blob/356427c2a2bb43c3c680f1a091aa957c558c07da/themes%2Fdevelopment%2FBlack%2Fgenerate.py",
+      "raw_url": "https://github.com/texus/TGUI/raw/356427c2a2bb43c3c680f1a091aa957c558c07da/themes%2Fdevelopment%2FBlack%2Fgenerate.py",
+      "contents_url": "https://api.github.com/repos/texus/TGUI/contents/themes%2Fdevelopment%2FBlack%2Fgenerate.py?ref=356427c2a2bb43c3c680f1a091aa957c558c07da",
+      "patch": "@@ -1,7 +1,7 @@\n import os\n import json\n-import numpy as np\n from string import Template\n+import numpy as np\n from PIL import Image\n from PyTexturePacker import Packer\n \n@@ -58,7 +58,7 @@\n \n # Generate the theme file based on the template and where the texture packer placed each image\n mapping = {}\n-with open('tmp.json', 'r') as f:\n+with open('tmp.json', mode='r', encoding=\"utf-8\") as f:\n     data = json.load(f)\n     for imageFilename in data['frames']:\n         frame = data['frames'][imageFilename]['frame']\n@@ -68,11 +68,11 @@\n         mapping[filenameWithoutExtension] = '\"Black.png\" Part({}, {}, {}, {})'.format(\n             posX, posY, frame['w'], frame['h'])\n \n-with open('Black.txt.in', 'r') as f:\n+with open('Black.txt.in', mode='r', encoding=\"utf-8\") as f:\n     contents = f.read()\n \n changedContents = Template(contents).substitute(mapping)\n-with open('Black.txt', 'w') as f:\n+with open('Black.txt', mode='w', encoding=\"utf-8\") as f:\n     f.write(changedContents)\n \n # Remove teporary files created by texture packer"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "b3e374bb8f55d435c749d9dfe6e54bfa27ed3985",
+      "message": "Explicitly specify encoding when opening file in generate.py\n\nDon't rely on the default which may change from system to system, be\nexplicit.",
+      "parent_shas": [
+        "71c537d1d3d25268563e0c0b1b28d1a9493a51ba"
+      ]
+    },
+    {
+      "sha": "356427c2a2bb43c3c680f1a091aa957c558c07da",
+      "message": "Import standard stuff before 3rd party stuff in generate.py",
+      "parent_shas": [
+        "b3e374bb8f55d435c749d9dfe6e54bfa27ed3985"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__texus__TGUI__pr351.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\texus__TGUI__pr351__python_java__texus__TGUI__pr351\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\texus__TGUI__pr351__python_java__texus__TGUI__pr351\\rn"
+  }
+}

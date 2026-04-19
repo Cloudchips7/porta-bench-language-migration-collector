@@ -1,0 +1,166 @@
+{
+  "instance_id": "py2_py3__MarkusNeusinger__anyplot__pr4866",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "MarkusNeusinger/anyplot",
+  "pr_number": 4866,
+  "pr_url": "https://github.com/MarkusNeusinger/anyplot/pull/4866",
+  "repo": {
+    "full_name": "MarkusNeusinger/anyplot",
+    "clone_url": "https://github.com/MarkusNeusinger/anyplot.git",
+    "default_branch": "main",
+    "created_at": "2025-11-18T18:15:06Z",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 33528
+  },
+  "pull_request": {
+    "id": 3401377975,
+    "title": "feat(pygal): implement funnel-meta-analysis",
+    "body": "## Implementation: `funnel-meta-analysis` - pygal\n\nImplements the **pygal** version of `funnel-meta-analysis`.\n\n**File:** `plots/funnel-meta-analysis/implementations/pygal.py`\n\n**Parent Issue:** #4590\n\n---\n:robot: *[impl-generate workflow](https://github.com/MarkusNeusinger/pyplots/actions/runs/23114663070)*",
+    "created_at": "2026-03-15T16:44:58Z",
+    "merged_at": "2026-03-15T17:15:52Z",
+    "base_sha": "4ca09e13c29ef262ecca59c39a7b3ef53ffa0b14",
+    "head_sha": "332dd5aff469e1eb05fe9ee1be214b81aaf02f2d",
+    "merge_commit_sha": "d93ac83345c8d60229aada5c7261536f53a4bf99",
+    "labels": [
+      "ai-attempt-1",
+      "ai-attempt-2",
+      "ai-attempt-3",
+      "ai-approved",
+      "quality:90",
+      "quality:85",
+      "quality:87",
+      "quality:80"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "c550b052ea65b53a30685cf5f819882adf9c7822",
+  "final_sha": "332dd5aff469e1eb05fe9ee1be214b81aaf02f2d",
+  "changed_files": [
+    {
+      "sha": "7705d32026f5594d91fe220a520384e7c8a223eb",
+      "filename": "plots/funnel-meta-analysis/implementations/pygal.py",
+      "status": "added",
+      "additions": 176,
+      "deletions": 0,
+      "changes": 176,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/332dd5aff469e1eb05fe9ee1be214b81aaf02f2d/plots%2Ffunnel-meta-analysis%2Fimplementations%2Fpygal.py",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/332dd5aff469e1eb05fe9ee1be214b81aaf02f2d/plots%2Ffunnel-meta-analysis%2Fimplementations%2Fpygal.py",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Ffunnel-meta-analysis%2Fimplementations%2Fpygal.py?ref=332dd5aff469e1eb05fe9ee1be214b81aaf02f2d",
+      "patch": "@@ -0,0 +1,176 @@\n+\"\"\" pyplots.ai\n+funnel-meta-analysis: Meta-Analysis Funnel Plot for Publication Bias\n+Library: pygal 3.1.0 | Python 3.14.3\n+Quality: 90/100 | Created: 2026-03-15\n+\"\"\"\n+\n+import numpy as np\n+import pygal\n+from pygal.style import Style\n+\n+\n+# Data: 15 RCTs comparing drug vs placebo (log odds ratios)\n+np.random.seed(42)\n+study_names = [\n+    \"Adams 2018\",\n+    \"Baker 2019\",\n+    \"Chen 2019\",\n+    \"Davis 2020\",\n+    \"Evans 2020\",\n+    \"Foster 2021\",\n+    \"Garcia 2021\",\n+    \"Harris 2022\",\n+    \"Ibrahim 2022\",\n+    \"Jones 2022\",\n+    \"Kim 2023\",\n+    \"Lee 2023\",\n+    \"Martinez 2023\",\n+    \"Nelson 2024\",\n+    \"O'Brien 2024\",\n+]\n+\n+# Effect sizes (log odds ratios) and standard errors\n+# High-precision studies cluster near pooled effect; low-precision studies\n+# show rightward asymmetry (missing negative small studies = publication bias)\n+# Martinez 2023 (index 12) is clearly outside CI, demonstrating an outlier\n+effect_sizes = np.array(\n+    [-0.50, -0.42, -0.68, -0.46, -0.25, -0.55, -0.48, -0.44, -0.38, -0.20, -0.72, -0.43, -0.08, -0.51, -0.58]\n+)\n+std_errors = np.array([0.08, 0.11, 0.17, 0.09, 0.16, 0.21, 0.13, 0.07, 0.22, 0.18, 0.26, 0.10, 0.23, 0.12, 0.24])\n+\n+# Summary (pooled) effect size\n+pooled_effect = -0.47\n+\n+# Separate studies by precision for visual hierarchy\n+high_precision_mask = std_errors < 0.15\n+low_precision_mask = ~high_precision_mask\n+\n+# Publication-quality style with refined typography and palette\n+custom_style = Style(\n+    background=\"#FFFFFF\",\n+    plot_background=\"#F8FAFB\",\n+    foreground=\"#2B3A4A\",\n+    foreground_strong=\"#1A2636\",\n+    foreground_subtle=\"#E4E8EC\",\n+    colors=(\n+        \"#6FA8C7\",  # 0: CI left boundary (muted teal-blue)\n+        \"#6FA8C7\",  # 1: CI right boundary (matched)\n+        \"#1A2636\",  # 2: Pooled effect line (dark navy)\n+        \"#9CA8B4\",  # 3: Null effect line (muted grey)\n+        \"#306998\",  # 4: High-precision studies (Python blue)\n+        \"#D95F02\",  # 5: Low-precision studies (strong orange, colorblind-safe)\n+    ),\n+    title_font_size=48,\n+    label_font_size=28,\n+    major_label_font_size=24,\n+    legend_font_size=22,\n+    value_font_size=18,\n+    tooltip_font_size=22,\n+    stroke_width=3,\n+    font_family=\"Helvetica, Arial, sans-serif\",\n+    opacity=\".9\",\n+    opacity_hover=\"1\",\n+)\n+\n+# Custom y-axis labels for clean tick positioning\n+y_labels_list = [0.00, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30]\n+\n+# Chart with refined configuration\n+chart = pygal.XY(\n+    width=4800,\n+    height=2700,\n+    title=\"funnel-meta-analysis \\u00b7 pygal \\u00b7 pyplots.ai\",\n+    x_title=\"Log Odds Ratio (Effect Size)\",\n+    y_title=\"Standard Error (precision \\u2191)\",\n+    style=custom_style,\n+    show_legend=True,\n+    legend_at_bottom=True,\n+    legend_at_bottom_columns=3,\n+    legend_box_size=20,\n+    dots_size=14,\n+    stroke=False,\n+    show_y_guides=True,\n+    show_x_guides=False,\n+    margin=50,\n+    inverse_y_axis=True,\n+    truncate_legend=-1,\n+    x_value_formatter=lambda x: f\"{x:.2f}\",\n+    y_value_formatter=lambda y: f\"{y:.2f}\",\n+    y_labels=y_labels_list,\n+    print_values=False,\n+    print_zeroes=False,\n+    range=(0, 0.30),\n+    xrange=(-1.10, 0.18),\n+    spacing=25,\n+    tooltip_border_radius=8,\n+    explicit_size=True,\n+)\n+\n+# Funnel boundaries (pseudo 95% CI) - left boundary\n+se_values = np.linspace(0, 0.30, 60)\n+funnel_left = [(float(pooled_effect - 1.96 * se), float(se)) for se in se_values]\n+chart.add(\n+    \"95% Pseudo CI\",\n+    funnel_left,\n+    stroke=True,\n+    show_dots=False,\n+    stroke_style={\"width\": 5, \"dasharray\": \"14, 6\"},\n+    formatter=lambda x: \"\",\n+)\n+\n+# Right CI boundary (suppressed from legend via None)\n+funnel_right = [(float(pooled_effect + 1.96 * se), float(se)) for se in se_values]\n+chart.add(\n+    None,\n+    funnel_right,\n+    stroke=True,\n+    show_dots=False,\n+    stroke_style={\"width\": 5, \"dasharray\": \"14, 6\"},\n+    formatter=lambda x: \"\",\n+)\n+\n+# Vertical line at pooled effect (prominent, solid)\n+chart.add(\n+    f\"Pooled Effect (LOR = {pooled_effect:.2f})\",\n+    [(float(pooled_effect), 0.0), (float(pooled_effect), 0.30)],\n+    stroke=True,\n+    show_dots=False,\n+    stroke_style={\"width\": 7},\n+    formatter=lambda x: \"\",\n+)\n+\n+# Vertical dashed line at null effect (0)\n+chart.add(\n+    \"Null Effect (LOR = 0)\",\n+    [(0.0, 0.0), (0.0, 0.30)],\n+    stroke=True,\n+    show_dots=False,\n+    stroke_style={\"width\": 3, \"dasharray\": \"10, 8\"},\n+    formatter=lambda x: \"\",\n+)\n+\n+# High-precision studies (larger markers, tightly clustered near pooled effect)\n+hp_points = []\n+for name, es, se in zip(\n+    np.array(study_names)[high_precision_mask],\n+    effect_sizes[high_precision_mask],\n+    std_errors[high_precision_mask],\n+    strict=True,\n+):\n+    hp_points.append({\"value\": (float(es), float(se)), \"label\": f\"{name}: LOR={es:.2f}, SE={se:.2f}\"})\n+chart.add(\"High-precision studies\", hp_points, stroke=False, dots_size=22, formatter=lambda x: \"\")\n+\n+# Low-precision studies (medium markers, asymmetric scatter revealing bias)\n+lp_points = []\n+for name, es, se in zip(\n+    np.array(study_names)[low_precision_mask],\n+    effect_sizes[low_precision_mask],\n+    std_errors[low_precision_mask],\n+    strict=True,\n+):\n+    lp_points.append({\"value\": (float(es), float(se)), \"label\": f\"{name}: LOR={es:.2f}, SE={se:.2f}\"})\n+chart.add(\"Low-precision studies (bias region)\", lp_points, stroke=False, dots_size=16, formatter=lambda x: \"\")\n+\n+# Render outputs\n+chart.render_to_png(\"plot.png\", dpi=192)\n+chart.render_to_file(\"plot.html\")"
+    },
+    {
+      "sha": "5655bdf8f074ff9d9cea316bb9f05cc6703c2eda",
+      "filename": "plots/funnel-meta-analysis/metadata/pygal.yaml",
+      "status": "added",
+      "additions": 225,
+      "deletions": 0,
+      "changes": 225,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/332dd5aff469e1eb05fe9ee1be214b81aaf02f2d/plots%2Ffunnel-meta-analysis%2Fmetadata%2Fpygal.yaml",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/332dd5aff469e1eb05fe9ee1be214b81aaf02f2d/plots%2Ffunnel-meta-analysis%2Fmetadata%2Fpygal.yaml",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Ffunnel-meta-analysis%2Fmetadata%2Fpygal.yaml?ref=332dd5aff469e1eb05fe9ee1be214b81aaf02f2d",
+      "patch": "@@ -0,0 +1,225 @@\n+library: pygal\n+specification_id: funnel-meta-analysis\n+created: '2026-03-15T16:44:54Z'\n+updated: '2026-03-15T17:15:33Z'\n+generated_by: claude-opus-4-5-20251101\n+workflow_run: 23114663070\n+issue: 4590\n+python_version: 3.14.3\n+library_version: 3.1.0\n+preview_url: https://storage.googleapis.com/pyplots-images/plots/funnel-meta-analysis/pygal/plot.png\n+preview_thumb: https://storage.googleapis.com/pyplots-images/plots/funnel-meta-analysis/pygal/plot_thumb.png\n+preview_html: https://storage.googleapis.com/pyplots-images/plots/funnel-meta-analysis/pygal/plot.html\n+quality_score: 90\n+review:\n+  strengths:\n+  - Excellent data storytelling through high/low precision grouping with distinct\n+    colors and sizes\n+  - All spec features fully implemented with correct funnel plot geometry\n+  - Realistic neutral clinical meta-analysis data with clear publication bias signal\n+  - Clean colorblind-safe palette (blue/orange) with refined typography\n+  - Dual PNG/HTML output leverages pygal SVG nature\n+  weaknesses:\n+  - Minor canvas waste on left side of x-axis (xrange could be tighter)\n+  - Legend text is functional but could be more refined in presentation\n+  image_description: The plot displays a funnel plot for meta-analysis of 15 RCTs\n+    comparing drug vs placebo. The x-axis shows \"Log Odds Ratio (Effect Size)\" ranging\n+    from -1.10 to ~0.18, and the y-axis shows \"Standard Error (precision ↑)\" inverted\n+    from 0 (top) to 0.30 (bottom). A solid dark navy vertical line marks the pooled\n+    effect at LOR = -0.47, and a grey vertical line marks the null effect at LOR =\n+    0. Dashed teal-blue diagonal lines form the funnel shape (95% pseudo CI). High-precision\n+    studies appear as larger dark blue dots clustered tightly near the pooled effect\n+    at the top, while low-precision studies appear as smaller orange dots scattered\n+    more widely toward the bottom, with visible rightward asymmetry suggesting publication\n+    bias. The background is a subtle off-white (#F8FAFB) with y-axis grid lines only.\n+    The legend at the bottom shows five entries across three columns. Overall layout\n+    is clean and professional.\n+  criteria_checklist:\n+    visual_quality:\n+      score: 29\n+      max: 30\n+      items:\n+      - id: VQ-01\n+        name: Text Legibility\n+        score: 8\n+        max: 8\n+        passed: true\n+        comment: 'All font sizes explicitly set: title=48, label=28, major_label=24,\n+          legend=22, value=18. All text clearly readable.'\n+      - id: VQ-02\n+        name: No Overlap\n+        score: 6\n+        max: 6\n+        passed: true\n+        comment: No overlapping text elements. Legend entries well-spaced across 3\n+          columns.\n+      - id: VQ-03\n+        name: Element Visibility\n+        score: 6\n+        max: 6\n+        passed: true\n+        comment: Study dots clearly visible with differentiated sizing (22 vs 16).\n+          Funnel and reference lines distinguishable.\n+      - id: VQ-04\n+        name: Color Accessibility\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: Blue/orange colorblind-safe combination with excellent contrast.\n+      - id: VQ-05\n+        name: Layout & Canvas\n+        score: 3\n+        max: 4\n+        passed: true\n+        comment: Good utilization overall. Minor wasted space on left side of x-axis.\n+      - id: VQ-06\n+        name: Axis Labels & Title\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: 'Descriptive labels with context: Log Odds Ratio (Effect Size) and\n+          Standard Error (precision ↑).'\n+    design_excellence:\n+      score: 14\n+      max: 20\n+      items:\n+      - id: DE-01\n+        name: Aesthetic Sophistication\n+        score: 6\n+        max: 8\n+        passed: true\n+        comment: Strong design with custom palette, refined typography, intentional\n+          color hierarchy. Clearly above defaults.\n+      - id: DE-02\n+        name: Visual Refinement\n+        score: 4\n+        max: 6\n+        passed: true\n+        comment: Subtle plot background, y-guides only, muted gridlines, generous\n+          whitespace.\n+      - id: DE-03\n+        name: Data Storytelling\n+        score: 4\n+        max: 6\n+        passed: true\n+        comment: Two-group coloring with bias region label creates visual hierarchy.\n+          Asymmetry communicates publication bias.\n+    spec_compliance:\n+      score: 15\n+      max: 15\n+      items:\n+      - id: SC-01\n+        name: Plot Type\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Correct funnel plot as XY scatter with reference lines and CI boundaries.\n+      - id: SC-02\n+        name: Required Features\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: 'All spec features present: inverted y-axis, pooled effect line,\n+          null effect line, CI funnel, study points with size variation.'\n+      - id: SC-03\n+        name: Data Mapping\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: X=effect size, Y=standard error, y-axis correctly inverted.\n+      - id: SC-04\n+        name: Title & Legend\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: Title matches required format. Legend labels descriptive and accurate.\n+    data_quality:\n+      score: 15\n+      max: 15\n+      items:\n+      - id: DQ-01\n+        name: Feature Coverage\n+        score: 6\n+        max: 6\n+        passed: true\n+        comment: Shows high/low precision studies, visible asymmetry, studies inside/outside\n+          CI, outlier present.\n+      - id: DQ-02\n+        name: Realistic Context\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: 15 RCTs drug vs placebo with realistic author/year names. Neutral\n+          healthcare topic.\n+      - id: DQ-03\n+        name: Appropriate Scale\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: Log odds ratios around -0.5, SE 0.07-0.26 — realistic for clinical\n+          meta-analyses.\n+    code_quality:\n+      score: 10\n+      max: 10\n+      items:\n+      - id: CQ-01\n+        name: KISS Structure\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: Clean linear structure with no functions or classes.\n+      - id: CQ-02\n+        name: Reproducibility\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: np.random.seed(42) set and data is hardcoded.\n+      - id: CQ-03\n+        name: Clean Imports\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: Only numpy, pygal, and Style — all used.\n+      - id: CQ-04\n+        name: Code Elegance\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: Clean Pythonic code with boolean masking for group separation.\n+      - id: CQ-05\n+        name: Output & API\n+        score: 1\n+        max: 1\n+        passed: true\n+        comment: Saves as plot.png. Also generates plot.html.\n+    library_mastery:\n+      score: 7\n+      max: 10\n+      items:\n+      - id: LM-01\n+        name: Idiomatic Usage\n+        score: 4\n+        max: 5\n+        passed: true\n+        comment: Good use of XY chart, Style class, per-series stroke_style/dots_size,\n+          formatter, legend suppression, inverse_y_axis.\n+      - id: LM-02\n+        name: Distinctive Features\n+        score: 3\n+        max: 5\n+        passed: true\n+        comment: 'Uses pygal-specific: inverse_y_axis, SVG dasharray, tooltip_border_radius,\n+          dual PNG/HTML output.'\n+  verdict: APPROVED\n+impl_tags:\n+  dependencies: []\n+  techniques:\n+  - manual-ticks\n+  - custom-legend\n+  - html-export\n+  patterns:\n+  - data-generation\n+  - iteration-over-groups\n+  dataprep: []\n+  styling:\n+  - grid-styling"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "b7ab498c265161ac32c4be7cefe36406b362ed88",
+      "message": "feat(pygal): implement funnel-meta-analysis",
+      "parent_shas": [
+        "c550b052ea65b53a30685cf5f819882adf9c7822"
+      ]
+    },
+    {
+      "sha": "a475718a7dee1637b5c7aef1cf625d8b1d22ead4",
+      "message": "chore(pygal): add metadata for funnel-meta-analysis",
+      "parent_shas": [
+        "b7ab498c265161ac32c4be7cefe36406b362ed88"
+      ]
+    },
+    {
+      "sha": "a62eaa4cc2116be3564ad05d159a871e9c287d30",
+      "message": "chore(pygal): update quality score 80 and review feedback for funnel-meta-analysis",
+      "parent_shas": [
+        "a475718a7dee1637b5c7aef1cf625d8b1d22ead4"
+      ]
+    },
+    {
+      "sha": "cb1319c1a83c3be60ad37c3aef194e1cbd1b80dd",
+      "message": "fix(pygal): address review feedback for funnel-meta-analysis\n\nAttempt 1/3 - fixes based on AI review",
+      "parent_shas": [
+        "a62eaa4cc2116be3564ad05d159a871e9c287d30"
+      ]
+    },
+    {
+      "sha": "00fbdf2326a37f5bae58fdafd2557128b1dd738f",
+      "message": "chore(pygal): update quality score 85 and review feedback for funnel-meta-analysis",
+      "parent_shas": [
+        "cb1319c1a83c3be60ad37c3aef194e1cbd1b80dd"
+      ]
+    },
+    {
+      "sha": "11a7cd1d31b7cf17eb46110aad9a0bf1cbe03aa3",
+      "message": "fix(pygal): address review feedback for funnel-meta-analysis\n\nAttempt 2/3 - fixes based on AI review",
+      "parent_shas": [
+        "00fbdf2326a37f5bae58fdafd2557128b1dd738f"
+      ]
+    },
+    {
+      "sha": "5bbf993184d4eab8c7b1692f0685d871fc36cdca",
+      "message": "chore(pygal): update quality score 87 and review feedback for funnel-meta-analysis",
+      "parent_shas": [
+        "11a7cd1d31b7cf17eb46110aad9a0bf1cbe03aa3"
+      ]
+    },
+    {
+      "sha": "43545a838b22fd40705dbc1bd994fd4944c782bf",
+      "message": "fix(pygal): address review feedback for funnel-meta-analysis\n\nAttempt 3/3 - fixes based on AI review",
+      "parent_shas": [
+        "5bbf993184d4eab8c7b1692f0685d871fc36cdca"
+      ]
+    },
+    {
+      "sha": "e6fccc4801ae998badbec0a14f315c889104b622",
+      "message": "chore(pygal): update quality score 90 and review feedback for funnel-meta-analysis",
+      "parent_shas": [
+        "43545a838b22fd40705dbc1bd994fd4944c782bf"
+      ]
+    },
+    {
+      "sha": "332dd5aff469e1eb05fe9ee1be214b81aaf02f2d",
+      "message": "Merge branch 'main' into implementation/funnel-meta-analysis/pygal",
+      "parent_shas": [
+        "e6fccc4801ae998badbec0a14f315c889104b622",
+        "4ca09e13c29ef262ecca59c39a7b3ef53ffa0b14"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__MarkusNeusinger__anyplot__pr4866.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4866__py2_py3__MarkusNeusinger__anyplot__pr4866\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr4866__py2_py3__MarkusNeusinger__anyplot__pr4866\\rn"
+  }
+}

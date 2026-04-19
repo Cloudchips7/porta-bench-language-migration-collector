@@ -1,0 +1,86 @@
+{
+  "instance_id": "cpp_python__jdx__mise__pr8961",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "jdx/mise",
+  "pr_number": 8961,
+  "pr_url": "https://github.com/jdx/mise/pull/8961",
+  "repo": {
+    "full_name": "jdx/mise",
+    "clone_url": "https://github.com/jdx/mise.git",
+    "default_branch": "main",
+    "created_at": "2023-01-09T14:44:21Z",
+    "stars": 26812,
+    "license": "MIT",
+    "size_kb": 42203
+  },
+  "pull_request": {
+    "id": 3503255370,
+    "title": "fix(python): use native ARM64 precompiled Python on Windows ARM",
+    "body": "Hello there! 👋 \r\n\r\nFirst and foremost, thank you for creating and actively developing `mise`! 😃 I discovered it through [this HackerNews post](https://news.ycombinator.com/item?id=45491621) and I've used it for a personal project since then. By the way, I'm genuinely impressed by how many releases you ship every now and then 👍\r\n\r\nToday, I wanted to run my python project on Windows ARM64, and this happened:\r\n\r\n```\r\n DEBUG using lockfile URL for platform windows-arm64: https://github.com/astral-sh/python-build-standalone/releases/download/20260324/cpython-3.13.12+20260324-x86_64-pc-windows-msvc-install_only_stripped.tar.gz\r\n  INFO  python@3.13.12       [2/4] download cpython-3.13.12+20260324-x86_64-pc-windows-msvc-install_only_stripped.tar.gz\r\n```\r\n\r\nI saw the resulting failure when trying to load an ARM64 DLL from the downloaded x86_64 Python:\r\n\r\n```\r\n  >>> import ctypes; ctypes.CDLL(r\"C:\\PATH\\TO\\ARM64\\DLL\\engine.dll\")\r\n  OSError: [WinError 193] %1 is not a valid Win32 application\r\n```\r\n\r\nThis fix change the downloaded python into: \r\n\r\n```\r\n  DEBUG GET https://mise-versions.jdx.dev/tools/python-precompiled-aarch64-pc-windows-msvc.gz\r\n  INFO  python@3.13.12       [2/4] download cpython-3.13.12+20260324-aarch64-pc-windows-msvc-install_only_stripped.tar.gz\r\n```",
+    "created_at": "2026-04-08T12:57:56Z",
+    "merged_at": "2026-04-08T18:24:49Z",
+    "base_sha": "cf08e2b0aa84f7d21853e2815df80e65e5990d94",
+    "head_sha": "7ca6334cb8f7c4b845322f3ed94cbef3f0585198",
+    "merge_commit_sha": "30996304718018010f9bc596bf631438b50fa5f5",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "cf08e2b0aa84f7d21853e2815df80e65e5990d94",
+  "final_sha": "7ca6334cb8f7c4b845322f3ed94cbef3f0585198",
+  "changed_files": [
+    {
+      "sha": "4e1a4c1ae7badd1d21cc5f988fd83fac67dba219",
+      "filename": "src/plugins/core/python.rs",
+      "status": "modified",
+      "additions": 43,
+      "deletions": 3,
+      "changes": 46,
+      "blob_url": "https://github.com/jdx/mise/blob/7ca6334cb8f7c4b845322f3ed94cbef3f0585198/src%2Fplugins%2Fcore%2Fpython.rs",
+      "raw_url": "https://github.com/jdx/mise/raw/7ca6334cb8f7c4b845322f3ed94cbef3f0585198/src%2Fplugins%2Fcore%2Fpython.rs",
+      "contents_url": "https://api.github.com/repos/jdx/mise/contents/src%2Fplugins%2Fcore%2Fpython.rs?ref=7ca6334cb8f7c4b845322f3ed94cbef3f0585198",
+      "patch": "@@ -896,14 +896,19 @@ fn python_arch(settings: &Settings) -> &str {\n     if let Some(arch) = &settings.python.precompiled_arch {\n         return arch.as_str();\n     }\n-    let arch = match settings.arch() {\n+    let arch = settings.arch();\n+    resolve_python_arch(std::env::consts::OS, arch)\n+}\n+\n+fn resolve_python_arch<'a>(os: &str, arch: &'a str) -> &'a str {\n+    let arch = match arch {\n         \"x64\" => \"x86_64\",\n         \"arm64\" => \"aarch64\",\n         other => other,\n     };\n-    if cfg!(windows) {\n+    if os == \"windows\" && arch != \"aarch64\" {\n         \"x86_64\"\n-    } else if cfg!(linux) && arch == \"x86_64\" {\n+    } else if os == \"linux\" && arch == \"x86_64\" {\n         if cfg!(target_feature = \"avx512f\") {\n             \"x86_64_v4\"\n         } else if cfg!(target_feature = \"avx2\") {\n@@ -958,3 +963,38 @@ fn ensure_not_windows() -> eyre::Result<()> {\n fn filter_freethreaded(v: &str, flavor: &Option<String>) -> bool {\n     flavor.as_ref().is_some_and(|f| f.contains(\"freethreaded\")) || !v.contains(\"freethreaded\")\n }\n+\n+#[cfg(test)]\n+mod tests {\n+    use super::*;\n+\n+    #[test]\n+    fn test_resolve_python_arch_windows_x64() {\n+        assert_eq!(resolve_python_arch(\"windows\", \"x64\"), \"x86_64\");\n+        assert_eq!(resolve_python_arch(\"windows\", \"x86_64\"), \"x86_64\");\n+    }\n+\n+    #[test]\n+    fn test_resolve_python_arch_windows_arm64() {\n+        assert_eq!(resolve_python_arch(\"windows\", \"arm64\"), \"aarch64\");\n+        assert_eq!(resolve_python_arch(\"windows\", \"aarch64\"), \"aarch64\");\n+    }\n+\n+    #[test]\n+    fn test_resolve_python_arch_linux_x64() {\n+        // Exact variant depends on CPU features at compile time,\n+        // but it should always start with \"x86_64\"\n+        assert!(resolve_python_arch(\"linux\", \"x64\").starts_with(\"x86_64\"));\n+    }\n+\n+    #[test]\n+    fn test_resolve_python_arch_linux_arm64() {\n+        assert_eq!(resolve_python_arch(\"linux\", \"arm64\"), \"aarch64\");\n+    }\n+\n+    #[test]\n+    fn test_resolve_python_arch_macos() {\n+        assert_eq!(resolve_python_arch(\"macos\", \"arm64\"), \"aarch64\");\n+        assert_eq!(resolve_python_arch(\"macos\", \"x64\"), \"x86_64\");\n+    }\n+}"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8d802f76f1a935e24b6cfd3a736db14faed73860",
+      "message": "test(python): add unit tests for python_arch platform selection",
+      "parent_shas": [
+        "cf08e2b0aa84f7d21853e2815df80e65e5990d94"
+      ]
+    },
+    {
+      "sha": "7ca6334cb8f7c4b845322f3ed94cbef3f0585198",
+      "message": "fix(python): use native ARM64 precompiled Python on Windows ARM",
+      "parent_shas": [
+        "8d802f76f1a935e24b6cfd3a736db14faed73860"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__jdx__mise__pr8961.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\jdx__mise__pr8961__cpp_python__jdx__mise__pr8961\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\jdx__mise__pr8961__cpp_python__jdx__mise__pr8961\\rn"
+  }
+}

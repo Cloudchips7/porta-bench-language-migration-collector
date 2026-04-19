@@ -1,0 +1,128 @@
+{
+  "instance_id": "python_java__Pikselkroken__pixlstash__pr198",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "Pikselkroken/pixlstash",
+  "pr_number": 198,
+  "pr_url": "https://github.com/Pikselkroken/pixlstash/pull/198",
+  "repo": {
+    "full_name": "Pikselkroken/pixlstash",
+    "clone_url": "https://github.com/Pikselkroken/pixlstash.git",
+    "default_branch": "develop",
+    "created_at": "2025-10-12T14:13:17Z",
+    "stars": 29,
+    "license": "GPL-3.0",
+    "size_kb": 202429
+  },
+  "pull_request": {
+    "id": 3526723102,
+    "title": "Python ssl",
+    "body": "",
+    "created_at": "2026-04-14T06:04:08Z",
+    "merged_at": "2026-04-14T07:45:28Z",
+    "base_sha": "9d5a0ab275a0667055c4aa170f1c3c1293ad229f",
+    "head_sha": "32594a00baac40baee2e31441e9807edce73e99a",
+    "merge_commit_sha": "9fac829c0d720774246df7f0d09f9de441e1e709",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "9d5a0ab275a0667055c4aa170f1c3c1293ad229f",
+  "final_sha": "32594a00baac40baee2e31441e9807edce73e99a",
+  "changed_files": [
+    {
+      "sha": "d22106fbe84494cb7aea73d53b01bc1de9568786",
+      "filename": "CHANGELOG.md",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/Pikselkroken/pixlstash/blob/32594a00baac40baee2e31441e9807edce73e99a/CHANGELOG.md",
+      "raw_url": "https://github.com/Pikselkroken/pixlstash/raw/32594a00baac40baee2e31441e9807edce73e99a/CHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/Pikselkroken/pixlstash/contents/CHANGELOG.md?ref=32594a00baac40baee2e31441e9807edce73e99a",
+      "patch": "@@ -1,3 +1,7 @@\n+# [1.0.1]\n+- Updated two dependencies (pillow and npm_and_yarn) due to vulnerabilities\n+- Shifted to a self-contained Python way of generating SSL certs so we don't rely on external OpenSSL.\n+\n # [1.0.0]\n - Improved tagging interface\n - Improved speed and reliability of image uploads"
+    },
+    {
+      "sha": "4a468f9875131eea48f5916a7263afbb83f1e4a6",
+      "filename": "pixlstash/server.py",
+      "status": "modified",
+      "additions": 37,
+      "deletions": 19,
+      "changes": 56,
+      "blob_url": "https://github.com/Pikselkroken/pixlstash/blob/32594a00baac40baee2e31441e9807edce73e99a/pixlstash%2Fserver.py",
+      "raw_url": "https://github.com/Pikselkroken/pixlstash/raw/32594a00baac40baee2e31441e9807edce73e99a/pixlstash%2Fserver.py",
+      "contents_url": "https://api.github.com/repos/Pikselkroken/pixlstash/contents/pixlstash%2Fserver.py?ref=32594a00baac40baee2e31441e9807edce73e99a",
+      "patch": "@@ -635,7 +635,12 @@ def _init_server_config(server_config_path):\n         return server_config\n \n     def _ensure_ssl_certificates(self):\n-        import subprocess\n+        import datetime\n+\n+        from cryptography import x509\n+        from cryptography.hazmat.primitives import hashes, serialization\n+        from cryptography.hazmat.primitives.asymmetric import rsa\n+        from cryptography.x509.oid import NameOID\n \n         keyfile = self._server_config.get(\"ssl_keyfile\")\n         certfile = self._server_config.get(\"ssl_certfile\")\n@@ -645,25 +650,38 @@ def _ensure_ssl_certificates(self):\n             os.makedirs(os.path.dirname(certfile), exist_ok=True)\n             print(f\"[SSL] Generating self-signed certificate: {certfile}, {keyfile}\")\n             try:\n-                subprocess.run(\n-                    [\n-                        \"openssl\",\n-                        \"req\",\n-                        \"-x509\",\n-                        \"-nodes\",\n-                        \"-days\",\n-                        \"365\",\n-                        \"-newkey\",\n-                        \"rsa:2048\",\n-                        \"-keyout\",\n-                        keyfile,\n-                        \"-out\",\n-                        certfile,\n-                        \"-subj\",\n-                        \"/CN=localhost\",\n-                    ],\n-                    check=True,\n+                private_key = rsa.generate_private_key(\n+                    public_exponent=65537,\n+                    key_size=2048,\n+                )\n+                subject = issuer = x509.Name(\n+                    [x509.NameAttribute(NameOID.COMMON_NAME, \"localhost\")]\n                 )\n+                now = datetime.datetime.now(datetime.timezone.utc)\n+                cert = (\n+                    x509.CertificateBuilder()\n+                    .subject_name(subject)\n+                    .issuer_name(issuer)\n+                    .public_key(private_key.public_key())\n+                    .serial_number(x509.random_serial_number())\n+                    .not_valid_before(now)\n+                    .not_valid_after(now + datetime.timedelta(days=365))\n+                    .add_extension(\n+                        x509.SubjectAlternativeName([x509.DNSName(\"localhost\")]),\n+                        critical=False,\n+                    )\n+                    .sign(private_key, hashes.SHA256())\n+                )\n+                with open(keyfile, \"wb\") as f:\n+                    f.write(\n+                        private_key.private_bytes(\n+                            serialization.Encoding.PEM,\n+                            serialization.PrivateFormat.TraditionalOpenSSL,\n+                            serialization.NoEncryption(),\n+                        )\n+                    )\n+                with open(certfile, \"wb\") as f:\n+                    f.write(cert.public_bytes(serialization.Encoding.PEM))\n             except Exception as e:\n                 print(f\"[SSL] Failed to generate self-signed certificate: {e}\")\n                 raise"
+    },
+    {
+      "sha": "8b0cbbea55646ed95b3a8d98d55da1eb1573db6a",
+      "filename": "pixlstash/startup_checks.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 7,
+      "changes": 16,
+      "blob_url": "https://github.com/Pikselkroken/pixlstash/blob/32594a00baac40baee2e31441e9807edce73e99a/pixlstash%2Fstartup_checks.py",
+      "raw_url": "https://github.com/Pikselkroken/pixlstash/raw/32594a00baac40baee2e31441e9807edce73e99a/pixlstash%2Fstartup_checks.py",
+      "contents_url": "https://api.github.com/repos/Pikselkroken/pixlstash/contents/pixlstash%2Fstartup_checks.py?ref=32594a00baac40baee2e31441e9807edce73e99a",
+      "patch": "@@ -240,13 +240,15 @@ def _check_watch_folders(self, outcome: StartupCheckOutcome) -> None:\n                 outcome.warnings.append(f\"Watch folder does not exist: {folder}\")\n \n     def _check_optional_dependencies(self, outcome: StartupCheckOutcome) -> None:\n-        openssl_path = shutil.which(\"openssl\")\n-        if self._server_config.get(\"require_ssl\", False) and not openssl_path:\n-            outcome.hard_failures.append(\n-                \"require_ssl is enabled but openssl is not available on PATH.\"\n-            )\n-        elif not openssl_path:\n-            outcome.warnings.append(\"Optional dependency missing: openssl\")\n+        if self._server_config.get(\"require_ssl\", False):\n+            keyfile = self._server_config.get(\"ssl_keyfile\", \"\")\n+            certfile = self._server_config.get(\"ssl_certfile\", \"\")\n+            certs_exist = os.path.exists(keyfile) and os.path.exists(certfile)\n+            if not certs_exist and not shutil.which(\"openssl\"):\n+                outcome.hard_failures.append(\n+                    \"require_ssl is enabled but openssl is not available on PATH \"\n+                    \"and no existing certificate files were found.\"\n+                )\n \n         if not shutil.which(\"nvidia-smi\"):\n             outcome.warnings.append("
+    },
+    {
+      "sha": "e4861fadb0b34bc7b6f018f0c76645ddc6da4cf6",
+      "filename": "tests/test_ssl_generation.py",
+      "status": "added",
+      "additions": 136,
+      "deletions": 0,
+      "changes": 136,
+      "blob_url": "https://github.com/Pikselkroken/pixlstash/blob/32594a00baac40baee2e31441e9807edce73e99a/tests%2Ftest_ssl_generation.py",
+      "raw_url": "https://github.com/Pikselkroken/pixlstash/raw/32594a00baac40baee2e31441e9807edce73e99a/tests%2Ftest_ssl_generation.py",
+      "contents_url": "https://api.github.com/repos/Pikselkroken/pixlstash/contents/tests%2Ftest_ssl_generation.py?ref=32594a00baac40baee2e31441e9807edce73e99a",
+      "patch": "@@ -0,0 +1,136 @@\n+\"\"\"Tests for automatic self-signed SSL certificate generation.\"\"\"\n+\n+import datetime\n+import os\n+\n+\n+from cryptography import x509\n+from cryptography.hazmat.primitives import serialization\n+from cryptography.x509.oid import NameOID\n+\n+from pixlstash.server import Server\n+\n+\n+def _make_ssl_config(tmpdir, keyfile_name=\"key.pem\", certfile_name=\"cert.pem\"):\n+    return {\n+        \"require_ssl\": True,\n+        \"ssl_keyfile\": os.path.join(tmpdir, keyfile_name),\n+        \"ssl_certfile\": os.path.join(tmpdir, certfile_name),\n+    }\n+\n+\n+def _call_ensure_ssl(server_config):\n+    \"\"\"Invoke _ensure_ssl_certificates without constructing a full Server.\"\"\"\n+    instance = object.__new__(Server)\n+    instance._server_config = server_config\n+    instance._ensure_ssl_certificates()\n+\n+\n+class TestEnsureSslCertificates:\n+    def test_generates_key_and_cert_files(self, tmp_path):\n+        config = _make_ssl_config(str(tmp_path))\n+        _call_ensure_ssl(config)\n+\n+        assert os.path.exists(config[\"ssl_keyfile\"]), \"Key file was not created\"\n+        assert os.path.exists(config[\"ssl_certfile\"]), \"Cert file was not created\"\n+\n+    def test_generated_cert_is_valid_pem(self, tmp_path):\n+        config = _make_ssl_config(str(tmp_path))\n+        _call_ensure_ssl(config)\n+\n+        with open(config[\"ssl_certfile\"], \"rb\") as f:\n+            cert_pem = f.read()\n+\n+        cert = x509.load_pem_x509_certificate(cert_pem)\n+        assert cert is not None\n+\n+    def test_generated_key_is_valid_pem(self, tmp_path):\n+        config = _make_ssl_config(str(tmp_path))\n+        _call_ensure_ssl(config)\n+\n+        with open(config[\"ssl_keyfile\"], \"rb\") as f:\n+            key_pem = f.read()\n+\n+        key = serialization.load_pem_private_key(key_pem, password=None)\n+        assert key is not None\n+\n+    def test_cert_common_name_is_localhost(self, tmp_path):\n+        config = _make_ssl_config(str(tmp_path))\n+        _call_ensure_ssl(config)\n+\n+        with open(config[\"ssl_certfile\"], \"rb\") as f:\n+            cert = x509.load_pem_x509_certificate(f.read())\n+\n+        cn = cert.subject.get_attributes_for_oid(NameOID.COMMON_NAME)\n+        assert len(cn) == 1\n+        assert cn[0].value == \"localhost\"\n+\n+    def test_cert_has_localhost_san(self, tmp_path):\n+        config = _make_ssl_config(str(tmp_path))\n+        _call_ensure_ssl(config)\n+\n+        with open(config[\"ssl_certfile\"], \"rb\") as f:\n+            cert = x509.load_pem_x509_certificate(f.read())\n+\n+        san = cert.extensions.get_extension_for_class(x509.SubjectAlternativeName)\n+        dns_names = san.value.get_values_for_type(x509.DNSName)\n+        assert \"localhost\" in dns_names\n+\n+    def test_cert_validity_is_approximately_one_year(self, tmp_path):\n+        config = _make_ssl_config(str(tmp_path))\n+        _call_ensure_ssl(config)\n+\n+        with open(config[\"ssl_certfile\"], \"rb\") as f:\n+            cert = x509.load_pem_x509_certificate(f.read())\n+\n+        validity = cert.not_valid_after_utc - cert.not_valid_before_utc\n+        assert datetime.timedelta(days=364) <= validity <= datetime.timedelta(days=366)\n+\n+    def test_cert_is_not_yet_expired(self, tmp_path):\n+        config = _make_ssl_config(str(tmp_path))\n+        _call_ensure_ssl(config)\n+\n+        with open(config[\"ssl_certfile\"], \"rb\") as f:\n+            cert = x509.load_pem_x509_certificate(f.read())\n+\n+        now = datetime.datetime.now(datetime.timezone.utc)\n+        assert cert.not_valid_before_utc <= now <= cert.not_valid_after_utc\n+\n+    def test_does_not_overwrite_existing_files(self, tmp_path):\n+        config = _make_ssl_config(str(tmp_path))\n+        _call_ensure_ssl(config)\n+\n+        keyfile_mtime = os.path.getmtime(config[\"ssl_keyfile\"])\n+        certfile_mtime = os.path.getmtime(config[\"ssl_certfile\"])\n+\n+        _call_ensure_ssl(config)\n+\n+        assert os.path.getmtime(config[\"ssl_keyfile\"]) == keyfile_mtime\n+        assert os.path.getmtime(config[\"ssl_certfile\"]) == certfile_mtime\n+\n+    def test_creates_intermediate_directories(self, tmp_path):\n+        nested_dir = str(tmp_path / \"a\" / \"b\" / \"c\")\n+        config = _make_ssl_config(nested_dir)\n+        _call_ensure_ssl(config)\n+\n+        assert os.path.exists(config[\"ssl_keyfile\"])\n+        assert os.path.exists(config[\"ssl_certfile\"])\n+\n+    def test_key_matches_cert_public_key(self, tmp_path):\n+        config = _make_ssl_config(str(tmp_path))\n+        _call_ensure_ssl(config)\n+\n+        with open(config[\"ssl_keyfile\"], \"rb\") as f:\n+            key = serialization.load_pem_private_key(f.read(), password=None)\n+        with open(config[\"ssl_certfile\"], \"rb\") as f:\n+            cert = x509.load_pem_x509_certificate(f.read())\n+\n+        key_pub = key.public_key().public_bytes(\n+            serialization.Encoding.PEM,\n+            serialization.PublicFormat.SubjectPublicKeyInfo,\n+        )\n+        cert_pub = cert.public_key().public_bytes(\n+            serialization.Encoding.PEM,\n+            serialization.PublicFormat.SubjectPublicKeyInfo,\n+        )\n+        assert key_pub == cert_pub"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "9451de8453ee1701d1ca5108e02f75954972d534",
+      "message": "Use built-in Python methods for generating certs for SSL (#190)",
+      "parent_shas": [
+        "9d5a0ab275a0667055c4aa170f1c3c1293ad229f"
+      ]
+    },
+    {
+      "sha": "117f0714b9dd3abba1105af9d8063ccfb47cb46b",
+      "message": "Added 1.0.1 to CHANGELOG",
+      "parent_shas": [
+        "9451de8453ee1701d1ca5108e02f75954972d534"
+      ]
+    },
+    {
+      "sha": "32594a00baac40baee2e31441e9807edce73e99a",
+      "message": "Add SSL cert generation tests",
+      "parent_shas": [
+        "117f0714b9dd3abba1105af9d8063ccfb47cb46b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "adds_new_tests",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__Pikselkroken__pixlstash__pr198.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\Pikselkroken__pixlstash__pr198__python_java__Pikselkroken__pixlstash__pr198\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\Pikselkroken__pixlstash__pr198__python_java__Pikselkroken__pixlstash__pr198\\rn"
+  }
+}

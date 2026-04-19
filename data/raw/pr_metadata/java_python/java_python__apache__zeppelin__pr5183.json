@@ -1,0 +1,196 @@
+{
+  "instance_id": "java_python__apache__zeppelin__pr5183",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "apache/zeppelin",
+  "pr_number": 5183,
+  "pr_url": "https://github.com/apache/zeppelin/pull/5183",
+  "repo": {
+    "full_name": "apache/zeppelin",
+    "clone_url": "https://github.com/apache/zeppelin.git",
+    "default_branch": "master",
+    "created_at": "2015-03-25T07:00:06Z",
+    "stars": 6617,
+    "license": "Apache-2.0",
+    "size_kb": 115017
+  },
+  "pull_request": {
+    "id": 3404978114,
+    "title": "[ZEPPELIN-6404] Rewrite merge PR script in Python with no external dependencies",
+    "body": "## Summary\n\n- Rewrite `dev/merge_zeppelin_pr.py` as a single-file Python CLI (`dev/merge_pr.py`)\n- No external dependencies — uses only Python 3 built-in libraries (`urllib`, `json`, `subprocess`, `argparse`, `re`)\n- Runs directly with `python3 dev/merge_pr.py --pr <number> [flags]`\n- Non-interactive, AI-agent friendly design\n\n## Motivation\n\nThe existing Python merge script (`dev/merge_zeppelin_pr.py`) requires a Python virtual environment with dependencies (`jira`, `python-dotenv`), and is interactive (prompts for user input). This makes it difficult to use from CI/CD or AI agent workflows.\n\nThe new version:\n- Requires only Python 3 (no venv, no pip install)\n- All flags are CLI arguments — no interactive prompts\n- Single file, ~450 lines, zero external dependencies\n- Instance-based design (`MergePR` class)\n\n## Usage\n\n```bash\n# Dry run (shows PR info without merging)\npython3 dev/merge_pr.py --pr 5167 --dry-run\n\n# Merge and resolve JIRA\npython3 dev/merge_pr.py --pr 5167 --resolve-jira --fix-versions 0.13.0\n\n# Merge and cherry-pick into release branches\npython3 dev/merge_pr.py --pr 5167 --release-branches branch-0.12,branch-0.11\n```\n\n## Flags\n\n| Flag | Description |\n|------|-------------|\n| `--pr` | Pull request number (required) |\n| `--target` | Target branch (default: PR base branch) |\n| `--fix-versions` | JIRA fix version(s), comma-separated |\n| `--release-branches` | Release branch(es) to cherry-pick into, comma-separated |\n| `--resolve-jira` | Resolve associated JIRA issue(s) |\n| `--dry-run` | Show what would be done without making changes |\n| `--push-remote` | Git remote for pushing (default: `apache`) |\n\nTokens are read from environment variables: `GITHUB_OAUTH_KEY`, `JIRA_ACCESS_TOKEN`.\n\n## Test Plan\n\n- [x] `python3 dev/merge_pr.py --help` — shows usage\n- [x] `python3 dev/merge_pr.py --pr 5167 --dry-run` — fetches PR info correctly\n- [ ] Full merge test with a real PR\n- [ ] Cherry-pick into release branch test\n- [ ] JIRA resolution test",
+    "created_at": "2026-03-16T15:09:48Z",
+    "merged_at": "2026-03-30T04:37:10Z",
+    "base_sha": "5c35ad9ba2033419bf7e9e0343751d1ce2a360b0",
+    "head_sha": "85f63fed12cd4c66cc0dc32a187af0963d90558f",
+    "merge_commit_sha": "221c0c5c3d5adb7056a212fc44316362a63ea140",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "5c35ad9ba2033419bf7e9e0343751d1ce2a360b0",
+  "final_sha": "85f63fed12cd4c66cc0dc32a187af0963d90558f",
+  "changed_files": [
+    {
+      "sha": "ef87dad4d123a8b44d6f5a18ec7ba495a6a1ae05",
+      "filename": "dev/merge_pr.py",
+      "status": "added",
+      "additions": 449,
+      "deletions": 0,
+      "changes": 449,
+      "blob_url": "https://github.com/apache/zeppelin/blob/85f63fed12cd4c66cc0dc32a187af0963d90558f/dev%2Fmerge_pr.py",
+      "raw_url": "https://github.com/apache/zeppelin/raw/85f63fed12cd4c66cc0dc32a187af0963d90558f/dev%2Fmerge_pr.py",
+      "contents_url": "https://api.github.com/repos/apache/zeppelin/contents/dev%2Fmerge_pr.py?ref=85f63fed12cd4c66cc0dc32a187af0963d90558f",
+      "patch": "@@ -0,0 +1,449 @@\n+#!/usr/bin/env python3\n+#\n+# Licensed to the Apache Software Foundation (ASF) under one or more\n+# contributor license agreements.  See the NOTICE file distributed with\n+# this work for additional information regarding copyright ownership.\n+# The ASF licenses this file to You under the Apache License, Version 2.0\n+# (the \"License\"); you may not use this file except in compliance with\n+# the License.  You may obtain a copy of the License at\n+#\n+#    http://www.apache.org/licenses/LICENSE-2.0\n+#\n+# Unless required by applicable law or agreed to in writing, software\n+# distributed under the License is distributed on an \"AS IS\" BASIS,\n+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+# See the License for the specific language governing permissions and\n+# limitations under the License.\n+#\n+\n+\"\"\"merge_pr.py - Merge Apache Zeppelin pull requests via the GitHub API.\n+\n+Optionally cherry-picks into release branches and resolves JIRA issues.\n+No external dependencies — uses only Python 3 built-in libraries.\n+\n+Usage:\n+    python3 dev/merge_pr.py --pr 5167 --dry-run\n+    python3 dev/merge_pr.py --pr 5167 --resolve-jira --fix-versions 0.13.0\n+    python3 dev/merge_pr.py --pr 5167 --resolve-jira --release-branches branch-0.12\n+\"\"\"\n+\n+import argparse\n+import json\n+import os\n+import re\n+import subprocess\n+import sys\n+import urllib.error\n+import urllib.request\n+\n+GITHUB_API_BASE = \"https://api.github.com/repos/apache/zeppelin\"\n+JIRA_API_BASE = \"https://issues.apache.org/jira/rest/api/2\"\n+\n+DEFAULT_BRANCH = \"master\"\n+DEFAULT_REMOTE = \"apache\"\n+JIRA_RESOLVE_TRANSITION = \"Resolve Issue\"\n+JIRA_CLOSED_STATUSES = frozenset((\"Resolved\", \"Closed\"))\n+\n+JIRA_ID_RE = re.compile(r\"ZEPPELIN-\\d{3,6}\")\n+TITLE_FORMATTED_RE = re.compile(r\"^\\[ZEPPELIN-\\d{3,6}](\\[[A-Z0-9_\\s,]+] )+\\S+\")\n+TITLE_REF_RE = re.compile(r\"(?i)(ZEPPELIN[-\\s]*\\d{3,6})\")\n+COMPONENT_RE = re.compile(r\"(?i)(\\[[\\w\\s,.\\-]+])\")\n+WHITESPACE_RE = re.compile(r\"\\s+\")\n+LEADING_NON_WORD_RE = re.compile(r\"^\\W+\")\n+SEMANTIC_VER_RE = re.compile(r\"^\\d+\\.\\d+\\.\\d+$\")\n+\n+\n+class MergePR:\n+    def __init__(self, args):\n+        self.pr = args.pr\n+        self.target = args.target or \"\"\n+        self.fix_versions = _parse_csv(args.fix_versions) if args.fix_versions else []\n+        self.release_branches = _parse_csv(args.release_branches) if args.release_branches else []\n+        self.resolve_jira = args.resolve_jira\n+        self.dry_run = args.dry_run\n+        self.push_remote = args.push_remote or os.environ.get(\"PUSH_REMOTE_NAME\", DEFAULT_REMOTE)\n+        self.github_token = args.github_token or os.environ.get(\"GITHUB_OAUTH_KEY\", \"\")\n+        self.jira_token = args.jira_token or os.environ.get(\"JIRA_ACCESS_TOKEN\", \"\")\n+\n+    # ── Git ──────────────────────────────────────────────────────────────\n+\n+    def _git(self, *args):\n+        result = subprocess.run(\n+            [\"git\", *args],\n+            capture_output=True, text=True,\n+        )\n+        if result.returncode != 0:\n+            output = (result.stdout + result.stderr).strip()\n+            raise RuntimeError(f\"git {' '.join(args)} failed:\\n{output}\")\n+        return result.stdout.strip()\n+\n+    def _git_current_ref(self):\n+        ref = self._git(\"rev-parse\", \"--abbrev-ref\", \"HEAD\")\n+        return self._git(\"rev-parse\", \"HEAD\") if ref == \"HEAD\" else ref\n+\n+    # ── HTTP ─────────────────────────────────────────────────────────────\n+\n+    def _http(self, method, url, payload=None, auth=\"\"):\n+        data = json.dumps(payload).encode() if payload is not None else None\n+        req = urllib.request.Request(url, data=data, method=method)\n+        req.add_header(\"Content-Type\", \"application/json\")\n+        req.add_header(\"Accept\", \"application/json\")\n+        if auth:\n+            req.add_header(\"Authorization\", auth)\n+        try:\n+            with urllib.request.urlopen(req) as resp:\n+                return resp.status, json.loads(resp.read().decode())\n+        except urllib.error.HTTPError as e:\n+            err_body = e.read().decode() if e.fp else \"\"\n+            try:\n+                return e.code, json.loads(err_body)\n+            except json.JSONDecodeError:\n+                return e.code, {\"error\": err_body}\n+\n+    # ── GitHub ───────────────────────────────────────────────────────────\n+\n+    def _gh_auth(self):\n+        return f\"token {self.github_token}\" if self.github_token else \"\"\n+\n+    def _gh_get_pr(self, num):\n+        code, data = self._http(\"GET\", f\"{GITHUB_API_BASE}/pulls/{num}\", auth=self._gh_auth())\n+        if code != 200:\n+            raise RuntimeError(f\"GET PR #{num}: HTTP {code}\")\n+        return data\n+\n+    def _gh_merge_pr(self, num, title, msg):\n+        payload = {\"commit_title\": title, \"commit_message\": msg, \"merge_method\": \"squash\"}\n+        code, data = self._http(\"PUT\", f\"{GITHUB_API_BASE}/pulls/{num}/merge\", payload, self._gh_auth())\n+        if code == 405:\n+            raise RuntimeError(f\"Merge PR #{num} is not allowed\")\n+        if code != 200:\n+            raise RuntimeError(f\"Merge PR #{num}: HTTP {code}\")\n+        return data\n+\n+    def _gh_comment_pr(self, num, comment):\n+        code, _ = self._http(\"POST\", f\"{GITHUB_API_BASE}/issues/{num}/comments\",\n+                             {\"body\": comment}, self._gh_auth())\n+        if code != 201:\n+            print(f\"Warning: comment PR #{num}: HTTP {code}\", file=sys.stderr)\n+\n+    # ── JIRA ─────────────────────────────────────────────────────────────\n+\n+    def _jira_auth(self):\n+        return f\"Bearer {self.jira_token}\" if self.jira_token else \"\"\n+\n+    def _jira_get_issue(self, key):\n+        code, data = self._http(\"GET\", f\"{JIRA_API_BASE}/issue/{key}\", auth=self._jira_auth())\n+        if code != 200:\n+            raise RuntimeError(f\"GET {key}: HTTP {code}\")\n+        return data\n+\n+    def _jira_unreleased_versions(self):\n+        code, data = self._http(\"GET\", f\"{JIRA_API_BASE}/project/ZEPPELIN/versions\", auth=self._jira_auth())\n+        if code != 200:\n+            raise RuntimeError(f\"GET versions: HTTP {code}\")\n+        versions = []\n+        for v in data:\n+            name = v.get(\"name\", \"\")\n+            if not v.get(\"released\") and not v.get(\"archived\") and SEMANTIC_VER_RE.match(name):\n+                versions.append({\"id\": str(v[\"id\"]), \"name\": name})\n+        versions.sort(key=lambda v: _ver_tuple(v[\"name\"]), reverse=True)\n+        return versions\n+\n+    def _jira_transitions(self, key):\n+        code, data = self._http(\"GET\", f\"{JIRA_API_BASE}/issue/{key}/transitions\", auth=self._jira_auth())\n+        if code != 200:\n+            raise RuntimeError(f\"GET transitions {key}: HTTP {code}\")\n+        return [{\"id\": t[\"id\"], \"name\": t[\"name\"]} for t in data.get(\"transitions\", [])]\n+\n+    def _jira_resolve(self, key, transition_id, fix_ver, comment):\n+        payload = {\n+            \"transition\": {\"id\": transition_id},\n+            \"update\": {\n+                \"comment\": [{\"add\": {\"body\": comment}}],\n+                \"fixVersions\": [{\"add\": {\"id\": fv[\"id\"], \"name\": fv[\"name\"]}} for fv in fix_ver],\n+            },\n+        }\n+        code, _ = self._http(\"POST\", f\"{JIRA_API_BASE}/issue/{key}/transitions\", payload, self._jira_auth())\n+        if code != 204:\n+            raise RuntimeError(f\"Resolve {key}: HTTP {code}\")\n+\n+    # ── Fix version resolution ───────────────────────────────────────────\n+\n+    def _resolve_fix_versions(self, branches, versions):\n+        \"\"\"Resolve fix version objects from explicit --fix-versions and branch inference.\n+\n+        Returns a list of version dicts ({\"id\": ..., \"name\": ...}).\n+        Raises RuntimeError if an explicit fix version is not found.\n+        \"\"\"\n+        vm = {v[\"name\"]: v for v in versions}\n+        fix_ver, seen = [], set()\n+\n+        for fv in self.fix_versions:\n+            if fv not in vm:\n+                raise RuntimeError(f'fix version \"{fv}\" not found')\n+            fix_ver.append(vm[fv])\n+            seen.add(fv)\n+\n+        infer_master = not self.fix_versions\n+        latest = versions[0][\"name\"]\n+        names = []\n+        for branch in branches:\n+            if branch == DEFAULT_BRANCH:\n+                if infer_master and latest not in seen:\n+                    names.append(latest)\n+                    seen.add(latest)\n+            else:\n+                prefix = branch[len(\"branch-\"):] if branch.startswith(\"branch-\") else branch\n+                found = [v[\"name\"] for v in versions if v[\"name\"].startswith(prefix + \".\") or v[\"name\"] == prefix]\n+                if found:\n+                    pick = found[-1]  # smallest matching (list is desc-sorted)\n+                    if pick not in seen:\n+                        names.append(pick)\n+                        seen.add(pick)\n+                else:\n+                    print(f\"Warning: no version found for {branch}, skipping\", file=sys.stderr)\n+\n+        # Remove redundant X.Y.0 when X.(Y-1).0 is also present\n+        filtered = []\n+        for v in names:\n+            parts = v.split(\".\")\n+            if len(parts) == 3 and parts[2] == \"0\":\n+                minor = int(parts[1])\n+                if minor > 0 and f\"{parts[0]}.{minor - 1}.0\" in seen:\n+                    continue\n+            filtered.append(v)\n+\n+        inferred = [vm[n] for n in filtered if n in vm]\n+        if inferred:\n+            print(f\"Auto-inferred fix version(s): {', '.join(filtered)}\")\n+        fix_ver.extend(inferred)\n+        return fix_ver\n+\n+    # ── Effective command ────────────────────────────────────────────────\n+\n+    def _print_effective_command(self, target_branch, fix_ver):\n+        parts = [\"python3 dev/merge_pr.py\", f\"--pr {self.pr}\"]\n+        if target_branch and target_branch != DEFAULT_BRANCH:\n+            parts.append(f\"--target {target_branch}\")\n+        if self.release_branches:\n+            parts.append(f\"--release-branches {','.join(self.release_branches)}\")\n+        if self.resolve_jira:\n+            parts.append(\"--resolve-jira\")\n+        if fix_ver:\n+            parts.append(f\"--fix-versions {','.join(fv['name'] for fv in fix_ver)}\")\n+        if self.push_remote != DEFAULT_REMOTE:\n+            parts.append(f\"--push-remote {self.push_remote}\")\n+        print(f\"[dry-run] Effective command:\\n  {' '.join(parts)}\")\n+\n+    # ── Main flow ────────────────────────────────────────────────────────\n+\n+    def run(self):\n+        original_head = self._git_current_ref()\n+\n+        pr_data = self._gh_get_pr(self.pr)\n+        if not pr_data.get(\"mergeable\"):\n+            raise RuntimeError(f\"PR #{self.pr} is not mergeable\")\n+        pr_title = pr_data[\"title\"]\n+        if \"[WIP]\" in pr_title:\n+            print(f\"WARNING: PR title contains [WIP]: {pr_title}\", file=sys.stderr)\n+\n+        target_branch = self.target or pr_data[\"base\"][\"ref\"]\n+        title = _standardize_title(pr_title)\n+        src = f\"{pr_data['user']['login']}/{pr_data['head']['ref']}\"\n+        pr_body = pr_data.get(\"body\", \"\") or \"\"\n+\n+        print(f\"=== Pull Request #{self.pr} ===\")\n+        print(f\"title:  {title}\")\n+        print(f\"source: {src}\")\n+        print(f\"target: {target_branch}\")\n+        print(f\"url:    {pr_data['url']}\")\n+        if self.release_branches:\n+            print(f\"release-branches: {', '.join(self.release_branches)}\")\n+\n+        # Resolve fix versions once (used for both dry-run display and actual JIRA resolution)\n+        fix_ver = []\n+        if self.resolve_jira and self.jira_token and JIRA_ID_RE.search(title):\n+            try:\n+                versions = self._jira_unreleased_versions()\n+                if versions:\n+                    branches = [target_branch] + self.release_branches\n+                    fix_ver = self._resolve_fix_versions(branches, versions)\n+            except RuntimeError as e:\n+                print(f\"Warning: failed to resolve fix versions: {e}\", file=sys.stderr)\n+\n+        if self.dry_run:\n+            print()\n+            self._print_effective_command(target_branch, fix_ver)\n+            return\n+\n+        # Merge\n+        body = pr_body.replace(\"@\", \"<at>\")\n+        try:\n+            name = self._git(\"config\", \"--get\", \"user.name\")\n+        except RuntimeError:\n+            name = \"\"\n+        try:\n+            email = self._git(\"config\", \"--get\", \"user.email\")\n+        except RuntimeError:\n+            email = \"\"\n+        msg = f\"{body}\\n\\nCloses #{self.pr} from {src}.\\n\\nSigned-off-by: {name} <{email}>\"\n+\n+        merge_data = self._gh_merge_pr(self.pr, title, msg)\n+        sha = merge_data[\"sha\"]\n+        print(f\"\\nPR #{self.pr} merged! (hash: {_short_sha(sha)})\")\n+\n+        try:\n+            self._git(\"fetch\", self.push_remote, target_branch)\n+        except RuntimeError:\n+            pass\n+\n+        # Cherry-pick into release branches\n+        merged = [target_branch]\n+        for branch in self.release_branches:\n+            pick = _pick_branch_name(self.pr, branch)\n+            try:\n+                self._git(\"fetch\", self.push_remote, f\"{branch}:{pick}\")\n+            except RuntimeError as e:\n+                print(f\"Warning: fetch {branch} failed: {e}\", file=sys.stderr)\n+                continue\n+            self._git(\"checkout\", pick)\n+            try:\n+                self._git(\"cherry-pick\", \"-sx\", sha)\n+                self._git(\"push\", self.push_remote, f\"{pick}:{branch}\")\n+                h = self._git(\"rev-parse\", pick)\n+                print(f\"Picked into {branch} (hash: {_short_sha(h)})\")\n+                merged.append(branch)\n+            except RuntimeError as e:\n+                print(f\"Warning: cherry-pick/push into {branch} failed: {e}\", file=sys.stderr)\n+                try:\n+                    self._git(\"cherry-pick\", \"--abort\")\n+                except RuntimeError:\n+                    pass\n+            finally:\n+                self._git(\"checkout\", original_head)\n+                self._git(\"branch\", \"-D\", pick)\n+\n+        self._comment_merge_summary(merged, sha)\n+\n+        if self.resolve_jira:\n+            try:\n+                self._do_resolve_jira(title, fix_ver)\n+            except RuntimeError as e:\n+                print(f\"Warning: JIRA resolution failed: {e}\", file=sys.stderr)\n+\n+    def _comment_merge_summary(self, merged, sha):\n+        lines = [f\"Merged into {merged[0]} ({_short_sha(sha)}).\"]\n+        for branch in merged[1:]:\n+            lines.append(f\"Cherry-picked into {branch}.\")\n+        try:\n+            self._gh_comment_pr(self.pr, \"\\n\".join(lines))\n+            print(\"Commented on PR with merge summary.\")\n+        except RuntimeError as e:\n+            print(f\"Warning: failed to comment on PR: {e}\", file=sys.stderr)\n+\n+    def _do_resolve_jira(self, title, fix_ver):\n+        if not self.jira_token:\n+            raise RuntimeError(\"JIRA_ACCESS_TOKEN is not set\")\n+\n+        ids = JIRA_ID_RE.findall(title)\n+        if not ids:\n+            print(\"No JIRA ID found in PR title, skipping.\")\n+            return\n+\n+        for jira_id in ids:\n+            try:\n+                issue = self._jira_get_issue(jira_id)\n+            except RuntimeError as e:\n+                print(f\"Warning: get {jira_id}: {e}\", file=sys.stderr)\n+                continue\n+            status = issue.get(\"fields\", {}).get(\"status\", {}).get(\"name\", \"\")\n+            if status in JIRA_CLOSED_STATUSES:\n+                print(f'JIRA {jira_id} already \"{status}\", skipping.')\n+                continue\n+\n+            print(f\"=== JIRA {jira_id} ===\")\n+            print(f\"Summary:  {issue.get('fields', {}).get('summary', '')}\")\n+            print(f\"Status:   {status}\")\n+\n+            transitions = self._jira_transitions(jira_id)\n+            resolve_id = next((t[\"id\"] for t in transitions if t[\"name\"] == JIRA_RESOLVE_TRANSITION), None)\n+            if not resolve_id:\n+                print(f\"Warning: no '{JIRA_RESOLVE_TRANSITION}' transition for {jira_id}\", file=sys.stderr)\n+                continue\n+\n+            jira_comment = (\n+                f\"Issue resolved by pull request {self.pr}\"\n+                f\"\\n[https://github.com/apache/zeppelin/pull/{self.pr}]\"\n+            )\n+            try:\n+                self._jira_resolve(jira_id, resolve_id, fix_ver, jira_comment)\n+                print(f\"Resolved {jira_id}!\")\n+            except RuntimeError as e:\n+                print(f\"Warning: resolve {jira_id}: {e}\", file=sys.stderr)\n+\n+\n+# ── Module-level utilities ───────────────────────────────────────────────\n+\n+def _parse_csv(value):\n+    return [s.strip() for s in value.split(\",\") if s.strip()] if value else []\n+\n+\n+def _ver_tuple(v):\n+    return tuple(int(x) for x in v.split(\".\"))\n+\n+\n+def _short_sha(sha):\n+    return sha[:8] if len(sha) > 8 else sha\n+\n+\n+def _pick_branch_name(pr_num, branch):\n+    return f\"PR_TOOL_PICK_PR_{pr_num}_{branch.upper()}\"\n+\n+\n+def _standardize_title(text):\n+    text = text.rstrip(\".\")\n+    if text.startswith('Revert \"') and text.endswith('\"'):\n+        return text\n+    if TITLE_FORMATTED_RE.match(text):\n+        return text\n+\n+    jira_refs = []\n+    for m in TITLE_REF_RE.finditer(text):\n+        ref = m.group(1)\n+        jira_refs.append(\"[\" + WHITESPACE_RE.sub(\"-\", ref.upper()) + \"]\")\n+        text = text.replace(ref, \"\")\n+\n+    components = []\n+    for m in COMPONENT_RE.finditer(text):\n+        comp = m.group(1)\n+        components.append(comp.upper())\n+        text = text.replace(comp, \"\")\n+\n+    text = LEADING_NON_WORD_RE.sub(\"\", text)\n+    result = \"\".join(jira_refs) + \"\".join(components) + \" \" + text\n+    return WHITESPACE_RE.sub(\" \", result.strip())\n+\n+\n+# ── Entry point ──────────────────────────────────────────────────────────\n+\n+def main():\n+    parser = argparse.ArgumentParser(\n+        description=\"Merge Apache Zeppelin pull requests\",\n+        usage=\"python3 dev/merge_pr.py [flags]\",\n+    )\n+    parser.add_argument(\"--pr\", type=int, required=True, help=\"Pull request number\")\n+    parser.add_argument(\"--target\", default=\"\", help=\"Target branch (default: PR base branch)\")\n+    parser.add_argument(\"--fix-versions\", default=\"\", help=\"JIRA fix version(s), comma-separated\")\n+    parser.add_argument(\"--release-branches\", default=\"\", help=\"Release branch(es) to cherry-pick into, comma-separated\")\n+    parser.add_argument(\"--resolve-jira\", action=\"store_true\", help=\"Resolve associated JIRA issue(s)\")\n+    parser.add_argument(\"--dry-run\", action=\"store_true\", help=\"Show what would be done without making changes\")\n+    parser.add_argument(\"--push-remote\", default=\"\", help=\"Git remote for pushing (default: apache)\")\n+    parser.add_argument(\"--github-token\", default=\"\", help=\"GitHub OAuth token (env: GITHUB_OAUTH_KEY)\")\n+    parser.add_argument(\"--jira-token\", default=\"\", help=\"JIRA access token (env: JIRA_ACCESS_TOKEN)\")\n+\n+    args = parser.parse_args()\n+    MergePR(args).run()\n+\n+\n+if __name__ == \"__main__\":\n+    main()"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "37cc85ca4c9b0980f2e595cca7a94f5339d22874",
+      "message": "[ZEPPELIN-6404] Rewrite merge PR CLI as single-file Go using standard library\n\nReplace multi-file cobra-based CLI with a single dev/merge-pr.go using\nonly Go standard library (flag package). No go.mod needed - runs directly\nwith `go run dev/merge-pr.go --pr <number> [flags]`.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "5c35ad9ba2033419bf7e9e0343751d1ce2a360b0"
+      ]
+    },
+    {
+      "sha": "a152f9f09d363093f6139086f40989905b35e6e8",
+      "message": "[ZEPPELIN-6404] Simplify merge-pr.go: precompile regexps, fix quality issues\n\n- Extract 6 regexp patterns to package-level vars (avoid recompilation)\n- Add shortSHA helper to unify hash truncation with length guard\n- Remove unused flagPRRemote flag\n- Use local variable for target branch instead of mutating global\n- Deduplicate cherry-pick cleanup with closure\n- Fix jiraTransitions error handling for consistency\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "37cc85ca4c9b0980f2e595cca7a94f5339d22874"
+      ]
+    },
+    {
+      "sha": "25f1379fb6a7d3d3e809c2326fb253144d8537ff",
+      "message": "[ZEPPELIN-6404] Rename flags to plural: --fix-versions, --release-branches\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "a152f9f09d363093f6139086f40989905b35e6e8"
+      ]
+    },
+    {
+      "sha": "67bd4903debf5d68fd400b29959f1b97ac02d1f6",
+      "message": "[ZEPPELIN-6404] Match Python script behavior: component brackets and fix-version inference\n\n- standardizeTitle now extracts [COMPONENT] brackets (e.g. [SPARK], [FLINK])\n  and assembles them after JIRA refs, matching Python's standardize_jira_ref\n- Add inferFixVersions to auto-map release branches to JIRA versions\n  (e.g. branch-0.12 → smallest 0.12.x unreleased version)\n- Remove redundant X.Y.0 when X.(Y-1).0 is also present\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "25f1379fb6a7d3d3e809c2326fb253144d8537ff"
+      ]
+    },
+    {
+      "sha": "548611069c442b1f4f6494c1b78754029e3cc566",
+      "message": "[ZEPPELIN-6404] Combine explicit fix-versions with auto-inferred release branch versions\n\n- --fix-versions and release branch inference now work together\n- e.g. --fix-versions 0.13.0 --release-branches branch-0.12 → 0.13.0, 0.12.1\n- Master auto-inference only runs when --fix-versions is not specified\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "67bd4903debf5d68fd400b29959f1b97ac02d1f6"
+      ]
+    },
+    {
+      "sha": "0d6ba9cc6929855255b6858ec1b7a9e8ca4b96a3",
+      "message": "[ZEPPELIN-6404] Add effective command output in dry-run, fix JIRA Accept header\n\n- dry-run now shows the effective command with all inferred values resolved\n- Fix HTTP Accept header: use application/json instead of GitHub-specific\n  header that caused JIRA API 406 errors\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "548611069c442b1f4f6494c1b78754029e3cc566"
+      ]
+    },
+    {
+      "sha": "7a6e7aaaaca567c263a1c702b00eae57397459f9",
+      "message": "[ZEPPELIN-6404] Add /merge-pr Claude Code skill\n\nAllows merging PRs with natural language input:\n  /merge-pr 5167 fix-versions 0.13.0, cherry-pick into branch-0.12\n\nAlways dry-runs first and asks for confirmation before actual merge.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "0d6ba9cc6929855255b6858ec1b7a9e8ca4b96a3"
+      ]
+    },
+    {
+      "sha": "ec4c5450aed0d446b6b2e6adc7410fb34ea26888",
+      "message": "[ZEPPELIN-6404] Auto-download Go in /merge-pr skill if not installed\n\nThe skill now checks for Go availability and downloads it to .go/\ndirectory if not found, so the merge tool works without pre-installed Go.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "7a6e7aaaaca567c263a1c702b00eae57397459f9"
+      ]
+    },
+    {
+      "sha": "7e3276afa49d87106d75844a48f941d66dfa528b",
+      "message": "[ZEPPELIN-6404] Improve /merge-pr skill: interactive confirmation loop\n\nAfter dry-run, ask user if effective command looks correct and allow\nadjusting fix-versions, release-branches before actual merge.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "ec4c5450aed0d446b6b2e6adc7410fb34ea26888"
+      ]
+    },
+    {
+      "sha": "b85ec89fdc4ede5fd9230c0fbe1a3ce4cfaa947a",
+      "message": "[ZEPPELIN-6404] Show --help and ask for input when PR number is missing\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "7e3276afa49d87106d75844a48f941d66dfa528b"
+      ]
+    },
+    {
+      "sha": "55a6b3d85dd63eb64c0ed6daa73bffd41200f74c",
+      "message": "[ZEPPELIN-6404] Comment on PR with merge summary after merge\n\nPosts a comment on the GitHub PR listing which branches were merged into,\ne.g. \"Merged into master (394e2457). Cherry-picked into branch-0.12.\"\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "b85ec89fdc4ede5fd9230c0fbe1a3ce4cfaa947a"
+      ]
+    },
+    {
+      "sha": "912c9e38f7b9577f928a5f4b53a8240211292189",
+      "message": "[ZEPPELIN-6404] Add Apache license header to merge-pr.md\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "55a6b3d85dd63eb64c0ed6daa73bffd41200f74c"
+      ]
+    },
+    {
+      "sha": "1aa88e5ed545a65045e28f033c391d9e70765436",
+      "message": "[ZEPPELIN-6404] Add Java CLI tool for merging pull requests\n\nSingle-file Java 11 CLI (java dev/merge-pr.java) that mirrors the Go\nversion. No external dependencies - uses java.net.http.HttpClient and\nmanual JSON parsing. Supports GitHub squash merge, cherry-pick into\nrelease branches, JIRA resolution, fix-version inference, PR commenting,\nand effective command display in dry-run mode.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "912c9e38f7b9577f928a5f4b53a8240211292189"
+      ]
+    },
+    {
+      "sha": "4d62d3a7dc83265a7546f05d7acb960ad13d6a86",
+      "message": "[ZEPPELIN-6404] Remove Go CLI and update skill to use Java\n\n- Delete dev/merge-pr.go\n- Remove .go/ from .gitignore\n- Update merge-pr.md skill to reference java dev/merge-pr.java\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "1aa88e5ed545a65045e28f033c391d9e70765436"
+      ]
+    },
+    {
+      "sha": "49b6c3cdab59a3af3697aa527017238bafb3637e",
+      "message": "[ZEPPELIN-6404] Refactor Java CLI to instance-based style\n\nConvert all static fields/methods to instance-based: constructor\nparses args into instance fields, run() and helpers are instance\nmethods. Only constants, JSON/utility helpers, and main() remain\nstatic. Also extract resolveFixVersionNames() and\ncommentMergeSummary() for readability.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "4d62d3a7dc83265a7546f05d7acb960ad13d6a86"
+      ]
+    },
+    {
+      "sha": "4ee0887b1c379bc74136d71ef8b0387b6c02321e",
+      "message": "[ZEPPELIN-6404] Fix help text alignment in merge-pr.java\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "49b6c3cdab59a3af3697aa527017238bafb3637e"
+      ]
+    },
+    {
+      "sha": "e2c5da9c89f2271bc84898fc3acff282cb97e86c",
+      "message": "[ZEPPELIN-6404] Rewrite merge CLI in Python, remove Java and skill\n\nReplace dev/merge-pr.java with dev/merge_pr.py using only Python 3\nbuilt-in libraries (urllib, json, subprocess, argparse, re). Remove\n.claude/commands/merge-pr.md from git tracking.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "4ee0887b1c379bc74136d71ef8b0387b6c02321e"
+      ]
+    },
+    {
+      "sha": "85f63fed12cd4c66cc0dc32a187af0963d90558f",
+      "message": "[ZEPPELIN-6404] Simplify merge_pr.py: deduplicate JIRA calls, extract constants\n\n- Resolve fix versions once and pass to both dry-run and JIRA resolution\n- Unify _resolve_fix_version_names and _do_resolve_jira fix-version logic\n  into single _resolve_fix_versions method\n- Extract constants: DEFAULT_BRANCH, DEFAULT_REMOTE, JIRA_RESOLVE_TRANSITION,\n  JIRA_CLOSED_STATUSES\n- Use try/finally in cherry-pick loop to guarantee HEAD restoration\n- Extract _pick_branch_name helper\n- Rename _http param body→payload to avoid shadowing\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>",
+      "parent_shas": [
+        "e2c5da9c89f2271bc84898fc3acff282cb97e86c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__apache__zeppelin__pr5183.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\apache__zeppelin__pr5183__java_python__apache__zeppelin__pr5183\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\apache__zeppelin__pr5183__java_python__apache__zeppelin__pr5183\\rn"
+  }
+}

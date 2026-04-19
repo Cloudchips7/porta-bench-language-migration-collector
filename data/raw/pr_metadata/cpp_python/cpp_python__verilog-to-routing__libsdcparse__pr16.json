@@ -1,0 +1,91 @@
+{
+  "instance_id": "cpp_python__verilog-to-routing__libsdcparse__pr16",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "verilog-to-routing/libsdcparse",
+  "pr_number": 16,
+  "pr_url": "https://github.com/verilog-to-routing/libsdcparse/pull/16",
+  "repo": {
+    "full_name": "verilog-to-routing/libsdcparse",
+    "clone_url": "https://github.com/verilog-to-routing/libsdcparse.git",
+    "default_branch": "master",
+    "created_at": "2014-03-14T14:48:28Z",
+    "stars": 13,
+    "license": "MIT",
+    "size_kb": 665
+  },
+  "pull_request": {
+    "id": 3509842962,
+    "title": "Add windows macos builds",
+    "body": "Changes:\r\n\r\n- Ensure explicit correct linking order for `sdc_commands` library and `sdcparse_test` executable to fix issues on windows\r\n- replace `$function` with `$action`  as it is deprecated, and latest SWIG has removed  support for `$function`",
+    "created_at": "2026-04-09T17:12:20Z",
+    "merged_at": "2026-04-09T21:35:03Z",
+    "base_sha": "99dda27e34a0ed1fb44cef26491c900a0bddf3f0",
+    "head_sha": "60367f9a9a376e29732220e51ecda097e32fe2f9",
+    "merge_commit_sha": "6e2280fe8d3c832c8d42aafc82156239ab776b0d",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "99dda27e34a0ed1fb44cef26491c900a0bddf3f0",
+  "final_sha": "60367f9a9a376e29732220e51ecda097e32fe2f9",
+  "changed_files": [
+    {
+      "sha": "3ed8473bbbb28263d7ca975e2c5590770df7e7c4",
+      "filename": "CMakeLists.txt",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 2,
+      "changes": 12,
+      "blob_url": "https://github.com/verilog-to-routing/libsdcparse/blob/60367f9a9a376e29732220e51ecda097e32fe2f9/CMakeLists.txt",
+      "raw_url": "https://github.com/verilog-to-routing/libsdcparse/raw/60367f9a9a376e29732220e51ecda097e32fe2f9/CMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/verilog-to-routing/libsdcparse/contents/CMakeLists.txt?ref=60367f9a9a376e29732220e51ecda097e32fe2f9",
+      "patch": "@@ -64,8 +64,8 @@ set_target_properties(libsdcparse PROPERTIES PREFIX \"\") #Avoid extra 'lib' prefi\n \n target_link_libraries(libsdcparse\n     PRIVATE\n-    ${TCL_LIBRARY}\n     sdc_commands\n+    ${TCL_LIBRARY}\n )\n \n target_include_directories(libsdcparse\n@@ -77,7 +77,15 @@ target_include_directories(libsdcparse\n \n #Create the test executable\n add_executable(sdcparse_test src/main.cpp)\n-target_link_libraries(sdcparse_test libsdcparse)\n+# note that we explicitly add sdc_commands to the dependencies below\n+# so that we can ensure that TCL_LIBRARY is linked at the end, otherwise\n+# CMake seems to add the sdc_commands implicit dependency after the TCL_LIBRARY\n+# leading to linking errors on windows (mingw64-cmake)\n+target_link_libraries(sdcparse_test\n+    PRIVATE\n+    libsdcparse\n+    sdc_commands\n+    ${TCL_LIBRARY})\n \n #Suppress IPO link warnings\n get_target_property(USES_IPO sdcparse_test INTERPROCEDURAL_OPTIMIZATION)"
+    },
+    {
+      "sha": "d40e1704db7c1972e27a1644473eeab2fe26f89c",
+      "filename": "src/tcl/sdc_commands.i",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1,
+      "changes": 4,
+      "blob_url": "https://github.com/verilog-to-routing/libsdcparse/blob/60367f9a9a376e29732220e51ecda097e32fe2f9/src%2Ftcl%2Fsdc_commands.i",
+      "raw_url": "https://github.com/verilog-to-routing/libsdcparse/raw/60367f9a9a376e29732220e51ecda097e32fe2f9/src%2Ftcl%2Fsdc_commands.i",
+      "contents_url": "https://api.github.com/repos/verilog-to-routing/libsdcparse/contents/src%2Ftcl%2Fsdc_commands.i?ref=60367f9a9a376e29732220e51ecda097e32fe2f9",
+      "patch": "@@ -92,9 +92,11 @@ extern int Sdc_commands_SafeInit(Tcl_Interp* interp);\n \n // Wrap all functions in a try-catch block to allow errors to be thrown from\n // within the interface functions.\n+// $function is no longer recognized, and is replaced by $action\n+// ref: https://swig.org/Release/CHANGES#:~:text=2025-06-09:%20olly%20The%20$function%20variable\n %exception {\n     try {\n-        $function;\n+        $action;\n     } catch (const std::out_of_range& oor) {\n         SWIG_exception(SWIG_IndexError, oor.what());\n     } catch (const std::exception& e) {"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "60367f9a9a376e29732220e51ecda097e32fe2f9",
+      "message": "Ensure explicit correct linking order for sdc_commands and sdcparse_test to fix issues on windows, replace  with  as SWIG has removed  support",
+      "parent_shas": [
+        "99dda27e34a0ed1fb44cef26491c900a0bddf3f0"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__verilog-to-routing__libsdcparse__pr16.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\verilog-to-routing__libsdcparse__pr16__cpp_python__verilog-to-routing__libsdcparse__pr16\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\verilog-to-routing__libsdcparse__pr16__cpp_python__verilog-to-routing__libsdcparse__pr16\\rn"
+  }
+}

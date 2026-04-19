@@ -1,0 +1,79 @@
+{
+  "instance_id": "cpp_python__AcePeak__naturo__pr186",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "AcePeak/naturo",
+  "pr_number": 186,
+  "pr_url": "https://github.com/AcePeak/naturo/pull/186",
+  "repo": {
+    "full_name": "AcePeak/naturo",
+    "clone_url": "https://github.com/AcePeak/naturo.git",
+    "default_branch": "main",
+    "created_at": "2026-03-19T03:21:35Z",
+    "stars": 5,
+    "license": "MIT",
+    "size_kb": 16447
+  },
+  "pull_request": {
+    "id": 3434734107,
+    "title": "fix: use pure WTS ctypes API for session detection (fixes #183)",
+    "body": "## Problem\nQA verification found that the previous fix (dcf691b) still fails in `schtasks /it` context because `query session` returns exit code 1, causing `_is_current_session_interactive()` to bail out prematurely.\n\n## Root Cause\n`query session` returns non-zero exit codes in many valid scenarios (schtasks, some RDP configs). Parsing its text output is also fragile across locales.\n\n## Fix\nReplace the entire `query session` subprocess approach with pure ctypes calls to `WTSQuerySessionInformationW` (WTS_INFO_CLASS = WTSConnectState). This:\n\n1. Eliminates subprocess calls — no exit code or encoding issues\n2. Directly queries the WTS connect state enum for the current session\n3. Considers `WTSActive` (0) and `WTSConnected` (1) as interactive states\n4. Works reliably in schtasks /it, RDP, console, and service contexts\n\n## Testing\n- All 1441 tests pass (475 skipped for platform-specific)\n- Needs QA verification on compile machine in schtasks /it context\n\nFixes #183",
+    "created_at": "2026-03-23T15:49:00Z",
+    "merged_at": "2026-03-23T15:53:28Z",
+    "base_sha": "dcf691b89c44b6c82c4c3c9cbfb31fc77fd60ce1",
+    "head_sha": "98af2765b2a36abfb7a6cb2732085da9fce47422",
+    "merge_commit_sha": "643287563024358f3d81f4473c4031dda0c2373e",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "dcf691b89c44b6c82c4c3c9cbfb31fc77fd60ce1",
+  "final_sha": "98af2765b2a36abfb7a6cb2732085da9fce47422",
+  "changed_files": [
+    {
+      "sha": "60931f9e5e25398619da04fda649eb514b3b17fa",
+      "filename": "naturo/cli/interaction.py",
+      "status": "modified",
+      "additions": 38,
+      "deletions": 26,
+      "changes": 64,
+      "blob_url": "https://github.com/AcePeak/naturo/blob/98af2765b2a36abfb7a6cb2732085da9fce47422/naturo%2Fcli%2Finteraction.py",
+      "raw_url": "https://github.com/AcePeak/naturo/raw/98af2765b2a36abfb7a6cb2732085da9fce47422/naturo%2Fcli%2Finteraction.py",
+      "contents_url": "https://api.github.com/repos/AcePeak/naturo/contents/naturo%2Fcli%2Finteraction.py?ref=98af2765b2a36abfb7a6cb2732085da9fce47422",
+      "patch": "@@ -209,11 +209,15 @@ def _validate_method(method: str, json_output: bool) -> bool:\n def _is_current_session_interactive() -> bool:\n     \"\"\"Check if the current process runs in an active Console or RDP session.\n \n-    Uses the Windows Terminal Services (WTS) API via ctypes and the\n-    ``query session`` command to determine whether the session hosting\n-    this process is interactive.  This handles cases where ``SESSIONNAME``\n-    is not set (e.g. Task Scheduler ``/it`` tasks) but the process *is*\n-    running in a desktop session.\n+    Uses the Windows Terminal Services (WTS) API purely via ctypes to\n+    determine whether the session hosting this process is interactive.\n+    This handles cases where ``SESSIONNAME`` is not set (e.g. Task\n+    Scheduler ``/it`` tasks) but the process *is* running in a desktop\n+    session.\n+\n+    The implementation queries ``WTSQuerySessionInformationW`` for\n+    ``WTSConnectState`` — no subprocess calls, no ``query session``\n+    dependency, no encoding or exit-code surprises.\n \n     Returns:\n         True if the process session is an active Console or RDP session.\n@@ -222,9 +226,8 @@ def _is_current_session_interactive() -> bool:\n     try:\n         import ctypes\n         import ctypes.wintypes\n-        import subprocess\n \n-        # Get the Terminal Services session ID for the current process.\n+        # --------------- session ID for current process ---------------\n         pid = ctypes.windll.kernel32.GetCurrentProcessId()  # type: ignore[attr-defined]\n         session_id = ctypes.wintypes.DWORD(0)\n         ok = ctypes.windll.kernel32.ProcessIdToSessionId(  # type: ignore[attr-defined]\n@@ -238,28 +241,37 @@ def _is_current_session_interactive() -> bool:\n         if sid == 0:\n             return False\n \n-        # Use ``query session`` to check whether our session is Active.\n-        result = subprocess.run(\n-            [\"query\", \"session\"],\n-            capture_output=True, text=True, timeout=5,\n-            encoding=\"utf-8\", errors=\"replace\",\n+        # --------------- WTS connect state via pure ctypes ---------------\n+        WTS_CURRENT_SERVER_HANDLE = 0\n+        WTSConnectState = 8  # WTS_INFO_CLASS enum value\n+\n+        # WTS_CONNECTSTATE_CLASS values we consider interactive:\n+        WTSActive = 0\n+        WTSConnected = 1  # user connected but not yet logged in — still desktop\n+\n+        wtsapi32 = ctypes.windll.wtsapi32  # type: ignore[attr-defined]\n+        kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined]\n+\n+        buf = ctypes.wintypes.LPWSTR()\n+        bytes_returned = ctypes.wintypes.DWORD(0)\n+\n+        ok = wtsapi32.WTSQuerySessionInformationW(\n+            WTS_CURRENT_SERVER_HANDLE,\n+            sid,\n+            WTSConnectState,\n+            ctypes.byref(buf),\n+            ctypes.byref(bytes_returned),\n         )\n-        if result.returncode != 0:\n+        if not ok:\n             return False\n \n-        # Parse output.  Each line has columns like:\n-        #   SESSIONNAME  USERNAME  ID  STATE  TYPE  DEVICE\n-        # The active user line may start with \">\" marker.\n-        # We look for our session ID and check the next token is \"Active\".\n-        for line in result.stdout.splitlines():\n-            parts = line.replace(\">\", \" \").split()\n-            if not parts:\n-                continue\n-            for i, token in enumerate(parts):\n-                if token == str(sid) and i + 1 < len(parts):\n-                    if parts[i + 1].lower() == \"active\":\n-                        return True\n-        return False\n+        try:\n+            # The buffer holds a single DWORD (connect state enum).\n+            state = ctypes.cast(buf, ctypes.POINTER(ctypes.wintypes.DWORD)).contents.value\n+        finally:\n+            wtsapi32.WTSFreeMemory(buf)\n+\n+        return state in (WTSActive, WTSConnected)\n     except Exception:\n         return False\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "98af2765b2a36abfb7a6cb2732085da9fce47422",
+      "message": "fix: use pure WTS ctypes API for session detection, drop query session subprocess (fixes #183)",
+      "parent_shas": [
+        "dcf691b89c44b6c82c4c3c9cbfb31fc77fd60ce1"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__AcePeak__naturo__pr186.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\AcePeak__naturo__pr186__cpp_python__AcePeak__naturo__pr186\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\AcePeak__naturo__pr186__cpp_python__AcePeak__naturo__pr186\\rn"
+  }
+}

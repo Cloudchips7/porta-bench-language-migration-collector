@@ -1,0 +1,78 @@
+{
+  "instance_id": "java_python__mouredev__roadmap-retos-programacion__pr9319",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "mouredev/roadmap-retos-programacion",
+  "pr_number": 9319,
+  "pr_url": "https://github.com/mouredev/roadmap-retos-programacion/pull/9319",
+  "repo": {
+    "full_name": "mouredev/roadmap-retos-programacion",
+    "clone_url": "https://github.com/mouredev/roadmap-retos-programacion.git",
+    "default_branch": "main",
+    "created_at": "2023-12-18T10:59:18Z",
+    "stars": 8154,
+    "license": "Apache-2.0",
+    "size_kb": 55901
+  },
+  "pull_request": {
+    "id": 3455455370,
+    "title": "#00 - Java",
+    "body": "## Describe tus cambios\r\nSolo corresponde con la presentación del ejercicio.\r\n\r\n## Comprobaciones\r\nAsegúrate de cumplir los siguientes puntos antes de realizar la \"Pull Request\":\r\n\r\n- [ ] El título de mi Pull Request sigue este formato: \"#[número] - [lenguaje_utilizado]\". *(Ej: #00 - Python\")*\r\n- [ ] El nombre el fichero se corresponde con el de mi usuario en GitHub más la extensión del lenguaje. *(Ej: mouredev.py)*\r\n- [ ] El fichero de corrección se encuentra dentro del directorio del ejercicio y en una carpeta con el nombre del lenguaje de programación utilizado en minúsculas. *(Ej: Roadmap/00 - SINTAXIS, VARIABLES, TIPOS DE DATOS Y HOLA MUNDO/python/mouredev.py)*\r\n",
+    "created_at": "2026-03-27T06:58:21Z",
+    "merged_at": "2026-04-14T18:42:42Z",
+    "base_sha": "4c54a556378a5cd474d3a3e9fe988b0c74da453b",
+    "head_sha": "2340f0a610bec0bc3b4591668f46feb7df0779d9",
+    "merge_commit_sha": "ded59b23f85c8d80a37dbebfb91b4a975c9d0259",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "4c54a556378a5cd474d3a3e9fe988b0c74da453b",
+  "final_sha": "2340f0a610bec0bc3b4591668f46feb7df0779d9",
+  "changed_files": [
+    {
+      "sha": "4ed924eadfc2b25f14eebcf0e99bec83d016a669",
+      "filename": "Roadmap/00 - SINTAXIS, VARIABLES, TIPOS DE DATOS Y HOLA MUNDO/java/HectrAlvz.java",
+      "status": "added",
+      "additions": 35,
+      "deletions": 0,
+      "changes": 35,
+      "blob_url": "https://github.com/mouredev/roadmap-retos-programacion/blob/2340f0a610bec0bc3b4591668f46feb7df0779d9/Roadmap%2F00%20-%20SINTAXIS%2C%20VARIABLES%2C%20TIPOS%20DE%20DATOS%20Y%20HOLA%20MUNDO%2Fjava%2FHectrAlvz.java",
+      "raw_url": "https://github.com/mouredev/roadmap-retos-programacion/raw/2340f0a610bec0bc3b4591668f46feb7df0779d9/Roadmap%2F00%20-%20SINTAXIS%2C%20VARIABLES%2C%20TIPOS%20DE%20DATOS%20Y%20HOLA%20MUNDO%2Fjava%2FHectrAlvz.java",
+      "contents_url": "https://api.github.com/repos/mouredev/roadmap-retos-programacion/contents/Roadmap%2F00%20-%20SINTAXIS%2C%20VARIABLES%2C%20TIPOS%20DE%20DATOS%20Y%20HOLA%20MUNDO%2Fjava%2FHectrAlvz.java?ref=2340f0a610bec0bc3b4591668f46feb7df0779d9",
+      "patch": "@@ -0,0 +1,35 @@\n+public class HectrAlvz {\n+\n+    // Documetación en https://www.java.com/\n+    public static void main(String[] args) {\n+        // Comentario en una sola linea\n+\n+        /*\n+         * Comentario\n+         * en varias\n+         * lineas\n+         */\n+\n+        // Variables y constantes\n+        String variable = \"Esta es una variable\";\n+        final String CONSTANTE = \"Siempre será una constante\";\n+\n+        // Tipos primitivos\n+        byte numeroIntentosLogin = 3;\n+        short numeroHabitacionesHotel = 120;\n+        int cantidadProductosInventario = 4500;\n+        long numeroTotalVisitasPagina = 25000000000L;\n+        float temperaturaPromedioCiudad = 24.5f;\n+        double porcentajeImpuestoVenta = 16.75;\n+        char caracter = 'z';\n+        char caracterDesdeCodigo = 64;\n+        boolean condicionVerdadera = true;\n+        boolean condicionFalsa = false;\n+\n+        // Salida por consola\n+        String lenguaje = \"Java\";\n+        System.out.println(\"¡Hola, \" + lenguaje + \"!\");\n+\n+    }\n+\n+}\n\\ No newline at end of file"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "2340f0a610bec0bc3b4591668f46feb7df0779d9",
+      "message": "#00 - Java",
+      "parent_shas": [
+        "4c54a556378a5cd474d3a3e9fe988b0c74da453b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_tests_detected"
+    ],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__mouredev__roadmap-retos-programacion__pr9319.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\mouredev__roadmap-retos-programacion__pr9319__java_python__mouredev__roadmap-retos-programacion__pr9319\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\mouredev__roadmap-retos-programacion__pr9319__java_python__mouredev__roadmap-retos-programacion__pr9319\\rn"
+  }
+}

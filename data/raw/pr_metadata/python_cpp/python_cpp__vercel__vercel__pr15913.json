@@ -1,0 +1,168 @@
+{
+  "instance_id": "python_cpp__vercel__vercel__pr15913",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "vercel/vercel",
+  "pr_number": 15913,
+  "pr_url": "https://github.com/vercel/vercel/pull/15913",
+  "repo": {
+    "full_name": "vercel/vercel",
+    "clone_url": "https://github.com/vercel/vercel.git",
+    "default_branch": "main",
+    "created_at": "2016-09-09T01:12:08Z",
+    "stars": 15316,
+    "license": "Apache-2.0",
+    "size_kb": 228959
+  },
+  "pull_request": {
+    "id": 3518129303,
+    "title": "[python] optimize resolving python versions on build image",
+    "body": "Use filesystem checks instead of subprocess calls to locate `uv` and `python` installed on the build image.\r\n\r\nBefore\r\n\r\n<img width=\"958\" height=\"774\" alt=\"before\" src=\"https://github.com/user-attachments/assets/a305fefa-840b-4082-9f7f-1cdde9a4f981\" />\r\n\r\nAfter\r\n\r\n<img width=\"949\" height=\"723\" alt=\"after\" src=\"https://github.com/user-attachments/assets/64b81fd4-0006-4394-a299-6b75eec26ace\" />",
+    "created_at": "2026-04-11T19:45:07Z",
+    "merged_at": "2026-04-13T20:37:36Z",
+    "base_sha": "ed027451a32d56a299e2bfe5ac21db4b230fb525",
+    "head_sha": "2c7f3e496544311a66b84a575d8a5622d211f8d1",
+    "merge_commit_sha": "71e5dcc49d6b1eb3955ca7e18a52e76d18e8e8dc",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "6712eb87653784b99327f81ed3dbff44e30038c5",
+  "final_sha": "2c7f3e496544311a66b84a575d8a5622d211f8d1",
+  "changed_files": [
+    {
+      "sha": "de22502883dfece03cb43af993d56f8fa112ee33",
+      "filename": ".changeset/shy-toys-rush.md",
+      "status": "added",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/vercel/vercel/blob/2c7f3e496544311a66b84a575d8a5622d211f8d1/.changeset%2Fshy-toys-rush.md",
+      "raw_url": "https://github.com/vercel/vercel/raw/2c7f3e496544311a66b84a575d8a5622d211f8d1/.changeset%2Fshy-toys-rush.md",
+      "contents_url": "https://api.github.com/repos/vercel/vercel/contents/.changeset%2Fshy-toys-rush.md?ref=2c7f3e496544311a66b84a575d8a5622d211f8d1",
+      "patch": "@@ -0,0 +1,5 @@\n+---\n+'@vercel/python': patch\n+---\n+\n+Replace subprocess calls with fs.existsSync"
+    },
+    {
+      "sha": "05987176d1cf25307684b0adda1c0b3e46f0507a",
+      "filename": "packages/python/src/uv.ts",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 1,
+      "changes": 18,
+      "blob_url": "https://github.com/vercel/vercel/blob/2c7f3e496544311a66b84a575d8a5622d211f8d1/packages%2Fpython%2Fsrc%2Fuv.ts",
+      "raw_url": "https://github.com/vercel/vercel/raw/2c7f3e496544311a66b84a575d8a5622d211f8d1/packages%2Fpython%2Fsrc%2Fuv.ts",
+      "contents_url": "https://api.github.com/repos/vercel/vercel/contents/packages%2Fpython%2Fsrc%2Fuv.ts?ref=2c7f3e496544311a66b84a575d8a5622d211f8d1",
+      "patch": "@@ -25,8 +25,21 @@ interface UvPythonEntry {\n   implementation: string;\n }\n \n+const KNOWN_UV_PATH = '/usr/local/bin/uv';\n+\n+/**\n+ * On the Vercel build image, return the known uv path directly instead of\n+ * scanning PATH via `which`.\n+ */\n+export function findUvOnBuildImage(\n+  knownPath: string = KNOWN_UV_PATH\n+): string | null {\n+  if (!process.env.VERCEL_BUILD_IMAGE) return null;\n+  return fs.existsSync(knownPath) ? knownPath : null;\n+}\n+\n export function findUvInPath(): string | null {\n-  return which.sync('uv', { nothrow: true });\n+  return findUvOnBuildImage() ?? which.sync('uv', { nothrow: true });\n }\n \n export function getUvCacheDir(workPath: string): string {\n@@ -270,6 +283,9 @@ async function getUserScriptsDir(pythonPath: string): Promise<string | null> {\n }\n \n export async function findUvBinary(pythonPath: string): Promise<string | null> {\n+  const buildImageUv = findUvOnBuildImage();\n+  if (buildImageUv) return buildImageUv;\n+\n   const found = which.sync('uv', { nothrow: true });\n   if (found) return found;\n "
+    },
+    {
+      "sha": "3b17e4e9cca58fd4553c5535a86864ed3717da41",
+      "filename": "packages/python/src/version.ts",
+      "status": "modified",
+      "additions": 27,
+      "deletions": 2,
+      "changes": 29,
+      "blob_url": "https://github.com/vercel/vercel/blob/2c7f3e496544311a66b84a575d8a5622d211f8d1/packages%2Fpython%2Fsrc%2Fversion.ts",
+      "raw_url": "https://github.com/vercel/vercel/raw/2c7f3e496544311a66b84a575d8a5622d211f8d1/packages%2Fpython%2Fsrc%2Fversion.ts",
+      "contents_url": "https://api.github.com/repos/vercel/vercel/contents/packages%2Fpython%2Fsrc%2Fversion.ts?ref=2c7f3e496544311a66b84a575d8a5622d211f8d1",
+      "patch": "@@ -1,8 +1,9 @@\n import { join, dirname } from 'path';\n+import { existsSync } from 'fs';\n import { NowBuildError } from '@vercel/build-utils';\n import { selectPythonVersion, PythonConfigKind } from '@vercel/python-analysis';\n import type { PythonBuild, PythonPackage } from '@vercel/python-analysis';\n-import { UvRunner, findUvInPath } from './uv';\n+import { UvRunner, findUvInPath, UV_PYTHON_PATH_PREFIX } from './uv';\n import { detectPlatform } from './utils';\n \n export interface PythonVersion {\n@@ -320,13 +321,37 @@ function isDiscontinued({ discontinueDate }: PythonVersion): boolean {\n   return discontinueDate !== undefined && discontinueDate.getTime() <= today;\n }\n \n-// Cache for installed Python versions to avoid repeated execSync calls\n+// Cache for installed Python versions to avoid repeated calls\n let installedPythonsCache: Set<string> | null = null;\n \n+/**\n+ * Detect installed Python versions by probing for symlinks at\n+ * {basePath}/bin/python{major}.{minor}.  On the Vercel build image this\n+ * avoids spawning a `uv python list` subprocess.\n+ */\n+export function getInstalledPythonsFromFilesystem(\n+  basePath: string = UV_PYTHON_PATH_PREFIX\n+): Set<string> {\n+  const result = new Set<string>();\n+  for (const opt of allOptions) {\n+    const binPath = join(basePath, 'bin', `python${opt.major}.${opt.minor}`);\n+    if (existsSync(binPath)) {\n+      result.add(pythonVersionString(opt));\n+    }\n+  }\n+  return result;\n+}\n+\n function getInstalledPythons(): Set<string> {\n   if (installedPythonsCache !== null) {\n     return installedPythonsCache;\n   }\n+\n+  if (process.env.VERCEL_BUILD_IMAGE) {\n+    installedPythonsCache = getInstalledPythonsFromFilesystem();\n+    return installedPythonsCache;\n+  }\n+\n   const uvPath = findUvInPath();\n   if (!uvPath) {\n     throw new NowBuildError({"
+    },
+    {
+      "sha": "5e6f8e364cacc3c01d8af193acf303f3a034fdcf",
+      "filename": "packages/python/test/unit.test.ts",
+      "status": "modified",
+      "additions": 90,
+      "deletions": 0,
+      "changes": 90,
+      "blob_url": "https://github.com/vercel/vercel/blob/2c7f3e496544311a66b84a575d8a5622d211f8d1/packages%2Fpython%2Ftest%2Funit.test.ts",
+      "raw_url": "https://github.com/vercel/vercel/raw/2c7f3e496544311a66b84a575d8a5622d211f8d1/packages%2Fpython%2Ftest%2Funit.test.ts",
+      "contents_url": "https://api.github.com/repos/vercel/vercel/contents/packages%2Fpython%2Ftest%2Funit.test.ts?ref=2c7f3e496544311a66b84a575d8a5622d211f8d1",
+      "patch": "@@ -47,6 +47,7 @@ import {\n   resolvePythonVersion,\n   DEFAULT_PYTHON_VERSION_STRING,\n   resetInstalledPythonsCache,\n+  getInstalledPythonsFromFilesystem,\n } from '../src/version';\n import type { PythonConstraint, PythonPackage } from '@vercel/python-analysis';\n import { build, prepareCache } from '../src/index';\n@@ -56,6 +57,7 @@ import {\n   UV_PYTHON_DOWNLOADS_MODE,\n   getProtectedUvEnv,\n   getUvCacheDir,\n+  findUvOnBuildImage,\n } from '../src/uv';\n import { VERCEL_WORKERS_VERSION } from '../src/package-versions';\n import { createPyprojectToml } from '../src/install';\n@@ -539,6 +541,94 @@ describe('default Python version behavior', () => {\n   });\n });\n \n+describe('getInstalledPythonsFromFilesystem', () => {\n+  it('detects installed Pythons from filesystem bin directory', () => {\n+    const basePath = path.join(tmpPythonDir, 'uv-python');\n+    const binDir = path.join(basePath, 'bin');\n+    fs.mkdirSync(binDir, { recursive: true });\n+    fs.writeFileSync(path.join(binDir, 'python3.12'), '');\n+    fs.writeFileSync(path.join(binDir, 'python3.13'), '');\n+\n+    const result = getInstalledPythonsFromFilesystem(basePath);\n+    expect(result).toEqual(new Set(['3.12', '3.13']));\n+  });\n+\n+  it('returns empty set when no Pythons are installed', () => {\n+    const basePath = path.join(tmpPythonDir, 'uv-python-empty');\n+    const binDir = path.join(basePath, 'bin');\n+    fs.mkdirSync(binDir, { recursive: true });\n+\n+    const result = getInstalledPythonsFromFilesystem(basePath);\n+    expect(result).toEqual(new Set());\n+  });\n+\n+  it('ignores Python versions not in allOptions', () => {\n+    const basePath = path.join(tmpPythonDir, 'uv-python-extra');\n+    const binDir = path.join(basePath, 'bin');\n+    fs.mkdirSync(binDir, { recursive: true });\n+    fs.writeFileSync(path.join(binDir, 'python3.12'), '');\n+    // 3.99 does not exist in allOptions\n+    fs.writeFileSync(path.join(binDir, 'python3.99'), '');\n+\n+    const result = getInstalledPythonsFromFilesystem(basePath);\n+    expect(result).toEqual(new Set(['3.12']));\n+  });\n+\n+  it('uses filesystem fast path when VERCEL_BUILD_IMAGE is set', () => {\n+    const basePath = path.join(tmpPythonDir, 'uv-python-integration');\n+    const binDir = path.join(basePath, 'bin');\n+    fs.mkdirSync(binDir, { recursive: true });\n+    fs.writeFileSync(path.join(binDir, 'python3.12'), '');\n+    fs.writeFileSync(path.join(binDir, 'python3.13'), '');\n+    fs.writeFileSync(path.join(binDir, 'python3.14'), '');\n+\n+    const origBuildImage = process.env.VERCEL_BUILD_IMAGE;\n+    process.env.VERCEL_BUILD_IMAGE = '1';\n+    try {\n+      resetInstalledPythonsCache();\n+      const result = getInstalledPythonsFromFilesystem(basePath);\n+      expect(result).toEqual(new Set(['3.12', '3.13', '3.14']));\n+    } finally {\n+      if (origBuildImage === undefined) {\n+        delete process.env.VERCEL_BUILD_IMAGE;\n+      } else {\n+        process.env.VERCEL_BUILD_IMAGE = origBuildImage;\n+      }\n+    }\n+  });\n+});\n+\n+describe('findUvOnBuildImage', () => {\n+  const origBuildImage = process.env.VERCEL_BUILD_IMAGE;\n+\n+  afterEach(() => {\n+    if (origBuildImage === undefined) {\n+      delete process.env.VERCEL_BUILD_IMAGE;\n+    } else {\n+      process.env.VERCEL_BUILD_IMAGE = origBuildImage;\n+    }\n+  });\n+\n+  it('returns null when VERCEL_BUILD_IMAGE is not set', () => {\n+    delete process.env.VERCEL_BUILD_IMAGE;\n+    expect(findUvOnBuildImage()).toBeNull();\n+  });\n+\n+  it('returns the known path when VERCEL_BUILD_IMAGE is set and file exists', () => {\n+    process.env.VERCEL_BUILD_IMAGE = '1';\n+    const mockUvPath = path.join(tmpPythonDir, 'mock-uv');\n+    fs.mkdirSync(tmpPythonDir, { recursive: true });\n+    fs.writeFileSync(mockUvPath, '');\n+\n+    expect(findUvOnBuildImage(mockUvPath)).toBe(mockUvPath);\n+  });\n+\n+  it('returns null when VERCEL_BUILD_IMAGE is set but file does not exist', () => {\n+    process.env.VERCEL_BUILD_IMAGE = '1';\n+    expect(findUvOnBuildImage('/nonexistent/path/uv')).toBeNull();\n+  });\n+});\n+\n describe('fallback behavior when requested version is not installed', () => {\n   it('falls back to DEFAULT_PYTHON_VERSION_STRING when Pipfile.lock requests unavailable version', () => {\n     // Setup: 3.14, 3.13, 3.12 are installed, but NOT 3.9"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "dec06029cb73350e511c0c50072ddd669dd0fefb",
+      "message": "Remove uv python list when running on vercel build image.\n\nSigned-off-by: gscho <greg.c.schofield@gmail.com>",
+      "parent_shas": [
+        "6712eb87653784b99327f81ed3dbff44e30038c5"
+      ]
+    },
+    {
+      "sha": "005c5fee27f67422482d6e8ffdfe2641735c323f",
+      "message": "Prevent multiple subprocess calls to which to find uv.\n\nSigned-off-by: gscho <greg.c.schofield@gmail.com>",
+      "parent_shas": [
+        "dec06029cb73350e511c0c50072ddd669dd0fefb"
+      ]
+    },
+    {
+      "sha": "5f05d40fb5dd5e5bf556ca80a26902aca7d50ba0",
+      "message": "Merge branch 'main' into gscho/optimize-resolve-python-versions",
+      "parent_shas": [
+        "005c5fee27f67422482d6e8ffdfe2641735c323f",
+        "93d652869a6934bbcd719cdcd2b99dc7e840796f"
+      ]
+    },
+    {
+      "sha": "60d7cc978d51354f3190eb4b5160cc75edeebebf",
+      "message": "Merge branch 'main' into gscho/optimize-resolve-python-versions",
+      "parent_shas": [
+        "5f05d40fb5dd5e5bf556ca80a26902aca7d50ba0",
+        "c729aaa90134f94c4ff5552e8db936b12d8d25ab"
+      ]
+    },
+    {
+      "sha": "98a47c72715bfea153e25a40fcb0d7fb53d82ec5",
+      "message": "Merge branch 'main' into gscho/optimize-resolve-python-versions",
+      "parent_shas": [
+        "60d7cc978d51354f3190eb4b5160cc75edeebebf",
+        "be643e6f879057aab74dd16f5118b96a013e126f"
+      ]
+    },
+    {
+      "sha": "322dc5b89282533e4c4b372a42eafaca01b84712",
+      "message": "Merge branch 'main' into gscho/optimize-resolve-python-versions",
+      "parent_shas": [
+        "98a47c72715bfea153e25a40fcb0d7fb53d82ec5",
+        "ed027451a32d56a299e2bfe5ac21db4b230fb525"
+      ]
+    },
+    {
+      "sha": "5a8d8a9b5519b1fa148b41c3ab935e6579d3bbb3",
+      "message": "Add changeset.\n\nSigned-off-by: gscho <greg.c.schofield@gmail.com>",
+      "parent_shas": [
+        "005c5fee27f67422482d6e8ffdfe2641735c323f"
+      ]
+    },
+    {
+      "sha": "2c7f3e496544311a66b84a575d8a5622d211f8d1",
+      "message": "Merge branch 'gscho/optimize-resolve-python-versions' of https://github.com/vercel/vercel into gscho/optimize-resolve-python-versions",
+      "parent_shas": [
+        "5a8d8a9b5519b1fa148b41c3ab935e6579d3bbb3",
+        "322dc5b89282533e4c4b372a42eafaca01b84712"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__vercel__vercel__pr15913.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\vercel__vercel__pr15913__python_cpp__vercel__vercel__pr15913\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\vercel__vercel__pr15913__python_cpp__vercel__vercel__pr15913\\rn"
+  }
+}

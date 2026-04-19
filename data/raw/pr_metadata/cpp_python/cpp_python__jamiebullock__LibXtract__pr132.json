@@ -1,0 +1,110 @@
+{
+  "instance_id": "cpp_python__jamiebullock__LibXtract__pr132",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "jamiebullock/LibXtract",
+  "pr_number": 132,
+  "pr_url": "https://github.com/jamiebullock/LibXtract/pull/132",
+  "repo": {
+    "full_name": "jamiebullock/LibXtract",
+    "clone_url": "https://github.com/jamiebullock/LibXtract.git",
+    "default_branch": "main",
+    "created_at": "2012-05-31T15:16:08Z",
+    "stars": 230,
+    "license": "MIT",
+    "size_kb": 1563
+  },
+  "pull_request": {
+    "id": 3499038017,
+    "title": "feat: expose stateful functions in SWIG bindings",
+    "body": "## Summary\n\n- Remove `%ignore` directives for `xtract_last_n`, `xtract_last_n_state_new`, and `xtract_last_n_state_delete`\n- SWIG handles the opaque `xtract_last_n_state *` pointer natively — no special typemaps or workarounds needed\n- Add stateful function tests to both Python and Java test scripts\n\nThe fix was literally deleting 3 lines. The `%ignore` was a workaround from 2013 that was never revisited.\n\nCloses #59\n\n## Test plan\n\n- [x] `make && make check` passes (375 assertions, 61 test cases)\n- [x] `make -C swig check` — Python and Java tests pass including stateful functions\n- [ ] Verify on Linux and Windows CI",
+    "created_at": "2026-04-07T16:38:21Z",
+    "merged_at": "2026-04-07T16:51:44Z",
+    "base_sha": "14354e5c62f65f6d05d3bea572b976e1aead7f4e",
+    "head_sha": "f7c2b009ec4bacac830e878169f0eeb24887209e",
+    "merge_commit_sha": "dc1cfd2ee7072f8ee241e4d701cd1d98eb17c11f",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "14354e5c62f65f6d05d3bea572b976e1aead7f4e",
+  "final_sha": "f7c2b009ec4bacac830e878169f0eeb24887209e",
+  "changed_files": [
+    {
+      "sha": "5177ef2aa24a5ce03aeb1474fa0814bb76f6ef06",
+      "filename": "swig/test.java",
+      "status": "modified",
+      "additions": 22,
+      "deletions": 0,
+      "changes": 22,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/f7c2b009ec4bacac830e878169f0eeb24887209e/swig%2Ftest.java",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/f7c2b009ec4bacac830e878169f0eeb24887209e/swig%2Ftest.java",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2Ftest.java?ref=f7c2b009ec4bacac830e878169f0eeb24887209e",
+      "patch": "@@ -56,6 +56,28 @@ public static void main(String[] args) {\n             System.out.println(result.getitem(i));\n         }\n \n+        System.out.println(\"Testing stateful functions...\");\n+\n+        int N = 4;\n+        SWIGTYPE_p_xtract_last_n_state_ state = xtract.xtract_last_n_state_new(N);\n+        doubleArray lastN = new doubleArray(N);\n+        for (int i = 0; i < N; i++) lastN.setitem(i, 0.0);\n+\n+        doubleArray data = new doubleArray(1);\n+        data.setitem(0, 42.0);\n+        /* N.B. data is a single sample; N is the window size, not the size of data */\n+        xtract.xtract_last_n(state, data.cast(), N, null, lastN.cast());\n+        System.out.printf(\"last_n after one value: %.1f%n\", lastN.getitem(N - 1));\n+\n+        data.setitem(0, 99.0);\n+        xtract.xtract_last_n(state, data.cast(), N, null, lastN.cast());\n+        System.out.printf(\"last_n after two values: %.1f, %.1f%n\",\n+                lastN.getitem(N - 2), lastN.getitem(N - 1));\n+\n+        xtract.xtract_last_n_state_delete(state);\n+        data.delete();\n+        lastN.delete();\n+\n         System.out.println(\"\\nFinished!\\n\");\n \n         a.delete();"
+    },
+    {
+      "sha": "6c1cda181aa5750b7f3879d29c9527a95560ea5f",
+      "filename": "swig/test.py",
+      "status": "modified",
+      "additions": 23,
+      "deletions": 0,
+      "changes": 23,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/f7c2b009ec4bacac830e878169f0eeb24887209e/swig%2Ftest.py",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/f7c2b009ec4bacac830e878169f0eeb24887209e/swig%2Ftest.py",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2Ftest.py?ref=f7c2b009ec4bacac830e878169f0eeb24887209e",
+      "patch": "@@ -60,4 +60,27 @@\n for i in range(len):\n     print(result[i])\n \n+print('Testing stateful functions...')\n+\n+N = 4\n+state = xtract.xtract_last_n_state_new(N)\n+result = xtract.doubleArray(N)\n+\n+for i in range(N):\n+    result[i] = 0.0\n+\n+data = xtract.doubleArray(1)\n+data[0] = 42.0\n+# N.B. data is a single sample; N is the window size, not the size of data\n+xtract.xtract_last_n(state, data, N, None, result)\n+\n+print('last_n after one value: %.1f' % result[N - 1])\n+\n+data[0] = 99.0\n+xtract.xtract_last_n(state, data, N, None, result)\n+\n+print('last_n after two values: %.1f, %.1f' % (result[N - 2], result[N - 1]))\n+\n+xtract.xtract_last_n_state_delete(state)\n+\n print('\\nFinished!\\n')"
+    },
+    {
+      "sha": "05f77ffaae249a3312ee88775f8f70ef0ddaf838",
+      "filename": "swig/xtract.i",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 5,
+      "changes": 5,
+      "blob_url": "https://github.com/jamiebullock/LibXtract/blob/f7c2b009ec4bacac830e878169f0eeb24887209e/swig%2Fxtract.i",
+      "raw_url": "https://github.com/jamiebullock/LibXtract/raw/f7c2b009ec4bacac830e878169f0eeb24887209e/swig%2Fxtract.i",
+      "contents_url": "https://api.github.com/repos/jamiebullock/LibXtract/contents/swig%2Fxtract.i?ref=f7c2b009ec4bacac830e878169f0eeb24887209e",
+      "patch": "@@ -82,11 +82,6 @@\n \n %ignore xtract;\n \n-/* For now ignore stateful functions */\n-%ignore xtract_last_n;\n-%ignore xtract_last_n_state_new;\n-%ignore xtract_last_n_state_delete;\n-\n \n %include \"xtract/xtract_scalar.h\"\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "94478de96b6680e63e2ca2225fdf676a495358b6",
+      "message": "feat: expose stateful functions in SWIG bindings\n\nRemove %ignore directives for xtract_last_n, xtract_last_n_state_new,\nand xtract_last_n_state_delete. SWIG handles the opaque\nxtract_last_n_state pointer natively — no special typemaps needed.\n\nAdd stateful function tests to both Python and Java test scripts\nverifying create, push values, read history, and delete.\n\nCloses #59",
+      "parent_shas": [
+        "14354e5c62f65f6d05d3bea572b976e1aead7f4e"
+      ]
+    },
+    {
+      "sha": "f7c2b009ec4bacac830e878169f0eeb24887209e",
+      "message": "fix: clarify xtract_last_n usage in test comments\n\nN is the window size (output length), not the size of data.\ndata is always a single sample. This differs from every other\nfunction in the library where N is the input size.",
+      "parent_shas": [
+        "94478de96b6680e63e2ca2225fdf676a495358b6"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__jamiebullock__LibXtract__pr132.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\jamiebullock__LibXtract__pr132__cpp_python__jamiebullock__LibXtract__pr132\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\jamiebullock__LibXtract__pr132__cpp_python__jamiebullock__LibXtract__pr132\\rn"
+  }
+}

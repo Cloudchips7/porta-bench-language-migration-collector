@@ -1,0 +1,180 @@
+{
+  "instance_id": "python_cpp__kdeldycke__click-extra__pr1612",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "kdeldycke/click-extra",
+  "pr_number": 1612,
+  "pr_url": "https://github.com/kdeldycke/click-extra/pull/1612",
+  "repo": {
+    "full_name": "kdeldycke/click-extra",
+    "clone_url": "https://github.com/kdeldycke/click-extra.git",
+    "default_branch": "main",
+    "created_at": "2021-10-18T08:02:27Z",
+    "stars": 114,
+    "license": "GPL-2.0",
+    "size_kb": 10592
+  },
+  "pull_request": {
+    "id": 3486329234,
+    "title": "Format Python",
+    "body": "### Description\n\nAuto-formats Python files with [autopep8](https://github.com/hhatto/autopep8) (comment wrapping) and [Ruff](https://docs.astral.sh/ruff/) (linting and formatting). When no `[tool.ruff]` section or `ruff.toml` is present, [repomatic's bundled defaults](https://github.com/kdeldycke/repomatic/blob/main/repomatic/data/ruff.toml) are applied at runtime. See the [`format-python` job documentation](https://github.com/kdeldycke/repomatic?tab=readme-ov-file#githubworkflowsautofixyaml-jobs) for details.\n\n> [!TIP]\n> Customize formatting and linting rules via [`[tool.ruff]`](https://docs.astral.sh/ruff/configuration/) and [`[tool.autopep8]`](https://github.com/hhatto/autopep8#configuration) in your `pyproject.toml`.\n\n\n> [!IMPORTANT]\n> If you suspect the PR content is outdated, **[click `Run workflow`](https://github.com/kdeldycke/click-extra/actions/workflows/autofix.yaml)** to refresh it manually before merging.\n\n\n<details><summary><code>Workflow metadata</code></summary>\n\n| Field | Value |\n| :-- | :-- |\n| **Trigger** | `push` |\n| **Actor** | @kdeldycke |\n| **Ref** | `main` |\n| **Commit** | [`28d6f32f`](https://github.com/kdeldycke/click-extra/commit/28d6f32fc4df41299606165b41230665f612def0) |\n| **Job** | [`format-python`](https://github.com/kdeldycke/click-extra/blob/28d6f32fc4df41299606165b41230665f612def0/.github/workflows/autofix.yaml) |\n| **Workflow** | [`autofix.yaml`](https://github.com/kdeldycke/click-extra/blob/28d6f32fc4df41299606165b41230665f612def0/.github/workflows/autofix.yaml) |\n| **Run** | [#2565.1](https://github.com/kdeldycke/click-extra/actions/runs/24337955790) |\n\n</details>\n\n---\n\n🏭 Generated with [repomatic](https://github.com/kdeldycke/repomatic) `6.12.0`",
+    "created_at": "2026-04-03T13:26:06Z",
+    "merged_at": "2026-04-13T11:17:13Z",
+    "base_sha": "28d6f32fc4df41299606165b41230665f612def0",
+    "head_sha": "798c21e3c8c72a44e572d90a25a00934967a7609",
+    "merge_commit_sha": "30d2bb6e1f1f5ca140cc7577891cc2be2e034cbe",
+    "labels": [
+      "🤖 ci"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "28d6f32fc4df41299606165b41230665f612def0",
+  "final_sha": "798c21e3c8c72a44e572d90a25a00934967a7609",
+  "changed_files": [
+    {
+      "sha": "dde5b4c2ba60a0cd11351ef7d0234a8d3c335e15",
+      "filename": "click_extra/__init__.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/798c21e3c8c72a44e572d90a25a00934967a7609/click_extra%2F__init__.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/798c21e3c8c72a44e572d90a25a00934967a7609/click_extra%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/click_extra%2F__init__.py?ref=798c21e3c8c72a44e572d90a25a00934967a7609",
+      "patch": "@@ -175,6 +175,7 @@\n     \"Section\",\n     \"SectionMixin\",\n     \"ShowParamsOption\",\n+    \"SortByOption\",\n     \"Style\",\n     \"TableFormat\",\n     \"TableFormatOption\",\n@@ -226,12 +227,15 @@\n     \"password_option\",\n     \"path\",\n     \"pause\",\n+    \"print_data\",\n+    \"print_sorted_table\",\n     \"print_table\",\n     \"progressbar\",\n     \"prompt\",\n     \"render_table\",\n     \"search_params\",\n     \"secho\",\n+    \"serialize_data\",\n     \"show_params_option\",\n     \"style\",\n     \"table_format_option\","
+    },
+    {
+      "sha": "73d0288298efe1d989e89153f37bb26d7bb85d8d",
+      "filename": "click_extra/colorize.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 10,
+      "changes": 15,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/798c21e3c8c72a44e572d90a25a00934967a7609/click_extra%2Fcolorize.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/798c21e3c8c72a44e572d90a25a00934967a7609/click_extra%2Fcolorize.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/click_extra%2Fcolorize.py?ref=798c21e3c8c72a44e572d90a25a00934967a7609",
+      "patch": "@@ -25,6 +25,7 @@\n from enum import Enum\n from functools import lru_cache\n from gettext import gettext as _\n+\n import click\n import cloup\n from cloup._util import identity\n@@ -455,15 +456,13 @@ def _collect_choice_keywords(\n             # original-case values. This is the first step of Click's own\n             # ``normalize_choice()`` before case folding is applied.\n             kw.choices.update(\n-                c.name if isinstance(c, Enum) else str(c)\n-                for c in param.type.choices\n+                c.name if isinstance(c, Enum) else str(c) for c in param.type.choices\n             )\n         else:\n             # Standard metavar: collect the normalized forms that\n             # match what Click renders in ``[choice1|choice2]``.\n             kw.choices.update(\n-                param.type.normalize_choice(c, ctx)\n-                for c in param.type.choices\n+                param.type.normalize_choice(c, ctx) for c in param.type.choices\n             )\n             # Also collect the rendered metavar string (e.g.\n             # ``[json|xml|csv]``) so it can be styled and placeholdered\n@@ -668,9 +667,7 @@ def _style_bracket_fields(self, match: re.Match) -> str:\n             prefix + self.theme.bracket(\"[\") + \"\".join(styled) + self.theme.bracket(\"]\")\n         )\n \n-    def _style_choice_metavar(\n-        self, metavar: str, choices: set[str]\n-    ) -> str | None:\n+    def _style_choice_metavar(self, metavar: str, choices: set[str]) -> str | None:\n         \"\"\"Style individual choices inside a choice metavar string.\n \n         Takes a rendered metavar like ``[json|xml|csv]`` and returns a styled\n@@ -766,9 +763,7 @@ def _bracket_to_placeholder(match: re.Match) -> str:\n                 continue\n             pattern = re.compile(_escape_for_help_screen(metavar_str))\n             help_text = pattern.sub(\n-                lambda m, s=styled: self._add_placeholder(\n-                    s, bracket_placeholders\n-                ),\n+                lambda m, s=styled: self._add_placeholder(s, bracket_placeholders),\n                 help_text,\n             )\n "
+    },
+    {
+      "sha": "6ad81078d5bde750fca7edf7a4024efea27dbdcf",
+      "filename": "click_extra/commands.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 1,
+      "changes": 7,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/798c21e3c8c72a44e572d90a25a00934967a7609/click_extra%2Fcommands.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/798c21e3c8c72a44e572d90a25a00934967a7609/click_extra%2Fcommands.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/click_extra%2Fcommands.py?ref=798c21e3c8c72a44e572d90a25a00934967a7609",
+      "patch": "@@ -28,7 +28,12 @@\n import click\n import cloup\n \n-from .colorize import ColorOption, ExtraHelpColorsMixin, HelpExtraFormatter, HelpKeywords\n+from .colorize import (\n+    ColorOption,\n+    ExtraHelpColorsMixin,\n+    HelpExtraFormatter,\n+    HelpKeywords,\n+)\n from .config import (\n     DEFAULT_SUBCOMMANDS_KEY,\n     PREPEND_SUBCOMMANDS_KEY,"
+    },
+    {
+      "sha": "685ee07980bb10989eae8c311948c5c6c53bde12",
+      "filename": "click_extra/table.py",
+      "status": "modified",
+      "additions": 25,
+      "deletions": 17,
+      "changes": 42,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/798c21e3c8c72a44e572d90a25a00934967a7609/click_extra%2Ftable.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/798c21e3c8c72a44e572d90a25a00934967a7609/click_extra%2Ftable.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/click_extra%2Ftable.py?ref=798c21e3c8c72a44e572d90a25a00934967a7609",
+      "patch": "@@ -35,7 +35,7 @@\n \n TYPE_CHECKING = False\n if TYPE_CHECKING:\n-    from collections.abc import Callable, Iterable, Sequence\n+    from collections.abc import Callable, Sequence\n     from typing import Any\n \n \n@@ -444,7 +444,11 @@ def _pad_gfm_separator(text: str) -> str:\n         new_parts = [parts[0]]\n         for cell in parts[1:-1]:\n             stripped = cell.strip()\n-            if not stripped or \"-\" not in stripped or not all(c in \"-:\" for c in stripped):\n+            if (\n+                not stripped\n+                or \"-\" not in stripped\n+                or not all(c in \"-:\" for c in stripped)\n+            ):\n                 new_parts.append(cell)\n                 continue\n             # Already padded.\n@@ -605,9 +609,7 @@ def print_table(\n     try:\n         print_func(render_func(table_data, headers, **kwargs))\n     except ImportError:\n-        raise SystemExit(\n-            f\"Error: {_missing_extra_message(table_format)}\"\n-        ) from None\n+        raise SystemExit(f\"Error: {_missing_extra_message(table_format)}\") from None\n \n \n def _missing_extra_message(\n@@ -680,7 +682,10 @@ def serialize_data(\n \n     match table_format:\n         case TableFormat.JSON | TableFormat.JSON5 | TableFormat.JSONC:\n-            return json.dumps(clean, **{\"ensure_ascii\": False, \"indent\": 2, **kwargs}) + \"\\n\"\n+            return (\n+                json.dumps(clean, **{\"ensure_ascii\": False, \"indent\": 2, **kwargs})\n+                + \"\\n\"\n+            )\n \n         case TableFormat.HJSON:\n             import hjson\n@@ -699,18 +704,25 @@ def serialize_data(\n         case TableFormat.YAML:\n             import yaml\n \n-            return str(yaml.dump(\n-                clean,\n-                **{\"allow_unicode\": True, \"default_flow_style\": False, **kwargs},\n-            ))\n+            return str(\n+                yaml.dump(\n+                    clean,\n+                    **{\"allow_unicode\": True, \"default_flow_style\": False, **kwargs},\n+                )\n+            )\n \n         case TableFormat.XML:\n             import xmltodict\n \n             stripped = _strip_none_and_wrap(clean)\n             result: str = xmltodict.unparse(\n                 {root_element: stripped},\n-                **{\"pretty\": True, \"encoding\": \"unicode\", \"full_document\": False, **kwargs},\n+                **{\n+                    \"pretty\": True,\n+                    \"encoding\": \"unicode\",\n+                    \"full_document\": False,\n+                    **kwargs,\n+                },\n             )\n             return result + \"\\n\"\n \n@@ -855,9 +867,7 @@ def cell_key(v):\n     sort_order = list(range(column_count))\n \n     if sort_columns:\n-        col_index = {\n-            col_id: i for i, (_, col_id) in enumerate(header_defs) if col_id\n-        }\n+        col_index = {col_id: i for i, (_, col_id) in enumerate(header_defs) if col_id}\n         # Move specified columns to the front in reverse order so the first\n         # specified column ends up at position 0.\n         for sort_col in reversed(sort_columns):\n@@ -898,9 +908,7 @@ def print_sorted_table(\n     if not table_data:\n         return\n \n-    headers = tuple(\n-        style(label, bold=True) for label, _ in header_defs\n-    )\n+    headers = tuple(style(label, bold=True) for label, _ in header_defs)\n     sort_key = _column_sort_key(header_defs, sort_columns, cell_key)\n     print_table(\n         table_data=table_data,"
+    },
+    {
+      "sha": "2b753a28fcf66d59dfefd82ba345350b89b0f527",
+      "filename": "docs/colorize.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/798c21e3c8c72a44e572d90a25a00934967a7609/docs%2Fcolorize.md",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/798c21e3c8c72a44e572d90a25a00934967a7609/docs%2Fcolorize.md",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/docs%2Fcolorize.md?ref=798c21e3c8c72a44e572d90a25a00934967a7609",
+      "patch": "@@ -146,6 +146,7 @@ For advanced customization, override `collect_keywords()` on your command class.\n ```python\n from click_extra import ExtraCommand, HelpKeywords\n \n+\n class MyCommand(ExtraCommand):\n     def collect_keywords(self, ctx):\n         kw = super().collect_keywords(ctx)"
+    },
+    {
+      "sha": "94500f7ee45ec1cd06bb3a2863b66ae5416e35a4",
+      "filename": "tests/test_colorize.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 10,
+      "changes": 15,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/798c21e3c8c72a44e572d90a25a00934967a7609/tests%2Ftest_colorize.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/798c21e3c8c72a44e572d90a25a00934967a7609/tests%2Ftest_colorize.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/tests%2Ftest_colorize.py?ref=798c21e3c8c72a44e572d90a25a00934967a7609",
+      "patch": "@@ -26,6 +26,7 @@\n import cloup\n import pytest\n from boltons.strutils import strip_ansi\n+from click.testing import CliRunner\n \n from click_extra import (\n     Color,\n@@ -51,7 +52,6 @@\n     style,\n     verbosity_option,\n )\n-from click.testing import CliRunner\n from click_extra.colorize import (\n     HelpKeywords,\n     color_envvars,\n@@ -1588,14 +1588,8 @@ def test_multiple_choice_options_metavar_styled():\n     )\n     ctx = ExtraContext(cmd)\n     help_text = cmd.get_help(ctx)\n-    assert (\n-        \"[\" + theme.choice(\"json\") + \"|\" + theme.choice(\"csv\") + \"]\"\n-        in help_text\n-    )\n-    assert (\n-        \"[\" + theme.choice(\"red\") + \"|\" + theme.choice(\"blue\") + \"]\"\n-        in help_text\n-    )\n+    assert \"[\" + theme.choice(\"json\") + \"|\" + theme.choice(\"csv\") + \"]\" in help_text\n+    assert \"[\" + theme.choice(\"red\") + \"|\" + theme.choice(\"blue\") + \"]\" in help_text\n \n \n def test_excluded_multiple_choices_styled_in_metavar_only():\n@@ -1797,7 +1791,8 @@ def command4():\n         echo(\"Run click-extra command #4...\")\n \n     color_cli1.section(\"Subcommand group 1\", command1, command2)  # type: ignore[attr-defined]\n-    color_cli1.section(\"Extra commands\", command3, command4)  # type: ignore[attr-defined]\n+    # type: ignore[attr-defined]\n+    color_cli1.section(\"Extra commands\", command3, command4)\n \n     help_screen = (\n         r\"\\x1b\\[94m\\x1b\\[1m\\x1b\\[4mUsage:\\x1b\\[0m \\x1b\\[97mcolor-cli1\\x1b\\[0m \\x1b\\[36m\\x1b\\[2m\\[OPTIONS\\]\\x1b\\[0m \\x1b\\[36m\\x1b\\[2mCOMMAND \\[ARGS\\]\\.\\.\\.\\x1b\\[0m\\n\""
+    },
+    {
+      "sha": "0215365ad17f68ad9009d92583ee206e5936b0e2",
+      "filename": "tests/test_commands.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 6,
+      "changes": 8,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/798c21e3c8c72a44e572d90a25a00934967a7609/tests%2Ftest_commands.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/798c21e3c8c72a44e572d90a25a00934967a7609/tests%2Ftest_commands.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/tests%2Ftest_commands.py?ref=798c21e3c8c72a44e572d90a25a00934967a7609",
+      "patch": "@@ -1037,12 +1037,8 @@ def test_help_in_all_command_cli(self, invoke, all_command_cli):\n         assert result.exit_code == 0\n         assert \"command-cli1\" in result.stdout\n \n-    def test_help_for_subcommand_in_all_command_cli(\n-        self, invoke, all_command_cli\n-    ):\n+    def test_help_for_subcommand_in_all_command_cli(self, invoke, all_command_cli):\n         \"\"\"``help default-subcommand`` works on the fixture CLI.\"\"\"\n-        result = invoke(\n-            all_command_cli, \"help\", \"default-subcommand\", color=False\n-        )\n+        result = invoke(all_command_cli, \"help\", \"default-subcommand\", color=False)\n         assert result.exit_code == 0\n         assert \"default-subcommand\" in result.stdout"
+    },
+    {
+      "sha": "296ffb79b3e55adf9502eaedf8c0e02c543069bc",
+      "filename": "tests/test_envvar.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/798c21e3c8c72a44e572d90a25a00934967a7609/tests%2Ftest_envvar.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/798c21e3c8c72a44e572d90a25a00934967a7609/tests%2Ftest_envvar.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/tests%2Ftest_envvar.py?ref=798c21e3c8c72a44e572d90a25a00934967a7609",
+      "patch": "@@ -208,7 +208,8 @@ def envvars_test_cases():\n     broken_value_map = {k: False for k in working_value_map}\n \n     for (cmd_decorator, decorator_name), envvar_cases in matrix.items():\n-        for case_name, envvar_names in envvar_cases.items():  # type: ignore[attr-defined]\n+        # type: ignore[attr-defined]\n+        for case_name, envvar_names in envvar_cases.items():\n             value_map = (\n                 working_value_map if case_name == \"working_envvar\" else broken_value_map\n             )"
+    },
+    {
+      "sha": "b0b8796e7752a1a3794ac3a4588a048a861c5f31",
+      "filename": "tests/test_table.py",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 8,
+      "changes": 20,
+      "blob_url": "https://github.com/kdeldycke/click-extra/blob/798c21e3c8c72a44e572d90a25a00934967a7609/tests%2Ftest_table.py",
+      "raw_url": "https://github.com/kdeldycke/click-extra/raw/798c21e3c8c72a44e572d90a25a00934967a7609/tests%2Ftest_table.py",
+      "contents_url": "https://api.github.com/repos/kdeldycke/click-extra/contents/tests%2Ftest_table.py?ref=798c21e3c8c72a44e572d90a25a00934967a7609",
+      "patch": "@@ -40,19 +40,17 @@\n from click_extra.pytest import command_decorators\n from click_extra.table import (\n     SERIALIZATION_FORMATS,\n+    SortByOption,\n     TableFormat,\n     _apply_default,\n+    _column_sort_key,\n     _strip_none,\n     print_data,\n+    print_sorted_table,\n     print_table,\n     render_table,\n     serialize_data,\n )\n-from click_extra.table import (\n-    SortByOption,\n-    _column_sort_key,\n-    print_sorted_table,\n-)\n \n \n @pytest.mark.once\n@@ -1163,7 +1161,9 @@ def cli(ctx):\n def test_sort_by_option_multi_column(invoke):\n     \"\"\"Multiple --sort-by options define sort priority.\"\"\"\n     sort_opt = SortByOption(\n-        (\"City\", \"city\"), (\"Name\", \"name\"), (\"Age\", \"age\"),\n+        (\"City\", \"city\"),\n+        (\"Name\", \"name\"),\n+        (\"Age\", \"age\"),\n     )\n \n     @command(params=[sort_opt])\n@@ -1180,8 +1180,12 @@ def cli(ctx):\n \n     result = invoke(\n         cli,\n-        \"--table-format\", \"json\",\n-        \"--sort-by\", \"name\", \"--sort-by\", \"age\",\n+        \"--table-format\",\n+        \"json\",\n+        \"--sort-by\",\n+        \"name\",\n+        \"--sort-by\",\n+        \"age\",\n         color=False,\n     )\n     assert result.exit_code == 0"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "798c21e3c8c72a44e572d90a25a00934967a7609",
+      "message": "Format Python",
+      "parent_shas": [
+        "28d6f32fc4df41299606165b41230665f612def0"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "python_cpp_wrapper_noise"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "python_cpp_wrapper_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__kdeldycke__click-extra__pr1612.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\kdeldycke__click-extra__pr1612__python_cpp__kdeldycke__click-extra__pr1612\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\kdeldycke__click-extra__pr1612__python_cpp__kdeldycke__click-extra__pr1612\\rn"
+  }
+}

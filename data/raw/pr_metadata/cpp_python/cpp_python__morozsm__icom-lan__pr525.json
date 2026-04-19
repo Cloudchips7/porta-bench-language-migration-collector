@@ -1,0 +1,105 @@
+{
+  "instance_id": "cpp_python__morozsm__icom-lan__pr525",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "morozsm/icom-lan",
+  "pr_number": 525,
+  "pr_url": "https://github.com/morozsm/icom-lan/pull/525",
+  "repo": {
+    "full_name": "morozsm/icom-lan",
+    "clone_url": "https://github.com/morozsm/icom-lan.git",
+    "default_branch": "main",
+    "created_at": "2026-02-25T06:47:17Z",
+    "stars": 12,
+    "license": "MIT",
+    "size_kb": 11584
+  },
+  "pull_request": {
+    "id": 3509499759,
+    "title": "feat(#515): stable macOS CoreAudio device UID support",
+    "body": "Closes #515\n\n- `src/icom_lan/audio/_macos_uid.py` — CoreAudio ctypes helper (kAudioDevicePropertyDeviceUID)\n- `src/icom_lan/audio/usb_driver.py` — UsbAudioDevice.platform_uid field, UID lookup wired in\n- `tests/test_macos_audio_uid.py` — 8 tests (monkeypatched helper, fallback on non-Darwin, fallback on import error)\n\n4455 passed. Part of epic #513.\n\nNote: depends on #514 (AudioBackend types) — should be rebased/merged after #524.",
+    "created_at": "2026-04-09T15:45:08Z",
+    "merged_at": "2026-04-09T15:48:50Z",
+    "base_sha": "a51e2f6bf00cac275deebcb9e4b32d92befc339c",
+    "head_sha": "20e3061ebb2436281c46abca7c600e28c4132707",
+    "merge_commit_sha": "087126e67e9329c477891e7cc9b4012af91e4d68",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "a51e2f6bf00cac275deebcb9e4b32d92befc339c",
+  "final_sha": "20e3061ebb2436281c46abca7c600e28c4132707",
+  "changed_files": [
+    {
+      "sha": "0bbde33471cc9f687dab8dcc44d32b9eb98329e6",
+      "filename": "src/icom_lan/audio/_macos_uid.py",
+      "status": "added",
+      "additions": 176,
+      "deletions": 0,
+      "changes": 176,
+      "blob_url": "https://github.com/morozsm/icom-lan/blob/20e3061ebb2436281c46abca7c600e28c4132707/src%2Ficom_lan%2Faudio%2F_macos_uid.py",
+      "raw_url": "https://github.com/morozsm/icom-lan/raw/20e3061ebb2436281c46abca7c600e28c4132707/src%2Ficom_lan%2Faudio%2F_macos_uid.py",
+      "contents_url": "https://api.github.com/repos/morozsm/icom-lan/contents/src%2Ficom_lan%2Faudio%2F_macos_uid.py?ref=20e3061ebb2436281c46abca7c600e28c4132707",
+      "patch": "@@ -0,0 +1,176 @@\n+\"\"\"macOS CoreAudio device UID lookup via ctypes.\n+\n+Maps PortAudio / sounddevice device names to stable CoreAudio device UIDs\n+(``kAudioDevicePropertyDeviceUID``).  These UIDs persist across reboots and\n+re-enumeration, unlike integer indices which can shift when devices are\n+plugged / unplugged.\n+\n+This module is macOS-only.  Callers must gate imports behind a\n+``sys.platform == \"darwin\"`` check.\n+\"\"\"\n+\n+from __future__ import annotations\n+\n+import ctypes\n+import ctypes.util\n+import logging\n+from typing import Any\n+\n+logger = logging.getLogger(__name__)\n+\n+# ---------------------------------------------------------------------------\n+# CoreAudio constants\n+# ---------------------------------------------------------------------------\n+# AudioObjectPropertySelector values\n+kAudioHardwarePropertyDevices = 0x64657623  # 'dev#'\n+kAudioObjectPropertyName = 0x6C6E616D  # 'lnam'\n+kAudioDevicePropertyDeviceUID = 0x75696420  # 'uid '\n+\n+# AudioObjectPropertyScope / Element\n+kAudioObjectPropertyScopeGlobal = 0x676C6F62  # 'glob'\n+kAudioObjectPropertyElementMain = 0  # kAudioObjectPropertyElementMaster on older SDKs\n+\n+# Well-known object IDs\n+kAudioObjectSystemObject = 1\n+\n+\n+# ---------------------------------------------------------------------------\n+# ctypes structures\n+# ---------------------------------------------------------------------------\n+class AudioObjectPropertyAddress(ctypes.Structure):\n+    _fields_ = [\n+        (\"mSelector\", ctypes.c_uint32),\n+        (\"mScope\", ctypes.c_uint32),\n+        (\"mElement\", ctypes.c_uint32),\n+    ]\n+\n+\n+# ---------------------------------------------------------------------------\n+# Low-level helpers\n+# ---------------------------------------------------------------------------\n+\n+def _load_coreaudio() -> ctypes.CDLL:\n+    \"\"\"Load the CoreAudio framework, raising *OSError* on failure.\"\"\"\n+    path = ctypes.util.find_library(\"CoreAudio\")\n+    if path is None:\n+        raise OSError(\"CoreAudio framework not found\")\n+    return ctypes.cdll.LoadLibrary(path)\n+\n+\n+def _get_all_device_ids(ca: ctypes.CDLL) -> list[int]:\n+    \"\"\"Return AudioObjectIDs for every audio device on the system.\"\"\"\n+    prop = AudioObjectPropertyAddress(\n+        kAudioHardwarePropertyDevices,\n+        kAudioObjectPropertyScopeGlobal,\n+        kAudioObjectPropertyElementMain,\n+    )\n+    size = ctypes.c_uint32(0)\n+    status = ca.AudioObjectGetPropertyDataSize(\n+        ctypes.c_uint32(kAudioObjectSystemObject),\n+        ctypes.byref(prop),\n+        ctypes.c_uint32(0),\n+        None,\n+        ctypes.byref(size),\n+    )\n+    if status != 0 or size.value == 0:\n+        return []\n+\n+    count = size.value // ctypes.sizeof(ctypes.c_uint32)\n+    buf = (ctypes.c_uint32 * count)()\n+    status = ca.AudioObjectGetPropertyData(\n+        ctypes.c_uint32(kAudioObjectSystemObject),\n+        ctypes.byref(prop),\n+        ctypes.c_uint32(0),\n+        None,\n+        ctypes.byref(size),\n+        ctypes.byref(buf),\n+    )\n+    if status != 0:\n+        return []\n+    return list(buf)\n+\n+\n+def _cfstring_to_python(cf: ctypes.c_void_p) -> str | None:\n+    \"\"\"Convert a CFStringRef to a Python str, returning *None* on failure.\"\"\"\n+    CoreFoundation = ctypes.cdll.LoadLibrary(\n+        ctypes.util.find_library(\"CoreFoundation\")  # type: ignore[arg-type]\n+    )\n+    CFStringGetLength = CoreFoundation.CFStringGetLength\n+    CFStringGetLength.argtypes = [ctypes.c_void_p]\n+    CFStringGetLength.restype = ctypes.c_long\n+\n+    CFStringGetCString = CoreFoundation.CFStringGetCString\n+    CFStringGetCString.argtypes = [\n+        ctypes.c_void_p,\n+        ctypes.c_char_p,\n+        ctypes.c_long,\n+        ctypes.c_uint32,\n+    ]\n+    CFStringGetCString.restype = ctypes.c_bool\n+\n+    kCFStringEncodingUTF8 = 0x08000100\n+    length = CFStringGetLength(cf)\n+    buf_size = length * 4 + 1  # worst-case UTF-8\n+    buf = ctypes.create_string_buffer(buf_size)\n+    ok = CFStringGetCString(cf, buf, buf_size, kCFStringEncodingUTF8)\n+    if not ok:\n+        return None\n+    return buf.value.decode(\"utf-8\")\n+\n+\n+def _get_string_property(ca: ctypes.CDLL, device_id: int, selector: int) -> str | None:\n+    \"\"\"Read a CFString property from an AudioObject.\"\"\"\n+    prop = AudioObjectPropertyAddress(\n+        selector,\n+        kAudioObjectPropertyScopeGlobal,\n+        kAudioObjectPropertyElementMain,\n+    )\n+    size = ctypes.c_uint32(ctypes.sizeof(ctypes.c_void_p))\n+    cf_ref = ctypes.c_void_p()\n+    status = ca.AudioObjectGetPropertyData(\n+        ctypes.c_uint32(device_id),\n+        ctypes.byref(prop),\n+        ctypes.c_uint32(0),\n+        None,\n+        ctypes.byref(size),\n+        ctypes.byref(cf_ref),\n+    )\n+    if status != 0 or not cf_ref.value:\n+        return None\n+    try:\n+        return _cfstring_to_python(cf_ref)\n+    finally:\n+        CoreFoundation = ctypes.cdll.LoadLibrary(\n+            ctypes.util.find_library(\"CoreFoundation\")  # type: ignore[arg-type]\n+        )\n+        CoreFoundation.CFRelease(cf_ref)\n+\n+\n+# ---------------------------------------------------------------------------\n+# Public API\n+# ---------------------------------------------------------------------------\n+\n+def get_device_uid_map() -> dict[str, str]:\n+    \"\"\"Return ``{device_name: device_uid}`` for all CoreAudio devices.\n+\n+    On failure (non-macOS, missing framework, etc.) returns an empty dict\n+    so callers can treat absence as \"UID not available\".\n+    \"\"\"\n+    try:\n+        ca = _load_coreaudio()\n+    except OSError:\n+        logger.debug(\"CoreAudio not available — UIDs will be empty\")\n+        return {}\n+\n+    uid_map: dict[str, str] = {}\n+    try:\n+        device_ids = _get_all_device_ids(ca)\n+        for dev_id in device_ids:\n+            name = _get_string_property(ca, dev_id, kAudioObjectPropertyName)\n+            uid = _get_string_property(ca, dev_id, kAudioDevicePropertyDeviceUID)\n+            if name and uid:\n+                uid_map[name] = uid\n+    except Exception:\n+        logger.debug(\"CoreAudio UID enumeration failed\", exc_info=True)\n+\n+    return uid_map"
+    },
+    {
+      "sha": "2dce86e4937c26bc806e2887c7bd00ffcce3dc05",
+      "filename": "src/icom_lan/audio/usb_driver.py",
+      "status": "modified",
+      "additions": 20,
+      "deletions": 1,
+      "changes": 21,
+      "blob_url": "https://github.com/morozsm/icom-lan/blob/20e3061ebb2436281c46abca7c600e28c4132707/src%2Ficom_lan%2Faudio%2Fusb_driver.py",
+      "raw_url": "https://github.com/morozsm/icom-lan/raw/20e3061ebb2436281c46abca7c600e28c4132707/src%2Ficom_lan%2Faudio%2Fusb_driver.py",
+      "contents_url": "https://api.github.com/repos/morozsm/icom-lan/contents/src%2Ficom_lan%2Faudio%2Fusb_driver.py?ref=20e3061ebb2436281c46abca7c600e28c4132707",
+      "patch": "@@ -13,6 +13,7 @@\n \n import asyncio\n import logging\n+import sys\n from dataclasses import dataclass\n from typing import Any, Callable\n \n@@ -51,6 +52,7 @@ class UsbAudioDevice:\n     default_samplerate: int = 48_000\n     is_default_input: bool = False\n     is_default_output: bool = False\n+    platform_uid: str = \"\"\n \n     @property\n     def supports_rx(self) -> bool:\n@@ -187,6 +189,19 @@ def select_usb_audio_devices(\n     return selected_rx, selected_tx\n \n \n+def _get_uid_map() -> dict[str, str]:\n+    \"\"\"Return CoreAudio name→UID map on macOS, empty dict elsewhere.\"\"\"\n+    if sys.platform != \"darwin\":\n+        return {}\n+    try:\n+        from icom_lan.audio._macos_uid import get_device_uid_map\n+\n+        return get_device_uid_map()\n+    except Exception:\n+        logger.debug(\"CoreAudio UID lookup unavailable\", exc_info=True)\n+        return {}\n+\n+\n def list_usb_audio_devices(sounddevice_module: Any) -> list[UsbAudioDevice]:\n     \"\"\"Return normalized system audio devices.\"\"\"\n     raw_devices = list(sounddevice_module.query_devices())\n@@ -197,13 +212,16 @@ def list_usb_audio_devices(sounddevice_module: Any) -> list[UsbAudioDevice]:\n         default_input_idx = _safe_int(default_raw[0], default=-1)\n         default_output_idx = _safe_int(default_raw[1], default=-1)\n \n+    uid_map = _get_uid_map()\n+\n     normalized: list[UsbAudioDevice] = []\n     for idx, raw in enumerate(raw_devices):\n         index = _safe_int(raw.get(\"index\", idx), default=idx)\n+        name = str(raw.get(\"name\", f\"device-{index}\"))\n         normalized.append(\n             UsbAudioDevice(\n                 index=index,\n-                name=str(raw.get(\"name\", f\"device-{index}\")),\n+                name=name,\n                 input_channels=_safe_int(raw.get(\"max_input_channels\")),\n                 output_channels=_safe_int(raw.get(\"max_output_channels\")),\n                 default_samplerate=_safe_int(\n@@ -215,6 +233,7 @@ def list_usb_audio_devices(sounddevice_module: Any) -> list[UsbAudioDevice]:\n                 is_default_output=(\n                     default_output_idx is not None and index == default_output_idx\n                 ),\n+                platform_uid=uid_map.get(name, \"\"),\n             )\n         )\n     return normalized"
+    },
+    {
+      "sha": "f282834e4266773710ee63008cbe39934d5e4aeb",
+      "filename": "tests/test_macos_audio_uid.py",
+      "status": "added",
+      "additions": 162,
+      "deletions": 0,
+      "changes": 162,
+      "blob_url": "https://github.com/morozsm/icom-lan/blob/20e3061ebb2436281c46abca7c600e28c4132707/tests%2Ftest_macos_audio_uid.py",
+      "raw_url": "https://github.com/morozsm/icom-lan/raw/20e3061ebb2436281c46abca7c600e28c4132707/tests%2Ftest_macos_audio_uid.py",
+      "contents_url": "https://api.github.com/repos/morozsm/icom-lan/contents/tests%2Ftest_macos_audio_uid.py?ref=20e3061ebb2436281c46abca7c600e28c4132707",
+      "patch": "@@ -0,0 +1,162 @@\n+\"\"\"Tests for macOS CoreAudio UID integration in UsbAudioDevice.\"\"\"\n+\n+from __future__ import annotations\n+\n+from types import SimpleNamespace\n+from unittest.mock import patch\n+\n+import pytest\n+\n+from icom_lan.audio.usb_driver import (\n+    UsbAudioDevice,\n+    list_usb_audio_devices,\n+)\n+\n+\n+# ---------------------------------------------------------------------------\n+# Fixtures\n+# ---------------------------------------------------------------------------\n+\n+def _make_sd_module(devices: list[dict]) -> SimpleNamespace:\n+    \"\"\"Build a fake sounddevice module that returns *devices*.\"\"\"\n+    return SimpleNamespace(\n+        query_devices=lambda: devices,\n+        default=SimpleNamespace(device=[0, 1]),\n+    )\n+\n+\n+_FAKE_DEVICES = [\n+    {\n+        \"index\": 0,\n+        \"name\": \"USB Audio CODEC\",\n+        \"max_input_channels\": 1,\n+        \"max_output_channels\": 2,\n+        \"default_samplerate\": 48000,\n+    },\n+    {\n+        \"index\": 1,\n+        \"name\": \"MacBook Pro Speakers\",\n+        \"max_input_channels\": 0,\n+        \"max_output_channels\": 2,\n+        \"default_samplerate\": 44100,\n+    },\n+]\n+\n+_FAKE_UID_MAP = {\n+    \"USB Audio CODEC\": \"AppleUSBAudioEngine:BurrBrown:USB Audio CODEC:1234:1,2\",\n+    \"MacBook Pro Speakers\": \"BuiltInSpeakerDevice\",\n+}\n+\n+\n+# ---------------------------------------------------------------------------\n+# Tests: platform_uid field basics\n+# ---------------------------------------------------------------------------\n+\n+\n+class TestPlatformUidField:\n+    def test_default_empty(self) -> None:\n+        dev = UsbAudioDevice(index=0, name=\"test\", input_channels=1, output_channels=0)\n+        assert dev.platform_uid == \"\"\n+\n+    def test_explicit_uid(self) -> None:\n+        dev = UsbAudioDevice(\n+            index=0,\n+            name=\"test\",\n+            input_channels=1,\n+            output_channels=0,\n+            platform_uid=\"some-stable-uid\",\n+        )\n+        assert dev.platform_uid == \"some-stable-uid\"\n+\n+\n+# ---------------------------------------------------------------------------\n+# Tests: list_usb_audio_devices with monkeypatched UID map\n+# ---------------------------------------------------------------------------\n+\n+\n+class TestListDevicesWithUid:\n+    def test_uid_populated_via_macos_helper(self) -> None:\n+        \"\"\"When _get_uid_map returns data, platform_uid is set.\"\"\"\n+        sd = _make_sd_module(_FAKE_DEVICES)\n+        with patch(\n+            \"icom_lan.audio.usb_driver._get_uid_map\",\n+            return_value=_FAKE_UID_MAP,\n+        ):\n+            devices = list_usb_audio_devices(sd)\n+\n+        assert len(devices) == 2\n+        assert devices[0].platform_uid == _FAKE_UID_MAP[\"USB Audio CODEC\"]\n+        assert devices[0].platform_uid != \"\"\n+        assert devices[1].platform_uid == _FAKE_UID_MAP[\"MacBook Pro Speakers\"]\n+\n+    def test_uid_empty_when_helper_returns_empty(self) -> None:\n+        \"\"\"When _get_uid_map returns {}, platform_uid stays empty.\"\"\"\n+        sd = _make_sd_module(_FAKE_DEVICES)\n+        with patch(\n+            \"icom_lan.audio.usb_driver._get_uid_map\",\n+            return_value={},\n+        ):\n+            devices = list_usb_audio_devices(sd)\n+\n+        assert all(d.platform_uid == \"\" for d in devices)\n+\n+    def test_uid_partial_match(self) -> None:\n+        \"\"\"Only devices whose name is in the UID map get a UID.\"\"\"\n+        sd = _make_sd_module(_FAKE_DEVICES)\n+        partial_map = {\"USB Audio CODEC\": \"uid-for-usb-only\"}\n+        with patch(\n+            \"icom_lan.audio.usb_driver._get_uid_map\",\n+            return_value=partial_map,\n+        ):\n+            devices = list_usb_audio_devices(sd)\n+\n+        assert devices[0].platform_uid == \"uid-for-usb-only\"\n+        assert devices[1].platform_uid == \"\"\n+\n+    def test_other_fields_unchanged(self) -> None:\n+        \"\"\"Adding platform_uid must not break existing fields.\"\"\"\n+        sd = _make_sd_module(_FAKE_DEVICES)\n+        with patch(\n+            \"icom_lan.audio.usb_driver._get_uid_map\",\n+            return_value=_FAKE_UID_MAP,\n+        ):\n+            devices = list_usb_audio_devices(sd)\n+\n+        dev = devices[0]\n+        assert dev.index == 0\n+        assert dev.name == \"USB Audio CODEC\"\n+        assert dev.input_channels == 1\n+        assert dev.output_channels == 2\n+        assert dev.default_samplerate == 48_000\n+        assert dev.supports_rx is True\n+        assert dev.supports_tx is True\n+        assert dev.duplex is True\n+\n+\n+# ---------------------------------------------------------------------------\n+# Tests: _get_uid_map fallback behaviour\n+# ---------------------------------------------------------------------------\n+\n+\n+class TestGetUidMapFallback:\n+    def test_returns_empty_on_non_darwin(self) -> None:\n+        \"\"\"On non-macOS, _get_uid_map must return {}.\"\"\"\n+        from icom_lan.audio.usb_driver import _get_uid_map\n+\n+        with patch(\"icom_lan.audio.usb_driver.sys\") as mock_sys:\n+            mock_sys.platform = \"linux\"\n+            result = _get_uid_map()\n+        assert result == {}\n+\n+    def test_returns_empty_on_import_error(self) -> None:\n+        \"\"\"If the macOS helper fails to import, _get_uid_map returns {}.\"\"\"\n+        from icom_lan.audio.usb_driver import _get_uid_map\n+\n+        with patch(\"icom_lan.audio.usb_driver.sys\") as mock_sys:\n+            mock_sys.platform = \"darwin\"\n+            with patch(\n+                \"icom_lan.audio._macos_uid.get_device_uid_map\",\n+                side_effect=OSError(\"no CoreAudio\"),\n+            ):\n+                result = _get_uid_map()\n+        assert result == {}"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "20e3061ebb2436281c46abca7c600e28c4132707",
+      "message": "feat(#515): add stable macOS CoreAudio device UID to UsbAudioDevice\n\nAdd _macos_uid.py helper that uses ctypes to query CoreAudio\nAudioObjectGetPropertyData for kAudioDevicePropertyDeviceUID, producing\na name→UID map. Wire this into list_usb_audio_devices() via a new\nplatform_uid field on UsbAudioDevice (defaults to \"\" on non-macOS).\nGracefully falls back to empty UIDs if CoreAudio is unavailable.\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "a51e2f6bf00cac275deebcb9e4b32d92befc339c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "adds_new_tests",
+      "binding_wrapper_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__morozsm__icom-lan__pr525.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\morozsm__icom-lan__pr525__cpp_python__morozsm__icom-lan__pr525\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\morozsm__icom-lan__pr525__cpp_python__morozsm__icom-lan__pr525\\rn"
+  }
+}

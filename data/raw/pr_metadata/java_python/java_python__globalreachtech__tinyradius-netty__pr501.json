@@ -1,0 +1,443 @@
+{
+  "instance_id": "java_python__globalreachtech__tinyradius-netty__pr501",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "globalreachtech/tinyradius-netty",
+  "pr_number": 501,
+  "pr_url": "https://github.com/globalreachtech/tinyradius-netty/pull/501",
+  "repo": {
+    "full_name": "globalreachtech/tinyradius-netty",
+    "clone_url": "https://github.com/globalreachtech/tinyradius-netty.git",
+    "default_branch": "master",
+    "created_at": "2019-06-26T02:18:24Z",
+    "stars": 51,
+    "license": "LGPL-2.1",
+    "size_kb": 4458
+  },
+  "pull_request": {
+    "id": 3530028799,
+    "title": "delombok and java records",
+    "body": "",
+    "created_at": "2026-04-14T18:45:59Z",
+    "merged_at": "2026-04-14T22:12:16Z",
+    "base_sha": "02aa9c446323c47dc00332f7edbf5ccebb504e11",
+    "head_sha": "6b08a82812594b67d4c75ee4f88b2be66616abef",
+    "merge_commit_sha": "b781b72329942b5ff70ef0043abb26c4ed022d34",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "02aa9c446323c47dc00332f7edbf5ccebb504e11",
+  "final_sha": "6b08a82812594b67d4c75ee4f88b2be66616abef",
+  "changed_files": [
+    {
+      "sha": "dcf0098aa9c28b32191e6397383184b731cf7d98",
+      "filename": ".snyk",
+      "status": "added",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/.snyk",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/.snyk",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/.snyk?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -0,0 +1,2 @@\n+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities\n+version: v1.25.0\n\\ No newline at end of file"
+    },
+    {
+      "sha": "d9c60da57a421d92fdd1f33d1daa8c2c4db35a5f",
+      "filename": "build.gradle.kts",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/build.gradle.kts",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/build.gradle.kts",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/build.gradle.kts?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -5,7 +5,6 @@ plugins {\n     `java-library`\n     `maven-publish`\n     jacoco\n-    alias(libs.plugins.freefair.lombok)\n     alias(libs.plugins.sonarqube)\n     alias(libs.plugins.jreleaser)\n }"
+    },
+    {
+      "sha": "d80c9bd124d3a171f6310fdf008b01ef55d35be3",
+      "filename": "gradle/libs.versions.toml",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/gradle%2Flibs.versions.toml",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/gradle%2Flibs.versions.toml",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/gradle%2Flibs.versions.toml?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -17,6 +17,5 @@ jradius-core = { module = \"net.jradius:jradius-core\", version = \"1.1.5\" }\n \n \n [plugins]\n-freefair-lombok = { id = \"io.freefair.lombok\", version = \"9.2.0\" }\n sonarqube = { id = \"org.sonarqube\", version = \"7.2.3.7755\" }\n jreleaser = { id = \"org.jreleaser\", version = \"1.23.0\" }\n\\ No newline at end of file"
+    },
+    {
+      "sha": "8582143d1e8de0804b855a5c813494a026f73135",
+      "filename": "src/main/java/org/tinyradius/core/attribute/AttributeHolder.java",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FAttributeHolder.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FAttributeHolder.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FAttributeHolder.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -223,8 +223,8 @@ default List<RadiusAttribute> getAttributes(@NonNull Predicate<RadiusAttribute>\n      */\n     @NonNull\n     default List<RadiusAttribute> getAttributes(@NonNull AttributeTemplate type) {\n-        if (type.getVendorId() == getChildVendorId())\n-            return getAttributes(type.getType());\n+        if (type.vendorId() == getChildVendorId())\n+            return getAttributes(type.type());\n \n         return Collections.emptyList();\n     }"
+    },
+    {
+      "sha": "132e4aee14f1634f018185bb7a46dfd7d54d5d51",
+      "filename": "src/main/java/org/tinyradius/core/attribute/AttributeTemplate.java",
+      "status": "modified",
+      "additions": 42,
+      "deletions": 61,
+      "changes": 103,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FAttributeTemplate.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FAttributeTemplate.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FAttributeTemplate.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -1,8 +1,6 @@\n package org.tinyradius.core.attribute;\n \n import io.netty.buffer.ByteBuf;\n-import lombok.EqualsAndHashCode;\n-import lombok.Getter;\n import org.jspecify.annotations.NonNull;\n import org.jspecify.annotations.Nullable;\n import org.tinyradius.core.RadiusPacketException;\n@@ -16,7 +14,6 @@\n import java.util.HashMap;\n import java.util.Map;\n \n-import static lombok.AccessLevel.NONE;\n import static org.tinyradius.core.attribute.AttributeTypes.TUNNEL_PASSWORD;\n import static org.tinyradius.core.attribute.AttributeTypes.USER_PASSWORD;\n import static org.tinyradius.core.attribute.codec.AttributeCodecType.*;\n@@ -27,69 +24,53 @@\n  * Each attribute type is represented by an instance of this object.\n  * This class stores the type code, the type name, and the vendor ID\n  * for each attribute type.\n+ *\n+ * @param vendorId  vendor ID or -1 if not applicable\n+ * @param type      Radius type code for this attribute e.g. '1' (for User-Name)\n+ * @param name      name of type e.g. 'User-Name'\n+ * @param dataType  string | octets | integer | date | ipaddr | ipv6addr | ipv6prefix\n+ * @param tagged    Whether attribute supports Tag field as per RFC2868\n+ * @param codecType One of {@link AttributeCodecType} enum, defaults to NO_ENCRYPT for none\n+ * @param factory   the factory used to create instances of this attribute\n+ * @param int2str   Internal map for integer-to-string enumeration mapping\n+ * @param str2int   Internal map for string-to-integer enumeration mapping\n  */\n-@Getter\n-@EqualsAndHashCode\n-public class AttributeTemplate {\n-\n-    /**\n-     * vendor ID or -1 if not applicable\n-     */\n-    private final int vendorId;\n-    /**\n-     * Radius type code for this attribute e.g. '1' (for User-Name)\n-     */\n-    private final int type;\n-    /**\n-     * name of type e.g. 'User-Name'\n-     */\n-    private final String name;\n-    /**\n-     * string | octets | integer | date | ipaddr | ipv6addr | ipv6prefix\n-     */\n-    private final String dataType;\n-\n-    /**\n-     * Whether attribute supports Tag field as per RFC2868\n-     */\n-    private final boolean tagged;\n-    /**\n-     * One of {@link AttributeCodecType} enum, defaults to NO_ENCRYPT for none\n-     */\n-    private final AttributeCodecType codecType;\n-\n-    @EqualsAndHashCode.Exclude\n-    private final RadiusAttributeFactory<? extends RadiusAttribute> factory;\n-\n-    @Getter(NONE)\n-    @EqualsAndHashCode.Exclude\n-    private final Map<Integer, String> int2str = new HashMap<>();\n-\n-    @Getter(NONE)\n-    @EqualsAndHashCode.Exclude\n-    private final Map<String, Integer> str2int = new HashMap<>();\n+public record AttributeTemplate(\n+        int vendorId,\n+        int type,\n+        @NonNull String name,\n+        @NonNull String dataType,\n+        boolean tagged,\n+        @NonNull AttributeCodecType codecType,\n+        @NonNull RadiusAttributeFactory<? extends RadiusAttribute> factory,\n+        @NonNull Map<Integer, String> int2str,\n+        @NonNull Map<String, Integer> str2int\n+) {\n \n     /**\n      * Create a new attribute type.\n      *\n-     * @param vendorId  vendor ID or -1 if N/A\n-     * @param type      sub-attribute type code, as unsigned byte\n-     * @param name      sub-attribute name\n-     * @param dataType  string | octets | integer | date | ipaddr | ipv6addr | ipv6prefix\n-     * @param factory   the factory to create the attribute\n+     * @param vendorId            vendor ID or -1 if N/A\n+     * @param type                sub-attribute type code, as unsigned byte\n+     * @param name                sub-attribute name\n+     * @param dataType            string | octets | integer | date | ipaddr | ipv6addr | ipv6prefix\n+     * @param factory             the factory to create the attribute\n      * @param dictionaryCodecType codec type\n-     * @param hasTag    whether attribute supports tags, as defined in RFC2868, default false\n+     * @param hasTag              whether attribute supports tags, as defined in RFC2868, default false\n      */\n-    public AttributeTemplate(int vendorId, int type, @NonNull String name, @NonNull String dataType, @NonNull RadiusAttributeFactory<? extends RadiusAttribute> factory, AttributeCodecType dictionaryCodecType, boolean hasTag) {\n+    public AttributeTemplate(int vendorId,\n+                             int type,\n+                             @NonNull String name,\n+                             @NonNull String dataType,\n+                             @NonNull RadiusAttributeFactory<? extends RadiusAttribute> factory,\n+                             AttributeCodecType dictionaryCodecType,\n+                             boolean hasTag) {\n+        this(vendorId, type, name, dataType.toLowerCase(),\n+                detectHasTag(vendorId, type, hasTag),\n+                confirmAttributeCodec(vendorId, type, dictionaryCodecType),\n+                factory, new HashMap<>(), new HashMap<>());\n         if (name.isEmpty())\n             throw new IllegalArgumentException(\"Name is empty\");\n-        this.vendorId = vendorId;\n-        this.type = type;\n-        this.name = name;\n-        this.dataType = dataType.toLowerCase();\n-        this.factory = factory;\n-        this.tagged = detectHasTag(vendorId, type, hasTag);\n-        this.codecType = confirmAttributeCodec(vendorId, type, dictionaryCodecType);\n     }\n \n     /**\n@@ -252,9 +233,9 @@ public RadiusAttribute decode(@NonNull RadiusAttribute attribute, byte @NonNull\n     @Override\n     @NonNull\n     public String toString() {\n-        var s = Integer.toUnsignedString(getType()) + \"/\" + getName() + \": \" + getDataType();\n-        if (getVendorId() != -1)\n-            s += \" (Vendor \" + getVendorId() + \")\";\n+        var s = Integer.toUnsignedString(type()) + \"/\" + name() + \": \" + dataType();\n+        if (vendorId() != -1)\n+            s += \" (Vendor \" + vendorId() + \")\";\n         return s;\n     }\n \n@@ -288,4 +269,4 @@ private static AttributeCodecType confirmAttributeCodec(int vendorId, int type,\n \n         return codecType;\n     }\n-}\n\\ No newline at end of file\n+}"
+    },
+    {
+      "sha": "42301b0b0f7286b1612981862259b3b8a666e41a",
+      "filename": "src/main/java/org/tinyradius/core/attribute/AttributeTypes.java",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FAttributeTypes.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FAttributeTypes.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FAttributeTypes.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -1,14 +1,14 @@\n package org.tinyradius.core.attribute;\n \n-import lombok.experimental.UtilityClass;\n-\n /**\n  * Based on official IANA assignments for <a href=\"https://www.iana.org/assignments/radius-types/radius-types.xhtml#radius-types-2\">Radius Attribute Types</a>\n  */\n @SuppressWarnings(\"unused\")\n-@UtilityClass\n public class AttributeTypes {\n \n+    private AttributeTypes() {\n+    }\n+\n     /**\n      * User-Name [RFC2865]\n      * <p>"
+    },
+    {
+      "sha": "61326e8daf9f364ac3a958decfde9d594ebf3452",
+      "filename": "src/main/java/org/tinyradius/core/attribute/NestedAttributeHolder.java",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 1,
+      "changes": 6,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FNestedAttributeHolder.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FNestedAttributeHolder.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FNestedAttributeHolder.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -20,6 +20,10 @@\n  */\n public interface NestedAttributeHolder<T extends NestedAttributeHolder<T>> extends AttributeHolder<T> {\n \n+\n+    /**\n+     * Default child vendor ID for top-level (non-vendor-specific) attributes.\n+     */\n     int CHILD_VENDOR_ID = -1;\n \n     /**\n@@ -68,7 +72,7 @@ default List<RadiusAttribute> getAttributes(int vendorId, int type) {\n     @Override\n     @NonNull\n     default List<RadiusAttribute> getAttributes(@NonNull AttributeTemplate type) {\n-        return getAttributes(type.getVendorId(), type.getType());\n+        return getAttributes(type.vendorId(), type.type());\n     }\n \n     /**"
+    },
+    {
+      "sha": "330cbc8367a8f3e5e3c5bf150cc4187e110654e8",
+      "filename": "src/main/java/org/tinyradius/core/attribute/type/EncodedAttribute.java",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FEncodedAttribute.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FEncodedAttribute.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FEncodedAttribute.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -93,7 +93,7 @@ public boolean isEncoded() {\n     @Override\n     public String toString() {\n         var codecType = getAttributeTemplate()\n-                .map(AttributeTemplate::getCodecType)\n+                .map(AttributeTemplate::codecType)\n                 .orElse(NO_ENCRYPT);\n         return \"[Encoded: \" + codecType.name() + \"] \" + delegate;\n     }"
+    },
+    {
+      "sha": "93ac9262e93851945b9fb905e953458fd9a8d080",
+      "filename": "src/main/java/org/tinyradius/core/attribute/type/IntegerAttribute.java",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FIntegerAttribute.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FIntegerAttribute.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FIntegerAttribute.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -86,7 +86,7 @@ public String getValueString() {\n         var byteBuf = Unpooled.buffer(Integer.BYTES, Integer.BYTES).writeInt(integer);\n \n         return dictionary.getAttributeTemplate(vendorId, type)\n-                .filter(AttributeTemplate::isTagged)\n+                .filter(AttributeTemplate::tagged)\n                 .map(x -> byteBuf.copy(1, 3)) // skip first octet if has_tag\n                 .orElse(byteBuf)\n                 .array();"
+    },
+    {
+      "sha": "2e0f619f82625dee12545f54fc34cdbc6a0c5faa",
+      "filename": "src/main/java/org/tinyradius/core/attribute/type/OctetsAttribute.java",
+      "status": "modified",
+      "additions": 16,
+      "deletions": 5,
+      "changes": 21,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FOctetsAttribute.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FOctetsAttribute.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FOctetsAttribute.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -1,32 +1,32 @@\n package org.tinyradius.core.attribute.type;\n \n import io.netty.buffer.ByteBuf;\n-import lombok.EqualsAndHashCode;\n import org.jspecify.annotations.NonNull;\n import org.tinyradius.core.dictionary.Dictionary;\n import org.tinyradius.core.dictionary.Vendor;\n \n+import java.util.Objects;\n import java.util.Optional;\n \n /**\n  * The basic generic Radius attribute. All type-specific implementations extend this class\n  * by adding additional type conversion methods and validations.\n  */\n-@EqualsAndHashCode\n public class OctetsAttribute implements RadiusAttribute {\n \n     /**\n      * Default factory for creating {@link OctetsAttribute} instances.\n      */\n     public static final RadiusAttributeFactory<OctetsAttribute> FACTORY = new Factory();\n \n-    @EqualsAndHashCode.Exclude\n     private final Dictionary dictionary;\n \n+    /**\n+     * for (Vendor-Specific) sub-attributes, otherwise -1\n+     */\n+    private final int vendorId;\n     private final ByteBuf data;\n \n-    private final int vendorId; // for Vendor-Specific sub-attributes, otherwise -1\n-\n     /**\n      * Creates a new OctetsAttribute.\n      *\n@@ -137,6 +137,17 @@ public String toString() {\n         return dictionary;\n     }\n \n+    @Override\n+    public boolean equals(Object o) {\n+        if (!(o instanceof OctetsAttribute that)) return false;\n+        return vendorId == that.vendorId && Objects.equals(data, that.data);\n+    }\n+\n+    @Override\n+    public int hashCode() {\n+        return Objects.hash(data, vendorId);\n+    }\n+\n     private static class Factory implements RadiusAttributeFactory<OctetsAttribute> {\n \n         /**"
+    },
+    {
+      "sha": "52ecb9cf9e9451b675322cc862a26bde48537b59",
+      "filename": "src/main/java/org/tinyradius/core/attribute/type/RadiusAttribute.java",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FRadiusAttribute.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FRadiusAttribute.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FRadiusAttribute.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -153,7 +153,7 @@ default int getLengthSize() {\n      */\n     default int getTagSize() {\n         return getDictionary().getAttributeTemplate(getVendorId(), getType())\n-                .map(AttributeTemplate::isTagged)\n+                .map(AttributeTemplate::tagged)\n                 .orElse(false) ? 1 : 0;\n     }\n \n@@ -174,7 +174,7 @@ default Optional<Vendor> getVendor() {\n      */\n     default boolean isTagged() {\n         return getAttributeTemplate()\n-                .map(AttributeTemplate::isTagged)\n+                .map(AttributeTemplate::tagged)\n                 .orElse(false);\n     }\n \n@@ -186,7 +186,7 @@ default boolean isTagged() {\n     @NonNull\n     default AttributeCodecType codecType() {\n         return getAttributeTemplate()\n-                .map(AttributeTemplate::getCodecType)\n+                .map(AttributeTemplate::codecType)\n                 .orElse(NO_ENCRYPT);\n     }\n \n@@ -198,15 +198,15 @@ default AttributeCodecType codecType() {\n     @NonNull\n     default String getAttributeName() {\n         return getAttributeTemplate()\n-                .map(AttributeTemplate::getName)\n+                .map(AttributeTemplate::name)\n                 .orElse(getVendorId() != -1 ?\n                         \"Unknown-Sub-Attribute-\" + getType() :\n                         \"Unknown-Attribute-\" + getType());\n     }\n \n     /**\n      * Returns set of all nested attributes if contains sub-attributes,\n-     * otherwise singleton set of current attribute.\n+     * otherwise singleton set of the current attribute.\n      *\n      * @return List of RadiusAttributes\n      */"
+    },
+    {
+      "sha": "8d11d7e1d13c0801e0aafb901213c1f9aeb8d1ec",
+      "filename": "src/main/java/org/tinyradius/core/attribute/type/RadiusAttributeFactory.java",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FRadiusAttributeFactory.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FRadiusAttributeFactory.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FRadiusAttributeFactory.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -101,7 +101,7 @@ default T create(@NonNull Dictionary dictionary, int vendorId, int type, byte ta\n      */\n     private static byte @NonNull [] toTagBytes(@NonNull Dictionary dictionary, int vendorId, int type, byte tag) {\n         return dictionary.getAttributeTemplate(vendorId, type)\n-                .filter(AttributeTemplate::isTagged)\n+                .filter(AttributeTemplate::tagged)\n                 .map(x -> new byte[]{tag})\n                 .orElse(new byte[0]);\n     }"
+    },
+    {
+      "sha": "762a30a0aa6c374269331002788cdbc38f838629",
+      "filename": "src/main/java/org/tinyradius/core/attribute/type/VendorSpecificAttribute.java",
+      "status": "modified",
+      "additions": 55,
+      "deletions": 56,
+      "changes": 111,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FVendorSpecificAttribute.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FVendorSpecificAttribute.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2Ftype%2FVendorSpecificAttribute.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -1,86 +1,105 @@\n package org.tinyradius.core.attribute.type;\n \n-import static org.tinyradius.core.attribute.AttributeTypes.VENDOR_SPECIFIC;\n-\n import io.netty.buffer.ByteBuf;\n import io.netty.buffer.Unpooled;\n-import java.util.ArrayList;\n-import java.util.List;\n-import lombok.EqualsAndHashCode;\n-import lombok.Getter;\n import org.jspecify.annotations.NonNull;\n import org.tinyradius.core.RadiusPacketException;\n import org.tinyradius.core.attribute.AttributeHolder;\n import org.tinyradius.core.dictionary.Dictionary;\n import org.tinyradius.core.dictionary.Vendor;\n \n+import java.util.ArrayList;\n+import java.util.List;\n+\n+import static org.tinyradius.core.attribute.AttributeTypes.VENDOR_SPECIFIC;\n+\n \n /**\n  * Vendor-Specific attribute. Both an attribute itself and an attribute container for sub-attributes.\n  */\n-@Getter\n-@EqualsAndHashCode(callSuper = true) // fields `attributes`/`childVendorId` are derived from byteBuf\n public class VendorSpecificAttribute extends OctetsAttribute implements AttributeHolder<VendorSpecificAttribute> {\n \n     /**\n      * Default factory for creating {@link VendorSpecificAttribute} instances.\n      */\n     public static final RadiusAttributeFactory<VendorSpecificAttribute> FACTORY = new Factory();\n \n-    @EqualsAndHashCode.Exclude\n-    private final int childVendorId;\n-\n-    @EqualsAndHashCode.Exclude\n+    // derived from byteBuf\n     private final List<RadiusAttribute> attributes;\n \n+    /**\n+     * Constructs a new Vendor-Specific attribute.\n+     *\n+     * @param dictionary    dictionary to use for (sub)attributes\n+     * @param childVendorId vendor ID of the sub-attributes\n+     * @param attributes    sub-attributes held\n+     */\n+    public VendorSpecificAttribute(@NonNull Dictionary dictionary, int childVendorId, @NonNull List<RadiusAttribute> attributes) {\n+        this(dictionary, attributes, toByteBuf(childVendorId, attributes));\n+        if (attributes.stream().anyMatch(a -> a.getVendorId() != childVendorId))\n+            throw new IllegalArgumentException(\"Vendor-Specific attribute sub-attributes must have same vendorId as VSA childVendorId: \" + childVendorId);\n+    }\n+\n     /**\n      * Creates a new Vendor-Specific attribute.\n      *\n      * @param dictionary dictionary to use for (sub)attributes\n-     * @param vendorId   ignored, VSAs should always be -1 (top level attribute)\n+     * @param vendorId   must be -1 (VSA is always a top level attribute)\n      * @param data       data to parse for childVendorId and sub-attributes\n      */\n     public VendorSpecificAttribute(@NonNull Dictionary dictionary, int vendorId, @NonNull ByteBuf data) {\n-        this(dictionary, validate(data).getInt(2),\n-                AttributeHolder.readAttributes(dictionary, data.getInt(2), data.slice(6, data.readableBytes() - 6)),\n+        this(dictionary,\n+                AttributeHolder.readAttributes(dictionary, validate(data).getInt(2), data.slice(6, data.readableBytes() - 6)),\n                 data);\n         if (vendorId != -1)\n             throw new IllegalArgumentException(\"Vendor-Specific attribute should be top level attribute, vendorId should be -1, actual: \" + vendorId);\n     }\n \n-    // get around `Call to 'this()' must be first statement in constructor body`\n+    /**\n+     * Internal constructor for VendorSpecificAttribute.\n+     *\n+     * @param dictionary dictionary to use for (sub)attributes\n+     * @param attributes sub-attributes held\n+     * @param data       equivalent of childVendorId + subattribute data in byte array form\n+     */\n+    private VendorSpecificAttribute(@NonNull Dictionary dictionary, @NonNull List<RadiusAttribute> attributes, @NonNull ByteBuf data) {\n+        super(dictionary, -1, data);\n+        this.attributes = List.copyOf(attributes);\n+        if (data.getByte(0) != VENDOR_SPECIFIC)\n+            throw new IllegalArgumentException(\"Vendor-Specific attribute attributeId should always be 26, \" +\n+                    \"actual: \" + data.getByte(0));\n+        validate(data);\n+    }\n+\n+    /**\n+     * Returns the vendor ID of the sub-attributes.\n+     *\n+     * @return the child vendor ID\n+     */\n+    @Override\n+    public int getChildVendorId() {\n+        return getData().getInt(2);\n+    }\n \n     /**\n-     * Validates VSA data.\n+     * Returns the list of sub-attributes held by this VSA.\n      *\n-     * @param data the data to validate\n-     * @return the data\n+     * @return the attributes\n      */\n+    @Override\n+    @NonNull\n+    public List<RadiusAttribute> getAttributes() {\n+        return attributes;\n+    }\n+\n     @NonNull\n     private static ByteBuf validate(@NonNull ByteBuf data) {\n         int len = data.readableBytes();\n         if (len < 7) // VSA headers are 6 bytes\n             throw new IllegalArgumentException(\"Vendor-Specific attribute should be greater than 6 octets, actual: \" + len);\n-\n         return data;\n     }\n \n-    /**\n-     * Constructs a new Vendor-Specific attribute.\n-     *\n-     * @param dictionary    dictionary to use for (sub)attributes\n-     * @param childVendorId vendor ID of the sub-attributes\n-     * @param attributes    sub-attributes held\n-     */\n-    public VendorSpecificAttribute(@NonNull Dictionary dictionary, int childVendorId, @NonNull List<RadiusAttribute> attributes) {\n-        this(dictionary, childVendorId, attributes, toByteBuf(childVendorId, attributes));\n-        boolean mismatchVendorId = attributes.stream()\n-                .map(RadiusAttribute::getVendorId)\n-                .anyMatch(id -> id != childVendorId);\n-        if (mismatchVendorId)\n-            throw new IllegalArgumentException(\"Vendor-Specific attribute sub-attributes must have same vendorId as VSA childVendorId: \" + childVendorId);\n-    }\n-\n     /**\n      * Converts vendor ID and attributes to a ByteBuf.\n      *\n@@ -98,26 +117,6 @@ private static ByteBuf toByteBuf(int childVendorId, @NonNull List<RadiusAttribut\n         return Unpooled.wrappedBuffer(header, attributesBytes);\n     }\n \n-    /**\n-     * Internal constructor for VendorSpecificAttribute.\n-     *\n-     * @param dictionary    dictionary to use for (sub)attributes\n-     * @param childVendorId vendor ID of the sub-attributes\n-     * @param attributes    sub-attributes held\n-     * @param data          equivalent of childVendorId + subattribute data in byte array form\n-     */\n-    private VendorSpecificAttribute(@NonNull Dictionary dictionary, int childVendorId, @NonNull List<RadiusAttribute> attributes, @NonNull ByteBuf data) {\n-        super(dictionary, -1, data);\n-        this.childVendorId = childVendorId;\n-        this.attributes = List.copyOf(attributes);\n-\n-        if (data.getByte(0) != VENDOR_SPECIFIC)\n-            throw new IllegalArgumentException(\"Vendor-Specific attribute attributeId should always be 26, \" +\n-                    \"actual: \" + data.getByte(0));\n-\n-        validate(data);\n-    }\n-\n     /**\n      * {@inheritDoc}\n      */"
+    },
+    {
+      "sha": "542d541bbf635321c5ffcbea2d1de56677660d29",
+      "filename": "src/main/java/org/tinyradius/core/dictionary/MemoryDictionary.java",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 6,
+      "changes": 12,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fdictionary%2FMemoryDictionary.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fdictionary%2FMemoryDictionary.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fdictionary%2FMemoryDictionary.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -119,16 +119,16 @@ public MemoryDictionary addVendor(@NonNull Vendor vendor) {\n     @Override\n     @NonNull\n     public MemoryDictionary addAttributeTemplate(@NonNull AttributeTemplate attributeTemplate) {\n-        var vendorId = attributeTemplate.getVendorId();\n-        var typeCode = attributeTemplate.getType();\n-        var attributeName = attributeTemplate.getName();\n+        var vendorId = attributeTemplate.vendorId();\n+        var typeCode = attributeTemplate.type();\n+        var attributeName = attributeTemplate.name();\n \n         if (attributesByName.containsKey(attributeName)) {\n             var existing = attributesByName.get(attributeName);\n             if (existing.equals(attributeTemplate)) {\n                 log.info(\"Ignoring duplicate attribute definition: {} [{},{}] {}, hasTag={}, encrypt={} \",\n-                        existing.getName(), existing.getVendorId(), existing.getType(), existing.getDataType(),\n-                        existing.isTagged(), existing.getCodecType());\n+                        existing.name(), existing.vendorId(), existing.type(), existing.dataType(),\n+                        existing.tagged(), existing.codecType());\n                 return this;\n             } else {\n                 throw new IllegalArgumentException(\"Duplicate attribute definition name, \" +\n@@ -143,7 +143,7 @@ public MemoryDictionary addAttributeTemplate(@NonNull AttributeTemplate attribut\n         // support multiple names with same code for compatibility\n         if (vendorAttributes.containsKey(typeCode))\n             log.warn(\"Duplicate type code [{},{}], overwriting {} with {}\",\n-                    vendorId, Integer.toUnsignedLong(typeCode), vendorAttributes.get(typeCode).getName(), attributeTemplate.getName());\n+                    vendorId, Integer.toUnsignedLong(typeCode), vendorAttributes.get(typeCode).name(), attributeTemplate.name());\n \n         vendorAttributes.put(typeCode, attributeTemplate);\n         return this;"
+    },
+    {
+      "sha": "e89a20ac50d22ddc4c1ad836893c1427cebcdda8",
+      "filename": "src/main/java/org/tinyradius/core/packet/BaseRadiusPacket.java",
+      "status": "modified",
+      "additions": 34,
+      "deletions": 5,
+      "changes": 39,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fpacket%2FBaseRadiusPacket.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fpacket%2FBaseRadiusPacket.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fpacket%2FBaseRadiusPacket.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -2,8 +2,6 @@\n \n import io.netty.buffer.ByteBuf;\n import io.netty.buffer.Unpooled;\n-import lombok.EqualsAndHashCode;\n-import lombok.Getter;\n import org.apache.logging.log4j.LogManager;\n import org.apache.logging.log4j.Logger;\n import org.jspecify.annotations.NonNull;\n@@ -14,14 +12,13 @@\n \n import java.util.Arrays;\n import java.util.List;\n+import java.util.Objects;\n \n import static org.tinyradius.core.attribute.codec.AttributeCodecType.NO_ENCRYPT;\n \n /**\n  * Base Radius Packet implementation without support for authenticators or encoding\n  */\n-@Getter\n-@EqualsAndHashCode\n public abstract class BaseRadiusPacket<T extends RadiusPacket<T>> implements RadiusPacket<T> {\n \n     private static final Logger log = LogManager.getLogger(BaseRadiusPacket.class);\n@@ -30,7 +27,6 @@ public abstract class BaseRadiusPacket<T extends RadiusPacket<T>> implements Rad\n     private final Dictionary dictionary;\n \n     private final ByteBuf header;\n-\n     private final List<RadiusAttribute> attributes;\n \n     /**\n@@ -59,6 +55,28 @@ protected BaseRadiusPacket(@NonNull Dictionary dictionary, @NonNull ByteBuf head\n                     \"actual length (\" + length + \")  does not match declared length (\" + declaredLength + \")\");\n     }\n \n+    /**\n+     * Returns the dictionary used by this packet.\n+     *\n+     * @return the dictionary\n+     */\n+    @Override\n+    @NonNull\n+    public Dictionary getDictionary() {\n+        return dictionary;\n+    }\n+\n+    /**\n+     * Returns the list of attributes in this packet.\n+     *\n+     * @return the attributes\n+     */\n+    @Override\n+    @NonNull\n+    public List<RadiusAttribute> getAttributes() {\n+        return attributes;\n+    }\n+\n     /**\n      * {@inheritDoc}\n      */\n@@ -138,4 +156,15 @@ public String toString() {\n \n         return s.toString();\n     }\n+\n+    @Override\n+    public boolean equals(Object o) {\n+        if (!(o instanceof BaseRadiusPacket<?> that)) return false;\n+        return Objects.equals(header, that.header) && Objects.equals(attributes, that.attributes);\n+    }\n+\n+    @Override\n+    public int hashCode() {\n+        return Objects.hash(header, attributes);\n+    }\n }"
+    },
+    {
+      "sha": "e64ebb57292750d21fa6751d6b24c55e6a63758e",
+      "filename": "src/main/java/org/tinyradius/core/packet/PacketType.java",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 3,
+      "changes": 8,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fpacket%2FPacketType.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fpacket%2FPacketType.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fpacket%2FPacketType.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -1,17 +1,19 @@\n package org.tinyradius.core.packet;\n \n-import java.util.Map;\n-import lombok.experimental.UtilityClass;\n import org.jspecify.annotations.NonNull;\n \n+import java.util.Map;\n+\n import static java.util.Map.entry;\n \n /**\n  * Based on official IANA assignments for <a href=\"https://www.iana.org/assignments/radius-types/radius-types.xhtml#radius-types-27\">Radius Packet Type Codes</a>\n  */\n-@UtilityClass\n public class PacketType {\n \n+    private PacketType() {\n+    }\n+\n     /**\n      * Access-Request [RFC2865]\n      * <p>"
+    },
+    {
+      "sha": "5b5281be89ceceb61aca224524a1ec5b02b39ad9",
+      "filename": "src/main/java/org/tinyradius/io/client/PendingRequestCtx.java",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 2,
+      "changes": 12,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fclient%2FPendingRequestCtx.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fclient%2FPendingRequestCtx.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fclient%2FPendingRequestCtx.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -1,7 +1,6 @@\n package org.tinyradius.io.client;\n \n import io.netty.util.concurrent.Promise;\n-import lombok.Getter;\n import org.jspecify.annotations.NonNull;\n import org.tinyradius.core.packet.request.RadiusRequest;\n import org.tinyradius.core.packet.response.RadiusResponse;\n@@ -11,7 +10,6 @@\n /**\n  * Wrapper that holds a promise to be resolved when response is received.\n  */\n-@Getter\n public class PendingRequestCtx extends RequestCtx {\n \n     private final Promise<RadiusResponse> response;\n@@ -28,6 +26,16 @@ public PendingRequestCtx(@NonNull RadiusRequest packet, @NonNull RadiusEndpoint\n         this.response = response;\n     }\n \n+    /**\n+     * Returns the promise for the RADIUS response.\n+     *\n+     * @return the response promise\n+     */\n+    @NonNull\n+    public Promise<RadiusResponse> getResponse() {\n+        return response;\n+    }\n+\n     /**\n      * {@inheritDoc}\n      */"
+    },
+    {
+      "sha": "cba533045fa77db79bb2130c3632a7e92d2c6d34",
+      "filename": "src/main/java/org/tinyradius/io/client/handler/PromiseAdapter.java",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 3,
+      "changes": 17,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fclient%2Fhandler%2FPromiseAdapter.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fclient%2Fhandler%2FPromiseAdapter.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fclient%2Fhandler%2FPromiseAdapter.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -10,9 +10,7 @@\n import org.tinyradius.core.packet.response.RadiusResponse;\n import org.tinyradius.io.client.PendingRequestCtx;\n \n-import java.util.List;\n-import java.util.Map;\n-import java.util.UUID;\n+import java.util.*;\n import java.util.concurrent.ConcurrentHashMap;\n import java.util.function.Supplier;\n \n@@ -123,6 +121,19 @@ protected void decode(@NonNull ChannelHandlerContext ctx, @NonNull RadiusRespons\n      * @param promise The promise to be completed when a matching response is received.\n      */\n     public record Request(String secret, byte[] auth, int id, Promise<RadiusResponse> promise) {\n+        @Override\n+        public boolean equals(Object o) {\n+            if (!(o instanceof Request request)) return false;\n+            return id == request.id\n+                    && Objects.deepEquals(auth, request.auth)\n+                    && Objects.equals(secret, request.secret)\n+                    && Objects.equals(promise, request.promise);\n+        }\n+\n+        @Override\n+        public int hashCode() {\n+            return Objects.hash(secret, Arrays.hashCode(auth), id, promise);\n+        }\n     }\n \n }"
+    },
+    {
+      "sha": "aa78b49e7e5c5d6a1bb2300eee931cd62d498d3b",
+      "filename": "src/main/java/org/tinyradius/io/server/RequestCtx.java",
+      "status": "modified",
+      "additions": 20,
+      "deletions": 2,
+      "changes": 22,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fserver%2FRequestCtx.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fserver%2FRequestCtx.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fserver%2FRequestCtx.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -1,6 +1,5 @@\n package org.tinyradius.io.server;\n \n-import lombok.Getter;\n import org.jspecify.annotations.NonNull;\n import org.tinyradius.core.packet.request.RadiusRequest;\n import org.tinyradius.core.packet.response.RadiusResponse;\n@@ -16,7 +15,6 @@\n  * Use {@link #withResponse(RadiusResponse)} to create a {@link ResponseCtx}\n  * for sending a response back to the client.\n  */\n-@Getter\n public class RequestCtx {\n \n     private final RadiusRequest request;\n@@ -33,6 +31,26 @@ public RequestCtx(@NonNull RadiusRequest request, @NonNull RadiusEndpoint endpoi\n         this.endpoint = endpoint;\n     }\n \n+    /**\n+     * Returns the incoming RADIUS request packet.\n+     *\n+     * @return the RADIUS request\n+     */\n+    @NonNull\n+    public RadiusRequest getRequest() {\n+        return request;\n+    }\n+\n+    /**\n+     * Returns the remote endpoint from which the request was received.\n+     *\n+     * @return the remote endpoint (address and secret)\n+     */\n+    @NonNull\n+    public RadiusEndpoint getEndpoint() {\n+        return endpoint;\n+    }\n+\n     /**\n      * Creates a {@link ResponseCtx} for sending a response back to the client.\n      *"
+    },
+    {
+      "sha": "8b412986160c2068370558418d3eaf575f8cbfd1",
+      "filename": "src/main/java/org/tinyradius/io/server/ResponseCtx.java",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 2,
+      "changes": 12,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fserver%2FResponseCtx.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fserver%2FResponseCtx.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fserver%2FResponseCtx.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -1,6 +1,5 @@\n package org.tinyradius.io.server;\n \n-import lombok.Getter;\n import org.jspecify.annotations.NonNull;\n import org.tinyradius.core.packet.request.RadiusRequest;\n import org.tinyradius.core.packet.response.RadiusResponse;\n@@ -13,7 +12,6 @@\n  * to be sent back to the client. This context is passed through the\n  * Netty channel pipeline for encoding and sending the response.\n  */\n-@Getter\n public class ResponseCtx extends RequestCtx {\n \n     private final RadiusResponse response;\n@@ -29,4 +27,14 @@ public ResponseCtx(@NonNull RadiusRequest packet, @NonNull RadiusEndpoint endpoi\n         super(packet, endpoint);\n         this.response = response;\n     }\n+\n+    /**\n+     * Returns the RADIUS response to be sent.\n+     *\n+     * @return the RADIUS response\n+     */\n+    @NonNull\n+    public RadiusResponse getResponse() {\n+        return response;\n+    }\n }"
+    },
+    {
+      "sha": "73682afaff836f2239b8b5687587c45cfbf006dc",
+      "filename": "src/main/java/org/tinyradius/io/server/handler/BasicCachingHandler.java",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1,
+      "changes": 4,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fserver%2Fhandler%2FBasicCachingHandler.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fserver%2Fhandler%2FBasicCachingHandler.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Fmain%2Fjava%2Forg%2Ftinyradius%2Fio%2Fserver%2Fhandler%2FBasicCachingHandler.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -116,7 +116,9 @@ private static Packet from(RequestCtx ctx) {\n         @Override\n         public boolean equals(Object o) {\n             if (!(o instanceof Packet packet)) return false;\n-            return id == packet.id && Objects.deepEquals(authenticator, packet.authenticator) && Objects.equals(remoteAddress, packet.remoteAddress);\n+            return id == packet.id\n+                    && Objects.deepEquals(authenticator, packet.authenticator)\n+                    && Objects.equals(remoteAddress, packet.remoteAddress);\n         }\n \n         /**"
+    },
+    {
+      "sha": "d68cb58e2a60d68225db0294a28681d407cf89e2",
+      "filename": "src/test/java/org/tinyradius/core/attribute/AttributeTemplateTest.java",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FAttributeTemplateTest.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FAttributeTemplateTest.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fattribute%2FAttributeTemplateTest.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -45,25 +45,25 @@ void testFlagDetection() {\n                 .addAttributeTemplate(tunnelPassword)\n                 .addAttributeTemplate(custom);\n \n-        assertEquals(NO_ENCRYPT, template.getCodecType());\n+        assertEquals(NO_ENCRYPT, template.codecType());\n         IntegerAttribute templateDecoded = (IntegerAttribute) template.create(customDict, (byte) 1, new byte[4]);\n         assertFalse(templateDecoded.getTag().isPresent());\n         IntegerAttribute templateEncoded = (IntegerAttribute) template.createEncoded(customDict, (byte) 1, new byte[4]);\n         assertFalse(templateEncoded.getTag().isPresent());\n \n-        assertEquals(RFC2865_USER_PASSWORD, userPassword.getCodecType());\n+        assertEquals(RFC2865_USER_PASSWORD, userPassword.codecType());\n         IntegerAttribute userPasswordDecoded = (IntegerAttribute) userPassword.create(customDict, (byte) 1, new byte[4]);\n         assertFalse(userPasswordDecoded.getTag().isPresent());\n         EncodedAttribute userPasswordEncoded = (EncodedAttribute) userPassword.createEncoded(customDict, (byte) 1, new byte[4]);\n         assertFalse(userPasswordEncoded.getTag().isPresent());\n \n-        assertEquals(RFC2868_TUNNEL_PASSWORD, tunnelPassword.getCodecType());\n+        assertEquals(RFC2868_TUNNEL_PASSWORD, tunnelPassword.codecType());\n         IntegerAttribute tunnelPasswordDecoded = (IntegerAttribute) tunnelPassword.create(customDict, (byte) 1, new byte[3]);  // int length 3 if has_tag\n         assertTrue(tunnelPasswordDecoded.getTag().isPresent());\n         EncodedAttribute tunnelPasswordEncoded = (EncodedAttribute) tunnelPassword.createEncoded(customDict, (byte) 1, new byte[4]);\n         assertTrue(tunnelPasswordEncoded.getTag().isPresent());\n \n-        assertEquals(RFC2865_USER_PASSWORD, custom.getCodecType());\n+        assertEquals(RFC2865_USER_PASSWORD, custom.codecType());\n         IntegerAttribute customDecoded = (IntegerAttribute) custom.create(customDict, (byte) 1, new byte[3]); // int length 3 if has_tag\n         assertTrue(customDecoded.getTag().isPresent());\n         EncodedAttribute customEncoded = (EncodedAttribute) custom.createEncoded(customDict, (byte) 1, new byte[4]);"
+    },
+    {
+      "sha": "1ab15a73eb00b15e6b6fac465c4fb9788d59c3b3",
+      "filename": "src/test/java/org/tinyradius/core/dictionary/parser/DictionaryCompatibilityTest.java",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fdictionary%2Fparser%2FDictionaryCompatibilityTest.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fdictionary%2Fparser%2FDictionaryCompatibilityTest.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fdictionary%2Fparser%2FDictionaryCompatibilityTest.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -23,9 +23,9 @@ void latestFreeRadiusDict() throws IOException {\n         assertTrue(attributeTemplate.isPresent());\n \n         // sanity check\n-        assertEquals(\"Service-Type\", attributeTemplate.get().getName());\n+        assertEquals(\"Service-Type\", attributeTemplate.get().name());\n         assertEquals(\"Login-User\", attributeTemplate.get().getEnumeration(1));\n-        assertEquals(\"Digest-Attributes\", dictionary.getAttributeTemplate(-1, 207).get().getName());\n+        assertEquals(\"Digest-Attributes\", dictionary.getAttributeTemplate(-1, 207).get().name());\n     }\n \n     @Test\n@@ -37,9 +37,9 @@ void jradiusDict() throws IOException {\n         assertTrue(attributeTemplate.isPresent());\n \n         // sanity check\n-        assertEquals(\"Service-Type\", attributeTemplate.get().getName());\n+        assertEquals(\"Service-Type\", attributeTemplate.get().name());\n         assertEquals(\"Login-User\", attributeTemplate.get().getEnumeration(1));\n-        assertEquals(\"Digest-Attributes\", dictionary.getAttributeTemplate(-1, 207).get().getName());\n+        assertEquals(\"Digest-Attributes\", dictionary.getAttributeTemplate(-1, 207).get().name());\n     }\n \n }\n\\ No newline at end of file"
+    },
+    {
+      "sha": "8a1370e803627ce9ee7ed0a7e74ba5b32084f851",
+      "filename": "src/test/java/org/tinyradius/core/dictionary/parser/DictionaryParserTest.java",
+      "status": "modified",
+      "additions": 42,
+      "deletions": 42,
+      "changes": 84,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fdictionary%2Fparser%2FDictionaryParserTest.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fdictionary%2Fparser%2FDictionaryParserTest.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fcore%2Fdictionary%2Fparser%2FDictionaryParserTest.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -36,34 +36,34 @@ static void setup() throws IOException {\n     void classpathIncludeDict() {\n         Optional<AttributeTemplate> attributeTemplate = dictionary.getAttributeTemplate(6);\n         assertTrue(attributeTemplate.isPresent());\n-        assertEquals(\"Service-Type\", attributeTemplate.get().getName());\n+        assertEquals(\"Service-Type\", attributeTemplate.get().name());\n         assertEquals(\"Login-User\", attributeTemplate.get().getEnumeration(1));\n-        assertEquals(\"Digest-Attributes\", dictionary.getAttributeTemplate(-1, 207).get().getName());\n+        assertEquals(\"Digest-Attributes\", dictionary.getAttributeTemplate(-1, 207).get().name());\n     }\n \n     @Test\n     void testVendorAttrFlags() {\n         // VENDORATTR      14122   WISPr-Bandwidth-Min-Up         5       integer has_tag\n \n         AttributeTemplate attribute = dictionary.getAttributeTemplate(\"WISPr-Redirection-URL\").get();\n-        assertFalse(attribute.isTagged());\n-        assertEquals(NO_ENCRYPT, attribute.getCodecType());\n+        assertFalse(attribute.tagged());\n+        assertEquals(NO_ENCRYPT, attribute.codecType());\n \n         AttributeTemplate tagAttribute = dictionary.getAttributeTemplate(\"WISPr-Bandwidth-Min-Up\").get();\n-        assertTrue(tagAttribute.isTagged());\n-        assertEquals(NO_ENCRYPT, tagAttribute.getCodecType());\n+        assertTrue(tagAttribute.tagged());\n+        assertEquals(NO_ENCRYPT, tagAttribute.codecType());\n \n         AttributeTemplate encryptAttribute = dictionary.getAttributeTemplate(\"WISPr-Bandwidth-Min-Down\").get();\n-        assertFalse(encryptAttribute.isTagged());\n-        assertEquals(RFC2865_USER_PASSWORD, encryptAttribute.getCodecType());\n+        assertFalse(encryptAttribute.tagged());\n+        assertEquals(RFC2865_USER_PASSWORD, encryptAttribute.codecType());\n \n         AttributeTemplate tagEncryptAttribute = dictionary.getAttributeTemplate(\"WISPr-Bandwidth-Max-Up\").get();\n-        assertTrue(tagEncryptAttribute.isTagged());\n-        assertEquals(RFC2868_TUNNEL_PASSWORD, tagEncryptAttribute.getCodecType());\n+        assertTrue(tagEncryptAttribute.tagged());\n+        assertEquals(RFC2868_TUNNEL_PASSWORD, tagEncryptAttribute.codecType());\n \n         AttributeTemplate encryptTagAttribute = dictionary.getAttributeTemplate(\"WISPr-Bandwidth-Max-Down\").get();\n-        assertTrue(encryptTagAttribute.isTagged());\n-        assertEquals(ASCEND_SECRET, encryptTagAttribute.getCodecType());\n+        assertTrue(encryptTagAttribute.tagged());\n+        assertEquals(ASCEND_SECRET, encryptTagAttribute.codecType());\n     }\n \n     @Test\n@@ -72,49 +72,49 @@ void testStatefulVendorAttributeFlags() {\n         // ATTRIBUTE\tAscend-Max-Shared-Users\t\t\t2\tinteger  has_tag\n \n         AttributeTemplate attribute = dictionary.getAttributeTemplate(\"Ascend-Test\").get();\n-        assertFalse(attribute.isTagged());\n-        assertEquals(NO_ENCRYPT, attribute.getCodecType());\n+        assertFalse(attribute.tagged());\n+        assertEquals(NO_ENCRYPT, attribute.codecType());\n \n         AttributeTemplate tagAttribute = dictionary.getAttributeTemplate(\"Ascend-Max-Shared-Users\").get();\n-        assertTrue(tagAttribute.isTagged());\n-        assertEquals(NO_ENCRYPT, tagAttribute.getCodecType());\n+        assertTrue(tagAttribute.tagged());\n+        assertEquals(NO_ENCRYPT, tagAttribute.codecType());\n \n         AttributeTemplate encryptAttribute = dictionary.getAttributeTemplate(\"Ascend-UU-Info\").get();\n-        assertFalse(encryptAttribute.isTagged());\n-        assertEquals(RFC2865_USER_PASSWORD, encryptAttribute.getCodecType());\n+        assertFalse(encryptAttribute.tagged());\n+        assertEquals(RFC2865_USER_PASSWORD, encryptAttribute.codecType());\n \n         AttributeTemplate tagEncryptAttribute = dictionary.getAttributeTemplate(\"Ascend-CIR-Timer\").get();\n-        assertTrue(tagEncryptAttribute.isTagged());\n-        assertEquals(RFC2868_TUNNEL_PASSWORD, tagEncryptAttribute.getCodecType());\n+        assertTrue(tagEncryptAttribute.tagged());\n+        assertEquals(RFC2868_TUNNEL_PASSWORD, tagEncryptAttribute.codecType());\n \n         AttributeTemplate encryptTagAttribute = dictionary.getAttributeTemplate(\"Ascend-FR-08-Mode\").get();\n-        assertTrue(encryptTagAttribute.isTagged());\n-        assertEquals(ASCEND_SECRET, encryptTagAttribute.getCodecType());\n+        assertTrue(encryptTagAttribute.tagged());\n+        assertEquals(ASCEND_SECRET, encryptTagAttribute.codecType());\n     }\n \n     @Test\n     void testAttributeFlags() {\n         // ATTRIBUTE PKM-SAID    141      short encrypt=1\n \n         AttributeTemplate attribute = dictionary.getAttributeTemplate(\"PKM-Config-Settings\").get();\n-        assertFalse(attribute.isTagged());\n-        assertEquals(NO_ENCRYPT, attribute.getCodecType());\n+        assertFalse(attribute.tagged());\n+        assertEquals(NO_ENCRYPT, attribute.codecType());\n \n         AttributeTemplate tagAttribute = dictionary.getAttributeTemplate(\"PKM-Cryptosuite-List\").get();\n-        assertTrue(tagAttribute.isTagged());\n-        assertEquals(NO_ENCRYPT, tagAttribute.getCodecType());\n+        assertTrue(tagAttribute.tagged());\n+        assertEquals(NO_ENCRYPT, tagAttribute.codecType());\n \n         AttributeTemplate encryptAttribute = dictionary.getAttributeTemplate(\"PKM-SAID\").get();\n-        assertFalse(encryptAttribute.isTagged());\n-        assertEquals(RFC2865_USER_PASSWORD, encryptAttribute.getCodecType());\n+        assertFalse(encryptAttribute.tagged());\n+        assertEquals(RFC2865_USER_PASSWORD, encryptAttribute.codecType());\n \n         AttributeTemplate tagEncryptAttribute = dictionary.getAttributeTemplate(\"PKM-SA-Descriptor\").get();\n-        assertTrue(tagEncryptAttribute.isTagged());\n-        assertEquals(RFC2868_TUNNEL_PASSWORD, tagEncryptAttribute.getCodecType());\n+        assertTrue(tagEncryptAttribute.tagged());\n+        assertEquals(RFC2868_TUNNEL_PASSWORD, tagEncryptAttribute.codecType());\n \n         AttributeTemplate encryptTagAttribute = dictionary.getAttributeTemplate(\"PKM-Auth-Key\").get();\n-        assertTrue(encryptTagAttribute.isTagged());\n-        assertEquals(ASCEND_SECRET, encryptTagAttribute.getCodecType());\n+        assertTrue(encryptTagAttribute.tagged());\n+        assertEquals(ASCEND_SECRET, encryptTagAttribute.codecType());\n     }\n \n     @Test\n@@ -131,14 +131,14 @@ void valueEnumDeferred() {\n     @Test\n     void attributeNonDecimal() {\n         AttributeTemplate template1 = dictionary.getAttributeTemplate(\"USR-Last-Number-Dialed-Out\").get();\n-        assertEquals(102, template1.getType());\n-        assertEquals(\"string\", template1.getDataType());\n-        assertEquals(429, template1.getVendorId());\n+        assertEquals(102, template1.type());\n+        assertEquals(\"string\", template1.dataType());\n+        assertEquals(429, template1.vendorId());\n \n         AttributeTemplate template2 = dictionary.getAttributeTemplate(429, 232).get();\n-        assertEquals(\"USR-Last-Number-Dialed-In-DNIS\", template2.getName());\n-        assertEquals(\"string\", template2.getDataType());\n-        assertEquals(429, template2.getVendorId());\n+        assertEquals(\"USR-Last-Number-Dialed-In-DNIS\", template2.name());\n+        assertEquals(\"string\", template2.dataType());\n+        assertEquals(429, template2.vendorId());\n     }\n \n     @Test\n@@ -172,10 +172,10 @@ void vendorFormatFlag() {\n     @Test\n     void attributeCustomTypeSize() {\n         AttributeTemplate basic = dictionary.getAttributeTemplate(\"Lucent-Max-Shared-Users\").get();\n-        assertEquals(2, basic.getType());\n+        assertEquals(2, basic.type());\n \n         AttributeTemplate custom = dictionary.getAttributeTemplate(\"Lucent-Retrain-Reason\").get();\n-        assertEquals(20119, custom.getType());\n+        assertEquals(20119, custom.type());\n     }\n \n     @Test\n@@ -192,9 +192,9 @@ void fileSystemIncludeDict() throws IOException {\n \n         Optional<AttributeTemplate> attributeTemplate = dictionary.getAttributeTemplate(6);\n         assertTrue(attributeTemplate.isPresent());\n-        assertEquals(\"Service-Type\", attributeTemplate.get().getName());\n+        assertEquals(\"Service-Type\", attributeTemplate.get().name());\n         assertEquals(\"Login-User\", attributeTemplate.get().getEnumeration(1));\n-        assertEquals(\"Digest-Attributes\", dictionary.getAttributeTemplate(-1, 207).get().getName());\n+        assertEquals(\"Digest-Attributes\", dictionary.getAttributeTemplate(-1, 207).get().name());\n \n         try (var paths = Files.walk(tmpPath)) {\n             paths.sorted(Comparator.reverseOrder())"
+    },
+    {
+      "sha": "38ca34a5fca44d4f41b531d9952301d93707ae2f",
+      "filename": "src/test/java/org/tinyradius/e2e/handler/SimpleAccessHandler.java",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 2,
+      "changes": 14,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fe2e%2Fhandler%2FSimpleAccessHandler.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fe2e%2Fhandler%2FSimpleAccessHandler.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fe2e%2Fhandler%2FSimpleAccessHandler.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -1,7 +1,6 @@\n package org.tinyradius.e2e.handler;\n \n import io.netty.channel.ChannelHandlerContext;\n-import lombok.RequiredArgsConstructor;\n import org.jspecify.annotations.NonNull;\n import org.tinyradius.core.RadiusPacketException;\n import org.tinyradius.core.packet.request.AccessRequest;\n@@ -17,11 +16,22 @@\n import static org.tinyradius.core.packet.PacketType.ACCESS_ACCEPT;\n import static org.tinyradius.core.packet.PacketType.ACCESS_REJECT;\n \n-@RequiredArgsConstructor\n+/**\n+ * Simple access handler for testing purposes.\n+ */\n public class SimpleAccessHandler extends RequestHandler {\n \n     private final Map<String, String> credentials;\n \n+    /**\n+     * Constructs a {@code SimpleAccessHandler} with the given credentials.\n+     *\n+     * @param credentials the map of username to password for authentication\n+     */\n+    public SimpleAccessHandler(Map<String, String> credentials) {\n+        this.credentials = credentials;\n+    }\n+\n     @Override\n     protected @NonNull Class<? extends RadiusRequest> acceptedPacketType() {\n         return AccessRequest.class;"
+    },
+    {
+      "sha": "3dc08f131fa153340f0ede92f0f0968859144053",
+      "filename": "src/test/java/org/tinyradius/io/client/RadiusClientTest.java",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 2,
+      "changes": 12,
+      "blob_url": "https://github.com/globalreachtech/tinyradius-netty/blob/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fio%2Fclient%2FRadiusClientTest.java",
+      "raw_url": "https://github.com/globalreachtech/tinyradius-netty/raw/6b08a82812594b67d4c75ee4f88b2be66616abef/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fio%2Fclient%2FRadiusClientTest.java",
+      "contents_url": "https://api.github.com/repos/globalreachtech/tinyradius-netty/contents/src%2Ftest%2Fjava%2Forg%2Ftinyradius%2Fio%2Fclient%2FRadiusClientTest.java?ref=6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "patch": "@@ -7,7 +7,6 @@\n import io.netty.util.HashedWheelTimer;\n import io.netty.util.Timer;\n import io.netty.util.concurrent.Promise;\n-import lombok.RequiredArgsConstructor;\n import org.junit.jupiter.api.AutoClose;\n import org.junit.jupiter.api.Test;\n import org.junit.jupiter.api.extension.ExtendWith;\n@@ -241,7 +240,6 @@ void communicateWithHooksTimeout() throws RadiusPacketException, InterruptedExce\n     }\n \n     @ChannelHandler.Sharable\n-    @RequiredArgsConstructor\n     private static class CapturingOutboundHandler extends ChannelOutboundHandlerAdapter {\n \n         private static final CapturingOutboundHandler NOOP = new CapturingOutboundHandler(p -> {\n@@ -256,6 +254,16 @@ private static CapturingOutboundHandler of(RadiusResponse response) {\n         }\n \n         private final Consumer<Promise<RadiusResponse>> failFast;\n+\n+        /**\n+         * Constructs a {@code CapturingOutboundHandler}.\n+         *\n+         * @param failFast consumer to handle the promise immediately\n+         */\n+        public CapturingOutboundHandler(Consumer<Promise<RadiusResponse>> failFast) {\n+            this.failFast = failFast;\n+        }\n+\n         private final List<PendingRequestCtx> requests = new ArrayList<>();\n \n         @Override"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "0ec5fb20e54e593694fd007b131147a7035c9e2f",
+      "message": "delombok",
+      "parent_shas": [
+        "02aa9c446323c47dc00332f7edbf5ccebb504e11"
+      ]
+    },
+    {
+      "sha": "e8bf8ba735c5cb1772d69bbbef00f788145b1e67",
+      "message": "delombok and java records",
+      "parent_shas": [
+        "0ec5fb20e54e593694fd007b131147a7035c9e2f"
+      ]
+    },
+    {
+      "sha": "f34a51aa7aaa84fdfc314cd3ea2b975ce48879ba",
+      "message": "delombok",
+      "parent_shas": [
+        "e8bf8ba735c5cb1772d69bbbef00f788145b1e67"
+      ]
+    },
+    {
+      "sha": "4bf149800c347f8e4846cd9f3361714617773973",
+      "message": "delombok",
+      "parent_shas": [
+        "f34a51aa7aaa84fdfc314cd3ea2b975ce48879ba"
+      ]
+    },
+    {
+      "sha": "5ac73204c0248153f4b2280f6dedfc5c938f2294",
+      "message": "delombok",
+      "parent_shas": [
+        "4bf149800c347f8e4846cd9f3361714617773973"
+      ]
+    },
+    {
+      "sha": "45696669c6df4497388f00dafb508242ae6fa71d",
+      "message": "delombok",
+      "parent_shas": [
+        "5ac73204c0248153f4b2280f6dedfc5c938f2294"
+      ]
+    },
+    {
+      "sha": "4dfa6033321a44b4119f5583fcd9be139e4686e3",
+      "message": "delombok",
+      "parent_shas": [
+        "45696669c6df4497388f00dafb508242ae6fa71d"
+      ]
+    },
+    {
+      "sha": "2095fcb70e70786bb8351873f519417e22bbc41f",
+      "message": "delombok",
+      "parent_shas": [
+        "4dfa6033321a44b4119f5583fcd9be139e4686e3"
+      ]
+    },
+    {
+      "sha": "fb32c440315521ca460b40b26b9a37c6b8c2e194",
+      "message": "refactoring",
+      "parent_shas": [
+        "2095fcb70e70786bb8351873f519417e22bbc41f"
+      ]
+    },
+    {
+      "sha": "6b08a82812594b67d4c75ee4f88b2be66616abef",
+      "message": "refactoring",
+      "parent_shas": [
+        "fb32c440315521ca460b40b26b9a37c6b8c2e194"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "java_python_bridge_noise"
+    ],
+    "auto_signals": [
+      "java_python_bridge_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__globalreachtech__tinyradius-netty__pr501.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\globalreachtech__tinyradius-netty__pr501__java_python__globalreachtech__tinyradius-netty__pr501\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\globalreachtech__tinyradius-netty__pr501__java_python__globalreachtech__tinyradius-netty__pr501\\rn"
+  }
+}

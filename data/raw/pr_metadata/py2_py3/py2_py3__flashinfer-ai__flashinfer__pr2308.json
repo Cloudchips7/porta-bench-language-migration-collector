@@ -1,0 +1,103 @@
+{
+  "instance_id": "py2_py3__flashinfer-ai__flashinfer__pr2308",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "flashinfer-ai/flashinfer",
+  "pr_number": 2308,
+  "pr_url": "https://github.com/flashinfer-ai/flashinfer/pull/2308",
+  "repo": {
+    "full_name": "flashinfer-ai/flashinfer",
+    "clone_url": "https://github.com/flashinfer-ai/flashinfer.git",
+    "default_branch": "main",
+    "created_at": "2023-07-22T00:29:04Z",
+    "stars": 5431,
+    "license": "Apache-2.0",
+    "size_kb": 50026
+  },
+  "pull_request": {
+    "id": 3155008845,
+    "title": "Fix: FilteredTopKUnifiedKernel read value out of length",
+    "body": "<!-- .github/pull_request_template.md -->\r\n\r\n## 📌 Description\r\n\r\nI found an issue in the implementation of `top_k_ragged_transform` where elements beyond the specified `lengths` range can be read. This leads to out-of-bounds indices in the result.\r\n\r\nMinimal repro:\r\n\r\n```python\r\ntorch.set_default_device(torch.cuda.current_device())\r\ntorch.manual_seed(22)\r\ntopk = 4\r\nblock_logits = torch.randn(1, 8, dtype=torch.float32)\r\nprint(block_logits)\r\n\r\nidxs = flashinfer.top_k_ragged_transform(\r\n    block_logits,\r\n    offsets=torch.zeros(1, dtype=torch.int32),\r\n    lengths=torch.tensor([5], dtype=torch.int32),\r\n    k=topk\r\n)\r\nprint(idxs)\r\nprint(block_logits[:, :5].topk(k=4).indices)\r\n```\r\n\r\nOutput:\r\n\r\n```text\r\ntensor([[ 0.4519,  1.0099, -0.3167, -2.1224,  1.0826,  1.9583,  0.2751,  0.0463]],\r\n       device='cuda:0')\r\ntensor([[0, 4, 1, 5]], device='cuda:0', dtype=torch.int32)\r\ntensor([[4, 1, 0, 2]], device='cuda:0')\r\n```\r\n\r\nIn this example, `lengths = [5]`, so indices in `idxs` should be strictly less than 5. The returned index `5` is clearly out of bounds.\r\n\r\nThe root cause is that the `vec_load` logic does not properly guard against reading past the valid range near the boundary. After fixing the boundary handling in `vec_load`, this case produces the expected result.\r\n\r\nAffected APIs:\r\n- `top_k_ragged_transform`\r\n- `top_k_page_table_transform`\r\n\r\nI also checked the implementation of `RadixTopKMultiCTA`, and it does not appear to suffer from this bug.\r\n\r\n## 🔍 Related Issues\r\n\r\nNone\r\n<!-- Link any related issues here -->\r\n\r\n## 🚀 Pull Request Checklist\r\n\r\nThank you for contributing to FlashInfer! Before we review your pull request, please make sure the following items are complete.\r\n\r\n### ✅ Pre-commit Checks\r\n\r\n- [x] I have installed `pre-commit` by running `pip install pre-commit` (or used your preferred method).\r\n- [x] I have installed the hooks with `pre-commit install`.\r\n- [x] I have run the hooks manually with `pre-commit run --all-files` and fixed any reported issues.\r\n\r\n> If you are unsure about how to set up `pre-commit`, see [the pre-commit documentation](https://pre-commit.com/).\r\n\r\n## 🧪 Tests\r\n\r\n- [x] All tests are passing (`unittest`, etc.).\r\n```\r\n>> python tests/utils/test_topk.py\r\nTesting page table transform...\r\nTesting ragged transform...\r\nTesting trivial cases...\r\nTesting variable lengths...\r\nTesting large scale...\r\n\r\nTesting SGLang-style comparisons...\r\n\r\nAll tests passed!\r\n```\r\n\r\n## Reviewer Notes\r\n\r\n<!-- Optional: anything you'd like reviewers to focus on, concerns, etc. -->\r\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n## Summary by CodeRabbit\n\n* **Bug Fixes**\n  * Improved boundary-safe processing for vectorized and tail elements to prevent out-of-range reads and ensure consistent histogram/top-k results on non-multiple lengths.\n* **Tests**\n  * Added a test verifying top-k behavior with ragged/out-of-length inputs, ensuring outputs remain within valid index ranges and match a reference implementation.\n\n<sub>✏️ Tip: You can customize this high-level summary in your review settings.</sub>\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "created_at": "2026-01-08T06:40:45Z",
+    "merged_at": "2026-01-09T18:31:21Z",
+    "base_sha": "4230a48aedd21fc8823249147c4b8b363bb0dc36",
+    "head_sha": "0a01d1c4187f4e62481f53d727432ab4601f6e9f",
+    "merge_commit_sha": "c6dcedf68f8bba7a2c94c604d4886837c65bfc34",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "4230a48aedd21fc8823249147c4b8b363bb0dc36",
+  "final_sha": "0a01d1c4187f4e62481f53d727432ab4601f6e9f",
+  "changed_files": [
+    {
+      "sha": "975b778a21f7fd10b4bbe3ceb3f9a21e38b7397e",
+      "filename": "include/flashinfer/topk.cuh",
+      "status": "modified",
+      "additions": 37,
+      "deletions": 17,
+      "changes": 54,
+      "blob_url": "https://github.com/flashinfer-ai/flashinfer/blob/0a01d1c4187f4e62481f53d727432ab4601f6e9f/include%2Fflashinfer%2Ftopk.cuh",
+      "raw_url": "https://github.com/flashinfer-ai/flashinfer/raw/0a01d1c4187f4e62481f53d727432ab4601f6e9f/include%2Fflashinfer%2Ftopk.cuh",
+      "contents_url": "https://api.github.com/repos/flashinfer-ai/flashinfer/contents/include%2Fflashinfer%2Ftopk.cuh?ref=0a01d1c4187f4e62481f53d727432ab4601f6e9f",
+      "patch": "@@ -1989,15 +1989,21 @@ __global__ void __launch_bounds__(FILTERED_TOPK_BLOCK_THREADS)\n \n   vec_t<DType, VEC_SIZE> score_vec;\n \n+  const int aligned_length = (length / VEC_SIZE) * VEC_SIZE;\n #pragma unroll 2\n-  for (int base = tx * VEC_SIZE; base < length; base += BLOCK_SIZE * VEC_SIZE) {\n+  for (int base = tx * VEC_SIZE; base < aligned_length; base += BLOCK_SIZE * VEC_SIZE) {\n     score_vec.cast_load(&score[base]);\n #pragma unroll\n     for (int j = 0; j < VEC_SIZE; ++j) {\n       const auto bin = Traits::ToCoarseKey(score_vec[j]);\n       atomicAdd(&s_histogram[bin], 1);\n     }\n   }\n+  // Handle tail\n+  for (int i = aligned_length + tx; i < length; i += BLOCK_SIZE) {\n+    const auto bin = Traits::ToCoarseKey(score[i]);\n+    atomicAdd(&s_histogram[bin], 1);\n+  }\n   __syncthreads();\n \n   // Suffix sum\n@@ -2034,7 +2040,7 @@ __global__ void __launch_bounds__(FILTERED_TOPK_BLOCK_THREADS)\n   if (topk == 0) {\n     // Collect indices where bin > threshold\n #pragma unroll 2\n-    for (int base = tx * VEC_SIZE; base < length; base += BLOCK_SIZE * VEC_SIZE) {\n+    for (int base = tx * VEC_SIZE; base < aligned_length; base += BLOCK_SIZE * VEC_SIZE) {\n       score_vec.cast_load(&score[base]);\n #pragma unroll\n       for (int j = 0; j < VEC_SIZE; ++j) {\n@@ -2045,34 +2051,48 @@ __global__ void __launch_bounds__(FILTERED_TOPK_BLOCK_THREADS)\n         }\n       }\n     }\n+    // Handle tail\n+    for (int i = aligned_length + tx; i < length; i += BLOCK_SIZE) {\n+      const auto bin = static_cast<int>(Traits::ToCoarseKey(score[i]));\n+      if (bin > threshold_bin) {\n+        const auto pos = atomicAdd(&s_counter, 1);\n+        s_indices[pos] = i;\n+      }\n+    }\n     __syncthreads();\n   } else {\n     __syncthreads();\n     if (tx < RADIX + 1) s_histogram[tx] = 0;\n     __syncthreads();\n \n     // Filter + histogram for refinement\n+    auto filter_and_add_to_histogram = [&](auto raw_input, int index) {\n+      const auto bin = static_cast<int>(Traits::ToCoarseKey(raw_input));\n+      if (bin > threshold_bin) {\n+        const auto pos = atomicAdd(&s_counter, 1);\n+        s_indices[pos] = index;\n+      } else if (bin == threshold_bin) {\n+        const auto pos = atomicAdd(&s_num_input[0], 1);\n+        if (__builtin_expect(pos < SMEM_INPUT_SIZE, 1)) {\n+          s_input_idx[0][pos] = index;\n+          const auto ordered = Traits::ToOrdered(raw_input);\n+          const auto sub_bin = (ordered >> FIRST_SHIFT) & 0xFF;\n+          atomicAdd(&s_histogram[sub_bin], 1);\n+        }\n+      }\n+    };\n #pragma unroll 2\n-    for (int base = tx * VEC_SIZE; base < length; base += BLOCK_SIZE * VEC_SIZE) {\n+    for (int base = tx * VEC_SIZE; base < aligned_length; base += BLOCK_SIZE * VEC_SIZE) {\n       score_vec.cast_load(&score[base]);\n #pragma unroll\n       for (int j = 0; j < VEC_SIZE; ++j) {\n-        const auto raw_input = score_vec[j];\n-        const auto bin = static_cast<int>(Traits::ToCoarseKey(raw_input));\n-        if (bin > threshold_bin) {\n-          const auto pos = atomicAdd(&s_counter, 1);\n-          s_indices[pos] = base + j;\n-        } else if (bin == threshold_bin) {\n-          const auto pos = atomicAdd(&s_num_input[0], 1);\n-          if (__builtin_expect(pos < SMEM_INPUT_SIZE, 1)) {\n-            s_input_idx[0][pos] = base + j;\n-            const auto ordered = Traits::ToOrdered(raw_input);\n-            const auto sub_bin = (ordered >> FIRST_SHIFT) & 0xFF;\n-            atomicAdd(&s_histogram[sub_bin], 1);\n-          }\n-        }\n+        filter_and_add_to_histogram(score_vec[j], base + j);\n       }\n     }\n+    // Handle tail\n+    for (int i = aligned_length + tx; i < length; i += BLOCK_SIZE) {\n+      filter_and_add_to_histogram(score[i], i);\n+    }\n     __syncthreads();\n \n     // Stage 2: refine with 8bit radix passes"
+    },
+    {
+      "sha": "921fc7c5ec7dad141aeaba171d9e0c7826c8530d",
+      "filename": "tests/utils/test_topk.py",
+      "status": "modified",
+      "additions": 48,
+      "deletions": 0,
+      "changes": 48,
+      "blob_url": "https://github.com/flashinfer-ai/flashinfer/blob/0a01d1c4187f4e62481f53d727432ab4601f6e9f/tests%2Futils%2Ftest_topk.py",
+      "raw_url": "https://github.com/flashinfer-ai/flashinfer/raw/0a01d1c4187f4e62481f53d727432ab4601f6e9f/tests%2Futils%2Ftest_topk.py",
+      "contents_url": "https://api.github.com/repos/flashinfer-ai/flashinfer/contents/tests%2Futils%2Ftest_topk.py?ref=0a01d1c4187f4e62481f53d727432ab4601f6e9f",
+      "patch": "@@ -419,6 +419,54 @@ def test_top_k_ragged_transform(num_rows, max_len, k, dtype):\n     assert accuracy >= min_accuracy, f\"Accuracy {accuracy:.4f} < {min_accuracy}\"\n \n \n+@pytest.mark.parametrize(\"num_rows\", [1, 8, 32])\n+@pytest.mark.parametrize(\"max_len\", [1024, 4096, 8192])\n+@pytest.mark.parametrize(\"k\", [64, 256, 512])\n+@pytest.mark.parametrize(\"dtype\", [torch.float32, torch.float16, torch.bfloat16])\n+def test_top_k_ragged_transform_out_of_length(num_rows, max_len, k, dtype):\n+    \"\"\"Test top_k_ragged_transform returns correct indices with offsets.\"\"\"\n+    if k > max_len:\n+        pytest.skip(\"k should be less than max_len\")\n+\n+    torch.manual_seed(42)\n+    device = \"cuda\"\n+\n+    # Generate random scores\n+    scores = torch.randn(num_rows, max_len, device=device, dtype=dtype)\n+\n+    # Generate naive offsets (cumulative sum style)\n+    offsets = torch.zeros(num_rows, device=device, dtype=torch.int32)\n+\n+    # Random in [1, max_len]\n+    lengths = torch.randint(\n+        1, max_len + 1, (num_rows,), device=device, dtype=torch.int32\n+    )\n+\n+    # Test flashinfer implementation\n+    output = flashinfer.top_k_ragged_transform(scores, offsets, lengths, k)\n+\n+    # Reference implementation\n+    ref_output = reference_ragged_transform(scores, offsets, lengths, k)\n+\n+    # Check output shape\n+    assert output.shape == (num_rows, k), (\n+        f\"Expected shape {(num_rows, k)}, got {output.shape}\"\n+    )\n+    assert output.dtype == torch.int32\n+\n+    # Check accuracy\n+    accuracy = compute_transform_accuracy(output, ref_output, num_rows, k)\n+    min_accuracy = 0.95\n+    assert accuracy >= min_accuracy, f\"Accuracy {accuracy:.4f} < {min_accuracy}\"\n+    # Check out of length\n+    valid_min = offsets\n+    valid_max = offsets + lengths\n+    output = output.clamp_min(0)\n+    assert torch.all((output >= valid_min[:, None]) & (output < valid_max[:, None])), (\n+        f\"Out of length Error. {valid_min=}, {valid_max=}, {output.max(dim=1).values=}, {output.min(dim=1).values=}\"\n+    )\n+\n+\n @pytest.mark.parametrize(\"num_rows\", [4, 16])\n @pytest.mark.parametrize(\"max_len\", [2048])\n @pytest.mark.parametrize(\"k\", [256, 512])"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "bd3f16bcfb8defec53074535c7ce45a7af929bab",
+      "message": "fix FilteredTopKUnifiedKernel read value out of length",
+      "parent_shas": [
+        "4230a48aedd21fc8823249147c4b8b363bb0dc36"
+      ]
+    },
+    {
+      "sha": "10ab3d43bc07717f980a5ebf694afc1a665a0e43",
+      "message": "better handle tail and add unittest",
+      "parent_shas": [
+        "bd3f16bcfb8defec53074535c7ce45a7af929bab"
+      ]
+    },
+    {
+      "sha": "0a01d1c4187f4e62481f53d727432ab4601f6e9f",
+      "message": "remove redundant bounds check in inner loop",
+      "parent_shas": [
+        "10ab3d43bc07717f980a5ebf694afc1a665a0e43"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__flashinfer-ai__flashinfer__pr2308.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\flashinfer-ai__flashinfer__pr2308__py2_py3__flashinfer-ai__flashinfer__pr2308\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\flashinfer-ai__flashinfer__pr2308__py2_py3__flashinfer-ai__flashinfer__pr2308\\rn"
+  }
+}

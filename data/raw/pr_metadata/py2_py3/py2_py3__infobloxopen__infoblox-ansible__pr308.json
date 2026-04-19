@@ -1,0 +1,216 @@
+{
+  "instance_id": "py2_py3__infobloxopen__infoblox-ansible__pr308",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "infobloxopen/infoblox-ansible",
+  "pr_number": 308,
+  "pr_url": "https://github.com/infobloxopen/infoblox-ansible/pull/308",
+  "repo": {
+    "full_name": "infobloxopen/infoblox-ansible",
+    "clone_url": "https://github.com/infobloxopen/infoblox-ansible.git",
+    "default_branch": "master",
+    "created_at": "2017-08-25T14:52:59Z",
+    "stars": 62,
+    "license": "GPL-3.0",
+    "size_kb": 645
+  },
+  "pull_request": {
+    "id": 3105703309,
+    "title": "Fix Sanity and UT execution",
+    "body": "Unit and Sanity Tests are fixed",
+    "created_at": "2025-12-16T09:54:35Z",
+    "merged_at": "2025-12-16T10:40:22Z",
+    "base_sha": "dcd53cffb0b45a01a097f0d436c7ed19f13c2464",
+    "head_sha": "8838f4d60af0457c4908e80bc02bb6aae2533e43",
+    "merge_commit_sha": "7ae16763f6a4c8a29779b8a13289000c5d35595c",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "dcd53cffb0b45a01a097f0d436c7ed19f13c2464",
+  "final_sha": "8838f4d60af0457c4908e80bc02bb6aae2533e43",
+  "changed_files": [
+    {
+      "sha": "aa4ebce4476ab0bc481fe5758796c88f666eefc2",
+      "filename": ".github/workflows/ansible-test.yml",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 1,
+      "changes": 15,
+      "blob_url": "https://github.com/infobloxopen/infoblox-ansible/blob/8838f4d60af0457c4908e80bc02bb6aae2533e43/.github%2Fworkflows%2Fansible-test.yml",
+      "raw_url": "https://github.com/infobloxopen/infoblox-ansible/raw/8838f4d60af0457c4908e80bc02bb6aae2533e43/.github%2Fworkflows%2Fansible-test.yml",
+      "contents_url": "https://api.github.com/repos/infobloxopen/infoblox-ansible/contents/.github%2Fworkflows%2Fansible-test.yml?ref=8838f4d60af0457c4908e80bc02bb6aae2533e43",
+      "patch": "@@ -57,6 +57,8 @@ jobs:\n             python-version: '3.13'\n           - ansible-version: devel\n             python-version: '3.10'\n+          - ansible-version: devel\n+            python-version: '3.11'  \n           - ansible-version: stable-2.18\n             python-version: '3.10'\n \n@@ -81,6 +83,14 @@ jobs:\n           git clone https://github.com/ansible/ansible.git -b ${{ matrix.ansible-version }}\n           if [ \"${{ matrix.ansible-version }}\" == \"stable-2.16\" ]; then cp -rf ansible/test/units/compat /home/runner/.ansible/collections/ansible_collections/infoblox/nios_modules/tests/unit/; fi\n           cp -rf ansible/test/units/modules/utils.py /home/runner/.ansible/collections/ansible_collections/infoblox/nios_modules/tests/unit/plugins/modules/\n+          if [ \"${{ matrix.ansible-version }}\" == \"devel\" ]; then\n+            echo \"devel branch detected → injecting legacy utils.py\"\n+            wget https://raw.githubusercontent.com/ansible/ansible/stable-2.17/test/units/modules/utils.py -O \\\n+              /home/runner/.ansible/collections/ansible_collections/infoblox/nios_modules/tests/unit/plugins/modules/utils.py\n+          else\n+            cp -rf ansible/test/units/modules/utils.py \\\n+              /home/runner/.ansible/collections/ansible_collections/infoblox/nios_modules/tests/unit/plugins/modules/\n+          fi\n           sed -i 's/units/ansible_collections.infoblox.nios_modules.tests.unit/' /home/runner/.ansible/collections/ansible_collections/infoblox/nios_modules/tests/unit/plugins/modules/utils.py\n           if [ -f /home/runner/.ansible/collections/ansible_collections/infoblox/nios_modules/tests/unit/requirements.txt ]; then pip install -r /home/runner/.ansible/collections/ansible_collections/infoblox/nios_modules/tests/unit/requirements.txt; fi\n       - name: Run Unit tests using ansible-test\n@@ -92,6 +102,9 @@ jobs:\n           if [ \"${{ matrix.ansible-version }}\" == \"stable-2.16\" ] || [ \"${{ matrix.ansible-version }}\" == \"stable-2.17\" ]; then \n             pip install coverage==7.3.2;\n           fi\n+          if [ \"${{ matrix.ansible-version }}\" == \"devel\" ]; then\n+            pip install \"coverage==7.10.7\"\n+          fi\n           ansible-test coverage xml -v --group-by command --group-by version\n         working-directory: /home/runner/.ansible/collections/ansible_collections/infoblox/nios_modules/\n \n@@ -185,7 +198,7 @@ jobs:\n         with:\n           # it is just required to run that once as \"ansible-test sanity\" in the docker image\n           # will run on all python versions it supports.\n-          python-version: 3.11\n+          python-version: ${{ matrix.ansible-version == 'devel' && '3.12' || '3.11' }}\n \n       - name: Install ansible (${{ matrix.ansible-version }}) version\n         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible-version }}.tar.gz --disable-pip-version-check"
+    },
+    {
+      "sha": "647e552b1099e2f8f98df4be1410fa022196555c",
+      "filename": "plugins/inventory/nios_inventory.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/infobloxopen/infoblox-ansible/blob/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Finventory%2Fnios_inventory.py",
+      "raw_url": "https://github.com/infobloxopen/infoblox-ansible/raw/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Finventory%2Fnios_inventory.py",
+      "contents_url": "https://api.github.com/repos/infobloxopen/infoblox-ansible/contents/plugins%2Finventory%2Fnios_inventory.py?ref=8838f4d60af0457c4908e80bc02bb6aae2533e43",
+      "patch": "@@ -70,7 +70,6 @@\n from ansible.plugins.inventory import BaseInventoryPlugin\n from ..module_utils.api import WapiInventory\n from ..module_utils.api import normalize_extattrs, flatten_extattrs\n-from ansible.module_utils.six import iteritems\n from ansible.errors import AnsibleError\n \n \n@@ -104,5 +103,5 @@ def parse(self, inventory, loader, path, cache=True):  # Plugin interface (2)\n             self.inventory.set_variable(host_name, 'view', host['view'])\n             self.inventory.set_variable(host_name, 'ipv4addrs', [item['ipv4addr'] for item in host['ipv4addrs']])\n \n-            for key, value in iteritems(flatten_extattrs(host['extattrs'])):\n+            for key, value in flatten_extattrs(host['extattrs']).items():\n                 self.inventory.set_variable(host_name, key, value)"
+    },
+    {
+      "sha": "4e52393b2d20e81525147f218aef093ba08fdcc8",
+      "filename": "plugins/module_utils/api.py",
+      "status": "modified",
+      "additions": 27,
+      "deletions": 19,
+      "changes": 46,
+      "blob_url": "https://github.com/infobloxopen/infoblox-ansible/blob/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodule_utils%2Fapi.py",
+      "raw_url": "https://github.com/infobloxopen/infoblox-ansible/raw/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodule_utils%2Fapi.py",
+      "contents_url": "https://api.github.com/repos/infobloxopen/infoblox-ansible/contents/plugins%2Fmodule_utils%2Fapi.py?ref=8838f4d60af0457c4908e80bc02bb6aae2533e43",
+      "patch": "@@ -34,10 +34,10 @@\n import copy\n from functools import partial\n from ansible.module_utils._text import to_native\n-from ansible.module_utils.six import iteritems\n from ansible.module_utils._text import to_text\n from ansible.module_utils.basic import env_fallback\n-from ansible.module_utils.common.validation import check_type_dict, safe_eval\n+from ansible.module_utils.common.validation import check_type_dict\n+from ast import literal_eval as safe_eval\n \n try:\n     from infoblox_client.connector import Connector\n@@ -117,7 +117,7 @@ def get_connector(*args, **kwargs):\n \n     if not set(kwargs.keys()).issubset(list(NIOS_PROVIDER_SPEC.keys()) + ['ssl_verify']):\n         raise Exception('invalid or unsupported keyword argument for connector')\n-    for key, value in iteritems(NIOS_PROVIDER_SPEC):\n+    for key, value in NIOS_PROVIDER_SPEC.items():\n         if key not in kwargs:\n             # apply default values from NIOS_PROVIDER_SPEC since we cannot just\n             # assume the provider values are coming from AnsibleModule\n@@ -153,7 +153,7 @@ def normalize_extattrs(value):\n             }\n         }\n     '''\n-    return dict([(k, {'value': v}) for k, v in iteritems(value)])\n+    return dict([(k, {'value': v}) for k, v in value.items()])\n \n \n def flatten_extattrs(value):\n@@ -169,7 +169,7 @@ def flatten_extattrs(value):\n             key: value\n         }\n     '''\n-    return dict([(k, v['value']) for k, v in iteritems(value)])\n+    return dict([(k, v['value']) for k, v in value.items()])\n \n \n def member_normalize(member_spec):\n@@ -236,7 +236,7 @@ def normalize_ib_spec(ib_spec):\n     result = {}\n     for arg in ib_spec:\n         result[arg] = dict([(k, v)\n-                            for k, v in iteritems(ib_spec[arg])\n+                            for k, v in ib_spec[arg].items()\n                             if k not in ('ib_req', 'transform', 'update')])\n     return result\n \n@@ -322,7 +322,7 @@ def clean_empty_keys(self, current_object, proposed_object):\n         \"\"\"\n         keys_to_remove = []\n \n-        for key, proposed_item in iteritems(proposed_object):\n+        for key, proposed_item in proposed_object.items():\n             # Check if the key is empty (None, empty string, empty list, etc.)\n             if proposed_item in [None, '', [], {}, set()]:  # Add more empty checks if needed\n                 # If the key doesn't exist in current_object, mark it for removal\n@@ -349,7 +349,7 @@ def run(self, ib_obj_type, ib_spec):\n \n         result = {'changed': False}\n \n-        obj_filter = dict([(k, self.module.params[k]) for k, v in iteritems(ib_spec) if v.get('ib_req')])\n+        obj_filter = dict([(k, self.module.params[k]) for k, v in ib_spec.items() if v.get('ib_req')])\n         # get object reference\n         ib_obj_ref, update, new_name = self.get_object_ref(self.module, ib_obj_type, obj_filter, ib_spec)\n \n@@ -364,7 +364,7 @@ def run(self, ib_obj_type, ib_spec):\n             ib_obj_ref, update, new_name = self.get_object_ref(self.module, ib_obj_type, obj_filter, ib_spec)\n \n         proposed_object = {}\n-        for key, value in iteritems(ib_spec):\n+        for key, value in ib_spec.items():\n             if self.module.params[key] is not None:\n                 if 'transform' in value:\n                     proposed_object[key] = value['transform'](self.module)\n@@ -451,8 +451,10 @@ def run(self, ib_obj_type, ib_spec):\n                     text_obj = json.loads(text_obj)\n                     txt = text_obj['new_text']\n                 except Exception:\n-                    (result, exc) = safe_eval(text_obj, dict(), include_exceptions=True)\n-                    if exc is not None:\n+                    try:\n+                        result = safe_eval(text_obj)\n+                        txt = result['new_text']\n+                    except Exception:\n                         raise TypeError('unable to evaluate string as dictionary')\n                     txt = result['new_text']\n                 proposed_object['text'] = txt\n@@ -701,7 +703,7 @@ def compare_extattrs(self, current_extattrs, proposed_extattrs):\n         if len(current_extattrs) != len(proposed_extattrs):\n             return False\n         else:\n-            for key, proposed_item in iteritems(proposed_extattrs):\n+            for key, proposed_item in proposed_extattrs.items():\n                 current_item = current_extattrs.get(key)\n                 if current_item != proposed_item:\n                     return False\n@@ -711,7 +713,7 @@ def verify_list_order(self, proposed_data, current_data):\n         return len(proposed_data) == len(current_data) and all(a == b for a, b in zip(proposed_data, current_data))\n \n     def compare_objects(self, current_object, proposed_object, ib_obj_type=None):\n-        for key, proposed_item in iteritems(proposed_object):\n+        for key, proposed_item in proposed_object.items():\n             current_item = current_object.get(key)\n \n             # if proposed has a key that current doesn't, then the objects are\n@@ -896,8 +898,11 @@ def get_object_ref(self, module, ib_obj_type, obj_filter, ib_spec):\n                             txt = text_obj['old_text']\n                             old_text_exists = True\n                         except Exception:\n-                            (result, exc) = safe_eval(text_obj, dict(), include_exceptions=True)\n-                            if exc is not None:\n+                            try:\n+                                result = safe_eval(text_obj)\n+                                txt = result['old_text']\n+                                old_text_exists = True\n+                            except Exception:\n                                 raise TypeError('unable to evaluate string as dictionary')\n                             txt = result['old_text']\n                             old_text_exists = True\n@@ -959,8 +964,11 @@ def get_object_ref(self, module, ib_obj_type, obj_filter, ib_spec):\n                         txt = text_obj['old_text']\n                         old_text_exists = True\n                     except Exception:\n-                        (result, exc) = safe_eval(text_obj, dict(), include_exceptions=True)\n-                        if exc is not None:\n+                        try:\n+                            result = safe_eval(text_obj)\n+                            txt = result['old_text']\n+                            old_text_exists = True\n+                        except Exception:\n                             raise TypeError('unable to evaluate string as dictionary')\n                         txt = result['old_text']\n                         old_text_exists = True\n@@ -1062,8 +1070,8 @@ def on_update(self, proposed_object, ib_spec):\n         :returns: updated object to be sent to API endpoint\n         '''\n         keys = set()\n-        for key, value in iteritems(proposed_object):\n+        for key, value in proposed_object.items():\n             update = ib_spec[key].get('update', True)\n             if not update:\n                 keys.add(key)\n-        return dict([(k, v) for k, v in iteritems(proposed_object) if k not in keys])\n+        return dict([(k, v) for k, v in proposed_object.items() if k not in keys])"
+    },
+    {
+      "sha": "64fa13872904e217ba0702f6c768b9472f250f0c",
+      "filename": "plugins/modules/nios_dtc_monitor_snmp.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/infobloxopen/infoblox-ansible/blob/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodules%2Fnios_dtc_monitor_snmp.py",
+      "raw_url": "https://github.com/infobloxopen/infoblox-ansible/raw/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodules%2Fnios_dtc_monitor_snmp.py",
+      "contents_url": "https://api.github.com/repos/infobloxopen/infoblox-ansible/contents/plugins%2Fmodules%2Fnios_dtc_monitor_snmp.py?ref=8838f4d60af0457c4908e80bc02bb6aae2533e43",
+      "patch": "@@ -194,7 +194,6 @@\n RETURN = ''' # '''\n \n from ansible.module_utils.basic import AnsibleModule\n-from ansible.module_utils.six import iteritems\n from ..module_utils.api import WapiModule\n from ..module_utils.api import NIOS_DTC_MONITOR_SNMP\n from ..module_utils.api import normalize_ib_spec\n@@ -219,7 +218,7 @@ def oids(module):\n \n     oids = list()\n     for item in module.params['oids']:\n-        oid = dict([(k, v) for k, v in iteritems(item) if v is not None])\n+        oid = dict([(k, v) for k, v in item.items() if v is not None])\n         if 'oid' not in oid:\n             module.fail_json(msg='oid is required for oid value')\n         oids.append(oid)"
+    },
+    {
+      "sha": "895e39506f232af99b2384e46166dde92c211b3a",
+      "filename": "plugins/modules/nios_dtc_topology.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/infobloxopen/infoblox-ansible/blob/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodules%2Fnios_dtc_topology.py",
+      "raw_url": "https://github.com/infobloxopen/infoblox-ansible/raw/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodules%2Fnios_dtc_topology.py",
+      "contents_url": "https://api.github.com/repos/infobloxopen/infoblox-ansible/contents/plugins%2Fmodules%2Fnios_dtc_topology.py?ref=8838f4d60af0457c4908e80bc02bb6aae2533e43",
+      "patch": "@@ -164,7 +164,6 @@\n RETURN = ''' # '''\n \n from ansible.module_utils.basic import AnsibleModule\n-from ansible.module_utils.six import iteritems\n from ..module_utils.api import WapiModule\n from ..module_utils.api import NIOS_DTC_TOPOLOGY\n from ..module_utils.api import normalize_ib_spec\n@@ -177,7 +176,7 @@ def main():\n     def sources_transform(sources, module):\n         source_list = list()\n         for source in sources:\n-            src = dict([(k, v) for k, v in iteritems(source) if v is not None])\n+            src = dict([(k, v) for k, v in source.items() if v is not None])\n             if 'source_type' not in src or 'source_value' not in src:\n                 module.fail_json(msg='source_type and source_value are required for source')\n             source_list.append(src)"
+    },
+    {
+      "sha": "51c53f0b3de0f2f7558ab19ba5721bf994e7dab8",
+      "filename": "plugins/modules/nios_fixed_address.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/infobloxopen/infoblox-ansible/blob/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodules%2Fnios_fixed_address.py",
+      "raw_url": "https://github.com/infobloxopen/infoblox-ansible/raw/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodules%2Fnios_fixed_address.py",
+      "contents_url": "https://api.github.com/repos/infobloxopen/infoblox-ansible/contents/plugins%2Fmodules%2Fnios_fixed_address.py?ref=8838f4d60af0457c4908e80bc02bb6aae2533e43",
+      "patch": "@@ -200,7 +200,6 @@\n RETURN = ''' # '''\n \n from ansible.module_utils.basic import AnsibleModule\n-from ansible.module_utils.six import iteritems\n from ..module_utils.api import NIOS_IPV4_FIXED_ADDRESS, NIOS_IPV6_FIXED_ADDRESS\n from ..module_utils.api import WapiModule\n from ..module_utils.api import normalize_ib_spec\n@@ -233,7 +232,7 @@ def options(module):\n     special_num = [3, 6, 15, 28, 51]\n     options = list()\n     for item in module.params['options']:\n-        opt = dict([(k, v) for k, v in iteritems(item) if v is not None])\n+        opt = dict([(k, v) for k, v in item.items() if v is not None])\n         if 'name' not in opt and 'num' not in opt:\n             module.fail_json(msg='one of `name` or `num` is required for option value')\n         if 'name' in opt and opt['name'] not in special_options:\n@@ -309,7 +308,7 @@ def main():\n                            supports_check_mode=True)\n \n     # to get the argument ipaddr\n-    obj_filter = dict([(k, module.params[k]) for k, v in iteritems(ib_spec) if v.get('ib_req')])\n+    obj_filter = dict([(k, module.params[k]) for k, v in ib_spec.items() if v.get('ib_req')])\n     # to modify argument based on ipaddr type i.e. IPV4/IPV6\n     fixed_address_ip_type, ib_spec, module = validate_ip_addr_type(obj_filter['ipaddr'], ib_spec, module)\n "
+    },
+    {
+      "sha": "2a5893e855e631b348f0a3291eaa0217c99b852a",
+      "filename": "plugins/modules/nios_host_record.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/infobloxopen/infoblox-ansible/blob/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodules%2Fnios_host_record.py",
+      "raw_url": "https://github.com/infobloxopen/infoblox-ansible/raw/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodules%2Fnios_host_record.py",
+      "contents_url": "https://api.github.com/repos/infobloxopen/infoblox-ansible/contents/plugins%2Fmodules%2Fnios_host_record.py?ref=8838f4d60af0457c4908e80bc02bb6aae2533e43",
+      "patch": "@@ -385,7 +385,6 @@\n RETURN = ''' # '''\n \n from ansible.module_utils.basic import AnsibleModule\n-from ansible.module_utils.six import iteritems\n from ..module_utils.api import WapiModule\n from ..module_utils.api import NIOS_HOST_RECORD\n from ..module_utils.api import normalize_ib_spec\n@@ -405,7 +404,7 @@ def ipaddr(module, key, filtered_keys=None):\n     filtered_keys = filtered_keys or list()\n     objects = list()\n     for item in module.params[key]:\n-        objects.append(dict([(k, v) for k, v in iteritems(item) if v is not None and k not in filtered_keys]))\n+        objects.append(dict([(k, v) for k, v in item.items() if v is not None and k not in filtered_keys]))\n     return objects\n \n "
+    },
+    {
+      "sha": "97b86a55f7d71d9a6e14ba1e91c4cea9e722edd9",
+      "filename": "plugins/modules/nios_network.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 5,
+      "changes": 9,
+      "blob_url": "https://github.com/infobloxopen/infoblox-ansible/blob/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodules%2Fnios_network.py",
+      "raw_url": "https://github.com/infobloxopen/infoblox-ansible/raw/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodules%2Fnios_network.py",
+      "contents_url": "https://api.github.com/repos/infobloxopen/infoblox-ansible/contents/plugins%2Fmodules%2Fnios_network.py?ref=8838f4d60af0457c4908e80bc02bb6aae2533e43",
+      "patch": "@@ -312,7 +312,6 @@\n RETURN = ''' # '''\n \n from ansible.module_utils.basic import AnsibleModule\n-from ansible.module_utils.six import iteritems\n from ..module_utils.api import WapiModule\n from ..module_utils.api import NIOS_IPV4_NETWORK, NIOS_IPV6_NETWORK\n from ..module_utils.api import NIOS_IPV4_NETWORK_CONTAINER, NIOS_IPV6_NETWORK_CONTAINER\n@@ -338,7 +337,7 @@ def options(module):\n     '''\n     options = list()\n     for item in module.params['options']:\n-        opt = dict([(k, v) for k, v in iteritems(item) if v is not None])\n+        opt = dict([(k, v) for k, v in item.items() if v is not None])\n         if 'name' not in opt and 'num' not in opt:\n             module.fail_json(msg='one of `name` or `num` is required for option value')\n         options.append(opt)\n@@ -371,7 +370,7 @@ def check_vendor_specific_dhcp_option(module, ib_spec):\n     '''This function will check if the argument dhcp option belongs to vendor-specific and if yes then will remove\n      use_options flag which is not supported with vendor-specific dhcp options.\n     '''\n-    for key, value in iteritems(ib_spec):\n+    for key, value in ib_spec.items():\n         if isinstance(module.params[key], list):\n             for temp_dict in module.params[key]:\n                 if 'num' in temp_dict:\n@@ -388,7 +387,7 @@ def vlans(module):\n         if module.params['vlans']:\n             for vlan in module.params['vlans']:\n \n-                vlan_filtered = dict((k, v) for k, v in iteritems(vlan) if v is not None)\n+                vlan_filtered = dict((k, v) for k, v in vlan.items() if v is not None)\n                 if 'name' not in vlan_filtered and 'id' not in vlan_filtered:\n                     module.fail_json(msg='one of `name` or `id` is required for vlans value')\n \n@@ -454,7 +453,7 @@ def vlans(module):\n                            supports_check_mode=True)\n \n     # to get the argument ipaddr\n-    obj_filter = dict([(k, module.params[k]) for k, v in iteritems(ib_spec) if v.get('ib_req')])\n+    obj_filter = dict([(k, module.params[k]) for k, v in ib_spec.items() if v.get('ib_req')])\n     network_type, ib_spec = check_ip_addr_type(obj_filter, ib_spec)\n \n     wapi = WapiModule(module)"
+    },
+    {
+      "sha": "ad14beac0f0c6d7f248c63269e4d7a5d0197dcc4",
+      "filename": "plugins/modules/nios_range.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/infobloxopen/infoblox-ansible/blob/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodules%2Fnios_range.py",
+      "raw_url": "https://github.com/infobloxopen/infoblox-ansible/raw/8838f4d60af0457c4908e80bc02bb6aae2533e43/plugins%2Fmodules%2Fnios_range.py",
+      "contents_url": "https://api.github.com/repos/infobloxopen/infoblox-ansible/contents/plugins%2Fmodules%2Fnios_range.py?ref=8838f4d60af0457c4908e80bc02bb6aae2533e43",
+      "patch": "@@ -282,7 +282,6 @@\n RETURN = ''' # '''\n \n from ansible.module_utils.basic import AnsibleModule\n-from ansible.module_utils.six import iteritems\n from ..module_utils.api import WapiModule\n from ..module_utils.api import NIOS_RANGE\n from ..module_utils.api import normalize_ib_spec\n@@ -306,7 +305,7 @@ def options(module):\n     '''\n     options = list()\n     for item in module.params['options']:\n-        opt = dict([(k, v) for k, v in iteritems(item) if v is not None])\n+        opt = dict([(k, v) for k, v in item.items() if v is not None])\n         if 'name' not in opt and 'num' not in opt:\n             module.fail_json(msg='one of `name` or `num` is required for option value')\n         options.append(opt)\n@@ -317,7 +316,7 @@ def check_vendor_specific_dhcp_option(module, ib_spec):\n     '''This function will check if the argument dhcp option belongs to vendor-specific and if yes then will remove\n      use_options flag which is not supported with vendor-specific dhcp options.\n     '''\n-    for key, value in iteritems(ib_spec):\n+    for key, value in ib_spec.items():\n         if isinstance(module.params[key], list):\n             for temp_dict in module.params[key]:\n                 if 'num' in temp_dict:"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "97256206d074a520fe254b6628ee50d5ba5d2d76",
+      "message": "Fixing Sanity tests",
+      "parent_shas": [
+        "dcd53cffb0b45a01a097f0d436c7ed19f13c2464"
+      ]
+    },
+    {
+      "sha": "04a416a942ec494989d5fdd33a17262b97b5d789",
+      "message": "Fixing Unit tests",
+      "parent_shas": [
+        "97256206d074a520fe254b6628ee50d5ba5d2d76"
+      ]
+    },
+    {
+      "sha": "93ab9e27479a3033c1590570999e2b03052d5947",
+      "message": "Fixing Unit tests",
+      "parent_shas": [
+        "04a416a942ec494989d5fdd33a17262b97b5d789"
+      ]
+    },
+    {
+      "sha": "2e7ff152070e8ee6de17ea5a0e3e40b0def34611",
+      "message": "Fixing Unit tests",
+      "parent_shas": [
+        "93ab9e27479a3033c1590570999e2b03052d5947"
+      ]
+    },
+    {
+      "sha": "08862fae32bec986e8503e37eb630fc5f9273eb8",
+      "message": "Fixing Unit tests",
+      "parent_shas": [
+        "2e7ff152070e8ee6de17ea5a0e3e40b0def34611"
+      ]
+    },
+    {
+      "sha": "9891c8224273a19de7715b4095cbdcc7bab026bb",
+      "message": "Fixing Unit tests",
+      "parent_shas": [
+        "08862fae32bec986e8503e37eb630fc5f9273eb8"
+      ]
+    },
+    {
+      "sha": "8838f4d60af0457c4908e80bc02bb6aae2533e43",
+      "message": "Reversing push and pull github actions changes",
+      "parent_shas": [
+        "9891c8224273a19de7715b4095cbdcc7bab026bb"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__infobloxopen__infoblox-ansible__pr308.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\infobloxopen__infoblox-ansible__pr308__py2_py3__infobloxopen__infoblox-ansible__pr308\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\infobloxopen__infoblox-ansible__pr308__py2_py3__infobloxopen__infoblox-ansible__pr308\\rn"
+  }
+}

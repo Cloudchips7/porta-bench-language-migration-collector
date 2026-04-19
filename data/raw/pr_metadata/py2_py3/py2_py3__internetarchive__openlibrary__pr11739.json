@@ -1,0 +1,82 @@
+{
+  "instance_id": "py2_py3__internetarchive__openlibrary__pr11739",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "internetarchive/openlibrary",
+  "pr_number": 11739,
+  "pr_url": "https://github.com/internetarchive/openlibrary/pull/11739",
+  "repo": {
+    "full_name": "internetarchive/openlibrary",
+    "clone_url": "https://github.com/internetarchive/openlibrary.git",
+    "default_branch": "master",
+    "created_at": "2008-10-30T05:20:14Z",
+    "stars": 6365,
+    "license": "AGPL-3.0",
+    "size_kb": 110829
+  },
+  "pull_request": {
+    "id": 3212382716,
+    "title": "chore(deps): update dependency python-memcached to v1.62",
+    "body": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) |\n|---|---|---|---|\n| [python-memcached](https://redirect.github.com/linsomniac/python-memcached) | `==1.59` → `==1.62` | ![age](https://developer.mend.io/api/mc/badges/age/pypi/python-memcached/1.62?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/pypi/python-memcached/1.59/1.62?slim=true) |\n\n---\n\n### Release Notes\n\n<details>\n<summary>linsomniac/python-memcached (python-memcached)</summary>\n\n### [`v1.62`](https://redirect.github.com/linsomniac/python-memcached/releases/tag/1.62): delete() returns 0 for NOT_FOUND or server error (consistent with docstring)\n\n[Compare Source](https://redirect.github.com/linsomniac/python-memcached/compare/1.61...1.62)\n\ndelete() return value now is 1 for \"DELETED\" and 0 for \"NOT\\_FOUND\" or server error.  (Nick Pope PR [#&#8203;190](https://redirect.github.com/linsomniac/python-memcached/issues/190))\nThis is consistent with the docstring.\n\n### [`v1.61`](https://redirect.github.com/linsomniac/python-memcached/releases/tag/1.61): Fixing date in Changelog\n\n[Compare Source](https://redirect.github.com/linsomniac/python-memcached/compare/1.60...1.61)\n\nThis is a documentation-only fix, fixing the date in the Changelog in the 1.60 release.  See that release for the full set of changes.\n\n### [`v1.60`](https://redirect.github.com/linsomniac/python-memcached/releases/tag/1.60): : Many bug-fixes (2023)\n\n[Compare Source](https://redirect.github.com/linsomniac/python-memcached/compare/1.59...1.60)\n\n- Allow to use a datetime.timedelta parameter for Client.set (PR from Theo Massard)\n- Fix cmemcahe\\_hash 0 values being translated to 1 (PR from Chow Loong Jin)\n- Fix tuple key support in multi methods  (PR from Sergii Mikhtoniuk) [#&#8203;154](https://redirect.github.com/linsomniac/python-memcached/issues/154)\n- Add support for default value in get (PR from Jakub Szafrański)\n- test\\_memcache.py: try import unittest.mock (PR from Tim Orling)\n- Use == as suggested by Python 3.8 (PR from [@&#8203;za](https://redirect.github.com/za))\n- Decoding in slab funcs, replacing \"1\" with \"True\" in while. [#&#8203;175](https://redirect.github.com/linsomniac/python-memcached/issues/175)\n- Tell PyPI to parse README as markdown (PR from [@&#8203;MartinThoma](https://redirect.github.com/MartinThoma)) [#&#8203;168](https://redirect.github.com/linsomniac/python-memcached/issues/168)\n- test\\_memcache.py: try import unittest.mock (PR from [@&#8203;moto-timo](https://redirect.github.com/moto-timo)) [#&#8203;172](https://redirect.github.com/linsomniac/python-memcached/issues/172)\n- Removed Python 2.7 from setup.cfg, adding 3.8-3.12\n- Add support for default value in get() (PR from [@&#8203;samupl](https://redirect.github.com/samupl)) [#&#8203;158](https://redirect.github.com/linsomniac/python-memcached/issues/158)\n- Fix tuple key support in multi methods (regression in 1.55). (PR from [@&#8203;sergiimk](https://redirect.github.com/sergiimk)) [#&#8203;155](https://redirect.github.com/linsomniac/python-memcached/issues/155)\n- Fix cmemcahe\\_hash 0 values being translated to 1.  For example \"ob\" would hash to 0 and then get converted to 1.  Looks like this dated back to 2009, the original code we imported for that hash function. (PR from [@&#8203;hyperair](https://redirect.github.com/hyperair)) [#&#8203;152](https://redirect.github.com/linsomniac/python-memcached/issues/152)\n- Removing six.PY2/3 conditionals\n- Removing \"time\" from delete and making expiry mandatory in touch. (port of [@&#8203;erankor](https://redirect.github.com/erankor)'s PR in [#&#8203;30](https://redirect.github.com/linsomniac/python-memcached/issues/30) )\n- Added quit() method.  This method sends the 'quit' command to the servers and then closes the connections, reducing the number of TIME\\_WAIT sockets hanging around the OS. (PR from [@&#8203;userrl](https://redirect.github.com/userrl)) [#&#8203;15](https://redirect.github.com/linsomniac/python-memcached/issues/15)\n- Allow to use a datetime.timedelta parameter for Client.set (PR from [@&#8203;tbobm](https://redirect.github.com/tbobm)) [#&#8203;146](https://redirect.github.com/linsomniac/python-memcached/issues/146)\n- Allow keys to be encoded before use. (Port of PR in [#&#8203;52](https://redirect.github.com/linsomniac/python-memcached/issues/52) from [@&#8203;harlowja](https://redirect.github.com/harlowja))\n- Removing historic python 2to3 code and deprecated socket.error (for OSError). (PR from [@&#8203;pgajdos](https://redirect.github.com/pgajdos)) [#&#8203;186](https://redirect.github.com/linsomniac/python-memcached/issues/186)\n- Updating to the latest PSF license\n\n</details>\n\n---\n\n### Configuration\n\n📅 **Schedule**: Branch creation - At any time (no schedule defined), Automerge - At any time (no schedule defined).\n\n🚦 **Automerge**: Disabled by config. Please merge this manually once you are satisfied.\n\n♻ **Rebasing**: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.\n\n🔕 **Ignore**: Close this PR and you won't be reminded about this update again.\n\n---\n\n - [ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box\n\n---\n\nThis PR was generated by [Mend Renovate](https://mend.io/renovate/). View the [repository job log](https://developer.mend.io/github/internetarchive/openlibrary).\n<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiI0Mi45Mi4xIiwidXBkYXRlZEluVmVyIjoiNDIuOTIuMSIsInRhcmdldEJyYW5jaCI6Im1hc3RlciIsImxhYmVscyI6W119-->\n",
+    "created_at": "2026-01-26T23:01:23Z",
+    "merged_at": "2026-01-28T17:38:35Z",
+    "base_sha": "18be75c0d6883aac642651f35da01d4d16604a19",
+    "head_sha": "ffeb5c83d37b00aeff955f0aa519996400474d24",
+    "merge_commit_sha": "ac201b1e52c68829af15e78ea35445c3a160359c",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "18be75c0d6883aac642651f35da01d4d16604a19",
+  "final_sha": "ffeb5c83d37b00aeff955f0aa519996400474d24",
+  "changed_files": [
+    {
+      "sha": "5e51b97df3b41ea88017fd624527502864bc1d84",
+      "filename": "requirements.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/internetarchive/openlibrary/blob/ffeb5c83d37b00aeff955f0aa519996400474d24/requirements.txt",
+      "raw_url": "https://github.com/internetarchive/openlibrary/raw/ffeb5c83d37b00aeff955f0aa519996400474d24/requirements.txt",
+      "contents_url": "https://api.github.com/repos/internetarchive/openlibrary/contents/requirements.txt?ref=ffeb5c83d37b00aeff955f0aa519996400474d24",
+      "patch": "@@ -24,7 +24,7 @@ psycopg2==2.9.6\n pydantic==2.4.0\n pymarc==5.1.0\n python-dateutil==2.8.2\n-python-memcached==1.59\n+python-memcached==1.62\n python-multipart==0.0.21\n PyYAML==6.0.1\n qrcode==7.4.2"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "ffeb5c83d37b00aeff955f0aa519996400474d24",
+      "message": "chore(deps): update dependency python-memcached to v1.62",
+      "parent_shas": [
+        "18be75c0d6883aac642651f35da01d4d16604a19"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match",
+      "strict_migration_signal"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__internetarchive__openlibrary__pr11739.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\internetarchive__openlibrary__pr11739__py2_py3__internetarchive__openlibrary__pr11739\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\internetarchive__openlibrary__pr11739__py2_py3__internetarchive__openlibrary__pr11739\\rn"
+  }
+}

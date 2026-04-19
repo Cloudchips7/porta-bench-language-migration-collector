@@ -1,0 +1,82 @@
+{
+  "instance_id": "java_python__Graylog2__graylog2-server__pr25011",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "Graylog2/graylog2-server",
+  "pr_number": 25011,
+  "pr_url": "https://github.com/Graylog2/graylog2-server/pull/25011",
+  "repo": {
+    "full_name": "Graylog2/graylog2-server",
+    "clone_url": "https://github.com/Graylog2/graylog2-server.git",
+    "default_branch": "master",
+    "created_at": "2010-05-17T21:27:02Z",
+    "stars": 8009,
+    "license": "NOASSERTION",
+    "size_kb": 209725
+  },
+  "pull_request": {
+    "id": 3287929206,
+    "title": "Bump org.openrewrite:rewrite-java from 8.72.6 to 8.72.8 in the openrewrite group",
+    "body": "Bumps the openrewrite group with 1 update: [org.openrewrite:rewrite-java](https://github.com/openrewrite/rewrite).\n\nUpdates `org.openrewrite:rewrite-java` from 8.72.6 to 8.72.8\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/openrewrite/rewrite/releases\">org.openrewrite:rewrite-java's releases</a>.</em></p>\n<blockquote>\n<h2>8.72.8</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>Fix StackOverflowError in Validated.Both and redundant validation traversal by <a href=\"https://github.com/pstreef\"><code>@​pstreef</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6690\">openrewrite/rewrite#6690</a></li>\n<li>Changing <code>npx</code> to <code>npx.cmd</code> on Windows, normalizing paths for source file processing and fixing <code>spawn</code> and <code>spawnSync</code> on Windows. by <a href=\"https://github.com/steve-aom-elliott\"><code>@​steve-aom-elliott</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6662\">openrewrite/rewrite#6662</a></li>\n<li>Mark parent tag in DependencyInsight when dependency is inherited by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6693\">openrewrite/rewrite#6693</a></li>\n<li>Clean up the error message when a recipe cannot be found in the marketplace by <a href=\"https://github.com/shanman190\"><code>@​shanman190</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6688\">openrewrite/rewrite#6688</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.72.7...v8.72.8\">https://github.com/openrewrite/rewrite/compare/v8.72.7...v8.72.8</a></p>\n<h2>8.72.7</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>RPC - Remove mention of JavaScript for Python RPC server error message by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6673\">openrewrite/rewrite#6673</a></li>\n<li>Skip BOM download when version contains unresolved placeholders by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6674\">openrewrite/rewrite#6674</a></li>\n<li>Support multi-component literal dependency declarations by <a href=\"https://github.com/MBoegers\"><code>@​MBoegers</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6669\">openrewrite/rewrite#6669</a></li>\n<li>Improving <code>AddCommentToImport</code> when it comes to comments that get added at the beginning of the file by <a href=\"https://github.com/steve-aom-elliott\"><code>@​steve-aom-elliott</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6675\">openrewrite/rewrite#6675</a></li>\n<li>Fix DeleteProperty losing newlines when deleting entries with block scalars by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6670\">openrewrite/rewrite#6670</a></li>\n<li>Python: Add RPC infrastructure for calling Java recipes by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6677\">openrewrite/rewrite#6677</a></li>\n<li>Python: Add pip bootstrap support for openrewrite package by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6679\">openrewrite/rewrite#6679</a></li>\n<li>Python: Add data table support for recipes by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6680\">openrewrite/rewrite#6680</a></li>\n<li>Add Gradle FindRepositoryOrder recipe by <a href=\"https://github.com/kmccarp\"><code>@​kmccarp</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6676\">openrewrite/rewrite#6676</a></li>\n<li>Python: Add context-insensitive templating mechanism by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6681\">openrewrite/rewrite#6681</a></li>\n<li>Fix test for newer plugin versions by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6685\">openrewrite/rewrite#6685</a></li>\n<li>Catch Throwable instead of Exception in KotlinParser and PythonParser by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6633\">openrewrite/rewrite#6633</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.72.6...v8.72.7\">https://github.com/openrewrite/rewrite/compare/v8.72.6...v8.72.7</a></p>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/0e021e86bae13820abfc339f87679e1f90210650\"><code>0e021e8</code></a> Clean up the error message when a recipe cannot be found in the marketplace (...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/9fe1fb5c16b7904cc9a6838ce8d4030155893fbc\"><code>9fe1fb5</code></a> Mark parent tag in DependencyInsight when dependency is inherited (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6693\">#6693</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/8315c067c7edca7816b7fbe88c0fdab982122eaa\"><code>8315c06</code></a> Changing <code>npx</code> to <code>npx.cmd</code> on Windows, normalizing paths for source file pro...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/1790f4e9e70d5e6a2932756707811a56cc4c90a1\"><code>1790f4e</code></a> Fix StackOverflowError in Validated.Both.iterator() and redundant validation ...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/75e9711701f148287f7d1e0d4be7656fb550eba7\"><code>75e9711</code></a> Catch Throwable instead of Exception in KotlinParser and PythonParser (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6633\">#6633</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/ac001a47b6342d01f5ab8202c25b2271a24410c8\"><code>ac001a4</code></a> Fix test for newer plugin versions (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6685\">#6685</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/75467701d02522558862627d0fc06e20936fccdd\"><code>7546770</code></a> Python: Add context-insensitive templating mechanism (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6681\">#6681</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/dc11f7a1c5e9c153dab63d8d9934ab8e4cdf79b3\"><code>dc11f7a</code></a> Add Gradle FindRepositoryOrder recipe (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6676\">#6676</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/ff9d9148808f4bdc7b3c33f6a0b977f92445b524\"><code>ff9d914</code></a> Python: Add data table support for recipes (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6680\">#6680</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/acee7fb4a384f1315fdc19b8be0fe9d55098a4f7\"><code>acee7fb</code></a> Python: Add pip bootstrap support for openrewrite package (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6679\">#6679</a>)</li>\n<li>Additional commits viewable in <a href=\"https://github.com/openrewrite/rewrite/compare/v8.72.6...v8.72.8\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=org.openrewrite:rewrite-java&package-manager=maven&previous-version=8.72.6&new-version=8.72.8)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nYou can trigger a rebase of this PR by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore <dependency name> major version` will close this group update PR and stop Dependabot creating any more for the specific dependency's major version (unless you unignore this specific dependency's major version or upgrade to it yourself)\n- `@dependabot ignore <dependency name> minor version` will close this group update PR and stop Dependabot creating any more for the specific dependency's minor version (unless you unignore this specific dependency's minor version or upgrade to it yourself)\n- `@dependabot ignore <dependency name>` will close this group update PR and stop Dependabot creating any more for the specific dependency (unless you unignore this specific dependency or upgrade to it yourself)\n- `@dependabot unignore <dependency name>` will remove all of the ignore conditions of the specified dependency\n- `@dependabot unignore <dependency name> <ignore condition>` will remove the ignore condition of the specified dependency and ignore conditions\n\n\n</details>",
+    "created_at": "2026-02-16T01:02:39Z",
+    "merged_at": "2026-02-16T10:34:10Z",
+    "base_sha": "1d8930a477d11c5a818e77ed55c208b30e0d95c8",
+    "head_sha": "8425eefe341fa4e39d3cda3dc7d1e6571cd4c930",
+    "merge_commit_sha": "83942ab92b5dca2ce9dac0465a84b73a2e3775fe",
+    "labels": [
+      "dependencies",
+      "maven"
+    ]
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "1d8930a477d11c5a818e77ed55c208b30e0d95c8",
+  "final_sha": "8425eefe341fa4e39d3cda3dc7d1e6571cd4c930",
+  "changed_files": [
+    {
+      "sha": "0bfd01516a6cba0962e264c9c3d76ca783e69916",
+      "filename": "pom.xml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Graylog2/graylog2-server/blob/8425eefe341fa4e39d3cda3dc7d1e6571cd4c930/pom.xml",
+      "raw_url": "https://github.com/Graylog2/graylog2-server/raw/8425eefe341fa4e39d3cda3dc7d1e6571cd4c930/pom.xml",
+      "contents_url": "https://api.github.com/repos/Graylog2/graylog2-server/contents/pom.xml?ref=8425eefe341fa4e39d3cda3dc7d1e6571cd4c930",
+      "patch": "@@ -783,7 +783,7 @@\n                         <dependency>\n                             <groupId>org.openrewrite</groupId>\n                             <artifactId>rewrite-java</artifactId>\n-                            <version>8.72.6</version>\n+                            <version>8.72.8</version>\n                         </dependency>\n                         <dependency>\n                             <groupId>org.openrewrite.recipe</groupId>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8425eefe341fa4e39d3cda3dc7d1e6571cd4c930",
+      "message": "Bump org.openrewrite:rewrite-java in the openrewrite group\n\nBumps the openrewrite group with 1 update: [org.openrewrite:rewrite-java](https://github.com/openrewrite/rewrite).\n\n\nUpdates `org.openrewrite:rewrite-java` from 8.72.6 to 8.72.8\n- [Release notes](https://github.com/openrewrite/rewrite/releases)\n- [Commits](https://github.com/openrewrite/rewrite/compare/v8.72.6...v8.72.8)\n\n---\nupdated-dependencies:\n- dependency-name: org.openrewrite:rewrite-java\n  dependency-version: 8.72.8\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: openrewrite\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "1d8930a477d11c5a818e77ed55c208b30e0d95c8"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__Graylog2__graylog2-server__pr25011.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\Graylog2__graylog2-server__pr25011__java_python__Graylog2__graylog2-server__pr25011\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\Graylog2__graylog2-server__pr25011__java_python__Graylog2__graylog2-server__pr25011\\rn"
+  }
+}

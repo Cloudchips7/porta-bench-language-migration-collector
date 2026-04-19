@@ -1,0 +1,76 @@
+{
+  "instance_id": "python_cpp__ROCm__rocm-jax__pr379",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "ROCm/rocm-jax",
+  "pr_number": 379,
+  "pr_url": "https://github.com/ROCm/rocm-jax/pull/379",
+  "repo": {
+    "full_name": "ROCm/rocm-jax",
+    "clone_url": "https://github.com/ROCm/rocm-jax.git",
+    "default_branch": "master",
+    "created_at": "2025-04-09T19:11:03Z",
+    "stars": 22,
+    "license": "Apache-2.0",
+    "size_kb": 160828
+  },
+  "pull_request": {
+    "id": 3505107899,
+    "title": "Adjust unversioned Python to symlink to Python 3.11.",
+    "body": "## Motivation\r\nOriginally, symlinking Python to Python3 resulted in a symlink to Python 3.6. In order to use a more recent version, we specify Python 3.11. This will satisfy some of the version dependencies needed in the JAX CI scripts.\r\n\r\n## Changes\r\nThe only change is to file: `docker/manylinux/Dockerfile.jax-manylinux_2_28-rocm`. The version of Python 3 that is being symlinked is specified as Python 3.11 which was already on the manylinux image.",
+    "created_at": "2026-04-08T20:00:23Z",
+    "merged_at": "2026-04-08T20:36:12Z",
+    "base_sha": "cf0f9b6d2b53627e7e49797bbe1fc018f1d35f6d",
+    "head_sha": "b6694fc37e20093546726bf7e2f392b4087739cd",
+    "merge_commit_sha": "e04ffbe33f31f3e5066364b30f3c521e342e5d95",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "cf0f9b6d2b53627e7e49797bbe1fc018f1d35f6d",
+  "final_sha": "b6694fc37e20093546726bf7e2f392b4087739cd",
+  "changed_files": [
+    {
+      "sha": "2ef400811a58648adb9f0651bb595d392f199834",
+      "filename": "docker/manylinux/Dockerfile.jax-manylinux_2_28-rocm",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/ROCm/rocm-jax/blob/b6694fc37e20093546726bf7e2f392b4087739cd/docker%2Fmanylinux%2FDockerfile.jax-manylinux_2_28-rocm",
+      "raw_url": "https://github.com/ROCm/rocm-jax/raw/b6694fc37e20093546726bf7e2f392b4087739cd/docker%2Fmanylinux%2FDockerfile.jax-manylinux_2_28-rocm",
+      "contents_url": "https://api.github.com/repos/ROCm/rocm-jax/contents/docker%2Fmanylinux%2FDockerfile.jax-manylinux_2_28-rocm?ref=b6694fc37e20093546726bf7e2f392b4087739cd",
+      "patch": "@@ -40,4 +40,4 @@ RUN --mount=type=cache,target=/var/cache/dnf \\\n \n # The manylinux base image provides python3 but not unversioned 'python'.\n # CI scripts currently require this so we symlink Python to Python3.\n-RUN ln -s /usr/bin/python3 /usr/local/bin/python\n+RUN ln -s /usr/bin/python3.11 /usr/local/bin/python"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "b6694fc37e20093546726bf7e2f392b4087739cd",
+      "message": "Adjust unversioned Python to symlink to Python 3.11.\n\nOriginally, symlinking Python to Python3 resulted in a symlink to\nPython3.6. In order to use a more recent version, we specify Python3.11.",
+      "parent_shas": [
+        "cf0f9b6d2b53627e7e49797bbe1fc018f1d35f6d"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__ROCm__rocm-jax__pr379.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\ROCm__rocm-jax__pr379__python_cpp__ROCm__rocm-jax__pr379\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\ROCm__rocm-jax__pr379__python_cpp__ROCm__rocm-jax__pr379\\rn"
+  }
+}

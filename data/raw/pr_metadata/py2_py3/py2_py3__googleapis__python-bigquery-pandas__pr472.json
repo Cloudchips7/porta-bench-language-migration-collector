@@ -1,0 +1,96 @@
+{
+  "instance_id": "py2_py3__googleapis__python-bigquery-pandas__pr472",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "googleapis/python-bigquery-pandas",
+  "pr_number": 472,
+  "pr_url": "https://github.com/googleapis/python-bigquery-pandas/pull/472",
+  "repo": {
+    "full_name": "googleapis/python-bigquery-pandas",
+    "clone_url": "https://github.com/googleapis/python-bigquery-pandas.git",
+    "default_branch": "main",
+    "created_at": "2017-02-08T13:07:19Z",
+    "stars": 490,
+    "license": "BSD-3-Clause",
+    "size_kb": 1730
+  },
+  "pull_request": {
+    "id": 826691465,
+    "title": "chore(main): release 0.17.0",
+    "body": ":robot: I have created a release *beep* *boop*\n---\n\n\n## [0.17.0](https://github.com/googleapis/python-bigquery-pandas/compare/v0.16.0...v0.17.0) (2022-01-19)\n\n\n### ⚠ BREAKING CHANGES\n\n* use nullable Int64 and boolean dtypes if available (#445)\n\n### Features\n\n* accepts a table ID, which downloads the table without a query ([#443](https://github.com/googleapis/python-bigquery-pandas/issues/443)) ([bf0e863](https://github.com/googleapis/python-bigquery-pandas/commit/bf0e863ff6506eca267b14e59e47417bd60e947f))\n* use nullable Int64 and boolean dtypes if available ([#445](https://github.com/googleapis/python-bigquery-pandas/issues/445)) ([89078f8](https://github.com/googleapis/python-bigquery-pandas/commit/89078f89478469aa60a0a8b8e1e0c4a59aa059e0))\n\n\n### Bug Fixes\n\n* `read_gbq` supports extreme DATETIME values such as `0001-01-01 00:00:00` ([#444](https://github.com/googleapis/python-bigquery-pandas/issues/444)) ([d120f8f](https://github.com/googleapis/python-bigquery-pandas/commit/d120f8fbdf4541a39ce8d87067523d48f21554bf))\n* `to_gbq` allows strings for DATE and floats for NUMERIC with `api_method=\"load_parquet\"` ([#423](https://github.com/googleapis/python-bigquery-pandas/issues/423)) ([2180836](https://github.com/googleapis/python-bigquery-pandas/commit/21808367d02b5b7fcf35b3c7520224c819879aec))\n* allow extreme DATE values such as `datetime.date(1, 1, 1)` in `load_gbq` ([#442](https://github.com/googleapis/python-bigquery-pandas/issues/442)) ([e13abaf](https://github.com/googleapis/python-bigquery-pandas/commit/e13abaf015cd1ea9da3ad5063680bf89e18f0fac))\n* avoid iteritems deprecation in pandas prerelease ([#469](https://github.com/googleapis/python-bigquery-pandas/issues/469)) ([7379cdc](https://github.com/googleapis/python-bigquery-pandas/commit/7379cdcd7eedcbc751a4002bdf90c12e810e6bcd))\n* use data project for destination in `to_gbq` ([#455](https://github.com/googleapis/python-bigquery-pandas/issues/455)) ([891a00c](https://github.com/googleapis/python-bigquery-pandas/commit/891a00c8f202aa476ffb22b2fb92c01ffa84889a))\n\n\n### Miscellaneous Chores\n\n* release 0.17.0 ([#470](https://github.com/googleapis/python-bigquery-pandas/issues/470)) ([29ac8c3](https://github.com/googleapis/python-bigquery-pandas/commit/29ac8c33127457e86d9864a6979d532cd1d3ae5c))\n\n---\nThis PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please).",
+    "created_at": "2022-01-19T16:32:10Z",
+    "merged_at": "2022-01-19T17:12:15Z",
+    "base_sha": "29ac8c33127457e86d9864a6979d532cd1d3ae5c",
+    "head_sha": "9b774606fe766fbc9bda1cad56885c31e3987e19",
+    "merge_commit_sha": "d4539747848156446d8a3ccdb49661e72ae03109",
+    "labels": [
+      "api: bigquery",
+      "autorelease: published"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "29ac8c33127457e86d9864a6979d532cd1d3ae5c",
+  "final_sha": "9b774606fe766fbc9bda1cad56885c31e3987e19",
+  "changed_files": [
+    {
+      "sha": "2a2a2c8143211d65b0963148ee86da12fa5d5db9",
+      "filename": "CHANGELOG.md",
+      "status": "modified",
+      "additions": 26,
+      "deletions": 0,
+      "changes": 26,
+      "blob_url": "https://github.com/googleapis/python-bigquery-pandas/blob/9b774606fe766fbc9bda1cad56885c31e3987e19/CHANGELOG.md",
+      "raw_url": "https://github.com/googleapis/python-bigquery-pandas/raw/9b774606fe766fbc9bda1cad56885c31e3987e19/CHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/googleapis/python-bigquery-pandas/contents/CHANGELOG.md?ref=9b774606fe766fbc9bda1cad56885c31e3987e19",
+      "patch": "@@ -1,5 +1,31 @@\n # Changelog\n \n+## [0.17.0](https://github.com/googleapis/python-bigquery-pandas/compare/v0.16.0...v0.17.0) (2022-01-19)\n+\n+\n+### ⚠ BREAKING CHANGES\n+\n+* use nullable Int64 and boolean dtypes if available (#445)\n+\n+### Features\n+\n+* accepts a table ID, which downloads the table without a query ([#443](https://github.com/googleapis/python-bigquery-pandas/issues/443)) ([bf0e863](https://github.com/googleapis/python-bigquery-pandas/commit/bf0e863ff6506eca267b14e59e47417bd60e947f))\n+* use nullable Int64 and boolean dtypes if available ([#445](https://github.com/googleapis/python-bigquery-pandas/issues/445)) ([89078f8](https://github.com/googleapis/python-bigquery-pandas/commit/89078f89478469aa60a0a8b8e1e0c4a59aa059e0))\n+\n+\n+### Bug Fixes\n+\n+* `read_gbq` supports extreme DATETIME values such as `0001-01-01 00:00:00` ([#444](https://github.com/googleapis/python-bigquery-pandas/issues/444)) ([d120f8f](https://github.com/googleapis/python-bigquery-pandas/commit/d120f8fbdf4541a39ce8d87067523d48f21554bf))\n+* `to_gbq` allows strings for DATE and floats for NUMERIC with `api_method=\"load_parquet\"` ([#423](https://github.com/googleapis/python-bigquery-pandas/issues/423)) ([2180836](https://github.com/googleapis/python-bigquery-pandas/commit/21808367d02b5b7fcf35b3c7520224c819879aec))\n+* allow extreme DATE values such as `datetime.date(1, 1, 1)` in `load_gbq` ([#442](https://github.com/googleapis/python-bigquery-pandas/issues/442)) ([e13abaf](https://github.com/googleapis/python-bigquery-pandas/commit/e13abaf015cd1ea9da3ad5063680bf89e18f0fac))\n+* avoid iteritems deprecation in pandas prerelease ([#469](https://github.com/googleapis/python-bigquery-pandas/issues/469)) ([7379cdc](https://github.com/googleapis/python-bigquery-pandas/commit/7379cdcd7eedcbc751a4002bdf90c12e810e6bcd))\n+* use data project for destination in `to_gbq` ([#455](https://github.com/googleapis/python-bigquery-pandas/issues/455)) ([891a00c](https://github.com/googleapis/python-bigquery-pandas/commit/891a00c8f202aa476ffb22b2fb92c01ffa84889a))\n+\n+\n+### Miscellaneous Chores\n+\n+* release 0.17.0 ([#470](https://github.com/googleapis/python-bigquery-pandas/issues/470)) ([29ac8c3](https://github.com/googleapis/python-bigquery-pandas/commit/29ac8c33127457e86d9864a6979d532cd1d3ae5c))\n+\n ## [0.16.0](https://www.github.com/googleapis/python-bigquery-pandas/compare/v0.16.0...v0.16.0) (2021-11-08)\n \n "
+    },
+    {
+      "sha": "9fc1e4aa25878e52e3402f17d1d8c3f635ebf9bd",
+      "filename": "pandas_gbq/version.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/googleapis/python-bigquery-pandas/blob/9b774606fe766fbc9bda1cad56885c31e3987e19/pandas_gbq%2Fversion.py",
+      "raw_url": "https://github.com/googleapis/python-bigquery-pandas/raw/9b774606fe766fbc9bda1cad56885c31e3987e19/pandas_gbq%2Fversion.py",
+      "contents_url": "https://api.github.com/repos/googleapis/python-bigquery-pandas/contents/pandas_gbq%2Fversion.py?ref=9b774606fe766fbc9bda1cad56885c31e3987e19",
+      "patch": "@@ -2,4 +2,4 @@\n # Use of this source code is governed by a BSD-style\n # license that can be found in the LICENSE file.\n \n-__version__ = \"0.16.0\"\n+__version__ = \"0.17.0\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "9b774606fe766fbc9bda1cad56885c31e3987e19",
+      "message": "chore(main): release 0.17.0",
+      "parent_shas": [
+        "29ac8c33127457e86d9864a6979d532cd1d3ae5c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__googleapis__python-bigquery-pandas__pr472.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\googleapis__python-bigquery-pandas__pr472__py2_py3__googleapis__python-bigquery-pandas__pr472\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\googleapis__python-bigquery-pandas__pr472__py2_py3__googleapis__python-bigquery-pandas__pr472\\rn"
+  }
+}

@@ -1,0 +1,225 @@
+{
+  "instance_id": "cpp_python__anagrambuild__swig-ts__pr120",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "anagrambuild/swig-ts",
+  "pr_number": 120,
+  "pr_url": "https://github.com/anagrambuild/swig-ts/pull/120",
+  "repo": {
+    "full_name": "anagrambuild/swig-ts",
+    "clone_url": "https://github.com/anagrambuild/swig-ts.git",
+    "default_branch": "main",
+    "created_at": "2025-04-04T10:41:04Z",
+    "stars": 8,
+    "license": "NOASSERTION",
+    "size_kb": 3880
+  },
+  "pull_request": {
+    "id": 3379096579,
+    "title": "Version Packages",
+    "body": "This PR was opened by the [Changesets release](https://github.com/changesets/action) GitHub action. When you're ready to do a release, you can merge this and the packages will be published to npm automatically. If you're not ready to do a release yet, that's fine, whenever you add more changesets to main, this PR will be updated.\n\n\n# Releases\n## @swig-wallet/classic@1.7.1\n\n### Patch Changes\n\n-   Updated dependencies [c522b47]\n    -   @swig-wallet/lib@1.7.1\n    -   @swig-wallet/coder@1.7.1\n\n## @swig-wallet/developer@1.2.1\n\n### Patch Changes\n\n-   Updated dependencies [c522b47]\n    -   @swig-wallet/lib@1.7.1\n\n## @swig-wallet/kit@1.7.1\n\n### Patch Changes\n\n-   Updated dependencies [c522b47]\n    -   @swig-wallet/lib@1.7.1\n    -   @swig-wallet/coder@1.7.1\n\n## @swig-wallet/lib@1.7.1\n\n### Patch Changes\n\n-   c522b47: Added k1/r1 validation\n    -   @swig-wallet/coder@1.7.1\n\n## @swig-wallet/mcp-server@1.0.4\n\n### Patch Changes\n\n-   c522b47: Added k1/r1 validation\n    -   @swig-wallet/classic@1.7.1\n\n## @swig-wallet/coder@1.7.1\n\n\n",
+    "created_at": "2026-03-10T14:46:23Z",
+    "merged_at": "2026-03-10T15:04:07Z",
+    "base_sha": "c522b47a05bc96ad81c97600d20fd8a62e577bd2",
+    "head_sha": "e4f923eba7cd09b59e416b86930832b2846a34a3",
+    "merge_commit_sha": "97ed03e1f1c7ef44a4d053dddc689cef1c68cbfc",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "c522b47a05bc96ad81c97600d20fd8a62e577bd2",
+  "final_sha": "e4f923eba7cd09b59e416b86930832b2846a34a3",
+  "changed_files": [
+    {
+      "sha": "3bee34054264b5a88715441f6ebadae3630937b9",
+      "filename": ".changeset/tender-toes-behave.md",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 6,
+      "changes": 6,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/c522b47a05bc96ad81c97600d20fd8a62e577bd2/.changeset%2Ftender-toes-behave.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/c522b47a05bc96ad81c97600d20fd8a62e577bd2/.changeset%2Ftender-toes-behave.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/.changeset%2Ftender-toes-behave.md?ref=c522b47a05bc96ad81c97600d20fd8a62e577bd2",
+      "patch": "@@ -1,6 +0,0 @@\n----\n-'@swig-wallet/mcp-server': patch\n-'@swig-wallet/lib': patch\n----\n-\n-Added k1/r1 validation"
+    },
+    {
+      "sha": "5e5a1ae614da5cb867ceace5a6e0f2e3b5845df3",
+      "filename": "packages/classic/CHANGELOG.md",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fclassic%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fclassic%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fclassic%2FCHANGELOG.md?ref=e4f923eba7cd09b59e416b86930832b2846a34a3",
+      "patch": "@@ -1,5 +1,13 @@\n # @swig-wallet/classic\n \n+## 1.7.1\n+\n+### Patch Changes\n+\n+- Updated dependencies [c522b47]\n+  - @swig-wallet/lib@1.7.1\n+  - @swig-wallet/coder@1.7.1\n+\n ## 1.7.0\n \n ### Patch Changes"
+    },
+    {
+      "sha": "05e05cc0a92a9d70e740b20fc5a3a1292dc15967",
+      "filename": "packages/classic/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fclassic%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fclassic%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fclassic%2Fpackage.json?ref=e4f923eba7cd09b59e416b86930832b2846a34a3",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/classic\",\n-  \"version\": \"1.7.0\",\n+  \"version\": \"1.7.1\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "bfa28ea451f4e3bcb43a32f5378476cc6b0b7c43",
+      "filename": "packages/coder/CHANGELOG.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fcoder%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fcoder%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fcoder%2FCHANGELOG.md?ref=e4f923eba7cd09b59e416b86930832b2846a34a3",
+      "patch": "@@ -1,5 +1,7 @@\n # @swig-wallet/coder\n \n+## 1.7.1\n+\n ## 1.7.0\n \n ## 1.6.0"
+    },
+    {
+      "sha": "2ad8fb628b47ee84195978d1a46f7fe8480d20b2",
+      "filename": "packages/coder/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fcoder%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fcoder%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fcoder%2Fpackage.json?ref=e4f923eba7cd09b59e416b86930832b2846a34a3",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/coder\",\n-  \"version\": \"1.7.0\",\n+  \"version\": \"1.7.1\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "8bf597f50eca100e2f788f5001e6aea3806876f2",
+      "filename": "packages/developer/CHANGELOG.md",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fdeveloper%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fdeveloper%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fdeveloper%2FCHANGELOG.md?ref=e4f923eba7cd09b59e416b86930832b2846a34a3",
+      "patch": "@@ -1,5 +1,12 @@\n # @swig-wallet/developer\n \n+## 1.2.1\n+\n+### Patch Changes\n+\n+- Updated dependencies [c522b47]\n+  - @swig-wallet/lib@1.7.1\n+\n ## 1.2.0\n \n ### Minor Changes"
+    },
+    {
+      "sha": "77daea77c186b71479b653f9d3b8e09e61d80f06",
+      "filename": "packages/developer/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fdeveloper%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fdeveloper%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fdeveloper%2Fpackage.json?ref=e4f923eba7cd09b59e416b86930832b2846a34a3",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/developer\",\n-  \"version\": \"1.2.0\",\n+  \"version\": \"1.2.1\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "99d16bdc61a9c746286a5737a1dbd944f07837d5",
+      "filename": "packages/kit/CHANGELOG.md",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fkit%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fkit%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fkit%2FCHANGELOG.md?ref=e4f923eba7cd09b59e416b86930832b2846a34a3",
+      "patch": "@@ -1,5 +1,13 @@\n # @swig-wallet/classic\n \n+## 1.7.1\n+\n+### Patch Changes\n+\n+- Updated dependencies [c522b47]\n+  - @swig-wallet/lib@1.7.1\n+  - @swig-wallet/coder@1.7.1\n+\n ## 1.7.0\n \n ### Patch Changes"
+    },
+    {
+      "sha": "c520e506d31ae891c21974b574efaab021a39f2d",
+      "filename": "packages/kit/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fkit%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fkit%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fkit%2Fpackage.json?ref=e4f923eba7cd09b59e416b86930832b2846a34a3",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/kit\",\n-  \"version\": \"1.7.0\",\n+  \"version\": \"1.7.1\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "0aeb48490f73d42b6758bc9d06aa6aff74c03cd9",
+      "filename": "packages/lib/CHANGELOG.md",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Flib%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Flib%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Flib%2FCHANGELOG.md?ref=e4f923eba7cd09b59e416b86930832b2846a34a3",
+      "patch": "@@ -1,5 +1,12 @@\n # @swig-wallet/classic\n \n+## 1.7.1\n+\n+### Patch Changes\n+\n+- c522b47: Added k1/r1 validation\n+  - @swig-wallet/coder@1.7.1\n+\n ## 1.7.0\n \n ### Minor Changes"
+    },
+    {
+      "sha": "24701c4a43edda6c7a86e1611afff8677f82ac88",
+      "filename": "packages/lib/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Flib%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Flib%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Flib%2Fpackage.json?ref=e4f923eba7cd09b59e416b86930832b2846a34a3",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/lib\",\n-  \"version\": \"1.7.0\",\n+  \"version\": \"1.7.1\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    },
+    {
+      "sha": "e205c760b0f88bef6d0192bde9f2bf8727d69d86",
+      "filename": "packages/mcp-server/CHANGELOG.md",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fmcp-server%2FCHANGELOG.md",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fmcp-server%2FCHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fmcp-server%2FCHANGELOG.md?ref=e4f923eba7cd09b59e416b86930832b2846a34a3",
+      "patch": "@@ -1,5 +1,12 @@\n # @swig-wallet/mcp-server\n \n+## 1.0.4\n+\n+### Patch Changes\n+\n+- c522b47: Added k1/r1 validation\n+  - @swig-wallet/classic@1.7.1\n+\n ## 1.0.3\n \n ### Patch Changes"
+    },
+    {
+      "sha": "f0d8b19bce37bf9b9a64e3a9f2706bb81eb9e8c6",
+      "filename": "packages/mcp-server/package.json",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fmcp-server%2Fpackage.json",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/e4f923eba7cd09b59e416b86930832b2846a34a3/packages%2Fmcp-server%2Fpackage.json",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fmcp-server%2Fpackage.json?ref=e4f923eba7cd09b59e416b86930832b2846a34a3",
+      "patch": "@@ -1,6 +1,6 @@\n {\n   \"name\": \"@swig-wallet/mcp-server\",\n-  \"version\": \"1.0.3\",\n+  \"version\": \"1.0.4\",\n   \"license\": \"AGPL-3.0-only\",\n   \"repository\": {\n     \"type\": \"git\","
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "e4f923eba7cd09b59e416b86930832b2846a34a3",
+      "message": "Version Packages",
+      "parent_shas": [
+        "c522b47a05bc96ad81c97600d20fd8a62e577bd2"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__anagrambuild__swig-ts__pr120.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\anagrambuild__swig-ts__pr120__cpp_python__anagrambuild__swig-ts__pr120\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\anagrambuild__swig-ts__pr120__cpp_python__anagrambuild__swig-ts__pr120\\rn"
+  }
+}

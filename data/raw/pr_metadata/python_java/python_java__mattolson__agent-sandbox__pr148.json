@@ -1,0 +1,265 @@
+{
+  "instance_id": "python_java__mattolson__agent-sandbox__pr148",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "mattolson/agent-sandbox",
+  "pr_number": 148,
+  "pr_url": "https://github.com/mattolson/agent-sandbox/pull/148",
+  "repo": {
+    "full_name": "mattolson/agent-sandbox",
+    "clone_url": "https://github.com/mattolson/agent-sandbox.git",
+    "default_branch": "main",
+    "created_at": "2026-01-17T19:23:56Z",
+    "stars": 164,
+    "license": "MIT",
+    "size_kb": 1499
+  },
+  "pull_request": {
+    "id": 3526358254,
+    "title": "Add python to local dev env and update python stack",
+    "body": "## Summary\r\n\r\nThis PR makes the local Python development story more useful for both product users and maintainers working on proxy-side Python code.\r\n\r\n- add a dedicated Python test environment in `Dockerfile.dev` for local proxy-addon work, including `mitmproxy`, `pytest`, and `PyYAML`\r\n- make the shipped Python stack more practical for default-deny sandbox use by documenting Debian `venv` behavior, PEP 668 limits, and the offline `--system-site-packages` workflow\r\n- remove `pipx` from the shipped Python stack and simplify the Python path layout around `~/.local/bin`\r\n- move Go-installed tools to `$HOME/go/bin` and update the Go stack docs and local compose mounts so Go tools do not mask agent binaries such as `codex`\r\n- add common Python local-dev artifacts to `.gitignore`\r\n- refresh README language around supported agents and clarify that public package registries such as PyPI remain opt-in\r\n- normalize the local compose files for this repo's dev environment\r\n\r\n",
+    "created_at": "2026-04-14T03:40:19Z",
+    "merged_at": "2026-04-14T05:05:22Z",
+    "base_sha": "c82c32c2b4acacc16826a97aa80d4940b4366f81",
+    "head_sha": "24b37077a284b913c5c0c2d45f5d44018c619d1e",
+    "merge_commit_sha": "a93654b4d273ee37c68b865e672bfe81f62dcf68",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "c82c32c2b4acacc16826a97aa80d4940b4366f81",
+  "final_sha": "24b37077a284b913c5c0c2d45f5d44018c619d1e",
+  "changed_files": [
+    {
+      "sha": "fb63c760bc003db15a8002da26d1b28a50022c38",
+      "filename": ".agent-sandbox/compose/agent.codex.yml",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/mattolson/agent-sandbox/blob/24b37077a284b913c5c0c2d45f5d44018c619d1e/.agent-sandbox%2Fcompose%2Fagent.codex.yml",
+      "raw_url": "https://github.com/mattolson/agent-sandbox/raw/24b37077a284b913c5c0c2d45f5d44018c619d1e/.agent-sandbox%2Fcompose%2Fagent.codex.yml",
+      "contents_url": "https://api.github.com/repos/mattolson/agent-sandbox/contents/.agent-sandbox%2Fcompose%2Fagent.codex.yml?ref=24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "patch": "@@ -10,9 +10,7 @@ services:\n   agent:\n     image: ghcr.io/mattolson/agent-sandbox-codex@sha256:883ec21664c410b3943fdca146990e93e91426737cc83b8b6321cdee0ca454ae\n     volumes:\n-      # Persist Codex config and credentials\n       - codex-state:/home/dev/.codex\n-      # Persist shell history\n       - codex-history:/commandhistory\n volumes:\n   codex-state:"
+    },
+    {
+      "sha": "650cff6da6da8e9cfc47fd3939574d5776f16319",
+      "filename": ".agent-sandbox/compose/base.yml",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 10,
+      "changes": 18,
+      "blob_url": "https://github.com/mattolson/agent-sandbox/blob/24b37077a284b913c5c0c2d45f5d44018c619d1e/.agent-sandbox%2Fcompose%2Fbase.yml",
+      "raw_url": "https://github.com/mattolson/agent-sandbox/raw/24b37077a284b913c5c0c2d45f5d44018c619d1e/.agent-sandbox%2Fcompose%2Fbase.yml",
+      "contents_url": "https://api.github.com/repos/mattolson/agent-sandbox/contents/.agent-sandbox%2Fcompose%2Fbase.yml?ref=24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "patch": "@@ -7,14 +7,19 @@ services:\n     image: ghcr.io/mattolson/agent-sandbox-proxy@sha256:76de198087cefc7747b4171ff9d708dff8b5296242e15d9b7c9081b3b1d00577\n     cap_drop:\n       - ALL\n-    environment:\n-      - PROXY_MODE=enforce\n     volumes:\n       - proxy-state:/home/mitmproxy/.mitmproxy\n       - proxy-ca:/ca-export\n       - ../policy/user.policy.yaml:/etc/agent-sandbox/policy/user.policy.yaml:ro\n+    environment:\n+      - PROXY_MODE=enforce\n     healthcheck:\n-      test: [\"CMD\", \"nc\", \"-z\", \"localhost\", \"8080\"]\n+      test:\n+        - CMD\n+        - nc\n+        - -z\n+        - localhost\n+        - \"8080\"\n       interval: 5s\n       timeout: 3s\n       retries: 3\n@@ -25,19 +30,13 @@ services:\n     cap_drop:\n       - ALL\n     cap_add:\n-      # iptables firewall rule management (init-firewall.sh)\n       - NET_ADMIN\n-      # Raw socket access for iptables (init-firewall.sh)\n       - NET_RAW\n-      # sudo to run init scripts as root (sudoers restricts to specific scripts)\n       - SETUID\n       - SETGID\n     volumes:\n-      # Project workspace\n       - ../..:/workspace\n-      # Read-only policy directory\n       - ..:/workspace/.agent-sandbox:ro\n-      # Proxy CA certificate (public cert only, no private key)\n       - proxy-ca:/etc/mitmproxy:ro\n     working_dir: /workspace\n     stdin_open: true\n@@ -47,7 +46,6 @@ services:\n       - HTTP_PROXY=http://proxy:8080\n       - HTTPS_PROXY=http://proxy:8080\n       - NO_PROXY=localhost,127.0.0.1,proxy\n-      # Disable HTTP/2 in Go clients (gh CLI) to avoid header validation issues through proxy\n       - GODEBUG=http2client=0\n volumes:\n   proxy-state:"
+    },
+    {
+      "sha": "bb385ec33c16b009d395781181c88dace754e0bb",
+      "filename": ".agent-sandbox/compose/user.override.yml",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 2,
+      "changes": 6,
+      "blob_url": "https://github.com/mattolson/agent-sandbox/blob/24b37077a284b913c5c0c2d45f5d44018c619d1e/.agent-sandbox%2Fcompose%2Fuser.override.yml",
+      "raw_url": "https://github.com/mattolson/agent-sandbox/raw/24b37077a284b913c5c0c2d45f5d44018c619d1e/.agent-sandbox%2Fcompose%2Fuser.override.yml",
+      "contents_url": "https://api.github.com/repos/mattolson/agent-sandbox/contents/.agent-sandbox%2Fcompose%2Fuser.override.yml?ref=24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "patch": "@@ -12,12 +12,14 @@ services:\n     volumes:\n       - ${HOME}/.config/agent-sandbox/shell.d:/home/dev/.config/agent-sandbox/shell.d:ro\n       - ${HOME}/.config/agent-sandbox/dotfiles:/home/dev/.dotfiles:ro\n-      - go-bin:/home/dev/.local/bin\n+      - go-tool-bin:/home/dev/go/bin\n       - go-mod-cache:/home/dev/.cache/go-mod\n       - go-build-cache:/home/dev/.cache/go-build\n       - go-env:/home/dev/.config/go\n+      - pip-cache:/home/dev/.cache/pip\n volumes:\n-  go-bin:\n+  go-tool-bin:\n   go-mod-cache:\n   go-build-cache:\n   go-env:\n+  pip-cache:"
+    },
+    {
+      "sha": "8292042d05d65957f0168d7d683bb2a5b107a41f",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/mattolson/agent-sandbox/blob/24b37077a284b913c5c0c2d45f5d44018c619d1e/.gitignore",
+      "raw_url": "https://github.com/mattolson/agent-sandbox/raw/24b37077a284b913c5c0c2d45f5d44018c619d1e/.gitignore",
+      "contents_url": "https://api.github.com/repos/mattolson/agent-sandbox/contents/.gitignore?ref=24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "patch": "@@ -3,6 +3,10 @@\n .env\n .idea\n .vscode\n+.venv/\n+.mypy_cache/\n+.pytest_cache/\n+.ruff_cache/\n __pycache__/\n *.pyc\n .DS_Store"
+    },
+    {
+      "sha": "0548ac1340dabe506cc5dc17e58e37a8540d6875",
+      "filename": "Dockerfile.dev",
+      "status": "modified",
+      "additions": 13,
+      "deletions": 3,
+      "changes": 16,
+      "blob_url": "https://github.com/mattolson/agent-sandbox/blob/24b37077a284b913c5c0c2d45f5d44018c619d1e/Dockerfile.dev",
+      "raw_url": "https://github.com/mattolson/agent-sandbox/raw/24b37077a284b913c5c0c2d45f5d44018c619d1e/Dockerfile.dev",
+      "contents_url": "https://api.github.com/repos/mattolson/agent-sandbox/contents/Dockerfile.dev?ref=24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "patch": "@@ -2,12 +2,22 @@ ARG AGENT=opencode\n FROM agent-sandbox-${AGENT}:local\n \n USER root\n-RUN /etc/agent-sandbox/stacks/go.sh 1.26.1\n \n+# Setup go\n+RUN /etc/agent-sandbox/stacks/go.sh 1.26.1\n ENV GOPATH=/home/dev/go\n-ENV GOBIN=/home/dev/.local/bin\n+ENV GOBIN=/home/dev/go/bin\n ENV GOMODCACHE=/home/dev/.cache/go-mod\n ENV GOCACHE=/home/dev/.cache/go-build\n-ENV PATH=/usr/local/go/bin:/home/dev/.local/bin:/home/dev/go/bin:$PATH\n+\n+# Setup python\n+RUN /etc/agent-sandbox/stacks/python.sh\n+RUN python3 -m venv /opt/proxy-python && \\\n+  /opt/proxy-python/bin/pip install --no-cache-dir mitmproxy pytest PyYAML\n+ENV PIP_CACHE_DIR=/home/dev/.cache/pip\n+ENV PIP_DISABLE_PIP_VERSION_CHECK=1\n+\n+# Keep agent binaries ahead of the proxy test env and Go-installed tools.\n+ENV PATH=/home/dev/.local/bin:/opt/proxy-python/bin:/usr/local/go/bin:$PATH:/home/dev/go/bin\n \n USER dev"
+    },
+    {
+      "sha": "6708adfbdbbe5088fa4fe6ddd412c728911b15f5",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 12,
+      "changes": 26,
+      "blob_url": "https://github.com/mattolson/agent-sandbox/blob/24b37077a284b913c5c0c2d45f5d44018c619d1e/README.md",
+      "raw_url": "https://github.com/mattolson/agent-sandbox/raw/24b37077a284b913c5c0c2d45f5d44018c619d1e/README.md",
+      "contents_url": "https://api.github.com/repos/mattolson/agent-sandbox/contents/README.md?ref=24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "patch": "@@ -25,17 +25,17 @@ Target platform: [Colima](https://github.com/abiosoft/colima) + [Docker Engine](\n \n | Agent | CLI | VS Code | JetBrains |\n |-------|-----|---------|-----------|\n-| [Claude Code](https://code.claude.com/docs/en/overview) | :green_circle: | :green_circle: | :green_circle: |\n-| [Codex](https://github.com/openai/codex) | :green_circle: | :large_blue_circle: | :large_blue_circle: |\n-| [Gemini](https://github.com/google-gemini/gemini-cli) | :large_blue_circle: | :large_blue_circle: | :red_circle: |\n-| [OpenCode](https://github.com/anomalyco/opencode) | :large_blue_circle: | :large_blue_circle: | :red_circle: |\n-| [Pi](https://github.com/badlogic/pi-mono) | :large_blue_circle: | :red_circle: | :red_circle: |\n-| [Factory](https://docs.factory.ai/cli) | :large_blue_circle: | :large_blue_circle: | :large_blue_circle: |\n-| [Copilot](https://github.com/github/copilot-cli) | :large_blue_circle: | :large_blue_circle: | :red_circle: |\n-\n-* :green_circle: **Full Support** - stable, heavily used by maintainers\n-* :large_blue_circle: **Preview** - tested during initial integration, but not heavily used by maintainers. Contributions, documentation, and bug reports welcome.\n-* :red_circle: **Not Supported** - known blockers\n+| [Claude Code](https://code.claude.com/docs/en/overview) | :white_check_mark: | :white_check_mark: | :white_check_mark: |\n+| [Codex](https://github.com/openai/codex) | :white_check_mark: | :heavy_check_mark: | :heavy_check_mark: |\n+| [Gemini](https://github.com/google-gemini/gemini-cli) | :heavy_check_mark: | :heavy_check_mark: | :no_entry_sign: |\n+| [OpenCode](https://github.com/anomalyco/opencode) | :heavy_check_mark: | :heavy_check_mark: | :no_entry_sign: |\n+| [Pi](https://github.com/badlogic/pi-mono) | :heavy_check_mark: | :no_entry_sign: | :no_entry_sign: |\n+| [Factory](https://docs.factory.ai/cli) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |\n+| [Copilot](https://github.com/github/copilot-cli) | :heavy_check_mark: | :heavy_check_mark: | :no_entry_sign: |\n+\n+* :white_check_mark: **Full Support** - stable, heavily used by maintainers\n+* :heavy_check_mark: **Preview** - tested during initial integration, but not heavily used by maintainers. Contributions, documentation, and bug reports welcome.\n+* :no_entry_sign: **Not Supported** - known blockers\n   * Copilot's IntelliJ plugin [cannot complete auth in a devcontainer](https://github.com/microsoft/copilot-intellij-feedback/issues/1375).\n   * No official Google Gemini plugin available for JetBrains\n   * No JetBrains extension available for OpenCode\n@@ -209,9 +209,11 @@ services:\n \n domains:\n   - registry.npmjs.org\n-  - pypi.org\n ```\n \n+Public package registries such as PyPI are intentionally not allowed by default. If you need them, add them explicitly\n+to your user or per-agent policy. Prefer a private mirror or proxy when you have one.\n+\n If you want to make customizations that apply to a single agent, you can edit the file `.agent-sandbox/policy/user.agent.<agent>.policy.yaml`. For example, to add a domain to the allowlist, but only when using Claude Code, add it to the file `user.agent.claude.policy.yaml`.\n \n See [docs/policy/schema.md](./docs/policy/schema.md) for the full policy format reference."
+    },
+    {
+      "sha": "2ac1747d2494db0dfa2dc7a02d836cf7ee437499",
+      "filename": "docs/stacks/README.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/mattolson/agent-sandbox/blob/24b37077a284b913c5c0c2d45f5d44018c619d1e/docs%2Fstacks%2FREADME.md",
+      "raw_url": "https://github.com/mattolson/agent-sandbox/raw/24b37077a284b913c5c0c2d45f5d44018c619d1e/docs%2Fstacks%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/mattolson/agent-sandbox/contents/docs%2Fstacks%2FREADME.md?ref=24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "patch": "@@ -25,7 +25,7 @@ agentbox up -d\n \n | Stack | Script | Version arg | Default | Guide |\n |-------|--------|-------------|---------|-------|\n-| Python | `python.sh` | (ignored, uses apt) | System Python 3 | - |\n+| Python | `python.sh` | (ignored, uses apt) | System Python 3, pip, venv, and native build toolchain | [Python stack](./python.md) |\n | Node.js | `node.sh` | Major version | 22 | - |\n | Go | `go.sh` | Full version | 1.26.1 | [Go stack](./go.md) |\n | Rust | `rust.sh` | Toolchain | stable | - |\n@@ -34,6 +34,7 @@ Each script handles both amd64 and arm64 architectures.\n \n ## Stack-Specific Guides\n \n+- [Python stack](./python.md) - Python build deps, user-local tool paths, and opt-in package registry policy\n - [Go stack](./go.md) - Go environment variables, persistent local dev mounts, and policy requirements\n \n ## Advanced"
+    },
+    {
+      "sha": "14773acfadf1059b5ed20fa5b0986300cb4ced99",
+      "filename": "docs/stacks/go.md",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 4,
+      "changes": 9,
+      "blob_url": "https://github.com/mattolson/agent-sandbox/blob/24b37077a284b913c5c0c2d45f5d44018c619d1e/docs%2Fstacks%2Fgo.md",
+      "raw_url": "https://github.com/mattolson/agent-sandbox/raw/24b37077a284b913c5c0c2d45f5d44018c619d1e/docs%2Fstacks%2Fgo.md",
+      "contents_url": "https://api.github.com/repos/mattolson/agent-sandbox/contents/docs%2Fstacks%2Fgo.md?ref=24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "patch": "@@ -5,7 +5,7 @@ See [Language stacks](./README.md) for the shared stack workflow.\n The Go stack configures these paths for the `dev` user:\n \n - `GOPATH=$HOME/go`\n-- `GOBIN=$HOME/.local/bin`\n+- `GOBIN=$HOME/go/bin`\n - `GOMODCACHE=$HOME/.cache/go-mod`\n - `GOCACHE=$HOME/.cache/go-build`\n \n@@ -16,20 +16,21 @@ bin dir, module cache, build cache, and Go env:\n services:\n   agent:\n     volumes:\n-      - go-bin:/home/dev/.local/bin\n+      - go-tool-bin:/home/dev/go/bin\n       - go-mod-cache:/home/dev/.cache/go-mod\n       - go-build-cache:/home/dev/.cache/go-build\n       - go-env:/home/dev/.config/go\n \n volumes:\n-  go-bin:\n+  go-tool-bin:\n   go-mod-cache:\n   go-build-cache:\n   go-env:\n ```\n \n Keep source code in `/workspace`, not under `GOPATH`. The stack also installs `build-essential` and `pkg-config` so\n-CGO-backed packages can compile.\n+CGO-backed packages can compile. `GOBIN` uses `$HOME/go/bin` rather than `~/.local/bin` so Go-installed tools do not\n+mask agent binaries such as `codex`.\n \n For module downloads and `go install`, allow at least `proxy.golang.org` and `sum.golang.org` in your sandbox policy.\n If you run the installer script inside a running sandboxed container instead of during image build, you will also need"
+    },
+    {
+      "sha": "0727bc8e956356f9d4dd96b9552a6a51fdb49eba",
+      "filename": "docs/stacks/python.md",
+      "status": "added",
+      "additions": 92,
+      "deletions": 0,
+      "changes": 92,
+      "blob_url": "https://github.com/mattolson/agent-sandbox/blob/24b37077a284b913c5c0c2d45f5d44018c619d1e/docs%2Fstacks%2Fpython.md",
+      "raw_url": "https://github.com/mattolson/agent-sandbox/raw/24b37077a284b913c5c0c2d45f5d44018c619d1e/docs%2Fstacks%2Fpython.md",
+      "contents_url": "https://api.github.com/repos/mattolson/agent-sandbox/contents/docs%2Fstacks%2Fpython.md?ref=24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "patch": "@@ -0,0 +1,92 @@\n+# Python Stack\n+\n+See [Language stacks](./README.md) for the shared stack workflow.\n+\n+The Python stack installs these system packages:\n+\n+- `python3`\n+- `python3-dev`\n+- `python3-pip`\n+- `python3-setuptools`\n+- `python3-venv`\n+- `python3-wheel`\n+- `build-essential`\n+- `pkg-config`\n+- `libffi-dev`\n+- `libssl-dev`\n+\n+It also configures these paths for the `dev` user:\n+\n+- `PATH=$HOME/.local/bin:/usr/local/bin:$PATH`\n+- `PIP_CACHE_DIR=$HOME/.cache/pip`\n+\n+Use the system interpreter only to create project environments. For normal work, pick one of these workflows.\n+\n+## Default-Deny Local Workflow\n+\n+In the default sandbox policy, Debian's Python packaging behavior matters:\n+\n+- `pip install ...` and `pip install --user ...` outside a virtualenv are blocked by PEP 668 (`externally-managed-environment`)\n+- Fresh `python -m venv` environments include `pip` and `setuptools`, but not `wheel`\n+- `python3-wheel` is installed system-wide by this stack, but a standard virtualenv does not see it unless you use `--system-site-packages`\n+- `python -m venv --upgrade-deps` reaches PyPI, so it is not useful under the default-deny policy\n+\n+If you need to work on a checked-in local package without allowing a package registry, create the venv with system site\n+packages so Debian's packaged build tooling remains visible, then disable build isolation for local installs:\n+\n+```bash\n+python -m venv --system-site-packages .venv\n+. .venv/bin/activate\n+pip install --no-build-isolation -e .\n+```\n+\n+This is less isolated than a normal virtualenv because Debian-packaged modules remain visible inside the environment.\n+If you want a cleaner virtualenv, allow a private mirror or explicit package registry access and use the standard\n+`python -m venv .venv` workflow instead.\n+\n+## Registry-Enabled Workflow\n+\n+Once a private mirror or package registry is allowed by policy, use a standard project-local virtualenv:\n+\n+```bash\n+python -m venv .venv\n+. .venv/bin/activate\n+pip install wheel  # if your project needs it\n+```\n+\n+Do not rely on `pip install --user`. Debian marks the system interpreter as externally managed, so those installs fail\n+unless you opt into `--break-system-packages`, which this stack does not recommend.\n+\n+For a persistent local Python dev environment, add a pip cache mount to `.agent-sandbox/compose/user.override.yml`:\n+\n+```yaml\n+services:\n+  agent:\n+    volumes:\n+      - pip-cache:/home/dev/.cache/pip\n+\n+volumes:\n+  pip-cache:\n+```\n+\n+Package registry access is intentionally closed by default. That keeps public package download out of the baseline\n+security posture while still giving you a complete local Python toolchain for checked-in code, local virtualenvs, and\n+mounted artifacts.\n+\n+If you need package installs inside the sandbox, prefer allowing a private package mirror or proxy instead of public\n+PyPI. For example:\n+\n+```yaml\n+domains:\n+  - python-packages.example.com\n+```\n+\n+If you explicitly want public PyPI for local development, opt in by adding these domains to your policy:\n+\n+```yaml\n+domains:\n+  - pypi.org\n+  - files.pythonhosted.org\n+```\n+\n+Commands like `pip install ...` that fetch from a registry will only work after you allow that registry."
+    },
+    {
+      "sha": "61fe5e9296257cc3dd11ac2dedf78c9ee27f7ec1",
+      "filename": "images/base/Dockerfile",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1,
+      "changes": 4,
+      "blob_url": "https://github.com/mattolson/agent-sandbox/blob/24b37077a284b913c5c0c2d45f5d44018c619d1e/images%2Fbase%2FDockerfile",
+      "raw_url": "https://github.com/mattolson/agent-sandbox/raw/24b37077a284b913c5c0c2d45f5d44018c619d1e/images%2Fbase%2FDockerfile",
+      "contents_url": "https://api.github.com/repos/mattolson/agent-sandbox/contents/images%2Fbase%2FDockerfile?ref=24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "patch": "@@ -109,6 +109,7 @@ COPY --chown=${USERNAME}:${USERNAME} tmux.conf /home/${USERNAME}/.tmux.conf\n # Copy firewall script, shell init, and utilities\n # Files in /etc/agent-sandbox are root-owned to prevent agent tampering\n COPY shell-init.sh /etc/agent-sandbox/shell-init.sh\n+COPY path-helpers.sh /etc/agent-sandbox/path-helpers.sh\n COPY stacks/ /etc/agent-sandbox/stacks/\n COPY init-firewall.sh /usr/local/bin/\n COPY install-proxy-ca.sh /usr/local/bin/\n@@ -126,8 +127,9 @@ USER root\n RUN mkdir -p /usr/local/etc\n COPY system-gitconfig /usr/local/etc/gitconfig\n \n-RUN chmod 644 /etc/agent-sandbox/shell-init.sh /etc/zsh/zshrc /usr/local/etc/gitconfig && \\\n+RUN chmod 644 /etc/agent-sandbox/shell-init.sh /etc/agent-sandbox/path-helpers.sh /etc/zsh/zshrc /usr/local/etc/gitconfig && \\\n   chown root:root /etc/agent-sandbox/shell-init.sh && \\\n+  chown root:root /etc/agent-sandbox/path-helpers.sh && \\\n   chown root:root /etc/zsh/zshrc && \\\n   chown root:root /usr/local/etc/gitconfig && \\\n   chmod -R 755 /etc/agent-sandbox/stacks && \\"
+    },
+    {
+      "sha": "c694f0ef48ed59e0b03b6a79c6ee135204cf0e61",
+      "filename": "images/base/path-helpers.sh",
+      "status": "added",
+      "additions": 36,
+      "deletions": 0,
+      "changes": 36,
+      "blob_url": "https://github.com/mattolson/agent-sandbox/blob/24b37077a284b913c5c0c2d45f5d44018c619d1e/images%2Fbase%2Fpath-helpers.sh",
+      "raw_url": "https://github.com/mattolson/agent-sandbox/raw/24b37077a284b913c5c0c2d45f5d44018c619d1e/images%2Fbase%2Fpath-helpers.sh",
+      "contents_url": "https://api.github.com/repos/mattolson/agent-sandbox/contents/images%2Fbase%2Fpath-helpers.sh?ref=24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "patch": "@@ -0,0 +1,36 @@\n+#!/bin/sh\n+\n+path_prepend() {\n+  PATH=\"$1${PATH:+:$PATH}\"\n+}\n+\n+path_append() {\n+  PATH=\"${PATH:+$PATH:}$1\"\n+}\n+\n+path_dedupe() {\n+  _agentbox_old_path=\"$PATH\"\n+  _agentbox_new_path=\"\"\n+\n+  while [ -n \"$_agentbox_old_path\" ]; do\n+    case \"$_agentbox_old_path\" in\n+      *:*)\n+        _agentbox_entry=\"${_agentbox_old_path%%:*}\"\n+        _agentbox_old_path=\"${_agentbox_old_path#*:}\"\n+        ;;\n+      *)\n+        _agentbox_entry=\"$_agentbox_old_path\"\n+        _agentbox_old_path=\"\"\n+        ;;\n+    esac\n+\n+    [ -n \"$_agentbox_entry\" ] || continue\n+    case \":$_agentbox_new_path:\" in\n+      *\":$_agentbox_entry:\"*) ;;\n+      *) _agentbox_new_path=\"${_agentbox_new_path:+$_agentbox_new_path:}$_agentbox_entry\" ;;\n+    esac\n+  done\n+\n+  PATH=\"$_agentbox_new_path\"\n+  unset _agentbox_old_path _agentbox_new_path _agentbox_entry\n+}"
+    },
+    {
+      "sha": "44c82dde9afb2dd42b105f73f9117f23ce06a2cb",
+      "filename": "images/base/stacks/go.sh",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 7,
+      "changes": 24,
+      "blob_url": "https://github.com/mattolson/agent-sandbox/blob/24b37077a284b913c5c0c2d45f5d44018c619d1e/images%2Fbase%2Fstacks%2Fgo.sh",
+      "raw_url": "https://github.com/mattolson/agent-sandbox/raw/24b37077a284b913c5c0c2d45f5d44018c619d1e/images%2Fbase%2Fstacks%2Fgo.sh",
+      "contents_url": "https://api.github.com/repos/mattolson/agent-sandbox/contents/images%2Fbase%2Fstacks%2Fgo.sh?ref=24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "patch": "@@ -49,26 +49,36 @@ tar -C /usr/local -xzf \"${TMPDIR}/${TARBALL}\"\n # Go directories for dev user\n mkdir -p \\\n   /home/dev/go \\\n+  /home/dev/go/bin \\\n   /home/dev/.cache/go-build \\\n   /home/dev/.cache/go-mod \\\n-  /home/dev/.config/go \\\n-  /home/dev/.local/bin\n-chown -R dev:dev /home/dev/go /home/dev/.cache /home/dev/.config/go /home/dev/.local\n+  /home/dev/.config/go\n+chown -R dev:dev /home/dev/go /home/dev/.cache /home/dev/.config/go\n \n cat > /etc/zsh/zshenv.d/go.zsh << 'ZSHENV'\n export GOPATH=\"$HOME/go\"\n-export GOBIN=\"$HOME/.local/bin\"\n+export GOBIN=\"$HOME/go/bin\"\n export GOMODCACHE=\"$HOME/.cache/go-mod\"\n export GOCACHE=\"$HOME/.cache/go-build\"\n-export PATH=\"/usr/local/go/bin:$GOBIN:$GOPATH/bin:$PATH\"\n+. /etc/agent-sandbox/path-helpers.sh\n+\n+path_prepend \"/usr/local/go/bin\"\n+path_append \"$GOBIN\"\n+path_dedupe\n+export PATH\n ZSHENV\n \n cat > /etc/profile.d/go.sh << 'PROFILE'\n export GOPATH=\"$HOME/go\"\n-export GOBIN=\"$HOME/.local/bin\"\n+export GOBIN=\"$HOME/go/bin\"\n export GOMODCACHE=\"$HOME/.cache/go-mod\"\n export GOCACHE=\"$HOME/.cache/go-build\"\n-export PATH=\"/usr/local/go/bin:$GOBIN:$GOPATH/bin:$PATH\"\n+. /etc/agent-sandbox/path-helpers.sh\n+\n+path_prepend \"/usr/local/go/bin\"\n+path_append \"$GOBIN\"\n+path_dedupe\n+export PATH\n PROFILE\n \n echo \"Go stack installed: $(/usr/local/go/bin/go version)\""
+    },
+    {
+      "sha": "e964d5b1bd1a1ca937738f7adb9c561b28f0093a",
+      "filename": "images/base/stacks/python.sh",
+      "status": "modified",
+      "additions": 34,
+      "deletions": 4,
+      "changes": 38,
+      "blob_url": "https://github.com/mattolson/agent-sandbox/blob/24b37077a284b913c5c0c2d45f5d44018c619d1e/images%2Fbase%2Fstacks%2Fpython.sh",
+      "raw_url": "https://github.com/mattolson/agent-sandbox/raw/24b37077a284b913c5c0c2d45f5d44018c619d1e/images%2Fbase%2Fstacks%2Fpython.sh",
+      "contents_url": "https://api.github.com/repos/mattolson/agent-sandbox/contents/images%2Fbase%2Fstacks%2Fpython.sh?ref=24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "patch": "@@ -1,5 +1,5 @@\n #!/bin/bash\n-# Install Python 3 + pip + venv from apt\n+# Install a Python 3 development environment from apt\n # Usage: python.sh [version]\n #   version: not used (apt provides system Python), accepted for interface consistency\n set -euo pipefail\n@@ -10,21 +10,51 @@ if [ \"$(id -u)\" -ne 0 ]; then\n fi\n \n apt-get update && apt-get install -y --no-install-recommends \\\n+  build-essential \\\n+  libffi-dev \\\n+  libssl-dev \\\n+  pkg-config \\\n   python3 \\\n+  python3-dev \\\n   python3-pip \\\n+  python3-setuptools \\\n   python3-venv \\\n+  python3-wheel \\\n   && apt-get clean && rm -rf /var/lib/apt/lists/*\n \n # Convenience symlinks\n ln -sf /usr/bin/python3 /usr/local/bin/python\n+ln -sf /usr/bin/pip3 /usr/local/bin/pip\n \n-# PATH entry (python3 is already in /usr/bin, but pip may install to /usr/local/bin)\n+# Python tooling and caches live under the dev user's home directory.\n+mkdir -p \\\n+  /home/dev/.cache/pip \\\n+  /home/dev/.config/pip \\\n+  /home/dev/.local/bin\n+chown -R dev:dev /home/dev/.cache /home/dev/.config/pip /home/dev/.local\n+\n+# PATH entry for Python-managed tools plus shared cache/tooling defaults.\n+# Keep agent binaries in ~/.local/bin ahead of any later user-installed tools.\n cat > /etc/zsh/zshenv.d/python.zsh << 'ZSHENV'\n-export PATH=\"/usr/local/bin:$PATH\"\n+. /etc/agent-sandbox/path-helpers.sh\n+\n+path_prepend \"/usr/local/bin\"\n+path_prepend \"$HOME/.local/bin\"\n+path_dedupe\n+export PATH\n+export PIP_CACHE_DIR=\"$HOME/.cache/pip\"\n+export PIP_DISABLE_PIP_VERSION_CHECK=1\n ZSHENV\n \n cat > /etc/profile.d/python.sh << 'PROFILE'\n-export PATH=\"/usr/local/bin:$PATH\"\n+. /etc/agent-sandbox/path-helpers.sh\n+\n+path_prepend \"/usr/local/bin\"\n+path_prepend \"$HOME/.local/bin\"\n+path_dedupe\n+export PATH\n+export PIP_CACHE_DIR=\"$HOME/.cache/pip\"\n+export PIP_DISABLE_PIP_VERSION_CHECK=1\n PROFILE\n \n echo \"Python stack installed: $(python3 --version)\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "c9632c1e623306348f5755013d01efad7ab38765",
+      "message": "Normalize compose files",
+      "parent_shas": [
+        "c82c32c2b4acacc16826a97aa80d4940b4366f81"
+      ]
+    },
+    {
+      "sha": "e4766294b3196cd2e6288935e73441cd53bba79f",
+      "message": "Update supported agents chart",
+      "parent_shas": [
+        "c9632c1e623306348f5755013d01efad7ab38765"
+      ]
+    },
+    {
+      "sha": "83aa8b0dcd05629cb30dfa87f524dfc6a014b5ce",
+      "message": "Add a complete local Python development stack",
+      "parent_shas": [
+        "e4766294b3196cd2e6288935e73441cd53bba79f"
+      ]
+    },
+    {
+      "sha": "90df50d64ca91f7a3fba90e0515b52d3fc97f007",
+      "message": "Refine Python stack and local dev tooling",
+      "parent_shas": [
+        "83aa8b0dcd05629cb30dfa87f524dfc6a014b5ce"
+      ]
+    },
+    {
+      "sha": "ce7fc5bb34ff35f4d2b5893ba74df20a84f10a7d",
+      "message": "Fix zsh PATH dedupe in stack scripts",
+      "parent_shas": [
+        "90df50d64ca91f7a3fba90e0515b52d3fc97f007"
+      ]
+    },
+    {
+      "sha": "f2ab4e73652df33f481bbb6ba84cdc8cc6f6d7a8",
+      "message": "Share shell PATH helpers across stack scripts",
+      "parent_shas": [
+        "ce7fc5bb34ff35f4d2b5893ba74df20a84f10a7d"
+      ]
+    },
+    {
+      "sha": "24b37077a284b913c5c0c2d45f5d44018c619d1e",
+      "message": "Remove redundant GOPATH bin from Go PATH setup",
+      "parent_shas": [
+        "f2ab4e73652df33f481bbb6ba84cdc8cc6f6d7a8"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes",
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "python_java_bridge_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__mattolson__agent-sandbox__pr148.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\mattolson__agent-sandbox__pr148__python_java__mattolson__agent-sandbox__pr148\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\mattolson__agent-sandbox__pr148__python_java__mattolson__agent-sandbox__pr148\\rn"
+  }
+}

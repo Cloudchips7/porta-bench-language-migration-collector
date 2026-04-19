@@ -1,0 +1,257 @@
+{
+  "instance_id": "python_cpp__SebastianSchmidl__periodicity-detection__pr50",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "SebastianSchmidl/periodicity-detection",
+  "pr_number": 50,
+  "pr_url": "https://github.com/SebastianSchmidl/periodicity-detection/pull/50",
+  "repo": {
+    "full_name": "SebastianSchmidl/periodicity-detection",
+    "clone_url": "https://github.com/SebastianSchmidl/periodicity-detection.git",
+    "default_branch": "main",
+    "created_at": "2023-07-19T07:10:36Z",
+    "stars": 23,
+    "license": "MIT",
+    "size_kb": 165
+  },
+  "pull_request": {
+    "id": 3519426531,
+    "title": "Update python versions",
+    "body": "- Add support for Python 3.14\r\n- Remove support for Python 3.9\r\n- Update necessary dependencies and project configuration",
+    "created_at": "2026-04-12T13:23:40Z",
+    "merged_at": "2026-04-12T14:16:18Z",
+    "base_sha": "04340ab6e2ba85a006396cd75ef5d800b297f43a",
+    "head_sha": "28e45fa520abca03274b267ec62af84f8c53d7ab",
+    "merge_commit_sha": "1e60d317bd06a46878e4ecc285c396b54b595128",
+    "labels": [
+      "enhancement",
+      "dependencies",
+      "github_actions"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "04340ab6e2ba85a006396cd75ef5d800b297f43a",
+  "final_sha": "28e45fa520abca03274b267ec62af84f8c53d7ab",
+  "changed_files": [
+    {
+      "sha": "cd9bd7b4247b080626159534ff08231cc7a07b22",
+      "filename": ".github/workflows/build.yml",
+      "status": "modified",
+      "additions": 14,
+      "deletions": 16,
+      "changes": 30,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/28e45fa520abca03274b267ec62af84f8c53d7ab/.github%2Fworkflows%2Fbuild.yml",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/28e45fa520abca03274b267ec62af84f8c53d7ab/.github%2Fworkflows%2Fbuild.yml",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/.github%2Fworkflows%2Fbuild.yml?ref=28e45fa520abca03274b267ec62af84f8c53d7ab",
+      "patch": "@@ -13,7 +13,7 @@ defaults:\n \n jobs:\n   check:\n-    name: Run checks for periodicity-detection on ubuntu with python 3.9\n+    name: Run checks for periodicity-detection\n     runs-on: ubuntu-latest\n \n     steps:\n@@ -23,14 +23,14 @@ jobs:\n         with:\n           use-mamba: true\n           auto-update-conda: true\n-          python-version: \"3.9\"\n+          python-version: \"3.10\"\n           channels: \"defaults\"\n       - name: Install dependencies\n         run: |\n-          pip install -r requirements.dev\n+          pip install \".[dev]\"\n       - name: Typcheck with mypy\n         run: |\n-          python setup.py typecheck\n+          mypy periodicity_detection tests\n       - name: Lint with flake8\n         run: |\n           flake8 . --count --show-source --statistics\n@@ -42,7 +42,7 @@ jobs:\n       max-parallel: 3\n       matrix:\n         os: [ubuntu-latest] # [ubuntu-latest, windows-latest, macOS-latest]\n-        python_version: [\"3.9\", \"3.10\", \"3.11\", \"3.12\", \"3.13\"]\n+        python_version: [\"3.10\", \"3.11\", \"3.12\", \"3.13\", \"3.14\"]\n       fail-fast: false\n \n     steps:\n@@ -56,10 +56,10 @@ jobs:\n         channels: \"defaults\"\n     - name: Install dependencies\n       run: |\n-        pip install -r requirements.dev\n+        pip install \".[dev]\"\n     - name: Test with pytest\n       run: |\n-        python setup.py test\n+        pytest --cov-report=term --cov-report=xml:coverage.xml --cov=periodicity_detection tests\n     - name: Extract test coverage\n       if: ${{ matrix.python_version == '3.11' && matrix.os == 'ubuntu-latest' }}\n       run: |\n@@ -106,7 +106,7 @@ jobs:\n       with:\n         use-mamba: true\n         auto-update-conda: true\n-        python-version: 3.9\n+        python-version: \"3.10\"\n         channels: \"defaults\"\n     - name: Build source distribution\n       run: |\n@@ -117,8 +117,8 @@ jobs:\n         name: packages-source\n         path: dist\n \n-  build-manylinux-wheels:\n-    name: Build manylinux wheels\n+  build-manylinux-wheel:\n+    name: Build manylinux wheel\n     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')\n     needs:\n       - test\n@@ -127,11 +127,9 @@ jobs:\n \n     steps:\n       - uses: actions/checkout@v6\n-      - name: Build manylinux Python wheels\n-        uses: RalfG/python-wheels-manylinux-build@v0.7.1-manylinux2014_x86_64\n-        with:\n-          # our wheel is purely python, so this creates a *-none-any.wheel and other versions are not required for now\n-          python-versions: 'cp39-cp39m'\n+      - name: Build pure-Python wheel\n+        run: |\n+          python -m pip wheel --no-deps --wheel-dir dist/ .\n       - name: List packages\n         run: |\n           ls -alh dist\n@@ -144,7 +142,7 @@ jobs:\n   publish:\n     name: Publish distributions\n     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')\n-    needs: [build-source-distribution, build-manylinux-wheels]\n+    needs: [build-source-distribution, build-manylinux-wheel]\n     runs-on: ubuntu-latest\n     environment: release\n     permissions:"
+    },
+    {
+      "sha": "a57f3f0726d388887b014c5711b480327d351562",
+      "filename": ".github/workflows/test-pr.yml",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 7,
+      "changes": 14,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/28e45fa520abca03274b267ec62af84f8c53d7ab/.github%2Fworkflows%2Ftest-pr.yml",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/28e45fa520abca03274b267ec62af84f8c53d7ab/.github%2Fworkflows%2Ftest-pr.yml",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/.github%2Fworkflows%2Ftest-pr.yml?ref=28e45fa520abca03274b267ec62af84f8c53d7ab",
+      "patch": "@@ -12,7 +12,7 @@ defaults:\n \n jobs:\n   check:\n-    name: Run checks for periodicity-detection on ubuntu with python 3.9\n+    name: Run checks for periodicity-detection\n     runs-on: ubuntu-latest\n \n     steps:\n@@ -22,14 +22,14 @@ jobs:\n         with:\n           use-mamba: true\n           auto-update-conda: true\n-          python-version: \"3.9\"\n+          python-version: \"3.10\"\n           channels: \"defaults\"\n       - name: Install dependencies\n         run: |\n-          pip install -r requirements.dev\n+          pip install \".[dev]\"\n       - name: Typcheck with mypy\n         run: |\n-          python setup.py typecheck\n+          mypy periodicity_detection tests\n       - name: Lint with flake8\n         run: |\n           flake8 . --count --show-source --statistics\n@@ -41,7 +41,7 @@ jobs:\n       max-parallel: 3\n       matrix:\n         os: [ubuntu-latest] # [ubuntu-latest, windows-latest, macOS-latest]\n-        python_version: [\"3.9\", \"3.13\"]\n+        python_version: [\"3.10\", \"3.14\"]\n       fail-fast: false\n \n     steps:\n@@ -55,10 +55,10 @@ jobs:\n         channels: \"defaults\"\n     - name: Install dependencies\n       run: |\n-        pip install -r requirements.dev\n+        pip install \".[dev]\"\n     - name: Test with pytest\n       run: |\n-        python setup.py test\n+        pytest --cov-report=term --cov-report=xml:coverage.xml --cov=periodicity_detection tests\n     - name: Upload Coverage to Codecov\n       if: ${{ matrix.os == 'ubuntu-latest' }}\n       uses: codecov/codecov-action@v6"
+    },
+    {
+      "sha": "7ef5eb642de6cce93444a6f86a88a20cb0574f3a",
+      "filename": ".pre-commit-config.yaml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/28e45fa520abca03274b267ec62af84f8c53d7ab/.pre-commit-config.yaml",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/28e45fa520abca03274b267ec62af84f8c53d7ab/.pre-commit-config.yaml",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/.pre-commit-config.yaml?ref=28e45fa520abca03274b267ec62af84f8c53d7ab",
+      "patch": "@@ -9,7 +9,7 @@ repos:\n   - id: mixed-line-ending\n     args: [--fix=lf]\n - repo: https://github.com/pre-commit/mirrors-mypy\n-  rev: v0.920\n+  rev: v1.9.0\n   hooks:\n   - id: mypy\n     files: periodicity_detection"
+    },
+    {
+      "sha": "0a9a9b058e47818f7a5bcdc60415ca61a0812a7d",
+      "filename": ".readthedocs.yaml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/28e45fa520abca03274b267ec62af84f8c53d7ab/.readthedocs.yaml",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/28e45fa520abca03274b267ec62af84f8c53d7ab/.readthedocs.yaml",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/.readthedocs.yaml?ref=28e45fa520abca03274b267ec62af84f8c53d7ab",
+      "patch": "@@ -7,7 +7,7 @@ version: 2\n build:\n   os: ubuntu-22.04\n   tools:\n-    python: \"3.9\"\n+    python: \"3.10\"\n \n # Build documentation in the docs/ directory with Sphinx\n sphinx:"
+    },
+    {
+      "sha": "834fbf2556964e0dff726cd59a646b5d554b2c2c",
+      "filename": "LICENSE",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/28e45fa520abca03274b267ec62af84f8c53d7ab/LICENSE",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/28e45fa520abca03274b267ec62af84f8c53d7ab/LICENSE",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/LICENSE?ref=28e45fa520abca03274b267ec62af84f8c53d7ab",
+      "patch": "@@ -1,6 +1,6 @@\n MIT License\n \n-Copyright (c) 2022-2025 Sebastian Schmidl\n+Copyright (c) 2022-2026 Sebastian Schmidl\n \n Permission is hereby granted, free of charge, to any person obtaining a copy\n of this software and associated documentation files (the \"Software\"), to deal"
+    },
+    {
+      "sha": "130a3aa96383de0a2e989f865212d3526da8a99a",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/28e45fa520abca03274b267ec62af84f8c53d7ab/README.md",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/28e45fa520abca03274b267ec62af84f8c53d7ab/README.md",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/README.md?ref=28e45fa520abca03274b267ec62af84f8c53d7ab",
+      "patch": "@@ -9,7 +9,7 @@ Detect the dominant period in univariate, equidistant time series data.\n [![codecov](https://codecov.io/gh/CodeLionX/periodicity-detection/branch/main/graph/badge.svg?token=6QXOCY4TS2)](https://codecov.io/gh/CodeLionX/periodicity-detection)\n [![PyPI package](https://badge.fury.io/py/periodicity-detection.svg)](https://badge.fury.io/py/periodicity-detection)\n [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)\n-![python version 3.9|3.10|3.11|3.12|3.13](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)\n+![python version 3.10|3.11|3.12|3.13|3.14](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)\n [![Downloads](https://static.pepy.tech/badge/periodicity-detection)](https://pepy.tech/project/periodicity-detection)\n \n </div>\n@@ -37,7 +37,7 @@ You can install Periodicity Detection as a package or from source.\n \n ## Prerequisites\n \n-- python >= 3.9, < 3.14\n+- python >= 3.10, < 3.15\n - pip >= 20\n \n ## Installation using `pip` (recommended)"
+    },
+    {
+      "sha": "78fbc43fe8180d65848265079908aeb61cd278c8",
+      "filename": "docs/index.rst",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/28e45fa520abca03274b267ec62af84f8c53d7ab/docs%2Findex.rst",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/28e45fa520abca03274b267ec62af84f8c53d7ab/docs%2Findex.rst",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/docs%2Findex.rst?ref=28e45fa520abca03274b267ec62af84f8c53d7ab",
+      "patch": "@@ -47,7 +47,7 @@ Installation\n \n Prerequisites:\n \n-- python >= 3.7, <= 3.11\n+- python >= 3.10, <= 3.14\n - pip >= 20\n \n periodicity-detection is published to `PyPI <https://pypi.org/project/periodicity-detection>`_ and you can install it"
+    },
+    {
+      "sha": "f75e6bf6f7a16c1ca615a1561e9a9640435fd991",
+      "filename": "docs/requirements.txt",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 4,
+      "changes": 4,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/04340ab6e2ba85a006396cd75ef5d800b297f43a/docs%2Frequirements.txt",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/04340ab6e2ba85a006396cd75ef5d800b297f43a/docs%2Frequirements.txt",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/docs%2Frequirements.txt?ref=04340ab6e2ba85a006396cd75ef5d800b297f43a",
+      "patch": "@@ -1,4 +0,0 @@\n-sphinx==5.0.2\n-myst-parser==0.18.0\n-sphinx_rtd_theme==1.0.0\n-sphinx_rtd_dark_mode==1.2.4"
+    },
+    {
+      "sha": "087d31a134ecf338681de8a6653ad4a90bfd2aca",
+      "filename": "periodicity_detection/_version.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/28e45fa520abca03274b267ec62af84f8c53d7ab/periodicity_detection%2F_version.py",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/28e45fa520abca03274b267ec62af84f8c53d7ab/periodicity_detection%2F_version.py",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/periodicity_detection%2F_version.py?ref=28e45fa520abca03274b267ec62af84f8c53d7ab",
+      "patch": "@@ -1 +1 @@\n-__version__: str = \"0.2.0rc1\"\n+__version__: str = \"0.2.0rc2\""
+    },
+    {
+      "sha": "1148b5a428a322d5c91c950baf4c39dd979f9d5a",
+      "filename": "periodicity_detection/methods/findfrequency.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/28e45fa520abca03274b267ec62af84f8c53d7ab/periodicity_detection%2Fmethods%2Ffindfrequency.py",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/28e45fa520abca03274b267ec62af84f8c53d7ab/periodicity_detection%2Fmethods%2Ffindfrequency.py",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/periodicity_detection%2Fmethods%2Ffindfrequency.py?ref=28e45fa520abca03274b267ec62af84f8c53d7ab",
+      "patch": "@@ -121,9 +121,9 @@ def _ar_yule_walker(self, x: np.ndarray) -> Tuple[np.ndarray, float, int]:\n             # our purposes\n             # from statsmodels.regression import yule_walker\n             # ar, var = yule_walker(x, order=order, demean=False)\n-            ar, var, _ = aryule(x, order=order)\n-            ar_coeffs.append(ar)\n-            ar_vars.append(var)\n+            array, variance, _ = aryule(x, order=order)\n+            ar_coeffs.append(array)\n+            ar_vars.append(variance)\n \n         # calculate AICs\n         # formula directly taken from R stats-library:\n@@ -154,7 +154,7 @@ def _ar_yule_walker(self, x: np.ndarray) -> Tuple[np.ndarray, float, int]:\n             axs[0, 0].set_xlabel(\"order\")\n             axs[0, 0].set_ylabel(\"AIC\")\n             axs[0, 0].legend()\n-        return ar, var, order\n+        return ar, float(var), int(order)\n \n     # TODO: optimize (precomputed LUT for cs and sn?)\n     def _spectrum(self, ar: np.ndarray, var: float, order: int) -> np.ndarray:"
+    },
+    {
+      "sha": "e1b323221cc6760832e8528d0fbd53966299c8f9",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 69,
+      "deletions": 10,
+      "changes": 79,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/28e45fa520abca03274b267ec62af84f8c53d7ab/pyproject.toml",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/28e45fa520abca03274b267ec62af84f8c53d7ab/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/pyproject.toml?ref=28e45fa520abca03274b267ec62af84f8c53d7ab",
+      "patch": "@@ -1,32 +1,91 @@\n-[metadata]\n-license_files = {file=\"LICENSE\"}\n-\n [build-system]\n requires = [\"setuptools\"]\n build-backend = \"setuptools.build_meta\"\n \n+[project]\n+name = \"periodicity_detection\"\n+version = \"0.2.0rc2\"\n+description = \"Detect the dominant period in univariate, equidistant time series data.\"\n+authors = [{ name = \"Sebastian Schmidl\", email = \"sebastian.schmidl@hpi.de\" }]\n+license = \"MIT\"\n+license-files = [\"./LICENSE\"]\n+readme = { content-type = \"text/markdown\", file = \"README.md\" }\n+classifiers = [\n+    \"Programming Language :: Python :: 3\",\n+    \"Programming Language :: Python :: 3.10\",\n+    \"Programming Language :: Python :: 3.11\",\n+    \"Programming Language :: Python :: 3.12\",\n+    \"Programming Language :: Python :: 3.13\",\n+    \"Programming Language :: Python :: 3.14\",\n+    \"Typing :: Typed\",\n+    \"Topic :: Software Development\",\n+    \"Topic :: Scientific/Engineering\",\n+    \"Intended Audience :: Science/Research\",\n+    \"Intended Audience :: Developers\",\n+]\n+requires-python = \">=3.10\"\n+dependencies = [\n+    \"numpy>=1.21.6\",\n+    \"pandas>=1.5.3\",\n+    \"scipy>=1.7.3\",\n+    \"statsmodels>=0.13.5\",\n+    \"spectrum>=0.8\",\n+    \"typing_extensions>=4.7.1\",\n+    \"matplotlib>=3.5.3\",\n+]\n+\n+[project.urls]\n+source = \"https://github.com/SebastianSchmidl/periodicity-detection\"\n+documentation = \"https://periodicity-detection.readthedocs.io\"\n+\n+[project.optional-dependencies]\n+dev = [\n+    \"pytest\",\n+    \"pytest-cov\",\n+    \"mypy==1.9.0\",\n+    \"flake8==5.0.4\",\n+    \"black==23.1\",\n+    \"pre-commit==2.21\",\n+]\n+docs = [\n+    \"sphinx==5.0.2\",\n+    \"myst-parser==0.18.0\",\n+    \"sphinx_rtd_theme==1.0.0\",\n+    \"sphinx_rtd_dark_mode==1.2.4\",\n+]\n+\n+[project.scripts]\n+\"periodicity\" = \"periodicity_detection.__main__:cli\"\n+\n [tool.coverage.run]\n branch = false\n omit = [\"**/__main__.py\"]\n \n [tool.coverage.report]\n-exclude_lines =[\"pragma: no cover\", \"raise NotImplementedError\", \"\\\\.\\\\.\\\\.\", \"def __repr__\", \"pass\"]\n+exclude_lines = [\n+    \"pragma: no cover\",\n+    \"raise NotImplementedError\",\n+    \"\\\\.\\\\.\\\\.\",\n+    \"def __repr__\",\n+    \"pass\",\n+]\n #fail_under = 80\n-fail_under = 0  # for testing purposes\n+fail_under = 0      # for testing purposes\n skip_covered = true\n sort = \"Cover\"\n \n [tool.black]\n-target-version = ['py39']\n+target-version = ['py310']\n \n [tool.isort]\n-py_version = \"39\"\n-profile = \"black\" # Play nicely with black\n+py_version = \"310\"\n+profile = \"black\"                              # Play nicely with black\n src_paths = [\"periodicity_detection\", \"tests\"]\n \n [tool.mypy]\n-python_version = \"3.9\"\n+python_version = \"3.10\"\n show_error_codes = true\n+pretty = true\n \n [[tool.mypy.overrides]]\n module = [\n@@ -35,6 +94,6 @@ module = [\n     \"pandas.*\",\n     \"statsmodels.*\",\n     \"scipy.*\",\n-    \"spectrum.*\"\n+    \"spectrum.*\",\n ]\n ignore_missing_imports = true"
+    },
+    {
+      "sha": "2f443a9a6fc587c65f41839f9b2ea40652c54645",
+      "filename": "requirements.dev",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 9,
+      "changes": 9,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/04340ab6e2ba85a006396cd75ef5d800b297f43a/requirements.dev",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/04340ab6e2ba85a006396cd75ef5d800b297f43a/requirements.dev",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/requirements.dev?ref=04340ab6e2ba85a006396cd75ef5d800b297f43a",
+      "patch": "@@ -1,9 +0,0 @@\n--r requirements.txt\n-\n-# dev-dependencies\n-pytest\n-pytest-cov\n-mypy==0.920\n-flake8==5.0.4\n-black==23.1\n-pre-commit==2.21"
+    },
+    {
+      "sha": "4ee948083558c6a3c2f0dc3625646e4e1e2e6a2b",
+      "filename": "requirements.txt",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 8,
+      "changes": 8,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/04340ab6e2ba85a006396cd75ef5d800b297f43a/requirements.txt",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/04340ab6e2ba85a006396cd75ef5d800b297f43a/requirements.txt",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/requirements.txt?ref=04340ab6e2ba85a006396cd75ef5d800b297f43a",
+      "patch": "@@ -1,8 +0,0 @@\n-numpy>=1.21.6\n-pandas>=1.3.5\n-scipy>=1.7.3\n-statsmodels>=0.13.5\n-spectrum>=0.8\n-typing_extensions>=4.7.1\n-\n-matplotlib>=3.5.3"
+    },
+    {
+      "sha": "2c8c3ba78aa279e8ea5cf1f732abb996e1245774",
+      "filename": "setup.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 92,
+      "changes": 92,
+      "blob_url": "https://github.com/SebastianSchmidl/periodicity-detection/blob/28e45fa520abca03274b267ec62af84f8c53d7ab/setup.py",
+      "raw_url": "https://github.com/SebastianSchmidl/periodicity-detection/raw/28e45fa520abca03274b267ec62af84f8c53d7ab/setup.py",
+      "contents_url": "https://api.github.com/repos/SebastianSchmidl/periodicity-detection/contents/setup.py?ref=28e45fa520abca03274b267ec62af84f8c53d7ab",
+      "patch": "@@ -1,7 +1,6 @@\n import glob\n import os\n import shutil\n-import sys\n from pathlib import Path\n \n from setuptools import setup, find_packages, Command\n@@ -13,70 +12,7 @@\n     exec(fh.read())\n VERSION: str = __version__  # noqa\n README = (HERE / \"README.md\").read_text(encoding=\"UTF-8\")\n-DOC_NAME = \"periodicity-detection\"\n PYTHON_NAME = \"periodicity_detection\"\n-with open(HERE / \"requirements.txt\") as fh:\n-    REQUIRED = fh.read().splitlines()\n-with open(HERE / \"requirements.dev\") as fh:\n-    DEV_REQUIRED = [\n-        dep\n-        for dep in fh.read().splitlines()\n-        if dep and not dep.startswith(\"-\") and not dep.startswith(\"#\")\n-    ]\n-with open(HERE / \"docs\" / \"requirements.txt\") as fh:\n-    DOCS_REQUIRED = fh.read().splitlines()\n-\n-\n-class PyTestCommand(Command):\n-    description = f\"run PyTest for {DOC_NAME}\"\n-    user_options = []\n-\n-    def initialize_options(self) -> None:\n-        pass\n-\n-    def finalize_options(self) -> None:\n-        pass\n-\n-    def run(self) -> None:\n-        import pytest\n-        from pytest import ExitCode\n-\n-        exit_code = pytest.main(\n-            [\n-                \"--cov-report=term\",\n-                \"--cov-report=xml:coverage.xml\",\n-                f\"--cov={PYTHON_NAME}\",\n-                \"tests\",\n-            ]\n-        )\n-        if exit_code == ExitCode.TESTS_FAILED:\n-            raise ValueError(\"Tests failed!\")\n-        elif exit_code == ExitCode.INTERRUPTED:\n-            raise ValueError(\"pytest was interrupted!\")\n-        elif exit_code == ExitCode.INTERNAL_ERROR:\n-            raise ValueError(\"pytest internal error!\")\n-        elif exit_code == ExitCode.USAGE_ERROR:\n-            raise ValueError(\"Pytest was not correctly used!\")\n-        elif exit_code == ExitCode.NO_TESTS_COLLECTED:\n-            raise ValueError(\"No tests found!\")\n-        # else: everything is fine\n-\n-\n-class MyPyCheckCommand(Command):\n-    description = f\"run MyPy for {DOC_NAME}; performs static type checking\"\n-    user_options = []\n-\n-    def initialize_options(self) -> None:\n-        pass\n-\n-    def finalize_options(self) -> None:\n-        pass\n-\n-    def run(self) -> None:\n-        from mypy.main import main as mypy\n-\n-        args = [\"--pretty\", PYTHON_NAME, \"tests\"]\n-        mypy(None, stdout=sys.stdout, stderr=sys.stderr, args=args)\n \n \n class CleanCommand(Command):\n@@ -116,40 +52,12 @@ def run(self):\n     setup(\n         name=PYTHON_NAME,\n         version=VERSION,\n-        description=\"Detect the dominant period in univariate, equidistant \"\n-        \"time series data.\",\n         long_description=README,\n         long_description_content_type=\"text/markdown\",\n-        author=\"Sebastian Schmidl\",\n-        author_email=\"sebastian.schmidl@hpi.de\",\n-        url=\"https://github.com/CodeLionX/periodicity_detection\",\n-        license=\"MIT\",\n-        classifiers=[\n-            \"License :: OSI Approved :: MIT License\",\n-            \"Programming Language :: Python :: 3\",\n-            \"Programming Language :: Python :: 3.9\",\n-            \"Programming Language :: Python :: 3.10\",\n-            \"Programming Language :: Python :: 3.11\",\n-            \"Programming Language :: Python :: 3.12\",\n-            \"Programming Language :: Python :: 3.13\",\n-            \"Typing :: Typed\",\n-            \"Topic :: Software Development\",\n-            \"Topic :: Scientific/Engineering\",\n-            \"Intended Audience :: Science/Research\",\n-            \"Intended Audience :: Developers\",\n-        ],\n         packages=find_packages(exclude=(\"tests\", \"tests.*\")),\n         package_data={\"periodicity_detection\": [\"py.typed\"]},\n-        install_requires=REQUIRED,\n-        extras_require={\n-            \"dev\": DEV_REQUIRED,\n-            \"docs\": DOCS_REQUIRED,\n-        },\n-        python_requires=\">=3.9\",\n         test_suite=\"tests\",\n         cmdclass={\n-            \"test\": PyTestCommand,\n-            \"typecheck\": MyPyCheckCommand,\n             \"clean\": CleanCommand,\n         },\n         zip_safe=False,"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "787364001e05f5a91d2ab9f17bea1c86703ccfbd",
+      "message": "Update python versions",
+      "parent_shas": [
+        "04340ab6e2ba85a006396cd75ef5d800b297f43a"
+      ]
+    },
+    {
+      "sha": "f508eef7db0bcd04def3375275631d9ee65d2da4",
+      "message": "Fix CI config",
+      "parent_shas": [
+        "787364001e05f5a91d2ab9f17bea1c86703ccfbd"
+      ]
+    },
+    {
+      "sha": "4e62aa21993c0ffc3817a0f7df21abc910964eb7",
+      "message": "Adjust build process",
+      "parent_shas": [
+        "f508eef7db0bcd04def3375275631d9ee65d2da4"
+      ]
+    },
+    {
+      "sha": "28e45fa520abca03274b267ec62af84f8c53d7ab",
+      "message": "Fix python spec in build",
+      "parent_shas": [
+        "4e62aa21993c0ffc3817a0f7df21abc910964eb7"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__SebastianSchmidl__periodicity-detection__pr50.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\SebastianSchmidl__periodicity-detection__pr50__python_cpp__SebastianSchmidl__periodicity-detection__pr50\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\SebastianSchmidl__periodicity-detection__pr50__python_cpp__SebastianSchmidl__periodicity-detection__pr50\\rn"
+  }
+}

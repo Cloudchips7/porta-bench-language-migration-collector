@@ -1,0 +1,350 @@
+{
+  "instance_id": "python_java__sogno-platform__cimgen__pr76",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "sogno-platform/cimgen",
+  "pr_number": 76,
+  "pr_url": "https://github.com/sogno-platform/cimgen/pull/76",
+  "repo": {
+    "full_name": "sogno-platform/cimgen",
+    "clone_url": "https://github.com/sogno-platform/cimgen.git",
+    "default_branch": "master",
+    "created_at": "2021-07-15T17:17:39Z",
+    "stars": 24,
+    "license": "Apache-2.0",
+    "size_kb": 1440
+  },
+  "pull_request": {
+    "id": 3518095224,
+    "title": "Cleanup python",
+    "body": "This adds modern tooling for python. It removes redundant details in the README and the docker setup which has never been used extensively.",
+    "created_at": "2026-04-11T19:26:38Z",
+    "merged_at": "2026-04-11T20:17:31Z",
+    "base_sha": "13d44fdfb2c9c68f5c91fdde902bba74530ae6cf",
+    "head_sha": "effb0bf744862863b1838604bbf11932a647a9a0",
+    "merge_commit_sha": "815dbe37c6034f220483c2fa063e2ec88afce9bb",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "13d44fdfb2c9c68f5c91fdde902bba74530ae6cf",
+  "final_sha": "effb0bf744862863b1838604bbf11932a647a9a0",
+  "changed_files": [
+    {
+      "sha": "81dfcf21fa859ee386371f1a652ca5f9e81d14b0",
+      "filename": ".devcontainer/Dockerfile.dev",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 4,
+      "changes": 4,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/.devcontainer%2FDockerfile.dev",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/.devcontainer%2FDockerfile.dev",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/.devcontainer%2FDockerfile.dev?ref=13d44fdfb2c9c68f5c91fdde902bba74530ae6cf",
+      "patch": "@@ -1,4 +0,0 @@\n-FROM ubuntu:22.04\n-RUN apt update\n-RUN apt install -y python3 git python3-pip libxml2-dev\n-RUN python3 -m pip install lxml xmltodict chevron beautifulsoup4"
+    },
+    {
+      "sha": "f8effa74a521d0700863944f5563cc2ee82aef98",
+      "filename": ".devcontainer/devcontainer.json",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 13,
+      "changes": 13,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/.devcontainer%2Fdevcontainer.json",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/.devcontainer%2Fdevcontainer.json",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/.devcontainer%2Fdevcontainer.json?ref=13d44fdfb2c9c68f5c91fdde902bba74530ae6cf",
+      "patch": "@@ -1,13 +0,0 @@\n-{\n-\t\"name\": \"cimgen\",\n-\t\"build\": {\n-\t    \"dockerfile\": \"Dockerfile.dev\"\n-\t},\n-\t\"customizations\": {\n-\t\t\"vscode\": {\n-\t\t\t\"extensions\": [\n-                \"ms-python.python\"\n-\t\t\t]\n-\t\t}\n-\t}\n-}"
+    },
+    {
+      "sha": "8332de349fb740af44a3de304dba51d670ff609e",
+      "filename": ".flake8",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 3,
+      "changes": 3,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/.flake8",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/.flake8",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/.flake8?ref=13d44fdfb2c9c68f5c91fdde902bba74530ae6cf",
+      "patch": "@@ -1,3 +0,0 @@\n-[flake8]\n-max-line-length = 120\n-extend-ignore = E203"
+    },
+    {
+      "sha": "330dbe4ee7eb1a08d0256fcba7074fedad31e7a1",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/.gitignore",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/.gitignore",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/.gitignore?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "patch": "@@ -12,4 +12,5 @@ __pycache__/\n tests/\n *.log\n *.json\n+dist/\n test-output/"
+    },
+    {
+      "sha": "60a193e423dd1d81c2c1f5843c518bbb1a701607",
+      "filename": ".pre-commit-config.yaml",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 13,
+      "changes": 18,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/.pre-commit-config.yaml",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/.pre-commit-config.yaml",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/.pre-commit-config.yaml?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "patch": "@@ -10,17 +10,9 @@ repos:\n       - id: mixed-line-ending\n       - id: check-executables-have-shebangs\n \n-  - repo: https://github.com/psf/black\n-    rev: 24.10.0\n+  - repo: https://github.com/astral-sh/ruff-pre-commit\n+    rev: v0.9.9\n     hooks:\n-      - id: black\n-\n-  - repo: https://github.com/PyCQA/flake8\n-    rev: 7.1.1\n-    hooks:\n-      - id: flake8\n-\n-  - repo: https://github.com/ComPWA/pyright-pre-commit\n-    rev: v1.1.391\n-    hooks:\n-      - id: pyright\n+      - id: ruff\n+        args: [ --fix ]\n+      - id: ruff-format"
+    },
+    {
+      "sha": "07f9f42fb2edada29525dbc06fbd0ef5425e898c",
+      "filename": "Dockerfile",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 11,
+      "changes": 11,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/Dockerfile",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/Dockerfile",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/Dockerfile?ref=13d44fdfb2c9c68f5c91fdde902bba74530ae6cf",
+      "patch": "@@ -1,11 +0,0 @@\n-# NOSONAR\n-FROM python:3.11\n-\n-# NOSONAR\n-COPY ./ /cimgen\n-\n-WORKDIR /cimgen\n-\n-RUN pip install .\n-\n-ENTRYPOINT [ \"cimgen\" ]"
+    },
+    {
+      "sha": "ea78844a9c6b84321432e841a0b89c6987827f2b",
+      "filename": "MANIFEST.in",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 9,
+      "changes": 9,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/MANIFEST.in",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/MANIFEST.in",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/MANIFEST.in?ref=13d44fdfb2c9c68f5c91fdde902bba74530ae6cf",
+      "patch": "@@ -1,9 +0,0 @@\n-include cimgen/languages/cpp/templates/*.mustache\n-include cimgen/languages/cpp/static/*\n-include cimgen/languages/java/templates/*.mustache\n-include cimgen/languages/java/*.java\n-include cimgen/languages/java/**/*.java\n-include cimgen/languages/javascript/templates/*.mustache\n-include cimgen/languages/modernpython/templates/*.mustache\n-include cimgen/languages/modernpython/utils/*.mustache\n-include cimgen/languages/python/templates/*.mustache"
+    },
+    {
+      "sha": "0b2c7aedcaa2204e40fb6f99eb6d8fc653250d8e",
+      "filename": "Makefile",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 27,
+      "changes": 27,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/Makefile",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/Makefile",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/Makefile?ref=13d44fdfb2c9c68f5c91fdde902bba74530ae6cf",
+      "patch": "@@ -1,27 +0,0 @@\n-LANGUAGES=python modernpython java javascript cpp\n-\n-SCHEMA?=CGMES_2.4.15_27JAN2020\n-\n-ifndef BUILD_IN_DOCKER\n-\tCIMGEN=cimgen\n-else\n-\tCIMGEN=docker run --volume \"$(shell pwd)/output:/cimgen/output\" cimgen\n-\tLANGUAGE_DEPS = image\n-endif\n-\n-# Extract version from SCHEMA (CGMES_2.4.15_27JAN2020 => 2_4_15)\n-CGMES_VERSION=$(subst .,_,$(wordlist 2,4,$(subst _, ,$(SCHEMA))))\n-\n-all: $(LANGUAGES)\n-\n-$(LANGUAGES): $(LANGUAGE_DEPS)\n-\t$(CIMGEN) \\\n-\t\t--outdir=output/$@/$(SCHEMA) \\\n-\t\t--schemadir=cgmes_schema/$(SCHEMA) \\\n-\t\t--langdir=$@ \\\n-\t\t--cgmes_version=cgmes_v$(CGMES_VERSION)\n-\n-image:\n-\tdocker build -t cimgen -f Dockerfile .\n-\n-.PHONY: all image $(LANGUAGES)"
+    },
+    {
+      "sha": "38fb1fa7c1f53863f30adfd82a64dcf68a05ccc7",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 20,
+      "deletions": 118,
+      "changes": 138,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/README.md",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/README.md",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/README.md?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "patch": "@@ -1,19 +1,17 @@\n-# <img src=\"documentation/images/cimgen_logo.png\" alt=\"CIMgen\" width=120 />\n-\n # CIMgen\n \n CIMgen is a command-line tool that generates language-specific data models (classes, structs) from Common Information Model (CIM) RDF schemas. It is designed to parse complex CIM RDF files and produce idiomatic code in various programming languages like Go, C++, Java, and Python.\n \n-Several projects use CIMgen, see [Projects using CIMgen](documentation/CIMgenOverview.md).\n+Several projects use CIMgen, see [Projects using CIMgen](docs/CIMgenProjects.md).\n \n-![Overview CIMgen](documentation/images/CIMgen.svg)\n+![Overview CIMgen](docs/images/cimgen_concept.svg)\n \n \n-# CIMgen Go\n+## CIMgen Go\n \n This is a rewrite of CIMgen in the Go programming language.\n \n-## How to Build and Run\n+### How to Build and Run\n \n Make sure that you have cloned the repo recursively to include the CGMES schema files from ENTSO-E\n \n@@ -40,22 +38,22 @@ Alternatively, you can install cimgen.\n \n     go install ./...\n \n-## How to Test\n+### How to Test\n \n Run the test suite using the `go test` command. The `-v` flag provides verbose output.\n \n     go test -v ./...\n \n \n-## Debugging\n+### Debugging\n \n To analyze differences between generated file you can use\n \n     git diff --no-index --word-diff --diff-filter=MR --ignore-space-change --ignore-blank-lines output/[dir 1] output/[dir 2]\n     diff -wB output/[dir 1] output/[dir 2]\n \n \n-## Architecture\n+### Architecture\n \n The code generation process follows these main steps:\n \n@@ -64,7 +62,7 @@ The code generation process follows these main steps:\n 3.  **Code Generation:** Using Go's `text/template` engine, it feeds the internal representation into language-specific templates (`lang-templates/*.tmpl`) to generate the final source code files.\n \n \n-## Key Go Files\n+### Key Go Files\n \n *   `cmd/cimgen/main.go`: The main entry point for the CLI tool. It parses command-line arguments and orchestrates the code generation process.\n *   `cim_generate.go`: Contains the core logic for driving the generation process for a specific language.\n@@ -73,121 +71,32 @@ The code generation process follows these main steps:\n *   `generator_*.go`: A set of files (e.g., `generator_go.go`, `generator_cpp.go`) that implement the generation logic for each target language.\n \n \n-# CIMgen Python\n+## CIMgen Python\n \n Python tool for code generation from CIM data model for several programming languages\n \n-## Usage\n-\n-### Generating C++ files\n+### Usage\n \n-#### Generating C++ files on Linux\n+Run the following, replacing `lang` with the target language:\n \n ```bash\n pip install -e .\n-cimgen --outdir=output/cpp/CGMES_2.4.15_27JAN2020 --schemadir=cgmes_schema/CGMES_2.4.15_27JAN2020 --langdir=cpp --cgmes_version=cgmes_v2_4_15\n+cimgen --outdir=output/<lang>/CGMES_2.4.15_27JAN2020 --schemadir=cgmes_schema/CGMES_2.4.15_27JAN2020 --langdir=<lang> --cgmes_version=cgmes_v2_4_15\n ```\n \n-This will build version `CGMES_2.4.15_27JAN2020` in the subfolder `output/cpp/CGMES_2.4.15_27JAN2020`.\n+This will build version `CGMES_2.4.15_27JAN2020` in the subfolder `output/[lang]/CGMES_2.4.15_27JAN2020`.\n+\n+Options:\n+- cpp\n+- python\n+- modernpython, i.e. PyDantic based dataclasses\n \n > [!NOTE]\n > If you wish to build an alternative version, you can see available options in the subfolder called `cgmes_schema`.\n > For the schema `CGMES_3.0.0` you have to use the option\n > `--cgmes_version=cgmes_v3_0_0`. `outdir` can be set to whichever absolute path you wish to create the files in.\n \n-Alternatively, you can leverage `Makefile`:\n-\n-```bash\n-pip install -e .\n-#unset BUILD_IN_DOCKER # if you previously set to use docker\n-#export SCHEMA=CGMES_3.0.0 # to use CGMES 3.0.0\n-make cpp\n-```\n-\n-#### Generating C++ files in a Docker container\n-\n-```bash\n-docker build --tag cimgen --file Dockerfile .\n-docker run --volume \"$(pwd)/output:/output\" cimgen --outdir=/output/cpp/CGMES_2.4.15_27JAN2020 --schemadir=/cimgen/cgmes_schema/CGMES_2.4.15_27JAN2020 --langdir=cpp --cgmes_version=cgmes_v2_4_15\n-```\n-\n-alternatively, you can leverage `Makefile`:\n-\n-```bash\n-export BUILD_IN_DOCKER=true\n-#export SCHEMA=CGMES_3.0.0 to use CGMES 3.0.0\n-make cpp\n-```\n-\n-### Generating Python files\n-\n-#### Generating Python files on Linux\n-\n-```bash\n-pip install -e .\n-cimgen --outdir=output/python/CGMES_2.4.15_27JAN2020 --schemadir=cgmes_schema/CGMES_2.4.15_27JAN2020 --langdir=python --cgmes_version=cgmes_v2_4_15\n-```\n-\n-alternatively, you can leverage `Makefile`:\n-\n-```bash\n-pip install -e .\n-#unset BUILD_IN_DOCKER # if you previously set to use docker\n-#export SCHEMA=CGMES_3.0.0 # to use CGMES 3.0.0\n-make python\n-```\n-\n-#### Generating Python files in a Docker container\n-\n-```bash\n-docker build --tag cimgen --file Dockerfile .\n-docker run --volume \"$(pwd)/output:/output\" cimgen --outdir=/output/python/CGMES_2.4.15_27JAN2020 --schemadir=/cimgen/cgmes_schema/CGMES_2.4.15_27JAN2020 --langdir=python --cgmes_version=cgmes_v2_4_15\n-```\n-\n-alternatively, you can leverage `Makefile`:\n-\n-```bash\n-export BUILD_IN_DOCKER=true\n-#export SCHEMA=CGMES_3.0.0 to use CGMES 3.0.0\n-make python\n-```\n-\n-### Generating Modern Python (i.e. PyDantic based dataclasses) files\n-\n-#### Generating Modern Python files on Linux\n-\n-```bash\n-pip install -e .\n-cimgen --outdir=output/modernpython/CGMES_2.4.15_27JAN2020 --schemadir=cgmes_schema/CGMES_2.4.15_27JAN2020 --langdir=modernpython --cgmes_version=cgmes_v2_4_15\n-```\n-\n-`outdir` can be set to whichever absolute path you wish to create the files in.\n-\n-alternatively, you can leverage `Makefile`:\n-\n-```bash\n-pip install -e .\n-#unset BUILD_IN_DOCKER # if you previously set to use docker\n-#export SCHEMA=CGMES_3.0.0 # to use CGMES 3.0.0\n-make modernpython\n-```\n-\n-#### Generating Modern Python files in a Docker container\n-\n-```bash\n-docker build --tag cimgen --file Dockerfile .\n-docker run --volume \"$(pwd)/output:/output\" cimgen --outdir=/output/modernpython/CGMES_2.4.15_27JAN2020 --schemadir=/cimgen/cgmes_schema/CGMES_2.4.15_27JAN2020 --langdir=modernpython --cgmes_version=cgmes_v2_4_15\n-```\n-\n-alternatively, you can leverage `Makefile`:\n-\n-```bash\n-export BUILD_IN_DOCKER=true\n-#export SCHEMA=CGMES_3.0.0 to use CGMES 3.0.0\n-make modernpython\n-```\n-\n-## Custom Profiles\n+### Custom Profiles\n \n To generate files for custom profiles,\n you have to copy the profile files to a subdirectory of the schema directory.\n@@ -200,14 +109,7 @@ cp <custom_profile>.rdf ... cgmes_schema/<schemadir>/<customdir>/\n cimgen --outdir=output/ --schemadir=cgmes_schema/<schemadir> --langdir=<lang> --cgmes_version=<version>\n ```\n \n-## Development\n-\n-### Developer Installation\n-\n-```bash\n-git clone https://github.com/sogno-platform/cimgen.git\n-cd cimgen\n-```\n+### Development\n \n For the python toolchain, install the package in dev mode:\n "
+    },
+    {
+      "sha": "bd4047abc9cdf8cae6228d40c7bacc49e736a016",
+      "filename": "cimgen/cimgen.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 3,
+      "changes": 4,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/cimgen%2Fcimgen.py",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/cimgen%2Fcimgen.py",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/cimgen%2Fcimgen.py?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "patch": "@@ -421,14 +421,12 @@ def _parse_rdf(input_dic: dict, version: str) -> dict[str, dict[str, CIMComponen\n def _write_all_files(\n     elem_dict: dict[str, CIMComponentDefinition], lang_pack: ModuleType, output_path: str, version: str\n ) -> None:\n-\n     # Setup called only once: make output directory, create base class, create profile class, etc.\n     lang_pack.setup(output_path, version, _get_profile_details(package_listed_by_short_name), _get_used_namespaces())\n \n     recommended_class_profiles = _get_recommended_class_profiles(elem_dict)\n \n     for class_name in elem_dict.keys():\n-\n         class_details = {\n             \"attributes\": elem_dict[class_name].attributes(),\n             \"class_location\": lang_pack.get_class_location(class_name, elem_dict, version),\n@@ -513,7 +511,7 @@ def _write_files(class_details: dict, output_path: str) -> None:\n \n \n def _merge_profiles_and_classes(\n-    profiles_array: list[dict[str, dict[str, CIMComponentDefinition]]]\n+    profiles_array: list[dict[str, dict[str, CIMComponentDefinition]]],\n ) -> dict[str, CIMComponentDefinition]:\n     \"\"\"Merge class infos of all profiles.\n "
+    },
+    {
+      "sha": "c778048c85420892a674db18782fffb24d45bf5b",
+      "filename": "cimgen/languages/cpp/lang_pack.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/cimgen%2Flanguages%2Fcpp%2Flang_pack.py",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/cimgen%2Flanguages%2Fcpp%2Flang_pack.py",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/cimgen%2Flanguages%2Fcpp%2Flang_pack.py?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "patch": "@@ -1,7 +1,8 @@\n-import chevron\n import shutil\n-from pathlib import Path\n from importlib.resources import files\n+from pathlib import Path\n+\n+import chevron\n \n \n # Setup called only once: make output directory, create base class, create profile class, etc.\n@@ -66,7 +67,6 @@ def get_class_location(class_name: str, class_map: dict, version: str) -> str:\n \n # This is the function that runs the template.\n def run_template(output_path: str, class_details: dict) -> None:\n-\n     # Add some class infos\n     class_details[\"attribute_class_includes\"] = _get_attribute_class_includes(class_details[\"attributes\"])\n     class_details[\"attribute_class_declarations\"] = _get_attribute_class_declarations(class_details[\"attributes\"])"
+    },
+    {
+      "sha": "9884489b0b6a7d33e1ea1339a9f214b36a150bc0",
+      "filename": "cimgen/languages/java/lang_pack.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/cimgen%2Flanguages%2Fjava%2Flang_pack.py",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/cimgen%2Flanguages%2Fjava%2Flang_pack.py",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/cimgen%2Flanguages%2Fjava%2Flang_pack.py?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "patch": "@@ -1,8 +1,9 @@\n-import chevron\n import logging\n import shutil\n-from pathlib import Path\n from importlib.resources import files\n+from pathlib import Path\n+\n+import chevron\n \n logger = logging.getLogger(__name__)\n \n@@ -43,7 +44,6 @@ def get_class_location(class_name: str, class_map: dict, version: str) -> str:\n \n # This is the function that runs the template.\n def run_template(output_path: str, class_details: dict) -> None:\n-\n     # Add some attribute infos\n     for attribute in class_details[\"attributes\"]:\n         attribute[\"is_primitive_string\"] = \"true\" if _attribute_is_primitive_string(attribute) else \"\""
+    },
+    {
+      "sha": "e554b3e9bbb2a37468975d1f936bbab277f4f2ea",
+      "filename": "cimgen/languages/javascript/lang_pack.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/cimgen%2Flanguages%2Fjavascript%2Flang_pack.py",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/cimgen%2Flanguages%2Fjavascript%2Flang_pack.py",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/cimgen%2Flanguages%2Fjavascript%2Flang_pack.py?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "patch": "@@ -1,8 +1,9 @@\n import os\n-import chevron\n import sys\n from importlib.resources import files\n \n+import chevron\n+\n \n # Setup called only once: make output directory, create base class, create profile class, etc.\n # This function makes sure we have somewhere to write the classes."
+    },
+    {
+      "sha": "f20f636276fae69200dec6cd33979f3f85ba0371",
+      "filename": "cimgen/languages/modernpython/lang_pack.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/cimgen%2Flanguages%2Fmodernpython%2Flang_pack.py",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/cimgen%2Flanguages%2Fmodernpython%2Flang_pack.py",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/cimgen%2Flanguages%2Fmodernpython%2Flang_pack.py?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "patch": "@@ -1,9 +1,10 @@\n-import chevron\n import logging\n import re\n import shutil\n-from pathlib import Path\n from importlib.resources import files\n+from pathlib import Path\n+\n+import chevron\n \n logger = logging.getLogger(__name__)\n \n@@ -83,7 +84,6 @@ def get_class_location(class_name: str, class_map: dict, version: str) -> str:\n \n \n def run_template(output_path: str, class_details: dict) -> None:\n-\n     # Add some attribute infos\n     for attribute in class_details[\"attributes\"]:\n         attribute[\"python_type\"], attribute[\"default_value\"] = _python_type_and_default_value(attribute)"
+    },
+    {
+      "sha": "cf52b7b8e9dccbbcb4a464d9a2cfe2c943c47a5a",
+      "filename": "cimgen/languages/python/lang_pack.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/cimgen%2Flanguages%2Fpython%2Flang_pack.py",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/cimgen%2Flanguages%2Fpython%2Flang_pack.py",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/cimgen%2Flanguages%2Fpython%2Flang_pack.py?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "patch": "@@ -1,9 +1,10 @@\n-import os\n-import chevron\n-import logging\n import glob\n+import logging\n+import os\n from importlib.resources import files\n \n+import chevron\n+\n logger = logging.getLogger(__name__)\n \n \n@@ -43,7 +44,6 @@ def get_class_location(class_name: str, class_map: dict, version: str) -> str:\n \n \n def run_template(output_path: str, class_details: dict) -> None:\n-\n     # Add some attribute infos\n     for attribute in class_details[\"attributes\"]:\n         attribute[\"default_value\"] = _default_value(attribute)"
+    },
+    {
+      "sha": "60c980e4fdf4ca48f429723978f5e16cbd5b1c50",
+      "filename": "docs/CIMgenProjects.md",
+      "status": "renamed",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/docs%2FCIMgenProjects.md",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/docs%2FCIMgenProjects.md",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/docs%2FCIMgenProjects.md?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "previous_filename": "documentation/CIMgenOverview.md"
+    },
+    {
+      "sha": "b1326895add72b1a67d809a3fa8db6f692cefc69",
+      "filename": "docs/images/cimgen_concept.svg",
+      "status": "renamed",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/docs%2Fimages%2Fcimgen_concept.svg",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/docs%2Fimages%2Fcimgen_concept.svg",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/docs%2Fimages%2Fcimgen_concept.svg?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "previous_filename": "documentation/images/CIMgen.svg"
+    },
+    {
+      "sha": "493913b5a4594abcdedffed5f21578b678f93331",
+      "filename": "docs/images/cimgen_logo.svg",
+      "status": "renamed",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/docs%2Fimages%2Fcimgen_logo.svg",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/docs%2Fimages%2Fcimgen_logo.svg",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/docs%2Fimages%2Fcimgen_logo.svg?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "previous_filename": "documentation/images/cimgen_logo.svg"
+    },
+    {
+      "sha": "caeafd807a42a5d4244278fe2d2af6cfefdeb4c7",
+      "filename": "docs/past-commits.txt",
+      "status": "renamed",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/docs%2Fpast-commits.txt",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/docs%2Fpast-commits.txt",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/docs%2Fpast-commits.txt?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "previous_filename": "documentation/past-commits.txt"
+    },
+    {
+      "sha": "491c7d90c296ffc4b2b6e4e19e6d0c1ff725a605",
+      "filename": "documentation/images/cimgen_logo.png",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/documentation%2Fimages%2Fcimgen_logo.png",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/13d44fdfb2c9c68f5c91fdde902bba74530ae6cf/documentation%2Fimages%2Fcimgen_logo.png",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/documentation%2Fimages%2Fcimgen_logo.png?ref=13d44fdfb2c9c68f5c91fdde902bba74530ae6cf"
+    },
+    {
+      "sha": "2bfb8cdb952c90fb813aa0f4960d3d96784a9be4",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 8,
+      "changes": 17,
+      "blob_url": "https://github.com/sogno-platform/cimgen/blob/effb0bf744862863b1838604bbf11932a647a9a0/pyproject.toml",
+      "raw_url": "https://github.com/sogno-platform/cimgen/raw/effb0bf744862863b1838604bbf11932a647a9a0/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/sogno-platform/cimgen/contents/pyproject.toml?ref=effb0bf744862863b1838604bbf11932a647a9a0",
+      "patch": "@@ -29,10 +29,8 @@ classifiers = [\n \n [project.optional-dependencies]\n dev = [\n-  \"black\",\n-  \"flake8\",\n   \"pre_commit\",\n-  \"pyright\",\n+  \"ruff\",\n ]\n \n [project.urls]\n@@ -50,13 +48,16 @@ build-backend = \"setuptools.build_meta\"\n [tool.setuptools]\n include-package-data = true\n \n+[tool.setuptools.package-data]\n+# Include all .sql and .json files found in any package\n+\"*\" = [\"*.mustache\", \"*.java\", \"*.hpp\", \"*.cpp\"]\n+\n [tool.setuptools.packages.find]\n include = [\"cimgen*\"]\n \n-[tool.black]\n+[tool.ruff]\n line-length = 120\n \n-[tool.pyright]\n-include = [\"cimgen\"]\n-exclude = [\"cimgen/languages/modernpython/utils\"]\n-typeCheckingMode = \"basic\"\n+[tool.ruff.lint]\n+select = [\"E\", \"F\", \"W\", \"I\"]\n+ignore = []"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "de1598856eecf5a517625233ecb421d4e580c865",
+      "message": "add ruff\n\nSigned-off-by: Markus Mirz <16180422+m-mirz@users.noreply.github.com>",
+      "parent_shas": [
+        "13d44fdfb2c9c68f5c91fdde902bba74530ae6cf"
+      ]
+    },
+    {
+      "sha": "7169928e33b3e6b4da34defab59ac39015842938",
+      "message": "shorten docs\n\nSigned-off-by: Markus Mirz <16180422+m-mirz@users.noreply.github.com>",
+      "parent_shas": [
+        "de1598856eecf5a517625233ecb421d4e580c865"
+      ]
+    },
+    {
+      "sha": "e0d907f8d33d9a065e8c1d83927a6530dc7abd54",
+      "message": "remove MANIFEST.in that seems redundant now\n\nSigned-off-by: Markus Mirz <16180422+m-mirz@users.noreply.github.com>",
+      "parent_shas": [
+        "7169928e33b3e6b4da34defab59ac39015842938"
+      ]
+    },
+    {
+      "sha": "adca8f887bb205113ec37b91fbf560c5c39478be",
+      "message": "remove docker setup and makefile\n\nSigned-off-by: Markus Mirz <16180422+m-mirz@users.noreply.github.com>",
+      "parent_shas": [
+        "e0d907f8d33d9a065e8c1d83927a6530dc7abd54"
+      ]
+    },
+    {
+      "sha": "8de8d117104681da1151e0f939cafa8ca0426432",
+      "message": "apply ruff fixes\n\nSigned-off-by: Markus Mirz <16180422+m-mirz@users.noreply.github.com>",
+      "parent_shas": [
+        "adca8f887bb205113ec37b91fbf560c5c39478be"
+      ]
+    },
+    {
+      "sha": "effb0bf744862863b1838604bbf11932a647a9a0",
+      "message": "fix package includes\n\nSigned-off-by: Markus Mirz <16180422+m-mirz@users.noreply.github.com>",
+      "parent_shas": [
+        "8de8d117104681da1151e0f939cafa8ca0426432"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__sogno-platform__cimgen__pr76.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\sogno-platform__cimgen__pr76__python_java__sogno-platform__cimgen__pr76\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\sogno-platform__cimgen__pr76__python_java__sogno-platform__cimgen__pr76\\rn"
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "instance_id": "cpp_python__flwrlabs__flower__pr7003",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "flwrlabs/flower",
+  "pr_number": 7003,
+  "pr_url": "https://github.com/flwrlabs/flower/pull/7003",
+  "repo": {
+    "full_name": "flwrlabs/flower",
+    "clone_url": "https://github.com/flwrlabs/flower.git",
+    "default_branch": "main",
+    "created_at": "2020-02-17T11:51:29Z",
+    "stars": 6831,
+    "license": "Apache-2.0",
+    "size_kb": 267886
+  },
+  "pull_request": {
+    "id": 3517634008,
+    "title": "feat(framework): Disable process dumping for SuperExec on Linux",
+    "body": "Verified by running `strace -p <pid>` on WSL. The command can be attached to `flower-superlink` but not `flower-superexec`.",
+    "created_at": "2026-04-11T13:39:53Z",
+    "merged_at": "2026-04-11T17:32:42Z",
+    "base_sha": "71b463af9992c7876efced4fa0d5cc6469de4635",
+    "head_sha": "bf1d27b1c9eab63eca167a573b9d6dae42255b9d",
+    "merge_commit_sha": "e1e7863bd0c7bbedb422394efcfcec22e34eafda",
+    "labels": [
+      "Maintainer"
+    ]
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "71b463af9992c7876efced4fa0d5cc6469de4635",
+  "final_sha": "bf1d27b1c9eab63eca167a573b9d6dae42255b9d",
+  "changed_files": [
+    {
+      "sha": "d85e21164e642c6814fde55f910d631fe7c5e5d6",
+      "filename": "framework/py/flwr/supercore/cli/flower_superexec.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/flwrlabs/flower/blob/bf1d27b1c9eab63eca167a573b9d6dae42255b9d/framework%2Fpy%2Fflwr%2Fsupercore%2Fcli%2Fflower_superexec.py",
+      "raw_url": "https://github.com/flwrlabs/flower/raw/bf1d27b1c9eab63eca167a573b9d6dae42255b9d/framework%2Fpy%2Fflwr%2Fsupercore%2Fcli%2Fflower_superexec.py",
+      "contents_url": "https://api.github.com/repos/flwrlabs/flower/contents/framework%2Fpy%2Fflwr%2Fsupercore%2Fcli%2Fflower_superexec.py?ref=bf1d27b1c9eab63eca167a573b9d6dae42255b9d",
+      "patch": "@@ -42,11 +42,13 @@\n )\n from flwr.supercore.superexec.run_superexec import run_superexec\n from flwr.supercore.update_check import warn_if_flwr_update_available\n+from flwr.supercore.utils import disable_process_dumping\n from flwr.supercore.version import package_version\n \n \n def flower_superexec() -> None:\n     \"\"\"Run `flower-superexec` command.\"\"\"\n+    disable_process_dumping(strict=False)\n     warn_if_flwr_update_available(process_name=\"flower-superexec\")\n     args = _parse_args().parse_args()\n "
+    },
+    {
+      "sha": "15dfea40f4c133c500896cf9fcdaaf4e6f681cb3",
+      "filename": "framework/py/flwr/supercore/utils.py",
+      "status": "modified",
+      "additions": 27,
+      "deletions": 0,
+      "changes": 27,
+      "blob_url": "https://github.com/flwrlabs/flower/blob/bf1d27b1c9eab63eca167a573b9d6dae42255b9d/framework%2Fpy%2Fflwr%2Fsupercore%2Futils.py",
+      "raw_url": "https://github.com/flwrlabs/flower/raw/bf1d27b1c9eab63eca167a573b9d6dae42255b9d/framework%2Fpy%2Fflwr%2Fsupercore%2Futils.py",
+      "contents_url": "https://api.github.com/repos/flwrlabs/flower/contents/framework%2Fpy%2Fflwr%2Fsupercore%2Futils.py?ref=bf1d27b1c9eab63eca167a573b9d6dae42255b9d",
+      "patch": "@@ -15,22 +15,27 @@\n \"\"\"Utility functions for the infrastructure.\"\"\"\n \n \n+import ctypes\n import json\n import os\n import re\n+import sys\n from collections.abc import Sequence\n+from logging import WARN\n from pathlib import Path\n from typing import Any, TypeVar\n \n import requests\n \n from flwr.common.constant import FLWR_DIR, FLWR_HOME\n+from flwr.common.logger import log\n from flwr.proto.federation_config_pb2 import SimulationConfig  # pylint: disable=E0611\n from flwr.supercore.version import package_version as flwr_version\n \n from .constant import APP_ID_PATTERN, APP_VERSION_PATTERN, MAX_NAME_LENGTH\n \n T = TypeVar(\"T\", str, bytes)\n+PR_SET_DUMPABLE = 4  # from /usr/include/linux/prctl.h\n \n \n def mask_string(value: str, head: int = 4, tail: int = 4) -> str:\n@@ -373,3 +378,25 @@ def get_metadata_bytes(\n ) -> bytes | None:\n     \"\"\"Return exactly one non-empty bytes metadata value for `key`.\"\"\"\n     return _get_metadata_typed(metadata, key, bytes)\n+\n+\n+def disable_process_dumping(strict: bool) -> None:\n+    \"\"\"Disable process dumping (core dumps + ptrace) on Linux.\"\"\"\n+    if not sys.platform.startswith(\"linux\"):\n+        return  # No-op on non-Linux systems\n+\n+    try:\n+        libc = ctypes.CDLL(None)\n+\n+        # Define argument and return types for prctl\n+        libc.prctl.argtypes = [ctypes.c_int, ctypes.c_ulong]\n+        libc.prctl.restype = ctypes.c_int\n+\n+        result = libc.prctl(PR_SET_DUMPABLE, 0)\n+        if result != 0:\n+            raise OSError(\"prctl(PR_SET_DUMPABLE, 0) failed\")\n+\n+    except Exception as e:  # pylint: disable=broad-exception-caught\n+        if strict:\n+            raise RuntimeError(f\"Failed to disable process dumping: {e!r}\") from e\n+        log(WARN, \"Failed to disable process dumping: %s\", e)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "88dd2b1f451e06caf2a8ab81d40d31d29f09dc27",
+      "message": "init",
+      "parent_shas": [
+        "71b463af9992c7876efced4fa0d5cc6469de4635"
+      ]
+    },
+    {
+      "sha": "bf1d27b1c9eab63eca167a573b9d6dae42255b9d",
+      "message": "Apply suggestion from @panh99",
+      "parent_shas": [
+        "88dd2b1f451e06caf2a8ab81d40d31d29f09dc27"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__flwrlabs__flower__pr7003.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\flwrlabs__flower__pr7003__cpp_python__flwrlabs__flower__pr7003\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\flwrlabs__flower__pr7003__cpp_python__flwrlabs__flower__pr7003\\rn"
+  }
+}

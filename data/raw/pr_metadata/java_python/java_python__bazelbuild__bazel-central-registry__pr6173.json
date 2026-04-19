@@ -1,0 +1,596 @@
+{
+  "instance_id": "java_python__bazelbuild__bazel-central-registry__pr6173",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "bazelbuild/bazel-central-registry",
+  "pr_number": 6173,
+  "pr_url": "https://github.com/bazelbuild/bazel-central-registry/pull/6173",
+  "repo": {
+    "full_name": "bazelbuild/bazel-central-registry",
+    "clone_url": "https://github.com/bazelbuild/bazel-central-registry.git",
+    "default_branch": "main",
+    "created_at": "2020-10-27T15:29:31Z",
+    "stars": 359,
+    "license": "Apache-2.0",
+    "size_kb": 19571
+  },
+  "pull_request": {
+    "id": 2904436671,
+    "title": "Add module sv-lang",
+    "body": "Add new module to BCR: [slang](https://sv-lang.com/)\r\n\r\nThe module itself is called `sv-lang` to avoid conflicts with other tools that may be named `slang`\r\n\r\nThis wraps the slang project with a Bazel build\r\n\r\nIt includes:\r\n\r\n- Slang C++ Libraries\r\n- Binary for the main slang driver\r\n- Binaries for the slang tools (slang-tidy, rewriter, ...)\r\n- Locally-built Python bindings (pyslang)",
+    "created_at": "2025-10-10T15:24:26Z",
+    "merged_at": "2025-10-20T11:57:48Z",
+    "base_sha": "c564459a2122cf6536961b3c82a74196399528a6",
+    "head_sha": "1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+    "merge_commit_sha": "ce10dbfcce6908792e0519e04716d30ceecb5c7c",
+    "labels": [
+      "presubmit-auto-run",
+      "skip-url-stability-check"
+    ]
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "4563b84dd829a2cb6d964bf86bb2d7a1e8538b4a",
+  "final_sha": "1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+  "changed_files": [
+    {
+      "sha": "fdb65b57f7f275ff8e78bf71dd484e4797a2bd86",
+      "filename": "modules/sv-lang/9.1.0/MODULE.bazel",
+      "status": "added",
+      "additions": 19,
+      "deletions": 0,
+      "changes": 19,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2FMODULE.bazel",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2FMODULE.bazel",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2FMODULE.bazel?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,19 @@\n+\"\"\"https://sv-lang.com/\"\"\"\n+\n+module(\n+    name = \"sv-lang\",\n+    version = \"9.1.0\",\n+    bazel_compatibility = [\">=7.2.1\"],\n+)\n+\n+bazel_dep(name = \"aspect_bazel_lib\", version = \"2.21.2\")\n+bazel_dep(name = \"aspect_rules_py\", version = \"1.6.4\")\n+bazel_dep(name = \"bazel_skylib\", version = \"1.8.2\")\n+bazel_dep(name = \"boost.unordered\", version = \"1.87.0\")\n+bazel_dep(name = \"fmt\", version = \"12.0.0\")\n+bazel_dep(name = \"platforms\", version = \"1.0.0\")\n+bazel_dep(name = \"pybind11_bazel\", version = \"2.13.6\")\n+bazel_dep(name = \"rules_cc\", version = \"0.2.9\")\n+bazel_dep(name = \"rules_foreign_cc\", version = \"0.15.1\")\n+bazel_dep(name = \"rules_pycross\", version = \"0.8.0\")\n+bazel_dep(name = \"rules_python\", version = \"1.6.3\")"
+    },
+    {
+      "sha": "9bc0efdfc12df97ca89786a52d3d8f4a5545f9de",
+      "filename": "modules/sv-lang/9.1.0/README.md",
+      "status": "added",
+      "additions": 27,
+      "deletions": 0,
+      "changes": 27,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2FREADME.md",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2FREADME.md",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2FREADME.md?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,27 @@\n+# Slang (sv-lang)\n+\n+This is a bazel wrapper to build [slang](https://sv-lang.com/).\n+\n+It includes:\n+\n+- Slang C++ Libraries\n+- Binary for the main slang driver\n+- Binaries for the slang tools (slang-tidy, rewriter, ...)\n+- Locally-built Python bindings (pyslang)\n+\n+## Pyslang\n+\n+Pyslang is available on PyPI, but the option of using a local build is provided\n+to take advantage of the reproducable hermetic build, and to align the versions\n+used for Slang and Pyslang in a given repository.\n+\n+Because we include the Python bindings, we do not use `mimalloc` in the main slang library build as they are incompatible.\n+\n+\n+## TODO\n+\n+Desirable future changes to this build include:\n+\n+- support multithreading in the C++ with `SLANG_USE_THREADS`\n+- add `.pyi` stubs for the Pythonbindings\n+- add a method to patch in CPPTRACE with `SLANG_USE_CPPTRACE`"
+    },
+    {
+      "sha": "2206f70b16daa4c9e8f80022764b4579f6ec76b1",
+      "filename": "modules/sv-lang/9.1.0/overlay/BUILD.bazel",
+      "status": "added",
+      "additions": 484,
+      "deletions": 0,
+      "changes": 484,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2FBUILD.bazel",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2FBUILD.bazel",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Foverlay%2FBUILD.bazel?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,484 @@\n+\n+\n+load(\"@aspect_bazel_lib//lib:run_binary.bzl\", \"run_binary\")\n+load(\"@pybind11_bazel//:build_defs.bzl\", \"pybind_library\")\n+load(\"@rules_cc//cc:defs.bzl\", \"cc_binary\", \"cc_library\")\n+load(\"@rules_python//python:defs.bzl\", \"py_binary\")\n+\n+\n+package(default_visibility = [\"//visibility:private\"])\n+\n+\n+# Slang version is major.minor.micro\n+# We strip away any sub-version numbers after the first 3 (e.g. remove a potential `.bcr.1`)\n+[\n+    SLANG_VERSION_MAJOR,\n+    SLANG_VERSION_MINOR,\n+    SLANG_VERSION_MICRO,\n+] = module_version().split(\".\")[:3]\n+SLANG_VERSION = \"{}.{}.{}\".format(SLANG_VERSION_MAJOR, SLANG_VERSION_MINOR, SLANG_VERSION_MICRO)\n+\n+# The source repo has a top level directory \"external\" which is reserved by Bazel.\n+# To hack around this, we don't use `strip_prefix` in sources/json so that the\n+# \"external\" directory is not at the top level.\n+# The downside of this is we need to prepend `SOURCES_PREFIX` to all paths here\n+SOURCES_PREFIX = \"slang-{}.{}\".format(SLANG_VERSION_MAJOR, SLANG_VERSION_MINOR)\n+\n+\n+\n+# Python dependencies for the code generation scripts\n+py_binary(\n+    name = \"diagnostic_gen\",\n+    srcs = [SOURCES_PREFIX + \"/scripts/diagnostic_gen.py\"],\n+)\n+\n+py_binary(\n+    name = \"syntax_gen\",\n+    srcs = [SOURCES_PREFIX + \"/scripts/syntax_gen.py\"],\n+)\n+\n+py_binary(\n+    name = \"grammar_gen\",\n+    srcs = [SOURCES_PREFIX + \"/scripts/grammar_gen.py\"],\n+)\n+\n+# Run diagnostic generation\n+run_binary(\n+    name = \"generate_diagnostics\",\n+    srcs = [\n+        SOURCES_PREFIX + \"/scripts/diagnostics.txt\",\n+        SOURCES_PREFIX + \"/scripts/warning_docs.txt\",\n+    ] + glob([SOURCES_PREFIX + \"/include/slang/analysis/*\"]),\n+    outs = [\n+        \"generated/DiagCode.cpp\",\n+        \"generated/slang/diagnostics/AllDiags.h\",\n+        \"generated/slang/diagnostics/AnalysisDiags.h\",\n+        \"generated/slang/diagnostics/CompilationDiags.h\",\n+        \"generated/slang/diagnostics/ConstEvalDiags.h\",\n+        \"generated/slang/diagnostics/DeclarationsDiags.h\",\n+        \"generated/slang/diagnostics/ExpressionsDiags.h\",\n+        \"generated/slang/diagnostics/GeneralDiags.h\",\n+        \"generated/slang/diagnostics/LexerDiags.h\",\n+        \"generated/slang/diagnostics/LookupDiags.h\",\n+        \"generated/slang/diagnostics/MetaDiags.h\",\n+        \"generated/slang/diagnostics/NumericDiags.h\",\n+        \"generated/slang/diagnostics/ParserDiags.h\",\n+        \"generated/slang/diagnostics/PreprocessorDiags.h\",\n+        \"generated/slang/diagnostics/StatementsDiags.h\",\n+        \"generated/slang/diagnostics/SysFuncsDiags.h\",\n+        \"generated/slang/diagnostics/TypesDiags.h\",\n+    ],\n+    args = [\n+        \"--diagnostics=$(location {}/scripts/diagnostics.txt)\".format(SOURCES_PREFIX),\n+        \"--outDir=$(RULEDIR)/generated/\",\n+        \"--srcDir={}/scripts/diagnostics/\".format(SOURCES_PREFIX),\n+        \"--incDir={}/include/slang/analysis/\".format(SOURCES_PREFIX),\n+    ],\n+    tool = \":diagnostic_gen\",\n+)\n+\n+# Run syntax generation\n+run_binary(\n+    name = \"generate_syntax\",\n+    srcs = [\n+        SOURCES_PREFIX + \"/scripts/syntax.txt\",\n+        SOURCES_PREFIX + \"/scripts/systemnames.txt\",\n+        SOURCES_PREFIX + \"/scripts/tokenkinds.txt\",\n+        SOURCES_PREFIX + \"/scripts/triviakinds.txt\",\n+    ],\n+    outs = [\n+        \"generated/AllSyntax.cpp\",\n+        \"generated/KnownSystemName.cpp\",\n+        \"generated/SyntaxClone.cpp\",\n+        \"generated/TokenKind.cpp\",\n+        \"generated/slang/parsing/KnownSystemName.h\",\n+        \"generated/slang/parsing/TokenKind.h\",\n+        \"generated/slang/syntax/AllSyntax.h\",\n+        \"generated/slang/syntax/SyntaxFwd.h\",\n+        \"generated/slang/syntax/SyntaxKind.h\",\n+    ],\n+    args = [\n+        \"--syntax=$(location {}/scripts/syntax.txt)\".format(SOURCES_PREFIX),\n+        \"--dir=$(RULEDIR)/generated/\",\n+    ],\n+    tool = \":syntax_gen\",\n+)\n+\n+# Run syntax generation for the python bindings\n+run_binary(\n+    name = \"generate_syntax_python\",\n+    srcs = [\n+        SOURCES_PREFIX + \"/scripts/syntax.txt\",\n+    ],\n+    outs = [\n+        \"generated/pyslang/PySyntaxBindings0.cpp\",\n+        \"generated/pyslang/PySyntaxBindings1.cpp\",\n+        \"generated/pyslang/PySyntaxBindings2.cpp\",\n+        \"generated/pyslang/PySyntaxBindings3.cpp\",\n+    ],\n+    args = [\n+        \"--syntax=$(location {}/scripts/syntax.txt)\".format(SOURCES_PREFIX),\n+        \"--dir=$(RULEDIR)/generated/pyslang/\",\n+        \"--python-bindings\",\n+    ],\n+    tool = \":syntax_gen\",\n+)\n+\n+# List of generated header files for the slang library\n+filegroup(\n+    name = \"slang_lib_generated_headers\",\n+    srcs = [\n+        \"generated/slang/diagnostics/AllDiags.h\",\n+        \"generated/slang/diagnostics/AnalysisDiags.h\",\n+        \"generated/slang/diagnostics/CompilationDiags.h\",\n+        \"generated/slang/diagnostics/ConstEvalDiags.h\",\n+        \"generated/slang/diagnostics/DeclarationsDiags.h\",\n+        \"generated/slang/diagnostics/ExpressionsDiags.h\",\n+        \"generated/slang/diagnostics/GeneralDiags.h\",\n+        \"generated/slang/diagnostics/LexerDiags.h\",\n+        \"generated/slang/diagnostics/LookupDiags.h\",\n+        \"generated/slang/diagnostics/MetaDiags.h\",\n+        \"generated/slang/diagnostics/NumericDiags.h\",\n+        \"generated/slang/diagnostics/ParserDiags.h\",\n+        \"generated/slang/diagnostics/PreprocessorDiags.h\",\n+        \"generated/slang/diagnostics/StatementsDiags.h\",\n+        \"generated/slang/diagnostics/SysFuncsDiags.h\",\n+        \"generated/slang/diagnostics/TypesDiags.h\",\n+        \"generated/slang/parsing/KnownSystemName.h\",\n+        \"generated/slang/parsing/TokenKind.h\",\n+        \"generated/slang/syntax/AllSyntax.h\",\n+        \"generated/slang/syntax/SyntaxFwd.h\",\n+        \"generated/slang/syntax/SyntaxKind.h\",\n+    ],\n+)\n+\n+filegroup(\n+    name = \"slang_lib_external_headers\",\n+    srcs = glob([\n+        SOURCES_PREFIX + \"/external/**/*.h\",\n+        SOURCES_PREFIX + \"/external/**/*.hpp\",\n+    ]),\n+)\n+\n+filegroup(\n+    name = \"slang_lib_internal_include_headers\",\n+    srcs = glob([\n+        SOURCES_PREFIX + \"/include/**/*.h\",\n+    ]),\n+)\n+\n+filegroup(\n+    name = \"slang_lib_internal_source_headers\",\n+    srcs = glob([\n+        SOURCES_PREFIX + \"/source/**/*.h\",\n+    ]),\n+)\n+\n+filegroup(\n+    name = \"slang_ast_sources\",\n+    srcs = glob([\n+        SOURCES_PREFIX + \"/source/ast/**/*.cpp\",\n+        SOURCES_PREFIX + \"/source/ast/**/*.h\",\n+    ]),\n+)\n+\n+filegroup(\n+    # Collect all the headers together for the main library\n+    name = \"slang_lib_headers\",\n+    srcs = [\n+        \":slang_lib_external_headers\",\n+        \":slang_lib_generated_headers\",\n+        \":slang_lib_internal_include_headers\",\n+        \":slang_lib_internal_source_headers\",\n+    ],\n+)\n+\n+cc_library(\n+    name = \"libsvlang\",\n+    srcs = [\n+        \"generated/AllSyntax.cpp\",\n+        \"generated/DiagCode.cpp\",\n+        \"generated/KnownSystemName.cpp\",\n+        \"generated/SyntaxClone.cpp\",\n+        \"generated/TokenKind.cpp\",\n+        SOURCES_PREFIX + \"/source/analysis/AbstractFlowAnalysis.cpp\",\n+        SOURCES_PREFIX + \"/source/analysis/AnalysisManager.cpp\",\n+        SOURCES_PREFIX + \"/source/analysis/AnalyzedAssertion.cpp\",\n+        SOURCES_PREFIX + \"/source/analysis/AnalyzedProcedure.cpp\",\n+        SOURCES_PREFIX + \"/source/analysis/CaseDecisionDag.cpp\",\n+        SOURCES_PREFIX + \"/source/analysis/ClockInference.cpp\",\n+        SOURCES_PREFIX + \"/source/analysis/DataFlowAnalysis.cpp\",\n+        SOURCES_PREFIX + \"/source/analysis/DriverTracker.cpp\",\n+        SOURCES_PREFIX + \"/source/analysis/ValueDriver.cpp\",\n+        SOURCES_PREFIX + \"/source/diagnostics/DiagnosticClient.cpp\",\n+        SOURCES_PREFIX + \"/source/diagnostics/DiagnosticEngine.cpp\",\n+        SOURCES_PREFIX + \"/source/diagnostics/Diagnostics.cpp\",\n+        SOURCES_PREFIX + \"/source/diagnostics/JsonDiagnosticClient.cpp\",\n+        SOURCES_PREFIX + \"/source/diagnostics/TextDiagnosticClient.cpp\",\n+        SOURCES_PREFIX + \"/source/driver/Driver.cpp\",\n+        SOURCES_PREFIX + \"/source/driver/SourceLoader.cpp\",\n+        SOURCES_PREFIX + \"/source/numeric/ConstantValue.cpp\",\n+        SOURCES_PREFIX + \"/source/numeric/SVInt.cpp\",\n+        SOURCES_PREFIX + \"/source/numeric/Time.cpp\",\n+        SOURCES_PREFIX + \"/source/parsing/Lexer.cpp\",\n+        SOURCES_PREFIX + \"/source/parsing/LexerFacts.cpp\",\n+        SOURCES_PREFIX + \"/source/parsing/NumberParser.cpp\",\n+        SOURCES_PREFIX + \"/source/parsing/Parser.cpp\",\n+        SOURCES_PREFIX + \"/source/parsing/ParserBase.cpp\",\n+        SOURCES_PREFIX + \"/source/parsing/ParserMetadata.cpp\",\n+        SOURCES_PREFIX + \"/source/parsing/Parser_expressions.cpp\",\n+        SOURCES_PREFIX + \"/source/parsing/Parser_members.cpp\",\n+        SOURCES_PREFIX + \"/source/parsing/Parser_statements.cpp\",\n+        SOURCES_PREFIX + \"/source/parsing/Preprocessor.cpp\",\n+        SOURCES_PREFIX + \"/source/parsing/Preprocessor_macros.cpp\",\n+        SOURCES_PREFIX + \"/source/parsing/Preprocessor_pragmas.cpp\",\n+        SOURCES_PREFIX + \"/source/parsing/Token.cpp\",\n+        SOURCES_PREFIX + \"/source/syntax/SyntaxFacts.cpp\",\n+        SOURCES_PREFIX + \"/source/syntax/SyntaxNode.cpp\",\n+        SOURCES_PREFIX + \"/source/syntax/SyntaxPrinter.cpp\",\n+        SOURCES_PREFIX + \"/source/syntax/SyntaxTree.cpp\",\n+        SOURCES_PREFIX + \"/source/syntax/SyntaxVisitor.cpp\",\n+        SOURCES_PREFIX + \"/source/text/CharInfo.cpp\",\n+        SOURCES_PREFIX + \"/source/text/Glob.cpp\",\n+        SOURCES_PREFIX + \"/source/text/Json.cpp\",\n+        SOURCES_PREFIX + \"/source/text/SourceLocation.cpp\",\n+        SOURCES_PREFIX + \"/source/text/SourceManager.cpp\",\n+        SOURCES_PREFIX + \"/source/util/BumpAllocator.cpp\",\n+        SOURCES_PREFIX + \"/source/util/CommandLine.cpp\",\n+        SOURCES_PREFIX + \"/source/util/IntervalMap.cpp\",\n+        SOURCES_PREFIX + \"/source/util/OS.cpp\",\n+        SOURCES_PREFIX + \"/source/util/SmallVector.cpp\",\n+        SOURCES_PREFIX + \"/source/util/String.cpp\",\n+        SOURCES_PREFIX + \"/source/util/TimeTrace.cpp\",\n+        SOURCES_PREFIX + \"/source/util/Util.cpp\",\n+        \":slang_ast_sources\",\n+        \":slang_lib_headers\",\n+        \"//private/slang/version_info:VersionInfo.cpp\",\n+    ],\n+    hdrs = [\":slang_lib_internal_include_headers\"],\n+    copts = [\n+        \"-std=c++20\",\n+        \"-fvisibility=hidden\",\n+        \"-fvisibility-inlines-hidden\",\n+        \"-fPIC\",  # Position-independent code required for python bindings\n+    ],\n+    includes = [\n+        \"generated\",\n+        SOURCES_PREFIX + \"/external\",\n+        SOURCES_PREFIX + \"/include\",\n+    ],\n+    visibility = [\"//visibility:public\"],\n+    deps = [\n+        \"//private/slang/export_headers:slang_export_headers\",\n+        \"@boost.unordered\",\n+        \"@fmt\",\n+    ],\n+    alwayslink = True,\n+)\n+\n+# Slang driver - the main slang binary\n+cc_binary(\n+    name = \"slang\",\n+    srcs = [\n+        SOURCES_PREFIX + \"/tools/driver/slang_main.cpp\",\n+    ],\n+    copts = [\n+        \"-std=c++20\",\n+    ],\n+    visibility = [\"//visibility:public\"],\n+    deps = [\n+        \":libsvlang\",\n+    ],\n+)\n+\n+# Slang-tidy linting tool\n+\n+cc_library(\n+    name = \"slang_tidy_lib\",\n+    srcs = [\n+        SOURCES_PREFIX + \"/tools/tidy/src/ASTHelperVisitors.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/TidyConfig.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/TidyConfigParser.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/style/AlwaysCombNamed.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/style/AlwaysCombNonBlocking.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/style/AlwaysFFBlocking.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/style/EnforceModuleInstantiationPrefix.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/style/EnforcePortPrefix.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/style/EnforcePortSuffix.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/style/GenerateNamed.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/style/NoDotStarInPortConnection.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/style/NoDotVarInPortConnection.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/style/NoImplicitPortNameInPortConnection.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/style/NoLegacyGenerate.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/style/NoOldAlwaysSyntax.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/style/OnlyANSIPortDecl.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/synthesis/AlwaysFFAssignmentOutsideConditional.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/synthesis/CastSignedIndex.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/synthesis/NoLatchesOnDesign.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/synthesis/OnlyAssignedOnReset.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/synthesis/RegisterHasNoReset.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/synthesis/UndrivenRange.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/synthesis/UnusedSensitiveSignal.cpp\",\n+        SOURCES_PREFIX + \"/tools/tidy/src/synthesis/XilinxDoNotCareValues.cpp\",\n+    ],\n+    hdrs = glob([\n+        SOURCES_PREFIX + \"/tools/tidy/include/**/*.h\",\n+    ]),\n+    copts = [\n+        \"-std=c++20\",\n+    ],\n+    includes = [\n+        SOURCES_PREFIX + \"/tools/tidy/include\",\n+    ],\n+    visibility = [\"//visibility:public\"],\n+    deps = [\n+        \":libsvlang\",\n+    ],\n+    alwayslink = True,\n+)\n+\n+cc_binary(\n+    name = \"slang-tidy\",\n+    srcs = [\n+        SOURCES_PREFIX + \"/tools/tidy/src/tidy.cpp\",\n+    ],\n+    copts = [\n+        \"-std=c++20\",\n+    ],\n+    visibility = [\"//visibility:public\"],\n+    deps = [\n+        \":slang_tidy_lib\",\n+    ],\n+)\n+\n+cc_binary(\n+    name = \"slang-hier\",\n+    srcs = [\n+        SOURCES_PREFIX + \"/tools/hier/hier.cpp\",\n+    ],\n+    copts = [\n+        \"-std=c++20\",\n+    ],\n+    visibility = [\"//visibility:public\"],\n+    deps = [\n+        \":libsvlang\",\n+    ],\n+)\n+\n+cc_library(\n+    name = \"slang_reflect_lib\",\n+    srcs = [\n+        SOURCES_PREFIX + \"/tools/reflect/src/SvEnum.cpp\",\n+        SOURCES_PREFIX + \"/tools/reflect/src/SvLocalParam.cpp\",\n+        SOURCES_PREFIX + \"/tools/reflect/src/SvStruct.cpp\",\n+        SOURCES_PREFIX + \"/tools/reflect/src/SvType.cpp\",\n+        SOURCES_PREFIX + \"/tools/reflect/src/SvTypeReflector.cpp\",\n+        SOURCES_PREFIX + \"/tools/reflect/src/SvUnion.cpp\",\n+    ],\n+    hdrs = glob([SOURCES_PREFIX + \"/tools/reflect/include/**/*.h\"]),\n+    copts = [\n+        \"-std=c++20\",\n+    ],\n+    includes = [SOURCES_PREFIX + \"/tools/reflect/include\"],\n+    visibility = [\"//visibility:public\"],\n+    deps = [\n+        \":libsvlang\",\n+    ],\n+    alwayslink = True,\n+)\n+\n+cc_binary(\n+    name = \"slang-reflect\",\n+    srcs = [\n+        SOURCES_PREFIX + \"/tools/reflect/src/reflect.cpp\",\n+    ],\n+    copts = [\n+        \"-std=c++20\",\n+    ],\n+    visibility = [\"//visibility:public\"],\n+    deps = [\n+        \":slang_reflect_lib\",\n+    ],\n+)\n+\n+cc_binary(\n+    name = \"rewriter\",\n+    srcs = [\n+        SOURCES_PREFIX + \"/tools/rewriter/rewriter.cpp\",\n+    ],\n+    copts = [\n+        \"-std=c++20\",\n+    ],\n+    visibility = [\"//visibility:public\"],\n+    deps = [\n+        \":libsvlang\",\n+    ],\n+)\n+\n+# TODO: run threadtest as a test if multithreading is ever enabled\n+cc_binary(\n+    name = \"slang-threadtest\",\n+    srcs = [\n+        SOURCES_PREFIX + \"/tools/threadtest/threadtest.cpp\",\n+    ],\n+    copts = [\n+        \"-std=c++20\",\n+        \"-fsanitize=thread\",\n+    ],\n+    linkopts = [\n+        \"-fsanitize=thread\",\n+    ],\n+    visibility = [\"//visibility:public\"],\n+    deps = [\n+        \":libsvlang\",\n+    ],\n+)\n+\n+# Add python bindings\n+pybind_library(\n+    name = \"pyslang_bindings_lib\",\n+    srcs = [\n+        SOURCES_PREFIX + \"/bindings/python/AnalysisBindings.cpp\",\n+        SOURCES_PREFIX + \"/bindings/python/ASTBindings.cpp\",\n+        SOURCES_PREFIX + \"/bindings/python/CompBindings.cpp\",\n+        SOURCES_PREFIX + \"/bindings/python/ExpressionBindings.cpp\",\n+        SOURCES_PREFIX + \"/bindings/python/NumericBindings.cpp\",\n+        SOURCES_PREFIX + \"/bindings/python/pyslang.cpp\",\n+        SOURCES_PREFIX + \"/bindings/python/StatementBindings.cpp\",\n+        SOURCES_PREFIX + \"/bindings/python/SymbolBindings.cpp\",\n+        SOURCES_PREFIX + \"/bindings/python/SyntaxBindings.cpp\",\n+        SOURCES_PREFIX + \"/bindings/python/TypeBindings.cpp\",\n+        SOURCES_PREFIX + \"/bindings/python/UtilBindings.cpp\",\n+        # Generated\n+        \"generated/pyslang/PySyntaxBindings0.cpp\",\n+        \"generated/pyslang/PySyntaxBindings1.cpp\",\n+        \"generated/pyslang/PySyntaxBindings2.cpp\",\n+        \"generated/pyslang/PySyntaxBindings3.cpp\",\n+    ],\n+    hdrs = [\n+        SOURCES_PREFIX + \"/bindings/python/PyVisitors.h\",\n+        SOURCES_PREFIX + \"/bindings/python/pyslang.h\",\n+    ],\n+    copts = [\n+        \"-std=c++20\",\n+        \"-fPIC\",\n+    ],\n+    defines = [\n+        \"VERSION_INFO={}\".format(SLANG_VERSION),\n+    ],\n+    includes = [\n+        SOURCES_PREFIX + \"/bindings/python\",\n+    ],\n+    visibility = [\"//:__subpackages__\"],\n+    deps = [\":libsvlang\"],\n+)\n+\n+# Export sources to use in pyslang\n+filegroup(\n+    name = \"pyslang_bindings_srcs\",\n+    srcs = [\n+        SOURCES_PREFIX + \"/bindings/python/pyslang.cpp\",\n+        SOURCES_PREFIX + \"/bindings/python/pyslang.h\",\n+    ],\n+    visibility = [\"//:__subpackages__\"],\n+)"
+    },
+    {
+      "sha": "9b599e3ad9ccc58be06bd6a22138836a09054e4e",
+      "filename": "modules/sv-lang/9.1.0/overlay/MODULE.bazel",
+      "status": "added",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2FMODULE.bazel",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2FMODULE.bazel",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Foverlay%2FMODULE.bazel?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1 @@\n+../MODULE.bazel\n\\ No newline at end of file"
+    },
+    {
+      "sha": "fbc5faee898e42a5c793853dd0154db4b5e68167",
+      "filename": "modules/sv-lang/9.1.0/overlay/private/slang/export_headers/BUILD.bazel",
+      "status": "added",
+      "additions": 20,
+      "deletions": 0,
+      "changes": 20,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fexport_headers%2FBUILD.bazel",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fexport_headers%2FBUILD.bazel",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fexport_headers%2FBUILD.bazel?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,20 @@\n+load(\"@rules_foreign_cc//foreign_cc:cmake.bzl\", \"cmake\")\n+\n+# Small CMake step to create slang/slang_export.h using cmake, so that the build is platform agnostic\n+\n+filegroup(\n+    name = \"slang_export_headers_srcs\",\n+    srcs = [\n+        \"CMakeLists.txt\",\n+        \"PlaceholderSource.cpp\",\n+    ],\n+)\n+\n+# TODO: could use modules/generate_export_header here instead?\n+cmake(\n+    name = \"slang_export_headers\",\n+    lib_source = \":slang_export_headers_srcs\",\n+    out_headers_only = True,\n+    targets = [\"slang_slang\"],\n+    visibility = [\"//:__subpackages__\"],\n+)"
+    },
+    {
+      "sha": "b0d5a4b597fa3002f72356a1d0215081da5104fd",
+      "filename": "modules/sv-lang/9.1.0/overlay/private/slang/export_headers/CMakeLists.txt",
+      "status": "added",
+      "additions": 51,
+      "deletions": 0,
+      "changes": 51,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fexport_headers%2FCMakeLists.txt",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fexport_headers%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fexport_headers%2FCMakeLists.txt?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,51 @@\n+cmake_minimum_required(VERSION 3.20...3.29)\n+\n+project(slang_export_headers)\n+\n+include(GenerateExportHeader)\n+\n+# Parts of this file are copied from the slang repo: source/CMakeLists.txt\n+# Recreated in CMake here to generate the correct headers for the current platform\n+\n+add_library(\n+  slang_slang\n+  STATIC\n+  PlaceholderSource.cpp\n+  )\n+\n+# Set the output name to match what bazel expects\n+set_target_properties(slang_slang PROPERTIES\n+  OUTPUT_NAME slang_export_headers\n+  PREFIX \"\"\n+)\n+\n+# For the generated export header, suppress annoying warnings\n+# Copied from slang repo\n+set(suppress_export_warnings\n+    \"\n+#if defined(_MSC_VER) && !defined(__ICL)\n+  #pragma warning(disable:4251)\n+  #pragma warning(disable:4275)\n+#elif defined(__GNUC__) && !defined(__clang__)\n+  #pragma GCC diagnostic ignored \\\"-Wattributes\\\"\n+#endif\n+\")\n+\n+# Generate the export header\n+# Partially copied from slang repo\n+generate_export_header(\n+  slang_slang\n+  BASE_NAME slang\n+  EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/slang/slang_export.h\n+  CUSTOM_CONTENT_FROM_VARIABLE\n+  suppress_export_warnings)\n+\n+# Install the generated header\n+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/slang/slang_export.h\n+        DESTINATION include/slang)\n+\n+# Install the library target\n+install(TARGETS slang_slang\n+        EXPORT slang_slang_targets\n+        ARCHIVE DESTINATION lib\n+        INCLUDES DESTINATION include)"
+    },
+    {
+      "sha": "a640ad0d6fd90e5a483e60c705a8580abd6f469e",
+      "filename": "modules/sv-lang/9.1.0/overlay/private/slang/export_headers/PlaceholderSource.cpp",
+      "status": "added",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fexport_headers%2FPlaceholderSource.cpp",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fexport_headers%2FPlaceholderSource.cpp",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fexport_headers%2FPlaceholderSource.cpp?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,2 @@\n+// Placeholder cpp file to give cmake something to target\n+void hello() {}"
+    },
+    {
+      "sha": "5a2f349aea3d7e20b972f3a2b306f1599fd12e2a",
+      "filename": "modules/sv-lang/9.1.0/overlay/private/slang/version_info/BUILD.bazel",
+      "status": "added",
+      "additions": 26,
+      "deletions": 0,
+      "changes": 26,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fversion_info%2FBUILD.bazel",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fversion_info%2FBUILD.bazel",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fversion_info%2FBUILD.bazel?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,26 @@\n+\"\"\"\n+Render VersionInfo.cpp with current module version\n+\"\"\"\n+load(\"@bazel_skylib//rules:expand_template.bzl\", \"expand_template\")\n+\n+# Slang version is major.minor.micro\n+# We strip away any sub-version numbers after the first 3 (e.g. remove a potential `.bcr.1`)\n+[\n+    SLANG_VERSION_MAJOR,\n+    SLANG_VERSION_MINOR,\n+    SLANG_VERSION_MICRO,\n+] = module_version().split(\".\")[:3]\n+\n+expand_template(\n+    name = \"VersionInfo\",\n+    out = \"VersionInfo.cpp\",\n+    substitutions = {\n+        \"@SLANG_VERSION_MAJOR@\": SLANG_VERSION_MAJOR,\n+        \"@SLANG_VERSION_MINOR@\": SLANG_VERSION_MINOR,\n+        \"@SLANG_VERSION_PATCH@\": SLANG_VERSION_MICRO,\n+        # Don't bother extracting the git hash\n+        \"@SLANG_VERSION_HASH@\": \"GIT_HASH_NOT_PROVIDED\",\n+    },\n+    template = \"VersionInfo.cpp.in\",\n+    visibility = [\"//:__subpackages__\"],\n+)"
+    },
+    {
+      "sha": "a3abf870ee941adf204fff076d9db9d2488ccfb0",
+      "filename": "modules/sv-lang/9.1.0/overlay/private/slang/version_info/VersionInfo.cpp.in",
+      "status": "added",
+      "additions": 26,
+      "deletions": 0,
+      "changes": 26,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fversion_info%2FVersionInfo.cpp.in",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fversion_info%2FVersionInfo.cpp.in",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Fslang%2Fversion_info%2FVersionInfo.cpp.in?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,26 @@\n+//------------------------------------------------------------------------------\n+// VersionInfo.cpp\n+// Input file for build-time version source generation\n+//\n+// SPDX-FileCopyrightText: Michael Popoloski\n+// SPDX-License-Identifier: MIT\n+//\n+//------------------------------------------------------------------------------\n+#include \"slang/util/VersionInfo.h\"\n+\n+using std::string_view;\n+using namespace std::literals;\n+\n+namespace slang {\n+\n+int VersionInfo::getMajor() { return @SLANG_VERSION_MAJOR@; }\n+\n+int VersionInfo::getMinor() { return @SLANG_VERSION_MINOR@; }\n+\n+int VersionInfo::getPatch() { return @SLANG_VERSION_PATCH@; }\n+\n+string_view VersionInfo::getHash() {\n+  return \"@SLANG_VERSION_HASH@\"sv;\n+}\n+\n+} // namespace slang"
+    },
+    {
+      "sha": "917b71bc79647f0c0651668db3ea20a1f873bf8f",
+      "filename": "modules/sv-lang/9.1.0/overlay/private/tests/BUILD.bazel",
+      "status": "added",
+      "additions": 19,
+      "deletions": 0,
+      "changes": 19,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Ftests%2FBUILD.bazel",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Ftests%2FBUILD.bazel",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Ftests%2FBUILD.bazel?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,19 @@\n+load(\"@bazel_skylib//rules:build_test.bzl\", \"build_test\")\n+\n+# Test builds of binaries and libraries\n+build_test(\n+    name = \"test_slang_builds\",\n+    targets = [\n+        \"//:libsvlang\",\n+        \"//:slang\",\n+        \"//:slang-hier\",\n+        \"//:slang-reflect\",\n+        \"//:rewriter\",\n+        \"//:slang-tidy\",\n+        \"//:slang-threadtest\",\n+        \"//pyslang:pyslang_lib\",\n+    ],\n+)\n+\n+\n+# TODO: wrap up the tests (C++ and Python) in the source repo to be run here as well"
+    },
+    {
+      "sha": "2d8007b674b81576757257542069ce83dd7b53e0",
+      "filename": "modules/sv-lang/9.1.0/overlay/private/tests/pyslang/BUILD.bazel",
+      "status": "added",
+      "additions": 11,
+      "deletions": 0,
+      "changes": 11,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Ftests%2Fpyslang%2FBUILD.bazel",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Ftests%2Fpyslang%2FBUILD.bazel",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Ftests%2Fpyslang%2FBUILD.bazel?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,11 @@\n+load(\"@aspect_rules_py//py:defs.bzl\", \"py_test\")\n+\n+\n+py_test(\n+    name = \"test\",\n+    srcs = [\"test.py\"],\n+    data = [\":test_module.sv\"],\n+    deps = [\n+        \"//pyslang:pyslang_wheel_lib\",\n+    ],\n+)"
+    },
+    {
+      "sha": "fab11a073dab5924ace29624106067dbcc4e5f0d",
+      "filename": "modules/sv-lang/9.1.0/overlay/private/tests/pyslang/test.py",
+      "status": "added",
+      "additions": 21,
+      "deletions": 0,
+      "changes": 21,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Ftests%2Fpyslang%2Ftest.py",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Ftests%2Fpyslang%2Ftest.py",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Ftests%2Fpyslang%2Ftest.py?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,21 @@\n+import pyslang\n+import os\n+import sys\n+\n+test_dir = os.path.dirname(__file__)\n+\n+\n+def test_pyslang():\n+    \"\"\"\n+    Import pyslang and show that we can load a syntax tree from an RTL file.\n+    \"\"\"\n+    tree = pyslang.SyntaxTree.fromFile(f\"{test_dir}/test_module.sv\")\n+    mod = tree.root.members[0]\n+    if mod.header.name.value != \"test_module\":\n+        raise RuntimeError(f\"Expected module name 'test_module', got '{mod.header.name.value}'\")\n+\n+    return 0\n+\n+\n+if __name__ == \"__main__\":\n+    sys.exit(test_pyslang())"
+    },
+    {
+      "sha": "849f3b9b2913e564cb32cf2d0d4a72ee837eb762",
+      "filename": "modules/sv-lang/9.1.0/overlay/private/tests/pyslang/test_module.sv",
+      "status": "added",
+      "additions": 12,
+      "deletions": 0,
+      "changes": 12,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Ftests%2Fpyslang%2Ftest_module.sv",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Ftests%2Fpyslang%2Ftest_module.sv",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fprivate%2Ftests%2Fpyslang%2Ftest_module.sv?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,12 @@\n+module test_module(\n+    input wire [3:0] a,       // 4-bit input A\n+    input wire [3:0] b,       // 4-bit input B\n+    input wire cin,           // Carry input\n+    output wire [3:0] sum,    // 4-bit sum output\n+    output wire cout          // Carry output\n+);\n+\n+    // 4-bit adder with carry\n+    assign {cout, sum} = a + b + cin;\n+\n+endmodule"
+    },
+    {
+      "sha": "2567fc0158fcbcf8e3375eba5b65ef289a5eaab4",
+      "filename": "modules/sv-lang/9.1.0/overlay/pyslang/BUILD.bazel",
+      "status": "added",
+      "additions": 56,
+      "deletions": 0,
+      "changes": 56,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fpyslang%2FBUILD.bazel",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fpyslang%2FBUILD.bazel",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fpyslang%2FBUILD.bazel?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,56 @@\n+load(\"@aspect_rules_py//py:defs.bzl\", \"py_library\")\n+load(\"@pybind11_bazel//:build_defs.bzl\", \"pybind_extension\")\n+load(\"@rules_pycross//pycross:defs.bzl\", \"pycross_wheel_library\")\n+load(\"@rules_python//python:packaging.bzl\", \"py_package\", \"py_wheel\")\n+\n+# Slang version is major.minor.micro\n+# Strip away any sub-version numbers after the first 3 (e.g. remove a potential `.bcr.1`)\n+SLANG_VERSION = \".\".join(module_version().split(\".\")[:3])\n+\n+# TODO: add .pyi stubs for the pybind python\n+\n+pybind_extension(\n+    # Must be called \"pyslang\" to match the underlying C++\n+    name = \"pyslang\",\n+    srcs = [\n+        \"//:pyslang_bindings_srcs\",\n+    ],\n+    copts = [\n+        \"-std=c++20\",\n+        \"-fPIC\",\n+    ],\n+    defines = [\n+        \"VERSION_INFO={}\".format(SLANG_VERSION),\n+    ],\n+    deps = [\n+        \"//:pyslang_bindings_lib\",\n+    ],\n+)\n+\n+py_library(\n+    name = \"pyslang_lib\",\n+    srcs = [\"__init__.py\"],\n+    data = [\":pyslang\"],\n+    visibility = [\"//visibility:public\"],\n+)\n+\n+py_package(\n+    name = \"pyslang_pkg\",\n+    deps = [\":pyslang_lib\"],\n+)\n+\n+py_wheel(\n+    name = \"pyslang_wheel\",\n+    distribution = \"pyslang\",\n+    strip_path_prefixes = [\"pyslang\"],\n+    version = SLANG_VERSION,\n+    deps = [\":pyslang_pkg\"],\n+)\n+\n+\n+pycross_wheel_library(\n+    name = \"pyslang_wheel_lib\",\n+    enable_implicit_namespace_pkgs = False,\n+    visibility = [\"//visibility:public\"],\n+    wheel = \":pyslang_wheel\",\n+)"
+    },
+    {
+      "sha": "812ba399cac24a5e8f0e324ed66778d334687d21",
+      "filename": "modules/sv-lang/9.1.0/overlay/pyslang/__init__.py",
+      "status": "added",
+      "additions": 1,
+      "deletions": 0,
+      "changes": 1,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fpyslang%2F__init__.py",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fpyslang%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Foverlay%2Fpyslang%2F__init__.py?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1 @@\n+from .pyslang import *  # noqa: F403"
+    },
+    {
+      "sha": "6f2595f760b29c474422191548043ea5c9f8d2e9",
+      "filename": "modules/sv-lang/9.1.0/presubmit.yml",
+      "status": "added",
+      "additions": 60,
+      "deletions": 0,
+      "changes": 60,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Fpresubmit.yml",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Fpresubmit.yml",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Fpresubmit.yml?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,60 @@\n+# Take default incompatible flags from incompatible_flags.yml except with broken flags disabled\n+incompatible_flags:\n+  # https://github.com/bazelbuild/bazel/issues/12933\n+  \"--incompatible_config_setting_private_default_visibility\":\n+    - 6.x\n+    - 7.x\n+    - 8.x\n+  # https://github.com/bazelbuild/bazel/issues/17032\n+  \"--incompatible_disable_starlark_host_transitions\":\n+    - 6.x\n+    - 7.x\n+    - 8.x\n+  # https://github.com/bazelbuild/bazel/issues/22080\n+  \"--incompatible_disable_native_repo_rules\":\n+    - 7.x\n+    - 8.x\n+  # https://github.com/bazelbuild/bazel/issues/23043\n+  \"--incompatible_autoload_externally=\":\n+    - 7.x\n+    # - 8.x # DISABLED: Not supported by dependencies of sv-lang - TODO: revisit this\n+  # https://github.com/bazelbuild/bazel/issues/23144\n+  # This flag will be flipped to false\n+  # TODO: enable this after fixing https://github.com/bazelbuild/bazel/issues/23144#issuecomment-2793072689\n+  # \"--noincompatible_enable_deprecated_label_apis\":\n+  #   - 7.x\n+  #   - 8.x\n+  # https://github.com/bazelbuild/bazel/issues/25755\n+  \"--incompatible_disable_autoloads_in_main_repo\":\n+    - last_green\n+    - rolling\n+  # https://github.com/bazelbuild/bazel/issues/7026\n+  \"--incompatible_strict_action_env\":\n+    - 6.x\n+    - 7.x\n+    - 8.x\n+\n+\n+bcr_test_module:\n+  module_path: \"\"\n+  matrix:\n+    platform:\n+      # Requires C++20 supported compiler (GCC > 11, clang > 17)\n+      - ubuntu2204\n+      - ubuntu2404\n+      - macos_arm64\n+    bazel: [\"7.x\", \"8.x\"]\n+\n+  tasks:\n+    verify_targets:\n+      name: \"Run test module\"\n+      platform: ${{ platform }}\n+      bazel: ${{ bazel }}\n+      build_flags:\n+        - '--cxxopt=-std=c++20'\n+      test_flags:\n+        - '--cxxopt=-std=c++20'\n+      build_targets:\n+      - \"//...\"\n+      test_targets:\n+      - \"//...\""
+    },
+    {
+      "sha": "72e91c806a194bf14b0edbd0b28438016d7a6a37",
+      "filename": "modules/sv-lang/9.1.0/source.json",
+      "status": "added",
+      "additions": 20,
+      "deletions": 0,
+      "changes": 20,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Fsource.json",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2F9.1.0%2Fsource.json",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2F9.1.0%2Fsource.json?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,20 @@\n+{\n+    \"url\": \"https://github.com/MikePopoloski/slang/archive/refs/tags/v9.1.tar.gz\",\n+    \"integrity\": \"sha256-gmHu/TbHV3ctW1KchBcuzbS4epMYDr3oy+oko1r02pA=\",\n+    \"strip_prefix\": \"\",\n+    \"overlay\": {\n+        \"BUILD.bazel\": \"sha256-SYjCid9tkiydNUp0lf0ueeCx4SMVj/9TUJmOuvVKub0=\",\n+        \"MODULE.bazel\": \"sha256-v44s/OSbuJnNiQy9kkZla9ZAB0ckVrlzUm7zvkPbLME=\",\n+        \"private/slang/export_headers/BUILD.bazel\": \"sha256-2FUQov0EJ7i57FlYL3LgZB1aNs1Kbs0XOU3DqC5ag3I=\",\n+        \"private/slang/export_headers/CMakeLists.txt\": \"sha256-dXPUOEacn9S6B4uHyTUP5xDVvVOJhs0erwy2QKtukBg=\",\n+        \"private/slang/export_headers/PlaceholderSource.cpp\": \"sha256-fbac0zZOm1fw3BCklQ1fhJ8Vk4dn5oDHH4P3aDohLEo=\",\n+        \"private/slang/version_info/BUILD.bazel\": \"sha256-yLiM9iSfLa4LN4tb6PjwADNRtjZNcPZm/Pry+tz+Pfo=\",\n+        \"private/slang/version_info/VersionInfo.cpp.in\": \"sha256-lEtZRUGNz46yF8M8sBgjL1N4Zr+KXioy8sv/0DmCSfE=\",\n+        \"private/tests/BUILD.bazel\": \"sha256-szGEhrNgI8xYYT3Dh65sYTxtLgzliigBBI327gTzFnE=\",\n+        \"private/tests/pyslang/BUILD.bazel\": \"sha256-kOhB1jkTVq4BZCuXinob8Em29LMXNLPZWEYUtVZzGfo=\",\n+        \"private/tests/pyslang/test.py\": \"sha256-l6MqWUryY2HGou9j0BQguh/saR0etdxx4lPiiyp38Hc=\",\n+        \"private/tests/pyslang/test_module.sv\": \"sha256-cuFYQHHY3Prq0YX7nIiFIahIEygfrQgiiahgP3EJfFU=\",\n+        \"pyslang/BUILD.bazel\": \"sha256-81pAy64dCn204qupAIA2XJRkKajTVgtY4bYU96IN8aE=\",\n+        \"pyslang/__init__.py\": \"sha256-Pv8R9uPWuV98CNTxi8PNVfyJY9K35Vx4xbNcyWgZlfY=\"\n+    }\n+}"
+    },
+    {
+      "sha": "44943b708ce02ce917575361dd58e5c1d4143446",
+      "filename": "modules/sv-lang/metadata.json",
+      "status": "added",
+      "additions": 18,
+      "deletions": 0,
+      "changes": 18,
+      "blob_url": "https://github.com/bazelbuild/bazel-central-registry/blob/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2Fmetadata.json",
+      "raw_url": "https://github.com/bazelbuild/bazel-central-registry/raw/1afdcce49cc5821c95cc6cf60e2e5540912693b3/modules%2Fsv-lang%2Fmetadata.json",
+      "contents_url": "https://api.github.com/repos/bazelbuild/bazel-central-registry/contents/modules%2Fsv-lang%2Fmetadata.json?ref=1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "patch": "@@ -0,0 +1,18 @@\n+{\n+    \"homepage\": \"https://sv-lang.com/\",\n+    \"maintainers\": [\n+        {\n+            \"email\": \"36563979+ahizzey@users.noreply.github.com\",\n+            \"github\": \"ahizzey\",\n+            \"github_user_id\": 36563979,\n+            \"name\": \"Adam Hizzey\"\n+        }\n+    ],\n+    \"repository\": [\n+        \"github:MikePopoloski/slang\"\n+    ],\n+    \"versions\": [\n+        \"9.1.0\"\n+    ],\n+    \"yanked_versions\": {}\n+}"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "ed2da71bbf1616a7fe8dd9b8c5522cb7aa8493cb",
+      "message": "add module bazel",
+      "parent_shas": [
+        "4563b84dd829a2cb6d964bf86bb2d7a1e8538b4a"
+      ]
+    },
+    {
+      "sha": "4791bd4f3946f024dcfba06c450632bce8229314",
+      "message": "add source json",
+      "parent_shas": [
+        "ed2da71bbf1616a7fe8dd9b8c5522cb7aa8493cb"
+      ]
+    },
+    {
+      "sha": "8e28c65c960ad8704a7995305f5f2086422b6834",
+      "message": "add basic slang build",
+      "parent_shas": [
+        "4791bd4f3946f024dcfba06c450632bce8229314"
+      ]
+    },
+    {
+      "sha": "9db608d2ca430c037968ce5917ba3c11630294d6",
+      "message": "Add export headers, fix visibility",
+      "parent_shas": [
+        "8e28c65c960ad8704a7995305f5f2086422b6834"
+      ]
+    },
+    {
+      "sha": "bed23c389c04c467ffcdd8690d6221ca771e947f",
+      "message": "add pyslang",
+      "parent_shas": [
+        "9db608d2ca430c037968ce5917ba3c11630294d6"
+      ]
+    },
+    {
+      "sha": "50e380204c37244848afd132aef6c30110a3c1bd",
+      "message": "reshuffle folders",
+      "parent_shas": [
+        "bed23c389c04c467ffcdd8690d6221ca771e947f"
+      ]
+    },
+    {
+      "sha": "bc367410364821e0f1999975f28acf3f48ca6770",
+      "message": "add include headers",
+      "parent_shas": [
+        "50e380204c37244848afd132aef6c30110a3c1bd"
+      ]
+    },
+    {
+      "sha": "e0c40661a86d2c26e4ecebd2429c5da8a79f0a1f",
+      "message": "Add metadata json\\",
+      "parent_shas": [
+        "bc367410364821e0f1999975f28acf3f48ca6770"
+      ]
+    },
+    {
+      "sha": "8e12cdb270b7ca846cb888d07917cf1710255d9f",
+      "message": "Merge branch 'bazelbuild:main' into slang",
+      "parent_shas": [
+        "e0c40661a86d2c26e4ecebd2429c5da8a79f0a1f",
+        "8d97a8a617029cd2faebdf986e413133b85d947c"
+      ]
+    },
+    {
+      "sha": "2d1af68911c95735ac56c8565623c2f5a06e690d",
+      "message": "move metadata",
+      "parent_shas": [
+        "8e12cdb270b7ca846cb888d07917cf1710255d9f"
+      ]
+    },
+    {
+      "sha": "a11d8523cd382bbc15d34406820f8775c9a97af7",
+      "message": "integrity",
+      "parent_shas": [
+        "2d1af68911c95735ac56c8565623c2f5a06e690d"
+      ]
+    },
+    {
+      "sha": "c22b6b4dff47ebc647fe57a1d4a800bd2950ba34",
+      "message": "add readme",
+      "parent_shas": [
+        "a11d8523cd382bbc15d34406820f8775c9a97af7"
+      ]
+    },
+    {
+      "sha": "c132767c96f6f796f0ed4401717485e9278febe6",
+      "message": "add build tests",
+      "parent_shas": [
+        "c22b6b4dff47ebc647fe57a1d4a800bd2950ba34"
+      ]
+    },
+    {
+      "sha": "1590799445b617ca1832a726f45bc185df7e5329",
+      "message": "fix",
+      "parent_shas": [
+        "c132767c96f6f796f0ed4401717485e9278febe6"
+      ]
+    },
+    {
+      "sha": "f81cafdff230eef48c8c88f89010a48d76376370",
+      "message": "add overlay module symlink",
+      "parent_shas": [
+        "1590799445b617ca1832a726f45bc185df7e5329"
+      ]
+    },
+    {
+      "sha": "3aed866ac5b03f8707b1fe212add7618558be40a",
+      "message": "add presubmit",
+      "parent_shas": [
+        "f81cafdff230eef48c8c88f89010a48d76376370"
+      ]
+    },
+    {
+      "sha": "21d41737e6ba10ab9304556e6c2f2c235b391cc5",
+      "message": "prefix",
+      "parent_shas": [
+        "3aed866ac5b03f8707b1fe212add7618558be40a"
+      ]
+    },
+    {
+      "sha": "c804aa2923dbade2d0af26095d0053402cbefbf8",
+      "message": "fix symlink",
+      "parent_shas": [
+        "21d41737e6ba10ab9304556e6c2f2c235b391cc5"
+      ]
+    },
+    {
+      "sha": "38508aa7e32b573cf69cebe73cbc3f9f2e53b760",
+      "message": "fix dep",
+      "parent_shas": [
+        "c804aa2923dbade2d0af26095d0053402cbefbf8"
+      ]
+    },
+    {
+      "sha": "7c41bb73d63da3b863924e2b97aa41cfcfb0d2ab",
+      "message": "roll back boost unordered version",
+      "parent_shas": [
+        "38508aa7e32b573cf69cebe73cbc3f9f2e53b760"
+      ]
+    },
+    {
+      "sha": "24156cae52fd9fc53867ad078a0e15de2cbdcd09",
+      "message": "fix paths",
+      "parent_shas": [
+        "7c41bb73d63da3b863924e2b97aa41cfcfb0d2ab"
+      ]
+    },
+    {
+      "sha": "99147441e91e995091a1d78b01cc503101ff6c54",
+      "message": "move tests",
+      "parent_shas": [
+        "24156cae52fd9fc53867ad078a0e15de2cbdcd09"
+      ]
+    },
+    {
+      "sha": "56c8f84c6ad597b16dce7f132c109ae91a53ccff",
+      "message": "fix tests",
+      "parent_shas": [
+        "99147441e91e995091a1d78b01cc503101ff6c54"
+      ]
+    },
+    {
+      "sha": "4be3d61f07f21bf41b2f0bfe4c1a171a36fa5eef",
+      "message": "add pyslang test",
+      "parent_shas": [
+        "56c8f84c6ad597b16dce7f132c109ae91a53ccff"
+      ]
+    },
+    {
+      "sha": "2b20d4131d45869d2b781e231e86b8aa6621755d",
+      "message": "fix python test",
+      "parent_shas": [
+        "4be3d61f07f21bf41b2f0bfe4c1a171a36fa5eef"
+      ]
+    },
+    {
+      "sha": "bda618bd46e9ea336ef3a73cd38756e211a1f9a7",
+      "message": "fix python test",
+      "parent_shas": [
+        "2b20d4131d45869d2b781e231e86b8aa6621755d"
+      ]
+    },
+    {
+      "sha": "a036f51d68e1c5b7008bfe09e4a4ca327cc15d19",
+      "message": "fix python test",
+      "parent_shas": [
+        "bda618bd46e9ea336ef3a73cd38756e211a1f9a7"
+      ]
+    },
+    {
+      "sha": "bcd2a3977e8d09e3b96b980e524ac6bf8f0268c4",
+      "message": "fix python test",
+      "parent_shas": [
+        "a036f51d68e1c5b7008bfe09e4a4ca327cc15d19"
+      ]
+    },
+    {
+      "sha": "12eda44ff2e43cb6df4d04e4d6d8db7d4037e500",
+      "message": "add source prefix hack :(",
+      "parent_shas": [
+        "bcd2a3977e8d09e3b96b980e524ac6bf8f0268c4"
+      ]
+    },
+    {
+      "sha": "a3a49cb1ce8a587fa71d1b9ca5afec8863e6712b",
+      "message": "move tests",
+      "parent_shas": [
+        "12eda44ff2e43cb6df4d04e4d6d8db7d4037e500"
+      ]
+    },
+    {
+      "sha": "51a5965ba923943daebcf952e3cf98590725fc99",
+      "message": "move tests (forgot to add)",
+      "parent_shas": [
+        "a3a49cb1ce8a587fa71d1b9ca5afec8863e6712b"
+      ]
+    },
+    {
+      "sha": "3e485399cd697ddc9b1451ca54906ef5c923f9a5",
+      "message": "++",
+      "parent_shas": [
+        "51a5965ba923943daebcf952e3cf98590725fc99"
+      ]
+    },
+    {
+      "sha": "7b5e266eba11ada8937dcb870f9057740b7d7942",
+      "message": "undo random change",
+      "parent_shas": [
+        "3e485399cd697ddc9b1451ca54906ef5c923f9a5"
+      ]
+    },
+    {
+      "sha": "1ff737b22c6c095a3f51132d921467c33ccb96af",
+      "message": "new email",
+      "parent_shas": [
+        "7b5e266eba11ada8937dcb870f9057740b7d7942"
+      ]
+    },
+    {
+      "sha": "2ff24cd9f37bede08397876f6f548b99d5758394",
+      "message": ".",
+      "parent_shas": [
+        "1ff737b22c6c095a3f51132d921467c33ccb96af"
+      ]
+    },
+    {
+      "sha": "b5569c9c2c7a7439b4f8c6ee8ba88924a6641db3",
+      "message": "integ",
+      "parent_shas": [
+        "2ff24cd9f37bede08397876f6f548b99d5758394"
+      ]
+    },
+    {
+      "sha": "d1c901d864b79075322e077c765081714c95b395",
+      "message": "add notes to readme",
+      "parent_shas": [
+        "b5569c9c2c7a7439b4f8c6ee8ba88924a6641db3"
+      ]
+    },
+    {
+      "sha": "ff568b8c81db09b6a5441d2511cb0b707580ecde",
+      "message": "remove @",
+      "parent_shas": [
+        "d1c901d864b79075322e077c765081714c95b395"
+      ]
+    },
+    {
+      "sha": "90d8df62d18c50cf99dc024b441b6bf4e9189cdd",
+      "message": "Rename module to sv-lang, thanks for the suggestion :)",
+      "parent_shas": [
+        "ff568b8c81db09b6a5441d2511cb0b707580ecde"
+      ]
+    },
+    {
+      "sha": "d54b341a7636bfbfb12eae200bb9d54b23bd56da",
+      "message": "build flags",
+      "parent_shas": [
+        "90d8df62d18c50cf99dc024b441b6bf4e9189cdd"
+      ]
+    },
+    {
+      "sha": "83bf5bce3bdb597365b74ec4847d549e915f61a8",
+      "message": "update platforms",
+      "parent_shas": [
+        "d54b341a7636bfbfb12eae200bb9d54b23bd56da"
+      ]
+    },
+    {
+      "sha": "f7522c28528593a85f25a5f9052a97a34ae0dac7",
+      "message": ";fix",
+      "parent_shas": [
+        "83bf5bce3bdb597365b74ec4847d549e915f61a8"
+      ]
+    },
+    {
+      "sha": "691ed7378168df43336eb044133242f8bde200bf",
+      "message": "incompatible_autoload_externally",
+      "parent_shas": [
+        "f7522c28528593a85f25a5f9052a97a34ae0dac7"
+      ]
+    },
+    {
+      "sha": "703a2c88411b24a1b96b569d4577f9cc349eb81c",
+      "message": "reshuffle",
+      "parent_shas": [
+        "691ed7378168df43336eb044133242f8bde200bf"
+      ]
+    },
+    {
+      "sha": "1afdcce49cc5821c95cc6cf60e2e5540912693b3",
+      "message": "add other flag back in",
+      "parent_shas": [
+        "703a2c88411b24a1b96b569d4577f9cc349eb81c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "too_many_commits"
+    ],
+    "auto_signals": [
+      "adds_new_tests",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__bazelbuild__bazel-central-registry__pr6173.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\bazelbuild__bazel-central-registry__pr6173__java_python__bazelbuild__bazel-central-registry__pr6173\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\bazelbuild__bazel-central-registry__pr6173__java_python__bazelbuild__bazel-central-registry__pr6173\\rn"
+  }
+}

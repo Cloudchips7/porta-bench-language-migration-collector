@@ -1,0 +1,222 @@
+{
+  "instance_id": "python_java__wdas__unf__pr34",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "wdas/unf",
+  "pr_number": 34,
+  "pr_url": "https://github.com/wdas/unf/pull/34",
+  "repo": {
+    "full_name": "wdas/unf",
+    "clone_url": "https://github.com/wdas/unf.git",
+    "default_branch": "main",
+    "created_at": "2022-05-03T23:18:29Z",
+    "stars": 69,
+    "license": "NOASSERTION",
+    "size_kb": 533
+  },
+  "pull_request": {
+    "id": 3469250667,
+    "title": "python: remove support for Boost::python",
+    "body": "We no longer support USD < 25.11. Remove dead code.\r\n\r\nResolves: PUP-3206",
+    "created_at": "2026-03-30T23:37:53Z",
+    "merged_at": "2026-04-02T17:04:08Z",
+    "base_sha": "ac043b30e2fb63290f7bd969d7538b9804395d50",
+    "head_sha": "0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+    "merge_commit_sha": "39ccf712396f1cd6b80a5cbaa349569b0aa8f589",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "ac043b30e2fb63290f7bd969d7538b9804395d50",
+  "final_sha": "0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+  "changed_files": [
+    {
+      "sha": "758c8ba2ba700647540dcc6ed8fecdaeedaaff9e",
+      "filename": ".github/workflows/test-linux.yml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 10,
+      "changes": 12,
+      "blob_url": "https://github.com/wdas/unf/blob/0f15499ed0a4406bb25adb9280ea4cc318c46b92/.github%2Fworkflows%2Ftest-linux.yml",
+      "raw_url": "https://github.com/wdas/unf/raw/0f15499ed0a4406bb25adb9280ea4cc318c46b92/.github%2Fworkflows%2Ftest-linux.yml",
+      "contents_url": "https://api.github.com/repos/wdas/unf/contents/.github%2Fworkflows%2Ftest-linux.yml?ref=0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+      "patch": "@@ -21,7 +21,7 @@ jobs:\n     strategy:\n       fail-fast: false\n       matrix:\n-        usd: [\"v24.08\", \"v25.05\"]\n+        usd: [\"v25.11\", \"v26.03\"]\n         python: [\"\", \"3.10\", \"3.12\"]\n \n     name: \"USD-${{ matrix.usd }}${{ matrix.python != '' && format('-py{0}', matrix.python) || '-no-py' }}\"\n@@ -53,14 +53,6 @@ jobs:\n           git clone https://github.com/PixarAnimationStudios/OpenUSD.git \\\n               --depth 1 --branch ${{ matrix.usd }} ./src\n \n-      - name: Apply patch for USD v24.08\n-        if: matrix.usd == 'v24.08'\n-        working-directory: ${{runner.temp}}/USD\n-        run: |\n-          sed -i '/BOOST_URL/ s|boostorg.jfrog.io.*/release|sourceforge.net/projects/boost/files/boost|' src/build_scripts/build_usd.py\n-          sed -i '/BOOST_URL/ s|source/boost|boost|' src/build_scripts/build_usd.py\n-          sed -i '/BOOST_URL/ s|\\.zip\"|.zip/download\"|' src/build_scripts/build_usd.py\n-\n       - name: Install USD\n         if: matrix.python != ''\n         working-directory: ${{runner.temp}}/USD\n@@ -132,4 +124,4 @@ jobs:\n         run: ctest -VV\n         env:\n           CTEST_OUTPUT_ON_FAILURE: True\n-\n+          PCP_ENABLE_MINIMAL_CHANGES_FOR_LAYER_OPERATIONS: 0"
+    },
+    {
+      "sha": "6bf859edea09d633e6474f85d2de97caf098eb25",
+      "filename": ".github/workflows/test-windows.yml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 10,
+      "changes": 12,
+      "blob_url": "https://github.com/wdas/unf/blob/0f15499ed0a4406bb25adb9280ea4cc318c46b92/.github%2Fworkflows%2Ftest-windows.yml",
+      "raw_url": "https://github.com/wdas/unf/raw/0f15499ed0a4406bb25adb9280ea4cc318c46b92/.github%2Fworkflows%2Ftest-windows.yml",
+      "contents_url": "https://api.github.com/repos/wdas/unf/contents/.github%2Fworkflows%2Ftest-windows.yml?ref=0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+      "patch": "@@ -21,7 +21,7 @@ jobs:\n     strategy:\n       fail-fast: false\n       matrix:\n-        usd: [\"v24.08\", \"v25.05.01\"]\n+        usd: [\"v25.11\", \"v26.03\"]\n         python: [\"\", \"3.10\", \"3.12\"]\n \n     name: \"USD-${{ matrix.usd }}${{ matrix.python != '' && format('-py{0}', matrix.python) || '-no-py' }}\"\n@@ -53,15 +53,6 @@ jobs:\n           git clone https://github.com/PixarAnimationStudios/OpenUSD.git ^\n               --depth 1 --branch ${{ matrix.usd }} ./src\n \n-      - name: Apply patch for USD v24.08\n-        if: matrix.usd == 'v24.08'\n-        working-directory: ${{runner.temp}}/USD\n-        shell: bash\n-        run: |\n-          sed -i '/BOOST_URL/ s|boostorg.jfrog.io.*/release|sourceforge.net/projects/boost/files/boost|' src/build_scripts/build_usd.py\n-          sed -i '/BOOST_URL/ s|source/boost|boost|' src/build_scripts/build_usd.py\n-          sed -i '/BOOST_URL/ s|\\.zip\"|.zip/download\"|' src/build_scripts/build_usd.py\n-\n       - name: Install USD\n         if: matrix.python != ''\n         working-directory: ${{runner.temp}}/USD\n@@ -155,3 +146,4 @@ jobs:\n         run: ctest -VV -C Release\n         env:\n           CTEST_OUTPUT_ON_FAILURE: True\n+          PCP_ENABLE_MINIMAL_CHANGES_FOR_LAYER_OPERATIONS: 0"
+    },
+    {
+      "sha": "78b5ed29f4946318de1f1ddd929272865ccd1a7d",
+      "filename": "CMakeLists.txt",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 9,
+      "changes": 9,
+      "blob_url": "https://github.com/wdas/unf/blob/0f15499ed0a4406bb25adb9280ea4cc318c46b92/CMakeLists.txt",
+      "raw_url": "https://github.com/wdas/unf/raw/0f15499ed0a4406bb25adb9280ea4cc318c46b92/CMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/wdas/unf/contents/CMakeLists.txt?ref=0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+      "patch": "@@ -86,15 +86,6 @@ if(BUILD_PYTHON_BINDINGS)\n     set(_py_version ${Python_VERSION_MAJOR}${Python_VERSION_MINOR})\n     mark_as_advanced(_py_version)\n \n-    if (NOT USD_USE_INTERNAL_BOOST_PYTHON)\n-        find_package(Boost 1.70.0 COMPONENTS \"python${_py_version}\" REQUIRED)\n-\n-        # Define generic target for Boost Python if necessary.\n-        if (NOT TARGET Boost::python)\n-            add_library(Boost::python ALIAS \"Boost::python${_py_version}\")\n-        endif()\n-    endif()\n-\n     # Set variable to identify the path to install and test python libraries.\n     set(PYTHON_VERSION\n         \"${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}\""
+    },
+    {
+      "sha": "e22869e87fa1c4f7bf5aaa0939244cb0d441f983",
+      "filename": "cmake/modules/FindUSD.cmake",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 16,
+      "changes": 16,
+      "blob_url": "https://github.com/wdas/unf/blob/0f15499ed0a4406bb25adb9280ea4cc318c46b92/cmake%2Fmodules%2FFindUSD.cmake",
+      "raw_url": "https://github.com/wdas/unf/raw/0f15499ed0a4406bb25adb9280ea4cc318c46b92/cmake%2Fmodules%2FFindUSD.cmake",
+      "contents_url": "https://api.github.com/repos/wdas/unf/contents/cmake%2Fmodules%2FFindUSD.cmake?ref=0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+      "patch": "@@ -75,26 +75,10 @@ if(USD_INCLUDE_DIR AND EXISTS \"${USD_INCLUDE_DIR}/pxr/pxr.h\")\n         list(APPEND USD_DEPENDENCIES \"Python::Python\")\n     endif()\n \n-    # Detect whether PXR_USE_INTERNAL_BOOST_PYTHON is explicitly enabled\n-    set(USD_USE_INTERNAL_BOOST_PYTHON ON CACHE INTERNAL \"\")\n-    string(REGEX MATCH\n-        \"#if +0[^\\n]*\\n[ \\t]*#define +PXR_USE_INTERNAL_BOOST_PYTHON\"\n-        _use_external_boost_python \"${_pxr_header}\")\n-\n-    # Use external Boost dependencies if USD version is less than 0.25.5, and\n-    # if internal Boost.Python is not explicitly disabled\n-    if (USD_VERSION VERSION_LESS \"0.25.5\" OR _use_external_boost_python)\n-        set(USD_USE_INTERNAL_BOOST_PYTHON OFF CACHE INTERNAL \"\")\n-        if (BUILD_PYTHON_BINDINGS)\n-            list(APPEND USD_DEPENDENCIES \"Boost::boost\" \"Boost::python\")\n-        endif()\n-    endif()\n-\n     mark_as_advanced(\n         _pxr_MAJOR\n         _pxr_MINOR\n         _pxr_PATCH\n-        _use_external_boost_python\n         USD_VERSION\n         USD_DEPENDENCIES\n     )"
+    },
+    {
+      "sha": "cd8a51ee2f9636d3ddbaa58427f276d816187950",
+      "filename": "doc/sphinx/release/release_notes.rst",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/wdas/unf/blob/0f15499ed0a4406bb25adb9280ea4cc318c46b92/doc%2Fsphinx%2Frelease%2Frelease_notes.rst",
+      "raw_url": "https://github.com/wdas/unf/raw/0f15499ed0a4406bb25adb9280ea4cc318c46b92/doc%2Fsphinx%2Frelease%2Frelease_notes.rst",
+      "contents_url": "https://api.github.com/repos/wdas/unf/contents/doc%2Fsphinx%2Frelease%2Frelease_notes.rst?ref=0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+      "patch": "@@ -4,6 +4,13 @@\n Release Notes\n *************\n \n+.. release:: Upcoming\n+\n+    .. change:: changed\n+\n+        USD versions older than 25.11 are no longer supported.\n+\n+\n .. release:: 0.9.0\n     :date: 2025-10-04\n "
+    },
+    {
+      "sha": "19ed38f4f2f596f15444d6711e5ca4a04f1883b4",
+      "filename": "src/CMakeLists.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/wdas/unf/blob/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2FCMakeLists.txt",
+      "raw_url": "https://github.com/wdas/unf/raw/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/wdas/unf/contents/src%2FCMakeLists.txt?ref=0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+      "patch": "@@ -42,7 +42,7 @@ target_link_libraries(unf\n \n # Transitive Pixar libraries depend on vendorized Boost.Python\n # (Required due to manual CMake module used to locate USD)\n-if (BUILD_PYTHON_BINDINGS AND USD_USE_INTERNAL_BOOST_PYTHON)\n+if (BUILD_PYTHON_BINDINGS)\n     target_link_libraries(unf PUBLIC usd::boost usd::python)\n endif()\n "
+    },
+    {
+      "sha": "4e5d53fcef1f5954751055b1e551af3065f17b29",
+      "filename": "src/python/CMakeLists.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 7,
+      "changes": 8,
+      "blob_url": "https://github.com/wdas/unf/blob/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2Fpython%2FCMakeLists.txt",
+      "raw_url": "https://github.com/wdas/unf/raw/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2Fpython%2FCMakeLists.txt",
+      "contents_url": "https://api.github.com/repos/wdas/unf/contents/src%2Fpython%2FCMakeLists.txt?ref=0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+      "patch": "@@ -29,13 +29,7 @@ target_include_directories(pyUnf\n         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>\n )\n \n-target_link_libraries(pyUnf PUBLIC unf)\n-\n-if (NOT USD_USE_INTERNAL_BOOST_PYTHON)\n-    target_link_libraries(pyUnf PUBLIC Boost::python)\n-else()\n-    target_link_libraries(pyUnf PUBLIC usd::boost usd::python)\n-endif()\n+target_link_libraries(pyUnf PUBLIC unf usd::boost usd::python)\n \n set_target_properties(pyUnf\n     PROPERTIES"
+    },
+    {
+      "sha": "2f1927ba367597189c9575532b8794d8b02a46e3",
+      "filename": "src/python/predicate.h",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 5,
+      "changes": 5,
+      "blob_url": "https://github.com/wdas/unf/blob/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2Fpython%2Fpredicate.h",
+      "raw_url": "https://github.com/wdas/unf/raw/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2Fpython%2Fpredicate.h",
+      "contents_url": "https://api.github.com/repos/wdas/unf/contents/src%2Fpython%2Fpredicate.h?ref=0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+      "patch": "@@ -8,13 +8,8 @@\n #include <pxr/base/tf/pyNoticeWrapper.h>\n #include <pxr/pxr.h>\n \n-#ifndef PXR_USE_INTERNAL_BOOST_PYTHON\n-#include <boost/python.hpp>\n-using namespace boost::python;\n-#else\n #include <pxr/external/boost/python.hpp>\n using namespace PXR_BOOST_PYTHON_NAMESPACE;\n-#endif\n \n #include <functional>\n "
+    },
+    {
+      "sha": "a4eeefd37e04637c42439334a7589a23c6e257f5",
+      "filename": "src/python/wrapBroker.cpp",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 6,
+      "changes": 6,
+      "blob_url": "https://github.com/wdas/unf/blob/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2Fpython%2FwrapBroker.cpp",
+      "raw_url": "https://github.com/wdas/unf/raw/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2Fpython%2FwrapBroker.cpp",
+      "contents_url": "https://api.github.com/repos/wdas/unf/contents/src%2Fpython%2FwrapBroker.cpp?ref=0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+      "patch": "@@ -13,15 +13,9 @@\n #include <pxr/usd/usd/common.h>\n #include <pxr/usd/usd/stage.h>\n \n-#ifndef PXR_USE_INTERNAL_BOOST_PYTHON\n-#include <boost/python.hpp>\n-using namespace boost::python;\n-using noncopyable = boost::noncopyable;\n-#else\n #include <pxr/external/boost/python.hpp>\n using namespace PXR_BOOST_PYTHON_NAMESPACE;\n using noncopyable = PXR_BOOST_PYTHON_NAMESPACE::noncopyable;\n-#endif\n \n using namespace unf;\n "
+    },
+    {
+      "sha": "46519762f7bf9638f1df057ce7e351a71a877ca1",
+      "filename": "src/python/wrapCapturePredicate.cpp",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 5,
+      "changes": 5,
+      "blob_url": "https://github.com/wdas/unf/blob/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2Fpython%2FwrapCapturePredicate.cpp",
+      "raw_url": "https://github.com/wdas/unf/raw/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2Fpython%2FwrapCapturePredicate.cpp",
+      "contents_url": "https://api.github.com/repos/wdas/unf/contents/src%2Fpython%2FwrapCapturePredicate.cpp?ref=0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+      "patch": "@@ -4,13 +4,8 @@\n \n #include \"unf/capturePredicate.h\"\n \n-#ifndef PXR_USE_INTERNAL_BOOST_PYTHON\n-#include <boost/python.hpp>\n-using namespace boost::python;\n-#else\n #include <pxr/external/boost/python.hpp>\n using namespace PXR_BOOST_PYTHON_NAMESPACE;\n-#endif\n \n using namespace unf;\n "
+    },
+    {
+      "sha": "d271768372817ffbc044038b2975a09b067ece87",
+      "filename": "src/python/wrapNotice.cpp",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 5,
+      "changes": 5,
+      "blob_url": "https://github.com/wdas/unf/blob/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2Fpython%2FwrapNotice.cpp",
+      "raw_url": "https://github.com/wdas/unf/raw/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2Fpython%2FwrapNotice.cpp",
+      "contents_url": "https://api.github.com/repos/wdas/unf/contents/src%2Fpython%2FwrapNotice.cpp?ref=0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+      "patch": "@@ -9,13 +9,8 @@\n \n #include <pxr/pxr.h>\n \n-#ifndef PXR_USE_INTERNAL_BOOST_PYTHON\n-#include <boost/python.hpp>\n-using namespace boost::python;\n-#else\n #include <pxr/external/boost/python.hpp>\n using namespace PXR_BOOST_PYTHON_NAMESPACE;\n-#endif\n \n using namespace unf::UnfNotice;\n "
+    },
+    {
+      "sha": "97226adfd9a7bd31f91d9328bd61fb1cb2677b63",
+      "filename": "src/python/wrapTransaction.cpp",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 6,
+      "changes": 6,
+      "blob_url": "https://github.com/wdas/unf/blob/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2Fpython%2FwrapTransaction.cpp",
+      "raw_url": "https://github.com/wdas/unf/raw/0f15499ed0a4406bb25adb9280ea4cc318c46b92/src%2Fpython%2FwrapTransaction.cpp",
+      "contents_url": "https://api.github.com/repos/wdas/unf/contents/src%2Fpython%2FwrapTransaction.cpp?ref=0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+      "patch": "@@ -11,15 +11,9 @@\n #include <pxr/usd/usd/common.h>\n #include <pxr/usd/usd/stage.h>\n \n-#ifndef PXR_USE_INTERNAL_BOOST_PYTHON\n-#include <boost/python.hpp>\n-#include <boost/python/return_internal_reference.hpp>\n-using namespace boost::python;\n-#else\n #include <pxr/external/boost/python.hpp>\n #include <pxr/external/boost/python/return_internal_reference.hpp>\n using namespace PXR_BOOST_PYTHON_NAMESPACE;\n-#endif\n \n using namespace unf;\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "e12c46280a41a90937203828f68abe13e843c994",
+      "message": "python: remove support for Boost::python\n\nWe no longer support USD < 25.11. Remove dead code.\n\nResolves: PUP-3206",
+      "parent_shas": [
+        "ac043b30e2fb63290f7bd969d7538b9804395d50"
+      ]
+    },
+    {
+      "sha": "0e60939af3a671a5d63689134e6eaf35477aa4ca",
+      "message": "ci: update supported USD versions",
+      "parent_shas": [
+        "e12c46280a41a90937203828f68abe13e843c994"
+      ]
+    },
+    {
+      "sha": "0f15499ed0a4406bb25adb9280ea4cc318c46b92",
+      "message": "ci: enable newer USD versions\n\nTemporarily disable the updated PCP change notifications\nto keep the tests passing. The tests will be adapted to\nthe new behavior without the environment variable in an\nupcoming change.",
+      "parent_shas": [
+        "0e60939af3a671a5d63689134e6eaf35477aa4ca"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__wdas__unf__pr34.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\wdas__unf__pr34__python_java__wdas__unf__pr34\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\wdas__unf__pr34__python_java__wdas__unf__pr34\\rn"
+  }
+}

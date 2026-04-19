@@ -1,0 +1,144 @@
+{
+  "instance_id": "python_cpp__kiwigrid__k8s-sidecar__pr552",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "kiwigrid/k8s-sidecar",
+  "pr_number": 552,
+  "pr_url": "https://github.com/kiwigrid/k8s-sidecar/pull/552",
+  "repo": {
+    "full_name": "kiwigrid/k8s-sidecar",
+    "clone_url": "https://github.com/kiwigrid/k8s-sidecar.git",
+    "default_branch": "master",
+    "created_at": "2018-05-02T09:24:28Z",
+    "stars": 758,
+    "license": "MIT",
+    "size_kb": 887
+  },
+  "pull_request": {
+    "id": 3497496759,
+    "title": "Pin python version",
+    "body": "- Refactor Dockerfiles for Multi-Arch Build\r\n- Streamline Docker Bake Configuration\r\n- Update Release Workflow for Unified Multi-Arch Build",
+    "created_at": "2026-04-07T11:09:12Z",
+    "merged_at": "2026-04-07T11:23:16Z",
+    "base_sha": "9c1ec2d8c1def619f7bb1d9f595c78a89bdd683b",
+    "head_sha": "61d0b22298b8208beecbf55ed70a5d9bbf917e47",
+    "merge_commit_sha": "59c2b1528cc40b39586fc2bfae872a85ec561418",
+    "labels": [
+      "dependencies",
+      "docker"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "465b4914235515e18d2e6c21cfa05e090b77715c",
+  "final_sha": "61d0b22298b8208beecbf55ed70a5d9bbf917e47",
+  "changed_files": [
+    {
+      "sha": "4aac2a179df1ba4580ddff682656a4e4bff0ba7a",
+      "filename": ".github/workflows/release.yaml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 4,
+      "changes": 7,
+      "blob_url": "https://github.com/kiwigrid/k8s-sidecar/blob/61d0b22298b8208beecbf55ed70a5d9bbf917e47/.github%2Fworkflows%2Frelease.yaml",
+      "raw_url": "https://github.com/kiwigrid/k8s-sidecar/raw/61d0b22298b8208beecbf55ed70a5d9bbf917e47/.github%2Fworkflows%2Frelease.yaml",
+      "contents_url": "https://api.github.com/repos/kiwigrid/k8s-sidecar/contents/.github%2Fworkflows%2Frelease.yaml?ref=61d0b22298b8208beecbf55ed70a5d9bbf917e47",
+      "patch": "@@ -9,7 +9,6 @@ on:\n     paths:\n       - 'src/**'\n       - 'Dockerfile'\n-      - 'Dockerfile.armv7'\n       - 'docker-bake.hcl'\n jobs:\n   release:\n@@ -73,9 +72,9 @@ jobs:\n           files: |\n             docker-bake.hcl\n           set: |\n-            common.tags+=docker.io/kiwigrid/k8s-sidecar:${{ steps.tagging.outputs.new_tag }}\n-            common.tags+=quay.io/kiwigrid/k8s-sidecar:${{ steps.tagging.outputs.new_tag }}\n-            common.tags+=ghcr.io/kiwigrid/k8s-sidecar:${{ steps.tagging.outputs.new_tag }}\n+            k8s-sidecar.tags=docker.io/kiwigrid/k8s-sidecar:${{ steps.tagging.outputs.new_tag }}\n+            k8s-sidecar.tags=quay.io/kiwigrid/k8s-sidecar:${{ steps.tagging.outputs.new_tag }}\n+            k8s-sidecar.tags=ghcr.io/kiwigrid/k8s-sidecar:${{ steps.tagging.outputs.new_tag }}\n \n       - name: Build Changelog\n         if: steps.tagging.outputs.part != '' && steps.tagging.outputs.part != 'none'"
+    },
+    {
+      "sha": "7af45401846a7cac1cc2e33a3ec3f63a66cc6d94",
+      "filename": ".github/workflows/release_test.yaml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/kiwigrid/k8s-sidecar/blob/61d0b22298b8208beecbf55ed70a5d9bbf917e47/.github%2Fworkflows%2Frelease_test.yaml",
+      "raw_url": "https://github.com/kiwigrid/k8s-sidecar/raw/61d0b22298b8208beecbf55ed70a5d9bbf917e47/.github%2Fworkflows%2Frelease_test.yaml",
+      "contents_url": "https://api.github.com/repos/kiwigrid/k8s-sidecar/contents/.github%2Fworkflows%2Frelease_test.yaml?ref=61d0b22298b8208beecbf55ed70a5d9bbf917e47",
+      "patch": "@@ -71,9 +71,9 @@ jobs:\n           files: |\n             docker-bake.hcl\n           set: |\n-            common.tags=docker.io/kiwigrid/k8s-sidecar:${{ steps.tagging.outputs.tag }}-${{ env.TEST_TAG }}\n-            common.tags=quay.io/kiwigrid/k8s-sidecar:${{ steps.tagging.outputs.tag }}-${{ env.TEST_TAG }}\n-            common.tags=ghcr.io/kiwigrid/k8s-sidecar:${{ steps.tagging.outputs.tag }}-${{ env.TEST_TAG }}\n+            k8s-sidecar.tags=docker.io/kiwigrid/k8s-sidecar:${{ steps.tagging.outputs.tag }}-${{ env.TEST_TAG }}\n+            k8s-sidecar.tags=quay.io/kiwigrid/k8s-sidecar:${{ steps.tagging.outputs.tag }}-${{ env.TEST_TAG }}\n+            k8s-sidecar.tags=ghcr.io/kiwigrid/k8s-sidecar:${{ steps.tagging.outputs.tag }}-${{ env.TEST_TAG }}\n \n       - name: Build Changelog\n         if: steps.tagging.outputs.part"
+    },
+    {
+      "sha": "c0aca362641583fa722cd7993aa0145f24fc1897",
+      "filename": "Dockerfile",
+      "status": "modified",
+      "additions": 11,
+      "deletions": 4,
+      "changes": 15,
+      "blob_url": "https://github.com/kiwigrid/k8s-sidecar/blob/61d0b22298b8208beecbf55ed70a5d9bbf917e47/Dockerfile",
+      "raw_url": "https://github.com/kiwigrid/k8s-sidecar/raw/61d0b22298b8208beecbf55ed70a5d9bbf917e47/Dockerfile",
+      "contents_url": "https://api.github.com/repos/kiwigrid/k8s-sidecar/contents/Dockerfile?ref=61d0b22298b8208beecbf55ed70a5d9bbf917e47",
+      "patch": "@@ -1,13 +1,20 @@\n-FROM python:alpine3.23 AS base\n+FROM python:3.13.12-alpine3.23 AS base\n \n FROM base AS builder\n+# TARGETPLATFORM is automatically set by buildx (e.g., to \"linux/arm/v7\")\n+ARG TARGETPLATFORM\n WORKDIR /app\n RUN python -m venv .venv && .venv/bin/pip install --no-cache-dir -U pip setuptools\n COPY        pyproject.toml /app/\n COPY        src/ /app/src/\n-RUN apk add --no-cache gcc && \\\n-\t.venv/bin/pip install --no-cache-dir . && \\\n-\tfind /app/.venv \\( -type d -a -name test -o -name tests \\) -o \\( -type f -a -name '*.pyc' -o -name '*.pyo' \\) -exec rm -rf '{}' \\+\n+# Install dependencies based on the target platform\n+RUN if [ \"$TARGETPLATFORM\" = \"linux/arm/v7\" ]; then \\\n+        apk add --no-cache gcc musl-dev g++ libffi-dev openssl-dev cargo; \\\n+    else \\\n+        apk add --no-cache gcc; \\\n+    fi && \\\n+    .venv/bin/pip install --no-cache-dir . && \\\n+    find /app/.venv \\( -type d -a -name test -o -name tests \\) -o \\( -type f -a -name '*.pyc' -o -name '*.pyo' \\) -exec rm -rf '{}' \\+\n \n \n FROM base"
+    },
+    {
+      "sha": "4efebf45188fef7c695f20bc2873d2d42751655b",
+      "filename": "Dockerfile.armv7",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 24,
+      "changes": 24,
+      "blob_url": "https://github.com/kiwigrid/k8s-sidecar/blob/465b4914235515e18d2e6c21cfa05e090b77715c/Dockerfile.armv7",
+      "raw_url": "https://github.com/kiwigrid/k8s-sidecar/raw/465b4914235515e18d2e6c21cfa05e090b77715c/Dockerfile.armv7",
+      "contents_url": "https://api.github.com/repos/kiwigrid/k8s-sidecar/contents/Dockerfile.armv7?ref=465b4914235515e18d2e6c21cfa05e090b77715c",
+      "patch": "@@ -1,24 +0,0 @@\n-FROM python:alpine3.23 AS base\n-\n-FROM base AS builder\n-WORKDIR /app\n-RUN python -m venv .venv && .venv/bin/pip install --no-cache-dir -U pip setuptools\n-COPY        pyproject.toml /app/\n-COPY        src/ /app/src/\n-RUN apk add --no-cache gcc musl-dev g++ libffi-dev openssl-dev cargo && \\\n-\t.venv/bin/pip install --no-cache-dir . && \\\n-\tfind /app/.venv \\( -type d -a -name test -o -name tests \\) -o \\( -type f -a -name '*.pyc' -o -name '*.pyo' \\) -exec rm -rf '{}' \\+\n-\n-\n-FROM base\n-LABEL org.opencontainers.image.source=https://github.com/kiwigrid/k8s-sidecar\n-LABEL org.opencontainers.image.description=\"K8s sidecar image to collect configmaps and secrets as files\"\n-LABEL org.opencontainers.image.licenses=MIT\n-ENV         PYTHONUNBUFFERED=1\n-WORKDIR /app\n-COPY --from=builder /app/.venv ./.venv\n-ENV PATH=\"/app/.venv/bin:$PATH\"\n-# Use the nobody user's numeric UID/GID to satisfy MustRunAsNonRoot PodSecurityPolicies\n-# https://kubernetes.io/docs/concepts/policy/pod-security-policy/#users-and-groups\n-USER        65534:65534\n-CMD         [ \"python\", \"-u\", \"-m\", \"sidecar\" ]"
+    },
+    {
+      "sha": "0b620fc6a7d4834e083de2c083dadfc29324b16e",
+      "filename": "docker-bake.hcl",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 19,
+      "changes": 28,
+      "blob_url": "https://github.com/kiwigrid/k8s-sidecar/blob/61d0b22298b8208beecbf55ed70a5d9bbf917e47/docker-bake.hcl",
+      "raw_url": "https://github.com/kiwigrid/k8s-sidecar/raw/61d0b22298b8208beecbf55ed70a5d9bbf917e47/docker-bake.hcl",
+      "contents_url": "https://api.github.com/repos/kiwigrid/k8s-sidecar/contents/docker-bake.hcl?ref=61d0b22298b8208beecbf55ed70a5d9bbf917e47",
+      "patch": "@@ -1,23 +1,13 @@\n-\n-target \"common\" {\n+# Definiert das Haupt-Target für den Multi-Arch-Build\n+target \"k8s-sidecar\" {\n+  platforms = [\n+    \"linux/amd64\",\n+    \"linux/arm64\",\n+    \"linux/arm/v7\"\n+  ]\n+  # Tags are dynamically defined in wokflows, so we leave this empty here\n   tags = []\n }\n-\n-# Target for amd64 and arm64\n-target \"k8s-sidecar-main\" {\n-  inherits = [\"common\"]\n-  dockerfile = \"Dockerfile\"\n-  platforms = [\"linux/amd64\", \"linux/arm64\"]\n-}\n-\n-# Target for armv7\n-target \"k8s-sidecar-armv7\" {\n-  inherits = [\"common\"]\n-  dockerfile = \"Dockerfile.armv7\"\n-  platforms = [\"linux/arm/v7\"]\n-}\n-\n-# The default group builds both targets\n group \"default\" {\n-  targets = [\"k8s-sidecar-main\"]\n+  targets = [\"k8s-sidecar\"]\n }"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "2c6a72a5f1c5906466a83e08a316f5e21339ab04",
+      "message": "refactor: Merge platform-specific Dockerfiles into a single multi-arch Dockerfile #none\n\n    The separate Dockerfile.armv7 has been merged into the main Dockerfile.\n    TARGETPLATFORM is now used to conditionally install arm/v7 specific build dependencies.\n    This change simplifies Dockerfile maintenance and enables a unified multi-arch image build.\n\nci: Configure docker-bake.hcl for unified multi-arch image build #none\n\n    The docker-bake.hcl now defines a single target `k8s-sidecar` encompassing all target platforms.\n    This restructuring ensures `buildx` creates a single, consistent multi-arch manifest, resolving previous issues with\n    registries overwriting image layers.",
+      "parent_shas": [
+        "465b4914235515e18d2e6c21cfa05e090b77715c"
+      ]
+    },
+    {
+      "sha": "20766b667b4752caeaf74252fea3740313a77d41",
+      "message": "ci: Adjust release.yaml and release_test.yamlfor new unified Dockerfile and bake config #none\n\n    The .github/workflows/release.yaml has been updated to reflect the streamlined multi-arch build process.\n    'Dockerfile.armv7' was removed from the push trigger paths as it is no longer a separate file.\n    The `docker/bake-action`'s `set` parameter now correctly applies tags to the `k8s-sidecar` target.",
+      "parent_shas": [
+        "2c6a72a5f1c5906466a83e08a316f5e21339ab04"
+      ]
+    },
+    {
+      "sha": "61d0b22298b8208beecbf55ed70a5d9bbf917e47",
+      "message": "fix: Correctly set tags for Docker images in release workflow",
+      "parent_shas": [
+        "20766b667b4752caeaf74252fea3740313a77d41"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes",
+      "python_cpp_wrapper_noise"
+    ],
+    "auto_signals": [
+      "python_cpp_wrapper_noise"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__kiwigrid__k8s-sidecar__pr552.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\kiwigrid__k8s-sidecar__pr552__python_cpp__kiwigrid__k8s-sidecar__pr552\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\kiwigrid__k8s-sidecar__pr552__python_cpp__kiwigrid__k8s-sidecar__pr552\\rn"
+  }
+}

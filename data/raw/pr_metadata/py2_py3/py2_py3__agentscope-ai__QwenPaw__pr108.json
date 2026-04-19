@@ -1,0 +1,97 @@
+{
+  "instance_id": "py2_py3__agentscope-ai__QwenPaw__pr108",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "agentscope-ai/QwenPaw",
+  "pr_number": 108,
+  "pr_url": "https://github.com/agentscope-ai/QwenPaw/pull/108",
+  "repo": {
+    "full_name": "agentscope-ai/QwenPaw",
+    "clone_url": "https://github.com/agentscope-ai/QwenPaw.git",
+    "default_branch": "main",
+    "created_at": "2026-02-24T03:42:56Z",
+    "stars": 15558,
+    "license": "Apache-2.0",
+    "size_kb": 70292
+  },
+  "pull_request": {
+    "id": 3338537095,
+    "title": "fix empty tool call and response",
+    "body": "## Description\r\n\r\n[Describe what this PR does and why]\r\n\r\n**Related Issue:** Fixes #(issue_number) or Relates to #(issue_number)\r\n\r\n**Security Considerations:** [If applicable, e.g. channel auth, env/config handling]\r\n\r\n## Type of Change\r\n\r\n- [x] Bug fix\r\n- [ ] New feature\r\n- [ ] Breaking change\r\n- [ ] Documentation\r\n- [ ] Refactoring\r\n\r\n## Component(s) Affected\r\n\r\n- [x] Core / Backend (app, agents, config, providers, utils, local_models)\r\n- [ ] Console (frontend web UI)\r\n- [ ] Channels (DingTalk, Feishu, QQ, Discord, iMessage, etc.)\r\n- [ ] Skills\r\n- [ ] CLI\r\n- [ ] Documentation (website)\r\n- [ ] Tests\r\n- [ ] CI/CD\r\n- [ ] Scripts / Deploy\r\n\r\n## Checklist\r\n\r\n- [x] Pre-commit hooks pass (`pre-commit run --all-files` or CI)\r\n- [ ] Tests pass locally (`pytest` or as relevant)\r\n- [x] Documentation updated (if needed)\r\n- [x] Ready for review\r\n\r\n## Testing\r\n\r\n[How to test these changes]\r\n\r\n## Additional Notes\r\n\r\n[Optional: any other context]\r\n",
+    "created_at": "2026-02-28T09:52:34Z",
+    "merged_at": "2026-02-28T10:41:45Z",
+    "base_sha": "3c8a14f7b39c72db110b6b9b2ab2d89efe81d148",
+    "head_sha": "e51a2c1e09658d9d8912055610062a056c7883a1",
+    "merge_commit_sha": "694568324fcaf6556b1c11d4824514b35bde5584",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "3c8a14f7b39c72db110b6b9b2ab2d89efe81d148",
+  "final_sha": "e51a2c1e09658d9d8912055610062a056c7883a1",
+  "changed_files": [
+    {
+      "sha": "2a983500c74e55f2af33860b3e27ef0bd5fe427b",
+      "filename": "src/copaw/agents/utils/__init__.py",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/agentscope-ai/QwenPaw/blob/e51a2c1e09658d9d8912055610062a056c7883a1/src%2Fcopaw%2Fagents%2Futils%2F__init__.py",
+      "raw_url": "https://github.com/agentscope-ai/QwenPaw/raw/e51a2c1e09658d9d8912055610062a056c7883a1/src%2Fcopaw%2Fagents%2Futils%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/agentscope-ai/QwenPaw/contents/src%2Fcopaw%2Fagents%2Futils%2F__init__.py?ref=e51a2c1e09658d9d8912055610062a056c7883a1",
+      "patch": "@@ -37,6 +37,8 @@\n # Tool message utilities\n from .tool_message_utils import (\n     _dedup_tool_blocks,\n+    _remove_invalid_tool_blocks,\n+    _repair_empty_tool_inputs,\n     _sanitize_tool_messages,\n     check_valid_messages,\n     extract_tool_ids,\n@@ -59,6 +61,8 @@\n     \"safe_count_str_tokens\",\n     # Tool message utilities\n     \"_dedup_tool_blocks\",\n+    \"_remove_invalid_tool_blocks\",\n+    \"_repair_empty_tool_inputs\",\n     \"_sanitize_tool_messages\",\n     \"check_valid_messages\",\n     \"extract_tool_ids\","
+    },
+    {
+      "sha": "d47bdade203da1398ac9e3d2a3d49ec6e2299b10",
+      "filename": "src/copaw/agents/utils/tool_message_utils.py",
+      "status": "modified",
+      "additions": 149,
+      "deletions": 0,
+      "changes": 149,
+      "blob_url": "https://github.com/agentscope-ai/QwenPaw/blob/e51a2c1e09658d9d8912055610062a056c7883a1/src%2Fcopaw%2Fagents%2Futils%2Ftool_message_utils.py",
+      "raw_url": "https://github.com/agentscope-ai/QwenPaw/raw/e51a2c1e09658d9d8912055610062a056c7883a1/src%2Fcopaw%2Fagents%2Futils%2Ftool_message_utils.py",
+      "contents_url": "https://api.github.com/repos/agentscope-ai/QwenPaw/contents/src%2Fcopaw%2Fagents%2Futils%2Ftool_message_utils.py?ref=e51a2c1e09658d9d8912055610062a056c7883a1",
+      "patch": "@@ -4,6 +4,7 @@\n This module ensures tool_use and tool_result messages are properly\n paired and ordered to prevent API errors.\n \"\"\"\n+import json\n import logging\n \n logger = logging.getLogger(__name__)\n@@ -175,11 +176,159 @@ def _dedup_tool_blocks(msgs: list) -> list:\n     return result if changed else msgs\n \n \n+def _remove_invalid_tool_blocks(msgs: list) -> list:\n+    \"\"\"Remove tool_use/tool_result blocks with invalid id/name.\n+\n+    A valid tool_use block must have:\n+    - Non-empty, non-None id\n+    - Non-empty, non-None name\n+\n+    A valid tool_result block must have:\n+    - Non-empty, non-None id\n+\n+    Args:\n+        msgs: List of Msg objects to validate.\n+\n+    Returns:\n+        List of Msg objects with invalid tool blocks removed.\n+    \"\"\"\n+    changed = False\n+    result: list = []\n+\n+    for msg in msgs:\n+        if not isinstance(msg.content, list):\n+            result.append(msg)\n+            continue\n+\n+        new_blocks: list = []\n+        removed = False\n+\n+        for block in msg.content:\n+            if not isinstance(block, dict):\n+                new_blocks.append(block)\n+                continue\n+\n+            block_type = block.get(\"type\")\n+\n+            # Validate tool_use and tool_result blocks\n+            if block_type in (\"tool_use\", \"tool_result\"):\n+                block_id = block.get(\"id\")\n+                block_name = block.get(\"name\")\n+\n+                # Check if id is valid (not None, not empty string)\n+                if not block_id:\n+                    logger.warning(\n+                        \"Removing %s with invalid id: id=%r, name=%r\",\n+                        block_type,\n+                        block_id,\n+                        block_name,\n+                    )\n+                    removed = True\n+                    continue\n+\n+                # For tool_use, also check name is non-empty\n+                if block_type == \"tool_use\" and not block_name:\n+                    logger.warning(\n+                        \"Removing tool_use with invalid name: id=%r, name=%r\",\n+                        block_id,\n+                        block_name,\n+                    )\n+                    removed = True\n+                    continue\n+\n+            new_blocks.append(block)\n+\n+        if removed:\n+            msg.content = new_blocks\n+            changed = True\n+\n+        result.append(msg)\n+\n+    return result if changed else msgs\n+\n+\n+def _repair_empty_tool_inputs(\n+    msgs: list,\n+) -> list:\n+    \"\"\"Repair tool_use blocks with empty input but valid raw_input.\n+\n+    This fixes a bug in AgentScope 1.0.16dev where stream_tool_parsing\n+    may fail to parse arguments correctly, leaving input={} while\n+    raw_input contains valid JSON.\n+\n+    Args:\n+        msgs: List of Msg objects to repair.\n+\n+    Returns:\n+        List of Msg objects with repaired tool_use blocks.\n+    \"\"\"\n+    # pylint: disable=too-many-nested-blocks\n+    changed = False\n+    result: list = []\n+\n+    for msg in msgs:\n+        if not isinstance(msg.content, list):\n+            result.append(msg)\n+            continue\n+\n+        new_blocks: list = []\n+        repaired = False\n+\n+        for block in msg.content:\n+            if not isinstance(block, dict):\n+                new_blocks.append(block)\n+                continue\n+\n+            # Check if this is a tool_use with empty input but valid raw_input\n+            if block.get(\"type\") == \"tool_use\":\n+                input_field = block.get(\"input\", {})\n+                raw_input = block.get(\"raw_input\", \"\")\n+\n+                # If input is empty but raw_input has content, try to parse\n+                if not input_field and raw_input and raw_input != \"{}\":\n+                    try:\n+                        parsed = json.loads(raw_input)\n+                        if isinstance(parsed, dict) and parsed:\n+                            # Success! Update the input field\n+                            block[\"input\"] = parsed\n+                            repaired = True\n+                            logger.info(\n+                                \"Repaired tool_use input from raw_input: \"\n+                                \"id=%s, name=%s, keys=%s\",\n+                                block.get(\"id\"),\n+                                block.get(\"name\"),\n+                                list(parsed.keys()),\n+                            )\n+                    except (json.JSONDecodeError, TypeError) as e:\n+                        logger.warning(\n+                            \"Failed to repair tool_use input from raw_input: \"\n+                            \"id=%s, name=%s, error=%s\",\n+                            block.get(\"id\"),\n+                            block.get(\"name\"),\n+                            e,\n+                        )\n+\n+            new_blocks.append(block)\n+\n+        if repaired:\n+            msg.content = new_blocks\n+            changed = True\n+\n+        result.append(msg)\n+\n+    return result if changed else msgs\n+\n+\n def _sanitize_tool_messages(msgs: list) -> list:\n     \"\"\"Ensure tool_use/tool_result messages are properly paired and ordered.\n \n     Returns the original list unchanged if no fix is needed.\n     \"\"\"\n+    # First, repair tool_use blocks with empty input but valid raw_input\n+    msgs = _repair_empty_tool_inputs(msgs)\n+    # Then, remove invalid tool blocks (empty id, None name, etc.)\n+    msgs = _remove_invalid_tool_blocks(msgs)\n+    # Finally, remove duplicate tool blocks\n     msgs = _dedup_tool_blocks(msgs)\n \n     pending: dict[str, int] = {}"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "c2d16fcdc76a525dceab5921736623429189254d",
+      "message": "fix empty msg",
+      "parent_shas": [
+        "3c8a14f7b39c72db110b6b9b2ab2d89efe81d148"
+      ]
+    },
+    {
+      "sha": "e51a2c1e09658d9d8912055610062a056c7883a1",
+      "message": "minor fix",
+      "parent_shas": [
+        "c2d16fcdc76a525dceab5921736623429189254d"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_tests_detected"
+    ],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__agentscope-ai__QwenPaw__pr108.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\agentscope-ai__QwenPaw__pr108__py2_py3__agentscope-ai__QwenPaw__pr108\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\agentscope-ai__QwenPaw__pr108__py2_py3__agentscope-ai__QwenPaw__pr108\\rn"
+  }
+}

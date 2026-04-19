@@ -1,0 +1,76 @@
+{
+  "instance_id": "python_cpp__stac-utils__rustac__pr1028",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "stac-utils/rustac",
+  "pr_number": 1028,
+  "pr_url": "https://github.com/stac-utils/rustac/pull/1028",
+  "repo": {
+    "full_name": "stac-utils/rustac",
+    "clone_url": "https://github.com/stac-utils/rustac.git",
+    "default_branch": "main",
+    "created_at": "2021-03-29T17:08:13Z",
+    "stars": 136,
+    "license": "Apache-2.0",
+    "size_kb": 8029
+  },
+  "pull_request": {
+    "id": 3528352610,
+    "title": "chore: group python dependencies",
+    "body": "",
+    "created_at": "2026-04-14T12:38:36Z",
+    "merged_at": "2026-04-14T12:45:23Z",
+    "base_sha": "9d65bf6379a3a164cddc6fa850e7aac2fc3cf5be",
+    "head_sha": "485ad5f8927051192c69067a1507958e38758d30",
+    "merge_commit_sha": "e15f77042674031deb6c08b7c2fa78a155dda733",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "9d65bf6379a3a164cddc6fa850e7aac2fc3cf5be",
+  "final_sha": "485ad5f8927051192c69067a1507958e38758d30",
+  "changed_files": [
+    {
+      "sha": "109fd6e6c56ebe4c6dc7f72e3dee2cede6672691",
+      "filename": ".github/dependabot.yml",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "changes": 4,
+      "blob_url": "https://github.com/stac-utils/rustac/blob/485ad5f8927051192c69067a1507958e38758d30/.github%2Fdependabot.yml",
+      "raw_url": "https://github.com/stac-utils/rustac/raw/485ad5f8927051192c69067a1507958e38758d30/.github%2Fdependabot.yml",
+      "contents_url": "https://api.github.com/repos/stac-utils/rustac/contents/.github%2Fdependabot.yml?ref=485ad5f8927051192c69067a1507958e38758d30",
+      "patch": "@@ -35,5 +35,9 @@ updates:\n     schedule:\n       interval: \"weekly\"\n     labels: []\n+    groups:\n+      python:\n+        patterns:\n+          - \"*\"\n     cooldown:\n       default-days: 7"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "485ad5f8927051192c69067a1507958e38758d30",
+      "message": "chore: group python dependencies",
+      "parent_shas": [
+        "9d65bf6379a3a164cddc6fa850e7aac2fc3cf5be"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__stac-utils__rustac__pr1028.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\stac-utils__rustac__pr1028__python_cpp__stac-utils__rustac__pr1028\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\stac-utils__rustac__pr1028__python_cpp__stac-utils__rustac__pr1028\\rn"
+  }
+}

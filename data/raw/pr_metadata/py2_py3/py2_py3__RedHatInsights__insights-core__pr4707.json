@@ -1,0 +1,190 @@
+{
+  "instance_id": "py2_py3__RedHatInsights__insights-core__pr4707",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "RedHatInsights/insights-core",
+  "pr_number": 4707,
+  "pr_url": "https://github.com/RedHatInsights/insights-core/pull/4707",
+  "repo": {
+    "full_name": "RedHatInsights/insights-core",
+    "clone_url": "https://github.com/RedHatInsights/insights-core.git",
+    "default_branch": "master",
+    "created_at": "2017-05-26T14:23:11Z",
+    "stars": 167,
+    "license": "Apache-2.0",
+    "size_kb": 16031
+  },
+  "pull_request": {
+    "id": 3224072640,
+    "title": "chore: drop python2 from insights-client",
+    "body": "### All Pull Requests:\r\n\r\nCheck all that apply:\r\n\r\n* [x] Have you followed the guidelines in our Contributing document, including the instructions about commit messages?\r\n* [x] No Sensitive Data in this change?\r\n* [ ] Is this PR to correct an issue?\r\n* [ ] Is this PR an enhancement?\r\n* [ ] Need backport to `3.0_egg`? Yes, refer to [RPM/Egg Delivery](https://github.com/RedHatInsights/insights-core/blob/master/CONTRIBUTING.md#rpmegg-delivery) to open a new PR.\r\n* [ ] Is this a backport from `master`? Yes, this is a backport of #PR-ID\r\n<!--\r\nReplace the \"PR-ID\", if this PR needs to be backported from the master branch.\r\n-->\r\n\r\n### Complete Description of Additions/Changes:\r\n\r\n<!--\r\nProvide complete details of the issue or enhancement. You may link to existing open publicly-accessible issues or enhancement requests that provide these details.\r\n\r\nPlease do not include links to any websites that are not publicly accessible. You may include non-link reference numbers to help you and your team identify non-public references.\r\n\r\nThis information is necessary before your PR can be reviewed.\r\n\r\nYou may remove this comment.\r\n-->\r\n* CardID: RHEL-141612\r\n\r\n* Remove the six dependency from the insights-client part of insights-core.\r\n\r\n###  Notes for reviewer\r\n\r\nI was looking for occurrences of the following text: \r\nsys.version_info; py.*2(regex); py.*3(regex); six; PY; PY3; PY2; unicode; long; 2.x; 3.x\r\n\r\n\r\n## Summary by Sourcery\r\n\r\nRemove Python 2 compatibility code and the six dependency from the insights-client portion of insights-core, standardizing on Python 3 behavior.\r\n\r\nEnhancements:\r\n- Replace six.string_types and six.PY* conditionals with native Python 3 types and logic across client configuration, connection, and collection rules.\r\n- Simplify HTTP request attachment handling and branch info serialization using standard Python 3 idioms.\r\n- Remove legacy Python 2-specific logging handler configuration and file-write branches in the client code.\r\n\r\nTests:\r\n- Update client utility and collection rules tests to patch builtins.open directly without six-based Python 2/3 branching.\n\n## Summary by Sourcery\n\nDrop remaining Python 2 compatibility code from the insights-client portion of insights-core and standardize behavior on Python 3.\n\nEnhancements:\n- Remove Python 2-only normalization and logging logic in the ansible playbook verifier and client configuration code.\n- Replace uses of six (string type checks, iteritems, PY2/PY3 branches) with native Python 3 types and idioms in client configuration, collection rules, connection handling, and logging setup.\n- Simplify request/response handling and branch info serialization to rely solely on Python 3-compatible JSON and file I/O operations.\n- Clean up ansible playbook serialization to operate only on Python 3, including updated handling of numeric and string values.\n\nTests:\n- Remove Python 2-specific tests and skips, and update tests to patch builtins.open directly without Python 2/3 branching in utilities and collection rules.\n- Adjust playbook serializer and crypto tests to reflect the removal of Python 2-specific behavior and comments.",
+    "created_at": "2026-01-29T15:57:11Z",
+    "merged_at": "2026-02-04T05:35:16Z",
+    "base_sha": "d3e9607b8d408303154fc7391e034936c68a4bc8",
+    "head_sha": "3e9d6bc72c3ddc2c537e8d4832df41d866b48659",
+    "merge_commit_sha": "6842ec802e2870898dae6c91663ca46373fae01e",
+    "labels": [
+      "client",
+      "RPM"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "d3e9607b8d408303154fc7391e034936c68a4bc8",
+  "final_sha": "3e9d6bc72c3ddc2c537e8d4832df41d866b48659",
+  "changed_files": [
+    {
+      "sha": "42e492ed0b1b2d2395a660eff4294d1662a33d58",
+      "filename": "insights/client/apps/ansible/playbook_verifier/__init__.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 48,
+      "changes": 48,
+      "blob_url": "https://github.com/RedHatInsights/insights-core/blob/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Fclient%2Fapps%2Fansible%2Fplaybook_verifier%2F__init__.py",
+      "raw_url": "https://github.com/RedHatInsights/insights-core/raw/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Fclient%2Fapps%2Fansible%2Fplaybook_verifier%2F__init__.py",
+      "contents_url": "https://api.github.com/repos/RedHatInsights/insights-core/contents/insights%2Fclient%2Fapps%2Fansible%2Fplaybook_verifier%2F__init__.py?ref=3e9d6bc72c3ddc2c537e8d4832df41d866b48659",
+      "patch": "@@ -7,14 +7,10 @@\n import sys\n import tempfile\n \n-import six\n-\n import insights.client.apps.ansible\n from insights.client.apps.ansible.playbook_verifier.serializer import PlaybookSerializer\n from insights.client.apps.ansible.playbook_verifier.contrib import gnupg\n from insights.client.apps.ansible.playbook_verifier.contrib.ruamel_yaml.ruamel import yaml\n-from insights.client.apps.ansible.playbook_verifier.contrib.ruamel_yaml.ruamel.yaml.comments import CommentedMap, CommentedSeq\n-from insights.client.apps.ansible.playbook_verifier.contrib.ruamel_yaml.ruamel.yaml.scalarint import ScalarInt\n from insights.client.constants import InsightsConstants as constants\n \n \n@@ -65,48 +61,6 @@ def load_playbook_yaml(playbook):\n         raise PlaybookVerificationError(\"Could not load the playbook.\")\n \n \n-def normalize_play_py2(play):\n-    \"\"\"In Python 2, get rid of any default unicode values.\n-\n-    :param play: The Ansible play.\n-    :type play: dict | yaml.comments.CommentedMap\n-\n-    :returns: Play with Unicode characters removed.\n-    :rtype: CommentedMap\n-    \"\"\"\n-    result = CommentedMap()\n-    for key, value in play.iteritems():\n-        if isinstance(value, CommentedMap):\n-            result[key] = CommentedMap(normalize_play_py2(value))\n-            continue\n-\n-        if isinstance(value, CommentedSeq):\n-            new_sequence = CommentedSeq()\n-            for item in value:\n-                if isinstance(item, six.text_type):\n-                    new_sequence.append(item.encode('ascii', 'ignore'))\n-                    continue\n-                if isinstance(item, CommentedMap):\n-                    new_sequence.append(normalize_play_py2(item))\n-                    continue\n-                new_sequence.append(item)\n-\n-            result[key] = new_sequence\n-            continue\n-\n-        if isinstance(value, six.text_type):\n-            result[key] = value.encode('ascii', 'ignore')\n-            continue\n-\n-        if isinstance(value, ScalarInt):\n-            result[key] = int(value)\n-            continue\n-\n-        result[key] = value\n-\n-    return result\n-\n-\n def serialize_play(play):\n     \"\"\"Convert the play object to bytes.\n \n@@ -115,8 +69,6 @@ def serialize_play(play):\n     :returns: Serialized play.\n     :rtype: bytes\n     \"\"\"\n-    if six.PY2:\n-        return str(normalize_play_py2(play)).encode(\"utf-8\")\n     if sys.version_info < (3, 12):\n         return str(play).encode(\"utf-8\")\n     return PlaybookSerializer.serialize(play).encode(\"utf-8\")"
+    },
+    {
+      "sha": "5452bf6e216071cb1d30625ca79faa378ae64690",
+      "filename": "insights/client/apps/ansible/playbook_verifier/serializer.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/RedHatInsights/insights-core/blob/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Fclient%2Fapps%2Fansible%2Fplaybook_verifier%2Fserializer.py",
+      "raw_url": "https://github.com/RedHatInsights/insights-core/raw/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Fclient%2Fapps%2Fansible%2Fplaybook_verifier%2Fserializer.py",
+      "contents_url": "https://api.github.com/repos/RedHatInsights/insights-core/contents/insights%2Fclient%2Fapps%2Fansible%2Fplaybook_verifier%2Fserializer.py?ref=3e9d6bc72c3ddc2c537e8d4832df41d866b48659",
+      "patch": "@@ -1,6 +1,5 @@\n import logging\n \n-import six\n from insights.client.apps.ansible.playbook_verifier.contrib.ruamel_yaml.ruamel.yaml.comments import (\n     CommentedMap,\n     CommentedSeq,\n@@ -31,7 +30,7 @@ def _obj(cls, value):\n             return cls._list(value)\n         if isinstance(value, int) or isinstance(value, float):\n             return str(value)\n-        if isinstance(value, six.string_types):\n+        if isinstance(value, str):\n             return cls._str(value)\n \n         logger.debug(\"Value type not recognized, it may misbehave: {value} ({typ})\".format("
+    },
+    {
+      "sha": "7a9f908b63f6c3bbaf7d5f87e54492e637e0a24e",
+      "filename": "insights/client/client.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 6,
+      "changes": 8,
+      "blob_url": "https://github.com/RedHatInsights/insights-core/blob/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Fclient%2Fclient.py",
+      "raw_url": "https://github.com/RedHatInsights/insights-core/raw/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Fclient%2Fclient.py",
+      "contents_url": "https://api.github.com/repos/RedHatInsights/insights-core/contents/insights%2Fclient%2Fclient.py?ref=3e9d6bc72c3ddc2c537e8d4832df41d866b48659",
+      "patch": "@@ -7,7 +7,6 @@\n import logging.handlers\n import os\n import time\n-import six\n \n from insights.util.rpm_vercmp import version_compare\n \n@@ -130,7 +129,7 @@ def configure_level(config):\n     config_level = 'DEBUG' if config.verbose else config.loglevel\n \n     init_log_level = logging.getLevelName(config_level)\n-    if type(init_log_level) in six.string_types:\n+    if type(init_log_level) is str:\n         print(\"Invalid log level %s, defaulting to DEBUG\" % config_level)\n         init_log_level = logging.DEBUG\n \n@@ -374,10 +373,7 @@ def _legacy_upload(config, pconn, tar_file, content_type, collection_duration=No\n \n             # Write to last upload file\n             with open(constants.last_upload_results_file, 'w') as handler:\n-                if six.PY3:\n-                    handler.write(upload.text)\n-                else:\n-                    handler.write(upload.text.encode('utf-8'))\n+                handler.write(upload.text)\n             os.chmod(constants.last_upload_results_file, 0o644)\n             write_to_disk(constants.lastupload_file)\n             os.chmod(constants.lastupload_file, 0o644)"
+    },
+    {
+      "sha": "c8c8a0955c6dfdfc75dde0b5a3102b97f795c182",
+      "filename": "insights/client/collection_rules.py",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 12,
+      "changes": 18,
+      "blob_url": "https://github.com/RedHatInsights/insights-core/blob/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Fclient%2Fcollection_rules.py",
+      "raw_url": "https://github.com/RedHatInsights/insights-core/raw/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Fclient%2Fcollection_rules.py",
+      "contents_url": "https://api.github.com/repos/RedHatInsights/insights-core/contents/insights%2Fclient%2Fcollection_rules.py?ref=3e9d6bc72c3ddc2c537e8d4832df41d866b48659",
+      "patch": "@@ -7,11 +7,10 @@\n import json\n import logging\n import os\n-import six\n import stat\n import yaml\n \n-from six.moves import configparser as ConfigParser\n+import configparser as ConfigParser\n \n from insights.client.constants import InsightsConstants as constants\n \n@@ -38,7 +37,7 @@ def is_list_of_strings(data):\n         if not isinstance(data, list):\n             return False\n         for l in data:\n-            if not isinstance(l, six.string_types):\n+            if not isinstance(l, str):\n                 return False\n         return True\n \n@@ -177,15 +176,10 @@ def get_rm_conf_old(self):\n                         + ', '.join(expected_keys)\n                         + '.'\n                     )\n-                if six.PY3:\n-                    rm_conf[item] = [\n-                        v.strip()\n-                        for v in value.strip().encode('utf-8').decode('unicode-escape').split(',')\n-                    ]\n-                else:\n-                    rm_conf[item] = [\n-                        v.strip() for v in value.strip().decode('string-escape').split(',')\n-                    ]\n+                rm_conf[item] = [\n+                    v.strip()\n+                    for v in value.strip().encode('utf-8').decode('unicode-escape').split(',')\n+                ]\n             self.rm_conf = rm_conf\n         except ConfigParser.Error as e:\n             # can't parse config file at all"
+    },
+    {
+      "sha": "b58c958dd586e3b0ea851e29f7d88f1f7326bb6e",
+      "filename": "insights/client/config.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 8,
+      "changes": 11,
+      "blob_url": "https://github.com/RedHatInsights/insights-core/blob/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Fclient%2Fconfig.py",
+      "raw_url": "https://github.com/RedHatInsights/insights-core/raw/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Fclient%2Fconfig.py",
+      "contents_url": "https://api.github.com/repos/RedHatInsights/insights-core/contents/insights%2Fclient%2Fconfig.py?ref=3e9d6bc72c3ddc2c537e8d4832df41d866b48659",
+      "patch": "@@ -4,9 +4,8 @@\n import copy\n import logging\n import os\n-import six\n \n-from six.moves import configparser as ConfigParser\n+import configparser as ConfigParser\n \n from insights.cleaner import DEFAULT_OBFUSCATIONS\n from insights.client.utilities import get_rhel_version, get_egg_version_tuple\n@@ -19,10 +18,6 @@\n     from constants import InsightsConstants as constants\n \n logger = logging.getLogger(__name__)\n-if six.PY2:\n-    # to avoid \"No handler\" issue of python 2.7\n-    # https://docs.python.org/2.7/howto/logging.html#configuring-logging-for-a-library\n-    logger.addHandler(logging.NullHandler())\n \n \n DEFAULT_OPTS = {\n@@ -658,7 +653,7 @@ def _load_config_file(self, fname=None):\n                     d[key] = parsedconfig.getint(constants.app_name, key)\n                 if key == 'http_timeout':\n                     d[key] = parsedconfig.getfloat(constants.app_name, key)\n-                if key in DEFAULT_BOOLS and isinstance(d[key], six.string_types):\n+                if key in DEFAULT_BOOLS and isinstance(d[key], str):\n                     d[key] = parsedconfig.getboolean(constants.app_name, key)\n             except ValueError as e:\n                 if self._print_errors:\n@@ -718,7 +713,7 @@ def _validate_obfuscation_options():\n                 # discard old options\n                 self.obfuscate = self.obfuscate_hostname = None\n             # Re-format the new obfuscation_list\n-            if isinstance(self.obfuscation_list, six.string_types):\n+            if isinstance(self.obfuscation_list, str):\n                 obf_opt = set(\n                     opt.strip() for opt in self.obfuscation_list.strip('\\'\"').split(',') if opt\n                 )"
+    },
+    {
+      "sha": "8433fb8a4524470daf7a2f94d77820caab8313e7",
+      "filename": "insights/client/connection.py",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 14,
+      "changes": 19,
+      "blob_url": "https://github.com/RedHatInsights/insights-core/blob/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Fclient%2Fconnection.py",
+      "raw_url": "https://github.com/RedHatInsights/insights-core/raw/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Fclient%2Fconnection.py",
+      "contents_url": "https://api.github.com/repos/RedHatInsights/insights-core/contents/insights%2Fclient%2Fconnection.py?ref=3e9d6bc72c3ddc2c537e8d4832df41d866b48659",
+      "patch": "@@ -5,7 +5,6 @@\n from __future__ import absolute_import\n import requests\n import os\n-import six\n import json\n import logging\n import platform\n@@ -15,14 +14,8 @@\n # import io\n from tempfile import TemporaryFile\n # from datetime import datetime, timedelta\n-try:\n-    # python 2\n-    from urlparse import urlparse\n-    from urllib import quote\n-except ImportError:\n-    # python 3\n-    from urllib.parse import urlparse\n-    from urllib.parse import quote\n+from urllib.parse import urlparse\n+from urllib.parse import quote\n from .utilities import (determine_hostname,\n                         generate_machine_id,\n                         machine_id_exists,\n@@ -114,7 +107,7 @@ def __init__(self, config):\n             # else:\n             # self.cert_verify = True\n         else:\n-            if isinstance(self.cert_verify, six.string_types):\n+            if isinstance(self.cert_verify, str):\n                 if self.cert_verify.lower() == 'false':\n                     self.cert_verify = False\n                 elif self.cert_verify.lower() == 'true':\n@@ -198,7 +191,7 @@ def _http_request(self, url, method, log_response_text=True, **kwargs):\n             log_message += \" headers={headers}\".format(headers=kwargs[\"headers\"])\n         if \"files\" in kwargs.keys():\n             attachments = []\n-            for name, content in six.iteritems(kwargs[\"files\"]):\n+            for name, content in kwargs[\"files\"].items():\n                 if isinstance(content, tuple):\n                     attachments.append(\"{name}:{file}\".format(name=name, file=content[0]))\n                 else:\n@@ -551,9 +544,7 @@ def get_branch_info(self):\n \n         # logger.debug(u'Saving branch info to file.')\n         # with io.open(constants.cached_branch_info, encoding='utf8', mode='w') as f:\n-        #     # json.dump is broke in py2 so use dumps\n-        #     bi_str = json.dumps(branch_info, ensure_ascii=False)\n-        #     f.write(bi_str)\n+        #     json.dump(branch_info, f, ensure_ascii=False)\n         self.config.branch_info = branch_info\n         return branch_info\n "
+    },
+    {
+      "sha": "1c4542c449ec58412a5c31a85043bd2ef7544d7e",
+      "filename": "insights/tests/client/apps/test_playbook_verifier.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 28,
+      "changes": 29,
+      "blob_url": "https://github.com/RedHatInsights/insights-core/blob/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Ftests%2Fclient%2Fapps%2Ftest_playbook_verifier.py",
+      "raw_url": "https://github.com/RedHatInsights/insights-core/raw/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Ftests%2Fclient%2Fapps%2Ftest_playbook_verifier.py",
+      "contents_url": "https://api.github.com/repos/RedHatInsights/insights-core/contents/insights%2Ftests%2Fclient%2Fapps%2Ftest_playbook_verifier.py?ref=3e9d6bc72c3ddc2c537e8d4832df41d866b48659",
+      "patch": "@@ -14,10 +14,7 @@\n \n from insights.client.constants import InsightsConstants as constants\n from insights.client.apps.ansible import playbook_verifier\n-from insights.client.apps.ansible.playbook_verifier import verify, PlaybookVerificationError, get_play_revocation_list, normalize_play_py2, load_playbook_yaml  # noqa\n-\n-\n-SKIP_ON_3 = pytest.mark.skipif(sys.version_info[0] > 2, reason=\"Only required in Python 2\")\n+from insights.client.apps.ansible.playbook_verifier import verify, PlaybookVerificationError, get_play_revocation_list, load_playbook_yaml  # noqa\n \n \n class TestErrors:\n@@ -199,27 +196,6 @@ def test_revoked_playbook(self, call_1, call_2):\n         assert revoked_error in str(error.value)\n \n \n-@SKIP_ON_3\n-def test_normalize_snippet():\n-    playbook = '''task:\n-  when:\n-    - '\"pam\" in ansible_facts.packages'\n-    - result_pam_file_present.stat.exists'''\n-\n-    snippet = load_playbook_yaml(playbook)\n-\n-    want = {\n-        'task': {\n-            'when': [\n-                '\"pam\" in ansible_facts.packages',\n-                'result_pam_file_present.stat.exists'\n-            ]\n-        }\n-    }\n-\n-    assert normalize_play_py2(snippet) == want\n-\n-\n class TestExcludeDynamicElements:\n     def test_ok_signature(self):\n         source = {\n@@ -388,9 +364,6 @@ def test_strings(self, source, expected):\n         ],\n     )\n     def test_strings_unicode(self, source, expected):\n-        if sys.version_info < (3, 0):\n-            raise pytest.skip(\"Unicode characters are not supported on Python 2 systems\")\n-\n         result = playbook_verifier.PlaybookSerializer.serialize(source)\n         assert result == expected\n "
+    },
+    {
+      "sha": "3d8753a608d0be6ccc4a505cc5a534040f96f858",
+      "filename": "insights/tests/client/collection_rules/test_get_rm_conf.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 7,
+      "changes": 8,
+      "blob_url": "https://github.com/RedHatInsights/insights-core/blob/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Ftests%2Fclient%2Fcollection_rules%2Ftest_get_rm_conf.py",
+      "raw_url": "https://github.com/RedHatInsights/insights-core/raw/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Ftests%2Fclient%2Fcollection_rules%2Ftest_get_rm_conf.py",
+      "contents_url": "https://api.github.com/repos/RedHatInsights/insights-core/contents/insights%2Ftests%2Fclient%2Fcollection_rules%2Ftest_get_rm_conf.py?ref=3e9d6bc72c3ddc2c537e8d4832df41d866b48659",
+      "patch": "@@ -1,6 +1,5 @@\n # -*- coding: UTF-8 -*-\n \n-import six\n import sys\n import pytest\n from .helpers import insights_upload_conf\n@@ -16,12 +15,7 @@\n \n \n def patch_open(filedata):\n-    if six.PY3:\n-        open_name = 'builtins.open'\n-    else:\n-        open_name = '__builtin__.open'\n-\n-    return patch(open_name, mock.mock_open(read_data=filedata), create=True)\n+    return patch('builtins.open', mock.mock_open(read_data=filedata), create=True)\n \n \n # Tests for the correct_format function"
+    },
+    {
+      "sha": "0bd7f403e4ed21e7798c90f2dec076e5ff43e388",
+      "filename": "insights/tests/client/test_crypto.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/RedHatInsights/insights-core/blob/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Ftests%2Fclient%2Ftest_crypto.py",
+      "raw_url": "https://github.com/RedHatInsights/insights-core/raw/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Ftests%2Fclient%2Ftest_crypto.py",
+      "contents_url": "https://api.github.com/repos/RedHatInsights/insights-core/contents/insights%2Ftests%2Fclient%2Ftest_crypto.py?ref=3e9d6bc72c3ddc2c537e8d4832df41d866b48659",
+      "patch": "@@ -98,7 +98,7 @@ def _initialize_gpg_environment(home):\n         f.write(GPG_PUBLIC_KEY)\n     # It is strictly not necessary to import both public and private keys,\n     #  the private key should be enough.\n-    #  However, the Python 2.6 CI image requires that.\n+\n     process = subprocess.Popen(\n         [\"/usr/bin/gpg\", \"--homedir\", home, \"--import\", public_key],\n         stdout=subprocess.PIPE, stderr=subprocess.PIPE,"
+    },
+    {
+      "sha": "d2e114f5a835117fec868c67f63c5523139120a0",
+      "filename": "insights/tests/client/test_utilities.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 13,
+      "changes": 15,
+      "blob_url": "https://github.com/RedHatInsights/insights-core/blob/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Ftests%2Fclient%2Ftest_utilities.py",
+      "raw_url": "https://github.com/RedHatInsights/insights-core/raw/3e9d6bc72c3ddc2c537e8d4832df41d866b48659/insights%2Ftests%2Fclient%2Ftest_utilities.py",
+      "contents_url": "https://api.github.com/repos/RedHatInsights/insights-core/contents/insights%2Ftests%2Fclient%2Ftest_utilities.py?ref=3e9d6bc72c3ddc2c537e8d4832df41d866b48659",
+      "patch": "@@ -9,7 +9,6 @@\n import re\n from unittest import mock\n from unittest.mock import patch\n-import six\n import pytest\n import errno\n from json import loads as json_load\n@@ -245,12 +244,7 @@ def test_read_pidfile():\n     '''\n     Test a pidfile that exists\n     '''\n-    if six.PY3:\n-        open_name = 'builtins.open'\n-    else:\n-        open_name = '__builtin__.open'\n-\n-    with patch(open_name, create=True) as mock_open:\n+    with patch('builtins.open', create=True) as mock_open:\n         mock_open.side_effect = [mock.mock_open(read_data='420').return_value]\n         assert util.read_pidfile() == '420'\n \n@@ -259,12 +253,7 @@ def test_read_pidfile_failure():\n     '''\n     Test a pidfile that does not exist\n     '''\n-    if six.PY3:\n-        open_name = 'builtins.open'\n-    else:\n-        open_name = '__builtin__.open'\n-\n-    with patch(open_name, create=True) as mock_open:\n+    with patch('builtins.open', create=True) as mock_open:\n         mock_open.side_effect = IOError\n         assert util.read_pidfile() is None\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "3e9d6bc72c3ddc2c537e8d4832df41d866b48659",
+      "message": "chore: drop python2 support from insights-client\n\n* CardID: RHEL-141612\n\n* Remove the six dependency and python 2 support from the\ninsights-client part of insights-core.\n\nSigned-off-by: Peter Schrimpel <pschrimp@redhat.com>",
+      "parent_shas": [
+        "d3e9607b8d408303154fc7391e034936c68a4bc8"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__RedHatInsights__insights-core__pr4707.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\RedHatInsights__insights-core__pr4707__py2_py3__RedHatInsights__insights-core__pr4707\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\RedHatInsights__insights-core__pr4707__py2_py3__RedHatInsights__insights-core__pr4707\\rn"
+  }
+}

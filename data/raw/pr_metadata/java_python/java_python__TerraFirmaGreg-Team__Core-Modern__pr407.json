@@ -1,0 +1,78 @@
+{
+  "instance_id": "java_python__TerraFirmaGreg-Team__Core-Modern__pr407",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "TerraFirmaGreg-Team/Core-Modern",
+  "pr_number": 407,
+  "pr_url": "https://github.com/TerraFirmaGreg-Team/Core-Modern/pull/407",
+  "repo": {
+    "full_name": "TerraFirmaGreg-Team/Core-Modern",
+    "clone_url": "https://github.com/TerraFirmaGreg-Team/Core-Modern.git",
+    "default_branch": "dev",
+    "created_at": "2023-07-21T04:24:58Z",
+    "stars": 21,
+    "license": "LGPL-3.0",
+    "size_kb": 5561
+  },
+  "pull_request": {
+    "id": 3490107486,
+    "title": "Update GTRepairHelper.java",
+    "body": "Fix repair recipe incorrectly copying durability from the tool",
+    "created_at": "2026-04-05T08:27:26Z",
+    "merged_at": "2026-04-06T11:40:31Z",
+    "base_sha": "eb2d6a27d9cef87c901df349a4ec2acad07b7470",
+    "head_sha": "c29c4c9204c217d2e10b2231dce3b07be481142b",
+    "merge_commit_sha": "7543ed5f279a6e4013c917f47faf26354e54fe1c",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "c51fbde1d0ca5e87c482488ac2a4a57a49cdb42c",
+  "final_sha": "c29c4c9204c217d2e10b2231dce3b07be481142b",
+  "changed_files": [
+    {
+      "sha": "b318c9018f3bc8c9c5f138b4bb7e8b61b9faffed",
+      "filename": "src/main/java/su/terrafirmagreg/core/common/tfgt/GTRepairHelper.java",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 1,
+      "changes": 13,
+      "blob_url": "https://github.com/TerraFirmaGreg-Team/Core-Modern/blob/c29c4c9204c217d2e10b2231dce3b07be481142b/src%2Fmain%2Fjava%2Fsu%2Fterrafirmagreg%2Fcore%2Fcommon%2Ftfgt%2FGTRepairHelper.java",
+      "raw_url": "https://github.com/TerraFirmaGreg-Team/Core-Modern/raw/c29c4c9204c217d2e10b2231dce3b07be481142b/src%2Fmain%2Fjava%2Fsu%2Fterrafirmagreg%2Fcore%2Fcommon%2Ftfgt%2FGTRepairHelper.java",
+      "contents_url": "https://api.github.com/repos/TerraFirmaGreg-Team/Core-Modern/contents/src%2Fmain%2Fjava%2Fsu%2Fterrafirmagreg%2Fcore%2Fcommon%2Ftfgt%2FGTRepairHelper.java?ref=c29c4c9204c217d2e10b2231dce3b07be481142b",
+      "patch": "@@ -42,7 +42,18 @@ public static void onItemCrafted(PlayerEvent.ItemCraftedEvent event) {\n             }\n         }\n \n-        if (hasRepairKit && !toolStack.isEmpty()) {\n+        boolean resultWasInputInGrid = false;\n+        for (int i = 0; i < grid.getContainerSize(); i++) {\n+            ItemStack s = grid.getItem(i);\n+            if (!s.isEmpty() && s.getItem() == event.getCrafting().getItem()) {\n+                resultWasInputInGrid = true;\n+                break;\n+            }\n+        }\n+\n+        if (hasRepairKit && !toolStack.isEmpty()\n+                && event.getCrafting().getItem() instanceof IGTTool\n+                && !resultWasInputInGrid) {\n             int repairAmount = (int) (toolStack.getMaxDamage() * repairPercent);\n             int newDamage = Math.max(0, toolStack.getDamageValue() - repairAmount);\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "c29c4c9204c217d2e10b2231dce3b07be481142b",
+      "message": "Update GTRepairHelper.java\n\nFix repair recipe incorrectly copying durability from the tool",
+      "parent_shas": [
+        "c51fbde1d0ca5e87c482488ac2a4a57a49cdb42c"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_tests_detected"
+    ],
+    "auto_signals": [
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__TerraFirmaGreg-Team__Core-Modern__pr407.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\TerraFirmaGreg-Team__Core-Modern__pr407__java_python__TerraFirmaGreg-Team__Core-Modern__pr407\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\TerraFirmaGreg-Team__Core-Modern__pr407__java_python__TerraFirmaGreg-Team__Core-Modern__pr407\\rn"
+  }
+}

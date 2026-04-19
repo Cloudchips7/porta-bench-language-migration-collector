@@ -1,0 +1,105 @@
+{
+  "instance_id": "py2_py3__kaifcoder__gemini_multipdf_chat__pr17",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "kaifcoder/gemini_multipdf_chat",
+  "pr_number": 17,
+  "pr_url": "https://github.com/kaifcoder/gemini_multipdf_chat/pull/17",
+  "repo": {
+    "full_name": "kaifcoder/gemini_multipdf_chat",
+    "clone_url": "https://github.com/kaifcoder/gemini_multipdf_chat.git",
+    "default_branch": "main",
+    "created_at": "2024-01-09T11:17:01Z",
+    "stars": 219,
+    "license": "MIT",
+    "size_kb": 44
+  },
+  "pull_request": {
+    "id": 3096450498,
+    "title": "Fix xrange NameError by pinning PyPDF2>=3.0.0",
+    "body": "`NameError: name 'xrange' is not defined` occurs when older PyPDF2 versions are installed. These versions contain Python 2 code (`xrange` was renamed to `range` in Python 3) and lack the `PdfReader` class used by the app.\n\n### Changes\n- Pin `PyPDF2>=3.0.0` in `requirements.txt` to ensure Python 3 compatible version\n- Add `__pycache__/` to `.gitignore`\n\n<!-- START COPILOT ORIGINAL PROMPT -->\n\n\n\n<details>\n\n<summary>Original prompt</summary>\n\n> \n> ----\n> \n> *This section details on the original issue you should resolve*\n> \n> <issue_title>NameError: name 'xrange' is not defined</issue_title>\n> <issue_description>\r\n> NameError: name 'xrange' is not defined\r\n> Traceback:\r\n> File \"/usr/local/lib/python3.11/dist-packages/streamlit/runtime/scriptrunner/script_runner.py\", line 600, in _run_script\r\n>     exec(code, module.__dict__)\r\n> File \"/root/gemini_multipdf_chat/app.py\", line 2, in <module>\r\n>     from PyPDF2 import PdfReader\r\n> File \"/usr/local/lib/python3.11/dist-packages/PyPDF2/__init__.py\", line 12, in <module>\r\n>     from ._encryption import PasswordType\r\n> File \"/usr/local/lib/python3.11/dist-packages/PyPDF2/_encryption.py\", line 60, in <module>\r\n>     from Crypto.Cipher import AES, ARC4  # type: ignore[import]\r\n>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n> File \"/usr/local/lib/python3.11/dist-packages/Crypto/Cipher/ARC4.py\", line 119, in <module>\r\n>     key_size = xrange(1,256+1)\r\n>                ^^^^^^\r\n> </issue_description>\n> \n> <agent_instructions>Fix this issue </agent_instructions>\n> \n> ## Comments on the Issue (you are @copilot in this section)\n> \n> <comments>\n> </comments>\n> \n\n\n</details>\n\n\n\n<!-- START COPILOT CODING AGENT SUFFIX -->\n\n- Fixes kaifcoder/gemini_multipdf_chat#11\n\n<!-- START COPILOT CODING AGENT TIPS -->\n---\n\n💡 You can make Copilot smarter by setting up custom instructions, customizing its development environment and configuring Model Context Protocol (MCP) servers. Learn more [Copilot coding agent tips](https://gh.io/copilot-coding-agent-tips) in the docs.",
+    "created_at": "2025-12-12T12:56:42Z",
+    "merged_at": "2025-12-12T13:06:03Z",
+    "base_sha": "e75cc8ece0b14c9080e0342a884f0fb593df5103",
+    "head_sha": "1c66abc34fa40382b91c0cdf50639f8829022cd9",
+    "merge_commit_sha": "3913e41cc47e93c5cdd43c14f6a0e47f65d97341",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "e75cc8ece0b14c9080e0342a884f0fb593df5103",
+  "final_sha": "1c66abc34fa40382b91c0cdf50639f8829022cd9",
+  "changed_files": [
+    {
+      "sha": "7929f2a5644022db58a9049a191458500be01ff8",
+      "filename": ".gitignore",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/kaifcoder/gemini_multipdf_chat/blob/1c66abc34fa40382b91c0cdf50639f8829022cd9/.gitignore",
+      "raw_url": "https://github.com/kaifcoder/gemini_multipdf_chat/raw/1c66abc34fa40382b91c0cdf50639f8829022cd9/.gitignore",
+      "contents_url": "https://api.github.com/repos/kaifcoder/gemini_multipdf_chat/contents/.gitignore?ref=1c66abc34fa40382b91c0cdf50639f8829022cd9",
+      "patch": "@@ -1,3 +1,4 @@\n .env\n venv\n-faiss_index\n\\ No newline at end of file\n+faiss_index\n+__pycache__/\n\\ No newline at end of file"
+    },
+    {
+      "sha": "200a16b269705120823496543d252c16349a576d",
+      "filename": "requirements.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/kaifcoder/gemini_multipdf_chat/blob/1c66abc34fa40382b91c0cdf50639f8829022cd9/requirements.txt",
+      "raw_url": "https://github.com/kaifcoder/gemini_multipdf_chat/raw/1c66abc34fa40382b91c0cdf50639f8829022cd9/requirements.txt",
+      "contents_url": "https://api.github.com/repos/kaifcoder/gemini_multipdf_chat/contents/requirements.txt?ref=1c66abc34fa40382b91c0cdf50639f8829022cd9",
+      "patch": "@@ -2,7 +2,7 @@ streamlit\n google-generativeai\n python-dotenv\n langchain\n-PyPDF2\n+PyPDF2>=3.0.0\n chromadb\n faiss-cpu\n langchain_google_genai"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "e868003d43af2ab3ec16121ba47a77e7205cc27b",
+      "message": "Initial plan",
+      "parent_shas": [
+        "e75cc8ece0b14c9080e0342a884f0fb593df5103"
+      ]
+    },
+    {
+      "sha": "3c5fbcc67ffdbcc2c402468a6720e8405ea553b7",
+      "message": "Initial plan for xrange fix\n\nCo-authored-by: kaifcoder <57701861+kaifcoder@users.noreply.github.com>",
+      "parent_shas": [
+        "e868003d43af2ab3ec16121ba47a77e7205cc27b"
+      ]
+    },
+    {
+      "sha": "1c66abc34fa40382b91c0cdf50639f8829022cd9",
+      "message": "Fix xrange NameError by requiring PyPDF2>=3.0.0 in requirements.txt\n\nCo-authored-by: kaifcoder <57701861+kaifcoder@users.noreply.github.com>",
+      "parent_shas": [
+        "3c5fbcc67ffdbcc2c402468a6720e8405ea553b7"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__kaifcoder__gemini_multipdf_chat__pr17.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\kaifcoder__gemini_multipdf_chat__pr17__py2_py3__kaifcoder__gemini_multipdf_chat__pr17\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\kaifcoder__gemini_multipdf_chat__pr17__py2_py3__kaifcoder__gemini_multipdf_chat__pr17\\rn"
+  }
+}

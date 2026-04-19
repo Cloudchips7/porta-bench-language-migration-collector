@@ -1,0 +1,196 @@
+{
+  "instance_id": "py2_py3__dynamiq-ai__dynamiq__pr506",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "dynamiq-ai/dynamiq",
+  "pr_number": 506,
+  "pr_url": "https://github.com/dynamiq-ai/dynamiq/pull/506",
+  "repo": {
+    "full_name": "dynamiq-ai/dynamiq",
+    "clone_url": "https://github.com/dynamiq-ai/dynamiq.git",
+    "default_branch": "main",
+    "created_at": "2024-09-26T10:20:26Z",
+    "stars": 1039,
+    "license": "Apache-2.0",
+    "size_kb": 9816
+  },
+  "pull_request": {
+    "id": 3120592295,
+    "title": "fix: fragile regex in ReAct agent action parsing",
+    "body": "The previous implementation failed when LLM outputs contained extra newlines or nested braces in JSON strings (common with provider like deepseek). The new parser reliably locates `Action Input:` and extracts JSON using balanced brace counting.\r\n\r\nFailing case:\r\n\r\n```\r\nThought: I need to calculate the sum of the first 10 numbers.\r\nAction: Calculator Tool\r\n\r\nAction Input: {\r\n    \"code\": \"print(sum(range(1, 11)))\"\r\n}\r\n```\r\n\r\nI've also moved `test_agent_structured_python_tool.py` to correct directory (requires API keys, was breaking fork PR CI)\r\n\r\n<!-- CURSOR_SUMMARY -->\r\n---\r\n\r\n> [!NOTE]\r\n> Replaces regex-based `Action Input` parsing with balanced-brace JSON extraction in `Agent._parse_action` and adds unit tests covering varied output formats.\r\n> \r\n> - **Agent parsing (`dynamiq/nodes/agents/agent.py`)**:\r\n>   - Replace regex-based `Action Input` parsing with brace-balanced JSON extraction that handles extra newlines, nested braces, and escaped quotes.\r\n>   - Strip optional markdown code fences from inputs; log warnings on JSON decode errors; raise recoverable error when no valid pairs found.\r\n>   - Remove dependency on `regex` module.\r\n> - **Tests**:\r\n>   - Add `tests/unit/nodes/agents/test_agent_parsing.py` with cases for DeepSeek-style outputs, standard format, multiple newlines, and JSON wrapped in markdown.\r\n> \r\n> <sup>Written by [Cursor Bugbot](https://cursor.com/dashboard?tab=bugbot) for commit 204198a02972c84b26283d5ca9979c7f315a665f. This will update automatically on new commits. Configure [here](https://cursor.com/dashboard?tab=bugbot).</sup>\r\n<!-- /CURSOR_SUMMARY -->\r\n\r\n<!-- ELLIPSIS_HIDDEN -->\r\n\r\n----\r\n\r\n> [!IMPORTANT]\r\n> Improved JSON parsing in `Agent` class to handle nested braces and newlines, with new tests added for verification.\r\n> \r\n>   - **Behavior**:\r\n>     - Improved `_parse_action()` in `agent.py` to handle JSON extraction using balanced brace counting, fixing issues with extra newlines and nested braces.\r\n>     - Removed fragile regex pattern for `Action Input` parsing.\r\n>   - **Tests**:\r\n>     - Added `test_agent_parsing.py` to test various output formats, including DeepSeek-style, standard format, multiple newlines, and JSON wrapped in markdown.\r\n>     - Tests ensure correct parsing of `Thought`, `Action`, and `Action Input` fields.\r\n> \r\n> <sup>This description was created by </sup>[<img alt=\"Ellipsis\" src=\"https://img.shields.io/badge/Ellipsis-blue?color=175173\">](https://www.ellipsis.dev?ref=dynamiq-ai%2Fdynamiq&utm_source=github&utm_medium=referral)<sup> for b7e582ddab8fe23632770759c07e66956b7f11cf. You can [customize](https://app.ellipsis.dev/dynamiq-ai/settings/summaries) this summary. It will automatically update as commits are pushed.</sup>\r\n\r\n<!-- ELLIPSIS_HIDDEN -->",
+    "created_at": "2025-12-21T11:49:28Z",
+    "merged_at": "2026-02-02T17:14:33Z",
+    "base_sha": "46ddae5d4f12718908b585dd73f337c91939df1d",
+    "head_sha": "222fa6fee260012465366ce82be2067388fab5f6",
+    "merge_commit_sha": "a4c3c162d425acc9b9e85e42298b0cf3cc626a15",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "d23ff627c5326be566d16790677311ffed5ebd29",
+  "final_sha": "222fa6fee260012465366ce82be2067388fab5f6",
+  "changed_files": [
+    {
+      "sha": "569410d05ab3385a4fcb4ac13cc2a6c4178e9307",
+      "filename": "dynamiq/nodes/agents/components/parser.py",
+      "status": "modified",
+      "additions": 69,
+      "deletions": 20,
+      "changes": 89,
+      "blob_url": "https://github.com/dynamiq-ai/dynamiq/blob/222fa6fee260012465366ce82be2067388fab5f6/dynamiq%2Fnodes%2Fagents%2Fcomponents%2Fparser.py",
+      "raw_url": "https://github.com/dynamiq-ai/dynamiq/raw/222fa6fee260012465366ce82be2067388fab5f6/dynamiq%2Fnodes%2Fagents%2Fcomponents%2Fparser.py",
+      "contents_url": "https://api.github.com/repos/dynamiq-ai/dynamiq/contents/dynamiq%2Fnodes%2Fagents%2Fcomponents%2Fparser.py?ref=222fa6fee260012465366ce82be2067388fab5f6",
+      "patch": "@@ -3,8 +3,6 @@\n import json\n import re\n \n-import regex\n-\n from dynamiq.nodes.agents.exceptions import ActionParsingException\n from dynamiq.utils.logger import logger\n \n@@ -54,34 +52,85 @@ def parse_default_action(output: str) -> tuple[str | None, str | None, dict | li\n     try:\n         thought = parse_default_thought(output) or None\n \n-        action_pattern = r\"Action:\\s*(.*?)\\nAction Input:\\s*(\\{(?:[^{}]|(?R))*\\})\"\n-\n-        remaining_text = output\n         actions = []\n+        action_input_matches = list(re.finditer(r\"Action Input:\", output))\n+\n+        for input_match in action_input_matches:\n+            preceding_text = output[: input_match.start()]\n+\n+            # Find the last \"Action:\" before this \"Action Input:\"\n+            # Match action name up to newline or end of string\n+            all_actions = list(re.finditer(r\"Action:\\s*(.+?)(?=\\n|$|Action)\", preceding_text))\n \n-        while \"Action:\" in remaining_text:\n-            action_match = regex.search(action_pattern, remaining_text, re.DOTALL)\n-            if not action_match:\n-                break\n+            if not all_actions:\n+                continue\n \n+            action_match = all_actions[-1]\n             action_name = action_match.group(1).strip()\n-            raw_input = action_match.group(2).strip()\n \n-            for marker in [\"```json\", \"```JSON\", \"```\"]:\n-                raw_input = raw_input.replace(marker, \"\").strip()\n+            # Extract JSON starting after \"Action Input:\"\n+            json_str_candidate = output[input_match.end() :].strip()\n \n-            try:\n-                action_input = json.loads(raw_input.strip())\n-                actions.append({\"tool_name\": action_name, \"tool_input\": action_input})\n-            except json.JSONDecodeError as e:\n+            # Remove markdown code block markers first\n+            for marker in [\"```json\", \"```JSON\", \"```\"]:\n+                json_str_candidate = json_str_candidate.replace(marker, \"\").strip()\n+\n+            # Manual JSON extraction with brace counting to handle nested structures\n+            brace_count = 0\n+            json_end = 0\n+            in_string = False\n+            escape = False\n+            found_start = False\n+            start_idx = 0\n+\n+            for j, char in enumerate(json_str_candidate):\n+                if not found_start:\n+                    if char == \"{\":\n+                        found_start = True\n+                        start_idx = j\n+                        brace_count = 1\n+                    elif not char.isspace():\n+                        # Non-whitespace character before '{' means invalid format\n+                        break\n+                    continue\n+\n+                if char == '\"' and not escape:\n+                    in_string = not in_string\n+\n+                if char == \"\\\\\" and not escape:\n+                    escape = True\n+                else:\n+                    escape = False\n+\n+                if not in_string:\n+                    if char == \"{\":\n+                        brace_count += 1\n+                    elif char == \"}\":\n+                        brace_count -= 1\n+                        if brace_count == 0:\n+                            json_end = j + 1\n+                            break\n+\n+            if json_end > 0:\n+                raw_input = json_str_candidate[start_idx:json_end]\n+\n+                try:\n+                    action_input = json.loads(raw_input)\n+                    actions.append({\"tool_name\": action_name, \"tool_input\": action_input})\n+                except json.JSONDecodeError as e:\n+                    raise ActionParsingException(\n+                        f\"Invalid JSON in Action Input for {action_name}: {str(e)} : {raw_input}\",\n+                        recoverable=True,\n+                    )\n+            else:\n+                # Brace counting failed - no valid JSON structure found\n                 raise ActionParsingException(\n-                    f\"Invalid JSON in Action Input for {action_name}: {str(e)} : {raw_input}\",\n+                    f\"Could not parse JSON structure in Action Input for {action_name}. \"\n+                    f\"Expected JSON object starting with '{{' but found: \"\n+                    f\"{json_str_candidate[:100]}{'...' if len(json_str_candidate) > 100 else ''}\",\n                     recoverable=True,\n                 )\n \n-            end_pos = action_match.end()\n-            remaining_text = remaining_text[end_pos:]\n-\n         if not actions:\n             logger.info(\"No valid Action and Action Input pairs found in the output \")\n             raise ActionParsingException("
+    },
+    {
+      "sha": "24df5a2645bac7463d0b08a75f3dcb6296419457",
+      "filename": "tests/integration_with_creds/agents/test_agent_structured_python_tool.py",
+      "status": "renamed",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/dynamiq-ai/dynamiq/blob/222fa6fee260012465366ce82be2067388fab5f6/tests%2Fintegration_with_creds%2Fagents%2Ftest_agent_structured_python_tool.py",
+      "raw_url": "https://github.com/dynamiq-ai/dynamiq/raw/222fa6fee260012465366ce82be2067388fab5f6/tests%2Fintegration_with_creds%2Fagents%2Ftest_agent_structured_python_tool.py",
+      "contents_url": "https://api.github.com/repos/dynamiq-ai/dynamiq/contents/tests%2Fintegration_with_creds%2Fagents%2Ftest_agent_structured_python_tool.py?ref=222fa6fee260012465366ce82be2067388fab5f6",
+      "previous_filename": "tests/integration/nodes/agents/test_agent_structured_python_tool.py"
+    },
+    {
+      "sha": "25d2982fe914b727d05077d3962e2562c9714476",
+      "filename": "tests/unit/nodes/agents/test_agent_parsing.py",
+      "status": "added",
+      "additions": 173,
+      "deletions": 0,
+      "changes": 173,
+      "blob_url": "https://github.com/dynamiq-ai/dynamiq/blob/222fa6fee260012465366ce82be2067388fab5f6/tests%2Funit%2Fnodes%2Fagents%2Ftest_agent_parsing.py",
+      "raw_url": "https://github.com/dynamiq-ai/dynamiq/raw/222fa6fee260012465366ce82be2067388fab5f6/tests%2Funit%2Fnodes%2Fagents%2Ftest_agent_parsing.py",
+      "contents_url": "https://api.github.com/repos/dynamiq-ai/dynamiq/contents/tests%2Funit%2Fnodes%2Fagents%2Ftest_agent_parsing.py?ref=222fa6fee260012465366ce82be2067388fab5f6",
+      "patch": "@@ -0,0 +1,173 @@\n+import pytest\n+\n+from dynamiq.nodes.agents.components import parser\n+from dynamiq.nodes.agents.exceptions import ActionParsingException\n+\n+\n+def test_parse_default_action_extra_newlines():\n+    \"\"\"Test parsing of output with extra newlines and nested JSON.\"\"\"\n+    output = r\"\"\"Thought: I need to calculate something.\n+\n+Action: Calculator Tool\n+\n+Action Input: {\n+    \"code\": \"print('Hello World')\\nprint({'nested': 'dict'})\"\n+}\"\"\"\n+\n+    thought, action, action_input = parser.parse_default_action(output)\n+\n+    assert thought == \"I need to calculate something.\"\n+    assert action == \"Calculator Tool\"\n+    assert action_input == {\"code\": \"print('Hello World')\\nprint({'nested': 'dict'})\"}\n+\n+\n+def test_parse_default_action_standard_format():\n+    \"\"\"Test parsing of standard strict format.\"\"\"\n+    output = 'Thought: thinking\\nAction: Tool\\nAction Input: {\"key\": \"value\"}'\n+\n+    thought, action, action_input = parser.parse_default_action(output)\n+\n+    assert thought == \"thinking\"\n+    assert action == \"Tool\"\n+    assert action_input == {\"key\": \"value\"}\n+\n+\n+def test_parse_default_action_multiple_newlines():\n+    \"\"\"Test parsing with multiple newlines between Action and Input.\"\"\"\n+    output = \"\"\"Thought: thinking\n+\n+Action: Tool Name\n+\n+\n+Action Input: {\"key\": \"value\"}\"\"\"\n+\n+    thought, action, action_input = parser.parse_default_action(output)\n+\n+    assert thought == \"thinking\"\n+    assert action == \"Tool Name\"\n+    assert action_input == {\"key\": \"value\"}\n+\n+\n+def test_parse_default_action_with_json_markdown():\n+    \"\"\"Test parsing when JSON is wrapped in markdown blocks.\"\"\"\n+    output = \"\"\"Thought: thinking\n+Action: Tool\n+Action Input: ```json\n+{\"key\": \"value\"}\n+```\"\"\"\n+    thought, action, action_input = parser.parse_default_action(output)\n+\n+    assert thought == \"thinking\"\n+    assert action == \"Tool\"\n+    assert action_input == {\"key\": \"value\"}\n+\n+\n+def test_parse_default_action_nested_json():\n+    \"\"\"Test parsing with deeply nested JSON structures.\"\"\"\n+    output = \"\"\"Thought: Complex data structure\n+Action: API Call\n+Action Input: {\"params\": {\"nested\": {\"deeply\": {\"key\": \"value\"}}, \"list\": [1, 2, 3]}}\"\"\"\n+\n+    thought, action, action_input = parser.parse_default_action(output)\n+\n+    assert thought == \"Complex data structure\"\n+    assert action == \"API Call\"\n+    assert action_input == {\"params\": {\"nested\": {\"deeply\": {\"key\": \"value\"}}, \"list\": [1, 2, 3]}}\n+\n+\n+def test_parse_default_action_json_with_list():\n+    \"\"\"Test parsing with a list.\"\"\"\n+    output = \"\"\"Thought: Complex data structure\n+Action: API Call\n+Action Input: {\"params\": {\"nested\": {\"deeply\": {\"key\": \"value\"}}, \"list\": [1, 2, 3]}}\"\"\"\n+\n+    thought, action, action_input = parser.parse_default_action(output)\n+\n+    assert thought == \"Complex data structure\"\n+    assert action == \"API Call\"\n+    assert action_input == {\"params\": {\"nested\": {\"deeply\": {\"key\": \"value\"}}, \"list\": [1, 2, 3]}}\n+\n+\n+def test_parse_default_action_json_with_escaped_quotes():\n+    \"\"\"Test parsing JSON containing escaped quotes.\"\"\"\n+    output = \"\"\"Thought: thinking\n+Action: Tool\n+Action Input: {\"message\": \"He said \\\\\"hello\\\\\" to me\"}\"\"\"\n+\n+    thought, action, action_input = parser.parse_default_action(output)\n+\n+    assert thought == \"thinking\"\n+    assert action == \"Tool\"\n+    assert action_input == {\"message\": 'He said \"hello\" to me'}\n+\n+\n+def test_parse_default_action_invalid_json():\n+    \"\"\"Test that invalid JSON raises ActionParsingException.\"\"\"\n+    output = \"\"\"Thought: thinking\n+Action: Tool\n+Action Input: {invalid json}\"\"\"\n+\n+    with pytest.raises(ActionParsingException) as excinfo:\n+        parser.parse_default_action(output)\n+\n+    assert excinfo.value.recoverable\n+\n+\n+def test_parse_default_action_missing_action():\n+    \"\"\"Test that missing Action raises ActionParsingException.\"\"\"\n+    output = \"\"\"Thought: thinking\n+Action Input: {\"key\": \"value\"}\"\"\"\n+\n+    with pytest.raises(ActionParsingException) as excinfo:\n+        parser.parse_default_action(output)\n+\n+    assert excinfo.value.recoverable\n+\n+\n+def test_parse_default_thought():\n+    \"\"\"Test extraction of thought from output.\"\"\"\n+    output = \"\"\"Thought: I need to think about this carefully\n+Action: Tool\n+Action Input: {\"key\": \"value\"}\"\"\"\n+\n+    thought = parser.parse_default_thought(output)\n+    assert thought == \"I need to think about this carefully\"\n+\n+\n+def test_parse_default_thought_multiline():\n+    \"\"\"Test extraction of multiline thought.\"\"\"\n+    output = \"\"\"Thought: I need to think about this carefully\n+and consider multiple factors\n+before deciding\n+Action: Tool\n+Action Input: {\"key\": \"value\"}\"\"\"\n+\n+    thought = parser.parse_default_thought(output)\n+    assert \"I need to think about this carefully\" in thought\n+    assert \"and consider multiple factors\" in thought\n+    assert \"before deciding\" in thought\n+\n+\n+def test_extract_default_final_answer():\n+    \"\"\"Test extraction of final answer.\"\"\"\n+    output = \"\"\"Thought: I have all the information I need\n+Answer: The final answer is 42\"\"\"\n+\n+    thought, answer = parser.extract_default_final_answer(output)\n+    assert thought == \"I have all the information I need\"\n+    assert answer == \"The final answer is 42\"\n+\n+\n+def test_extract_default_final_answer_multiline():\n+    \"\"\"Test extraction of multiline final answer.\"\"\"\n+    output = \"\"\"Thought: I have all the information I need\n+Answer: The final answer is:\n+1. First point\n+2. Second point\n+3. Third point\"\"\"\n+\n+    thought, answer = parser.extract_default_final_answer(output)\n+    assert thought == \"I have all the information I need\"\n+    assert \"The final answer is:\" in answer\n+    assert \"1. First point\" in answer\n+    assert \"3. Third point\" in answer"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "204198a02972c84b26283d5ca9979c7f315a665f",
+      "message": "fix: fragile regex in ReAct agent action parsing",
+      "parent_shas": [
+        "d23ff627c5326be566d16790677311ffed5ebd29"
+      ]
+    },
+    {
+      "sha": "7ef75faa67f5d65da7a6e4a120e8ede8ed059b52",
+      "message": "chore: merge changes from main branch",
+      "parent_shas": [
+        "204198a02972c84b26283d5ca9979c7f315a665f",
+        "c10a2bb7c09e3a7a7560612127e3658baa120d4b"
+      ]
+    },
+    {
+      "sha": "2c8e4ef18ebf2eed4fe33d2ff89a7d8e1c6ace25",
+      "message": "fix: update action parsing for Agent parser",
+      "parent_shas": [
+        "7ef75faa67f5d65da7a6e4a120e8ede8ed059b52"
+      ]
+    },
+    {
+      "sha": "457b55cc05ea86784147611eed554d5ab8e63f92",
+      "message": "fix: fix comments from Bugbot",
+      "parent_shas": [
+        "2c8e4ef18ebf2eed4fe33d2ff89a7d8e1c6ace25"
+      ]
+    },
+    {
+      "sha": "33092c7862a626a1193ab85c15609d577256898c",
+      "message": "Merge branch 'main' into main",
+      "parent_shas": [
+        "457b55cc05ea86784147611eed554d5ab8e63f92",
+        "0f9bc4ba967341501eeaf6e523ba9867e12e01b3"
+      ]
+    },
+    {
+      "sha": "aa0ed66d2eae8557dad025f1bcf1554a72445061",
+      "message": "fix: update tests after merging",
+      "parent_shas": [
+        "33092c7862a626a1193ab85c15609d577256898c"
+      ]
+    },
+    {
+      "sha": "4eacb1c962552280e520ba9357ca764c404f504c",
+      "message": "chore: merge changes from main branch",
+      "parent_shas": [
+        "aa0ed66d2eae8557dad025f1bcf1554a72445061",
+        "7b37041ba0af3d2a3c6d4a9f6ff02e919b30dcd8"
+      ]
+    },
+    {
+      "sha": "0e39fa6569fabd3bf74f15be1b3f54d85c13e0a1",
+      "message": "chore: merge changes from main branch",
+      "parent_shas": [
+        "4eacb1c962552280e520ba9357ca764c404f504c",
+        "ac6a9e3276e0372c2269246c002868ada850755e"
+      ]
+    },
+    {
+      "sha": "f5cb9f71fcf319c38dfe19afdc1c91ec1aa5eb6c",
+      "message": "chore: merge changes from main branch",
+      "parent_shas": [
+        "0e39fa6569fabd3bf74f15be1b3f54d85c13e0a1",
+        "db4ec9fcbb5b444f3c83946da1e9abc9235bb4dd"
+      ]
+    },
+    {
+      "sha": "52103180b2843c3479249c2dbedcbda2b6db5fe4",
+      "message": "chore: merge changes from main branch",
+      "parent_shas": [
+        "f5cb9f71fcf319c38dfe19afdc1c91ec1aa5eb6c",
+        "80b234d04681660cdc382d5a6a2521837f9888c9"
+      ]
+    },
+    {
+      "sha": "2fa3bf1b1ac71d14be381faa2f6d2b64f055de4a",
+      "message": "Merge branch 'main' into main",
+      "parent_shas": [
+        "52103180b2843c3479249c2dbedcbda2b6db5fe4",
+        "0f7611841d5ccece7981ab33242b8079e4d11266"
+      ]
+    },
+    {
+      "sha": "8b95f646e2a819d5f4c94cf07170398594dc4e20",
+      "message": "Merge branch 'main' into main",
+      "parent_shas": [
+        "2fa3bf1b1ac71d14be381faa2f6d2b64f055de4a",
+        "0d0abda5e03459f7c4b04b74befeab85f29c5a79"
+      ]
+    },
+    {
+      "sha": "222fa6fee260012465366ce82be2067388fab5f6",
+      "message": "Merge branch 'main' into main",
+      "parent_shas": [
+        "8b95f646e2a819d5f4c94cf07170398594dc4e20",
+        "46ddae5d4f12718908b585dd73f337c91939df1d"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "adds_new_tests",
+      "strict_migration_signal",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": true,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__dynamiq-ai__dynamiq__pr506.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\dynamiq-ai__dynamiq__pr506__py2_py3__dynamiq-ai__dynamiq__pr506\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\dynamiq-ai__dynamiq__pr506__py2_py3__dynamiq-ai__dynamiq__pr506\\rn"
+  }
+}

@@ -1,0 +1,233 @@
+{
+  "instance_id": "python_java__oliver-zehentleitner__unicorn-fy__pr57",
+  "scenario": "language_migration",
+  "subtype": "python_java",
+  "repo_full_name": "oliver-zehentleitner/unicorn-fy",
+  "pr_number": 57,
+  "pr_url": "https://github.com/oliver-zehentleitner/unicorn-fy/pull/57",
+  "repo": {
+    "full_name": "oliver-zehentleitner/unicorn-fy",
+    "clone_url": "https://github.com/oliver-zehentleitner/unicorn-fy.git",
+    "default_branch": "master",
+    "created_at": "2019-04-03T23:43:51Z",
+    "stars": 56,
+    "license": "MIT",
+    "size_kb": 10044
+  },
+  "pull_request": {
+    "id": 3498833978,
+    "title": "Add Python 3.14 support, drop Python 3.8",
+    "body": "## Summary\n\n- Drop Python 3.8 (EOL Oct 2024); minimum is now 3.9\n- Add Python 3.14 CI job (`unit-tests.yml`) and wheel build target (`build_wheels.yml`)\n- Remove Python 3.8 CI job and `cp38-*` wheel build target\n- Update `setup.py`, `pyproject.toml`, `environment.yml`, `meta.yaml`\n- Fix `meta.yaml`: `ujson` → `orjson` (missed in previous PR)\n- Update `README.md`, `CHANGELOG.md`\n\n## Test plan\n\n- [ ] CI unit tests pass on all Python versions (3.9 – 3.14)\n- [ ] `build_wheels.yml` builds `cp39-*` through `cp314-*` wheels correctly",
+    "created_at": "2026-04-07T15:51:53Z",
+    "merged_at": "2026-04-07T16:00:01Z",
+    "base_sha": "ee0c516e8f842a54912e4b6468e88e230159ee67",
+    "head_sha": "283446dcfd9b368788591b261284c9280c17e08c",
+    "merge_commit_sha": "a0c94874a414a184790c99bd5763e015f8d694fb",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_n"
+  ],
+  "base_sha": "ee0c516e8f842a54912e4b6468e88e230159ee67",
+  "final_sha": "283446dcfd9b368788591b261284c9280c17e08c",
+  "changed_files": [
+    {
+      "sha": "0b8feec3bab35215a1b03a2b432876a96ea78740",
+      "filename": ".github/workflows/build_wheels.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-fy/blob/283446dcfd9b368788591b261284c9280c17e08c/.github%2Fworkflows%2Fbuild_wheels.yml",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-fy/raw/283446dcfd9b368788591b261284c9280c17e08c/.github%2Fworkflows%2Fbuild_wheels.yml",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-fy/contents/.github%2Fworkflows%2Fbuild_wheels.yml?ref=283446dcfd9b368788591b261284c9280c17e08c",
+      "patch": "@@ -10,7 +10,7 @@ jobs:\n     name: Build wheels on ${{ matrix.os }}\n     runs-on: ${{ matrix.os }}\n     env:\n-      CIBW_BUILD: \"cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*\"\n+      CIBW_BUILD: \"cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*\"\n       CIBW_ARCHS_LINUX: \"x86_64\"\n       CIBW_ARCHS_MACOS: \"x86_64 arm64 universal2\"\n       CIBW_ARCHS_WINDOWS: \"AMD64\""
+    },
+    {
+      "sha": "011ec079f652be17b63637069f16d7c961dd1523",
+      "filename": ".github/workflows/unit-tests.yml",
+      "status": "modified",
+      "additions": 20,
+      "deletions": 20,
+      "changes": 40,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-fy/blob/283446dcfd9b368788591b261284c9280c17e08c/.github%2Fworkflows%2Funit-tests.yml",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-fy/raw/283446dcfd9b368788591b261284c9280c17e08c/.github%2Fworkflows%2Funit-tests.yml",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-fy/contents/.github%2Fworkflows%2Funit-tests.yml?ref=283446dcfd9b368788591b261284c9280c17e08c",
+      "patch": "@@ -7,7 +7,7 @@ on:\n     branches: [ master ]\n \n jobs:\n-  test_python_3_8:\n+  test_python_3_9:\n     runs-on: ubuntu-latest\n     steps:\n     - name: GitHub Checkout\n@@ -16,7 +16,7 @@ jobs:\n     - name: Set up Python\n       uses: actions/setup-python@v4\n       with:\n-        python-version: 3.8\n+        python-version: 3.9\n \n     - name: Install dependencies\n       run: |\n@@ -28,7 +28,7 @@ jobs:\n     - name: Run Unittest\n       run: coverage run --source unicorn_fy unittest_unicorn_fy.py\n \n-  test_python_3_9:\n+  test_python_3_10:\n     runs-on: ubuntu-latest\n     steps:\n     - name: GitHub Checkout\n@@ -37,7 +37,7 @@ jobs:\n     - name: Set up Python\n       uses: actions/setup-python@v4\n       with:\n-        python-version: 3.9\n+        python-version: \"3.10\"\n \n     - name: Install dependencies\n       run: |\n@@ -49,7 +49,7 @@ jobs:\n     - name: Run Unittest\n       run: coverage run --source unicorn_fy unittest_unicorn_fy.py\n \n-  test_python_3_10:\n+  test_python_3_11:\n     runs-on: ubuntu-latest\n     steps:\n     - name: GitHub Checkout\n@@ -58,7 +58,7 @@ jobs:\n     - name: Set up Python\n       uses: actions/setup-python@v4\n       with:\n-        python-version: \"3.10\"\n+        python-version: \"3.11\"\n \n     - name: Install dependencies\n       run: |\n@@ -70,7 +70,7 @@ jobs:\n     - name: Run Unittest\n       run: coverage run --source unicorn_fy unittest_unicorn_fy.py\n \n-  test_python_3_11:\n+  test_python_3_12:\n     runs-on: ubuntu-latest\n     steps:\n     - name: GitHub Checkout\n@@ -79,7 +79,7 @@ jobs:\n     - name: Set up Python\n       uses: actions/setup-python@v4\n       with:\n-        python-version: \"3.11\"\n+        python-version: \"3.12\"\n \n     - name: Install dependencies\n       run: |\n@@ -91,7 +91,7 @@ jobs:\n     - name: Run Unittest\n       run: coverage run --source unicorn_fy unittest_unicorn_fy.py\n \n-  test_python_3_12:\n+  test_python_3_13:\n     runs-on: ubuntu-latest\n     steps:\n     - name: GitHub Checkout\n@@ -100,7 +100,7 @@ jobs:\n     - name: Set up Python\n       uses: actions/setup-python@v4\n       with:\n-        python-version: \"3.12\"\n+        python-version: \"3.13\"\n \n     - name: Install dependencies\n       run: |\n@@ -112,7 +112,15 @@ jobs:\n     - name: Run Unittest\n       run: coverage run --source unicorn_fy unittest_unicorn_fy.py\n \n-  test_python_3_13:\n+    - name: Upload coverage to Codecov\n+      uses: codecov/codecov-action@v3\n+      with:\n+        token: ${{ secrets.CODECOV_TOKEN }}\n+        flags: unittests\n+        name: codecov-umbrella\n+        verbose: true\n+\n+  test_python_3_14:\n     runs-on: ubuntu-latest\n     steps:\n     - name: GitHub Checkout\n@@ -121,7 +129,7 @@ jobs:\n     - name: Set up Python\n       uses: actions/setup-python@v4\n       with:\n-        python-version: \"3.13\"\n+        python-version: \"3.14\"\n \n     - name: Install dependencies\n       run: |\n@@ -132,11 +140,3 @@ jobs:\n \n     - name: Run Unittest\n       run: coverage run --source unicorn_fy unittest_unicorn_fy.py\n-\n-    - name: Upload coverage to Codecov\n-      uses: codecov/codecov-action@v3\n-      with:\n-        token: ${{ secrets.CODECOV_TOKEN }}\n-        flags: unittests\n-        name: codecov-umbrella\n-        verbose: true"
+    },
+    {
+      "sha": "22cf7d6082fb6b57bff213e56844d90afd8dcfcb",
+      "filename": "AGENTS.md",
+      "status": "added",
+      "additions": 140,
+      "deletions": 0,
+      "changes": 140,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-fy/blob/283446dcfd9b368788591b261284c9280c17e08c/AGENTS.md",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-fy/raw/283446dcfd9b368788591b261284c9280c17e08c/AGENTS.md",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-fy/contents/AGENTS.md?ref=283446dcfd9b368788591b261284c9280c17e08c",
+      "patch": "@@ -0,0 +1,140 @@\n+# AGENTS.md — UnicornFy\n+\n+## Planning & Backlog\n+\n+Open development tasks and decisions are tracked in **[TASKS.md](TASKS.md)**.\n+\n+---\n+\n+## Project Overview\n+\n+Python SDK (MIT License) to convert raw WebSocket stream data from Binance exchange endpoints into well-formed Python dictionaries (\"unicorn-fied\" data).\n+\n+**Current Version:** 0.16.1.dev  \n+**Python Compatibility:** 3.8 – 3.13  \n+**Author:** Oliver Zehentleitner  \n+**PyPI:** `unicorn-fy`  \n+**Part of:** [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unicorn-binance-suite)\n+\n+---\n+\n+## Directory Structure\n+\n+```\n+unicorn_fy/\n+    unicorn_fy.py          # Main class UnicornFy (~1 file, all conversion logic)\n+    __init__.py            # Exports UnicornFy\n+\n+unittest_unicorn_fy.py     # Unit tests (run in CI)\n+dev/                       # Local dev/integration tests — NOT run in CI\n+examples/                  # Usage examples\n+docs/                      # Pre-built HTML documentation (Sphinx)\n+dev/sphinx/                # Sphinx source for rebuilding docs\n+```\n+\n+---\n+\n+## Supported Exchanges\n+\n+| Exchange Method | Exchange |\n+|---|---|\n+| `binance_com_websocket()` | Binance.com + Testnet |\n+| `binance_com_margin_websocket()` | Binance.com Margin |\n+| `binance_com_isolated_margin_websocket()` | Binance.com Isolated Margin |\n+| `binance_com_futures_websocket()` | Binance.com Futures |\n+| `binance_com_coin_futures_websocket()` | Binance.com Coin-M Futures |\n+| `binance_us_websocket()` | Binance.US |\n+| `trbinance_com_websocket()` | trBinance.com |\n+| `binance_org_websocket()` | Binance.org (DEX, pass-through only) |\n+\n+---\n+\n+## Dependencies\n+\n+Managed in `requirements.txt`, `setup.py`, and `pyproject.toml` — **all three must be kept in sync manually**:\n+\n+- `ujson` — fast JSON parsing (primary JSON lib in source)\n+- `requests` — HTTP for version checks\n+- `Cython` — C extension compilation (release builds only)\n+\n+---\n+\n+## Running Tests\n+\n+```bash\n+# Unit tests with coverage (this is what CI runs)\n+coverage run --source unicorn_fy unittest_unicorn_fy.py\n+\n+# Unit tests without coverage\n+python unittest_unicorn_fy.py\n+```\n+\n+Tests in `dev/` are local integration tests — they are **not run in CI**.\n+\n+**Coverage config:** `.coveragerc`\n+\n+---\n+\n+## Build & Packaging\n+\n+Development and testing use **plain Python** — no Cython compilation needed during development.\n+\n+Cython compilation only happens for **release builds**:\n+\n+```bash\n+python setup.py bdist_wheel\n+```\n+\n+**Version bump** — done **manually** before each release. Update the version string in all three locations:\n+1. `setup.py`\n+2. `pyproject.toml`\n+3. `unicorn_fy/unicorn_fy.py` (`__version__`)\n+\n+**CI/CD:** GitHub Actions in `.github/workflows/`\n+- `unit-tests.yml` — Python 3.8–3.13 on Ubuntu, Codecov upload\n+- `build_wheels.yml` — Manual trigger, builds wheels for Linux/macOS/Windows, PyPI release\n+- `codeql-analysis.yml` — Security scanning\n+- `build_conda.yml` — Conda package build\n+\n+---\n+\n+## Code Conventions\n+\n+- **File header:** Always include the full MIT license block with author/copyright (2019-2025)\n+- **Encoding:** UTF-8, UNIX line endings\n+- **Logging:** `logging.getLogger(\"unicorn_fy\")`\n+- **JSON:** `ujson` is used as `import ujson as json` — do not switch to stdlib `json`\n+- **Cython:** Core module compiles to C extension for releases — no `#cython:` directives needed in source\n+- **Versioning:** Keep version in sync across `setup.py`, `pyproject.toml`, and `unicorn_fy/unicorn_fy.py` manually\n+\n+---\n+\n+## Key Class\n+\n+| Class | File | Purpose |\n+|---|---|---|\n+| `UnicornFy` | `unicorn_fy/unicorn_fy.py` | All conversion logic; static methods per exchange |\n+\n+---\n+\n+## Usage Pattern (Quick Reference)\n+\n+```python\n+import unicorn_fy\n+\n+ufy = unicorn_fy.UnicornFy()\n+\n+# Convert raw Binance.com stream data\n+result = ufy.binance_com_websocket(raw_json_string)\n+\n+# Result contains normalized keys + 'unicorn_fied' metadata field\n+# {'stream_type': '...', 'event_type': '...', ..., 'unicorn_fied': ['binance', '0.16.1']}\n+```\n+\n+---\n+\n+## Integration with UNICORN Binance WebSocket API\n+\n+UnicornFy is used automatically by `unicorn-binance-websocket-api` when:\n+- `output_default=\"UnicornFy\"` is set on `BinanceWebSocketApiManager()`\n+- `output=\"UnicornFy\"` is set on individual `create_stream()` calls"
+    },
+    {
+      "sha": "f49617a85ec98a4a6251a410e8d870ec6fa1b56f",
+      "filename": "CHANGELOG.md",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-fy/blob/283446dcfd9b368788591b261284c9280c17e08c/CHANGELOG.md",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-fy/raw/283446dcfd9b368788591b261284c9280c17e08c/CHANGELOG.md",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-fy/contents/CHANGELOG.md?ref=283446dcfd9b368788591b261284c9280c17e08c",
+      "patch": "@@ -12,10 +12,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p\n ## 0.16.1.dev (development stage/unreleased/unstable)\n \n ## 0.16.2\n+### Added\n+- Python 3.14 support\n ### Changed\n - Switched JSON library from `ujson` to `orjson` (suite-wide standard)\n ### Fixed\n - `binance_websocket()`: `unicorn_fied` contained a method reference instead of the version string when `result` was not `None` (missing parentheses on `UnicornFy.get_version`)\n+### Removed\n+- Python 3.8 support (EOL Oct 2024); minimum is now 3.9\n+- Live integration tests (`TestLiveBinanceCom`, `TestLiveBinanceComFutures`) and UBWA/UBRA dependency from CI\n \n ## 0.16.1\n ### Added"
+    },
+    {
+      "sha": "96da8e8e588fd7a0d4d3fbd27998847a68757e4d",
+      "filename": "README.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-fy/blob/283446dcfd9b368788591b261284c9280c17e08c/README.md",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-fy/raw/283446dcfd9b368788591b261284c9280c17e08c/README.md",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-fy/contents/README.md?ref=283446dcfd9b368788591b261284c9280c17e08c",
+      "patch": "@@ -104,7 +104,7 @@ If you like the project, please\n [GitHub](https://github.com/oliver-zehentleitner/unicorn-fy)! \n \n ## Installation and Upgrade\n-The module requires Python 3.8 and runs smoothly up to and including Python 3.13.\n+The module requires Python 3.9 and runs smoothly up to and including Python 3.14.\n \n [There is no conda support until the migration to conda-forge.](https://github.com/oliver-zehentleitner/unicorn-binance-suite/issues/17)\n "
+    },
+    {
+      "sha": "3deeffa232adfd51c28678885b273b610d1d928a",
+      "filename": "TASKS.md",
+      "status": "added",
+      "additions": 21,
+      "deletions": 0,
+      "changes": 21,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-fy/blob/283446dcfd9b368788591b261284c9280c17e08c/TASKS.md",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-fy/raw/283446dcfd9b368788591b261284c9280c17e08c/TASKS.md",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-fy/contents/TASKS.md?ref=283446dcfd9b368788591b261284c9280c17e08c",
+      "patch": "@@ -0,0 +1,21 @@\n+# TASKS.md — UnicornFy\n+\n+Open development tasks, ideas, and decisions.\n+\n+---\n+\n+## In Progress\n+\n+*(none)*\n+\n+---\n+\n+## Backlog\n+\n+*(add tasks here)*\n+\n+---\n+\n+## Done\n+\n+- Set up AGENTS.md, CLAUDE.md, TASKS.md"
+    },
+    {
+      "sha": "ada6ca42be76036c56f8d97584ebbe84bbd3563e",
+      "filename": "environment.yml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-fy/blob/283446dcfd9b368788591b261284c9280c17e08c/environment.yml",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-fy/raw/283446dcfd9b368788591b261284c9280c17e08c/environment.yml",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-fy/contents/environment.yml?ref=283446dcfd9b368788591b261284c9280c17e08c",
+      "patch": "@@ -1,6 +1,6 @@\n name: unicorn-fy\n dependencies:\n-- python>=3.8,<3.13\n+- python>=3.9,<3.15\n - pip:\n   - Cython\n   - requests"
+    },
+    {
+      "sha": "e1d44ae383123e5d17e9e0251cb5e5d34fca271c",
+      "filename": "meta.yaml",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-fy/blob/283446dcfd9b368788591b261284c9280c17e08c/meta.yaml",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-fy/raw/283446dcfd9b368788591b261284c9280c17e08c/meta.yaml",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-fy/contents/meta.yaml?ref=283446dcfd9b368788591b261284c9280c17e08c",
+      "patch": "@@ -17,15 +17,15 @@ build:\n requirements:\n   build:\n     - {{ compiler('c') }}\n-    - python >=3.8,<3.13\n+    - python >=3.9,<3.15\n     - pip\n     - mypy\n   run:\n     - pip\n-    - python >=3.8,<3.13\n+    - python >=3.9,<3.15\n     - cython\n     - requests\n-    - ujson\n+    - orjson\n \n #channels:\n #  - lucit"
+    },
+    {
+      "sha": "8f24957156d58be7c50f5114dcadf7b60ac9c51f",
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-fy/blob/283446dcfd9b368788591b261284c9280c17e08c/pyproject.toml",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-fy/raw/283446dcfd9b368788591b261284c9280c17e08c/pyproject.toml",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-fy/contents/pyproject.toml?ref=283446dcfd9b368788591b261284c9280c17e08c",
+      "patch": "@@ -20,7 +20,7 @@ repository = \"https://github.com/oliver-zehentleitner/unicorn-fy\"\n 'Telegram' = 'https://t.me/unicorndevs'\n \n [tool.poetry.dependencies]\n-python = \">=3.8.0\"\n+python = \">=3.9.0\"\n Cython = \"*\"\n requests = \"*\"\n orjson = \"*\""
+    },
+    {
+      "sha": "93acc27198215c415f4330789c32ca29bc8f3968",
+      "filename": "setup.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-fy/blob/283446dcfd9b368788591b261284c9280c17e08c/setup.py",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-fy/raw/283446dcfd9b368788591b261284c9280c17e08c/setup.py",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-fy/contents/setup.py?ref=283446dcfd9b368788591b261284c9280c17e08c",
+      "patch": "@@ -95,17 +95,17 @@\n      },\n      packages=find_packages(exclude=[f\"dev/{source_dir}\"], include=[source_dir]),\n      ext_modules=cythonize(extensions, compiler_directives={'language_level': \"3\"}),\n-     python_requires='>=3.8.0',\n+     python_requires='>=3.9.0',\n      package_data={'': ['*.so', '*.dll', '*.py', '*.pyd', '*.pyi']},\n      include_package_data=True,\n      classifiers=[\n          \"Development Status :: 5 - Production/Stable\",\n-         \"Programming Language :: Python :: 3.8\",\n          \"Programming Language :: Python :: 3.9\",\n          \"Programming Language :: Python :: 3.10\",\n          \"Programming Language :: Python :: 3.11\",\n          \"Programming Language :: Python :: 3.12\",\n          \"Programming Language :: Python :: 3.13\",\n+         \"Programming Language :: Python :: 3.14\",\n          'Intended Audience :: Developers',\n          \"Intended Audience :: Financial and Insurance Industry\",\n          \"Intended Audience :: Information Technology\","
+    },
+    {
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "filename": "test-requirements.txt",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "changes": 2,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-fy/blob/283446dcfd9b368788591b261284c9280c17e08c/test-requirements.txt",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-fy/raw/283446dcfd9b368788591b261284c9280c17e08c/test-requirements.txt",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-fy/contents/test-requirements.txt?ref=283446dcfd9b368788591b261284c9280c17e08c",
+      "patch": "@@ -1,2 +0,0 @@\n-unicorn-binance-rest-api\n-unicorn-binance-websocket-api>=2.10.1"
+    },
+    {
+      "sha": "214c61fbf72017c2ed66ca5c8686003fafef2f63",
+      "filename": "unittest_unicorn_fy.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 104,
+      "changes": 104,
+      "blob_url": "https://github.com/oliver-zehentleitner/unicorn-fy/blob/283446dcfd9b368788591b261284c9280c17e08c/unittest_unicorn_fy.py",
+      "raw_url": "https://github.com/oliver-zehentleitner/unicorn-fy/raw/283446dcfd9b368788591b261284c9280c17e08c/unittest_unicorn_fy.py",
+      "contents_url": "https://api.github.com/repos/oliver-zehentleitner/unicorn-fy/contents/unittest_unicorn_fy.py?ref=283446dcfd9b368788591b261284c9280c17e08c",
+      "patch": "@@ -36,14 +36,10 @@\n # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS\n # IN THE SOFTWARE.\n \n-import unicorn_binance_websocket_api\n-import unicorn_binance_rest_api\n from unicorn_fy.unicorn_fy import UnicornFy\n import logging\n import unittest\n import os\n-import time\n-import threading\n \n \n # Todo: Add stream_everything with rest\n@@ -57,30 +53,6 @@\n print(\"Starting unittests\")\n \n \n-def print_stream_data_from_stream_buffer(binance_websocket_api_manager):\n-    while True:\n-        if binance_websocket_api_manager.is_manager_stopping():\n-            exit(0)\n-        oldest_stream_data_from_stream_buffer = binance_websocket_api_manager.pop_stream_data_from_stream_buffer()\n-        if oldest_stream_data_from_stream_buffer is not False:\n-            unicorn_fied_data = UnicornFy.binance_com_websocket(oldest_stream_data_from_stream_buffer)\n-            #print(str(unicorn_fied_data))\n-        else:\n-            time.sleep(0.01)\n-\n-\n-def print_stream_data_from_stream_buffer_futures(binance_websocket_api_manager):\n-    while True:\n-        if binance_websocket_api_manager.is_manager_stopping():\n-            exit(0)\n-        oldest_stream_data_from_stream_buffer = binance_websocket_api_manager.pop_stream_data_from_stream_buffer()\n-        if oldest_stream_data_from_stream_buffer is not False:\n-            unicorn_fied_data = UnicornFy.binance_com_futures_websocket(oldest_stream_data_from_stream_buffer)\n-            #print(str(unicorn_fied_data))\n-        else:\n-            time.sleep(0.01)\n-\n-\n class TestBinanceGeneric(unittest.TestCase):\n     def setUp(self):\n         self.unicorn_fy = UnicornFy()\n@@ -494,82 +466,6 @@ def tearDown(self):\n         del self.unicorn_fy\n \n \n-UBWA = unicorn_binance_websocket_api.BinanceWebSocketApiManager(exchange=\"binance.us\")\n-\n-\n-class TestLiveBinanceCom(unittest.TestCase):\n-    def setUp(self):\n-        print(\"\\n\\rStarting live test binance.com (us)\")\n-        self.unicorn_fy = UnicornFy()\n-        ubwa = UBWA\n-        worker_thread = threading.Thread(target=print_stream_data_from_stream_buffer,\n-                                         args=(ubwa,))\n-        worker_thread.start()\n-\n-        channels = {'aggTrade', 'trade', 'kline_1m', 'kline_5m', 'kline_15m', 'kline_30m', 'kline_1h', 'kline_2h',\n-                    'kline_4h',\n-                    'kline_6h', 'kline_8h', 'kline_12h', 'kline_1d', 'kline_3d', 'kline_1w', 'kline_1M', 'miniTicker',\n-                    'ticker', 'bookTicker', 'depth5', 'depth10', 'depth20', 'depth', 'depth@100ms'}\n-        arr_channels = {'!miniTicker', '!ticker', '!bookTicker'}\n-        markets = {'bnbbtc', 'ethbtc', 'btcusdt', 'bchabcusdt', 'xrpusdt', 'rvnbtc', 'ltcusdt', 'adausdt', 'eosusdt',\n-                   'wanbnb', 'zrxbnb', 'agibnb', 'funeth', 'arketh', 'engeth'}\n-        for channel in channels:\n-            ubwa.create_stream(channel, markets, stream_label=channel)\n-        ubwa.create_stream(arr_channels, \"arr\")\n-        stream_id_trade = ubwa.get_stream_id_by_label(\"trade\")\n-        ubwa.get_stream_subscriptions(stream_id_trade)\n-        time.sleep(10)\n-        ubwa.stop_manager_with_all_streams()\n-\n-    def test_template(self):\n-        data = ''\n-        asserted_result = \"\"\n-        self.assertEqual(str(self.unicorn_fy.binance_org_websocket(data)), asserted_result)\n-\n-    def tearDown(self):\n-        del self.unicorn_fy\n-\n-\n-UBWA2 = unicorn_binance_websocket_api.BinanceWebSocketApiManager(exchange=\"binance.us\")\n-\n-\n-class TestLiveBinanceComFutures(unittest.TestCase):\n-    def setUp(self):\n-        print(\"\\n\\rStarting live test binance.com-futures (us)\")\n-        self.unicorn_fy = UnicornFy()\n-        ubwa = UBWA2\n-        worker_thread = threading.Thread(target=print_stream_data_from_stream_buffer_futures,\n-                                         args=(ubwa,))\n-        worker_thread.start()\n-\n-        channels = {'aggTrade', 'trade', 'kline_1m', 'kline_5m', 'kline_15m', 'kline_30m', 'kline_1h', 'kline_2h',\n-                    'kline_4h',\n-                    'kline_6h', 'kline_8h', 'kline_12h', 'kline_1d', 'kline_3d', 'kline_1w', 'kline_1M', 'miniTicker',\n-                    'ticker', 'bookTicker', 'depth5', 'depth10', 'depth20', 'depth', 'depth@100ms'}\n-        arr_channels = {'!miniTicker', '!ticker', '!bookTicker'}\n-        markets = {'bnbbtc', 'ethbtc', 'btcusdt', 'bchabcusdt', 'xrpusdt', 'rvnbtc', 'ltcusdt', 'adausdt', 'eosusdt',\n-                   'wanbnb', 'zrxbnb', 'agibnb', 'funeth', 'arketh', 'engeth'}\n-        for channel in channels:\n-            ubwa.create_stream(channel, markets, stream_label=channel)\n-        ubwa.create_stream(arr_channels, \"arr\")\n-        stream_id_trade = ubwa.get_stream_id_by_label(\"trade\")\n-        ubwa.get_stream_subscriptions(stream_id_trade)\n-        time.sleep(10)\n-        ubwa.stop_manager_with_all_streams()\n-\n-    def test_template(self):\n-        data = ''\n-        asserted_result = \"\"\n-        self.assertEqual(str(self.unicorn_fy.binance_org_websocket(data)), asserted_result)\n-\n-    def test_with_context(self):\n-        with UnicornFy() as ufy:\n-            self.assertIsInstance(ufy.get_version(), str)\n-\n-    def tearDown(self):\n-        del self.unicorn_fy\n-\n-\n if __name__ == '__main__':\n     unittest.main()\n "
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "7e2916f182b8aeefcc92215a147b5cbacf87b03b",
+      "message": "Add Python 3.14 support, drop Python 3.8\n\n- Drop Python 3.8 (EOL Oct 2024); minimum is now 3.9\n- Add Python 3.14 CI job (unit-tests.yml) and wheel build target (build_wheels.yml)\n- Remove Python 3.8 CI job and cp38 wheel build target\n- Update setup.py, pyproject.toml, environment.yml, meta.yaml\n- Fix meta.yaml: ujson -> orjson (missed in previous PR)\n- Update README.md, CHANGELOG.md",
+      "parent_shas": [
+        "ee0c516e8f842a54912e4b6468e88e230159ee67"
+      ]
+    },
+    {
+      "sha": "4589c6dfda6e665c5b0aaeaddfa7b42540aff64b",
+      "message": "Add AGENTS.md and TASKS.md",
+      "parent_shas": [
+        "7e2916f182b8aeefcc92215a147b5cbacf87b03b"
+      ]
+    },
+    {
+      "sha": "854e4c7d18e7d50487117333bb7545d31b1310fc",
+      "message": "Remove live tests and UBWA/UBRA dependency from CI\n\nTestLiveBinanceCom and TestLiveBinanceComFutures connected to Binance\nand had no place in CI. UBWA is not yet available for Python 3.14,\ncausing the 3.14 CI job to fail. Removed live test classes, helper\nfunctions, UBWA/UBRA imports, and cleared test-requirements.txt.",
+      "parent_shas": [
+        "4589c6dfda6e665c5b0aaeaddfa7b42540aff64b"
+      ]
+    },
+    {
+      "sha": "283446dcfd9b368788591b261284c9280c17e08c",
+      "message": "Update CHANGELOG for live test removal",
+      "parent_shas": [
+        "854e4c7d18e7d50487117333bb7545d31b1310fc"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "python_java_bridge_noise"
+    ],
+    "auto_signals": [
+      "python_java_bridge_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_java\\python_java__oliver-zehentleitner__unicorn-fy__pr57.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_java\\oliver-zehentleitner__unicorn-fy__pr57__python_java__oliver-zehentleitner__unicorn-fy__pr57\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_java\\oliver-zehentleitner__unicorn-fy__pr57__python_java__oliver-zehentleitner__unicorn-fy__pr57\\rn"
+  }
+}

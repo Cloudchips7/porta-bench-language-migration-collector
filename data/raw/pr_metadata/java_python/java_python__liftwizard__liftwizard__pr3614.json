@@ -1,0 +1,82 @@
+{
+  "instance_id": "java_python__liftwizard__liftwizard__pr3614",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "liftwizard/liftwizard",
+  "pr_number": 3614,
+  "pr_url": "https://github.com/liftwizard/liftwizard/pull/3614",
+  "repo": {
+    "full_name": "liftwizard/liftwizard",
+    "clone_url": "https://github.com/liftwizard/liftwizard.git",
+    "default_branch": "main",
+    "created_at": "2020-01-08T00:21:57Z",
+    "stars": 17,
+    "license": "Apache-2.0",
+    "size_kb": 12432
+  },
+  "pull_request": {
+    "id": 3444514843,
+    "title": "Bump org.openrewrite:rewrite-bom from 8.76.4 to 8.77.0",
+    "body": "Bumps [org.openrewrite:rewrite-bom](https://github.com/openrewrite/rewrite) from 8.76.4 to 8.77.0.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/openrewrite/rewrite/releases\">org.openrewrite:rewrite-bom's releases</a>.</em></p>\n<blockquote>\n<h2>8.77.0</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>CopyValue: process all matching YAML files, not just the first by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7099\">openrewrite/rewrite#7099</a></li>\n<li>Support variable references in multi-component Gradle dependency declarations by <a href=\"https://github.com/MBoegers\"><code>@​MBoegers</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7095\">openrewrite/rewrite#7095</a></li>\n<li>C#: Add declarative <code>RewriteRule</code> combinator by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7106\">openrewrite/rewrite#7106</a></li>\n<li>Add CopyValue recipe for .properties files by <a href=\"https://github.com/Jenson3210\"><code>@​Jenson3210</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7097\">openrewrite/rewrite#7097</a></li>\n<li>Fix JavaTemplate expression replacement inside return statements by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7096\">openrewrite/rewrite#7096</a></li>\n<li>C#: Wire up capture constraint evaluation in pattern matching by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7109\">openrewrite/rewrite#7109</a></li>\n<li>C#: Fix indentation of flattened multi-statement template blocks by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7110\">openrewrite/rewrite#7110</a></li>\n<li>C#: Add <code>IRewriteRule.ToVisitor()</code> with fast-reject pattern matching by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7111\">openrewrite/rewrite#7111</a></li>\n<li>Fix AddSettingsPluginRepository duplicate pluginManagement when not first statement by <a href=\"https://github.com/MBoegers\"><code>@​MBoegers</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7105\">openrewrite/rewrite#7105</a></li>\n<li>Docker: Add new EOL image entries and update existing data by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7108\">openrewrite/rewrite#7108</a></li>\n<li>C#: Add <code>Find()</code> annotator overload and <code>ToFindVisitor()</code> to <code>CSharpPattern</code> by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7115\">openrewrite/rewrite#7115</a></li>\n<li>C#: Support variadic captures in attribute pattern matching and templates by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7114\">openrewrite/rewrite#7114</a></li>\n<li>Python: fix type attribution for identifiers in method invocations by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7119\">openrewrite/rewrite#7119</a></li>\n<li>Gradle: fix GradleJavaTemplateTest by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7118\">openrewrite/rewrite#7118</a></li>\n<li>C#: Simplify <code>IRewriteRule</code> API by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7120\">openrewrite/rewrite#7120</a></li>\n<li>C#: Enforce typed capture constraints at pattern matching time by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7117\">openrewrite/rewrite#7117</a></li>\n<li>C#: Fix typed capture constraints for generic interfaces and primitives by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7122\">openrewrite/rewrite#7122</a></li>\n<li>C#: Support open generic type parameters in typed captures by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7124\">openrewrite/rewrite#7124</a></li>\n<li>Fix JavaTemplate statement replacement regression for non-J.Block parent cursors by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7123\">openrewrite/rewrite#7123</a></li>\n<li>C#: Fix typed capture type resolution and improve type system by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7126\">openrewrite/rewrite#7126</a></li>\n<li>Add Proxy/Proxies data model to MavenSettings by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7092\">openrewrite/rewrite#7092</a></li>\n<li>Add visitArrayAccess to JavaPrinter for marker rendering by <a href=\"https://github.com/steve-aom-elliott\"><code>@​steve-aom-elliott</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7129\">openrewrite/rewrite#7129</a></li>\n<li>Fix unchanged Quark files appearing in changeset results by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7130\">openrewrite/rewrite#7130</a></li>\n<li>C#: Use safe pattern-match in CSharpVisitor for VisitExpression/VisitStatement by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7133\">openrewrite/rewrite#7133</a></li>\n<li>Continue refinements of <code>AddSettingsPluginRepository</code> by <a href=\"https://github.com/shanman190\"><code>@​shanman190</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7132\">openrewrite/rewrite#7132</a></li>\n<li>C#: Replace <code>RewriteRule</code> with <code>CSharpTemplate.Rewrite()</code> by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7134\">openrewrite/rewrite#7134</a></li>\n<li>Toml: Fix comment handling in <code>DeleteKey</code> by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/7121\">openrewrite/rewrite#7121</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.76.2...v8.77.0\">https://github.com/openrewrite/rewrite/compare/v8.76.2...v8.77.0</a></p>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/880296014ae99a1d328db6a7a6e5e64dd37566ef\"><code>8802960</code></a> Fix comment handling in DeleteKey (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7121\">#7121</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/035e067937c811df3b0e3326656efa7c57dd9c52\"><code>035e067</code></a> Extract documentation examples from tests</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/0a86c8b25807f65530646812a28ac41ca4388e36\"><code>0a86c8b</code></a> C#: Remove visitStatement from VisitLambda to match Java</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/a0561439cd9306c307f405b2b6fba5cade87b918\"><code>a056143</code></a> C#: Replace IRewriteRule/RewriteRule with CSharpTemplate.Rewrite() (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7134\">#7134</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/519950dcc3144ae0e68b32eb864b0c5ae3e0a9f3\"><code>519950d</code></a> Continue refinements of <code>AddPluginRepository</code> (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7132\">#7132</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/81927dc6f73a8edfb33a785b13deffa4c4dbd713\"><code>81927dc</code></a> C#: Visit prefix/markers before VisitExpression/VisitStatement, matching Java</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/aecb4b4579012a75c9d6693227e3bc01b1b6211e\"><code>aecb4b4</code></a> C#: Use safe pattern-match in CSharpVisitor for VisitExpression/VisitStatemen...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/48d403bfa6267e415bc6afef5ed13ff5abf78f7b\"><code>48d403b</code></a> Fix unchanged Quark files appearing in changeset results (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7130\">#7130</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/89ee6c9d28219a882b8d3f4e382e6b4c8e8861db\"><code>89ee6c9</code></a> Add visitArrayAccess to JavaPrinter for SearchResult marker rendering (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7129\">#7129</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/18d7e9abea19cf6afff114e02a0243a18e1705b9\"><code>18d7e9a</code></a> Add Proxy/Proxies data model to MavenSettings (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/7092\">#7092</a>)</li>\n<li>Additional commits viewable in <a href=\"https://github.com/openrewrite/rewrite/compare/v8.76.4...v8.77.0\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=org.openrewrite:rewrite-bom&package-manager=maven&previous-version=8.76.4&new-version=8.77.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)\n\n\n</details>",
+    "created_at": "2026-03-25T11:03:53Z",
+    "merged_at": "2026-03-25T15:14:09Z",
+    "base_sha": "015d176f80ce7d5bbc8ad2dc2e1f8b7fb47bf307",
+    "head_sha": "c22d006d7950149adbb1d36b0f5b20d97ed53e9f",
+    "merge_commit_sha": "eeb39f41659e64b04c5e35ea670271c5075e7888",
+    "labels": [
+      "dependencies",
+      "java"
+    ]
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "015d176f80ce7d5bbc8ad2dc2e1f8b7fb47bf307",
+  "final_sha": "c22d006d7950149adbb1d36b0f5b20d97ed53e9f",
+  "changed_files": [
+    {
+      "sha": "f0cdbbd74af7984b84242e91543ca3d3d8cb9ab1",
+      "filename": "liftwizard-utility/liftwizard-rewrite/pom.xml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/liftwizard/liftwizard/blob/c22d006d7950149adbb1d36b0f5b20d97ed53e9f/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "raw_url": "https://github.com/liftwizard/liftwizard/raw/c22d006d7950149adbb1d36b0f5b20d97ed53e9f/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "contents_url": "https://api.github.com/repos/liftwizard/liftwizard/contents/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml?ref=c22d006d7950149adbb1d36b0f5b20d97ed53e9f",
+      "patch": "@@ -46,7 +46,7 @@\n             <dependency>\n                 <groupId>org.openrewrite</groupId>\n                 <artifactId>rewrite-bom</artifactId>\n-                <version>8.76.4</version>\n+                <version>8.77.0</version>\n                 <type>pom</type>\n                 <scope>import</scope>\n             </dependency>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "c22d006d7950149adbb1d36b0f5b20d97ed53e9f",
+      "message": "Bump org.openrewrite:rewrite-bom from 8.76.4 to 8.77.0\n\nBumps [org.openrewrite:rewrite-bom](https://github.com/openrewrite/rewrite) from 8.76.4 to 8.77.0.\n- [Release notes](https://github.com/openrewrite/rewrite/releases)\n- [Commits](https://github.com/openrewrite/rewrite/compare/v8.76.4...v8.77.0)\n\n---\nupdated-dependencies:\n- dependency-name: org.openrewrite:rewrite-bom\n  dependency-version: 8.77.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "015d176f80ce7d5bbc8ad2dc2e1f8b7fb47bf307"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__liftwizard__liftwizard__pr3614.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3614__java_python__liftwizard__liftwizard__pr3614\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3614__java_python__liftwizard__liftwizard__pr3614\\rn"
+  }
+}

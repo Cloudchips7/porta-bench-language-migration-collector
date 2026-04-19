@@ -1,0 +1,76 @@
+{
+  "instance_id": "python_cpp__openedx__openedx-aspects__pr357",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "openedx/openedx-aspects",
+  "pr_number": 357,
+  "pr_url": "https://github.com/openedx/openedx-aspects/pull/357",
+  "repo": {
+    "full_name": "openedx/openedx-aspects",
+    "clone_url": "https://github.com/openedx/openedx-aspects.git",
+    "default_branch": "main",
+    "created_at": "2023-01-05T19:08:37Z",
+    "stars": 7,
+    "license": "Apache-2.0",
+    "size_kb": 6428
+  },
+  "pull_request": {
+    "id": 3520428343,
+    "title": "chore: Upgrade Python requirements",
+    "body": "Python requirements update. Please review the [changelogs](https://openedx.atlassian.net/wiki/spaces/TE/pages/1001521320/Python+Package+Changelogs) for the upgraded packages.",
+    "created_at": "2026-04-13T00:17:09Z",
+    "merged_at": "2026-04-13T13:48:30Z",
+    "base_sha": "b53d8e218b2d5c09fdda40b36cd4f0a6f2d427f3",
+    "head_sha": "b02b348d78a1971dbec8fec3fb697823db6262ba",
+    "merge_commit_sha": "8e9482f00803b24356991bb3aa6cc6386fa3d7f7",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "b53d8e218b2d5c09fdda40b36cd4f0a6f2d427f3",
+  "final_sha": "b02b348d78a1971dbec8fec3fb697823db6262ba",
+  "changed_files": [
+    {
+      "sha": "fdce89ab19685f14ea81968517e8c94f19d58b03",
+      "filename": "uv.lock",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "changes": 6,
+      "blob_url": "https://github.com/openedx/openedx-aspects/blob/b02b348d78a1971dbec8fec3fb697823db6262ba/uv.lock",
+      "raw_url": "https://github.com/openedx/openedx-aspects/raw/b02b348d78a1971dbec8fec3fb697823db6262ba/uv.lock",
+      "contents_url": "https://api.github.com/repos/openedx/openedx-aspects/contents/uv.lock?ref=b02b348d78a1971dbec8fec3fb697823db6262ba",
+      "patch": "@@ -479,15 +479,15 @@ wheels = [\n \n [[package]]\n name = \"uvicorn\"\n-version = \"0.43.0\"\n+version = \"0.44.0\"\n source = { registry = \"https://pypi.org/simple\" }\n dependencies = [\n     { name = \"click\" },\n     { name = \"h11\" },\n ]\n-sdist = { url = \"https://files.pythonhosted.org/packages/62/f2/368268300fb8af33743508d738ef7bb4d56afdb46c6d9c0fa3dd515df171/uvicorn-0.43.0.tar.gz\", hash = \"sha256:ab1652d2fb23abf124f36ccc399828558880def222c3cb3d98d24021520dc6e8\", size = 85686, upload-time = \"2026-04-03T18:37:48.984Z\" }\n+sdist = { url = \"https://files.pythonhosted.org/packages/5e/da/6eee1ff8b6cbeed47eeb5229749168e81eb4b7b999a1a15a7176e51410c9/uvicorn-0.44.0.tar.gz\", hash = \"sha256:6c942071b68f07e178264b9152f1f16dfac5da85880c4ce06366a96d70d4f31e\", size = 86947, upload-time = \"2026-04-06T09:23:22.826Z\" }\n wheels = [\n-    { url = \"https://files.pythonhosted.org/packages/55/df/0cf5b0c451602748fdc7a702d4667f6e209bf96aa6e3160d754234445f2a/uvicorn-0.43.0-py3-none-any.whl\", hash = \"sha256:46fac64f487fd968cd999e5e49efbbe64bd231b5bd8b4a0b482a23ebce499620\", size = 68591, upload-time = \"2026-04-03T18:37:47.64Z\" },\n+    { url = \"https://files.pythonhosted.org/packages/b7/23/a5bbd9600dd607411fa644c06ff4951bec3a4d82c4b852374024359c19c0/uvicorn-0.44.0-py3-none-any.whl\", hash = \"sha256:ce937c99a2cc70279556967274414c087888e8cec9f9c94644dfca11bd3ced89\", size = 69425, upload-time = \"2026-04-06T09:23:21.524Z\" },\n ]\n \n [[package]]"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "b02b348d78a1971dbec8fec3fb697823db6262ba",
+      "message": "chore: Upgrade Python requirements",
+      "parent_shas": [
+        "b53d8e218b2d5c09fdda40b36cd4f0a6f2d427f3"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "no_code_changes"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__openedx__openedx-aspects__pr357.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\openedx__openedx-aspects__pr357__python_cpp__openedx__openedx-aspects__pr357\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\openedx__openedx-aspects__pr357__python_cpp__openedx__openedx-aspects__pr357\\rn"
+  }
+}

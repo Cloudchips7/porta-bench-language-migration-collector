@@ -1,0 +1,174 @@
+{
+  "instance_id": "python_cpp__micropython__micropython__pr19021",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "micropython/micropython",
+  "pr_number": 19021,
+  "pr_url": "https://github.com/micropython/micropython/pull/19021",
+  "repo": {
+    "full_name": "micropython/micropython",
+    "clone_url": "https://github.com/micropython/micropython.git",
+    "default_branch": "master",
+    "created_at": "2013-12-20T11:47:07Z",
+    "stars": 21634,
+    "license": "NOASSERTION",
+    "size_kb": 73941
+  },
+  "pull_request": {
+    "id": 3474687315,
+    "title": "docs: Explain C/C++ dynamic memory considerations, and a bit about Python heap.",
+    "body": "### Summary\r\n\r\nThis was split out from C++ work in #18885 as the review process kept pulling threads of things which were under-explained about managing memory when writing C or C++ code to work with MicroPython.\r\n\r\nGoal of this PR:\r\n\r\n* Give C and C++ programmers some pointers about managing memory in C code that interacts with MicroPython.\r\n* Give C++ programmers some pointers about dynamic allocation & C++ standard library in MicroPython user modules.\r\n* Re-arranged some of the docs around memory management and the `gc` module to reduce duplication but increase cross-reference linking.\r\n\r\n(Pointer puns semi-intended. :grin:)\r\n\r\nSome of the statements about C++ in this PR won't apply to all ports until #18885 is merged.\r\n\r\n### Trade-offs and Alternatives\r\n\r\n* I think the current \"documentation\" for this is reading the code, but that's prone to misunderstanding or not seeing all of the possible ways to solve a particular problem when porting C code to MicroPython.\r\n\r\n### Generative AI\r\n\r\nI did not use generative AI tools when creating this PR.",
+    "created_at": "2026-04-01T00:55:14Z",
+    "merged_at": "2026-04-15T05:31:14Z",
+    "base_sha": "e379cb447926114d0a200f65e4be41f5149ab1e2",
+    "head_sha": "35652ff03c1479d51b66b1bd6b86419c52434761",
+    "merge_commit_sha": "35652ff03c1479d51b66b1bd6b86419c52434761",
+    "labels": [
+      "docs"
+    ]
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "e379cb447926114d0a200f65e4be41f5149ab1e2",
+  "final_sha": "35652ff03c1479d51b66b1bd6b86419c52434761",
+  "changed_files": [
+    {
+      "sha": "ec20e65f4772bcd48ac671efcd68e8fee675d2a4",
+      "filename": "docs/develop/cmodules.rst",
+      "status": "modified",
+      "additions": 72,
+      "deletions": 2,
+      "changes": 74,
+      "blob_url": "https://github.com/micropython/micropython/blob/35652ff03c1479d51b66b1bd6b86419c52434761/docs%2Fdevelop%2Fcmodules.rst",
+      "raw_url": "https://github.com/micropython/micropython/raw/35652ff03c1479d51b66b1bd6b86419c52434761/docs%2Fdevelop%2Fcmodules.rst",
+      "contents_url": "https://api.github.com/repos/micropython/micropython/contents/docs%2Fdevelop%2Fcmodules.rst?ref=35652ff03c1479d51b66b1bd6b86419c52434761",
+      "patch": "@@ -8,8 +8,8 @@ limitations with the Python environment, often due to an inability to access\n certain hardware resources or Python speed limitations.\n \n If your limitations can't be resolved with suggestions in :ref:`speed_python`,\n-writing some or all of your module in C (and/or C++ if implemented for your port)\n-is a viable option.\n+writing some or all of your module in C (and/or\n+:ref:`C++ if implemented for your port<cxx_support>`) is a viable option.\n \n If your module is designed to access or work with commonly available\n hardware or libraries please consider implementing it inside the MicroPython\n@@ -285,3 +285,73 @@ can now be accessed in Python just like any other builtin module, e.g.\n     sleep_ms(1000)\n     print(watch.time())\n     # should display approximately 1000\n+\n+\n+.. _c_heap:\n+\n+C Dynamic Memory Allocation\n+---------------------------\n+\n+MicroPython uses its own \"Python heap\" for `memorymanagement`,\n+which is not the same as the \"C heap\" used by C library functions ``malloc()``,\n+``free()``, etc. Not every MicroPython port comes with a \"C heap\" at all.\n+\n+Tier 1 & 2 ports have varying support for C dynamic memory allocation via a \"C\n+heap\":\n+\n+- unix, windows, esp32 and webassembly ports support C dynamic memory\n+  allocation.\n+- rp2 port will fail to allocate any memory at runtime unless the firmware is\n+  built with ``MICROPY_C_HEAP_SIZE=n`` to reserve ``n`` bytes of memory for a C\n+  heap. This memory will not be available for Python code to use.\n+- alif, mimxrt, nrf, renesas-ra, samd, and stm32 port builds that include\n+  dynamic C allocation will fail at link-time with errors such as ``undefined\n+  reference to `malloc'``. MicroPython has no built-in support for dynamic C\n+  allocation on these ports. Any solution requires manually adding a C heap\n+  implementation to the custom build.\n+- zephyr port currently does not support building with user modules.\n+\n+Python heap as C heap\n+~~~~~~~~~~~~~~~~~~~~~\n+\n+It may be practical for C code to call \"Python heap\" dynamic allocation\n+functions such ``m_malloc()``, ``m_malloc0()`` and ``m_free()`` instead.\n+\n+See `python_memory_from_c` for more information about this approach.\n+\n+.. _cxx_support:\n+\n+C++ Modules\n+-----------\n+\n+Most Tier 1 & 2 MicroPython ports (and some Tier 3) support building C++ user\n+modules, using the C++-specific environment variables described above.\n+\n+Integrating C++ and MicroPython successfully involves some additional\n+considerations:\n+\n+C++ Dynamic Memory Allocation\n+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n+\n+C++ programs (as well as C++ Standard Library features) typically use dynamic\n+memory allocation. The C++ default memory allocator (i.e. operators ``new`` and\n+``delete``) is typically implemented as a layer on top of `c_heap`.\n+\n+For MicroPython ports which don't include C dynamic memory allocation support,\n+C++ dynamic memory allocation can be supported in one of two ways:\n+\n+- Implement C dynamic memory allocation in your custom build.\n+- Implement a custom C++ allocator in your custom build.\n+\n+Linkage Considerations\n+~~~~~~~~~~~~~~~~~~~~~~\n+\n+Because MicroPython is a C-based project, any symbols which link to or from\n+MicroPython need to be qualified ``extern \"C\"`` in C++ code.\n+\n+It's strongly recommended to follow the pattern demonstrated in\n+`examples/usercmodule/cppexample\n+<https://github.com/micropython/micropython/blob/master/examples/usercmodule/cppexample>`_,\n+where the Python module is implemented in a minimal C file wrapper around the\n+C++ code.\n+"
+    },
+    {
+      "sha": "6ff9bfe023d21978cb49bffd2a353ef2b8e12472",
+      "filename": "docs/develop/library.rst",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 8,
+      "changes": 10,
+      "blob_url": "https://github.com/micropython/micropython/blob/35652ff03c1479d51b66b1bd6b86419c52434761/docs%2Fdevelop%2Flibrary.rst",
+      "raw_url": "https://github.com/micropython/micropython/raw/35652ff03c1479d51b66b1bd6b86419c52434761/docs%2Fdevelop%2Flibrary.rst",
+      "contents_url": "https://api.github.com/repos/micropython/micropython/contents/docs%2Fdevelop%2Flibrary.rst?ref=35652ff03c1479d51b66b1bd6b86419c52434761",
+      "patch": "@@ -26,15 +26,9 @@ Implementing a core module\n --------------------------\n \n Like CPython, MicroPython has core builtin modules that can be accessed through import statements.\n-An example is the ``gc`` module discussed in :ref:`memorymanagement`.\n+An example is the :mod:`gc` module discussed in :ref:`memorymanagement`.\n \n-.. code-block:: bash\n-\n-   >>> import gc\n-   >>> gc.enable()\n-   >>>\n-\n-MicroPython has several other builtin standard/core modules like ``io``, ``array`` etc.\n+MicroPython has several other builtin standard/core modules like :mod:`io`, :mod:`array`, etc.\n Adding a new core module involves several modifications.\n \n First, create the ``C`` file in the ``py/`` directory. In this example we are adding a"
+    },
+    {
+      "sha": "4ae8012004489dcb22de8681158ec351158206b9",
+      "filename": "docs/develop/memorymgt.rst",
+      "status": "modified",
+      "additions": 74,
+      "deletions": 37,
+      "changes": 111,
+      "blob_url": "https://github.com/micropython/micropython/blob/35652ff03c1479d51b66b1bd6b86419c52434761/docs%2Fdevelop%2Fmemorymgt.rst",
+      "raw_url": "https://github.com/micropython/micropython/raw/35652ff03c1479d51b66b1bd6b86419c52434761/docs%2Fdevelop%2Fmemorymgt.rst",
+      "contents_url": "https://api.github.com/repos/micropython/micropython/contents/docs%2Fdevelop%2Fmemorymgt.rst?ref=35652ff03c1479d51b66b1bd6b86419c52434761",
+      "patch": "@@ -4,43 +4,80 @@ Memory Management\n =================\n \n Unlike programming languages such as C/C++, MicroPython hides memory management\n-details from the developer by supporting automatic memory management.\n-Automatic memory management is a technique used by operating systems or applications to automatically manage\n-the allocation and deallocation of memory. This eliminates challenges such as forgetting to\n-free the memory allocated to an object. Automatic memory management also avoids the critical issue of using memory\n-that is already released. Automatic memory management takes many forms, one of them being\n-garbage collection (GC).\n-\n-The garbage collector usually has two responsibilities;\n-\n-#. Allocate new objects in available memory.\n-#. Free unused memory.\n-\n-There are many GC algorithms but MicroPython uses the\n-`Mark and Sweep <https://en.wikipedia.org/wiki/Tracing_garbage_collection#Basic_algorithm>`_\n-policy for managing memory. This algorithm has a mark phase that traverses the heap marking all\n-live objects while the sweep phase goes through the heap reclaiming all unmarked objects.\n-\n-Garbage collection functionality in MicroPython is available through the ``gc`` built-in\n-module:\n-\n-.. code-block:: bash\n-\n-   >>> x = 5\n-   >>> x\n-   5\n-   >>> import gc\n-   >>> gc.enable()\n-   >>> gc.mem_alloc()\n-   1312\n-   >>> gc.mem_free()\n-   2071392\n-   >>> gc.collect()\n-   19\n-   >>> gc.disable()\n-   >>>\n-\n-Even when ``gc.disable()`` is invoked, collection can be triggered with ``gc.collect()``.\n+details from the developer by supporting automatic memory management of a\n+\":ref:`Python heap<heap>`\" that holds all Python objects. MicroPython uses\n+garbage collection (GC) for automatic memory management. The garbage collector\n+is responsible for freeing memory which is no longer in use.\n+\n+Specifically, MicroPython uses a `Mark and Sweep\n+<https://en.wikipedia.org/wiki/Tracing_garbage_collection#Basic_algorithm>`_\n+garbage collection algorithm. This algorithm has a mark phase that scans the\n+heap marking all live objects, and then a sweep phase goes through the heap\n+reclaiming all unmarked objects.\n+\n+The MicroPython garbage collector is by default automatic, but manual control is\n+available through the :mod:`gc` built-in module.\n+\n+.. _python_memory_from_c:\n+\n+MicroPython Memory from C code\n+------------------------------\n+\n+Awareness of the garbage collector is needed when writing C code that allocates\n+memory from the \"Python heap\" (i.e. functions ``m_malloc()``, ``m_malloc0()``,\n+``m_free()``, etc).\n+\n+The mark phase of the garbage collector scans for live pointers to heap memory\n+starting from the following roots:\n+\n+- The stack of the main Python runtime (or REPL).\n+- The stacks of each \"Python thread\", for ports which implement Python threads\n+  on top of native operating system threads or tasks.\n+- The \"root pointers\" defined in C code using the macro\n+  ``MP_REGISTER_ROOT_POINTER``. These are the recommended way to have statically\n+  scoped pointers to the Python heap.\n+- Tracked allocations made with the ``m_tracked_calloc()``, ``m_tracked_realloc``\n+  and ``m_tracked_free()`` functions. These special functions allow allocating a\n+  block of memory which is always considered live by the garbage collector.\n+  Similar to memory allocation in C, this memory is only freed by calling\n+  ``m_tracked_free()`` or by soft reset. There is a small memory usage and\n+  runtime overhead to each tracked allocation. This feature is not enabled by\n+  default on all ports.\n+\n+The garbage collector then recursively scans and marks all the memory pointed to\n+by the root pointers, until all addresses are exhausted. This is sufficient to\n+find all Python objects that are still in use by the MicroPython runtime.\n+\n+However, the following memory will **not** be scanned by the garbage collector\n+and could be freed prematurely:\n+\n+- Static or global C variables which contain pointers to heap memory.\n+- Pointers which don't point to the \"head\" of an allocated buffer (i.e. to the\n+  exact address returned by ``m_malloc()``), but instead to an address inside\n+  the allocated buffer (for example, a pointer to a nested struct). For\n+  performance reasons, the garbage collector doesn't mark the enclosing buffer\n+  in these cases.\n+- The stack of any thread or RTOS task which isn't running Python code or\n+  manually registered as a \"Python thread\" (for ports which support native\n+  threads or tasks).\n+\n+Ways to avoid use-after-free in these scenarios:\n+\n+- Use the tracked allocation API ``m_tracked_calloc()``, ``m_tracked_realloc()``\n+  and ``m_tracked_free()``.\n+- Register a root pointer (see above), instead of storing a pointer in a static\n+  variable.\n+- Restructure the code, for example by having an API where Python code\n+  initialises a singleton Python object (implemented in C) which holds all of the\n+  relevant pointers instead of having them in static variables.\n+\n+.. note:: :ref:`soft_reset` always clears the Python heap and frees all memory.\n+          It's important not to hold any pointers to the heap after a soft\n+          reset, as they will become dangling pointers to freed memory.\n+\n+          Some ports support a \"C heap\" as well (see `c_heap`), in which case\n+          you can allocate memory that will stay valid over soft reset by\n+          calling standard C functions ``malloc``, etc.\n \n The object model\n ----------------"
+    },
+    {
+      "sha": "919f82ed520c246a8ed3e2c8701a87d217cf5b1b",
+      "filename": "docs/library/gc.rst",
+      "status": "modified",
+      "additions": 43,
+      "deletions": 1,
+      "changes": 44,
+      "blob_url": "https://github.com/micropython/micropython/blob/35652ff03c1479d51b66b1bd6b86419c52434761/docs%2Flibrary%2Fgc.rst",
+      "raw_url": "https://github.com/micropython/micropython/raw/35652ff03c1479d51b66b1bd6b86419c52434761/docs%2Flibrary%2Fgc.rst",
+      "contents_url": "https://api.github.com/repos/micropython/micropython/contents/docs%2Flibrary%2Fgc.rst?ref=35652ff03c1479d51b66b1bd6b86419c52434761",
+      "patch": "@@ -2,7 +2,8 @@\n ==========================================\n \n .. module:: gc\n-   :synopsis: control the garbage collector\n+   :synopsis: control the garbage collector which automatically frees\n+              :ref:`heap memory <heap>`\n \n |see_cpython_module| :mod:`python:gc`.\n \n@@ -18,6 +19,10 @@ Functions\n    Disable automatic garbage collection.  Heap memory can still be allocated,\n    and garbage collection can still be initiated manually using :meth:`gc.collect`.\n \n+.. function:: isenabled()\n+\n+   Returns True if automatic garbage collection is enabled, and False otherwise.\n+\n .. function:: collect()\n \n    Run a garbage collection.\n@@ -64,3 +69,40 @@ Functions\n       This function is a MicroPython extension. CPython has a similar\n       function - ``set_threshold()``, but due to different GC\n       implementations, its signature and semantics are different.\n+\n+   Examples\n+   ^^^^^^^^\n+\n+   To trigger a garbage collection each time 32768 bytes of RAM have been allocated in total::\n+\n+       gc.threshold(32768)\n+\n+   To restore the default behaviour, only triggering garbage collection when out of memory::\n+\n+       gc.threshold(-1)\n+\n+Example\n+-------\n+\n+.. code-block:: bash\n+\n+    >>> import gc\n+    >>> gc.mem_free() # Gets number of bytes free in memory\n+    8192\n+    >>> gc.mem_alloc() # Gets number of bytes allocated in memory\n+    1024\n+    >>> foo = bytearray(1000) # Create a big array of data\n+    >>> gc.mem_free() # Show that there's less memory available\n+    7168\n+    >>> gc.mem_alloc() # Show that there's more memory used\n+    2048\n+    >>> del foo # Delete the object\n+    >>> gc.mem_free() # Show that collection hasn't run yet\n+    7168\n+    >>> gc.mem_alloc() # That memory is still allocated\n+    2048\n+    >>> gc.collect() # Manually run the collection\n+    >>> gc.mem_free() # Now we have reclaimed that memory\n+    8192\n+    >>> gc.mem_alloc() # That memory is no longer allocated\n+    1024"
+    },
+    {
+      "sha": "65fa204315a5188370d00e0c110e665e09d0374d",
+      "filename": "docs/library/micropython.rst",
+      "status": "modified",
+      "additions": 27,
+      "deletions": 2,
+      "changes": 29,
+      "blob_url": "https://github.com/micropython/micropython/blob/35652ff03c1479d51b66b1bd6b86419c52434761/docs%2Flibrary%2Fmicropython.rst",
+      "raw_url": "https://github.com/micropython/micropython/raw/35652ff03c1479d51b66b1bd6b86419c52434761/docs%2Flibrary%2Fmicropython.rst",
+      "contents_url": "https://api.github.com/repos/micropython/micropython/contents/docs%2Flibrary%2Fmicropython.rst?ref=35652ff03c1479d51b66b1bd6b86419c52434761",
+      "patch": "@@ -62,8 +62,33 @@ Functions\n    is given then extra information is printed.\n \n    The information that is printed is implementation dependent, but currently\n-   includes the amount of stack and heap used.  In verbose mode it prints out\n-   the entire heap indicating which blocks are used and which are free.\n+   includes the amount of stack and heap used. In verbose mode it prints out a\n+   summary of the entire heap indicating which blocks are used and which are\n+   free.\n+\n+   The exact output of verbose mode varies between ports, but in general each\n+   letter represents a single 16 byte block of memory. Each line of\n+   output represents 0x400 bytes or 1KiB of RAM.\n+\n+   The meaning of each letter:\n+\n+   ====== =================\n+   Symbol Meaning\n+   ====== =================\n+       .   free block\n+       h   head block\n+       =   tail block\n+       m   marked head block\n+       T   tuple\n+       L   list\n+       D   dict\n+       F   float\n+       B   byte code\n+       M   module\n+       S   string or bytes\n+       A   bytearray\n+   ====== =================\n+\n \n .. function:: qstr_info([verbose])\n "
+    },
+    {
+      "sha": "616dc8833fd6731e66f80ab8c0fc3092b36e03ff",
+      "filename": "docs/reference/constrained.rst",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 22,
+      "changes": 30,
+      "blob_url": "https://github.com/micropython/micropython/blob/35652ff03c1479d51b66b1bd6b86419c52434761/docs%2Freference%2Fconstrained.rst",
+      "raw_url": "https://github.com/micropython/micropython/raw/35652ff03c1479d51b66b1bd6b86419c52434761/docs%2Freference%2Fconstrained.rst",
+      "contents_url": "https://api.github.com/repos/micropython/micropython/contents/docs%2Freference%2Fconstrained.rst?ref=35652ff03c1479d51b66b1bd6b86419c52434761",
+      "patch": "@@ -316,6 +316,12 @@ following periodically:\n     gc.collect()\n     gc.threshold(gc.mem_free() // 4 + gc.mem_alloc())\n \n+For more information, see below and the documentation for built-in module\n+:mod:`gc`.\n+\n+For details from MicroPython internals/developer perspective, see also\n+:doc:`/develop/memorymgt`.\n+\n Fragmentation\n ~~~~~~~~~~~~~\n \n@@ -376,28 +382,8 @@ Running the function uses over 10KiB, but on return ``a`` is garbage because it\n is out of scope and cannot be referenced. The final `gc.collect()` recovers\n that memory.\n \n-The final output produced by ``micropython.mem_info(1)`` will vary in detail but\n-may be interpreted as follows:\n-\n-====== =================\n-Symbol Meaning\n-====== =================\n-   .   free block\n-   h   head block\n-   =   tail block\n-   m   marked head block\n-   T   tuple\n-   L   list\n-   D   dict\n-   F   float\n-   B   byte code\n-   M   module\n-   S   string or bytes\n-   A   bytearray\n-====== =================\n-\n-Each letter represents a single block of memory, a block being 16 bytes. So each\n-line of the heap dump represents 0x400 bytes or 1KiB of RAM.\n+The verbose output from ``micropython.mem_info(1)`` is documented at\n+`micropython.mem_info()`.\n \n Control of garbage collection\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "3eb617da024f11b3ebd20adf4fc8fd8857a4ae1a",
+      "message": "docs/develop/cmodules: Add some notes about C dynamic memory and C++.\n\nThis work was funded through GitHub Sponsors.\n\nSigned-off-by: Angus Gratton <angus@redyak.com.au>",
+      "parent_shas": [
+        "e379cb447926114d0a200f65e4be41f5149ab1e2"
+      ]
+    },
+    {
+      "sha": "4f04f08903b7f3336ea95adb7a037e7a0471fdc0",
+      "message": "docs/develop/memorymgt: Expand on MicroPython memory management from C.\n\nThis work was funded through GitHub Sponsors.\n\nSigned-off-by: Angus Gratton <angus@redyak.com.au>",
+      "parent_shas": [
+        "3eb617da024f11b3ebd20adf4fc8fd8857a4ae1a"
+      ]
+    },
+    {
+      "sha": "50218dd2a879f4dcd0861a2486aab665a058e0f1",
+      "message": "docs: Link memory management & gc docs more, reduce duplication.\n\nThis work was funded through GitHub Sponsors.\n\nSigned-off-by: Angus Gratton <angus@redyak.com.au>",
+      "parent_shas": [
+        "4f04f08903b7f3336ea95adb7a037e7a0471fdc0"
+      ]
+    },
+    {
+      "sha": "c9bb9250db9579cce1772cff9cf69c8d17031a9d",
+      "message": "docs/develop: Link to module docs, remove extraneous example code.\n\nSmall cleanup.\n\nThis work was funded through GitHub Sponsors.\n\nSigned-off-by: Angus Gratton <angus@redyak.com.au>",
+      "parent_shas": [
+        "50218dd2a879f4dcd0861a2486aab665a058e0f1"
+      ]
+    },
+    {
+      "sha": "5e7d4bf9a654c538d32382e9750e558e5772082b",
+      "message": "docs/library/gc: Add documentation for gc.isenabled().\n\nSigned-off-by: Angus Gratton <angus@redyak.com.au>",
+      "parent_shas": [
+        "c9bb9250db9579cce1772cff9cf69c8d17031a9d"
+      ]
+    },
+    {
+      "sha": "35652ff03c1479d51b66b1bd6b86419c52434761",
+      "message": "docs/library/gc: Add some simple examples for gc.threshold().\n\nSigned-off-by: Angus Gratton <angus@redyak.com.au>",
+      "parent_shas": [
+        "5e7d4bf9a654c538d32382e9750e558e5772082b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__micropython__micropython__pr19021.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\micropython__micropython__pr19021__python_cpp__micropython__micropython__pr19021\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\micropython__micropython__pr19021__python_cpp__micropython__micropython__pr19021\\rn"
+  }
+}

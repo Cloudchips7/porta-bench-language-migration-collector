@@ -1,0 +1,138 @@
+{
+  "instance_id": "python_cpp__openedx__xblock-sdk__pr499",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "openedx/xblock-sdk",
+  "pr_number": 499,
+  "pr_url": "https://github.com/openedx/xblock-sdk/pull/499",
+  "repo": {
+    "full_name": "openedx/xblock-sdk",
+    "clone_url": "https://github.com/openedx/xblock-sdk.git",
+    "default_branch": "master",
+    "created_at": "2014-03-06T20:34:41Z",
+    "stars": 70,
+    "license": "Apache-2.0",
+    "size_kb": 1867
+  },
+  "pull_request": {
+    "id": 3518450642,
+    "title": "chore: Upgrade Python requirements",
+    "body": "Python requirements update. Please review the [changelogs](https://openedx.atlassian.net/wiki/spaces/TE/pages/1001521320/Python+Package+Changelogs) for the upgraded packages.",
+    "created_at": "2026-04-12T00:21:07Z",
+    "merged_at": "2026-04-13T05:53:39Z",
+    "base_sha": "198c5fe11720cd6342db6ef80ffec127754b7a6a",
+    "head_sha": "a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf",
+    "merge_commit_sha": "2cb29c37d1697d179a37b8883ef542305c728cb4",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "198c5fe11720cd6342db6ef80ffec127754b7a6a",
+  "final_sha": "a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf",
+  "changed_files": [
+    {
+      "sha": "c39ba12078551f4d787b99543fa6d027b65973ae",
+      "filename": "requirements/base.txt",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 5,
+      "changes": 10,
+      "blob_url": "https://github.com/openedx/xblock-sdk/blob/a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf/requirements%2Fbase.txt",
+      "raw_url": "https://github.com/openedx/xblock-sdk/raw/a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf/requirements%2Fbase.txt",
+      "contents_url": "https://api.github.com/repos/openedx/xblock-sdk/contents/requirements%2Fbase.txt?ref=a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf",
+      "patch": "@@ -12,9 +12,9 @@ asgiref==3.11.1\n     # via django\n binaryornot==0.6.0\n     # via cookiecutter\n-boto3==1.42.83\n+boto3==1.42.88\n     # via fs-s3fs\n-botocore==1.42.83\n+botocore==1.42.88\n     # via\n     #   boto3\n     #   s3transfer\n@@ -26,7 +26,7 @@ click==8.3.2\n     # via cookiecutter\n cookiecutter==2.7.1\n     # via -r requirements/base.in\n-django==5.2.12\n+django==5.2.13\n     # via\n     #   -c requirements/common_constraints.txt\n     #   -r requirements/base.in\n@@ -50,7 +50,7 @@ jmespath==1.1.0\n     #   botocore\n lazy==1.6\n     # via xblock\n-lxml==6.0.2\n+lxml==6.0.3\n     # via\n     #   -r requirements/base.in\n     #   xblock\n@@ -88,7 +88,7 @@ requests==2.33.1\n     # via\n     #   -r requirements/base.in\n     #   cookiecutter\n-rich==14.3.3\n+rich==14.3.4\n     # via cookiecutter\n s3transfer==0.16.0\n     # via boto3"
+    },
+    {
+      "sha": "aeefd766a22d8d6d4c60a8da1ee64cb40439e83a",
+      "filename": "requirements/ci.txt",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 4,
+      "changes": 8,
+      "blob_url": "https://github.com/openedx/xblock-sdk/blob/a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf/requirements%2Fci.txt",
+      "raw_url": "https://github.com/openedx/xblock-sdk/raw/a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf/requirements%2Fci.txt",
+      "contents_url": "https://api.github.com/repos/openedx/xblock-sdk/contents/requirements%2Fci.txt?ref=a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf",
+      "patch": "@@ -19,7 +19,7 @@ packaging==26.0\n     # via\n     #   pyproject-api\n     #   tox\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   python-discovery\n     #   tox\n@@ -28,13 +28,13 @@ pluggy==1.6.0\n     # via tox\n pyproject-api==1.10.0\n     # via tox\n-python-discovery==1.2.1\n+python-discovery==1.2.2\n     # via\n     #   tox\n     #   virtualenv\n tomli-w==1.2.0\n     # via tox\n-tox==4.52.0\n+tox==4.52.1\n     # via -r requirements/ci.in\n-virtualenv==21.2.0\n+virtualenv==21.2.1\n     # via tox"
+    },
+    {
+      "sha": "6d3653ab6f55ebeb33a4a0783192f1036f445aa3",
+      "filename": "requirements/dev.txt",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 10,
+      "changes": 20,
+      "blob_url": "https://github.com/openedx/xblock-sdk/blob/a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf/requirements%2Fdev.txt",
+      "raw_url": "https://github.com/openedx/xblock-sdk/raw/a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf/requirements%2Fdev.txt",
+      "contents_url": "https://api.github.com/repos/openedx/xblock-sdk/contents/requirements%2Fdev.txt?ref=a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf",
+      "patch": "@@ -32,12 +32,12 @@ binaryornot==0.6.0\n     #   -r requirements/base.txt\n     #   -r requirements/test.txt\n     #   cookiecutter\n-boto3==1.42.83\n+boto3==1.42.88\n     # via\n     #   -r requirements/base.txt\n     #   -r requirements/test.txt\n     #   fs-s3fs\n-botocore==1.42.83\n+botocore==1.42.88\n     # via\n     #   -r requirements/base.txt\n     #   -r requirements/test.txt\n@@ -92,7 +92,7 @@ distlib==0.4.0\n     # via\n     #   -r requirements/test.txt\n     #   virtualenv\n-django==5.2.12\n+django==5.2.13\n     # via\n     #   -c requirements/common_constraints.txt\n     #   -r requirements/base.txt\n@@ -149,7 +149,7 @@ lazy==1.6\n     #   -r requirements/test.txt\n     #   acid-xblock\n     #   xblock\n-lxml==6.0.2\n+lxml==6.0.3\n     # via\n     #   -r requirements/base.txt\n     #   -r requirements/test.txt\n@@ -195,7 +195,7 @@ packaging==26.0\n     #   pytest\n     #   pytest-rerunfailures\n     #   tox\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   -r requirements/test.txt\n     #   pylint\n@@ -240,7 +240,7 @@ pyproject-api==1.10.0\n     # via\n     #   -r requirements/test.txt\n     #   tox\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   -r requirements/test.txt\n     #   pytest-cov\n@@ -265,7 +265,7 @@ python-dateutil==2.9.0.post0\n     #   arrow\n     #   botocore\n     #   xblock\n-python-discovery==1.2.1\n+python-discovery==1.2.2\n     # via\n     #   -r requirements/test.txt\n     #   tox\n@@ -293,7 +293,7 @@ requests==2.33.1\n     #   -r requirements/base.txt\n     #   -r requirements/test.txt\n     #   cookiecutter\n-rich==14.3.3\n+rich==14.3.4\n     # via\n     #   -r requirements/base.txt\n     #   -r requirements/test.txt\n@@ -336,7 +336,7 @@ tomli-w==1.2.0\n     #   tox\n tomlkit==0.14.0\n     # via pylint\n-tox==4.52.0\n+tox==4.52.1\n     # via\n     #   -r requirements/test.in\n     #   -r requirements/test.txt\n@@ -351,7 +351,7 @@ urllib3==2.6.3\n     #   -r requirements/test.txt\n     #   botocore\n     #   requests\n-virtualenv==21.2.0\n+virtualenv==21.2.1\n     # via\n     #   -r requirements/test.txt\n     #   tox"
+    },
+    {
+      "sha": "e7d1c474f00c8ad12ee7f22e1fe04cdeaef3d3f1",
+      "filename": "requirements/pip-tools.txt",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/openedx/xblock-sdk/blob/a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf/requirements%2Fpip-tools.txt",
+      "raw_url": "https://github.com/openedx/xblock-sdk/raw/a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf/requirements%2Fpip-tools.txt",
+      "contents_url": "https://api.github.com/repos/openedx/xblock-sdk/contents/requirements%2Fpip-tools.txt?ref=a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf",
+      "patch": "@@ -4,7 +4,7 @@\n #\n #    make upgrade\n #\n-build==1.4.2\n+build==1.4.3\n     # via pip-tools\n click==8.3.2\n     # via pip-tools"
+    },
+    {
+      "sha": "5c758a36e8b84fff54bda06f86d50da3908736e8",
+      "filename": "requirements/quality.txt",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 10,
+      "changes": 20,
+      "blob_url": "https://github.com/openedx/xblock-sdk/blob/a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf/requirements%2Fquality.txt",
+      "raw_url": "https://github.com/openedx/xblock-sdk/raw/a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf/requirements%2Fquality.txt",
+      "contents_url": "https://api.github.com/repos/openedx/xblock-sdk/contents/requirements%2Fquality.txt?ref=a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf",
+      "patch": "@@ -26,11 +26,11 @@ binaryornot==0.6.0\n     # via\n     #   -r requirements/test.txt\n     #   cookiecutter\n-boto3==1.42.83\n+boto3==1.42.88\n     # via\n     #   -r requirements/test.txt\n     #   fs-s3fs\n-botocore==1.42.83\n+botocore==1.42.88\n     # via\n     #   -r requirements/test.txt\n     #   boto3\n@@ -76,7 +76,7 @@ distlib==0.4.0\n     # via\n     #   -r requirements/test.txt\n     #   virtualenv\n-django==5.2.12\n+django==5.2.13\n     # via\n     #   -c requirements/common_constraints.txt\n     #   -r requirements/test.txt\n@@ -126,7 +126,7 @@ lazy==1.6\n     #   -r requirements/test.txt\n     #   acid-xblock\n     #   xblock\n-lxml==6.0.2\n+lxml==6.0.3\n     # via\n     #   -r requirements/test.txt\n     #   xblock\n@@ -164,7 +164,7 @@ packaging==26.0\n     #   pytest\n     #   pytest-rerunfailures\n     #   tox\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   -r requirements/test.txt\n     #   pylint\n@@ -206,7 +206,7 @@ pyproject-api==1.10.0\n     # via\n     #   -r requirements/test.txt\n     #   tox\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   -r requirements/test.txt\n     #   pytest-cov\n@@ -224,7 +224,7 @@ python-dateutil==2.9.0.post0\n     #   arrow\n     #   botocore\n     #   xblock\n-python-discovery==1.2.1\n+python-discovery==1.2.2\n     # via\n     #   -r requirements/test.txt\n     #   tox\n@@ -248,7 +248,7 @@ requests==2.33.1\n     # via\n     #   -r requirements/test.txt\n     #   cookiecutter\n-rich==14.3.3\n+rich==14.3.4\n     # via\n     #   -r requirements/test.txt\n     #   cookiecutter\n@@ -285,7 +285,7 @@ tomli-w==1.2.0\n     #   tox\n tomlkit==0.14.0\n     # via pylint\n-tox==4.52.0\n+tox==4.52.1\n     # via -r requirements/test.txt\n tzdata==2026.1\n     # via\n@@ -296,7 +296,7 @@ urllib3==2.6.3\n     #   -r requirements/test.txt\n     #   botocore\n     #   requests\n-virtualenv==21.2.0\n+virtualenv==21.2.1\n     # via\n     #   -r requirements/test.txt\n     #   tox"
+    },
+    {
+      "sha": "f2fc1228b6774afdc500ffaf3e8f78e433d96282",
+      "filename": "requirements/test.txt",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 9,
+      "changes": 18,
+      "blob_url": "https://github.com/openedx/xblock-sdk/blob/a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf/requirements%2Ftest.txt",
+      "raw_url": "https://github.com/openedx/xblock-sdk/raw/a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf/requirements%2Ftest.txt",
+      "contents_url": "https://api.github.com/repos/openedx/xblock-sdk/contents/requirements%2Ftest.txt?ref=a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf",
+      "patch": "@@ -22,11 +22,11 @@ binaryornot==0.6.0\n     # via\n     #   -r requirements/base.txt\n     #   cookiecutter\n-boto3==1.42.83\n+boto3==1.42.88\n     # via\n     #   -r requirements/base.txt\n     #   fs-s3fs\n-botocore==1.42.83\n+botocore==1.42.88\n     # via\n     #   -r requirements/base.txt\n     #   boto3\n@@ -96,7 +96,7 @@ lazy==1.6\n     #   -r requirements/base.txt\n     #   acid-xblock\n     #   xblock\n-lxml==6.0.2\n+lxml==6.0.3\n     # via\n     #   -r requirements/base.txt\n     #   xblock\n@@ -131,7 +131,7 @@ packaging==26.0\n     #   pytest\n     #   pytest-rerunfailures\n     #   tox\n-platformdirs==4.9.4\n+platformdirs==4.9.6\n     # via\n     #   python-discovery\n     #   tox\n@@ -150,7 +150,7 @@ pypng==0.20220715.0\n     # via -r requirements/base.txt\n pyproject-api==1.10.0\n     # via tox\n-pytest==9.0.2\n+pytest==9.0.3\n     # via\n     #   pytest-cov\n     #   pytest-django\n@@ -167,7 +167,7 @@ python-dateutil==2.9.0.post0\n     #   arrow\n     #   botocore\n     #   xblock\n-python-discovery==1.2.1\n+python-discovery==1.2.2\n     # via\n     #   tox\n     #   virtualenv\n@@ -188,7 +188,7 @@ requests==2.33.1\n     # via\n     #   -r requirements/base.txt\n     #   cookiecutter\n-rich==14.3.3\n+rich==14.3.4\n     # via\n     #   -r requirements/base.txt\n     #   cookiecutter\n@@ -216,7 +216,7 @@ text-unidecode==1.3\n     #   python-slugify\n tomli-w==1.2.0\n     # via tox\n-tox==4.52.0\n+tox==4.52.1\n     # via -r requirements/test.in\n tzdata==2026.1\n     # via\n@@ -227,7 +227,7 @@ urllib3==2.6.3\n     #   -r requirements/base.txt\n     #   botocore\n     #   requests\n-virtualenv==21.2.0\n+virtualenv==21.2.1\n     # via tox\n web-fragments==4.0.0\n     # via"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "a33dfce0d2f693c6ad90feadb5c5abfe8d7070cf",
+      "message": "chore: Upgrade Python requirements",
+      "parent_shas": [
+        "198c5fe11720cd6342db6ef80ffec127754b7a6a"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only",
+      "dependency_only",
+      "doc_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__openedx__xblock-sdk__pr499.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\openedx__xblock-sdk__pr499__python_cpp__openedx__xblock-sdk__pr499\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\openedx__xblock-sdk__pr499__python_cpp__openedx__xblock-sdk__pr499\\rn"
+  }
+}

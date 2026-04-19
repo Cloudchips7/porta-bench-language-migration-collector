@@ -1,0 +1,128 @@
+{
+  "instance_id": "cpp_python__isair__jarvis__pr188",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "isair/jarvis",
+  "pr_number": 188,
+  "pr_url": "https://github.com/isair/jarvis/pull/188",
+  "repo": {
+    "full_name": "isair/jarvis",
+    "clone_url": "https://github.com/isair/jarvis.git",
+    "default_branch": "main",
+    "created_at": "2025-08-19T18:27:53Z",
+    "stars": 282,
+    "license": "NOASSERTION",
+    "size_kb": 10655
+  },
+  "pull_request": {
+    "id": 3531399667,
+    "title": "fix: dictation paste broken on Windows and hotkey displayed as 'cmd'",
+    "body": "## Summary\n\n- **Clipboard paste never worked on Windows**: `_clipboard_windows` used raw ctypes calls without setting `restype`/`argtypes` — on 64-bit Windows, handle return values were truncated from 64 to 32 bits, causing silent clipboard write failure. Now sets proper types and raises `OSError` on failure.\n- **Hotkey shown as \"cmd\" on Windows**: UI dropdowns, daemon logs, and setup wizard all displayed the raw internal key name `ctrl+cmd` instead of `Ctrl + Win`. Added `format_hotkey_display()` that maps to platform-native labels (Win on Windows, Cmd on macOS, Option for Alt on macOS).\n- Also added `\"win\"` as a modifier alias in the hotkey parser so users can write `ctrl+win` in config.\n\n## Test plan\n\n- [x] `TestFormatHotkeyDisplay` — 7 tests covering Windows/macOS/Linux label mapping\n- [x] `TestClipboardWindowsCtypes::test_clipboard_windows_roundtrip` — writes to clipboard via ctypes and reads back to verify (Windows-only)\n- [x] All 51 dictation tests pass\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+    "created_at": "2026-04-15T01:35:23Z",
+    "merged_at": "2026-04-15T01:38:29Z",
+    "base_sha": "424137025b8376e2f7e75a5326b45e32d25462e5",
+    "head_sha": "679a16c99b860768a28fa0166edf78f2a4074ddd",
+    "merge_commit_sha": "b55628f565b10ae462f8ecd007fe189ea8ae55ea",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "424137025b8376e2f7e75a5326b45e32d25462e5",
+  "final_sha": "679a16c99b860768a28fa0166edf78f2a4074ddd",
+  "changed_files": [
+    {
+      "sha": "f551c955062ab78088e9d800f94893f0a8200e93",
+      "filename": "src/desktop_app/settings_window.py",
+      "status": "modified",
+      "additions": 18,
+      "deletions": 6,
+      "changes": 24,
+      "blob_url": "https://github.com/isair/jarvis/blob/679a16c99b860768a28fa0166edf78f2a4074ddd/src%2Fdesktop_app%2Fsettings_window.py",
+      "raw_url": "https://github.com/isair/jarvis/raw/679a16c99b860768a28fa0166edf78f2a4074ddd/src%2Fdesktop_app%2Fsettings_window.py",
+      "contents_url": "https://api.github.com/repos/isair/jarvis/contents/src%2Fdesktop_app%2Fsettings_window.py?ref=679a16c99b860768a28fa0166edf78f2a4074ddd",
+      "patch": "@@ -71,6 +71,23 @@ class FieldMeta:\n ]\n \n \n+def _dictation_hotkey_choices() -> list:\n+    \"\"\"Build platform-aware dictation hotkey dropdown choices.\"\"\"\n+    from jarvis.dictation.dictation_engine import format_hotkey_display\n+    from jarvis.config import _default_dictation_hotkey\n+    default = _default_dictation_hotkey()\n+    options = [\n+        (\"ctrl+alt\", format_hotkey_display(\"ctrl+alt\")),\n+        (\"ctrl+cmd\", format_hotkey_display(\"ctrl+cmd\")),\n+        (\"ctrl+shift+d\", format_hotkey_display(\"ctrl+shift+d\")),\n+        (\"ctrl+shift\", format_hotkey_display(\"ctrl+shift\")),\n+    ]\n+    return [\n+        (val, f\"{label} (default)\" if val == default else label)\n+        for val, label in options\n+    ]\n+\n+\n def _build_field_metadata() -> List[FieldMeta]:\n     \"\"\"Build the metadata registry for all user-facing config fields.\"\"\"\n     fields = []\n@@ -280,12 +297,7 @@ def f(key, label, desc, cat, ftype, **kw):\n       \"features\", \"bool\")\n     f(\"dictation_hotkey\", \"Dictation Hotkey\",\n       \"Key combination to hold for dictation. Double-tap for hands-free mode.\",\n-      \"features\", \"choice\", choices=[\n-          (\"ctrl+alt\", \"Ctrl + Alt (macOS / Linux default)\"),\n-          (\"ctrl+cmd\", \"Ctrl + Win/Cmd (Windows default)\"),\n-          (\"ctrl+shift+d\", \"Ctrl + Shift + D\"),\n-          (\"ctrl+shift\", \"Ctrl + Shift\"),\n-      ])\n+      \"features\", \"choice\", choices=_dictation_hotkey_choices())\n     f(\"dictation_filler_removal\", \"Filler Word Removal\",\n       \"Use the local LLM to remove filler words (um, uh, like) from dictation output\",\n       \"features\", \"bool\")"
+    },
+    {
+      "sha": "345f981d5a2bbc0224a7fa7ac11d16c68a8fb5c1",
+      "filename": "src/desktop_app/setup_wizard.py",
+      "status": "modified",
+      "additions": 19,
+      "deletions": 7,
+      "changes": 26,
+      "blob_url": "https://github.com/isair/jarvis/blob/679a16c99b860768a28fa0166edf78f2a4074ddd/src%2Fdesktop_app%2Fsetup_wizard.py",
+      "raw_url": "https://github.com/isair/jarvis/raw/679a16c99b860768a28fa0166edf78f2a4074ddd/src%2Fdesktop_app%2Fsetup_wizard.py",
+      "contents_url": "https://api.github.com/repos/isair/jarvis/contents/src%2Fdesktop_app%2Fsetup_wizard.py?ref=679a16c99b860768a28fa0166edf78f2a4074ddd",
+      "patch": "@@ -2447,12 +2447,24 @@ def nextId(self) -> int:\n class DictationPage(QWizardPage):\n     \"\"\"Page for configuring dictation (hold-to-dictate) settings.\"\"\"\n \n-    _HOTKEY_OPTIONS = [\n-        (\"ctrl+alt\", \"Ctrl + Alt (macOS / Linux default)\"),\n-        (\"ctrl+cmd\", \"Ctrl + Win/Cmd (Windows default)\"),\n-        (\"ctrl+shift+d\", \"Ctrl + Shift + D\"),\n-        (\"ctrl+shift\", \"Ctrl + Shift\"),\n-    ]\n+    _HOTKEY_OPTIONS = None  # Built lazily via _hotkey_options()\n+\n+    @staticmethod\n+    def _hotkey_options():\n+        from jarvis.dictation.dictation_engine import format_hotkey_display\n+        from jarvis.config import _default_dictation_hotkey\n+        default = _default_dictation_hotkey()\n+        options = [\n+            (\"ctrl+alt\", format_hotkey_display(\"ctrl+alt\")),\n+            (\"ctrl+cmd\", format_hotkey_display(\"ctrl+cmd\")),\n+            (\"ctrl+shift+d\", format_hotkey_display(\"ctrl+shift+d\")),\n+            (\"ctrl+shift\", format_hotkey_display(\"ctrl+shift\")),\n+        ]\n+        # Tag the platform default\n+        return [\n+            (val, f\"{label} (default)\" if val == default else label)\n+            for val, label in options\n+        ]\n \n     def __init__(self, parent=None):\n         super().__init__(parent)\n@@ -2521,7 +2533,7 @@ def __init__(self, parent=None):\n         hotkey_layout.addWidget(hotkey_desc)\n \n         self._hotkey_combo = QComboBox()\n-        for value, label in self._HOTKEY_OPTIONS:\n+        for value, label in self._hotkey_options():\n             self._hotkey_combo.addItem(label, value)\n         self._hotkey_combo.setStyleSheet(\n             \"QComboBox { padding: 8px; font-size: 14px; background: #27272a; \""
+    },
+    {
+      "sha": "d9fc69e7d3ae9cdf505f168bb1d87cd2721cd9d4",
+      "filename": "src/jarvis/daemon.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1,
+      "changes": 3,
+      "blob_url": "https://github.com/isair/jarvis/blob/679a16c99b860768a28fa0166edf78f2a4074ddd/src%2Fjarvis%2Fdaemon.py",
+      "raw_url": "https://github.com/isair/jarvis/raw/679a16c99b860768a28fa0166edf78f2a4074ddd/src%2Fjarvis%2Fdaemon.py",
+      "contents_url": "https://api.github.com/repos/isair/jarvis/contents/src%2Fjarvis%2Fdaemon.py?ref=679a16c99b860768a28fa0166edf78f2a4074ddd",
+      "patch": "@@ -440,7 +440,8 @@ def _on_dictation_end():\n             dictation.start()\n             _global_dictation_engine = dictation\n             if dictation._started:\n-                hotkey_display = cfg.dictation_hotkey\n+                from jarvis.dictation.dictation_engine import format_hotkey_display\n+                hotkey_display = format_hotkey_display(cfg.dictation_hotkey)\n                 print(f\"🎙️ Dictation enabled (hold {hotkey_display} to dictate)\", flush=True)\n         except Exception as e:\n             debug_log(f\"dictation engine init failed: {e}\", \"dictation\")"
+    },
+    {
+      "sha": "8ce5f4527bc9870b69c5f88e2a535b6816017956",
+      "filename": "src/jarvis/dictation/dictation_engine.py",
+      "status": "modified",
+      "additions": 46,
+      "deletions": 4,
+      "changes": 50,
+      "blob_url": "https://github.com/isair/jarvis/blob/679a16c99b860768a28fa0166edf78f2a4074ddd/src%2Fjarvis%2Fdictation%2Fdictation_engine.py",
+      "raw_url": "https://github.com/isair/jarvis/raw/679a16c99b860768a28fa0166edf78f2a4074ddd/src%2Fjarvis%2Fdictation%2Fdictation_engine.py",
+      "contents_url": "https://api.github.com/repos/isair/jarvis/contents/src%2Fjarvis%2Fdictation%2Fdictation_engine.py?ref=679a16c99b860768a28fa0166edf78f2a4074ddd",
+      "patch": "@@ -215,21 +215,37 @@ def _clipboard_windows(text: str) -> None:\n     user32 = ctypes.windll.user32\n     kernel32 = ctypes.windll.kernel32\n \n+    # Set proper return/argument types so handles aren't truncated on 64-bit.\n+    user32.OpenClipboard.argtypes = [wintypes.HWND]\n+    user32.OpenClipboard.restype = wintypes.BOOL\n+    user32.CloseClipboard.restype = wintypes.BOOL\n+    user32.EmptyClipboard.restype = wintypes.BOOL\n+    user32.SetClipboardData.argtypes = [wintypes.UINT, wintypes.HANDLE]\n+    user32.SetClipboardData.restype = wintypes.HANDLE\n+    kernel32.GlobalAlloc.argtypes = [wintypes.UINT, ctypes.c_size_t]\n+    kernel32.GlobalAlloc.restype = wintypes.HANDLE\n+    kernel32.GlobalLock.argtypes = [wintypes.HANDLE]\n+    kernel32.GlobalLock.restype = ctypes.c_void_p\n+    kernel32.GlobalUnlock.argtypes = [wintypes.HANDLE]\n+    kernel32.GlobalUnlock.restype = wintypes.BOOL\n+    kernel32.GlobalFree.argtypes = [wintypes.HANDLE]\n+    kernel32.GlobalFree.restype = wintypes.HANDLE\n+\n     CF_UNICODETEXT = 13\n     GMEM_MOVEABLE = 0x0002\n \n-    if not user32.OpenClipboard(0):\n-        return\n+    if not user32.OpenClipboard(None):\n+        raise OSError(\"OpenClipboard failed\")\n     try:\n         user32.EmptyClipboard()\n         encoded = text.encode(\"utf-16-le\") + b\"\\x00\\x00\"\n         h = kernel32.GlobalAlloc(GMEM_MOVEABLE, len(encoded))\n         if not h:\n-            return\n+            raise OSError(\"GlobalAlloc failed\")\n         ptr = kernel32.GlobalLock(h)\n         if not ptr:\n             kernel32.GlobalFree(h)\n-            return\n+            raise OSError(\"GlobalLock failed\")\n         ctypes.memmove(ptr, encoded, len(encoded))\n         kernel32.GlobalUnlock(h)\n         user32.SetClipboardData(CF_UNICODETEXT, h)\n@@ -465,9 +481,35 @@ def _llm_clean_dictation(text: str, ollama_base_url: str, model: str = \"gemma4:e\n     \"alt\": \"alt_l\",\n     \"cmd\": \"cmd\",\n     \"super\": \"cmd\",\n+    \"win\": \"cmd\",\n }\n \n \n+def format_hotkey_display(combo: str) -> str:\n+    \"\"\"Format a hotkey string for human-readable display.\n+\n+    On Windows, ``cmd`` is shown as ``Win``.  On macOS, ``cmd`` stays as\n+    ``Cmd`` and ``alt`` becomes ``Option``.  Key parts are title-cased and\n+    joined with `` + ``.\n+    \"\"\"\n+    system = platform.system().lower()\n+    parts = [p.strip().lower() for p in combo.split(\"+\") if p.strip()]\n+\n+    display_parts: list[str] = []\n+    for part in parts:\n+        if part in (\"cmd\", \"super\", \"win\"):\n+            if system == \"windows\":\n+                display_parts.append(\"Win\")\n+            else:\n+                display_parts.append(\"Cmd\")\n+        elif part == \"alt\" and system == \"darwin\":\n+            display_parts.append(\"Option\")\n+        else:\n+            display_parts.append(part.capitalize())\n+\n+    return \" + \".join(display_parts)\n+\n+\n def parse_hotkey(combo: str):\n     \"\"\"Parse a hotkey string like ``'ctrl+shift+d'`` into pynput key objects.\n "
+    },
+    {
+      "sha": "0f580a35ada2afc1517082f3d59e8d5cd7c6a9bf",
+      "filename": "tests/test_dictation.py",
+      "status": "modified",
+      "additions": 97,
+      "deletions": 0,
+      "changes": 97,
+      "blob_url": "https://github.com/isair/jarvis/blob/679a16c99b860768a28fa0166edf78f2a4074ddd/tests%2Ftest_dictation.py",
+      "raw_url": "https://github.com/isair/jarvis/raw/679a16c99b860768a28fa0166edf78f2a4074ddd/tests%2Ftest_dictation.py",
+      "contents_url": "https://api.github.com/repos/isair/jarvis/contents/tests%2Ftest_dictation.py?ref=679a16c99b860768a28fa0166edf78f2a4074ddd",
+      "patch": "@@ -672,3 +672,100 @@ def test_voice_listener_has_transcribe_lock(self, listener):\n         \"\"\"VoiceListener should expose a transcribe_lock.\"\"\"\n         assert hasattr(listener, \"transcribe_lock\")\n         assert isinstance(listener.transcribe_lock, type(threading.Lock()))\n+\n+\n+# ---------------------------------------------------------------------------\n+# format_hotkey_display\n+# ---------------------------------------------------------------------------\n+\n+class TestFormatHotkeyDisplay:\n+    \"\"\"Tests for platform-aware hotkey display formatting.\"\"\"\n+\n+    @patch(\"src.jarvis.dictation.dictation_engine.platform\")\n+    def test_windows_cmd_shows_win(self, mock_platform):\n+        from src.jarvis.dictation.dictation_engine import format_hotkey_display\n+        mock_platform.system.return_value = \"Windows\"\n+        assert format_hotkey_display(\"ctrl+cmd\") == \"Ctrl + Win\"\n+\n+    @patch(\"src.jarvis.dictation.dictation_engine.platform\")\n+    def test_windows_super_shows_win(self, mock_platform):\n+        from src.jarvis.dictation.dictation_engine import format_hotkey_display\n+        mock_platform.system.return_value = \"Windows\"\n+        assert format_hotkey_display(\"ctrl+super\") == \"Ctrl + Win\"\n+\n+    @patch(\"src.jarvis.dictation.dictation_engine.platform\")\n+    def test_windows_win_shows_win(self, mock_platform):\n+        from src.jarvis.dictation.dictation_engine import format_hotkey_display\n+        mock_platform.system.return_value = \"Windows\"\n+        assert format_hotkey_display(\"ctrl+win\") == \"Ctrl + Win\"\n+\n+    @patch(\"src.jarvis.dictation.dictation_engine.platform\")\n+    def test_macos_cmd_shows_cmd(self, mock_platform):\n+        from src.jarvis.dictation.dictation_engine import format_hotkey_display\n+        mock_platform.system.return_value = \"Darwin\"\n+        assert format_hotkey_display(\"ctrl+cmd\") == \"Ctrl + Cmd\"\n+\n+    @patch(\"src.jarvis.dictation.dictation_engine.platform\")\n+    def test_macos_alt_shows_option(self, mock_platform):\n+        from src.jarvis.dictation.dictation_engine import format_hotkey_display\n+        mock_platform.system.return_value = \"Darwin\"\n+        assert format_hotkey_display(\"ctrl+alt\") == \"Ctrl + Option\"\n+\n+    @patch(\"src.jarvis.dictation.dictation_engine.platform\")\n+    def test_ctrl_shift_d(self, mock_platform):\n+        from src.jarvis.dictation.dictation_engine import format_hotkey_display\n+        mock_platform.system.return_value = \"Windows\"\n+        assert format_hotkey_display(\"ctrl+shift+d\") == \"Ctrl + Shift + D\"\n+\n+    @patch(\"src.jarvis.dictation.dictation_engine.platform\")\n+    def test_linux_alt_stays_alt(self, mock_platform):\n+        from src.jarvis.dictation.dictation_engine import format_hotkey_display\n+        mock_platform.system.return_value = \"Linux\"\n+        assert format_hotkey_display(\"ctrl+alt\") == \"Ctrl + Alt\"\n+\n+\n+# ---------------------------------------------------------------------------\n+# _clipboard_windows ctypes correctness\n+# ---------------------------------------------------------------------------\n+\n+class TestClipboardWindowsCtypes:\n+    \"\"\"Verify _clipboard_windows sets proper ctypes return types.\"\"\"\n+\n+    @pytest.mark.skipif(\n+        __import__(\"sys\").platform != \"win32\",\n+        reason=\"Windows-only clipboard API\",\n+    )\n+    def test_clipboard_windows_roundtrip(self):\n+        \"\"\"Write to clipboard and read back to verify ctypes bindings.\"\"\"\n+        import ctypes\n+        from ctypes import wintypes\n+        from src.jarvis.dictation.dictation_engine import _clipboard_windows\n+\n+        test_text = \"dictation test 🎙️\"\n+        _clipboard_windows(test_text)\n+\n+        # Read back from clipboard\n+        user32 = ctypes.windll.user32\n+        kernel32 = ctypes.windll.kernel32\n+        user32.OpenClipboard.argtypes = [wintypes.HWND]\n+        user32.OpenClipboard.restype = wintypes.BOOL\n+        user32.GetClipboardData.argtypes = [wintypes.UINT]\n+        user32.GetClipboardData.restype = wintypes.HANDLE\n+        user32.CloseClipboard.restype = wintypes.BOOL\n+        kernel32.GlobalLock.argtypes = [wintypes.HANDLE]\n+        kernel32.GlobalLock.restype = ctypes.c_void_p\n+        kernel32.GlobalUnlock.argtypes = [wintypes.HANDLE]\n+        kernel32.GlobalUnlock.restype = wintypes.BOOL\n+\n+        CF_UNICODETEXT = 13\n+        assert user32.OpenClipboard(None)\n+        try:\n+            h = user32.GetClipboardData(CF_UNICODETEXT)\n+            assert h, \"GetClipboardData returned NULL\"\n+            ptr = kernel32.GlobalLock(h)\n+            assert ptr, \"GlobalLock returned NULL\"\n+            result = ctypes.wstring_at(ptr)\n+            kernel32.GlobalUnlock(h)\n+            assert result == test_text\n+        finally:\n+            user32.CloseClipboard()"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "679a16c99b860768a28fa0166edf78f2a4074ddd",
+      "message": "fix: dictation paste broken on Windows and hotkey displayed as 'cmd'\n\nTwo issues fixed:\n\n1. Clipboard write silently failed on 64-bit Windows because ctypes\n   functions (GlobalAlloc, GlobalLock, etc.) defaulted to c_int return\n   types, truncating 64-bit handles. Now sets proper restype/argtypes\n   and raises on failure instead of silently returning.\n\n2. UI and logs showed raw 'ctrl+cmd' on Windows instead of 'Ctrl + Win'.\n   Added format_hotkey_display() that maps key names to platform-native\n   labels (Win on Windows, Cmd on macOS, Option for Alt on macOS).\n   Updated daemon log, setup wizard, and settings window to use it.\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+      "parent_shas": [
+        "424137025b8376e2f7e75a5326b45e32d25462e5"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_code",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": true,
+    "touches_source_language": false,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__isair__jarvis__pr188.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\isair__jarvis__pr188__cpp_python__isair__jarvis__pr188\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\isair__jarvis__pr188__cpp_python__isair__jarvis__pr188\\rn"
+  }
+}

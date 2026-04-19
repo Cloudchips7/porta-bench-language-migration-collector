@@ -1,0 +1,158 @@
+{
+  "instance_id": "py2_py3__MarkusNeusinger__anyplot__pr5048",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "MarkusNeusinger/anyplot",
+  "pr_number": 5048,
+  "pr_url": "https://github.com/MarkusNeusinger/anyplot/pull/5048",
+  "repo": {
+    "full_name": "MarkusNeusinger/anyplot",
+    "clone_url": "https://github.com/MarkusNeusinger/anyplot.git",
+    "default_branch": "main",
+    "created_at": "2025-11-18T18:15:06Z",
+    "stars": 7,
+    "license": "MIT",
+    "size_kb": 33528
+  },
+  "pull_request": {
+    "id": 3422173359,
+    "title": "feat(pygal): implement histogram-capability",
+    "body": "## Implementation: `histogram-capability` - pygal\n\nImplements the **pygal** version of `histogram-capability`.\n\n**File:** `plots/histogram-capability/implementations/pygal.py`\n\n**Parent Issue:** #4552\n\n---\n:robot: *[impl-generate workflow](https://github.com/MarkusNeusinger/pyplots/actions/runs/23318228545)*",
+    "created_at": "2026-03-19T21:44:30Z",
+    "merged_at": "2026-03-19T22:20:54Z",
+    "base_sha": "9861b05af903a3ba27cd117b189aac78a37501cb",
+    "head_sha": "01b9ea08a16a05b765a8ccf3354ef6f181c160d7",
+    "merge_commit_sha": "2fa376653d21e266f3e257d191a84892b5eec26d",
+    "labels": [
+      "ai-attempt-1",
+      "ai-attempt-2",
+      "ai-attempt-3",
+      "ai-approved",
+      "quality:78",
+      "quality:82",
+      "quality:84",
+      "quality:81"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "ae4f75e36c9844f2faf49e0ecd360fe9cec9097c",
+  "final_sha": "01b9ea08a16a05b765a8ccf3354ef6f181c160d7",
+  "changed_files": [
+    {
+      "sha": "68ff01f59b03e99025e09b4c1cd62c618f280795",
+      "filename": "plots/histogram-capability/implementations/pygal.py",
+      "status": "added",
+      "additions": 133,
+      "deletions": 0,
+      "changes": 133,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/01b9ea08a16a05b765a8ccf3354ef6f181c160d7/plots%2Fhistogram-capability%2Fimplementations%2Fpygal.py",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/01b9ea08a16a05b765a8ccf3354ef6f181c160d7/plots%2Fhistogram-capability%2Fimplementations%2Fpygal.py",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fhistogram-capability%2Fimplementations%2Fpygal.py?ref=01b9ea08a16a05b765a8ccf3354ef6f181c160d7",
+      "patch": "@@ -0,0 +1,133 @@\n+\"\"\" pyplots.ai\n+histogram-capability: Process Capability Plot with Specification Limits\n+Library: pygal 3.1.0 | Python 3.14.3\n+Quality: 82/100 | Created: 2026-03-19\n+\"\"\"\n+\n+import numpy as np\n+import pygal\n+from pygal.style import Style\n+from scipy import stats\n+\n+\n+# Data - Shaft diameter measurements (mm)\n+np.random.seed(42)\n+lsl = 9.95\n+usl = 10.05\n+target = 10.00\n+measurements = np.random.normal(loc=10.002, scale=0.012, size=200)\n+\n+# Statistics\n+mean = np.mean(measurements)\n+sigma = np.std(measurements, ddof=1)\n+cp = (usl - lsl) / (6 * sigma)\n+cpk = min((usl - mean) / (3 * sigma), (mean - lsl) / (3 * sigma))\n+\n+# Histogram bins\n+n_bins = 20\n+counts, bin_edges = np.histogram(measurements, bins=n_bins)\n+bin_width = bin_edges[1] - bin_edges[0]\n+\n+# Normal curve - use fewer, wider bars for a clean envelope look\n+n_curve_pts = 60\n+x_curve = np.linspace(mean - 4 * sigma, mean + 4 * sigma, n_curve_pts)\n+y_curve = stats.norm.pdf(x_curve, mean, sigma) * len(measurements) * bin_width\n+dx_curve = x_curve[1] - x_curve[0]\n+\n+# Style - colorblind-safe palette with distinct colors per series\n+# Order: histogram(blue), curve(purple), LSL(orange), USL(orange), target(teal), mean(gray)\n+custom_style = Style(\n+    background=\"white\",\n+    plot_background=\"white\",\n+    foreground=\"#333333\",\n+    foreground_strong=\"#333333\",\n+    foreground_subtle=\"#e0e0e0\",\n+    colors=(\"#306998\", \"#8e44ad\", \"#d35400\", \"#d35400\", \"#16a085\", \"#555555\"),\n+    title_font_size=64,\n+    label_font_size=44,\n+    major_label_font_size=40,\n+    legend_font_size=38,\n+    value_font_size=28,\n+    stroke_width=4,\n+    opacity=0.80,\n+    opacity_hover=0.90,\n+    font_family=\"'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif\",\n+)\n+\n+# Chart\n+y_ceil = float(max(counts) * 1.3)\n+chart = pygal.Histogram(\n+    width=4800,\n+    height=2700,\n+    style=custom_style,\n+    title=\"histogram-capability · pygal · pyplots.ai  |  Cp = {:.2f}  ·  Cpk = {:.2f}\".format(cp, cpk),\n+    x_title=\"Shaft Diameter (mm)\",\n+    y_title=\"Frequency\",\n+    show_legend=True,\n+    legend_at_bottom=True,\n+    legend_box_size=28,\n+    show_y_guides=True,\n+    show_x_guides=False,\n+    truncate_label=-1,\n+    truncate_legend=-1,\n+    margin_top=40,\n+    margin_right=60,\n+    margin_bottom=30,\n+    margin_left=20,\n+    x_value_formatter=lambda x: f\"{x:.3f}\",\n+    y_value_formatter=lambda y: f\"{y:.0f}\",\n+    xrange=(lsl - 3 * sigma, usl + 3 * sigma),\n+    range=(0, y_ceil),\n+    css=[\n+        \"file://style.css\",\n+        \"inline:.plot .background {fill: white !important; stroke: none !important;}\",\n+        \"inline:.graph > .background {fill: white !important; stroke: none !important;}\",\n+        \"inline:.axis .guides .line {stroke: #e0e0e0 !important; stroke-width: 0.8px;}\",\n+        \"inline:.axis.x > path.line {stroke: none !important;}\",\n+        \"inline:.axis.y > path.line {stroke: none !important;}\",\n+        \"inline:text.title {font-weight: 600 !important; fill: #222222 !important;}\",\n+        \"inline:.legends text {font-weight: 400 !important; fill: #444444 !important;}\",\n+    ],\n+    js=[],\n+)\n+\n+# Histogram bars using pygal.Histogram native format: (height, start, end)\n+hist_data = [(float(counts[i]), float(bin_edges[i]), float(bin_edges[i + 1])) for i in range(len(counts))]\n+chart.add(\"Measurements\", hist_data)\n+\n+# Normal distribution curve - fewer wider bars for smooth envelope appearance\n+curve_data = [(float(y), float(x), float(x + dx_curve)) for x, y in zip(x_curve, y_curve, strict=True)]\n+chart.add(\"Normal fit\", curve_data, stroke_style={\"width\": 3, \"linecap\": \"round\"})\n+\n+# LSL vertical line - wide bar for visibility\n+line_width = 0.0008\n+chart.add(\n+    \"LSL (9.95)\",\n+    [(y_ceil, float(lsl - line_width), float(lsl + line_width))],\n+    stroke_style={\"width\": 8, \"dasharray\": \"18,8\"},\n+)\n+\n+# USL vertical line\n+chart.add(\n+    \"USL (10.05)\",\n+    [(y_ceil, float(usl - line_width), float(usl + line_width))],\n+    stroke_style={\"width\": 8, \"dasharray\": \"18,8\"},\n+)\n+\n+# Target vertical line - teal, distinct from orange spec limits\n+chart.add(\n+    \"Target (10.00)\",\n+    [(y_ceil, float(target - line_width), float(target + line_width))],\n+    stroke_style={\"width\": 6, \"dasharray\": \"12,6\"},\n+)\n+\n+# Mean vertical line - dark gray, dotted pattern\n+chart.add(\n+    f\"Mean ({mean:.3f})\",\n+    [(y_ceil, float(mean - line_width / 2), float(mean + line_width / 2))],\n+    stroke_style={\"width\": 4, \"dasharray\": \"4,8\"},\n+)\n+\n+# Save\n+chart.render_to_png(\"plot.png\")\n+chart.render_to_file(\"plot.html\")"
+    },
+    {
+      "sha": "f95c5c50ca2a3492c9c1a827d8cc106ae46e6c3a",
+      "filename": "plots/histogram-capability/metadata/pygal.yaml",
+      "status": "added",
+      "additions": 238,
+      "deletions": 0,
+      "changes": 238,
+      "blob_url": "https://github.com/MarkusNeusinger/anyplot/blob/01b9ea08a16a05b765a8ccf3354ef6f181c160d7/plots%2Fhistogram-capability%2Fmetadata%2Fpygal.yaml",
+      "raw_url": "https://github.com/MarkusNeusinger/anyplot/raw/01b9ea08a16a05b765a8ccf3354ef6f181c160d7/plots%2Fhistogram-capability%2Fmetadata%2Fpygal.yaml",
+      "contents_url": "https://api.github.com/repos/MarkusNeusinger/anyplot/contents/plots%2Fhistogram-capability%2Fmetadata%2Fpygal.yaml?ref=01b9ea08a16a05b765a8ccf3354ef6f181c160d7",
+      "patch": "@@ -0,0 +1,238 @@\n+library: pygal\n+specification_id: histogram-capability\n+created: '2026-03-19T21:44:26Z'\n+updated: '2026-03-19T22:20:36Z'\n+generated_by: claude-opus-4-5-20251101\n+workflow_run: 23318228545\n+issue: 4552\n+python_version: 3.14.3\n+library_version: 3.1.0\n+preview_url: https://storage.googleapis.com/pyplots-images/plots/histogram-capability/pygal/plot.png\n+preview_thumb: https://storage.googleapis.com/pyplots-images/plots/histogram-capability/pygal/plot_thumb.png\n+preview_html: https://storage.googleapis.com/pyplots-images/plots/histogram-capability/pygal/plot.html\n+quality_score: 82\n+review:\n+  strengths:\n+  - 'Perfect code quality: clean KISS structure, reproducible seed, elegant workarounds\n+    for pygal limitations'\n+  - Strong data quality with realistic manufacturing context (shaft diameter measurements)\n+  - 'Good use of pygal-specific features: CSS overrides for spine removal, inline\n+    styling, native Histogram format'\n+  - 'Comprehensive feature set: histogram, normal fit, LSL/USL, target, mean, Cp/Cpk\n+    all present'\n+  - Custom style with explicit font sizes, custom font family, and intentional color\n+    palette\n+  weaknesses:\n+  - LSL/USL specification limit lines render as tall pink bars at plot edges, looking\n+    like decorative borders rather than meaningful reference lines\n+  - Normal distribution curve appears as stepped bars rather than a smooth curve (pygal\n+    limitation)\n+  - Mean line (gray) is hard to distinguish from target line (teal) at this scale\n+  - Title is right-aligned rather than centered, creating slight visual imbalance\n+  image_description: The plot displays a process capability histogram rendered with\n+    pygal. Blue histogram bars represent 200 shaft diameter measurements (mm) distributed\n+    in a bell-curve shape centered near 10.002. A lavender/purple normal distribution\n+    fit is overlaid as many thin histogram bars creating a bell-curve envelope shape.\n+    Two tall pink/salmon vertical bars at the extreme left and right edges of the\n+    plot mark LSL (9.95) and USL (10.05) — these visually resemble border decorations\n+    rather than distinct specification limit lines. A thin teal vertical line marks\n+    the Target (10.00) at center, and a thin gray vertical line marks the Mean (10.002).\n+    The title at top right reads \"histogram-capability · pygal · pyplots.ai | Cp =\n+    1.49 · Cpk = 1.45\". X-axis is labeled \"Shaft Diameter (mm)\" ranging from 9.950\n+    to 10.050. Y-axis is labeled \"Frequency\" ranging from 0 to 40. A six-entry legend\n+    at the bottom identifies Measurements, Normal fit, LSL (9.95), USL (10.05), Target\n+    (10.00), and Mean (10.002). Background is clean white with subtle horizontal grid\n+    lines and axis spines removed via CSS.\n+  criteria_checklist:\n+    visual_quality:\n+      score: 25\n+      max: 30\n+      items:\n+      - id: VQ-01\n+        name: Text Legibility\n+        score: 7\n+        max: 8\n+        passed: true\n+        comment: 'All font sizes explicitly set (title=64, label=44, major_label=40,\n+          legend=38, value=28). All text clearly readable. Minor: title right-aligned.'\n+      - id: VQ-02\n+        name: No Overlap\n+        score: 6\n+        max: 6\n+        passed: true\n+        comment: No text collisions. Legend entries well-spaced. X-axis labels clear.\n+      - id: VQ-03\n+        name: Element Visibility\n+        score: 4\n+        max: 6\n+        passed: false\n+        comment: LSL/USL rendered as tall wide pink bars at extreme edges — read as\n+          border decorations. Mean line hard to distinguish.\n+      - id: VQ-04\n+        name: Color Accessibility\n+        score: 3\n+        max: 4\n+        passed: true\n+        comment: Blue, purple, pink, teal, gray mostly distinguishable. Purple/blue\n+          overlap could challenge some colorblind types.\n+      - id: VQ-05\n+        name: Layout & Canvas\n+        score: 3\n+        max: 4\n+        passed: true\n+        comment: Plot fills good portion of canvas. Title right-alignment creates\n+          slight imbalance.\n+      - id: VQ-06\n+        name: Axis Labels & Title\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: Shaft Diameter (mm) with units, Frequency — descriptive and appropriate.\n+    design_excellence:\n+      score: 12\n+      max: 20\n+      items:\n+      - id: DE-01\n+        name: Aesthetic Sophistication\n+        score: 5\n+        max: 8\n+        passed: true\n+        comment: Custom color palette, custom font family, CSS overrides for spine\n+          removal. Goes beyond defaults. Pink LSL/USL bars reduce polish.\n+      - id: DE-02\n+        name: Visual Refinement\n+        score: 4\n+        max: 6\n+        passed: true\n+        comment: CSS removes axis spines and axis lines, y-guides only, white background,\n+          custom fonts.\n+      - id: DE-03\n+        name: Data Storytelling\n+        score: 3\n+        max: 6\n+        passed: false\n+        comment: Cp/Cpk in title tells capability story. LSL/USL rendering as border-like\n+          bars diminishes narrative clarity.\n+    spec_compliance:\n+      score: 14\n+      max: 15\n+      items:\n+      - id: SC-01\n+        name: Plot Type\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Histogram with normal distribution overlay — correct chart type.\n+      - id: SC-02\n+        name: Required Features\n+        score: 3\n+        max: 4\n+        passed: true\n+        comment: All features present. Normal curve is stepped bars (pygal limitation).\n+          Cp/Cpk in title rather than separate annotations.\n+      - id: SC-03\n+        name: Data Mapping\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: X-axis correctly maps shaft diameter, Y-axis maps frequency.\n+      - id: SC-04\n+        name: Title & Legend\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: Title format correct with Cp/Cpk. Legend labels descriptive with\n+          actual values.\n+    data_quality:\n+      score: 14\n+      max: 15\n+      items:\n+      - id: DQ-01\n+        name: Feature Coverage\n+        score: 5\n+        max: 6\n+        passed: true\n+        comment: 'Comprehensive coverage: histogram, normal fit, spec limits, target,\n+          mean, Cp/Cpk. Process is quite capable — a less ideal process would be more\n+          diagnostic.'\n+      - id: DQ-02\n+        name: Realistic Context\n+        score: 5\n+        max: 5\n+        passed: true\n+        comment: Shaft diameter measurements in mm for manufacturing quality control.\n+          Real-world engineering scenario.\n+      - id: DQ-03\n+        name: Appropriate Scale\n+        score: 4\n+        max: 4\n+        passed: true\n+        comment: 200 measurements, 0.1mm tolerance on 10mm shaft. Realistic for precision\n+          machining.\n+    code_quality:\n+      score: 10\n+      max: 10\n+      items:\n+      - id: CQ-01\n+        name: KISS Structure\n+        score: 3\n+        max: 3\n+        passed: true\n+        comment: 'Clean linear flow: imports, data, statistics, style, chart, series,\n+          save.'\n+      - id: CQ-02\n+        name: Reproducibility\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: np.random.seed(42) ensures deterministic output.\n+      - id: CQ-03\n+        name: Clean Imports\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: numpy, pygal, Style, scipy.stats — all used.\n+      - id: CQ-04\n+        name: Code Elegance\n+        score: 2\n+        max: 2\n+        passed: true\n+        comment: Well-organized, creative workarounds for pygal limitations. No fake\n+          functionality.\n+      - id: CQ-05\n+        name: Output & API\n+        score: 1\n+        max: 1\n+        passed: true\n+        comment: Saves as plot.png via render_to_png(). Current API.\n+    library_mastery:\n+      score: 7\n+      max: 10\n+      items:\n+      - id: LM-01\n+        name: Idiomatic Usage\n+        score: 4\n+        max: 5\n+        passed: true\n+        comment: Uses pygal.Histogram with native (height, start, end) format, custom\n+          Style, proper chart config.\n+      - id: LM-02\n+        name: Distinctive Features\n+        score: 3\n+        max: 5\n+        passed: true\n+        comment: CSS override system, HTML export alongside PNG, native Histogram\n+          tuple format.\n+  verdict: REJECTED\n+impl_tags:\n+  dependencies:\n+  - scipy\n+  techniques:\n+  - html-export\n+  patterns:\n+  - data-generation\n+  dataprep:\n+  - binning\n+  styling:\n+  - grid-styling\n+  - alpha-blending"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "1938bb8b9aa5beb7e4294a9d04998415e20829de",
+      "message": "feat(pygal): implement histogram-capability",
+      "parent_shas": [
+        "ae4f75e36c9844f2faf49e0ecd360fe9cec9097c"
+      ]
+    },
+    {
+      "sha": "125c254ac51309ea90d0b1b167d0d558741cfeed",
+      "message": "chore(pygal): add metadata for histogram-capability",
+      "parent_shas": [
+        "1938bb8b9aa5beb7e4294a9d04998415e20829de"
+      ]
+    },
+    {
+      "sha": "e13c1c1f33bff3279cad105327447987b02346a5",
+      "message": "chore(pygal): update quality score 81 and review feedback for histogram-capability",
+      "parent_shas": [
+        "125c254ac51309ea90d0b1b167d0d558741cfeed"
+      ]
+    },
+    {
+      "sha": "69016234daa446c81079cd1766fd37c9289a4540",
+      "message": "fix(pygal): address review feedback for histogram-capability\n\nAttempt 1/3 - fixes based on AI review",
+      "parent_shas": [
+        "e13c1c1f33bff3279cad105327447987b02346a5"
+      ]
+    },
+    {
+      "sha": "b972ab69ca784a6f5ea742588e2dad1f30d4a160",
+      "message": "chore(pygal): update quality score 84 and review feedback for histogram-capability",
+      "parent_shas": [
+        "69016234daa446c81079cd1766fd37c9289a4540"
+      ]
+    },
+    {
+      "sha": "e4b9c961189c431968f48434e744e494c5291348",
+      "message": "fix(pygal): address review feedback for histogram-capability\n\nAttempt 2/3 - fixes based on AI review",
+      "parent_shas": [
+        "b972ab69ca784a6f5ea742588e2dad1f30d4a160"
+      ]
+    },
+    {
+      "sha": "18c6c7cf31c616c67c12673ca7a9f0937a54ea40",
+      "message": "chore(pygal): update quality score 78 and review feedback for histogram-capability",
+      "parent_shas": [
+        "e4b9c961189c431968f48434e744e494c5291348"
+      ]
+    },
+    {
+      "sha": "505718d8abf1805e9484a303adf140d80de2f6f7",
+      "message": "chore(pygal): update quality score 82 and review feedback for histogram-capability",
+      "parent_shas": [
+        "18c6c7cf31c616c67c12673ca7a9f0937a54ea40"
+      ]
+    },
+    {
+      "sha": "01b9ea08a16a05b765a8ccf3354ef6f181c160d7",
+      "message": "Merge branch 'main' into implementation/histogram-capability/pygal",
+      "parent_shas": [
+        "505718d8abf1805e9484a303adf140d80de2f6f7",
+        "9861b05af903a3ba27cd117b189aac78a37501cb"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr"
+    ],
+    "auto_signals": [
+      "bot_generated",
+      "keyword_match",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__MarkusNeusinger__anyplot__pr5048.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr5048__py2_py3__MarkusNeusinger__anyplot__pr5048\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\MarkusNeusinger__anyplot__pr5048__py2_py3__MarkusNeusinger__anyplot__pr5048\\rn"
+  }
+}

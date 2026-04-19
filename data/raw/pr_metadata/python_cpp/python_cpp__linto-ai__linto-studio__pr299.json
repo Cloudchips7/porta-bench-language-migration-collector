@@ -1,0 +1,146 @@
+{
+  "instance_id": "python_cpp__linto-ai__linto-studio__pr299",
+  "scenario": "language_migration",
+  "subtype": "python_cpp",
+  "repo_full_name": "linto-ai/linto-studio",
+  "pr_number": 299,
+  "pr_url": "https://github.com/linto-ai/linto-studio/pull/299",
+  "repo": {
+    "full_name": "linto-ai/linto-studio",
+    "clone_url": "https://github.com/linto-ai/linto-studio.git",
+    "default_branch": "master",
+    "created_at": "2020-05-13T12:25:22Z",
+    "stars": 52,
+    "license": "AGPL-3.0",
+    "size_kb": 182104
+  },
+  "pull_request": {
+    "id": 3509712922,
+    "title": "Linto sdk python",
+    "body": "",
+    "created_at": "2026-04-09T16:37:11Z",
+    "merged_at": "2026-04-10T12:11:00Z",
+    "base_sha": "b28bd47f0024a7bd3d18107407d42d0ecd667d00",
+    "head_sha": "f2d5704364e93caf82a6033c81393b3f12ff0b70",
+    "merge_commit_sha": "0308bb056b604a84a32804d0fbe0596c4091f689",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_k"
+  ],
+  "base_sha": "0d1ec032ae7d323875293fd7624de134cbdd4f59",
+  "final_sha": "f2d5704364e93caf82a6033c81393b3f12ff0b70",
+  "changed_files": [
+    {
+      "sha": "1297d397b601eda623d9efe21c4de25cd2c82649",
+      "filename": "studio-api/components/WebServer/routecontrollers/conversation/share.js",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 4,
+      "changes": 11,
+      "blob_url": "https://github.com/linto-ai/linto-studio/blob/f2d5704364e93caf82a6033c81393b3f12ff0b70/studio-api%2Fcomponents%2FWebServer%2Froutecontrollers%2Fconversation%2Fshare.js",
+      "raw_url": "https://github.com/linto-ai/linto-studio/raw/f2d5704364e93caf82a6033c81393b3f12ff0b70/studio-api%2Fcomponents%2FWebServer%2Froutecontrollers%2Fconversation%2Fshare.js",
+      "contents_url": "https://api.github.com/repos/linto-ai/linto-studio/contents/studio-api%2Fcomponents%2FWebServer%2Froutecontrollers%2Fconversation%2Fshare.js?ref=f2d5704364e93caf82a6033c81393b3f12ff0b70",
+      "patch": "@@ -104,10 +104,11 @@ async function updateConversationRights(req, res, next) {\n         let sharedBy = await model.users.getById(req.payload.data.userId)\n \n         if (sharedBy.length !== 1) throw new UserNotFound()\n+        const sharedByEmail = sharedBy[0].email || sharedBy[0].firstname || \"LinTO Studio\"\n         await Mailing.conversationRightUpdate(\n           user,\n           req,\n-          sharedBy[0].email,\n+          sharedByEmail,\n           req.params.conversationId,\n         )\n       }\n@@ -116,11 +117,12 @@ async function updateConversationRights(req, res, next) {\n     if (!isUpdated) {\n       let sharedBy = await model.users.getById(req.payload.data.userId)\n       if (sharedBy.length !== 1) throw new UserNotFound()\n+      const sharedByEmail = sharedBy[0].email || sharedBy[0].firstname || \"LinTO Studio\"\n \n       Mailing.conversationShared(\n         user,\n         req,\n-        sharedBy[0].email,\n+        sharedByEmail,\n         req.params.conversationId,\n       )\n \n@@ -174,14 +176,15 @@ async function inviteNewUser(req, res, next) {\n         throw new UserError()\n       }\n \n-      // Share converation to created user\n+      // Share conversation to created user\n       const sharedBy = await model.users.getById(req.payload.data.userId)\n       if (sharedBy.length !== 1) throw new UserNotFound()\n+      const sharedByEmail = sharedBy[0].email || sharedBy[0].firstname || \"LinTO Studio\"\n       await Mailing.conversationSharedNewUser(\n         email,\n         req,\n         magicId,\n-        sharedBy[0].email,\n+        sharedByEmail,\n         req.params.conversationId,\n       )\n "
+    },
+    {
+      "sha": "77c42e3d17b5618f8d090e2a485baad4e4a8fb9e",
+      "filename": "studio-api/lib/mailer/mailing.js",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 3,
+      "changes": 10,
+      "blob_url": "https://github.com/linto-ai/linto-studio/blob/f2d5704364e93caf82a6033c81393b3f12ff0b70/studio-api%2Flib%2Fmailer%2Fmailing.js",
+      "raw_url": "https://github.com/linto-ai/linto-studio/raw/f2d5704364e93caf82a6033c81393b3f12ff0b70/studio-api%2Flib%2Fmailer%2Fmailing.js",
+      "contents_url": "https://api.github.com/repos/linto-ai/linto-studio/contents/studio-api%2Flib%2Fmailer%2Fmailing.js?ref=f2d5704364e93caf82a6033c81393b3f12ff0b70",
+      "patch": "@@ -30,9 +30,13 @@ class Mailing {\n     try {\n       if (user.emailIsVerified === false) {\n         // check if the user has a verified email\n-        if (user.verifiedEmail.length === 0) return false\n-\n-        user.email = user.verifiedEmail[user.verifiedEmail.length - 1] // use the last verified email\n+        if (user.verifiedEmail && user.verifiedEmail.length > 0) {\n+          user.email = user.verifiedEmail[user.verifiedEmail.length - 1] // use the last verified email\n+        } else if (!user.email) {\n+          // No verified email and no primary email — skip notification\n+          return false\n+        }\n+        // If user has a primary email (e.g. external user created via sharing), allow sending\n       }\n \n       if (user.emailNotifications === undefined) {"
+    },
+    {
+      "sha": "65b80660151a5f3b834f670d011ba6d212138832",
+      "filename": "studio-sdk/python/linto/main.py",
+      "status": "modified",
+      "additions": 104,
+      "deletions": 0,
+      "changes": 104,
+      "blob_url": "https://github.com/linto-ai/linto-studio/blob/f2d5704364e93caf82a6033c81393b3f12ff0b70/studio-sdk%2Fpython%2Flinto%2Fmain.py",
+      "raw_url": "https://github.com/linto-ai/linto-studio/raw/f2d5704364e93caf82a6033c81393b3f12ff0b70/studio-sdk%2Fpython%2Flinto%2Fmain.py",
+      "contents_url": "https://api.github.com/repos/linto-ai/linto-studio/contents/studio-sdk%2Fpython%2Flinto%2Fmain.py?ref=f2d5704364e93caf82a6033c81393b3f12ff0b70",
+      "patch": "@@ -1,5 +1,6 @@\n from .services.studioApiService import StudioApiService\n from .services.pollingService import PollingService\n+from .services.summaryPollingService import SummaryPollingService\n from datetime import datetime\n \n \n@@ -26,3 +27,106 @@ async def transcribe(self, file, enable_diarization=True, number_of_speaker=\"0\",\n \n     async def list_services(self):\n         return await self.api_service.fetch_asr_services()\n+\n+    async def list_llm_services(self):\n+        \"\"\"List available LLM services.\"\"\"\n+        return await self.api_service.fetch_llm_services()\n+\n+    async def summarize(self, conversation_id, service_route, flavor=None):\n+        \"\"\"Trigger LLM summary and return a polling handle.\n+\n+        Returns a SummaryPollingService emitting \"done\", \"error\", \"update\" events.\n+        \"\"\"\n+        await self.api_service.trigger_summary(\n+            conversationId=conversation_id,\n+            format=service_route,\n+            flavor=flavor,\n+        )\n+        return SummaryPollingService(\n+            conversation_id, service_route, self.api_service\n+        )\n+\n+    async def get_export_list(self, conversation_id):\n+        \"\"\"Get list of exports for a conversation.\"\"\"\n+        return await self.api_service.get_export_list(\n+            conversationId=conversation_id\n+        )\n+\n+    async def get_export_content(self, conversation_id, job_id):\n+        \"\"\"Get the content of a completed export.\"\"\"\n+        return await self.api_service.get_export_content(\n+            conversationId=conversation_id,\n+            jobId=job_id,\n+        )\n+\n+    async def share_conversation(self, conversation_id, email, right=1):\n+        \"\"\"Share a conversation with a user by email (READ access by default).\n+\n+        LinTO Studio sends the notification email automatically.\n+        \"\"\"\n+        return await self.api_service.share_conversation(\n+            conversationId=conversation_id, email=email, right=right\n+        )\n+\n+    async def search_users(self, search):\n+        \"\"\"Search users by email or name.\"\"\"\n+        return await self.api_service.search_users(search=search)\n+\n+    async def update_conversation(self, conversation_id, data):\n+        \"\"\"Update conversation fields (owner, sharedWithUsers, etc.).\"\"\"\n+        return await self.api_service.update_conversation(\n+            conversationId=conversation_id, data=data\n+        )\n+\n+    async def set_conversation_owner(self, conversation_id, email):\n+        \"\"\"Set conversation owner by email. Removes all other access rights.\n+\n+        Searches for the user by email, then updates the conversation\n+        owner and clears sharedWithUsers and customRights.\n+        Returns the userId if successful, None otherwise.\n+        \"\"\"\n+        users = await self.search_users(email)\n+        if not users:\n+            return None\n+\n+        user_id = None\n+        for u in users:\n+            if u.get(\"email\", \"\").lower() == email.lower():\n+                user_id = str(u.get(\"_id\", \"\"))\n+                break\n+\n+        if not user_id:\n+            return None\n+\n+        await self.update_conversation(conversation_id, {\n+            \"owner\": user_id,\n+            \"sharedWithUsers\": [],\n+            \"organization\": {\"customRights\": []},\n+        })\n+        return user_id\n+\n+    async def download_conversation(self, conversation_id, format=\"docx\"):\n+        \"\"\"Download transcription directly (without LLM). Returns binary for docx/odt, dict for json.\"\"\"\n+        return await self.api_service.download_conversation(\n+            conversationId=conversation_id,\n+            format=format,\n+        )\n+\n+    async def get_publication_templates(self):\n+        \"\"\"Get available publication templates.\"\"\"\n+        return await self.api_service.get_publication_templates()\n+\n+    async def get_template_placeholders(self, template_id):\n+        \"\"\"Get placeholders for a specific publication template.\"\"\"\n+        return await self.api_service.get_template_placeholders(\n+            templateId=template_id\n+        )\n+\n+    async def export_with_template(self, job_id, format=\"pdf\", template_id=None, version_number=None):\n+        \"\"\"Export a document using a publication template. Returns binary content.\"\"\"\n+        return await self.api_service.export_with_template(\n+            jobId=job_id,\n+            format=format,\n+            templateId=template_id,\n+            versionNumber=version_number,\n+        )"
+    },
+    {
+      "sha": "1010c6595ea76c94db1985c553c862265aef812e",
+      "filename": "studio-sdk/python/linto/services/studioApiService.py",
+      "status": "modified",
+      "additions": 102,
+      "deletions": 0,
+      "changes": 102,
+      "blob_url": "https://github.com/linto-ai/linto-studio/blob/f2d5704364e93caf82a6033c81393b3f12ff0b70/studio-sdk%2Fpython%2Flinto%2Fservices%2FstudioApiService.py",
+      "raw_url": "https://github.com/linto-ai/linto-studio/raw/f2d5704364e93caf82a6033c81393b3f12ff0b70/studio-sdk%2Fpython%2Flinto%2Fservices%2FstudioApiService.py",
+      "contents_url": "https://api.github.com/repos/linto-ai/linto-studio/contents/studio-sdk%2Fpython%2Flinto%2Fservices%2FstudioApiService.py?ref=f2d5704364e93caf82a6033c81393b3f12ff0b70",
+      "patch": "@@ -127,6 +127,104 @@ async def upload_file(self, **kwargs):\n \n         return await self._send_request(\"POST\", url, data=form, token=kwargs[\"token\"])\n \n+    # --- LLM / Summary methods ---\n+\n+    @with_token\n+    @with_organization_id\n+    async def fetch_llm_services(self, **kwargs):\n+        \"\"\"List available LLM services for the organization.\"\"\"\n+        org_id = kwargs[\"organizationId\"]\n+        url = f\"{self.base_api_url}/services/{org_id}/llm\"\n+        return await self._send_request(\"GET\", url, **kwargs)\n+\n+    @with_token\n+    async def trigger_summary(self, conversationId, format, flavor=None, **kwargs):\n+        \"\"\"Trigger LLM summary generation for a conversation.\"\"\"\n+        url = f\"{self.base_api_url}/conversations/{conversationId}/download?format={format}\"\n+        if flavor:\n+            url += f\"&flavor={flavor}\"\n+        return await self._send_request(\"POST\", url, **kwargs)\n+\n+    @with_token\n+    async def get_export_list(self, conversationId, **kwargs):\n+        \"\"\"Get list of exports for a conversation.\"\"\"\n+        url = f\"{self.base_api_url}/conversations/{conversationId}/export/list\"\n+        return await self._send_request(\"GET\", url, **kwargs)\n+\n+    @with_token\n+    async def get_export_content(self, conversationId, jobId, **kwargs):\n+        \"\"\"Get the content of a completed export.\"\"\"\n+        url = f\"{self.base_api_url}/conversations/{conversationId}/export/{jobId}/content\"\n+        return await self._send_request(\"GET\", url, **kwargs)\n+\n+    # --- Sharing methods ---\n+\n+    @with_token\n+    async def share_conversation(self, conversationId, email, right=1, **kwargs):\n+        \"\"\"Share a conversation with a user by email.\n+\n+        LinTO Studio automatically sends an email notification.\n+        If the user doesn't exist, an external account with magic link is created.\n+        \"\"\"\n+        url = f\"{self.base_api_url}/conversations/{conversationId}/invite\"\n+        return await self._send_request(\n+            \"POST\", url, json={\"email\": email, \"right\": right}, **kwargs\n+        )\n+\n+    # --- User methods ---\n+\n+    @with_token\n+    async def search_users(self, search, **kwargs):\n+        \"\"\"Search users by email or name.\"\"\"\n+        url = f\"{self.base_api_url}/users/search?search={search}\"\n+        return await self._send_request(\"GET\", url, **kwargs)\n+\n+    # --- Conversation management methods ---\n+\n+    @with_token\n+    async def update_conversation(self, conversationId, data, **kwargs):\n+        \"\"\"Update conversation fields (owner, sharedWithUsers, etc.).\"\"\"\n+        url = f\"{self.base_api_url}/conversations/{conversationId}\"\n+        return await self._send_request(\"PATCH\", url, json=data, **kwargs)\n+\n+    # --- Download methods ---\n+\n+    @with_token\n+    async def download_conversation(self, conversationId, format=\"docx\", **kwargs):\n+        \"\"\"Download transcription in the given format (docx, text, json, etc.).\"\"\"\n+        url = f\"{self.base_api_url}/conversations/{conversationId}/download?format={format}\"\n+        response_type = \"binary\" if format in (\"docx\", \"odt\", \"verbatim\") else None\n+        return await self._send_request(\"POST\", url, response_type=response_type, **kwargs)\n+\n+    # --- Publication methods ---\n+\n+    @with_token\n+    @with_organization_id\n+    async def get_publication_templates(self, **kwargs):\n+        \"\"\"Get available publication templates for the organization.\"\"\"\n+        org_id = kwargs[\"organizationId\"]\n+        url = f\"{self.base_api_url}/publication/templates?organization_id={org_id}\"\n+        return await self._send_request(\"GET\", url, **kwargs)\n+\n+    @with_token\n+    async def get_template_placeholders(self, templateId, **kwargs):\n+        \"\"\"Get placeholders for a specific publication template.\"\"\"\n+        url = f\"{self.base_api_url}/publication/templates/{templateId}/placeholders\"\n+        return await self._send_request(\"GET\", url, **kwargs)\n+\n+    @with_token\n+    async def export_with_template(self, jobId, format, templateId=None, versionNumber=None, **kwargs):\n+        \"\"\"Export a document using a publication template. Returns binary content (PDF/DOCX).\"\"\"\n+        url = f\"{self.base_api_url}/publication/{jobId}/export/{format}\"\n+        params = []\n+        if templateId:\n+            params.append(f\"templateId={templateId}\")\n+        if versionNumber is not None:\n+            params.append(f\"versionNumber={versionNumber}\")\n+        if params:\n+            url += \"?\" + \"&\".join(params)\n+        return await self._send_request(\"GET\", url, response_type=\"binary\", **kwargs)\n+\n     async def login(self, email: str, password: str):\n         async with aiohttp.ClientSession() as session:\n             async with session.post(\n@@ -171,4 +269,8 @@ async def _send_request(self, method, url, **kwargs):\n                         request_info=resp.request_info,\n                         history=resp.history,\n                     )\n+                if resp.status == 204:\n+                    return None\n+                if kwargs.get(\"response_type\") == \"binary\":\n+                    return await resp.read()\n                 return await resp.json()"
+    },
+    {
+      "sha": "2a839f16f4f6f75deda7438f4d252ef707499aa1",
+      "filename": "studio-sdk/python/linto/services/summaryPollingService.py",
+      "status": "added",
+      "additions": 68,
+      "deletions": 0,
+      "changes": 68,
+      "blob_url": "https://github.com/linto-ai/linto-studio/blob/f2d5704364e93caf82a6033c81393b3f12ff0b70/studio-sdk%2Fpython%2Flinto%2Fservices%2FsummaryPollingService.py",
+      "raw_url": "https://github.com/linto-ai/linto-studio/raw/f2d5704364e93caf82a6033c81393b3f12ff0b70/studio-sdk%2Fpython%2Flinto%2Fservices%2FsummaryPollingService.py",
+      "contents_url": "https://api.github.com/repos/linto-ai/linto-studio/contents/studio-sdk%2Fpython%2Flinto%2Fservices%2FsummaryPollingService.py?ref=f2d5704364e93caf82a6033c81393b3f12ff0b70",
+      "patch": "@@ -0,0 +1,68 @@\n+import asyncio\n+import logging\n+\n+from .pollingService import EventEmitter\n+\n+\n+class SummaryPollingService(EventEmitter):\n+    \"\"\"Polls export list until LLM summary is complete.\"\"\"\n+\n+    def __init__(self, conversation_id, service_route, api_service, interval=2.0):\n+        super().__init__()\n+        self.conversation_id = conversation_id\n+        self.service_route = service_route\n+        self.api_service = api_service\n+        self.interval = interval\n+        self._task = None\n+        self.start()\n+\n+    def start(self):\n+        if self._task is None:\n+            self._task = asyncio.create_task(self._poll_loop())\n+\n+    def stop(self):\n+        if self._task:\n+            self._task.cancel()\n+            self._task = None\n+\n+    async def _poll_loop(self):\n+        try:\n+            while True:\n+                exports = await self.api_service.get_export_list(\n+                    conversationId=self.conversation_id\n+                )\n+\n+                # Find the export matching our service route\n+                export = None\n+                for e in (exports if isinstance(exports, list) else []):\n+                    if e.get(\"format\") == self.service_route:\n+                        export = e\n+                        break\n+\n+                if export is None:\n+                    await asyncio.sleep(self.interval)\n+                    continue\n+\n+                status = export.get(\"status\")\n+                if status in (\"complete\", \"done\"):\n+                    job_id = export.get(\"jobId\")\n+                    if job_id:\n+                        content = await self.api_service.get_export_content(\n+                            conversationId=self.conversation_id,\n+                            jobId=job_id,\n+                        )\n+                        await self.emit(\"done\", {\"content\": content, \"jobId\": job_id})\n+                    else:\n+                        await self.emit(\"done\", {\"content\": export, \"jobId\": None})\n+                    self.stop()\n+                    break\n+                elif status == \"error\":\n+                    await self.emit(\"error\", export)\n+                    self.stop()\n+                    break\n+                else:\n+                    await self.emit(\"update\", export)\n+\n+                await asyncio.sleep(self.interval)\n+        except asyncio.CancelledError:\n+            logging.debug(\"Summary polling cancelled\")"
+    },
+    {
+      "sha": "e467b9b26f11d3660c77b9737eafcfd726b8bf75",
+      "filename": "studio-sdk/python/pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/linto-ai/linto-studio/blob/f2d5704364e93caf82a6033c81393b3f12ff0b70/studio-sdk%2Fpython%2Fpyproject.toml",
+      "raw_url": "https://github.com/linto-ai/linto-studio/raw/f2d5704364e93caf82a6033c81393b3f12ff0b70/studio-sdk%2Fpython%2Fpyproject.toml",
+      "contents_url": "https://api.github.com/repos/linto-ai/linto-studio/contents/studio-sdk%2Fpython%2Fpyproject.toml?ref=f2d5704364e93caf82a6033c81393b3f12ff0b70",
+      "patch": "@@ -1,10 +1,10 @@\n [build-system]\n-requires = [\"setuptools>=61.0\"]\n+requires = [\"setuptools>=68.0\"]\n build-backend = \"setuptools.build_meta\"\n \n [project]\n name = \"linto\"\n-version = \"1.1.2\"\n+version = \"1.2.0\"\n description = \"Wrapper around LinTO Studio API\"\n readme = \"README.md\"\n requires-python = \">=3.7\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "bff7f78e12b9fee52c96864905272d8ff8b7457b",
+      "message": "Fix email notification for users without verified email\n\nHandle cases where shared-by user has no email by falling back to\nfirstname or \"LinTO Studio\". Allow sending notifications to external\nusers created via sharing who have a primary email but no verified email.",
+      "parent_shas": [
+        "0d1ec032ae7d323875293fd7624de134cbdd4f59"
+      ]
+    },
+    {
+      "sha": "f2d5704364e93caf82a6033c81393b3f12ff0b70",
+      "message": "Add LLM summary, sharing, download and publication features to Python SDK\n\nSync Python SDK with latest development: add summarize, share_conversation,\ndownload_conversation, export_with_template, search_users, update_conversation,\nset_conversation_owner, publication templates support, and SummaryPollingService.\nAlso add HTTP 204 and binary response handling in _send_request.",
+      "parent_shas": [
+        "bff7f78e12b9fee52c96864905272d8ff8b7457b"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "python_cpp_wrapper_noise"
+    ],
+    "auto_signals": [
+      "python_cpp_wrapper_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\python_cpp\\python_cpp__linto-ai__linto-studio__pr299.json",
+    "r0_path": "data\\raw\\repo_snapshots\\python_cpp\\linto-ai__linto-studio__pr299__python_cpp__linto-ai__linto-studio__pr299\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\python_cpp\\linto-ai__linto-studio__pr299__python_cpp__linto-ai__linto-studio__pr299\\rn"
+  }
+}

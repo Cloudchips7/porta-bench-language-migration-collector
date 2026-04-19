@@ -1,0 +1,308 @@
+{
+  "instance_id": "py2_py3__learning-unlimited__ESP-Website__pr4231",
+  "scenario": "language_migration",
+  "subtype": "py2_py3",
+  "repo_full_name": "learning-unlimited/ESP-Website",
+  "pr_number": 4231,
+  "pr_url": "https://github.com/learning-unlimited/ESP-Website/pull/4231",
+  "repo": {
+    "full_name": "learning-unlimited/ESP-Website",
+    "clone_url": "https://github.com/learning-unlimited/ESP-Website.git",
+    "default_branch": "main",
+    "created_at": "2011-10-25T14:30:31Z",
+    "stars": 206,
+    "license": "MIT",
+    "size_kb": 63842
+  },
+  "pull_request": {
+    "id": 3310966064,
+    "title": "refactor: remove six library from useful_scripts",
+    "body": "### Description\r\n\r\nRemove all `six` library usage from the `useful_scripts/` directory. Primarily removes `from six.moves import input/range` and a few `six.string_types`/`six.iteritems` calls.\r\n\r\n**20 files changed** | +7/-28\r\n\r\n### Related Issue\r\n\r\nPart of #4232 — Remove `six` compatibility library\r\n\r\n### Type of Change\r\n\r\n- [x] Refactor / cleanup\r\n\r\n### Testing\r\n\r\n- [x] Zero remaining `six` references in `esp/useful_scripts/`\r\n\r\n\r\n### Checklist\r\n\r\n- [x] Self-reviewed the code\r\n- [x] No new warnings or errors introduced\r\n",
+    "created_at": "2026-02-21T15:33:07Z",
+    "merged_at": "2026-02-21T21:12:45Z",
+    "base_sha": "8fafcc30bcdf2e6b3481402a82035152a15fa31e",
+    "head_sha": "431ad9fb776be431f2377f52b272bb336b9f58c7",
+    "merge_commit_sha": "c0a7d8a2b9656454864d9b132fecfc81d0b81c4c",
+    "labels": [
+      "backend"
+    ]
+  },
+  "matched_queries": [
+    "query_c"
+  ],
+  "base_sha": "8fafcc30bcdf2e6b3481402a82035152a15fa31e",
+  "final_sha": "431ad9fb776be431f2377f52b272bb336b9f58c7",
+  "changed_files": [
+    {
+      "sha": "081ef3e0b138424a22f58966f48ba9b4947c9c12",
+      "filename": "esp/useful_scripts/add_lunches.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fadd_lunches.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fadd_lunches.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fadd_lunches.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -11,7 +11,6 @@\n from esp.program.models import Program, StudentRegistration, RegistrationType\n from esp.program.models.class_ import ClassSection\n from esp.users.models import ESPUser\n-import six\n \n program = Program.objects.get(id=115)  # Change me! (Splash 2014)\n relationship = RegistrationType.objects.get(name='Enrolled')\n@@ -53,7 +52,7 @@\n         lunchtimes_by_day[date].append(timeblock_id)\n \n for user in users:\n-    for day, lunchtimes in six.iteritems(lunchtimes_by_day):\n+    for day, lunchtimes in lunchtimes_by_day.items():\n         # If the user has any lunch already, continue to the next day/user\n         if any(sections_by_user_timeblock.get((user.id, lunchtime_id), 0)\n                in lunch_ids for lunchtime_id in lunchtimes):"
+    },
+    {
+      "sha": "55b246eb93b83c921c064b17e37fa09420afb688",
+      "filename": "esp/useful_scripts/all_classes_ever.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fall_classes_ever.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fall_classes_ever.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fall_classes_ever.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -1,5 +1,4 @@\n from esp.program.models import Program, ClassSubject\n-from six.moves import map\n from io import open\n \n programs = Program.objects.order_by('id')"
+    },
+    {
+      "sha": "b61804665a6fa905c840d8a169bfcc0ef99ac364",
+      "filename": "esp/useful_scripts/change-capacities-move-rooms-june-2013.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fchange-capacities-move-rooms-june-2013.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fchange-capacities-move-rooms-june-2013.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fchange-capacities-move-rooms-june-2013.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -15,7 +15,6 @@\n import csv\n from esp.program.models.class_ import ClassSubject\n from esp.resources.models import Resource\n-from six.moves import map\n from io import open\n \n def makeChanges(filename,override=False):"
+    },
+    {
+      "sha": "1ef6b4c46d6b1a092033a2e0cbb787edfb12c24b",
+      "filename": "esp/useful_scripts/check_conflicts.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fcheck_conflicts.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fcheck_conflicts.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fcheck_conflicts.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -13,7 +13,6 @@\n # Step 4 takes much longer to run than the others (O(n^2) where n is the number of scheduled classes).\n \n from esp.program.models import ClassSubject, ClassSection, Program\n-from six.moves import range\n \n program_name = '2011_Spring'  # change to your program\n program = Program.objects.get(anchor__name = program_name)"
+    },
+    {
+      "sha": "fc33a4950863b04eb04c0943d0276955edb66076",
+      "filename": "esp/useful_scripts/code_relicensing.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fcode_relicensing.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fcode_relicensing.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fcode_relicensing.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -3,7 +3,6 @@\n import re\n import os\n from io import open\n-from six.moves import range\n \n direction = 'forward'\n #direction = 'backward'"
+    },
+    {
+      "sha": "eaa45cbc334608679650f7d1367b67d9c359e242",
+      "filename": "esp/useful_scripts/csv_classroom_import.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fcsv_classroom_import.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fcsv_classroom_import.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fcsv_classroom_import.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -17,7 +17,6 @@\n \n from datetime import datetime\n from io import open\n-from six.moves import input\n \n ETYPE_CLASSBLOCK = EventType.objects.get(description='Class Time Block')\n RTYPE_CLASSROOM = ResourceType.get_or_create('Classroom')"
+    },
+    {
+      "sha": "2618881bad8a8f9cea658068637e8881fa247bd4",
+      "filename": "esp/useful_scripts/csv_fresh_classroom_import.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 5,
+      "changes": 8,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fcsv_fresh_classroom_import.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fcsv_fresh_classroom_import.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fcsv_fresh_classroom_import.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -17,9 +17,7 @@\n import argparse\n \n from datetime import datetime\n-import six\n from io import open\n-from six.moves import input\n \n \n ETYPE_CLASSBLOCK = EventType.objects.get(description='Class Time Block')\n@@ -121,7 +119,7 @@ def do_match(items_to_match, possible_options, description,\n             matching_idx[item] = match_attempt\n         print(\"We have the following matchings:\")\n         print(matching_idx)\n-        for item, match_idx in six.iteritems(matching_idx):\n+        for item, match_idx in matching_idx.items():\n             match_name = None if match_idx is None else \\\n                 possible_options[match_idx]\n             print(\"{}: {} ({})\".format(item, match_name, match_idx))\n@@ -151,8 +149,8 @@ def do_match(items_to_match, possible_options, description,\n             resource_value_matching[rtype.name] = {\n                     known: (possible_values[idx] if idx is not None else \"\")\n                     for known, idx in\n-                    six.iteritems(do_match(\n-                        known_values, possible_values, rtype.name))}\n+                    do_match(\n+                        known_values, possible_values, rtype.name).items()}\n \n \n def parse_time(date, time):"
+    },
+    {
+      "sha": "c36c305626fea6366f182e3b948fc50c77dafe1c",
+      "filename": "esp/useful_scripts/deduplicate_classrooms.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fdeduplicate_classrooms.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fdeduplicate_classrooms.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fdeduplicate_classrooms.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -5,7 +5,6 @@\n #\n \n from script_setup import *\n-from six.moves import input\n \n ETYPE_CLASSBLOCK = EventType.objects.get(description='Class Time Block')\n RTYPE_CLASSROOM = ResourceType.get_or_create('Classroom')"
+    },
+    {
+      "sha": "21253bae185713f321f5e64cb80b83c78b25b363",
+      "filename": "esp/useful_scripts/disable_users.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fdisable_users.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fdisable_users.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fdisable_users.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -2,7 +2,6 @@\n # Given a list of email addresses, disable the corresponding user accounts.\n \n from script_setup import *\n-from six.moves import input\n \n def yn(prompt):\n     print(prompt, end=' ')"
+    },
+    {
+      "sha": "8d4d9ccafb273483d98c41f516642f9637d08b76",
+      "filename": "esp/useful_scripts/export_all_surveys.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fexport_all_surveys.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fexport_all_surveys.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fexport_all_surveys.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -5,7 +5,6 @@\n from datetime import datetime, date, time\n \n from django.contrib.contenttypes.models import ContentType\n-import six\n from functools import reduce\n \n try:\n@@ -166,7 +165,7 @@ def auto_cell_type(val):\n         pass\n \n     # Give up; not a type that Excel likes\n-    val = six.text_type(val)\n+    val = str(val)\n \n     # Are we something that looks like a boolean?\n     if val.upper() in (\"TRUE\", \"FALSE\", \"T\", \"F\"):"
+    },
+    {
+      "sha": "89d89dc2014bf4aff7472375579df8eed119d9f1",
+      "filename": "esp/useful_scripts/formstack_download.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fformstack_download.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fformstack_download.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fformstack_download.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -14,7 +14,6 @@\n import pycurl\n import sys\n from io import open\n-from six.moves import input\n \n SUBMISSIONS_PER_PAGE = 100\n #  when enumerating form submissions, the maximum number of metadatas"
+    },
+    {
+      "sha": "3bd570c0301f9e3f2f31dfe6864e58a333d376f5",
+      "filename": "esp/useful_scripts/get_emails.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fget_emails.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fget_emails.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fget_emails.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -1,7 +1,6 @@\n import datetime\n import numpy as np\n from esp.dbmail.models import TextOfEmail\n-from six.moves import map\n from io import open\n msgs = [x['sent'] for x in TextOfEmail.objects.values('sent') if x is not None and x['sent'] is not None]\n to_timestamp = np.vectorize(lambda x: (x - datetime.datetime(1970, 1, 1)).total_seconds())"
+    },
+    {
+      "sha": "38150891b243df6f14db4ea47619c4bc42434173",
+      "filename": "esp/useful_scripts/increase_caps.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fincrease_caps.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fincrease_caps.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fincrease_caps.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -6,7 +6,6 @@\n from script_setup import *\n \n from esp.dbmail.models import send_mail\n-from six.moves import input\n \n program = Program.objects.get(url='Splash/2015')\n "
+    },
+    {
+      "sha": "378217894493de97ac6e1f566a94dafa7175a18f",
+      "filename": "esp/useful_scripts/merging_sep6.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fmerging_sep6.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fmerging_sep6.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fmerging_sep6.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -11,7 +11,6 @@\n from esp.users.models import *\n from esp.users.models.forwarder import *\n from esp.program.models import *\n-import six\n \n def get_dob(user):\n     try:\n@@ -40,7 +39,7 @@ def get_duplicate_users():\n     for user in users:\n         #   Only consider users that are only students (hence skipping teachers and admins).\n         ut = user.getUserTypes()\n-        if not (len(ut) == 1 and ut[0] == six.u('Student')):\n+        if not (len(ut) == 1 and ut[0] == 'Student'):\n             continue\n \n         num_students += 1"
+    },
+    {
+      "sha": "e507af4b145adf08a750ac8d3adccb319c45c75d",
+      "filename": "esp/useful_scripts/mitalert.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fmitalert.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fmitalert.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fmitalert.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -8,7 +8,6 @@\n import re\n import sys\n from io import open\n-from six.moves import input\n \n prog = Program.objects.get(url=input(\"Program URL (e.g. Spark/2014): \"))\n rawfile = open(os.path.expanduser(input(\"Output CSV: \")), \"wb\")"
+    },
+    {
+      "sha": "d30b3a6a1d734d7476e4efd671a6e413cfb1390e",
+      "filename": "esp/useful_scripts/onsite_apr17.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fonsite_apr17.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fonsite_apr17.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fonsite_apr17.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -4,7 +4,6 @@\n \n import string\n from io import open\n-from six.moves import range\n \n def ascii_sanitize(s):\n     return [x for x in s if x in string.printable]"
+    },
+    {
+      "sha": "2fbea7e6769ad6a51e76e0faa1d127876d039751",
+      "filename": "esp/useful_scripts/register_users/register_user.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fregister_users%2Fregister_user.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fregister_users%2Fregister_user.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fregister_users%2Fregister_user.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -3,7 +3,6 @@\n \n from twill.commands import *\n from generators import *\n-from six.moves import range\n \n base_host = 'http://dev2.learningu.org'\n splash_name = 'Splash/2011_Spring'"
+    },
+    {
+      "sha": "3dabd1d9e0ebd20e14e800a67078ba4c2720a2c3",
+      "filename": "esp/useful_scripts/schools_apr7.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "changes": 3,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fschools_apr7.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Fschools_apr7.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Fschools_apr7.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -1,5 +1,4 @@\n from esp.program.models import *\n-import six\n \n splash = Program.objects.get(id=2)\n \n@@ -18,7 +17,7 @@\n \n schools = list(school_dict.keys())\n def school_key(school):\n-    if isinstance(school, six.string_types):\n+    if isinstance(school, str):\n         return school.lower()\n     else:\n         return 'N/A'"
+    },
+    {
+      "sha": "f968c6c770b7267870e1f454b5eac971e3d5d0a3",
+      "filename": "esp/useful_scripts/total_donation.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Ftotal_donation.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Ftotal_donation.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Ftotal_donation.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -1,6 +1,5 @@\n from esp.accounting.controllers import ProgramAccountingController\n from esp.program.models import Program\n-from six.moves import input\n \n \n def get_donation_total(prog_name):"
+    },
+    {
+      "sha": "ad12fe13a96900a055e474802eb7e6c2b557cfb7",
+      "filename": "esp/useful_scripts/unenroll_students.py",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/learning-unlimited/ESP-Website/blob/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Funenroll_students.py",
+      "raw_url": "https://github.com/learning-unlimited/ESP-Website/raw/431ad9fb776be431f2377f52b272bb336b9f58c7/esp%2Fuseful_scripts%2Funenroll_students.py",
+      "contents_url": "https://api.github.com/repos/learning-unlimited/ESP-Website/contents/esp%2Fuseful_scripts%2Funenroll_students.py?ref=431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "patch": "@@ -13,7 +13,6 @@\n from esp.users.models import ESPUser\n from datetime import datetime, timedelta\n from django.db.models.aggregates import Min\n-from six.moves import input\n \n parser = argparse.ArgumentParser(description='Unenroll missing students from classes.')\n parser.add_argument('program_id', type=int, help='ID of the current program')"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "431ad9fb776be431f2377f52b272bb336b9f58c7",
+      "message": "refactor: remove six library from useful_scripts\n\nReplace all six library usage with native Python 3 equivalents in\nthe useful_scripts directory.",
+      "parent_shas": [
+        "8fafcc30bcdf2e6b3481402a82035152a15fa31e"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "candidate",
+    "exclude_reasons": [],
+    "auto_signals": [
+      "keyword_match",
+      "strict_migration_signal",
+      "touches_code"
+    ],
+    "has_tests_before": true,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": true,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": ""
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\py2_py3\\py2_py3__learning-unlimited__ESP-Website__pr4231.json",
+    "r0_path": "data\\raw\\repo_snapshots\\py2_py3\\learning-unlimited__ESP-Website__pr4231__py2_py3__learning-unlimited__ESP-Website__pr4231\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\py2_py3\\learning-unlimited__ESP-Website__pr4231__py2_py3__learning-unlimited__ESP-Website__pr4231\\rn"
+  }
+}

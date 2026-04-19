@@ -1,0 +1,76 @@
+{
+  "instance_id": "java_python__sbt__sbt-rjs__pr126",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "sbt/sbt-rjs",
+  "pr_number": 126,
+  "pr_url": "https://github.com/sbt/sbt-rjs/pull/126",
+  "repo": {
+    "full_name": "sbt/sbt-rjs",
+    "clone_url": "https://github.com/sbt/sbt-rjs.git",
+    "default_branch": "main",
+    "created_at": "2014-03-25T07:35:05Z",
+    "stars": 37,
+    "license": "NOASSERTION",
+    "size_kb": 223
+  },
+  "pull_request": {
+    "id": 3513449576,
+    "title": "Publish with java 17",
+    "body": "maybe add java 8 later, but I want to move on ",
+    "created_at": "2026-04-10T10:35:27Z",
+    "merged_at": "2026-04-10T10:35:37Z",
+    "base_sha": "095119451264688b8e2c175e99abd2a75891af6e",
+    "head_sha": "9f088d9a6955cfabc53da2e59cf0b3709b381a26",
+    "merge_commit_sha": "47ff87bd54b9dfe9fa0f23db857c2e21e80a7bee",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "095119451264688b8e2c175e99abd2a75891af6e",
+  "final_sha": "9f088d9a6955cfabc53da2e59cf0b3709b381a26",
+  "changed_files": [
+    {
+      "sha": "1c83c84a1592f074932f433b190d27769d328e02",
+      "filename": ".github/workflows/publish.yml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "changes": 4,
+      "blob_url": "https://github.com/sbt/sbt-rjs/blob/9f088d9a6955cfabc53da2e59cf0b3709b381a26/.github%2Fworkflows%2Fpublish.yml",
+      "raw_url": "https://github.com/sbt/sbt-rjs/raw/9f088d9a6955cfabc53da2e59cf0b3709b381a26/.github%2Fworkflows%2Fpublish.yml",
+      "contents_url": "https://api.github.com/repos/sbt/sbt-rjs/contents/.github%2Fworkflows%2Fpublish.yml?ref=9f088d9a6955cfabc53da2e59cf0b3709b381a26",
+      "patch": "@@ -8,7 +8,7 @@ on:\n \n jobs:\n   publish-artifacts:\n-    name: JDK 8\n+    name: JDK 17\n     runs-on: ubuntu-24.04\n     if: ${{ github.repository_owner == 'sbt' }}\n     steps:\n@@ -25,7 +25,7 @@ jobs:\n       - name: Install Adoptium Temurin OpenJDK\n         uses: coursier/setup-action@v1\n         with:\n-          jvm: adoptium:8\n+          jvm: adoptium:17\n \n       - name: Install sbt\n         uses: sbt/setup-sbt@v1"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "9f088d9a6955cfabc53da2e59cf0b3709b381a26",
+      "message": "Publish with java 17",
+      "parent_shas": [
+        "095119451264688b8e2c175e99abd2a75891af6e"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "ci_only"
+    ],
+    "auto_signals": [],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__sbt__sbt-rjs__pr126.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\sbt__sbt-rjs__pr126__java_python__sbt__sbt-rjs__pr126\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\sbt__sbt-rjs__pr126__java_python__sbt__sbt-rjs__pr126\\rn"
+  }
+}

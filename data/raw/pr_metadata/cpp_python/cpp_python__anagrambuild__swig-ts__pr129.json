@@ -1,0 +1,183 @@
+{
+  "instance_id": "cpp_python__anagrambuild__swig-ts__pr129",
+  "scenario": "language_migration",
+  "subtype": "cpp_python",
+  "repo_full_name": "anagrambuild/swig-ts",
+  "pr_number": 129,
+  "pr_url": "https://github.com/anagrambuild/swig-ts/pull/129",
+  "repo": {
+    "full_name": "anagrambuild/swig-ts",
+    "clone_url": "https://github.com/anagrambuild/swig-ts.git",
+    "default_branch": "main",
+    "created_at": "2025-04-04T10:41:04Z",
+    "stars": 8,
+    "license": "NOASSERTION",
+    "size_kb": 3880
+  },
+  "pull_request": {
+    "id": 3483373560,
+    "title": "feat: add RentDestination action support across TypeScript SDK",
+    "body": "## Summary\n- add `Permission.RentDestination` to coder permissions and payload decoding.\n- add `ActionsBuilder.rentDestination()` and encode it as a zero-length action config.\n- extend API/developer conversion paths to support `RentDestination` action config values.\n- update MCP permission parsing to accept `rentDestination` input.\n- add builder/payload tests for `RentDestination` behavior.\n\n## Validation\n- `bunx nx run-many -t typecheck --projects=\\\"@swig-wallet/api,@swig-wallet/coder,@swig-wallet/developer,@swig-wallet/lib\\\"`\n- `(packages/lib) bun test tests/actions/builder.test.ts tests/actions/payload.test.ts`\n- `(packages/mcp-server) bun run build`\n\n## Notes\n- `packages/mcp-server` typecheck currently OOMs in this environment; package build succeeds with these changes.",
+    "created_at": "2026-04-02T17:36:14Z",
+    "merged_at": "2026-04-02T22:34:17Z",
+    "base_sha": "b91ce401ea3b640f3cdb0d778a3c51b16cd2b5de",
+    "head_sha": "b35fb4c048cb88f265db11db25fc6b336955ad62",
+    "merge_commit_sha": "88c97f56da9b518122f359dd176d1e848d399d72",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_f"
+  ],
+  "base_sha": "b91ce401ea3b640f3cdb0d778a3c51b16cd2b5de",
+  "final_sha": "b35fb4c048cb88f265db11db25fc6b336955ad62",
+  "changed_files": [
+    {
+      "sha": "c3f162dd094b796e6b54070fd35aef7f640937d3",
+      "filename": "packages/api/src/portal/types.ts",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 0,
+      "changes": 2,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Fapi%2Fsrc%2Fportal%2Ftypes.ts",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Fapi%2Fsrc%2Fportal%2Ftypes.ts",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fapi%2Fsrc%2Fportal%2Ftypes.ts?ref=b35fb4c048cb88f265db11db25fc6b336955ad62",
+      "patch": "@@ -24,6 +24,8 @@ export type ActionConfig =\n   | { type: 'All' }\n   | { type: 'AllButManageAuthority' }\n   | { type: 'ManageAuthority' }\n+  | { type: 'CloseSwigAuthority' }\n+  | { type: 'RentDestination' }\n   | { type: 'SolLimit'; amount: string }\n   | { type: 'SolRecurringLimit'; recurringAmount: string; window: string }\n   | { type: 'SolDestinationLimit'; amount: string; destination: string }"
+    },
+    {
+      "sha": "a210aff049e6d8c0fd3c1a7f5c7af66f3fd086ed",
+      "filename": "packages/coder/src/types/permissions.ts",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 0,
+      "changes": 5,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Fcoder%2Fsrc%2Ftypes%2Fpermissions.ts",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Fcoder%2Fsrc%2Ftypes%2Fpermissions.ts",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fcoder%2Fsrc%2Ftypes%2Fpermissions.ts?ref=b35fb4c048cb88f265db11db25fc6b336955ad62",
+      "patch": "@@ -111,6 +111,11 @@ export enum Permission {\n    * Grants the ability to close token accounts and the swig account.\n    */\n   CloseSwigAuthority,\n+\n+  /**\n+   * Marks an authority as a valid rent destination for close instructions.\n+   */\n+  RentDestination,\n }\n \n /**"
+    },
+    {
+      "sha": "6f99aa6f02fc34f06fe7ef59da33e7ad3af43693",
+      "filename": "packages/developer/src/converters/actions.ts",
+      "status": "modified",
+      "additions": 8,
+      "deletions": 0,
+      "changes": 8,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Fdeveloper%2Fsrc%2Fconverters%2Factions.ts",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Fdeveloper%2Fsrc%2Fconverters%2Factions.ts",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fdeveloper%2Fsrc%2Fconverters%2Factions.ts?ref=b35fb4c048cb88f265db11db25fc6b336955ad62",
+      "patch": "@@ -18,6 +18,14 @@ export function actionsFromConfig(actions: ActionConfig[]): Actions {\n         builder.manageAuthority();\n         break;\n \n+      case 'CloseSwigAuthority':\n+        builder.closeSwigAuthority();\n+        break;\n+\n+      case 'RentDestination':\n+        builder.rentDestination();\n+        break;\n+\n       case 'SolLimit':\n         builder.solLimit({ amount: BigInt(action.amount) });\n         break;"
+    },
+    {
+      "sha": "6de1d20b74c877be628133eac492333536637f36",
+      "filename": "packages/lib/src/actions/builder.ts",
+      "status": "modified",
+      "additions": 26,
+      "deletions": 0,
+      "changes": 26,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Flib%2Fsrc%2Factions%2Fbuilder.ts",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Flib%2Fsrc%2Factions%2Fbuilder.ts",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Flib%2Fsrc%2Factions%2Fbuilder.ts?ref=b35fb4c048cb88f265db11db25fc6b336955ad62",
+      "patch": "@@ -115,6 +115,14 @@ export class ActionsBuilder {\n     return this;\n   }\n \n+  /**\n+   * Enable RentDestination action - marks authority as a valid close rent recipient\n+   */\n+  rentDestination(): this {\n+    this._actionConfigs.push(new RentDestinationConfig());\n+    return this;\n+  }\n+\n   /**\n    * Enable a program scope\n    * @param payload.programId ID of the program to enable\n@@ -545,6 +553,24 @@ class CloseSwigAuthorityConfig extends ActionConfig {\n   }\n }\n \n+class RentDestinationConfig extends ActionConfig {\n+  constructor() {\n+    super();\n+  }\n+\n+  get length() {\n+    return 0;\n+  }\n+\n+  get permission() {\n+    return Permission.RentDestination;\n+  }\n+\n+  encode(): Uint8Array {\n+    return new Uint8Array(0);\n+  }\n+}\n+\n class ProgramLimitConfig extends ActionConfig {\n   constructor(private payload: ProgramLimit) {\n     super();"
+    },
+    {
+      "sha": "9a55533d401556d2601bf0bd1b07322e9950a0d8",
+      "filename": "packages/lib/src/actions/payload.ts",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Flib%2Fsrc%2Factions%2Fpayload.ts",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Flib%2Fsrc%2Factions%2Fpayload.ts",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Flib%2Fsrc%2Factions%2Fpayload.ts?ref=b35fb4c048cb88f265db11db25fc6b336955ad62",
+      "patch": "@@ -104,6 +104,9 @@ export type ActionPayload =\n     }\n   | {\n       permission: Permission.CloseSwigAuthority;\n+    }\n+  | {\n+      permission: Permission.RentDestination;\n     };\n \n export function isActionPayload<P extends ActionPayload['permission']>(\n@@ -203,5 +206,9 @@ export function decodeActionPayload(\n     return { permission };\n   }\n \n+  if (permission === Permission.RentDestination) {\n+    return { permission };\n+  }\n+\n   throw new Error('Invalid Permission');\n }"
+    },
+    {
+      "sha": "26ab08048c2276830e288a4909d7ec193c7fcc5b",
+      "filename": "packages/lib/tests/actions/builder.test.ts",
+      "status": "modified",
+      "additions": 6,
+      "deletions": 0,
+      "changes": 6,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Flib%2Ftests%2Factions%2Fbuilder.test.ts",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Flib%2Ftests%2Factions%2Fbuilder.test.ts",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Flib%2Ftests%2Factions%2Fbuilder.test.ts?ref=b35fb4c048cb88f265db11db25fc6b336955ad62",
+      "patch": "@@ -38,6 +38,11 @@ describe('ActionsBuilder', () => {\n       expect(actions.isRoot()).toBe(false);\n       expect(actions.count).toBe(1);\n     });\n+\n+    test('rentDestination() creates RentDestination permission', () => {\n+      const actions = Actions.set().rentDestination().get();\n+      expect(actions.count).toBe(1);\n+    });\n   });\n \n   // ============================================================================\n@@ -287,6 +292,7 @@ describe('ActionsBuilder', () => {\n       // Each method should return the same builder instance for chaining\n       expect(builder.all()).toBe(builder);\n       expect(builder.manageAuthority()).toBe(builder);\n+      expect(builder.rentDestination()).toBe(builder);\n       expect(builder.programAll()).toBe(builder);\n     });\n   });"
+    },
+    {
+      "sha": "2d498c1041335b0d8bfdcfdbd937fd586421f06d",
+      "filename": "packages/lib/tests/actions/payload.test.ts",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 0,
+      "changes": 9,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Flib%2Ftests%2Factions%2Fpayload.test.ts",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Flib%2Ftests%2Factions%2Fpayload.test.ts",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Flib%2Ftests%2Factions%2Fpayload.test.ts?ref=b35fb4c048cb88f265db11db25fc6b336955ad62",
+      "patch": "@@ -57,6 +57,14 @@ describe('Action payload utilities', () => {\n       expect(payload.permission).toBe(Permission.StakeAll);\n     });\n \n+    test('decodes RentDestination permission', () => {\n+      const payload = decodeActionPayload(\n+        Permission.RentDestination,\n+        new Uint8Array(0),\n+      );\n+      expect(payload.permission).toBe(Permission.RentDestination);\n+    });\n+\n     test('decodes SolLimit permission with data', () => {\n       // SolLimit is 8 bytes (u64 amount)\n       const data = new Uint8Array(8);\n@@ -128,6 +136,7 @@ describe('Action payload utilities', () => {\n         Permission.AllButManageAuthority,\n         Permission.ProgramAll,\n         Permission.StakeAll,\n+        Permission.RentDestination,\n       ];\n \n       noPayloadPermissions.forEach((perm) => {"
+    },
+    {
+      "sha": "3bb9da4647318b66512a374e5947783b9bed4640",
+      "filename": "packages/mcp-server/src/index.ts",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 0,
+      "changes": 3,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Fmcp-server%2Fsrc%2Findex.ts",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/b35fb4c048cb88f265db11db25fc6b336955ad62/packages%2Fmcp-server%2Fsrc%2Findex.ts",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/packages%2Fmcp-server%2Fsrc%2Findex.ts?ref=b35fb4c048cb88f265db11db25fc6b336955ad62",
+      "patch": "@@ -87,6 +87,9 @@ function buildActions(\n       case 'closeSwigAuthority':\n         builder = builder.closeSwigAuthority();\n         break;\n+      case 'rentDestination':\n+        builder = builder.rentDestination();\n+        break;\n       case 'solLimit':\n         builder = builder.solLimit({ amount: BigInt(perm.amount as string) });\n         break;"
+    },
+    {
+      "sha": "6535272020a6b054ef5eec011f9672b141be9362",
+      "filename": "scripts/update-program-latest.sh",
+      "status": "modified",
+      "additions": 36,
+      "deletions": 17,
+      "changes": 53,
+      "blob_url": "https://github.com/anagrambuild/swig-ts/blob/b35fb4c048cb88f265db11db25fc6b336955ad62/scripts%2Fupdate-program-latest.sh",
+      "raw_url": "https://github.com/anagrambuild/swig-ts/raw/b35fb4c048cb88f265db11db25fc6b336955ad62/scripts%2Fupdate-program-latest.sh",
+      "contents_url": "https://api.github.com/repos/anagrambuild/swig-ts/contents/scripts%2Fupdate-program-latest.sh?ref=b35fb4c048cb88f265db11db25fc6b336955ad62",
+      "patch": "@@ -4,35 +4,57 @@ set -euo pipefail\n BRANCH=\"${1:-main}\"\n \n WORKSPACE_DIR=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")/..\" && pwd)\"\n-PROGRAM_DIR=$WORKSPACE_DIR/swig-program\n-PROGRAM_DEPLOY_DIR=$PROGRAM_DIR/target/deploy\n+PROGRAM_DIR=\"$WORKSPACE_DIR/swig-program\"\n+PROGRAM_DEPLOY_DIR=\"$PROGRAM_DIR/target/deploy\"\n+\n+build_sbf() {\n+  local build_dir=\"$1\"\n+  local build_name=\"$2\"\n+  shift 2\n+  local build_log\n+  build_log=\"$(mktemp)\"\n+\n+  echo \"Building ${build_name}...\"\n+  cd \"$build_dir\"\n+\n+  if ! cargo build-sbf --arch v1 \"$@\" -- -q > \"$build_log\" 2>&1; then\n+    echo \"❌ Failed to build ${build_name}\"\n+    cat \"$build_log\"\n+    rm -f \"$build_log\"\n+    exit 1\n+  fi\n+\n+  rm -f \"$build_log\"\n+}\n \n if [ ! -d \"$PROGRAM_DIR/.git\" ]; then\n   echo \"⚠️ Could not find swig program .git dir. Cloning from source (branch: '$BRANCH')...\"\n-  rm -rf $PROGRAM_DIR\n+  rm -rf \"$PROGRAM_DIR\"\n \n   # Use HTTPS with token if available (for CI), otherwise fall back to SSH\n   if [ -n \"${GITHUB_TOKEN:-}\" ]; then\n-    git clone -q -b \"$BRANCH\" \"https://${GITHUB_TOKEN}@github.com/anagrambuild/swig-wallet.git\" $PROGRAM_DIR\n+    git clone -q -b \"$BRANCH\" \"https://${GITHUB_TOKEN}@github.com/anagrambuild/swig-wallet.git\" \"$PROGRAM_DIR\"\n   else\n-    git clone -q -b \"$BRANCH\" git@github.com:anagrambuild/swig-wallet.git $PROGRAM_DIR\n+    git clone -q -b \"$BRANCH\" git@github.com:anagrambuild/swig-wallet.git \"$PROGRAM_DIR\"\n   fi\n else\n-  cd $PROGRAM_DIR\n+  cd \"$PROGRAM_DIR\"\n   echo \"Pulling swig program latest from branch '$BRANCH'...\"\n   git fetch origin \"$BRANCH\" > /dev/null 2>&1\n   git checkout \"$BRANCH\" > /dev/null 2>&1\n   git pull origin \"$BRANCH\" -q\n fi\n \n-cd $PROGRAM_DIR/program\n+cd \"$PROGRAM_DIR\"\n+\n+echo \"Pinning blake3 to v1.8.2 for Solana build compatibility...\"\n+cargo update -p blake3 --precise 1.8.2 > /dev/null 2>&1\n \n echo \"Program directory updated!\"\n-echo \"Building swig program...\"\n-cargo build-sbf --arch v1 -- -q > /dev/null 2>&1\n+build_sbf \"$PROGRAM_DIR/program\" \"swig program\"\n \n-if [ -f $PROGRAM_DEPLOY_DIR/swig.so ]; then\n-    cp $PROGRAM_DEPLOY_DIR/swig.so $WORKSPACE_DIR\n+if [ -f \"$PROGRAM_DEPLOY_DIR/swig.so\" ]; then\n+    cp \"$PROGRAM_DEPLOY_DIR/swig.so\" \"$WORKSPACE_DIR\"\n     echo \"✅ Main program copied: $WORKSPACE_DIR/swig.so\"\n else\n     echo \"❌ Could not find swig.so\"\n@@ -41,13 +63,10 @@ else\n fi\n \n # for ProgramExec testing\n-cd $PROGRAM_DIR/test-program-authority\n-\n-echo \"Building test-program-authority...\"\n-cargo build-sbf --arch v1 --features program_scope_test -- -q > /dev/null 2>&1\n+build_sbf \"$PROGRAM_DIR/test-program-authority\" \"test-program-authority\" --features program_scope_test\n \n-if [ -f $PROGRAM_DEPLOY_DIR/test_program_authority.so ]; then\n-    cp $PROGRAM_DEPLOY_DIR/test_program_authority.so $WORKSPACE_DIR\n+if [ -f \"$PROGRAM_DEPLOY_DIR/test_program_authority.so\" ]; then\n+    cp \"$PROGRAM_DEPLOY_DIR/test_program_authority.so\" \"$WORKSPACE_DIR\"\n     echo \"✅ Test authority program copied: $WORKSPACE_DIR/test_program_authority.so\"\n else\n     echo \"⚠️ Could not find test_program_authority.so\""
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "05f52d016791d506f2839ea65ebc8c32e9eaa924",
+      "message": "feat: add RentDestination action support across TypeScript SDK",
+      "parent_shas": [
+        "b91ce401ea3b640f3cdb0d778a3c51b16cd2b5de"
+      ]
+    },
+    {
+      "sha": "b35fb4c048cb88f265db11db25fc6b336955ad62",
+      "message": "fix: stabilize update-program build on Solana 2.2 toolchain",
+      "parent_shas": [
+        "05f52d016791d506f2839ea65ebc8c32e9eaa924"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "binding_wrapper_noise",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "binding_wrapper_noise",
+      "touches_tests"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": true,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\cpp_python\\cpp_python__anagrambuild__swig-ts__pr129.json",
+    "r0_path": "data\\raw\\repo_snapshots\\cpp_python\\anagrambuild__swig-ts__pr129__cpp_python__anagrambuild__swig-ts__pr129\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\cpp_python\\anagrambuild__swig-ts__pr129__cpp_python__anagrambuild__swig-ts__pr129\\rn"
+  }
+}

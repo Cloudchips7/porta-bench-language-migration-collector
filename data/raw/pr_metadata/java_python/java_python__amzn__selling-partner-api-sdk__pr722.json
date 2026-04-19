@@ -1,0 +1,79 @@
+{
+  "instance_id": "java_python__amzn__selling-partner-api-sdk__pr722",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "amzn/selling-partner-api-sdk",
+  "pr_number": 722,
+  "pr_url": "https://github.com/amzn/selling-partner-api-sdk/pull/722",
+  "repo": {
+    "full_name": "amzn/selling-partner-api-sdk",
+    "clone_url": "https://github.com/amzn/selling-partner-api-sdk.git",
+    "default_branch": "main",
+    "created_at": "2020-07-29T01:10:10Z",
+    "stars": 78,
+    "license": "Apache-2.0",
+    "size_kb": 32060
+  },
+  "pull_request": {
+    "id": 3516242137,
+    "title": "Update Java SDK",
+    "body": "Update Java SDK with latest changes from upstream.",
+    "created_at": "2026-04-10T22:30:08Z",
+    "merged_at": "2026-04-13T06:40:26Z",
+    "base_sha": "16cba9113d0c68903188ec0ba48ae07d4472e950",
+    "head_sha": "d6ffdf85053733f083b8054a63960883e987338d",
+    "merge_commit_sha": "64090881d28681bf6ac20b17d1abfb30c431e30d",
+    "labels": []
+  },
+  "matched_queries": [
+    "query_h"
+  ],
+  "base_sha": "16cba9113d0c68903188ec0ba48ae07d4472e950",
+  "final_sha": "d6ffdf85053733f083b8054a63960883e987338d",
+  "changed_files": [
+    {
+      "sha": "b2a2662eed72ef1612b84df5a3ef9f99f118246b",
+      "filename": "java/sdk/src/main/java/software/amazon/spapi/api/externalfulfillment/shipments/v2024_09_11/ShipmentRetrievalApi.java",
+      "status": "modified",
+      "additions": 7,
+      "deletions": 7,
+      "changes": 14,
+      "blob_url": "https://github.com/amzn/selling-partner-api-sdk/blob/d6ffdf85053733f083b8054a63960883e987338d/java%2Fsdk%2Fsrc%2Fmain%2Fjava%2Fsoftware%2Famazon%2Fspapi%2Fapi%2Fexternalfulfillment%2Fshipments%2Fv2024_09_11%2FShipmentRetrievalApi.java",
+      "raw_url": "https://github.com/amzn/selling-partner-api-sdk/raw/d6ffdf85053733f083b8054a63960883e987338d/java%2Fsdk%2Fsrc%2Fmain%2Fjava%2Fsoftware%2Famazon%2Fspapi%2Fapi%2Fexternalfulfillment%2Fshipments%2Fv2024_09_11%2FShipmentRetrievalApi.java",
+      "contents_url": "https://api.github.com/repos/amzn/selling-partner-api-sdk/contents/java%2Fsdk%2Fsrc%2Fmain%2Fjava%2Fsoftware%2Famazon%2Fspapi%2Fapi%2Fexternalfulfillment%2Fshipments%2Fv2024_09_11%2FShipmentRetrievalApi.java?ref=d6ffdf85053733f083b8054a63960883e987338d",
+      "patch": "@@ -233,7 +233,7 @@ public okhttp3.Call getShipmentAsync(\n      * Build call for getShipments\n      *\n      * @param status The status of shipment you want to include in the response. To retrieve all new shipments, set this\n-     *     value to &#x60;ACCEPTED&#x60;. (required)\n+     *     value to &#x60;CREATED&#x60; or &#x60;ACCEPTED&#x60;. (required)\n      * @param locationId The Amazon channel location identifier for the shipments you want to retrieve. (optional)\n      * @param marketplaceId The marketplace ID associated with the location. To find the ID for your marketplace, refer\n      *     to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids). (optional)\n@@ -346,7 +346,7 @@ private okhttp3.Call getShipmentsValidateBeforeCall(\n      * on the fulfillment node or the time of the shipments&#x27; last update.\n      *\n      * @param status The status of shipment you want to include in the response. To retrieve all new shipments, set this\n-     *     value to &#x60;ACCEPTED&#x60;. (required)\n+     *     value to &#x60;CREATED&#x60; or &#x60;ACCEPTED&#x60;. (required)\n      * @param locationId The Amazon channel location identifier for the shipments you want to retrieve. (optional)\n      * @param marketplaceId The marketplace ID associated with the location. To find the ID for your marketplace, refer\n      *     to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids). (optional)\n@@ -395,7 +395,7 @@ public ShipmentsResponse getShipments(\n      * on the fulfillment node or the time of the shipments&#x27; last update.\n      *\n      * @param status The status of shipment you want to include in the response. To retrieve all new shipments, set this\n-     *     value to &#x60;ACCEPTED&#x60;. (required)\n+     *     value to &#x60;CREATED&#x60; or &#x60;ACCEPTED&#x60;. (required)\n      * @param locationId The Amazon channel location identifier for the shipments you want to retrieve. (optional)\n      * @param marketplaceId The marketplace ID associated with the location. To find the ID for your marketplace, refer\n      *     to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids). (optional)\n@@ -442,7 +442,7 @@ public ShipmentsResponse getShipments(\n      * on the fulfillment node or the time of the shipments&#x27; last update.\n      *\n      * @param status The status of shipment you want to include in the response. To retrieve all new shipments, set this\n-     *     value to &#x60;ACCEPTED&#x60;. (required)\n+     *     value to &#x60;CREATED&#x60; or &#x60;ACCEPTED&#x60;. (required)\n      * @param locationId The Amazon channel location identifier for the shipments you want to retrieve. (optional)\n      * @param marketplaceId The marketplace ID associated with the location. To find the ID for your marketplace, refer\n      *     to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids). (optional)\n@@ -501,7 +501,7 @@ public ApiResponse<ShipmentsResponse> getShipmentsWithHttpInfo(\n      * on the fulfillment node or the time of the shipments&#x27; last update.\n      *\n      * @param status The status of shipment you want to include in the response. To retrieve all new shipments, set this\n-     *     value to &#x60;ACCEPTED&#x60;. (required)\n+     *     value to &#x60;CREATED&#x60; or &#x60;ACCEPTED&#x60;. (required)\n      * @param locationId The Amazon channel location identifier for the shipments you want to retrieve. (optional)\n      * @param marketplaceId The marketplace ID associated with the location. To find the ID for your marketplace, refer\n      *     to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids). (optional)\n@@ -547,7 +547,7 @@ public ApiResponse<ShipmentsResponse> getShipmentsWithHttpInfo(\n      * further filtered based on the fulfillment node or the time of the shipments&#x27; last update.\n      *\n      * @param status The status of shipment you want to include in the response. To retrieve all new shipments, set this\n-     *     value to &#x60;ACCEPTED&#x60;. (required)\n+     *     value to &#x60;CREATED&#x60; or &#x60;ACCEPTED&#x60;. (required)\n      * @param locationId The Amazon channel location identifier for the shipments you want to retrieve. (optional)\n      * @param marketplaceId The marketplace ID associated with the location. To find the ID for your marketplace, refer\n      *     to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids). (optional)\n@@ -595,7 +595,7 @@ public okhttp3.Call getShipmentsAsync(\n      * further filtered based on the fulfillment node or the time of the shipments&#x27; last update.\n      *\n      * @param status The status of shipment you want to include in the response. To retrieve all new shipments, set this\n-     *     value to &#x60;ACCEPTED&#x60;. (required)\n+     *     value to &#x60;CREATED&#x60; or &#x60;ACCEPTED&#x60;. (required)\n      * @param locationId The Amazon channel location identifier for the shipments you want to retrieve. (optional)\n      * @param marketplaceId The marketplace ID associated with the location. To find the ID for your marketplace, refer\n      *     to [Marketplace IDs](https://developer-docs.amazon.com/sp-api/docs/marketplace-ids). (optional)"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "d6ffdf85053733f083b8054a63960883e987338d",
+      "message": "Update Java SDK",
+      "parent_shas": [
+        "16cba9113d0c68903188ec0ba48ae07d4472e950"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "java_python_bridge_noise"
+    ],
+    "auto_signals": [
+      "java_python_bridge_noise",
+      "touches_code"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": true,
+    "touches_source_language": true,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__amzn__selling-partner-api-sdk__pr722.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\amzn__selling-partner-api-sdk__pr722__java_python__amzn__selling-partner-api-sdk__pr722\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\amzn__selling-partner-api-sdk__pr722__java_python__amzn__selling-partner-api-sdk__pr722\\rn"
+  }
+}

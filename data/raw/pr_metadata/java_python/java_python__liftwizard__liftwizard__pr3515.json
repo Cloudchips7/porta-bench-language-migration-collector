@@ -1,0 +1,82 @@
+{
+  "instance_id": "java_python__liftwizard__liftwizard__pr3515",
+  "scenario": "language_migration",
+  "subtype": "java_python",
+  "repo_full_name": "liftwizard/liftwizard",
+  "pr_number": 3515,
+  "pr_url": "https://github.com/liftwizard/liftwizard/pull/3515",
+  "repo": {
+    "full_name": "liftwizard/liftwizard",
+    "clone_url": "https://github.com/liftwizard/liftwizard.git",
+    "default_branch": "main",
+    "created_at": "2020-01-08T00:21:57Z",
+    "stars": 17,
+    "license": "Apache-2.0",
+    "size_kb": 12432
+  },
+  "pull_request": {
+    "id": 3344061886,
+    "title": "Bump org.openrewrite:rewrite-java-17 from 8.74.1 to 8.74.3",
+    "body": "Bumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.74.1 to 8.74.3.\n<details>\n<summary>Release notes</summary>\n<p><em>Sourced from <a href=\"https://github.com/openrewrite/rewrite/releases\">org.openrewrite:rewrite-java-17's releases</a>.</em></p>\n<blockquote>\n<h2>8.74.3</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>Make sure <code>AddToGitignore</code> keeps the newline at the end of the file by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6847\">openrewrite/rewrite#6847</a></li>\n<li>Fix JDK 25 IllegalAccessError from module split in JavaUnrestrictedClassLoader by <a href=\"https://github.com/mcebanupgrade\"><code>@​mcebanupgrade</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6836\">openrewrite/rewrite#6836</a></li>\n<li>RecipeListing withers now preserve metadata map by <a href=\"https://github.com/jkschneider\"><code>@​jkschneider</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6849\">openrewrite/rewrite#6849</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.74.2...v8.74.3\">https://github.com/openrewrite/rewrite/compare/v8.74.2...v8.74.3</a></p>\n<h2>8.74.2</h2>\n<h2>What's Changed</h2>\n<ul>\n<li>Python: Fix cross-type literal matching in pattern comparator by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6816\">openrewrite/rewrite#6816</a></li>\n<li>Python: Enable build cache and Develocity reporting for pytest by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6819\">openrewrite/rewrite#6819</a></li>\n<li>JavaScript: Add Develocity test reporting for Jest by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6820\">openrewrite/rewrite#6820</a></li>\n<li>Remove <code>maxHeapSize</code> from <code>JavaScriptRewriteRpc.Builder</code> in favor of caller-provided <code>NODE_OPTIONS</code> by <a href=\"https://github.com/pdelagrave\"><code>@​pdelagrave</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6803\">openrewrite/rewrite#6803</a></li>\n<li>Python: Isolate openrewrite package by version and add recipeInstallDir by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6824\">openrewrite/rewrite#6824</a></li>\n<li>Python: Serialize large integers as strings in RPC by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6829\">openrewrite/rewrite#6829</a></li>\n<li>Python: Add RPC codecs for <code>PythonResolutionResult</code> marker by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6832\">openrewrite/rewrite#6832</a></li>\n<li>JavaScript and Python: unique file names for <code>version.txt</code> files by <a href=\"https://github.com/greg-at-moderne\"><code>@​greg-at-moderne</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6831\">openrewrite/rewrite#6831</a></li>\n<li>Python: Parenthesize template results based on surrounding context by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6827\">openrewrite/rewrite#6827</a></li>\n<li>Migrate from services.gradle.org to downloads.gradle.org by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6823\">openrewrite/rewrite#6823</a></li>\n<li>Treat literal &quot;null&quot; string as null when reading marketplace CSV by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6826\">openrewrite/rewrite#6826</a></li>\n<li>Python: Unwrap <code>ExpressionStatement</code> around block-level template placeholders by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6838\">openrewrite/rewrite#6838</a></li>\n<li>RPC: Fix <code>getObject()</code> desync bugs by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6835\">openrewrite/rewrite#6835</a></li>\n<li>Python: Unify dev and release bootstrap for <code>openrewrite</code> package by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6839\">openrewrite/rewrite#6839</a></li>\n<li>Python: Fix <code>auto_format</code> adding extra indentation on sub-trees by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6842\">openrewrite/rewrite#6842</a></li>\n<li>Fix AddDependency bypassing onlyIfUsing with explicit config by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6834\">openrewrite/rewrite#6834</a></li>\n<li>Python: Fix template apply losing indentation in nested contexts by <a href=\"https://github.com/knutwannheden\"><code>@​knutwannheden</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6844\">openrewrite/rewrite#6844</a></li>\n<li>UpgradePluginVersion: skip adding version when managed by pluginManagement by <a href=\"https://github.com/timtebeek\"><code>@​timtebeek</code></a> in <a href=\"https://redirect.github.com/openrewrite/rewrite/pull/6828\">openrewrite/rewrite#6828</a></li>\n</ul>\n<p><strong>Full Changelog</strong>: <a href=\"https://github.com/openrewrite/rewrite/compare/v8.74.1...v8.74.2\">https://github.com/openrewrite/rewrite/compare/v8.74.1...v8.74.2</a></p>\n</blockquote>\n</details>\n<details>\n<summary>Commits</summary>\n<ul>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/2dd71b1df30c10b4dce82f609f1c349402cd77e8\"><code>2dd71b1</code></a> RecipeListing withers now preserve metadata map (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6849\">#6849</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/6533e0a1969c9be5b38c4807155d3e7be3d4162f\"><code>6533e0a</code></a> Fix JDK 25 IllegalAccessError from module split in JavaUnrestrictedClassLoade...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/d6c7f675eb301314ea9a4ab9d21301c4ffa30da7\"><code>d6c7f67</code></a> Make sure AddToGitignore keeps the newline at the end of the file (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6847\">#6847</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/bd2b80d2c7648d58706fa39ac7212e63710d2ad7\"><code>bd2b80d</code></a> UpgradePluginVersion: skip adding version when managed by pluginManagement (#...</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/e8047135f6834ec9ae142739db34fd662fd52da7\"><code>e804713</code></a> Python: Fix template apply losing indentation in nested contexts (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6844\">#6844</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/c32d38289f91888d6074e8d48f06fb8ff10c62da\"><code>c32d382</code></a> Fix AddDependency bypassing onlyIfUsing with explicit config (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6834\">#6834</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/82d6e559038f47bdf9fca1aeffac7090e355027a\"><code>82d6e55</code></a> Python: Fix auto_format adding extra indentation on sub-trees (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6842\">#6842</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/33ac75a7c82dcec681ef89ecfb6a1100722450a6\"><code>33ac75a</code></a> Python: Unify dev and release bootstrap for <code>openrewrite</code> package (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6839\">#6839</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/f93dd012957e0a25f3763cc87ec1329a79f0a095\"><code>f93dd01</code></a> RPC: Fix <code>getObject()</code> desync bugs (<a href=\"https://redirect.github.com/openrewrite/rewrite/issues/6835\">#6835</a>)</li>\n<li><a href=\"https://github.com/openrewrite/rewrite/commit/f03fa74789ceb6b5904a4ec03aace02f376f5247\"><code>f03fa74</code></a> Python: Unwrap ExpressionStatement around block-level template placeholders (...</li>\n<li>Additional commits viewable in <a href=\"https://github.com/openrewrite/rewrite/compare/v8.74.1...v8.74.3\">compare view</a></li>\n</ul>\n</details>\n<br />\n\n\n[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=org.openrewrite:rewrite-java-17&package-manager=maven&previous-version=8.74.1&new-version=8.74.3)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)\n\nDependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.\n\n[//]: # (dependabot-automerge-start)\n[//]: # (dependabot-automerge-end)\n\n---\n\n<details>\n<summary>Dependabot commands and options</summary>\n<br />\n\nYou can trigger Dependabot actions by commenting on this PR:\n- `@dependabot rebase` will rebase this PR\n- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it\n- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency\n- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)\n- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)\n\n\n</details>",
+    "created_at": "2026-03-02T12:43:24Z",
+    "merged_at": "2026-03-02T14:16:56Z",
+    "base_sha": "4554cf283c687e669c2601d05b82d96112200315",
+    "head_sha": "8d9e1ed8815bfdc7539816e000de70b971a63e39",
+    "merge_commit_sha": "978b6513dd9c1c17dfe01df7dd280dc2397c2605",
+    "labels": [
+      "dependencies",
+      "java"
+    ]
+  },
+  "matched_queries": [
+    "query_i"
+  ],
+  "base_sha": "4554cf283c687e669c2601d05b82d96112200315",
+  "final_sha": "8d9e1ed8815bfdc7539816e000de70b971a63e39",
+  "changed_files": [
+    {
+      "sha": "b1f480eef879cf0f156aa54248480e412f9647ed",
+      "filename": "liftwizard-utility/liftwizard-rewrite/pom.xml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/liftwizard/liftwizard/blob/8d9e1ed8815bfdc7539816e000de70b971a63e39/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "raw_url": "https://github.com/liftwizard/liftwizard/raw/8d9e1ed8815bfdc7539816e000de70b971a63e39/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml",
+      "contents_url": "https://api.github.com/repos/liftwizard/liftwizard/contents/liftwizard-utility%2Fliftwizard-rewrite%2Fpom.xml?ref=8d9e1ed8815bfdc7539816e000de70b971a63e39",
+      "patch": "@@ -307,7 +307,7 @@\n                     <dependency>\n                         <groupId>org.openrewrite</groupId>\n                         <artifactId>rewrite-java-17</artifactId>\n-                        <version>8.74.1</version>\n+                        <version>8.74.3</version>\n                     </dependency>\n                 </dependencies>\n             </plugin>"
+    }
+  ],
+  "commit_summaries": [
+    {
+      "sha": "8d9e1ed8815bfdc7539816e000de70b971a63e39",
+      "message": "Bump org.openrewrite:rewrite-java-17 from 8.74.1 to 8.74.3\n\nBumps [org.openrewrite:rewrite-java-17](https://github.com/openrewrite/rewrite) from 8.74.1 to 8.74.3.\n- [Release notes](https://github.com/openrewrite/rewrite/releases)\n- [Commits](https://github.com/openrewrite/rewrite/compare/v8.74.1...v8.74.3)\n\n---\nupdated-dependencies:\n- dependency-name: org.openrewrite:rewrite-java-17\n  dependency-version: 8.74.3\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
+      "parent_shas": [
+        "4554cf283c687e669c2601d05b82d96112200315"
+      ]
+    }
+  ],
+  "auto_filter": {
+    "status": "excluded",
+    "exclude_reasons": [
+      "bot_generated_pr",
+      "no_code_changes"
+    ],
+    "auto_signals": [
+      "bot_generated"
+    ],
+    "has_tests_before": false,
+    "adds_new_tests": false,
+    "touches_tests": false,
+    "touches_code": false,
+    "touches_source_language": false,
+    "touches_target_language": false,
+    "cross_language_mapping_visible": false,
+    "snapshot_error": "skipped_snapshot_due_to_auto_filter"
+  },
+  "paths": {
+    "metadata_path": "data\\raw\\pr_metadata\\java_python\\java_python__liftwizard__liftwizard__pr3515.json",
+    "r0_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3515__java_python__liftwizard__liftwizard__pr3515\\r0",
+    "rn_path": "data\\raw\\repo_snapshots\\java_python\\liftwizard__liftwizard__pr3515__java_python__liftwizard__liftwizard__pr3515\\rn"
+  }
+}

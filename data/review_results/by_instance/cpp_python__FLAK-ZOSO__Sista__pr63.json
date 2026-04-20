@@ -1,0 +1,22 @@
+{
+  "instance_id": "cpp_python__FLAK-ZOSO__Sista__pr63",
+  "subtype": "cpp_python",
+  "saved_at": "2026-04-20T23:29:22",
+  "manual_label": "positive",
+  "implementation_scope": "",
+  "logic_equivalence_scope": "",
+  "source_language": "c++",
+  "target_language": "python",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "test_files_detected",
+  "build_system": "make",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "low",
+  "exclude_reason": "",
+  "reviewer": "",
+  "cross_check_status": "pending",
+  "notes": ""
+}

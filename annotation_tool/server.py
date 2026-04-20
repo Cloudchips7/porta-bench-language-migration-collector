@@ -82,7 +82,7 @@ def ensure_layout() -> None:
 
 
 def load_json(path: Path):
-    with path.open("r", encoding="utf-8") as handle:
+    with path.open("r", encoding="utf-8-sig") as handle:
         return json.load(handle)
 
 
@@ -429,7 +429,7 @@ class ReviewHandler(SimpleHTTPRequestHandler):
             return
         try:
             length = int(self.headers.get("Content-Length", "0"))
-            payload = json.loads(self.rfile.read(length).decode("utf-8"))
+            payload = json.loads(self.rfile.read(length).decode("utf-8-sig"))
             saved = save_annotation(payload)
             self.send_json({"ok": True, "saved": saved, "results_dir": str(REVIEW_RESULTS_DIR.relative_to(PROJECT_ROOT))})
         except Exception as exc:  # noqa: BLE001

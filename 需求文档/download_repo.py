@@ -28,6 +28,7 @@ import subprocess
 import tempfile
 import textwrap
 import time
+import zipfile
 from urllib.parse import urlparse
 from collections import Counter
 from datetime import datetime
@@ -52,11 +53,13 @@ RAW_DIR = DATA_DIR / "raw"
 SEARCH_RESULTS_DIR = RAW_DIR / "search_results"
 PR_METADATA_DIR = RAW_DIR / "pr_metadata"
 SNAPSHOT_DIR = RAW_DIR / "repo_snapshots"
+SNAPSHOT_ARCHIVE_DIR = RAW_DIR / "repo_snapshot_archives"
 REVIEW_DIR = DATA_DIR / "review"
 PROCESSED_DIR = DATA_DIR / "processed"
 STATS_DIR = DATA_DIR / "stats"
 LOG_DIR = PROJECT_ROOT / "logs"
 TMP_DIR = PROJECT_ROOT / "tmp"
+MAX_GITHUB_ARCHIVE_BYTES = 95 * 1024 * 1024
 
 DEFAULT_TOKEN_FILE = SCRIPT_DIR / "Tokens.txt"
 DEFAULT_QUERY_FILE = CONFIG_DIR / "language_queries.json"
@@ -393,6 +396,7 @@ def ensure_layout() -> None:
         SEARCH_RESULTS_DIR,
         PR_METADATA_DIR,
         SNAPSHOT_DIR,
+        SNAPSHOT_ARCHIVE_DIR,
         REVIEW_DIR,
         PROCESSED_DIR,
         STATS_DIR,
@@ -751,6 +755,7 @@ class PortaBenchCollector:
         self.max_collect_candidates = int(
             args.max_prs if args.max_prs is not None else self.limits.get("max_prs_per_subtype", 1000)
         )
+        self.max_enrich_records = int(args.max_enrich_records) if args.max_enrich_records is not None else None
 
     def _configure_logger(self) -> logging.Logger:
         logger_name = f"porta_bench_{self.stage}_{self.subtype}"
@@ -782,6 +787,9 @@ class PortaBenchCollector:
 
     def subtype_snapshot_dir(self) -> Path:
         return SNAPSHOT_DIR / self.subtype
+
+    def subtype_snapshot_archive_dir(self) -> Path:
+        return SNAPSHOT_ARCHIVE_DIR / self.subtype
 
     def collect_manifest_path(self) -> Path:
         return self.subtype_metadata_dir() / "collect_index.jsonl"
@@ -1362,12 +1370,100 @@ class PortaBenchCollector:
     def metadata_file_path(self, instance_id: str) -> Path:
         return self.subtype_metadata_dir() / f"{instance_id}.json"
 
+    def snapshot_archive_bundle_dir(self, instance_id: str) -> Path:
+        return self.subtype_snapshot_archive_dir() / instance_id
+
+    def snapshot_archive_manifest_path(self, instance_id: str) -> Path:
+        return self.snapshot_archive_bundle_dir(instance_id) / "manifest.json"
+
+    def snapshot_archive_index_path(self) -> Path:
+        return SNAPSHOT_ARCHIVE_DIR / "archive_index.jsonl"
+
+    def split_archive_file(self, archive_path: Path, max_bytes: int) -> List[Path]:
+        if archive_path.stat().st_size <= max_bytes:
+            return [archive_path]
+        parts: List[Path] = []
+        with archive_path.open("rb") as source:
+            index = 1
+            while True:
+                chunk = source.read(max_bytes)
+                if not chunk:
+                    break
+                part_path = archive_path.with_name(f"{archive_path.name}.part{index:03d}")
+                with part_path.open("wb") as target:
+                    target.write(chunk)
+                parts.append(part_path)
+                index += 1
+        archive_path.unlink()
+        return parts
+
+    def update_snapshot_archive_index(self, manifest: Dict[str, Any]) -> None:
+        rows = load_jsonl(self.snapshot_archive_index_path())
+        rows = [row for row in rows if row.get("instance_id") != manifest["instance_id"]]
+        rows.append(
+            {
+                "instance_id": manifest["instance_id"],
+                "subtype": manifest["subtype"],
+                "snapshot_root_relpath": manifest["snapshot_root_relpath"],
+                "restore_parent_relpath": manifest["restore_parent_relpath"],
+                "archive_parts": manifest["archive_parts"],
+                "manifest_relpath": manifest["manifest_relpath"],
+                "created_at": manifest["created_at"],
+            }
+        )
+        rows.sort(key=lambda row: row["instance_id"])
+        dump_jsonl(self.snapshot_archive_index_path(), rows)
+
+    def package_snapshot_bundle(self, instance_id: str, snapshot_root: Path) -> Dict[str, Any]:
+        bundle_dir = self.snapshot_archive_bundle_dir(instance_id)
+        bundle_dir.mkdir(parents=True, exist_ok=True)
+        manifest_path = self.snapshot_archive_manifest_path(instance_id)
+        if manifest_path.exists():
+            manifest = load_json(manifest_path)
+            part_paths = [PROJECT_ROOT / rel for rel in manifest.get("archive_parts", [])]
+            if all(path.exists() for path in part_paths):
+                return manifest
+
+        archive_path = bundle_dir / "snapshot.zip"
+        if archive_path.exists():
+            archive_path.unlink()
+        for old_part in bundle_dir.glob("snapshot.zip.part*"):
+            old_part.unlink()
+
+        with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as zip_handle:
+            for file_path in sorted(snapshot_root.rglob("*")):
+                if not file_path.is_file():
+                    continue
+                arcname = f"{snapshot_root.name}/{file_path.relative_to(snapshot_root).as_posix()}"
+                zip_handle.write(file_path, arcname=arcname)
+
+        parts = self.split_archive_file(archive_path, MAX_GITHUB_ARCHIVE_BYTES)
+        created_at = datetime.now().isoformat(timespec="seconds")
+        manifest = {
+            "instance_id": instance_id,
+            "subtype": self.subtype,
+            "created_at": created_at,
+            "snapshot_root_name": snapshot_root.name,
+            "snapshot_root_relpath": str(snapshot_root.relative_to(PROJECT_ROOT)),
+            "restore_parent_relpath": str(snapshot_root.parent.relative_to(PROJECT_ROOT)),
+            "archive_format": "zip",
+            "archive_parts": [str(path.relative_to(PROJECT_ROOT)) for path in parts],
+            "archive_part_sizes": [path.stat().st_size for path in parts],
+            "manifest_relpath": str(manifest_path.relative_to(PROJECT_ROOT)),
+            "github_safe": all(path.stat().st_size < 100 * 1024 * 1024 for path in parts),
+            "notes": "Extract under restore_parent_relpath to reconstruct data/raw/repo_snapshots subtree.",
+        }
+        dump_json(manifest_path, manifest)
+        self.update_snapshot_archive_index(manifest)
+        return manifest
+
     def enrich_stage(self) -> None:
         self.logger.info("Starting enrich stage for %s", self.subtype)
         collect_index = self.load_collect_index()
         enrich_index = self.load_enrich_index()
         checkpoint = self.load_checkpoint(self.enrich_checkpoint_path(), {"processed_instance_ids": []})
         processed_ids = set(checkpoint["processed_instance_ids"])
+        processed_this_run = 0
 
         for instance_id, record in sorted(collect_index.items()):
             if record.get("collect_status") != "candidate":
@@ -1399,12 +1495,14 @@ class PortaBenchCollector:
 
                 has_tests_before = False
                 snapshot_error = ""
+                archive_manifest: Dict[str, Any] = {}
                 if not filter_result["exclude_reasons"]:
                     with tempfile.TemporaryDirectory(prefix="porta_bench_", dir=str(TMP_DIR)) as temp_dir:
                         repo_dir = Path(temp_dir) / "repo"
                         self.clone_repo(repo["clone_url"], repo_dir)
                         self.checkout_and_copy_snapshot(repo_dir, base_sha, r0_path)
                         self.checkout_and_copy_snapshot(repo_dir, final_sha, rn_path)
+                    archive_manifest = self.package_snapshot_bundle(instance_id, snapshot_root)
                     has_tests_before = self.repo_has_tests(r0_path)
                     if not has_tests_before:
                         filter_result["exclude_reasons"].append("no_tests_detected")
@@ -1468,6 +1566,8 @@ class PortaBenchCollector:
                         "metadata_path": str(self.metadata_file_path(instance_id).relative_to(PROJECT_ROOT)),
                         "r0_path": str(r0_path.relative_to(PROJECT_ROOT)),
                         "rn_path": str(rn_path.relative_to(PROJECT_ROOT)),
+                        "snapshot_archive_manifest_path": archive_manifest.get("manifest_relpath", ""),
+                        "snapshot_archive_parts": archive_manifest.get("archive_parts", []),
                     },
                 }
                 dump_json(self.metadata_file_path(instance_id), metadata)
@@ -1492,15 +1592,21 @@ class PortaBenchCollector:
                     "metadata_path": str(self.metadata_file_path(instance_id).relative_to(PROJECT_ROOT)),
                     "r0_path": str(r0_path.relative_to(PROJECT_ROOT)),
                     "rn_path": str(rn_path.relative_to(PROJECT_ROOT)),
+                    "snapshot_archive_manifest_path": archive_manifest.get("manifest_relpath", ""),
+                    "snapshot_archive_parts": archive_manifest.get("archive_parts", []),
                     "base_sha": base_sha,
                     "final_sha": final_sha,
                     "enrich_error": snapshot_error,
                 }
                 self.save_enrich_index(enrich_index)
                 processed_ids.add(instance_id)
+                processed_this_run += 1
                 checkpoint["processed_instance_ids"] = sorted(processed_ids)
                 self.save_checkpoint(self.enrich_checkpoint_path(), checkpoint)
                 self.logger.info("Enriched %s (%s)", instance_id, status)
+                if self.max_enrich_records is not None and processed_this_run >= self.max_enrich_records:
+                    self.logger.info("Reached max enrich record limit: %s", self.max_enrich_records)
+                    break
             except Exception as exc:  # noqa: BLE001
                 diagnostics = self.collect_github_network_diagnostics()
                 self.logger.error("Network diagnostics for %s: %s", instance_id, json.dumps(diagnostics, ensure_ascii=False))
@@ -1528,6 +1634,8 @@ class PortaBenchCollector:
                 }
                 self.save_enrich_index(enrich_index)
                 self.logger.exception("Failed to enrich %s: %s", instance_id, exc)
+                if self.max_enrich_records is not None and processed_this_run >= self.max_enrich_records:
+                    break
 
         self.logger.info("Enrich stage finished. Records: %s", len(enrich_index))
 
@@ -1836,6 +1944,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--review-file", default="")
     parser.add_argument("--max-prs", type=int, default=None)
     parser.add_argument("--max-search-pages", type=int, default=None)
+    parser.add_argument("--max-enrich-records", type=int, default=None)
     parser.add_argument("--sleep-sec", type=float, default=None)
     parser.add_argument("--include-uncertain", action="store_true")
     return parser.parse_args()

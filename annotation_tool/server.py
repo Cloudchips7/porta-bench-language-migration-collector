@@ -296,6 +296,20 @@ def sample_detail(instance_id: str) -> dict:
     return summary
 
 
+def build_all_patches_text(instance_id: str) -> str:
+    subtype = instance_id.split("__", 1)[0]
+    metadata = load_json(metadata_dir(subtype) / f"{instance_id}.json")
+    chunks = []
+    for item in metadata.get("changed_files", []):
+        patch = item.get("patch") or ""
+        if not patch.strip():
+            continue
+        chunks.append(f"===== FILE: {item.get('filename', '')} =====\n{patch}")
+    if not chunks:
+        return "当前样本没有可复制的 patch 内容。"
+    return "\n\n".join(chunks)
+
+
 def update_annotation_index(entry: dict) -> None:
     current = []
     if index_path().exists():
@@ -353,6 +367,12 @@ class ReviewHandler(SimpleHTTPRequestHandler):
     def log_message(self, format: str, *args) -> None:
         sys.stderr.write("[annotation-tool] " + format % args + "\n")
 
+    def end_headers(self) -> None:
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
+        super().end_headers()
+
     def send_json(self, payload, status=HTTPStatus.OK) -> None:
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
@@ -387,6 +407,15 @@ class ReviewHandler(SimpleHTTPRequestHandler):
             root_rel = detail["metadata"]["paths"][f"{side}_path"]
             full_path = PROJECT_ROOT / safe_rel_path(root_rel) / safe_rel_path(rel_path)
             return self.send_json(read_text_preview(full_path))
+        if parsed.path == "/api/all-patches":
+            query = parse_qs(parsed.query)
+            instance_id = query.get("instance_id", [""])[0]
+            if not instance_id:
+                return self.send_json({"error": "instance_id 缺失"}, status=HTTPStatus.BAD_REQUEST)
+            try:
+                return self.send_json({"content": build_all_patches_text(instance_id)})
+            except FileNotFoundError as exc:
+                return self.send_json({"error": str(exc)}, status=HTTPStatus.NOT_FOUND)
         if parsed.path == "/api/results":
             if index_path().exists():
                 return self.send_json(load_json(index_path()))

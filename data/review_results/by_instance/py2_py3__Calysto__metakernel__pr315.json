@@ -1,0 +1,22 @@
+{
+  "instance_id": "py2_py3__Calysto__metakernel__pr315",
+  "subtype": "py2_py3",
+  "saved_at": "2026-04-20T16:29:26",
+  "manual_label": "uncertain",
+  "implementation_scope": "partial_feature_migration",
+  "logic_equivalence_scope": "same_logic_translation",
+  "source_language": "python",
+  "target_language": "python",
+  "source_version": "2",
+  "target_version": "3",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "poetry",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "low",
+  "exclude_reason": "",
+  "reviewer": "xyy",
+  "cross_check_status": "pending",
+  "notes": ""
+}

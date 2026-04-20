@@ -53,7 +53,10 @@
             <div class="overview-grid" id="overviewGrid"></div>
 
             <div class="story-block">
-              <h4>PR 摘要</h4>
+              <div class="story-head">
+                <h4>PR 摘要</h4>
+                <button id="copyBodyBtn" class="ghost-button small" type="button">复制摘要</button>
+              </div>
               <div class="prose-block" id="bodyBlock">请选择样本后查看。</div>
             </div>
 
@@ -104,6 +107,7 @@
                     <button id="openDetailsModalBtn" class="ghost-button small" type="button">放大详情</button>
                     <button id="openPatchModalBtn" class="ghost-button small" type="button">放大 Patch</button>
                     <button id="openCompareModalBtn" class="ghost-button small" type="button">放大对照</button>
+                    <button id="copyAllPatchesBtn" class="ghost-button small" type="button">复制全部 Patch</button>
                   </div>
                 </div>
 
@@ -281,9 +285,31 @@
           <p class="eyebrow">Detail View</p>
           <h3 id="detailModalTitle">详情查看</h3>
         </div>
-        <button id="closeDetailModalBtn" class="ghost-button small" type="button">关闭</button>
+        <div class="detail-modal-actions">
+          <button id="copyDetailModalBtn" class="ghost-button small" type="button">复制内容</button>
+          <button id="closeDetailModalBtn" class="ghost-button small" type="button">关闭</button>
+        </div>
       </div>
       <div id="detailModalBody" class="detail-modal-body"></div>
+    </div>
+  </div>
+
+  <div id="copyFallbackModal" class="detail-modal" hidden>
+    <div class="detail-modal-backdrop" data-close="copy-fallback"></div>
+    <div class="detail-modal-panel copy-fallback-panel">
+      <div class="detail-modal-header">
+        <div>
+          <p class="eyebrow">Manual Copy</p>
+          <h3>自动复制失败，请手动复制</h3>
+        </div>
+        <div class="detail-modal-actions">
+          <button id="closeCopyFallbackBtn" class="ghost-button small" type="button">关闭</button>
+        </div>
+      </div>
+      <div class="detail-modal-body">
+        <p class="copy-fallback-tip">内容已经自动选中。你可以直接按 <code>Ctrl + C</code> 复制。</p>
+        <textarea id="copyFallbackTextarea" class="copy-fallback-textarea" readonly></textarea>
+      </div>
     </div>
   </div>
 

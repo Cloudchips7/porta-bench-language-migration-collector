@@ -17,6 +17,7 @@ const els = {
   heroStats: document.getElementById("heroStats"),
   overviewGrid: document.getElementById("overviewGrid"),
   bodyBlock: document.getElementById("bodyBlock"),
+  copyBodyBtn: document.getElementById("copyBodyBtn"),
   leftGuideList: document.getElementById("leftGuideList"),
   rightGuideList: document.getElementById("rightGuideList"),
   instanceBadge: document.getElementById("instanceBadge"),
@@ -37,10 +38,15 @@ const els = {
   openDetailsModalBtn: document.getElementById("openDetailsModalBtn"),
   openPatchModalBtn: document.getElementById("openPatchModalBtn"),
   openCompareModalBtn: document.getElementById("openCompareModalBtn"),
+  copyAllPatchesBtn: document.getElementById("copyAllPatchesBtn"),
   detailModal: document.getElementById("detailModal"),
   detailModalTitle: document.getElementById("detailModalTitle"),
   detailModalBody: document.getElementById("detailModalBody"),
+  copyDetailModalBtn: document.getElementById("copyDetailModalBtn"),
   closeDetailModalBtn: document.getElementById("closeDetailModalBtn"),
+  copyFallbackModal: document.getElementById("copyFallbackModal"),
+  closeCopyFallbackBtn: document.getElementById("closeCopyFallbackBtn"),
+  copyFallbackTextarea: document.getElementById("copyFallbackTextarea"),
   sourceLanguage: document.getElementById("sourceLanguage"),
   targetLanguage: document.getElementById("targetLanguage"),
   sourceVersion: document.getElementById("sourceVersion"),
@@ -142,6 +148,50 @@ async function fetchJson(url, options = {}) {
 function setSaveStatus(text, type = "") {
   els.saveStatus.textContent = text;
   els.saveStatus.className = `save-status ${type}`.trim();
+}
+
+async function copyText(text, successMessage) {
+  const normalized = text || "";
+  if (!normalized) {
+    setSaveStatus("?????????", "error");
+    return false;
+  }
+
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(normalized);
+      setSaveStatus(successMessage || "????????", "success");
+      return true;
+    }
+  } catch (error) {
+    // continue to legacy fallback
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = normalized;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  textarea.style.top = "0";
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+
+  try {
+    const copied = document.execCommand("copy");
+    document.body.removeChild(textarea);
+    if (copied) {
+      setSaveStatus(successMessage || "????????", "success");
+      return true;
+    }
+  } catch (error) {
+    document.body.removeChild(textarea);
+  }
+
+  openCopyFallback(normalized);
+  setSaveStatus("?????????????????", "error");
+  return false;
 }
 
 function heroStat(label, value) {
@@ -388,10 +438,12 @@ function fillExample() {
 function openModal(mode) {
   els.detailModal.hidden = false;
   const file = state.sample?.evidence_files?.find((item) => item.path === state.selectedFilePath);
+  els.copyDetailModalBtn.style.display = "inline-flex";
   if (mode === "details") {
     els.detailModalTitle.textContent = "文件详情放大查看";
     if (!file) {
       els.detailModalBody.innerHTML = `<div class="save-status">请先选择一个文件。</div>`;
+      els.copyDetailModalBtn.onclick = null;
       return;
     }
     const detailRows = [
@@ -414,11 +466,20 @@ function openModal(mode) {
         `).join("")}
       </div>
     `;
+    els.copyDetailModalBtn.onclick = () => {
+      const text = detailRows.map(([k, v]) => `${k}: ${v}`).join("\n");
+      copyText(text, "文件详情已复制到剪贴板。");
+    };
     return;
   }
   if (mode === "patch") {
     els.detailModalTitle.textContent = "Patch 放大查看";
-    els.detailModalBody.innerHTML = `<pre class="code-view">${escapeHtml(els.patchPreview.textContent)}</pre>`;
+    els.detailModalBody.innerHTML = `
+      <pre class="code-view">${escapeHtml(els.patchPreview.textContent)}</pre>
+    `;
+    els.copyDetailModalBtn.onclick = () => {
+      copyText(els.patchPreview.textContent, "Patch 已复制到剪贴板。");
+    };
     return;
   }
   els.detailModalTitle.textContent = "r0 / rn 对照放大查看";
@@ -434,10 +495,29 @@ function openModal(mode) {
       </section>
     </div>
   `;
+  els.copyDetailModalBtn.onclick = () => {
+    const text = `r0 内容：\n${els.r0Content.textContent}\n\nrn 内容：\n${els.rnContent.textContent}`;
+    copyText(text, "r0 / rn 对照内容已复制到剪贴板。");
+  };
 }
 
 function closeModal() {
   els.detailModal.hidden = true;
+  els.copyDetailModalBtn.onclick = null;
+}
+
+function openCopyFallback(text) {
+  els.copyFallbackTextarea.value = text || "";
+  els.copyFallbackModal.hidden = false;
+  requestAnimationFrame(() => {
+    els.copyFallbackTextarea.focus();
+    els.copyFallbackTextarea.select();
+    els.copyFallbackTextarea.setSelectionRange(0, els.copyFallbackTextarea.value.length);
+  });
+}
+
+function closeCopyFallback() {
+  els.copyFallbackModal.hidden = true;
 }
 
 function escapeHtml(text) {
@@ -579,11 +659,31 @@ async function init() {
   els.reloadBtn.addEventListener("click", loadSamples);
   els.saveBtn.addEventListener("click", saveAnnotation);
   els.fillExampleBtn.addEventListener("click", fillExample);
+  els.copyBodyBtn.addEventListener("click", () => {
+    const title = state.sample?.metadata?.title || "";
+    const body = els.bodyBlock.textContent || "";
+    const payload = `PR 标题：${title}\n\nPR 摘要：\n${body}`;
+    copyText(payload, "PR 摘要已复制到剪贴板。");
+  });
   els.openDetailsModalBtn.addEventListener("click", () => openModal("details"));
   els.openPatchModalBtn.addEventListener("click", () => openModal("patch"));
   els.openCompareModalBtn.addEventListener("click", () => openModal("compare"));
+  els.copyAllPatchesBtn.addEventListener("click", async () => {
+    if (!state.sample) {
+      setSaveStatus("请先选择一个样本。", "error");
+      return;
+    }
+    try {
+      const response = await fetchJson(`/api/all-patches?instance_id=${encodeURIComponent(state.sample.instance_id)}`);
+      await copyText(response.content, "当前样本的全部 Patch 已复制到剪贴板。");
+    } catch (error) {
+      setSaveStatus(`复制全部 Patch 失败：${error.message}`, "error");
+    }
+  });
   els.closeDetailModalBtn.addEventListener("click", closeModal);
   document.querySelector("[data-close='modal']").addEventListener("click", closeModal);
+  els.closeCopyFallbackBtn.addEventListener("click", closeCopyFallback);
+  document.querySelector("[data-close='copy-fallback']").addEventListener("click", closeCopyFallback);
   els.fileSearchInput.addEventListener("input", () => {
     state.fileSearch = els.fileSearchInput.value;
     renderFileList(state.sample || { evidence_files: [] });

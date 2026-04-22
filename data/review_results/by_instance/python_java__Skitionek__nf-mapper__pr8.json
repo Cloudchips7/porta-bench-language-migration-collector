@@ -1,0 +1,22 @@
+{
+  "instance_id": "python_java__Skitionek__nf-mapper__pr8",
+  "subtype": "python_java",
+  "saved_at": "2026-04-21T22:30:18",
+  "manual_label": "positive",
+  "implementation_scope": "full_repo_translation",
+  "logic_equivalence_scope": "same_logic_translation",
+  "source_language": "python",
+  "target_language": "java",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "test_files_detected",
+  "build_system": "poetry",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "high",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": ""
+}

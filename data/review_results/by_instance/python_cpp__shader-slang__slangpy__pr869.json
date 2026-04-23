@@ -1,0 +1,22 @@
+{
+  "instance_id": "python_cpp__shader-slang__slangpy__pr869",
+  "subtype": "python_cpp",
+  "saved_at": "2026-04-21T22:09:43",
+  "manual_label": "positive",
+  "implementation_scope": "partial_feature_migration",
+  "logic_equivalence_scope": "same_logic_translation",
+  "source_language": "python",
+  "target_language": "c++",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "pytest",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "low",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": ""
+}

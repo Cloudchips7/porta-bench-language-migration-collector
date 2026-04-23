@@ -1,0 +1,22 @@
+{
+  "instance_id": "python_cpp__amd__Triton-XDNA__pr22",
+  "subtype": "python_cpp",
+  "saved_at": "2026-04-21T12:13:22",
+  "manual_label": "positive",
+  "implementation_scope": "partial_feature_migration",
+  "logic_equivalence_scope": "same_logic_translation",
+  "source_language": "python",
+  "target_language": "c++",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "",
+  "build_system": "",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "high",
+  "exclude_reason": "",
+  "reviewer": "cjq",
+  "cross_check_status": "pending",
+  "notes": ""
+}

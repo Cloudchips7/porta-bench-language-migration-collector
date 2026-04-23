@@ -1,0 +1,22 @@
+{
+  "instance_id": "python_cpp__config-i1__smooth__pr348",
+  "subtype": "python_cpp",
+  "saved_at": "2026-04-21T21:45:17",
+  "manual_label": "negative",
+  "implementation_scope": "full_repo_translation",
+  "logic_equivalence_scope": "same_logic_translation",
+  "source_language": "python",
+  "target_language": "c++",
+  "source_version": "",
+  "target_version": "",
+  "migration_pattern": "",
+  "test_framework": "test_files_detected",
+  "build_system": "poetry",
+  "reproducible": "unknown",
+  "issue_rewrite_ready": "needs_check",
+  "leakage_risk": "low",
+  "exclude_reason": "",
+  "reviewer": "",
+  "cross_check_status": "pending",
+  "notes": "R->python"
+}

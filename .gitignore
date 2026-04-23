@@ -13,3 +13,4 @@ data/raw/repo_snapshots/
 需求文档/~$*.pptx
 !data/review_results/
 !data/review_results/**
+data/review_results/annotations_index.json

@@ -190,6 +190,32 @@ def load_saved_annotation(instance_id: str) -> dict:
     return load_json(path)
 
 
+def collect_annotation_index() -> list[dict]:
+    ensure_layout()
+    rows: list[dict] = []
+    for path in sorted(REVIEW_RESULTS_BY_INSTANCE.glob("*.json")):
+        try:
+            payload = load_json(path)
+        except Exception:
+            continue
+        instance_id = payload.get("instance_id") or path.stem
+        rows.append(
+            {
+                "instance_id": instance_id,
+                "subtype": payload.get("subtype", instance_id.split("__", 1)[0] if "__" in instance_id else ""),
+                "manual_label": payload.get("manual_label", ""),
+                "reviewer": payload.get("reviewer", ""),
+                "saved_at": payload.get("saved_at", ""),
+            }
+        )
+    rows.sort(key=lambda row: row.get("instance_id", ""))
+    return rows
+
+
+def rebuild_annotation_index_file() -> None:
+    write_json(index_path(), collect_annotation_index())
+
+
 def default_review_row(instance_id: str, subtype: str, enriched: dict, metadata: dict) -> dict:
     repo = metadata.get("repo", {})
     pr_meta = metadata.get("pull_request", {})
@@ -412,16 +438,6 @@ def build_all_patches_text(instance_id: str) -> str:
     return "\n\n".join(chunks)
 
 
-def update_annotation_index(entry: dict) -> None:
-    current = []
-    if index_path().exists():
-        current = load_json(index_path())
-    current = [row for row in current if row.get("instance_id") != entry["instance_id"]]
-    current.append(entry)
-    current.sort(key=lambda row: row["instance_id"])
-    write_json(index_path(), current)
-
-
 def save_annotation(payload: dict) -> dict:
     ensure_layout()
     instance_id = payload["instance_id"]
@@ -450,15 +466,7 @@ def save_annotation(payload: dict) -> dict:
         "notes": payload.get("notes", ""),
     }
     write_json(annotation_path(instance_id), record)
-    update_annotation_index(
-        {
-            "instance_id": instance_id,
-            "subtype": subtype,
-            "manual_label": record["manual_label"],
-            "reviewer": record["reviewer"],
-            "saved_at": now,
-        }
-    )
+    rebuild_annotation_index_file()
     return record
 
 
@@ -519,9 +527,7 @@ class ReviewHandler(SimpleHTTPRequestHandler):
             except FileNotFoundError as exc:
                 return self.send_json({"error": str(exc)}, status=HTTPStatus.NOT_FOUND)
         if parsed.path == "/api/results":
-            if index_path().exists():
-                return self.send_json(load_json(index_path()))
-            return self.send_json([])
+            return self.send_json(collect_annotation_index())
         return super().do_GET()
 
     def do_POST(self) -> None:
@@ -540,6 +546,7 @@ class ReviewHandler(SimpleHTTPRequestHandler):
 
 def main() -> None:
     ensure_layout()
+    rebuild_annotation_index_file()
     port = int(os.environ.get("ANNOTATION_TOOL_PORT", "8765"))
     server = ThreadingHTTPServer(("127.0.0.1", port), ReviewHandler)
     print(f"Annotation tool running at http://127.0.0.1:{port}")
